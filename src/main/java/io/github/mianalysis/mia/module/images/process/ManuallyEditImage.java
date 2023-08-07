@@ -28,14 +28,42 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Displays an image from the workspace, allowing the user to make manual edits, before saving it back into the workspace.  Edited images can either be stored as a new image in the workspace or overwrite the input image.  Once the image has been displayed, the user makes edits until clicking "OK" in the dialog box that appears.  As such, this module is only suitable for running in GUI mode.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ManuallyEditImage extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the "Apply to input image" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the edited image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String DISPLAY_SEPARATOR = "Display controls";
+
+	/**
+	* Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the "C" slider at the bottom of the image window).
+	*/
     public static final String CHANNEL_MODE = "Channel mode";
 
     public interface ChannelModes extends ShowImage.ChannelModes {

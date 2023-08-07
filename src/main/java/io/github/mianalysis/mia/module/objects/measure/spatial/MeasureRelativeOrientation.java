@@ -35,20 +35,60 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.volume.Volume;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
+
+/**
+* Measures the orientation of each object relative to a specific point.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point.<br><br>Note: Currently only works for X-Y plane measurements
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureRelativeOrientation extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects from the workspace for which orientation relative to a point will be measured.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point.  Output relative orientation measurements are associated with the relevant input object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Calculation controls";
     // public static final String ORIENTATION_MODE = "Orientation mode";
+
+	/**
+	* Measurement associated with each input object which defines the orientation of the first vector for the relative orientation calculation.  The other vector passes between the object centroid and a specific point (controlled by the other parameters).  This orientation measurement is assumed to be specified in degree units.
+	*/
     public static final String ORIENTATION_IN_X_Y_MEASUREMENT = "Orientation in X/Y measurement";
     // public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in
     // XY/Z measurement";
+
+	/**
+	* The range over which output relative orientation measurements are specified.  For cases where the orientation of the object could be inverted without consequence (e.g. fitting orientation to an ellipse), the range "0-90 degrees" can be used; however, in cases where the orientation is more specific (e.g. having come from object tracking), the range "0-180 degrees" can be used.  Relative orientation measurements are absolute, in that there's no distinction between positive and negative angular differences.
+	*/
     public static final String MEASUREMENT_RANGE = "Measurement range";
+
+	/**
+	* Controls the source of the reference point to which object orientations are compared.  :<br><ul><li>"Object centroid to image centre" Object orientations are compared to the centre of the object collection (i.e. to the image from which they were first detected).</li><li>"Object centroid to target centroid" Object orientations are compared to the centre of a specific object.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by "Object choice mode") in the specified collection ("Reference objects").  If "Reference must be in same frame" is not selected, the same object will be used in all timepoints.</li><li>"Object centroid to target surface" Object orientations are compared to the closest point on the surface of a specific object.  In this mode, the reference points can be different for all objects.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by "Object choice mode") in the specified collection ("Reference objects").  If "Reference must be in same frame" is not selected, the same object will be used in all timepoints.</li></ul>
+	*/
     public static final String REFERENCE_MODE = "Reference mode";
+
+	/**
+	* If "Reference mode" is set to "Object centroid to target centroid" or "Object centroid to target surface", this is the object collection from which the reference object(s) will be drawn.
+	*/
     public static final String REFERENCE_OBJECTS = "Reference objects";
+
+	/**
+	* If "Reference mode" is set to "Object centroid to target centroid" or "Object centroid to target surface", this controls whether the smallest or largest object from that collection will be used as the reference point for relative orientation calculations.
+	*/
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
+
+	/**
+	* When selected, the reference objects must be in the same frame as the input object being measured.  As such, all the objects in one frame will be compared to a common reference, but won't necessarily have the same reference as an object in another frame.
+	*/
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
 
     public MeasureRelativeOrientation(Modules modules) {

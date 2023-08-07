@@ -50,28 +50,102 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 05/06/2017.
  */
+
+/**
+* Gaussian spot fitting.  Can take objects as estimated locations.
+***Only works in 2D***
+***Only works for refinement of existing spots***
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitGaussian2D extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image/objects input";
+
+	/**
+	* Image from the workspace to which the 2D Gaussian profiles will be fit.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Objects for which 2D Gaussians will be fit.  A single Gaussian will be calculated for each object, with the centroid of the input object used as the starting estimate for the Gaussian centroid.  Fit parameters will be stored as measurements associated with the relevant input objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String FITTING_SEPARATOR = "Fitting controls";
+
+	/**
+	* Controls how the initial estimate of Gaussian sigma will be calculated.  Note: The initial radius value can also influence the range of accepted sigma values (see "Limit sigma range" parameter).<br><ul><li>"Fixed value" The same initial sigma value is applied to the fitting of all objects.  This value is provided by the "Sigma" parameter.</li><li>"Measurement" A different sigma value is applied to the fitting of each object.  This value is provided by the measurement (specified by "Sigma measurement") associated with the object being fit.</li></ul>
+	*/
     public static final String SIGMA_MODE = "Method to estimate sigma";
+
+	/**
+	* If "Method to estimate sigma" is set to "Fixed value", this is the initial sigma value that will be used in the fitting of all objects.
+	*/
     public static final String SIGMA = "Sigma";
+
+	/**
+	* If "Method to estimate sigma" is set to "Measurement", this is the measurement that will provide the intial sigma value used in the fitting of each object.
+	*/
     public static final String SIGMA_MEASUREMENT = "Sigma measurement";
+
+	/**
+	* If using object-associated measurements as the intial estimate of sigma, these measurements can be systematically increased or decreased with this multiplier.  Values less than 1 will reduce the sigma estimate, while values greater than 1 will increase it.  To use the default sigma value, set this to 1.
+	*/
     public static final String MEASUREMENT_MULTIPLIER = "Measurement multiplier";
+
+	/**
+	* When selected, the final sigma value must lie within a specific range.  This range is controlled by the "Minimum sigma (multiplier)" and "Maximum sigma (multiplier)" parameters.
+	*/
     public static final String LIMIT_SIGMA_RANGE = "Limit sigma range";
     public static final String MIN_SIGMA = "Minimum sigma (multiplier)";
     public static final String MAX_SIGMA = "Maximum sigma (multiplier)";
+
+	/**
+	* When selected, the size of the cropped image region, to which the 2D Gaussian is fit, is controlled by the "Window size" parameter.  Otherwise, the window size is automatically selected as 4 times the initial estimate of sigma, plus 1.
+	*/
     public static final String FIXED_FITTING_WINDOW = "Fixed fitting window";
+
+	/**
+	* If using a fixed fitting window ("Fixed fitting window" parameter selected), this is the size of the image crop (centered on the object being fit) that will be used.
+	*/
     public static final String WINDOW_SIZE = "Window size";
+
+	/**
+	* The maximum number of iterations the fitting algorithm can use.
+	*/
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Output controls";
+
+	/**
+	* If selected, any objects for which fits can't be determined (fitter runs out of evaluations before completing) will be removed from the input object set.
+	*/
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
+
+	/**
+	* If selected, the coordinates of the input objects will be updated to be circles.  The output circles will be centred on the best-fit location and have radii equal to the x-axis sigma value.
+	*/
     public static final String APPLY_VOLUME = "Apply volume";
+
+	/**
+	* If selected, an image containing all calculated Gaussian fits will be added to the workspace.
+	*/
     public static final String CREATE_GAUSSIAN_IMAGE = "Create Gaussian image";
+
+	/**
+	* If "Create Gaussian image" is selected, this is the name of the output Gaussian profile image that will be added to the workspace.
+	*/
     public static final String GAUSSIAN_IMAGE = "Gaussian image name";
 
     public FitGaussian2D(Modules modules) {

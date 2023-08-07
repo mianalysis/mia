@@ -41,24 +41,81 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 10/08/2017.
  */
+
+/**
+* Sets the intensity to maximise the dynamic range of the image.
+"Clipping fraction" is the fraction of pixels at either end of the range that gets clipped.The "Per object" region mode will normalise all pixels within each object.<br><br>Note: This module will change pixel intensities.  To set the display range without altering pixel intensities, use the "Set intensity display range" module
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class NormaliseIntensity extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from the workspace for which intensity normalisation will be calculated.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the normalisation should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If storing the processed image separately in the workspace, this is the name of the output image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String REGION_SEPARATOR = "Region controls";
+
+	/**
+	* Controls whether the intensities are normalised across the entire image stack ("Entire image"), across the image slice-by-slice ("Per slice") or separately within each object ("Per slice")
+	*/
     public static final String REGION_MODE = "Region mode";
+
+	/**
+	* If normalising intensities on an object-by-object basis ("Region mode" set to "Per object"), these are the objects that will be used.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String NORMALISATION_SEPARATOR = "Intensity normalisation";
+
+	/**
+	* Controls how the normalisation is calculated.  In each case, the minimum and maximum intensities are calculated and all values in the output image linearly interpolated between them:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum intensities in the final image are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul>
+	*/
     public static final String CALCULATION_MODE = "Calculation mode";
+
+	/**
+	* When applying a single normalisation to the entire image ("Region mode" set to "Entire image"), this parameter controls whether the normalisation range (min, max) will be determined from the input image or another image:<br><ul><li>"External" The image for which the normalisation range is calculated is different to the image that the final normalisation will be applied to.  For example, this could be a single representative slice or substack.  Using this could significantly reduce run-time for large stacks, especially when "Calculation mode" is set to "Precise".</li><li>"Internal" The normalisation range will be determined from the same image or stack onto which the normalisation will be applied.</li></ul>
+	*/
     public static final String CALCULATION_SOURCE = "Calculation source";
+
+	/**
+	* If using a separate image to determine the normalisation range ("Calculation source" set to "External"), this is the image that will be used for that calculation.
+	*/
     public static final String EXTERNAL_SOURCE = "External source";    
     public static final String CLIP_FRACTION_MIN = "Clipping fraction (min)";
     public static final String CLIP_FRACTION_MAX = "Clipping fraction (max)";
+
+	/**
+	* If manually setting the minimum intensity, this is the value that will be applied.
+	*/
     public static final String MIN_RANGE = "Minimum range value";
+
+	/**
+	* If manually setting the maximum intensity, this is the value that will be applied.
+	*/
     public static final String MAX_RANGE = "Maximum range value";
 
     public NormaliseIntensity(Modules modules) {

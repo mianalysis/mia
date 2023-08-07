@@ -38,21 +38,73 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href="https://www.cellclassifier.org/">Advanced Cell Classifier documentation</a>.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExportACCDataset extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image/objects input";
+
+	/**
+	* Objects for which an ACC dataset will be generated.  A summary of each object is output along with the specified measurements in a format that can be loaded into ACC.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Raw image from which objects were ultimately detected.  This image doesn't need to show the object selections, but will be displayed in ACC with an optional overlay variant (specified by "Input overlay image").  As such, the objects themselves should be visible.  Typically this would be a fluorescence or brightfield image.
+	*/
     public static final String INPUT_RAW_IMAGE = "Input raw image";
+
+	/**
+	* Equivalent image to that specified by "Input raw image", but with an overlay showing the input objects.  The overlay will be automatically flattened onto this image prior to saving.
+	*/
     public static final String INPUT_OVERLAY_IMAGE = "Input overlay image";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Dataset output";
+
+	/**
+	* Root folder where the output ACC dataset will be stored.
+	*/
     public static final String ROOT_DATASET_FOLDER = "Root dataset folder";
+
+	/**
+	* Metadata item associated with the input image that corresponds to the plate name from which the image was taken.  Note: The ACC format requires objects and images to be organised in a plate-based format; however, for single image samples, this text value could be set to the filename.
+	*/
     public static final String PLATE_NAME = "Plate name";
+
+	/**
+	* Metadata item associated with the input image that corresponds to the row letter for the plate well from which the image was taken.  Note: The ACC format requires objects and images to be organised in a plate-based format; however, for single image samples, this text value could be set to the series number.
+	*/
     public static final String ROW_LETTER = "Row letter";
+
+	/**
+	* Metadata item associated with the input image that corresponds to the column number for the plate well from which the image was taken.  Note: The ACC format requires objects and images to be organised in a plate-based format; however, for single image samples, this numeric value could be set to the series number.
+	*/
     public static final String COLUMN_NUMBER = "Column number";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
+
+	/**
+	* When selected, the available measurements are displayed in the MIA interface.  This allows only the relevant measurements associated with the objects to be used in ACC.
+	*/
     public static final String SHOW_MEASUREMENTS = "Show measurement selection";
+
+	/**
+	* If "Show measurement selection" is selected, all measurements associated with the input objects will be shown in the MIA interface, along with tickboxes that can be used to mark those for inclusion in the ACC dataset.
+	*/
     public static final String MEASUREMENTS = "Measurements";
 
     public ExportACCDataset(Modules modules) {
@@ -61,7 +113,7 @@ public class ExportACCDataset extends Module {
 
     @Override
     public String getDescription() {
-        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"https://www.cellclassifier.org/>Advanced Cell Classifier documentation</>.";
+        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"https://www.cellclassifier.org/\">Advanced Cell Classifier documentation</a>.";
 
     }
 

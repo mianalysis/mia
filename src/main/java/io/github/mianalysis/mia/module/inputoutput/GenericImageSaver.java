@@ -42,23 +42,71 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
+
+/**
+* Save an image/stack from the workspace to file.  Output file locations and filenames are generated from metadata items and fixed values.  This gives greater flexibility to output image locations than the standard "Save image" module.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GenericImageSaver extends Module {
+
+	/**
+	* 
+	*/
     public static final String LOADER_SEPARATOR = "Image saving";
+
+	/**
+	* Image to be saved to file.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
 
+
+	/**
+	* Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.
+	*/
     public static final String GENERIC_FORMAT = "Generic format";
+
+	/**
+	* List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.
+	*/
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
+
+	/**
+	* 
+	*/
     public static final String FORMAT_SEPARATOR = "Output image format";
+
+	/**
+	* The format the output image will be saved as:<br><ul><li>"AVI" Video written using the stock ImageJ "<a href="https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java">AVI Writer</a>".  Videos can use different compression algorithms specified using "Compression mode".  Framerate specified by "Frame rate (fps)" parameter.</li><li>"TIF" Standard multidimensional (multi-page) TIF image saving.</li><li>"ZIP" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul>
+	*/
     public static final String FILE_FORMAT = "File format";
+
+	/**
+	* Control whether saved images should be in ImageJ "Composite" (display all channels simultaneously) or "Color" (display one channel at a time) mode.
+	*/
     public static final String CHANNEL_MODE = "Channel mode";
+
+	/**
+	* Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.
+	*/
     public static final String SAVE_AS_RGB = "Save as RGB";
+
+	/**
+	* Compression mode used when saving AVI videos ("File format" parameter):<br><ul><li>"JPEG" Lossy video compression with quality specified by "Quality (0-100)" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li><li>"None" Frames are stored in their raw format (uncompressed).  This gives the highest quality, but also the largest file size.</li><li>"PNG" PNG video compression.</li></ul>
+	*/
     public static final String COMPRESSION_MODE = "Compression mode";
     public static final String QUALITY = "Quality (0-100)";
     public static final String FRAME_RATE = "Frame rate (fps)";
+
+	/**
+	* Flatten any overlay elements onto the image prior to saving.
+	*/
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public GenericImageSaver(Modules modules) {

@@ -25,11 +25,23 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 30/06/2017.
  */
+
+/**
+* Removes the specified image(s) from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an image can be retained for further use.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RemoveImages extends Module {
+
+	/**
+	* 
+	*/
     public static final String REMOVAL_SEPARATOR = "Images to remove";
     public static final String INPUT_IMAGE = "Input image";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
+
+	/**
+	* Mark another image from the workspace for removal.
+	*/
     public static final String REMOVE_ANOTHER_IMAGE = "Remove another image";
 
     public RemoveImages(Modules modules) {

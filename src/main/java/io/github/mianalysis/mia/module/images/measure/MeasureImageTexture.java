@@ -30,15 +30,47 @@ import io.github.sjcross.sjcommon.analysis.TextureCalculator;
 /**
  * Created by Stephen on 09/05/2017.
  */
+
+/**
+* Calculates Haralick's texture features for an image.  Each pixel in the image is compared to a corresponding pixel, a defined offset away (e.g. x-offset = 1, y-offset=0, z-offset=0 to compare to the pixel immediately right of each pixel).  The intensities of the pixel pairs are added to a 2D gray-level co-occurrence matrix (GLCM) from which measures of angular second moment, contrast, correlation and entropy can be calculated.<br><br>Robert M Haralick; K Shanmugam; Its'hak Dinstein, "Textural Features for Image Classification" <i>IEEE Transactions on Systems, Man, and Cybernetics. SMC-3</i> (1973) <b>6</b> 610–621.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureImageTexture extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image from the workspace for which texture metrics will be calculated.  Texture measurements will be assigned to this image.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String TEXTURE_SEPARATOR = "Texture calculation";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String X_OFFSET = "X-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Y_OFFSET = "Y-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Z_OFFSET = "Z-offset";
+
+	/**
+	* When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.
+	*/
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
     public MeasureImageTexture(Modules modules) {

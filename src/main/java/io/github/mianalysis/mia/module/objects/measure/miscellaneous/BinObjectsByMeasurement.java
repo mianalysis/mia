@@ -25,15 +25,47 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Distribute objects into a set of "bins" based on a measurement associated with each object.  Bins are evenly distributed between manually-specified smallest and largest bin centres.  The assigned bin for each object is stored as a new measurement associated with that object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class BinObjectsByMeasurement extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects from the workspace.  The specified measurement for each of these will be binned according to various parameters.  The assigned bin will be stored as a new measurement associated with this object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String BIN_SEPARATOR = "Binning controls";
+
+	/**
+	* Measurement associated with the input objects that will be binned according to the other parameters.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* Centre value associated with the smallest bin.  Bins will be evenly distributed in bins between this value and the upper bin centre (specified by "Largest bin centre".
+	*/
     public static final String SMALLEST_BIN_CENTRE = "Smallest bin centre";
+
+	/**
+	* Centre value associated with the largest bin.  Bins will be evenly distributed in bins between this value and the lower bin centre (specified by "Smallest bin centre".
+	*/
     public static final String LARGEST_BIN_CENTRE = "Largest bin centre";
+
+	/**
+	* Number of bins to divide measurements into.  These will be evenly distributed in the range between "Smallest bin centre" and "Largest bin centre".
+	*/
     public static final String NUMBER_OF_BINS = "Number of bins";
 
     public BinObjectsByMeasurement(Modules modules) {

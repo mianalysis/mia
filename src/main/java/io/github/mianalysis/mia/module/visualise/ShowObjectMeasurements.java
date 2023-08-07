@@ -21,9 +21,21 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 /**
  * Created by Stephen Cross on 14/10/2019.
  */
+
+/**
+* Displays all measurements associated with all objects of the specified object collection.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowObjectMeasurements extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Input";
+
+	/**
+	* Object collection to display all measurements for.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public ShowObjectMeasurements(Modules modules) {

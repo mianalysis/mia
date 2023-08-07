@@ -27,23 +27,79 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
+
+/**
+* Perform a mathematical operation on measurements associated with an image.  The calculation can replace either or both input image measurements with fixed values.  The resulting measurement is associated with the input image as a new measurement.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageMeasurementCalculator extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image from the workspace to perform the measurement calculation for.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String VALUE_SEPARATOR_1 = "Value 1 selection";
+
+	/**
+	* Controls how the first value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 1"is used.</li><li>"Measurement" A measurement associated with the input image and defined by "Measurement 1" is used.</li></ul>
+	*/
     public static final String VALUE_MODE_1 = "Value mode 1";
+
+	/**
+	* Fixed value to use in the calculation when "Value mode 1" is in "Fixed" mode.
+	*/
     public static final String FIXED_VALUE_1 = "Fixed value 1";
+
+	/**
+	* Measurement associated with the input image to use in the calculation when "Value mode 1" is in "Measurement" mode.
+	*/
     public static final String MEASUREMENT_1 = "Measurement 1";
 
+
+	/**
+	* 
+	*/
     public static final String VALUE_SEPARATOR_2 = "Value 2 selection";
+
+	/**
+	* Controls how the second value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 2"is used.</li><li>"Measurement" A measurement associated with the input image and defined by "Measurement 2" is used.</li></ul>
+	*/
     public static final String VALUE_MODE_2 = "Value mode 2";
+
+	/**
+	* Fixed value to use in the calculation when "Value mode 2" is in "Fixed" mode.
+	*/
     public static final String FIXED_VALUE_2 = "Fixed value 2";
+
+	/**
+	* Measurement associated with the input image to use in the calculation when "Value mode 2" is in "Measurement" mode.
+	*/
     public static final String MEASUREMENT_2 = "Measurement 2";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Measurement calculation";
+
+	/**
+	* The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the input image
+	*/
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
+
+	/**
+	* Calculation to perform.  Choices are: Add value 1 and value 2, Divide value 1 by value 2, Multiply value 1 and value 2, Subtract value 2 from value 1.
+	*/
     public static final String CALCULATION_MODE = "Calculation mode";
 
     public interface ValueModes {
@@ -96,19 +152,19 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
-        String valueMode1 = parameters.getValue(VALUE_MODE_1,workspace);
-        double fixedValue1 = parameters.getValue(FIXED_VALUE_1,workspace);
-        String measurementName1 = parameters.getValue(MEASUREMENT_1,workspace);
+        String valueMode1 = parameters.getValue(VALUE_MODE_1, workspace);
+        double fixedValue1 = parameters.getValue(FIXED_VALUE_1, workspace);
+        String measurementName1 = parameters.getValue(MEASUREMENT_1, workspace);
 
-        String valueMode2 = parameters.getValue(VALUE_MODE_2,workspace);
-        double fixedValue2 = parameters.getValue(FIXED_VALUE_2,workspace);
-        String measurementName2 = parameters.getValue(MEASUREMENT_2,workspace);
+        String valueMode2 = parameters.getValue(VALUE_MODE_2, workspace);
+        double fixedValue2 = parameters.getValue(FIXED_VALUE_2, workspace);
+        String measurementName2 = parameters.getValue(MEASUREMENT_2, workspace);
 
-        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT,workspace);
-        String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
+        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT, workspace);
+        String calculationMode = parameters.getValue(CALCULATION_MODE, workspace);
 
         // Getting value 1
         double value1 = 0;
@@ -137,7 +193,7 @@ public class ImageMeasurementCalculator extends Module {
 
         // Adding the new measurement
         inputImage.addMeasurement(new Measurement(outputMeasurementName, result));
-        
+
         // Showing results
         if (showOutput)
             inputImage.showMeasurements(this);
@@ -171,17 +227,17 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParams = new Parameters();
 
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
         returnedParams.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParams.add(parameters.getParameter(INPUT_IMAGE));
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));
         returnedParams.add(parameters.getParameter(VALUE_MODE_1));
-        switch ((String) parameters.getValue(VALUE_MODE_1,workspace)) {
+        switch ((String) parameters.getValue(VALUE_MODE_1, workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
                 break;
@@ -194,7 +250,7 @@ Workspace workspace = null;
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_2));
         returnedParams.add(parameters.getParameter(VALUE_MODE_2));
-        switch ((String) parameters.getValue(VALUE_MODE_2,workspace)) {
+        switch ((String) parameters.getValue(VALUE_MODE_2, workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
                 break;
@@ -215,12 +271,11 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // Creating new MeasurementRef
-        String inputImageName = parameters.getValue(INPUT_IMAGE,null);
-        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT,null);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, null);
+        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT, null);
 
         returnedRefs.add(imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName));
 
@@ -229,23 +284,23 @@ Workspace workspace = null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

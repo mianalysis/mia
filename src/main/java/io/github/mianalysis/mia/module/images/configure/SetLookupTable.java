@@ -28,16 +28,52 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.imagej.LUTs;
 
+
+/**
+* Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetLookupTable extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to set look-up table for.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String LUT_SEPARATOR = "Lookup table selection";
+
+	/**
+	* Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br>
+	*/
     public static final String CHANNEL_MODE = "Channel mode";
+
+	/**
+	* When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.
+	*/
     public static final String CHANNEL = "Channel";
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_IMAGE = "Reference image";
+
+	/**
+	* Look-up table to apply to the relevant channels.  Choices are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.
+	*/
     public static final String LOOKUP_TABLE = "Lookup table";
+
+	/**
+	* Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br>
+	*/
     public static final String DISPLAY_MODE = "Display mode";
 
     public SetLookupTable(Modules modules) {

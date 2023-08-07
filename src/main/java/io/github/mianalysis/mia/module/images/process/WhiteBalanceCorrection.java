@@ -29,11 +29,31 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.analysis.IntensityCalculator;
 
+
+/**
+* Apply whitebalance correction to an image based on a reference region (specified as an object).<br><br>Method based on the <a href="https://github.com/pmascalchi/ImageJ_Auto-white-balance-correction">macro</a> by Patrice Mascalchi ().
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class WhiteBalanceCorrection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply white balance correction to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the white balance correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the correction process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String REFERENCE_OBJECT = "Reference object(s)";
 

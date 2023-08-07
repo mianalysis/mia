@@ -48,34 +48,126 @@ import io.github.sjcross.sjcommon.object.voxels.BresenhamLine;
 /**
  * Created by sc13967 on 24/01/2018.
  */
+
+/**
+* Fits a 2D spline to the backbone of objects.  Each object in the input collection will be reduced to a single (longest skeleton path) backbone, which will be fit with the spline.  Local curvature of the spline can be calculated and any measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Curvature values can be calculated as "absolute" (always greater than 0, irrespective of the direction of curvature), or "signed" (sign dependent on direction of curvature, but requires the "start" end of the backbone to be specified).<br><br>Note: Spline fitting will be performed in 2D, so any 3D objects will be projected into a single plane first.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectCurvature extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Objects to which splines will be fit.  A single spline will be fit to each object in this collection.  Any calculated measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Note: Spline fitting will be performed in 2D, so any 3D objects will be projected into a single plane first.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Controls whether spline objects are exported:<br><ul><li>"Do not store" No spline objects are output by this module.</li><li>"Individual control points" Specific points along the contour are exported.  Each control point is itself a separate object, which is a child of the corresponding input object.  As such, each input object will generally have multiple child control point objects.</li><li>"Full contour" All points along the spline are exported as a single object.  This object is stored as a child of the corresponding input object.</li></ul>
+	*/
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
+
+	/**
+	* The name assigned to the objects if they are being exported.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+	/**
+	* If spline objects are being exported (either as full contours or as individual control points), this value controls the interval between points.  As such, increasing values will export fewer and fewer points.
+	*/
     public static final String EXPORT_EVERY_N_POINTS = "Export every N points";
 
+
+	/**
+	* 
+	*/
     public static final String FITTING_SEPARATOR = "Spline fitting";
+
+	/**
+	* Controls how the spline is fit to the input object:<br><ul><li>"LOESS (smooth fitting)" Performs a local regression (LOESS) interpolation of the line to give a smoothed representation of the object backbone (longest skeleton path).  Uses <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">Apache Math3 LoessInterpolator</a>.</li><li>"Standard (fits all points)" Fit spline is formed of straight line segments between every other point along the input object backbone (longest skeleton path).  This method doesn't perform any smoothing.  Uses <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/SplineInterpolator.html">Apache Math3 SplineInterpolator</a>.</li></ul>
+	*/
     public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
     public static final String N_NEIGHBOURS = "Number of neighbours (smoothing)";
+
+	/**
+	* "This many robustness iterations are done.  A sensible value is usually 0 (just the initial fit without any robustness iterations) to 4".  Description taken from <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">LoessInterpolator documentation</a>
+	*/
     public static final String ITERATIONS = "Iterations";
+
+	/**
+	* "If the median residual at a certain robustness iteration is less than this amount, no more iterations are done".  Description taken from <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">LoessInterpolator documentation</a>
+	*/
     public static final String ACCURACY = "Accuracy";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Spline measurement";
+
+	/**
+	* When selected, the fit spline will be oriented such that the first point is closer to the reference point (specified by measurements "X-axis reference measurement" and "Y-axis reference measurement") than the final point in the spline.  Having this consistency to the spline orientation allows measurements relative to the first point to be calculated (e.g. relative location of maximum curvature along the spline).  When this is not selected, there's no guarantee of which end of the spline will be "first".
+	*/
     public static final String RELATE_TO_REFERENCE_POINT = "Relate to reference point";
+
+	/**
+	* If "Relate to reference point" is selected, this is the measurement associated with the input object that will provide the x-axis reference for determining the orientation of the spline.
+	*/
     public static final String X_REF_MEASUREMENT = "X-axis reference measurement";
+
+	/**
+	* If "Relate to reference point" is selected, this is the measurement associated with the input object that will provide the y-axis reference for determining the orientation of the spline.
+	*/
     public static final String Y_REF_MEASUREMENT = "Y-axis reference measurement";
+
+	/**
+	* When selected (and when "Relate to reference point" is also selected), absolute curvature values will be calculated.  Absolute curvatures are always greater than or equal to 0, irrespective of direction.  Increasing signed curvature values indicate increasing curvatures.
+	*/
     public static final String ABSOLUTE_CURVATURE = "Measure absolute curvature";
+
+	/**
+	* When selected (and when "Relate to reference point" is also selected), signed curvature values will be calculated.  Signed curvatures are increasingly positive as the spline bends left and increasingly negative as the spline bends right (directions relative to path along spline, starting at first point).
+	*/
     public static final String SIGNED_CURVATURE = "Measure signed curvature";
+
+	/**
+	* When selected, the angle between the two ends of the spline are calculated in degree units.
+	*/
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Rendering";
+
+	/**
+	* When selected, the fit spline(s) will be rendered as an overlay on the image specified by "Input image".
+	*/
     public static final String DRAW_SPLINE = "Draw spline";
+
+	/**
+	* If drawing the spline(s), this is the image onto which they will be added as overlays.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* If drawing the spline(s), when this is selected, the spline overlays will be added to the image specified by "Input image".  If not selected, the image containing the overlays will be stored separately in the workspace with the name specified by "Output image".
+	*/
     public static final String APPLY_TO_IMAGE = "Apply to image";
+
+	/**
+	* If drawing the spline(s) and "Apply to image" is not selected, this is the name with which the overlay images will be stored in the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* If drawing the spline(s), this is the width of the spline overlay lines that will be drawn.
+	*/
     public static final String LINE_WIDTH = "Line width";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
 

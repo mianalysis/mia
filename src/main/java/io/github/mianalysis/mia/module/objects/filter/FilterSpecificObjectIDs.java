@@ -40,11 +40,31 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
+
+/**
+* Filter an object collection based on user-defined list of object ID numbers.  When the module executes, the user is presented with a dialog box where they can enter a comma-separated list of object IDs to remove.  Once the list is complete, the user presses "OK" to proceed.  All objects with ID numbers matching those in the list can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  To assist with selection of ID numbers, an optional image can be displayed - this could be pre-prepared to display object ID numbers using the "Add labels" module.  The number of objects specified for removal can be stored as a metadata value.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the "Image to display" parameter.
+	*/
     public static final String SHOW_IMAGE = "Show image";
+
+	/**
+	* Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the "Add labels" module.
+	*/
     public static final String DISPLAY_IMAGE_NAME = "Image to display";
+
+	/**
+	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName]_BY_ID").
+	*/
     public static final String STORE_RESULTS = "Store filter results";
 
     private static final String OK = "OK";

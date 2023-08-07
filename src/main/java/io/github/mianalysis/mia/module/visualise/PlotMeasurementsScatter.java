@@ -35,20 +35,56 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by sc13967 on 19/05/2017.
  */
+
+/**
+* Creates an ImageJ scatter plot of two measurements associated with specified objects.  A third measurement can be encoded as point colour.  The output plot can either be displayed immediately in an interactive ImageJ plotting window or stored as an image to the MIA workspace (allowing it to subsequently be saved to file).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class PlotMeasurementsScatter extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/image output";
+
+	/**
+	* Input object collection for which object-associated measurements will be plotted.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output plot image which will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String PLOTTING_SEPARATOR = "Plotting controls";
     public static final String MEASUREMENT1 = "First measurement (X)";
     public static final String MEASUREMENT2 = "Second measurement (Y)";
+
+	/**
+	* When selected, a third measurement can be represented as the plot marker colour.  This colour will vary according to the colourmap set with the "Colourmap" parameter
+	*/
     public static final String INCLUDE_COLOUR = "Add third measurement as colour";
     public static final String MEASUREMENT3 = "Third measurement (Colour)";
+
+	/**
+	* If "Add third measurement as colour" is selected, this is the colourmap that will control how marker colours vary in response to the magnitude of their values.
+	*/
     public static final String COLOURMAP = "Colourmap";
 
+
+	/**
+	* 
+	*/
     public static final String MISC_SEPARATOR = "Miscellaneous controls";
+
+	/**
+	* When selected, and if displaying module output in realtime ("Show output" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard image output will be displayed (i.e. the same image added to the workspace).
+	*/
     public static final String SHOW_AS_INTERACTIVE_PLOT = "Show as interactive plot";
 
     public PlotMeasurementsScatter(Modules modules) {

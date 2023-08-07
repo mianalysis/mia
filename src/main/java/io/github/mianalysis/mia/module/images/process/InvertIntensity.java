@@ -28,11 +28,31 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 17/01/2018.
  */
+
+/**
+* Invert intensity of each pixel.  This uses the stock ImageJ intensity inversion function ("Edit - Invert")
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class InvertIntensity extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to be inverted.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the input image will be replaced by the inverted image in the workspace.  If disabled, the inverted image will be stored as a new image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the inverted image will be stored as a new image in the workspace.  This is the name of the output inverted image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
     public InvertIntensity(Modules modules) {

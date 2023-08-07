@@ -32,16 +32,56 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class BinaryOperations2D extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply binary operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* 
+	*/
     public static final String OPERATION_SEPARATOR = "Operation controls";
+
+	/**
+	* Controls which binary operation will be applied.  The operations are described in full <a href="https://imagej.nih.gov/ij/docs/guide/146-29.html#toc-Subsection-29.8">here</a>:<br><ul><li>"Dilate" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li><li>"Distance map" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.</li><li>"Erode" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.</li><li>"Fill holes" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.</li><li>"Outline" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.</li><li>"Skeletonise" Repeatedly applies the erode process until each foreground region is a single pixel wide.</li><li>"Ultimate points" Repeatedly applies the erode process until each foreground is reduced to a single pixel.  The value of the remaining, isolated foreground pixels are equal to their equivalent, pre-erosion distance map values.  This process outputs a 32-bit greyscale image.</li><li>"Voronoi" Creates an image subdivided by lines such that all pixels contained within an enclosed region are closest to the same contiguous object in the input binary image.</li><li>"Watershed" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.</li></ul>
+	*/
     public static final String OPERATION_MODE = "Filter mode";
+
+	/**
+	* Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.
+	*/
     public static final String NUM_ITERATIONS = "Number of iterations";
+
+	/**
+	* The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.
+	*/
     public static final String COUNT = "Count";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
     public BinaryOperations2D(Modules modules) {

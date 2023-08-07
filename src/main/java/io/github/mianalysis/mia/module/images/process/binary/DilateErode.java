@@ -36,16 +36,52 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.img.imageplus.ImagePlusImg;
 
+
+/**
+* Applies binary dilate or erode operations to an image in the workspace.  Dilate will expand all foreground-labelled regions by a specified number of pixels, while erode will shrink all foreground-labelled regions by the same ammount.<br><br>This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.  All operations (both 2D and 3D) use the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class DilateErode extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply dilate or erode operation to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String OPERATION_SEPARATOR = "Operation controls";
+
+	/**
+	* Controls what sort of dilate or erode operation is performed on the input image:<br><ul><li>"Dilate 2D" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses ImageJ implementation.</li><li>"Dilate 3D" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses MorphoLibJ implementation.</li><li>"Erode 2D" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses ImageJ implementation.</li><li>"Erode 3D" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses MorphoLibJ implementation.</li></ul>
+	*/
     public static final String OPERATION_MODE = "Filter mode";
+
+	/**
+	* Number of times the operation will be run on a single image.  Effectively, this allows objects to be dilated or eroded by a specific number of pixels.
+	*/
     public static final String NUM_ITERATIONS = "Number of iterations";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
     public DilateErode(Modules modules) {

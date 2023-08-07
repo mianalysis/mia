@@ -381,11 +381,6 @@ public class ShapeGeneration {
     /* ********************************************************* */
 // Create Shape Outline
     
-    /**
-     * Note: shape returning is not always exactly inside the bounds - for example,
-     *   if the text requested is a "g" - the foot of the g may over hang the lower
-     *   bounds.
-     */
     public static ArrayList<VPoint> createShapeOutline(String text, Rectangle bounds, Font font) throws ShapeGenerationException {
         // Create text layout
         TextLayout textlayout = new TextLayout(text, font, FONT_RENDER);

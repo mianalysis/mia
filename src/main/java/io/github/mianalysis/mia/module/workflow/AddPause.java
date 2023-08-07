@@ -28,10 +28,26 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 09/02/2018.
  */
+
+/**
+* Pauses workflow execution and displays an option dialog to continue or quit.  Optionally, an image from the workspace can also be displayed.  An example usage would be during parameter optimisation, where subsequent elements of the analysis only want executing if the first steps are deemed successful (and this can't be automatically determined).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddPause extends Module {
+
+	/**
+	* 
+	*/
     public static final String PAUSE_SEPARATOR = "Pause controls";
+
+	/**
+	* When selected, an image from the workspace can be automatically displayed when this module executes.
+	*/
     public static final String SHOW_IMAGE = "Show image";
+
+	/**
+	* If "Show image" is selected, this image will be displayed when the module executes.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
     private static final String CONTINUE = "Continue";

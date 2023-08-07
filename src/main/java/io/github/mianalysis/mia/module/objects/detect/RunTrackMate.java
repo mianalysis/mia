@@ -67,28 +67,108 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 15/05/2017.
  */
+
+/**
+* Uses the TrackMate plugin included with Fiji to detect and track spots in images.  For more information, see the <a href="https://imagej.net/TrackMate">TrackMate</a> documentation.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunTrackMate extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* Image in which to detect spots.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Spot objects that will be added to the workspace.  If tracking is enabled, each spot will have a parent track object.
+	*/
     public static final String OUTPUT_SPOT_OBJECTS = "Output spot objects";
 
+
+	/**
+	* 
+	*/
     public static final String SPOT_SEPARATOR = "Spot detection";
+
+	/**
+	* Enable if spatial parameters (e.g. "Radius" or "Max linking distance") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* Enable TrackMate's "Subpixel localisation" functionality.  When enabled, subpixel centroid coordinates will be stored as measurements associated with each detected object.
+	*/
     public static final String DO_SUBPIXEL_LOCALIZATION = "Do sub-pixel localisation";
+
+	/**
+	* Enable TrackMate's "Median filtering" functionality.
+	*/
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
+
+	/**
+	* Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.
+	*/
     public static final String RADIUS = "Radius";
+
+	/**
+	* Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).
+	*/
     public static final String THRESHOLD = "Threshold";
+
+	/**
+	* When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.
+	*/
     public static final String ESTIMATE_SIZE = "Estimate spot size";
 
+
+	/**
+	* 
+	*/
     public static final String TRACK_SEPARATOR = "Spot tracking";
+
+	/**
+	* Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information.
+	*/
     public static final String DO_TRACKING = "Run tracking";
+
+	/**
+	* Method with which spots are tracked between frames:<br><ul><li>"Linear motion (Kalman)" Uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.</li><li>"Simple" (default) Calculates links between spot positions in the previous and current frames.  This does not take motion into account.</li></ul>
+	*/
     public static final String TRACKING_METHOD = "Tracking method";
+
+	/**
+	* Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements.
+	*/
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
+
+	/**
+	* Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless "Calibrated units" is selected.
+	*/
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
+
+	/**
+	* Minimum spot separation required for creation of a new track.
+	*/
     public static final String INITIAL_SEARCH_RADIUS = "Initial search radius";
+
+	/**
+	* Maximum distance between predicted spot location and location of spot in current frame.
+	*/
     public static final String SEARCH_RADIUS = "Search radius";
+
+	/**
+	* Maximum distance a spot can travel between "Max frame gap" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless "Calibrated units" is selected.
+	*/
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
+
+	/**
+	* Maximum number of frames a spot can go undetected before it will be classed as a new track upon reappearance.
+	*/
     public static final String MAX_FRAME_GAP = "Max frame gap";
 
     public interface TrackingMethods {

@@ -45,19 +45,67 @@ import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.voxels.MidpointCircle;
 
+
+/**
+* Creates a map of object measurements.  Each pixel of the output map is a combination of all object measurements at that location.  Measurements can be taken from the input objects themselves or from associated parent objects.  Multiple Z-slices and/or timepoints can be combined into a single slice.  The outmap is blurred with a Gaussian function to show smooth transitions between regions.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CreateMeasurementMap extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* Objects from workspace for which the measurement map will be created.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output image showing the measurement map which will be output to the workspace.  The value at each location will be based on the measurements of nearby objects.  Any pixels too far from an object (this distance will be controlled by the blur range, "Range") will be assigned NaN (not a number) values.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String MAP_SEPARATOR = "Map controls";
+
+	/**
+	* Controls whether the measurements being rendered for each object are measurements associated with that object ("Measurement") or are measurements associated with a parent object ("Parent object measurement").
+	*/
     public static final String MEASUREMENT_MODE = "Measurement mode";
+
+	/**
+	* If "Measurement mode" is set to "Parent object measurement", this is the parent object collection from which the measurement (specified by "Measurement") will be taken.
+	*/
     public static final String PARENT_OBJECT = "Parent object";
+
+	/**
+	* Controls the measurement for each object that will be rendered on the measurement map.  Depending on the setting for "Measurement mode", this can either be a measurement associated with the input object or with a parent of that object.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* Controls the statistic that will be used to combine multiple object measurements at each location.  For example, if two objects overlap at a specific location (occurs more frequently when "Merge slices" or "Merge time" are selected), the value at that location could be an average (or any other listed statistic) of the two.
+	*/
     public static final String STATISTIC = "Statistic";
+
+	/**
+	* The measurement map can be blurred using a Gaussian distribution.  This is the sigma value for that blurring function.
+	*/
     public static final String RANGE = "Range";
+
+	/**
+	* When selected, all measurements from different slices are combined into a single slice.
+	*/
     public static final String MERGE_SLICES = "Merge slices";
+
+	/**
+	* When selected, all measurements from different timepoints are combined into a single timepoint.
+	*/
     public static final String MERGE_TIME = "Merge time";
 
     public CreateMeasurementMap(Modules modules) {

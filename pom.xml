@@ -11,8 +11,8 @@
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>MIA</artifactId>
-    <version>1.2.9</version>
+    <artifactId>mia</artifactId>
+    <version>1.2.10</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -411,12 +411,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.sjcross</groupId>
+            <groupId>io.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>v1.12.5</version>
-            <!-- <groupId>io.github.sjcross</groupId>
-            <artifactId>sjcommon</artifactId>
-            <version>1.12.3</version> -->
+            <version>1.12.5</version>
         </dependency>
     </dependencies>
 
@@ -538,7 +535,8 @@
                 <version>3.7.1</version>
             </plugin>
 
-            <plugin>
+            <!-- To be uncommented when uploading to Maven Central -->
+            <!-- <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.13</version>
@@ -548,9 +546,9 @@
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.3.0</version>
@@ -576,9 +574,9 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.1.0</version>
@@ -591,7 +589,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 

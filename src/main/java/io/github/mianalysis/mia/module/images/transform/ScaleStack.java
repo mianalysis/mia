@@ -30,15 +30,43 @@ import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
+
+/**
+* Applies independent X,Y and Z-axis scaling to an input image.  Output dimensions can be specified explicitly, matched to another image in the workspace or calculated with a scaling factor.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to process.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Name of the output scaled image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String SCALE_SEPARATOR = "General scaling controls";
+
+	/**
+	* Controls how interpolated pixel values are calculated.  Choices are: None,Bicubic,Bilinear
+	*/
     public static final String INTERPOLATION_MODE = "Interpolation mode";
 
+
+	/**
+	* 
+	*/
     public static final String X_AXIS_SEPARATOR = "X-axis scaling controls";
     public static final String X_SCALE_MODE = "Scale mode (x-axis)";
     public static final String X_RESOLUTION = "Resolution (x-axis)";
@@ -46,6 +74,10 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String X_ADOPT_CALIBRATION = "Adopt calibration (x-axis)";
     public static final String X_SCALE_FACTOR = "Scale factor (x-axis)";
 
+
+	/**
+	* 
+	*/
     public static final String Y_AXIS_SEPARATOR = "Y-axis scaling controls";
     public static final String Y_SCALE_MODE = "Scale mode (y-axis)";
     public static final String Y_RESOLUTION = "Resolution (y-axis)";
@@ -53,6 +85,10 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String Y_ADOPT_CALIBRATION = "Adopt calibration (y-axis)";
     public static final String Y_SCALE_FACTOR = "Scale factor (y-axis)";
 
+
+	/**
+	* 
+	*/
     public static final String Z_AXIS_SEPARATOR = "Z-axis scaling controls";
     public static final String Z_SCALE_MODE = "Scale mode (z-axis)";
     public static final String Z_RESOLUTION = "Resolution (z-axis)";

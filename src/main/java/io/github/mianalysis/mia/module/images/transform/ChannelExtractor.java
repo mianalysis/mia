@@ -27,9 +27,21 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen on 08/05/2017.
  */
+
+/**
+* DEPRECATED: Please use ExtractSubstack module.<br><br> Extracts a single channel from a stack and stores it as a new image in the workspace.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ChannelExtractor extends Module {
+
+	/**
+	* Multi-channel image to extract a channel from.  This image is unaffected by the extraction process (i.e. its channel count doesn't decrease by 1).
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* The extracted channel will be stored in the workspace under this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
 

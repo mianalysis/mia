@@ -63,16 +63,52 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen on 12/05/2021.
  */
+
+/**
+* Run Fiji-compatible scripts directly within a MIA workflow.  These can be used to perform advanced actions, such as making measurements that aren't explicitly supported in MIA or running additional plugins.  Each script has access to the current workspace, thus providing a route to interact with and specify new images and objects.  Scripts also have access to this module, which in turn can be used to access all modules in the current workflow.  Scripts are run once per workflow execution.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunScript extends Module {
+
+	/**
+	* 
+	*/
     public static final String SCRIPT_SEPARATOR = "Script definition";
+
+	/**
+	* Select the source for the script code:<br><ul><li>"Script file" Load the macro from the file specified by the "Script file" parameter.</li><li>"Script text" Script code is written directly into the "Script text" box.</li></ul>
+	*/
     public static final String SCRIPT_MODE = "Script mode";
+
+	/**
+	* Specify the language of the script written in the "Script text" box.  This parameter is not necessary when loading a script from file, since the file extension provides the language information.
+	*/
     public static final String SCRIPT_LANGUAGE = "Script language";
+
+	/**
+	* Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code ("#@ io.github.mianalysis.mia.object.Workspace workspace" and "#@ io.github.mianalysis.mia.module.Module thisModule"), which are included by default.  With these lines present in the script, the workspace can be accessed via the "workspace" variable and the current module (i.e. this script module) via the "thisModule" variable.
+	*/
     public static final String SCRIPT_TEXT = "Script text";
+
+	/**
+	* Select a script file to be run by this module.  As with the "Script text" parameter, this script can start with the lines "#@ io.github.mianalysis.mia.object.Workspace workspace" and "#@ io.github.mianalysis.mia.module.Module thisModule", which provide access to the active workspace and this module.
+	*/
     public static final String SCRIPT_FILE = "Script file";
+
+	/**
+	* This button refreshes the script code as stored within MIA.  Clicking this will create an "undo" checkpoint and validate any global variables that have been used.
+	*/
     public static final String REFRESH_BUTTON = "Refresh script";
 
+
+	/**
+	* 
+	*/
     public static final String IMAGE_OUTPUT_SEPARATOR = "Script outputs";
+
+	/**
+	* If images or new object collections have been added to the workspace during script execution they must be added here, so subsequent modules are aware of their presence.  The act of adding an output via this method simply tells subsequent MIA modules the relevant images/object collections were added to the workspace; the image/object collection must be added to the workspace during script execution using the "workspace.addImage([image])" or "workspace.addObjects([object collection])" commands.
+	*/
     public static final String ADD_OUTPUT = "Add output";
     public static final String OUTPUT_TYPE = "Output type";
     public static final String OUTPUT_IMAGE = "Output image";

@@ -26,9 +26,21 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 12/05/2017.
  */
+
+/**
+* Measure intensity statistics (mean, median, mode, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageIntensity extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to measure intensity statistics for.  The resulting measurements will be associated with this image for use in subsequent modules.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
     public MeasureImageIntensity(Modules modules) {

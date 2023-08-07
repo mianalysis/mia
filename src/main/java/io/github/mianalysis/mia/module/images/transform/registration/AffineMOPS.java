@@ -23,17 +23,45 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 
+
+/**
+* Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be "linked" (all frames given the same registration) or "independent" (each stack registered separately).<br><br>This module uses the <a href="https://imagej.net/Feature_Extraction">Feature Extraction</a> plugin and associated MPICBG tools to detect MOPS ("Multi-Scale Oriented Patches") features from the input images and calculate and apply the necessary 2D affine transforms.<br><br>References: Brown, Matthew and Szeliski, Richard "Multi-image feature matching using multi-scale oriented patches". US Patent 7,382,897 (June 3, 2008).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineMOPS extends AbstractAffineRegistration {
+
+	/**
+	* 
+	*/
         public static final String FEATURE_SEPARATOR = "Feature detection";
         public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
+
+	/**
+	* "Keypoint candidates are extracted at all scales between maximum image size and minimum image size. This Scale Space is represented in octaves each covering a fixed number of discrete scale steps from σ0 to 2σ0. More steps result in more but eventually less stable keypoint candidates. Tip: Keep 3 as suggested by Lowe (2004) and do not use more than 10.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
         public static final String STEPS = "Steps per scale";
         public static final String MINIMUM_IMAGE_SIZE = "Minimum image size (px)";
         public static final String MAXIMUM_IMAGE_SIZE = "Maximum image size (px)";
+
+	/**
+	* "The MOPS-descriptor is simply a nxn intensity patch with normalized intensities. Brown (2005) suggests n=8.  We found larger descriptors with n greater than 16 perform better for Transmission Electron Micrographs from serial sections.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
         public static final String FD_SIZE = "Feature descriptor size";
+
+	/**
+	* "For SIFT-descriptors, this is the number of orientation bins b per 4×4px block as described above. Tip: Keep the default value b=8 as suggested by Lowe (2004).".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
         public static final String FD_ORIENTATION_BINS = "Feature descriptor orientation bins";
+
+	/**
+	* "Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
         public static final String ROD = "Closest/next closest ratio";
         public static final String MAX_EPSILON = "Maximal alignment error (px)";
+
+	/**
+	* "The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
         public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
         public AffineMOPS(Modules modules) {

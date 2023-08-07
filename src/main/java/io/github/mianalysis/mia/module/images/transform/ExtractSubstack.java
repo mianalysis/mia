@@ -50,19 +50,67 @@ import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 /**
  * Created by sc13967 on 18/01/2018.
  */
+
+/**
+* Extract a substack from the specified input image in terms of channels, slices and frames.  The output image is saved to the workspace for use later on in the workflow.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ExtractSubstack extends Module implements ActionListener {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from which the substack will be taken.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Output substack image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String RANGE_SEPARATOR = "Dimension ranges";
+
+	/**
+	* Method for selection of substack dimension ranges.<br><br>- "Fixed" (default) will apply the pre-specified dimension ranges to the input image.<br><br>- "Manual" will display a dialog asking the user to select the dimension ranges at runtime.  Each dimension (channel, slice or frame) can be fixed (i.e. not presented as an option to the user) using the "enable" toggles.
+	*/
     public static final String SELECTION_MODE = "Selection mode";
+
+	/**
+	* Channel range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.
+	*/
     public static final String CHANNELS = "Channels";
+
+	/**
+	* Slice range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.
+	*/
     public static final String SLICES = "Slices";
+
+	/**
+	* Frame range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.
+	*/
     public static final String FRAMES = "Frames";
+
+	/**
+	* If enabled, the user will be able to specify the final channel range to be used in the substack extraction.
+	*/
     public static final String ENABLE_CHANNELS_SELECTION = "Enable channels selection";
+
+	/**
+	* If enabled, the user will be able to specify the final slice range to be used in the substack extraction.
+	*/
     public static final String ENABLE_SLICES_SELECTION = "Enable slices selection";
+
+	/**
+	* If enabled, the user will be able to specify the final frame range to be used in the substack extraction.
+	*/
     public static final String ENABLE_FRAMES_SELECTION = "Enable frames selection";
 
     private static final String OK = "OK";

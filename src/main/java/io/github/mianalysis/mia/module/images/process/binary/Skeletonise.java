@@ -32,14 +32,42 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import sc.fiji.skeletonize3D.Skeletonize3D_;
 
+
+/**
+* Creates an skeletonised representation of a specific binary image in the workspace.  The input and output images will be 8-bit with binary logic determined by the "Binary logic" parameter.  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Skeletonise extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply 3D skeletonisation operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String SKELETONISE_SEPARATOR = "Skeletonise controls";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
     public interface BinaryLogic extends BinaryLogicInterface {

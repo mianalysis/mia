@@ -48,18 +48,66 @@ import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 /**
  * Created by Stephen on 30/05/2017.
  */
+
+/**
+* Apply intensity filters to an image (or image stack) in the workspace.  Filters are applied to each Z-stack independently (i.e. channels and timepoints do not interact with each other).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterImage extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply filter to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the filtering process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Filter controls";
+
+	/**
+	* Filter to be applied to the image.<br><ul><li>"Difference of Gaussian 2D" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".</li><li>"Gaussian 2D" </li><li>"Gaussian 3D" </li><li>"Gradient 2D" </li><li>"Maximum 2D" </li><li>"Maximum 3D" </li><li>"Mean 2D" </li><li>"Mean 3D" </li><li>"Median 2D" </li><li>"Median 3D" </li><li>"Minimum 2D" </li><li>"Minimum 3D" </li><li>"Ridge enhancement 2D" Uses initial image processing steps from "Ridge Detection" plugin to enhance ridge-like structures.</li><li>"Rolling frame" Filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable</li><li>"Variance 2D" </li><li>"Variance 3D" </li></ul>
+	*/
     public static final String FILTER_MODE = "Filter mode";
+
+	/**
+	* Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.
+	*/
     public static final String FILTER_RADIUS = "Filter radius";
+
+	/**
+	* Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* Statistic to apply for rolling frame filtering.
+	*/
     public static final String ROLLING_METHOD = "Rolling filter method";
+
+	/**
+	* When "Filter mode" is set to "Rolling frame", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to "-1,1" the statistic would be calculated based on the frames immediately before and after).
+	*/
     public static final String WINDOW_INDICES = "Window indices";
+
+	/**
+	* When "Filter mode" is set to "Ridge enhancement 2D", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).
+	*/
     public static final String CONTOUR_CONTRAST = "Contour contrast";
 
     public FilterImage(Modules modules) {

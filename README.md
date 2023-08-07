@@ -1,6 +1,6 @@
-<!-- [![TravisCI](https://travis-ci.org/mianalysis/mia.svg?branch=master)](https://travis-ci.org/mianalysis/mia) -->
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
-[![JitPack](https://jitpack.io/v/mianalysis/mia.svg)](https://jitpack.io/#mianalysis/mia/)
+[![javadoc](https://javadoc.io/badge2/io.github.mianalysis/MIA/javadoc.svg)](https://javadoc.io/doc/io.github.mianalysis/MIA)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.mianalysis/MIA/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.mianalysis/MIA)
 [![Testing](https://github.com/mianalysis/mia/actions/workflows/tests.yml/badge.svg)](https://github.com/mianalysis/mia/actions/workflows/tests.yml)
 
 
@@ -44,8 +44,29 @@ Note: If installing MIA manually, the ModularImageAnalysis update site should be
 
 Using MIA
 ------------
-Guides for using MIA can be found [here](https://mianalysis.github.io/mia/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).
+Guides for using MIA can be found [here](https://mianalysis.github.io/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).
 
+
+Contributing
+------------
+We welcome any contributions to the MIA project.  If you'd like to get involved, here are a few ways you could do so:
+- **Adding a new MIA module**.  We'd love it if you'd consider contributing a new module to MIA.  Such a module could allow an existing ImageJ plugin to be used as part of MIA workflows or add totally new functionality.  Adding new modules to MIA and the module format is detailed in an example module on our [mia-examples](https://github.com/mianalysis/mia-examples/tree/main/DevelopmentExamples/DevEx1_CustomModule) repository.  The repository also contains a template module that can be used as a starting point for new modules.
+- **Contributing new example workflows**.  If you've got a workflow you'd like to share, please consider uploading it to the [mia-examples](https://github.com/mianalysis/mia-examples) repository.
+- **Adding automated tests**.  Automated testing for MIA is currently incomplete.  We'd be very grateful for any tests that were added to the automated test suite.
+- **Developing existing MIA modules**.  We're in the process of transitioning from using ImageJ's ImagePlus format to the [ImgLib2](https://imagej.net/libs/imglib2/) format.  Amongst other benefits, this will allow MIA to make use ImgLib2's disk-cached image formats (loading images directly from storage). Any modules which could be rewritten to take advantage of ImgLib2 would help us reach this goal faster!
+- **Providing feedback**.  Any feedback, feature suggestions or comments are very welcome.  If you'd like to tell us how you're getting on with MIA, please contact us via the [Issues](https://github.com/mianalysis/mia/issues) board or send an email to stephen.cross@bristol.ac.uk
+
+If you'd like to include the latest version of MIA in your project, you can add the following dependency to your pom.xml file:
+
+```
+<dependency>
+    <groupId>io.github.mianalysis</groupId>
+    <artifactId>MIA</artifactId>
+    <version>1.2.10</version>
+</dependency>
+```
+
+The JavaDoc for MIA is available [here](https://javadoc.io/doc/io.github.mianalysis/MIA).
 
 Acknowledgements
 ------------
@@ -63,7 +84,7 @@ We hope you find MIA useful.  If you've used MIA in your research, please cite i
 
 Publications
 ------------
-MIA has been used in a variety of different analyses, a few published examples of which are listed below. For a more complete list, please go to [Publications](https://mianalysis.github.io/mia/html/publications.html).
+MIA has been used in a variety of different analyses, a few published examples of which are listed below. For a more complete list, please go to [Publications](https://mianalysis.github.io/publications.html).
 
 Edmunds, G.L., _et al._, "Adenosine 2A receptor and TIM3 suppress cytolytic killing of tumor cells via cytoskeletal polarization", _Communications Biology_ (2022) **5**, doi: [10.1038/s42003-021-02972-8](https://doi.org/10.1038/s42003-021-02972-8)
 

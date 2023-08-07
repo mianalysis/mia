@@ -61,43 +61,183 @@ import io.github.mianalysis.mia.process.LabelFactory;
 /**
  * Created by sc13967 on 17/05/2017.
  */
+
+/**
+* DEPRECATED - Please use individual overlay modules (e.g. "Add labels", "Add object outline", etc.).<br><br>Adds an overlay to the specified input image which can represent each specified input object.  This module can render many different types of overlay; options include: All points, Arrows, Centroid, Label only, Outline, Position measurements, Tracks
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddObjectsOverlay extends Module {
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Objects to represent as overlays.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* Controls the sort of overlay to be rendered:<br><ul><li>"All points" All points in each object are rendered as small circles.</li><li>"Arrows" Each object is represented by an arrow.  The size, colour and orientation of each arrow can be fixed or based on a measurement value..</li><li>"Centroid" Each object is represented by a single small circle positioned at the centre of the object (mean XYZ location).</li><li>"Label only" Displays a text string at the centroid location of each object.  Text can include object ID numbers, measurements or similar values for parent objects.</li><li>"Outline" Each object is represented by an outline.</li><li>"Position measurements" Each object is represented by a single circle positioned at the XYZ location specified by three position measurements.</li><li>"Tracks" The trajectory of a track (time-linked objects) is rendered for all track objects.  The line passes between the centre of each timepoint instance of that track and appears as the object moves )(i.e. it only shows the trajectory from previous frames).</li></ul>
+	*/
     public static final String POSITION_MODE = "Position mode";
+
+	/**
+	* Source for arrow orientation values:<br><ul><li>"Measurement" Orientation of arrows will be based on the measurement specified by the parameter "Measurement for orientation" for each object.</li><li>"Parent measurement" Orientation of arrows will be based on the measurement specified by the parameter "Measurement for orientation" taken from a parent of each object.  The parent object providing this measurement is specified by the parameter "Parent object for orientation".</li></ul>
+	*/
     public static final String ORIENTATION_MODE = "Arrow orientation mode";
+
+	/**
+	* Parent objects providing the measurements on which the orientation of the arrows are based.
+	*/
     public static final String PARENT_OBJECT_FOR_ORIENTATION = "Parent object for orientation";
+
+	/**
+	* Measurement that defines the orientation of each arrow.  Measurements should be supplied in degree units.
+	*/
     public static final String MEASUREMENT_FOR_ORIENTATION = "Measurement for orientation";
+
+	/**
+	* Method for determining the length of arrows:<br><ul><li>"Fixed value" All arrows are the same length.  Length is controlled by the "Length value (px)" parameter.</li><li>"Measurement" Arrow length is proportional to the measurement value specified by the "Measurement for length" parameter.  Absolute arrow lengths are adjusted by the "Arrow length scale" multiplication factor.</li><li>"Parent measurement" Arrow length is proportional to a parent object measurement value.  The parent is specified by the "Parent object for length" parameter and the measurement value by "Measurement for length".  Absolute arrow lengths are adjusted by the "Arrow length scale" multiplication factor.</li></ul>
+	*/
     public static final String LENGTH_MODE = "Arrow length mode";
     public static final String LENGTH_VALUE = "Length value (px)";
+
+	/**
+	* Parent objects from which the arrow length measurements will be taken.
+	*/
     public static final String PARENT_OBJECT_FOR_LENGTH = "Parent object for length";
+
+	/**
+	* Measurement value that will be used to control the arrow length.  This value is adjusted using the "Arrow length scale" muliplication factor.
+	*/
     public static final String MEASUREMENT_FOR_LENGTH = "Measurement for length";
+
+	/**
+	* Measurement values will be multiplied by this value prior to being used to control the arrow length.  Each arrow will be <i>MeasurementValue*LengthScale</i> pixels long.
+	*/
     public static final String LENGTH_SCALE = "Arrow length scale";
+
+	/**
+	* Size of the arrow head.  This should be an integer between 0 and 30, where 0 is the smallest possible head and 30 is the largest.
+	*/
     public static final String HEAD_SIZE = "Head size";
+
+	/**
+	* Controls what information each label displays:<br><ul><li>"ID" The ID number of the object.</li><li>"Measurement value" A measurement associated with the object.  The measurement is selected using the "Measurement for label" parameter.</li><li>"Parent ID" The ID number of a parent of the object.  The parent object is selected using the "Parent object for label" parameter.</li><li>"Parent measurement value" A measurement associated with a parent of the object.  The measurement is selected using the "Measurement for label" parameter and the parent object with the "Parent object for label" parameter.</li></ul>
+	*/
     public static final String LABEL_MODE = "Label mode";
+
+	/**
+	* Number of decimal places to use when displaying numeric values.
+	*/
     public static final String DECIMAL_PLACES = "Decimal places";
+
+	/**
+	* When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.
+	*/
     public static final String USE_SCIENTIFIC = "Use scientific notation";
+
+	/**
+	* Font size of the text label.
+	*/
     public static final String LABEL_SIZE = "Label size";
+
+	/**
+	* If "Label mode" is set to either "Parent ID" or "Parent measurement value", these are the parent objects which will be used.  These objects will be parents of the input objects.
+	*/
     public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
+
+	/**
+	* If "Label mode" is set to either "Measurement value" or "Parent measurement value", these are the measurements which will be used.
+	*/
     public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
+
+	/**
+	* Object measurement specifying the X-position of the overlay marker.  Measurement value must be specified in pixel units.
+	*/
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
+
+	/**
+	* Object measurement specifying the Y-position of the overlay marker.  Measurement value must be specified in pixel units.
+	*/
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
+
+	/**
+	* Object measurement specifying the Z-position (slice) of the overlay marker.  Measurement value must be specified in slice units.
+	*/
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
+
+	/**
+	* When selected, the radius of the overlay marker circle is controlled by the measurement specified by "Measurement for radius".  When not selected, point is represented by a single spot of fixed size.
+	*/
     public static final String USE_RADIUS = "Use radius measurement";
+
+	/**
+	* Object measurement use to specify the radius of the overlay marker circle.  Measurement value must be specified in pixel units.
+	*/
     public static final String MEASUREMENT_FOR_RADIUS = "Measurement for radius";
+
+	/**
+	* Method for determining colour of each object's corresponding overlay:<br><ul><li>"ID" Overlay colour is quasi-randomly selected based on the ID number of the object.  The colour used for a specific ID number will always be the same and is calculated using the equation <i>value = (ID * 1048576 % 255) / 255</i>.</li><li>"Measurement value" Overlay colour is determined by a measurement value.  Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects missing the relevant measurement  are always shown in red.  The measurement value is selected with the "Measurement for colour" parameter.</li><li>"Parent ID" Overlay colour is quasi-randomly selected based on the ID number of a parent of this object.  The colour used for a specific ID number will always be the same and is calculated using the equation <i>value = (ID * 1048576 % 255) / 255</i>.  The parent object is selected with the "Parent object for colour" parameter.</li><li>"Parent measurement value" Overlay colour is determined by a measurement value of a parent of this object.  Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects either missing the relevant measurement or without the relevant parent are always shown in red.  The parent object is selected with the "Parent object for colour" parameter and the measurement value is selected with the "Measurement for colour" parameter.</li><li>"Random colour" Overlay colour is randomly selected for each object.  Unlike the "ID" option, the colours generated here will be different for each evaluation of the module.</li><li>"Single colour" (default option) Overlay colour is fixed to one of a predetermined list of colours.  All objects  will be assigned the same overlay colour.  The colour is chosen using the "Single colour" parameter.</li></ul>
+	*/
     public static final String COLOUR_MODE = "Colour mode";
+
+	/**
+	* Colour for all object overlays to be rendered using.  This parameter is used if "Colour mode" is set to "Single colour".  Choices are: White, Black, Red, Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
+	*/
     public static final String SINGLE_COLOUR = "Single colour";
+
+	/**
+	* Measurement used to determine the colour of the overlay when "Colour mode" is set to either "Measurement value" or "Parent measurement value".
+	*/
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
+
+	/**
+	* Object collection used to determine the colour of the overlay based on either the ID or measurement value  of a parent object when "Colour mode" is set to either  "Parent ID" or "Parent measurement value".  These objects will be parents of the input objects.
+	*/
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+
+	/**
+	* Objects present in each frame of this track.  These are children of the "Input objects" and provide the coordinate information for each frame.
+	*/
     public static final String SPOT_OBJECTS = "Spot objects";
+
+	/**
+	* When enabled, segments of a track will only be displayed for a finite number of frames after the timepoint they correspond to.  This gives the effect of a moving tail behind the object and can be use to prevent the overlay image becoming too cluttered for long/dense videos.  The duration of the track history is specified by the "Track history (frames)" parameter.
+	*/
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
+
+	/**
+	* Width of the rendered lines.  Specified in pixel units.
+	*/
     public static final String LINE_WIDTH = "Line width";
+
+	/**
+	* Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.
+	*/
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
+
+	/**
+	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddObjectsOverlay(Modules modules) {

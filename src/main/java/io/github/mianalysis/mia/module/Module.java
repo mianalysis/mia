@@ -34,7 +34,7 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
- * Created by sc13967 on 02/05/2017.
+ * Abstract MIA module.  Each module extending this class should perform a defined action such as image filtering, object detection or adding a component to an overlay
  */
 public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     protected Modules modules;
@@ -60,6 +60,12 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     // CONSTRUCTOR
 
+    /**
+     * The module constructor requires us to provide the name of this module.
+     * @param name The name of this module as seen from within the MIA GUI.
+     * @param modules The module constructor, when called from within MIA, provides
+     *                all the modules currently in the workflow as an argument.
+     */
     public Module(String name, Modules modules) {
         super(name);
         this.modules = modules;
@@ -68,38 +74,65 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     // ABSTRACT METHODS
 
+    /**
+     * The module category within MIA in which this module will be placed. We can choose any of the default categories available in io.github.mianalysis.mia.module.Categories or use one created along with this module.
+     * @return The category for this module to be placed in
+     */
     public abstract Category getCategory();
 
+    /**
+     * The method which is run as part of a workflow.  This method contains all the code for loading items from the MIA workspace, performing the action of this module and exporting any new items to the workspace.
+     * 
+     * @param workspace The current workspace containing all available images and objects (i.e. those previously output by earlier modules in the workflow).
+     * @return Exit status
+     */
     protected abstract Status process(Workspace workspace);
 
-    /*
-     * Get a Parameters of all the possible parameters this class requires
-     * (not all may be used). This returns the Parameters, rather than just
-     * setting the local variable directly, which helps ensure the correct operation
-     * is included in the method.
+    /**
+     * Creates an instance of each parameter, each of which is stored in the "parameters" variable of the module.  Each new instance of the module will have a new set of parameters.  This method runs once, when the module is first created.
      */
     protected abstract void initialiseParameters();
 
-    /*
-     * Return a Parameters of the currently active parameters. This is
-     * generateModuleList each time a parameter is changed. For example, if
-     * "Export XML" is set to "false" a sub-parameter specifying the measurements to
-     * export won't be included in the Parameters. A separate rendering
-     * class will take this Parameters and generate an appropriate GUI
-     * panel.
+    /**
+     * Returns the currently-active parameters for this module.  The returned parameters will change depending on what other parameters are set to.  The output of this module determines the parameters that are displayed in the GUI.
+     * @return Currently-active parameters for this module
      */
     public abstract Parameters updateAndGetParameters();
 
+    /**
+     * Measurements added to any images by this module are reported by adding their reference to an ImageMeasurementRefs collection.  When no measurements are added by this module, this method can simply return "null".  These references tell downstream modules what measurements are available for each image.  Returned references should be the original copies stored in the local "imageMeasurementRefs" object.
+     * @return Image measurement references currently active for this module
+     */
     public abstract ImageMeasurementRefs updateAndGetImageMeasurementRefs();
 
+    /**
+     * Measurements added to any objects by this module are reported by adding their reference to an ObjMeasurementRefs collection.  When no measurements are added by this module, this method can simply return "null".  These references tell downstream modules what measurements are available for each object of a specific object collection.  Returned references should be the original copies stored in the local "objectMeasurementRefs" object.
+     * @return Object measurement references currently active for this module
+     */
     public abstract ObjMeasurementRefs updateAndGetObjectMeasurementRefs();
 
+    /**
+     * Values added to the workspace's metadata collection by this module are reported by adding their reference to a MetadataRefs collection.  When no metadata values are added by this module, this method can simply return "null".  Metadata values are single values within a workspace that specify information such as the root filename or series number.  These references tell downstream modules what metadata is available.  Returned references should be the original copies stored in the local "metadataRefs" object.
+     * @return Metadata references currently active for this module
+     */
     public abstract MetadataRefs updateAndGetMetadataReferences();
 
+    /**
+     * Any parent-child relationships established between objects by this module are reported by adding their reference to a ParentChildRefs collection.  When no parent-child relationships are added by this module, this method can simply return "null".  These references tell downstream modules what parent-child relationships are available.  Returned references should be the original copies stored in the local "parentChildRefs" object.
+     * @return Parent-child relationship references currently active for this module
+     */
     public abstract ParentChildRefs updateAndGetParentChildRefs();
 
+    /**
+     * Any partner-partner relationships established between objects by this module are reported by adding their reference to a PartnerRefs collection.  When no partner-partner relationships are added by this module, this method can simply return "null".  These references tell downstream modules what partner-partner relationships are available.  Returned references should be the original copies stored in the local "partnerRefs" object.
+     * @return Partner relationship references currently active for this module
+     */    
     public abstract PartnerRefs updateAndGetPartnerRefs();
 
+    /**
+     * Can be used to perform checks on parameters or other conditions to ensure the module is configured correctly.  This runs whenever a workflow is updated (e.g. a parameter in any module is changed).
+     * @return returns true if module checks pass
+     */
     public abstract boolean verify();
 
     // PUBLIC METHODS

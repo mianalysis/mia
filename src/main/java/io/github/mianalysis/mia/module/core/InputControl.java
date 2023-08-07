@@ -64,34 +64,114 @@ import ome.xml.meta.IMetadata;
 /**
  * Created by Stephen on 29/07/2017.
  */
+
+/**
+* Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class InputControl extends Module {
+
+	/**
+	* 
+	*/
     public static final String MESSAGE_SEPARATOR = "Message";
+
+	/**
+	* 
+	*/
     public static final String NO_LOAD_MESSAGE = "No load message";
 
+
+	/**
+	* 
+	*/
     public static final String IMPORT_SEPARATOR = "Core import controls";
+
+	/**
+	* The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.
+	*/
     public static final String INPUT_PATH = "Input path";
     // public static final String FILE_LIST = "File list";
+
+	/**
+	* For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul>
+	*/
     public static final String SERIES_MODE = "Series mode";
+
+	/**
+	* Comma-separated list of series numbers to be processed.
+	*/
     public static final String SERIES_LIST = "Series list";
+
+	/**
+	* Only load the (alphabetically) first file in each folder.
+	*/
     public static final String LOAD_FIRST_PER_FOLDER = "Only load first file per folder";
+
+	/**
+	* Only load the (alphabetically) first file matching the group specified by the regular expression "Pattern" parameter.  Each candidate filename will be matched against the regular expression in "Pattern" and retained for analysis if the selected group hasn't been seen before.  Only one group (specified using standard regex parenthesis notation) can be used.
+	*/
     public static final String LOAD_FIRST_MATCHING_GROUP = "Only load first matching group";
+
+	/**
+	* Regular expression pattern to use when "Only load first matching group" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).
+	*/
     public static final String PATTERN = "Pattern";
+
+	/**
+	* When pressed, MIA will update the active file used in test mode (i.e. when executing individual modules from editing mode) based on the currently-selected input file/folder and series settings.
+	*/
     public static final String REFRESH_FILE = "Refresh test file";
 
+
+	/**
+	* 
+	*/
     public static final String CALIBRATION_SEPARATOR = "Calibration controls";
+
+	/**
+	* Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.
+	*/
     public static final String SPATIAL_UNIT = "Spatial unit";
+
+	/**
+	* Temporal units for calibrated measurements.  Assuming temporal calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.
+	*/
     public static final String TEMPORAL_UNIT = "Temporal unit";
 
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "File/folder filters";
+
+	/**
+	* 
+	*/
     public static final String IGNORE_CASE = "Ignore case";
+
+	/**
+	* Add another filename filter.  All images to be processed will pass all filters.
+	*/
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.
+	*/
     public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
+
+	/**
+	* 
+	*/
     public static final String MACRO_WARNING = "Macro warning";
 
     // A special store for timepoint references for all objects

@@ -39,16 +39,52 @@ import io.github.sjcross.sjcommon.analysis.TextureCalculator;
  * Takes a set of objects and measures intensity texture values on a provided
  * image. Measurements are stored with the objects.
  */
+
+/**
+* Calculates Haralick's texture features for each object in a collection for a specific image.  Each point in each object is compared to a corresponding point, a defined offset away (e.g. x-offset = 1, y-offset=0, z-offset=0 to compare to the pixel immediately right of each pixel).  The intensities of each point pair are added to a 2D gray-level co-occurrence matrix (GLCM) from which measures of angular second moment, contrast, correlation and entropy can be calculated.<br><br>Robert M Haralick; K Shanmugam; Its'hak Dinstein, "Textural Features for Image Classification" <i>IEEE Transactions on Systems, Man, and Cybernetics. SMC-3</i> (1973) <b>6</b> 610–621.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectTexture extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* Objects from the workspace for which the corresponding texture of the image (specified by "Input image") will be calculated.  Textures will be calculated for each coordinate of each object and will include instances where the corresponding point (the intensity at the specified offset) is outside the object.  Texture measurements will be assigned to the relevant objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Image from the workspace from which texture metrics for each object will be calculated.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String TEXTURE_SEPARATOR = "Texture calculation";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String X_OFFSET = "X-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Y_OFFSET = "Y-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Z_OFFSET = "Z-offset";
+
+	/**
+	* When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.
+	*/
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
     public MeasureObjectTexture(Modules modules) {

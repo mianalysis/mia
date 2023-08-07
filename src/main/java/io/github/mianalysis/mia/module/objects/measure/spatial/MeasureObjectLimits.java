@@ -20,9 +20,21 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
+
+/**
+* Measures the XYZ spatial limits of each object relative to the origin (x = 0, y = 0, z = 0) of the original image.  Limits are stored as measurements associated with each object.  Measurements are reported in pixel (slice for z) coordinates and calibrated units.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectLimits extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects to measure spatial limits for.  Measurements will be associated with each object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectLimits(Modules modules) {

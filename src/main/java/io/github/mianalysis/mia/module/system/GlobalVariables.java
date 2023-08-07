@@ -29,9 +29,17 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Create fixed values which can be accessed by text entry parameters from all modules.  Use of global variables allows the same value to be used across multiple different modules without the need to explicitly type it.  Global variables are accessed with the notation "V{[NAME]}", where "[NAME]" is replaced with the name of the relevant variable.  Global variables can be used by any text or numeric parameter.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalVariables extends Module {
     public static final String VARIABLE_SEPARATOR = "Variable settings";
+
+	/**
+	* Add a new global variable.  Added variables can be removed using the "Remove" button.
+	*/
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_TYPE = "Variable type";

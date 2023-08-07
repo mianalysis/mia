@@ -28,10 +28,26 @@ import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+
+/**
+* Stores the ID number of an associated parent from a specific class.  Associated IDs are stored as measurements and are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ParentObjectID extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* For each object in this collection the ID number of an associated parent object (from the collection specified by "Parent object") will be stored as a measurement.  This measurement will be associated with each input object.  The measurement is evaluated at the time of access (unlike "normal" measurements which have fixed values), so should always be correct.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Associated parent object collection.
+	*/
     public static final String PARENT_OBJECT = "Parent object";
 
     public ParentObjectID(Modules modules) {

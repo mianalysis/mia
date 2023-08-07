@@ -35,17 +35,57 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Binarises an image (or image stack) using a fixed intensity threshold.  The input threshold can be a single value (same for all images) or taken from a measurement associated with the image to be binarised.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ManualThreshold extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply threshold to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the thresholding process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
+
+	/**
+	* Source for the threshold value:<br><ul><li>"Fixed value" Uses a single, fixed value for all images.  This value is specified using the "Threshold value" parameter.</li><li>"Image measurement" Threshold is set to the value of a measurement assoiated with the image to be binarised.  Measurement selected by "Measurement" parameter.  In this mode a different threshold can be applied to each image.</li></ul>
+	*/
     public static final String THRESHOLD_SOURCE = "Threshold source";
+
+	/**
+	* Absolute manual threshold value that will be applied to all pixels.
+	*/
     public static final String THRESHOLD_VALUE = "Threshold value";
+
+	/**
+	* Measurement to act as threshold value when in "Image measurement" mode.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
     public interface ThresholdSources {

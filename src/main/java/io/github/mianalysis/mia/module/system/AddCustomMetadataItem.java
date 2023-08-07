@@ -19,10 +19,26 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* This module allows for a specific metadata item to be used.  An example of this would be to add a label for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word "phase" in them).  Output metadata values can themselves be constructed from existing metadata values, accessed using the M{[NAME]} form (e.g. M{Filename}.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddCustomMetadataItem extends Module {
+
+	/**
+	* 
+	*/
     private static final String METADATA_SEPARATOR = "Specify metadata properties";
+
+	/**
+	* Name for metadata item to be assigned.
+	*/
     private static final String METADATA_NAME = "Metadata name";
+
+	/**
+	* Value of metadata item.  This will be the same for all analysis runs performed at the same time since this value doesn't update during an analysis.
+	*/
     private static final String METADATA_VALUE = "Metadata value";
 
 

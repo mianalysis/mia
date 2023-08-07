@@ -362,6 +362,8 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     /**
      * Displays measurement values from a specific Module
+     * @param module The module for which measurements will be displayed
+     * @param modules The collection of modules in which this module resides
      */
     public void showMeasurements(Module module, Modules modules) {
         // Getting MeasurementReferences

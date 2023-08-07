@@ -35,15 +35,47 @@ import io.github.sjcross.sjcommon.object.volume.Volume;
 /**
  * Created by sc13967 on 07/02/2018.
  */
+
+/**
+* Calculates the overlap of each object in an object collection with any object from another collection.  Overlaps are calculated for both specified object collections and are stored as measurements associated with the relevant object.  Overlap can occur for multiple objects; however, doubly-overlapped regions will only be counted once (i.e. an object can have no more than 100% overlap).  For example, an object in the first collection with 20% overlap with one object and 12% overlap with another would receive an overlap measurement of 32% (assuming the two overlapping objects weren't themselves overlapped in the overlapping region).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectOverlap extends Module {
+
+	/**
+	* 
+	*/
     public final static String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Controls whether overlap of objects from the same class should be calculated, or whether objects from two different classes should be compared.
+	*/
     public static final String OBJECT_SOURCE_MODE = "Object source mode";
+
+	/**
+	* Object collection for which, the overlap of each object with any object from a separate object collection (specified by the "Object set 2" parameter) will be calculated.
+	*/
     public final static String OBJECT_SET_1 = "Object set 1";
+
+	/**
+	* Object collection for which, the overlap of each object with any object from a separate object collection (specified by the "Object set 1" parameter) will be calculated.
+	*/
     public final static String OBJECT_SET_2 = "Object set 2";
+
+	/**
+	* When selected, objects will only be considered to have any overlap if they're present in the same frame (timepoint).
+	*/
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface ObjectSourceModes {

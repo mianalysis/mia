@@ -23,15 +23,80 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+/**
+ * Combine coordinates from related objects into a single object. This module
+ * can either add coordinates from all child objects into the associated parent
+ * or create entirely new merged objects. New merged objects can either contain
+ * just coordinates from child objects, or from the parent and its children. Any
+ * duplicate coordinates arising from overlapping child objects will only be
+ * stored once.<br>
+ * <br>
+ * Note: If updating the parent objects, any previously-measured object
+ * properties may be invalid (i.e. they are not updated). To update such
+ * measurements it's necessary to re-run the relevant measurement modules.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MergeRelatedObjects extends Module {
+
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
+
+    /**
+     * Input parent objects for merging. If "Output mode" is set to "Merge children
+     * into parent" all the coordinates from child objects will be added to this
+     * object. However, if operating in "Create new object" mode and "Merge mode" is
+     * set to "Merge parents and children", coordinates from parent objects will be
+     * added to the new merged objects.
+     */
     public static final String PARENT_OBJECTS = "Parent objects";
+
+    /**
+     * Child objects of the input parent. If "Output mode" is set to "Merge children
+     * into parent" all the coordinates from these objects will be added to their
+     * respective parent. However, if operating in "Create new object" coordinates
+     * from these objects will be added to the new merged objects.
+     */
     public static final String CHILD_OBJECTS = "Child objects";
 
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+    /**
+     * Controls where the merged object coordinates are output to:<br>
+     * <ul>
+     * <li>"Create new object" For each input parent, a new merged object will be
+     * created. These merged objects are themselves children of the parent
+     * object.</li>
+     * <li>"Merge children into parent" Combined coordinates (original coordinates
+     * from parent and coordinates of children) are added to this parent object.
+     * Note: In this mode the coordinates of the parent object are being updated, so
+     * any previously-measured object properties may be invalid (i.e. they are not
+     * updated). To update such measurements it's necessary to re-run the relevant
+     * measurement modules.</li>
+     * </ul>
+     */
     public static final String OUTPUT_MODE = "Output mode";
+
+    /**
+     * If outputting new merged objects (as opposed to updating the parent), objects
+     * will be stored with this reference name.
+     */
     public static final String OUTPUT_MERGED_OBJECTS = "Output overlapping objects";
+
+    /**
+     * When in "Create new object" mode, this parameter controls what coordinates
+     * are added to the new merged objects:
+     * <ul>
+     * <li>"Merge children only" Only coordinates from child objects are added to
+     * the merged object. In this mode, coordinates for the parent are ignored.</li>
+     * <li>"Merge parents and children" Coordinates from both the parent and child
+     * objects are added to the new merged object.</li>
+     * </ul>
+     */
     public static final String MERGE_MODE = "Merge mode";
 
     public interface OutputModes {
@@ -57,6 +122,9 @@ public class MergeRelatedObjects extends Module {
     public static Objs mergeRelatedObjectsCreateNew(Objs parentObjects, String childObjectsName,
             String relatedObjectsName, String mergeMode) {
         Objs relatedObjects = new Objs(relatedObjectsName, parentObjects);
+
+        if (parentObjects == null)
+            return relatedObjects;
 
         for (Obj parentObj : parentObjects.values()) {
             // Collecting all children for this parent. If none are present, skip to the
@@ -90,6 +158,9 @@ public class MergeRelatedObjects extends Module {
 
     public static void mergeRelatedObjectsUpdateParent(Objs parentObjects, String childObjectsName,
             String mergeMode) {
+        if (parentObjects == null)
+            return;
+
         for (Obj parentObj : parentObjects.values()) {
             // Collecting all children for this parent. If none are present, skip to the
             // next parent
@@ -110,7 +181,6 @@ public class MergeRelatedObjects extends Module {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_RELATE_MERGE;
@@ -125,13 +195,13 @@ public class MergeRelatedObjects extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
         Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
-        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
-        String relatedObjectsName = parameters.getValue(OUTPUT_MERGED_OBJECTS,workspace);
-        String mergeMode = parameters.getValue(MERGE_MODE,workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
+        String relatedObjectsName = parameters.getValue(OUTPUT_MERGED_OBJECTS, workspace);
+        String mergeMode = parameters.getValue(MERGE_MODE, workspace);
 
         switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -148,8 +218,9 @@ public class MergeRelatedObjects extends Module {
 
             case OutputModes.UPDATE_PARENT:
                 mergeRelatedObjectsUpdateParent(parentObjects, childObjectsName, mergeMode);
-                if (showOutput)
+                if (showOutput && parentObjects != null)
                     parentObjects.convertToImageIDColours().show();
+                
                 break;
         }
         return Status.PASS;
@@ -173,18 +244,18 @@ public class MergeRelatedObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(PARENT_OBJECTS));
         returnedParameters.add(parameters.get(CHILD_OBJECTS));
         ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS);
-        childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
+        childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS, workspace));
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE, workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 returnedParameters.add(parameters.get(OUTPUT_MERGED_OBJECTS));
                 returnedParameters.add(parameters.get(MERGE_MODE));
@@ -197,28 +268,28 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE, workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
-                returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS,workspace),
-                        parameters.getValue(OUTPUT_MERGED_OBJECTS,workspace)));
+                returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS, workspace),
+                        parameters.getValue(OUTPUT_MERGED_OBJECTS, workspace)));
                 break;
         }
 
@@ -228,7 +299,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

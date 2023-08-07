@@ -36,16 +36,56 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+
+/**
+* Run a single command on an image from the workspace.   This module only runs commands of the format "run([COMMAND], [ARGUMENTS])".  For example, the command "run("Subtract Background...", "rolling=50 stack");" would be specified with the "Command" parameter set to "Subtract Background..." and the "Parameters" parameter set to "rolling=50 stack".  For more advanced macro processing please use the "Run macro" module.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunSingleCommand extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply command to.  This image is duplicated prior to application of the command, so won't be updated by default.  To store any changes back onto this image, select the "Apply to input image" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the image returned by the command will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* When "Apply to input image" is not selected this will store the command output image into the MIA workspace with the name specified by this parameter.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* 
+	*/
     public static final String COMMAND_SEPARATOR = "Command controls";
+
+	/**
+	* The command command to run.  This must be the exact name as given by the ImageJ command recorder.  Note: Only commands of the format "run([MACRO TITLE], [ARGUMENTS])" can be run by this module.  For more advanced command processing please use the "Run macro" module.
+	*/
     public static final String COMMAND = "Command";
+
+	/**
+	* The options to pass to the command.
+	*/
     public static final String ARGUMENTS = "Parameters";
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* When running a command which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for commands containing the "stack" argument.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public RunSingleCommand(Modules modules) {

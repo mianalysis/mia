@@ -39,17 +39,57 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 
+
+/**
+* Applies the mask image to the specified object collection.  Any object coordinates coincident with black pixels (intensity 0) will be removed.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Objects to be masked.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Controls how the masked objects will be stored:<br><ul><li>"Create new objects" (Default) Will add the masked objects to a new object set and store this set in the workspace.</li><li>"Update input objects" Will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li></ul>
+	*/
     public static final String OBJECT_OUTPUT_MODE = "Output object mode";
+
+	/**
+	* Name for the output masked objects to be stored in workspace.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String MASK_SEPARATOR = "Mask options";
+
+	/**
+	* Controls whether the input objects will be masked by an image or an object collection:<br><ul><li>"Mask from image" (Default) Input objects will be masked based on the image specified by "Mask image".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.</li><li>"Mask from objects (remove overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.</li><li>"Mask from objects (retain overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.</li></ul>
+	*/
     public static final String MASK_MODE = "Mask mode";
+
+	/**
+	* Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.
+	*/
     public static final String MASK_OBJECTS = "Mask objects";
+
+	/**
+	* Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.
+	*/
     public static final String MASK_IMAGE = "Mask image";
+
+	/**
+	* When selected, any objects which have no volume following masking will be removed.
+	*/
     public static final String REMOVE_EMPTY_OBJECTS = "Remove empty objects";
 
     public interface MaskModes {
@@ -334,19 +374,19 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(MASK_MODE).setDescription(
                 "Controls whether the input objects will be masked by an image or an object collection:<br><ul>"
 
-                        + "\"" + MaskModes.MASK_FROM_IMAGE
+                        + "<li>\"" + MaskModes.MASK_FROM_IMAGE
                         + "\" (Default) Input objects will be masked based on the image specified by \"" + MASK_IMAGE
-                        + "\".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.<li>"
+                        + "\".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.</li>"
 
-                        + "\"" + MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP
+                        + "<li>\"" + MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP
                         + "\" Input objects will be masked based on all objects of the collection specified by \""
                         + MASK_OBJECTS
-                        + "\".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li>"
+                        + "\".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.</li>"
 
-                        + "\"" + MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP
+                        + "<li>\"" + MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP
                         + "\" Input objects will be masked based on all objects of the collection specified by \""
                         + MASK_OBJECTS
-                        + "\".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li></ul>");
+                        + "\".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.</li></ul>");
 
         parameters.get(MASK_IMAGE).setDescription(
                 "Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.");

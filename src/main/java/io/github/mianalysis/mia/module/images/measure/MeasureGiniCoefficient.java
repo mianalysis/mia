@@ -34,11 +34,31 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by sc13967 on 12/05/2017.
  */
+
+/**
+* Measure the Gini coefficient for all pixels in the specified image.  The Gini coefficient measures the inequality in intensity of pixels.  A coefficient of 0 indicates perfect intensity homogeneity (all pixels with the same value), while a value of 1 indicates the maximum possible inequality (all pixels are black, except for a single bright pixel).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String USE_MASK = "Use mask";
+
+	/**
+	* 
+	*/
     public static final String MASK_IMAGE = "Mask image";
 
     public MeasureGiniCoefficient(Modules modules) {

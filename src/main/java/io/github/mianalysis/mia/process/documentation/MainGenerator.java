@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import io.github.mianalysis.mia.MIA;
+
 public class MainGenerator {
     public static String INDEX = "INDEX";
     public static String MODULES = "MODULES";
@@ -94,7 +96,13 @@ public class MainGenerator {
 
             sb.append("Using MIA").append("\n").append("------------").append("\n");
             sb.append(
-                    "Guides for using MIA can be found [here](https://mianalysis.github.io/mia/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).\n");
+                    "Guides for using MIA can be found [here](https://mianalysis.github.io/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).\n");
+            sb.append("\n\n");
+
+            sb.append("Contributing").append("\n").append("------------").append("\n");
+            String contributingString = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/contributing.md")));
+            contributingString = contributingString.replace("${MIAVERSION}", MIA.getVersion());
+            sb.append(contributingString);
             sb.append("\n\n");
 
             sb.append("Acknowledgements").append("\n").append("------------").append("\n");

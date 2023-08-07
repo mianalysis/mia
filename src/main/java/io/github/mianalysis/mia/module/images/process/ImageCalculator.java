@@ -33,18 +33,62 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 19/09/2017.
  */
+
+/**
+* Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageCalculator extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* First image to be processed as part of calculation.
+	*/
     public static final String INPUT_IMAGE1 = "Input image 1";
+
+	/**
+	* Second image to be processed as part of calculation.
+	*/
     public static final String INPUT_IMAGE2 = "Input image 2";
+
+	/**
+	* Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul>
+	*/
     public static final String OVERWRITE_MODE = "Overwrite mode";
+
+	/**
+	* Name of the output image created during the image calculation.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.
+	*/
     public static final String OUTPUT_32BIT = "Output 32-bit image";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Image calculation";
+
+	/**
+	* The calculation to apply to the two input images.
+	*/
     public static final String CALCULATION_METHOD = "Calculation method";
+
+	/**
+	* 
+	*/
     public static final String IMAGE_2_CONTRIBUTION = "Image 2 relative contribution";
+
+	/**
+	* If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.
+	*/
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
     public ImageCalculator(Modules modules) {

@@ -51,20 +51,68 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Creates objects from an input binary image.  Each object is identified in 3D as a contiguous region of foreground labelled pixels.  All coordinates corresponding to that object are stored for use later.<br><br>Note: Input binary images must be 8-bit and only contain values 0 and 255.<br><br>Note: Uses MorphoLibJ to perform connected components labelling in 3D.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class IdentifyObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Name of output objects to be stored in workspace.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String IDENTIFICATION_SEPARATOR = "Object identification";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
+
+	/**
+	* 
+	*/
     public static final String DETECTION_MODE = "Detection mode";
+
+	/**
+	* Add all pixels to a single output object.  Enabling this skips the connected-components step.
+	*/
     public static final String SINGLE_OBJECT = "Identify as single object";
+
+	/**
+	* When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br><ul><li>"6" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.</li><li> - "26" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity.</li></ul>
+	*/
     public static final String CONNECTIVITY = "Connectivity";
+
+	/**
+	* The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul><li>"Pointlist" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li><li>"Octree" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li><li>"Quadtree" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>
+	*/
     public static final String VOLUME_TYPE = "Volume type";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 

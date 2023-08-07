@@ -29,12 +29,28 @@ import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.Point;
 import mpicbg.models.PointMatch;
 
+
+/**
+* Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be "linked" (all frames given the same registration) or "independent" (each stack registered separately).<br><br>This module uses centroids of previously-detected objects as the reference points for image alignment
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineCentroids extends AbstractAffineRegistration {
+
+	/**
+	* 
+	*/
     public static final String FEATURE_SEPARATOR = "Feature detection";
+
+	/**
+	* Centroids for these objects will be used as the references for image alignment.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String MAXIMUM_SEPARATION = "Maximum separation (px)";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
+
+	/**
+	* "The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
     public AffineCentroids(Modules modules) {

@@ -56,19 +56,59 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 21/06/2017.
  */
+
+/**
+* Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.  In K-Means++ [1], an optimisation of the standard K-Means algorithm, the points are assigned to a pre-determined number of clusters such that each point is assigned to its closest cluster mean position (this process is repeated until the cluster assignments stabilise or a maximum number of iterations is reached).  For DBSCAN [2], points are clustered based on a minimum number of neighbours within a specified spatial range.  As such, this algorithm doesn't require prior knowledge of the number of clusters.  Both algorithms use their respective <a href="https://commons.apache.org/proper/commons-math/">Apache Commons Math implementations.</a><br><br>References:<br>[1] Arthur, D.; Vassilvitskii, S. (2007). "k-means++: the advantages of careful seeding." <i>Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete algorithms. Society for Industrial and Applied Mathematics Philadelphia, PA, USA.</i> pp. 1027–1035<br>[2] Ester, M.; Kriegel, H.-P.; Sander, J.; Xu, X. (1996). "A density-based algorithm for discovering clusters in large spatial databases with noise." <i>Proceedings of the Second International Conference on Knowledge Discovery and Data Mining (KDD-96). AAAI Press.</i> pp. 226–231
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SingleClassCluster extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Objects from the workspace to be grouped into clusters.  Clusters are determined based on the centroid postions of the input objects.  Input objects will be children of their assigned clusters.  Each input object will be assigned to a single cluster.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CLUSTER_OBJECTS = "Cluster (parent) objects";
+
+	/**
+	* When selected, the output cluster object will be assigned volume based on the extents of all child objects.
+	*/
     public static final String APPLY_VOLUME = "Apply volume";
 
+
+	/**
+	* 
+	*/
     public static final String CLUSTER_SEPARATOR = "Cluster controls";
+
+	/**
+	* The clustering algorithm to use:<br><ul><li>"DBSCAN" Points are clustered based on a minimum number of neighbours ("Minimum number of points per cluster") within a specified distance ("Neighbourhood for clustering (epsilon)").  All proximal points which satisfy these criteria are added to a common cluster.  This uses the <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/clustering/DBSCANClusterer.html">Apache Commons Math3</a> implementation of DBSCAN, which describes the algorithm as: "A point p is density connected to another point q, if there exists a chain of points pi, with i = 1 .. n and p1 = p and pn = q, such that each pair (pi, pi+1) is directly density-reachable. A point q is directly density-reachable from point p if it is in the ε-neighborhood of this point.".</li><li>"KMeans++" Points are assigned into a pre-determined number of clusters (defined by "Number of clusters"), with each point assigned to the cluster with the closest centroid.  Since the cluster centroids will vary with each added point, this process is optimised iteratively.  The algorithm continues until either no points switch clusters or the maximum number of allowed iterations ("Maximum number of iterations") is reached.</li></ul>
+	*/
     public static final String CLUSTERING_ALGORITHM = "Clustering algorithm";
+
+	/**
+	* If "Clustering algorithm" is set to "KMeans++", this is the number of clusters the points will be assigned to.
+	*/
     public static final String K_CLUSTERS = "Number of clusters";
+
+	/**
+	* If "Clustering algorithm" is set to "KMeans++", this is the maximum number of optimisation iterations that will be performed.  If cluster assignment has stabilised prior to reaching this number of iterations the algorithm will terminate early.
+	*/
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
+
+	/**
+	* If "Clustering algorithm" is set to "DBSCAN", this is the minimum number of neighbour points which must be within a specified distance ("Neighbourhood for clustering (epsilon)") of a point for that point to be included in the cluster.
+	*/
     public static final String MIN_POINTS = "Minimum number of points per cluster";
+
+	/**
+	* When selected, objects must be in the same time frame for them to be assigned to a common cluster.
+	*/
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     public SingleClassCluster(Modules modules) {

@@ -38,15 +38,47 @@ import io.github.sjcross.sjcommon.object.tracks.Track;
 /**
  * Created by Stephen Cross on 24/05/2017.
  */
+
+/**
+* Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureTrackMotion extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Input objects";
+
+	/**
+	* Input track objects to measure motion for.  These must be specific "track" class objects as output by modules such as "Track objects".  The track objects are parents of individual timepoint instance objects, which are specified using the "Input spot objects" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.
+	*/
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
+
+	/**
+	* Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by "Input track objects".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.
+	*/
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
+
+	/**
+	* When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration prior to object detection.
+	*/
     public static final String SUBTRACT_AVERAGE_MOTION = "Subtract average motion";
+
+	/**
+	* When selected, the "leading point" of each object in the track will be determined and stored as X,Y,Z coordinate measurements associated with the relevant object.  The orientation of the track at that location will also be calculated.  In this instance, "leading point" refers to the front-most point in the object when considering the direction the object is moving in that frame.  This can be calculated relative to the previous frame, next frame or both previous and next frames (controlled by the "Orientation mode" parameter).
+	*/
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
+
+	/**
+	* If calculating the leading point of each object in each track ("Identify leading point" selected), this controls whether the instantaneous orientation of the track is determined relative to the previous frame, next frame or both previous and next frames.
+	*/
     public static final String ORIENTATION_MODE = "Orientation mode";
 
     public MeasureTrackMotion(Modules modules) {
