@@ -62,7 +62,7 @@ If you'd like to include the latest version of MIA in your project, you can add 
 <dependency>
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.10-SNAPSHOT</version>
+    <version>1.2.10</version>
 </dependency>
 ```
 
