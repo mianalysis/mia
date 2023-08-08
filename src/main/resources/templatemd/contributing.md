@@ -10,9 +10,9 @@ If you'd like to include the latest version of MIA in your project, you can add 
 ```
 <dependency>
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>MIA</artifactId>
+    <artifactId>mia</artifactId>
     <version>${MIAVERSION}</version>
 </dependency>
 ```
 
-The JavaDoc for MIA is available [here](https://javadoc.io/doc/io.github.mianalysis/MIA).
+The JavaDoc for MIA is available [here](https://javadoc.io/doc/io.github.mianalysis/mia).
