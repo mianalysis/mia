@@ -46,12 +46,12 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.object.Point;
-import io.github.sjcross.sjcommon.object.volume.CoordinateSet;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.SpatCal;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 /**
  * Created by sc13967 on 21/06/2017.

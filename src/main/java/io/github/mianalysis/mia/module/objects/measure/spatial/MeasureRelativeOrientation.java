@@ -14,6 +14,11 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -27,13 +32,8 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.analysis.volume.SurfaceSeparationCalculator;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.object.Point;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.SpatCal;
-import io.github.sjcross.sjcommon.object.volume.Volume;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.process.analysis.SurfaceSeparationCalculator;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 
 /**

@@ -13,8 +13,8 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.sjcross.sjcommon.mathfunc.CumStat;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
+import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.process.math.CumStat;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public abstract class TextType extends Parameter {

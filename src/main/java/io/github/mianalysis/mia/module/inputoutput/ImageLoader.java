@@ -14,7 +14,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.scijava.Priority;
 import org.scijava.io.location.FileLocation;
-import org.scijava.io.location.Location;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.NotNull;
@@ -41,6 +40,10 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.IncuCyteShortFilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.NameExtractor;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -63,12 +66,8 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.sjcommon.metadataextractors.CV7000FilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.IncuCyteShortFilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
-import io.github.sjcross.sjcommon.metadataextractors.NameExtractor;
-import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
-import io.github.sjcross.sjcommon.system.FileCrawler;
+import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.system.FileCrawler;
 import io.scif.Plane;
 import io.scif.Reader;
 import io.scif.SCIFIO;
@@ -92,7 +91,6 @@ import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
-import ome.xml.model.primitives.PositiveInteger;
 
 /**
  * Created by Stephen on 15/05/2017.

@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
+
 
 
 public class ExtractSubstackTest extends ModuleTest {

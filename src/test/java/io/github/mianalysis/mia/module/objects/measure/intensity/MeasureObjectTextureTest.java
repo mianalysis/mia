@@ -1,25 +1,26 @@
 package io.github.mianalysis.mia.module.objects.measure.intensity;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.IJ;
+import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectTexture;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.sjcross.sjcommon.analysis.TextureCalculator;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.mianalysis.mia.process.analysis.TextureCalculator;
 
 
 public class MeasureObjectTextureTest extends ModuleTest {

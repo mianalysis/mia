@@ -1,26 +1,27 @@
 package io.github.mianalysis.mia.expectedobjects;
 
-import util.opencsv.CSVReader;
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Measurement;
-import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.SpatCal;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import static io.github.mianalysis.mia.expectedobjects.ExpectedObjects.Mode.BINARY;
+import static io.github.mianalysis.mia.expectedobjects.ExpectedObjects.Mode.SIXTEEN_BIT;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
-
-import static io.github.mianalysis.mia.expectedobjects.ExpectedObjects.Mode.BINARY;
-import static io.github.mianalysis.mia.expectedobjects.ExpectedObjects.Mode.SIXTEEN_BIT;
+import util.opencsv.CSVReader;
 
 /**
  * Created by sc13967 on 12/02/2018.

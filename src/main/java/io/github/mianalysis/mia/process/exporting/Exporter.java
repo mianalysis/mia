@@ -50,7 +50,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -63,8 +63,7 @@ import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
-import io.github.sjcross.sjcommon.mathfunc.CumStat;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
+import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
  * Created by sc13967 on 12/05/2017.

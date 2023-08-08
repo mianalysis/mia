@@ -25,6 +25,9 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -40,9 +43,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.object.volume.CoordinateSet;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
 import sc.fiji.analyzeSkeleton.Graph;
@@ -323,7 +323,7 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    public static ArrayList<io.github.sjcross.sjcommon.object.Point<Integer>> getLargestShortestPath(Obj inputObject) {
+    public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(Obj inputObject) {
         Object[] result = initialiseAnalyzer(inputObject, 0, true);
         AnalyzeSkeleton_ analyzeSkeleton = (AnalyzeSkeleton_) result[0];
         SkeletonResult skeletonResult = (SkeletonResult) result[1];
@@ -332,9 +332,9 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    public static ArrayList<io.github.sjcross.sjcommon.object.Point<Integer>> getLargestShortestPath(Obj inputObject,
+    public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(Obj inputObject,
             AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult) {
-        ArrayList<io.github.sjcross.sjcommon.object.Point<Integer>> points2 = new ArrayList<>();
+        ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points2 = new ArrayList<>();
 
         double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]);
@@ -358,7 +358,7 @@ public class MeasureSkeleton extends Module {
         ArrayList<Point> points1 = analyzeSkeleton.getShortestPathPoints()[longestPathIdx];
 
         for (Point point : points1)
-            points2.add(new io.github.sjcross.sjcommon.object.Point<Integer>(point.x + xOffs, point.y + yOffs,
+            points2.add(new io.github.mianalysis.mia.object.coordinates.Point<Integer>(point.x + xOffs, point.y + yOffs,
                     point.z + zOffs));
 
         return points2;
@@ -368,7 +368,7 @@ public class MeasureSkeleton extends Module {
     static void createLargestShortestPath(Obj inputObject, Objs largestShortestPathObjects,
             AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult) {
 
-        ArrayList<io.github.sjcross.sjcommon.object.Point<Integer>> points = getLargestShortestPath(inputObject,
+        ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points = getLargestShortestPath(inputObject,
                 analyzeSkeleton, skeletonResult);
 
         Obj largestShortestPath = largestShortestPathObjects.createAndAddNewObject(VolumeType.POINTLIST);

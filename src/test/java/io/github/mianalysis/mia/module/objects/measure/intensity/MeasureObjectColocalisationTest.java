@@ -13,7 +13,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 // import io.github.mianalysis.MIA.Object.Image;
 // import io.github.mianalysis.MIA.Object.Obj;
 // import io.github.mianalysis.MIA.Object.Objs;
-// import io.github.sjcross.sjcommon.object.volume.VolumeType;
+// import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 // import java.net.URLDecoder;
 

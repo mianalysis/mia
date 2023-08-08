@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.sjcommon.object.Point;
+import io.github.mianalysis.mia.object.coordinates.Point;
 
 
 /**

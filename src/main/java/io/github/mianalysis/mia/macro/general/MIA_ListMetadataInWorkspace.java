@@ -8,7 +8,7 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListMetadataInWorkspace extends MacroOperation {

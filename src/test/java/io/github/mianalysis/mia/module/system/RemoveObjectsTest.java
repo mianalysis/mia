@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 
 public class RemoveObjectsTest extends ModuleTest {

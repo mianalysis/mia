@@ -36,8 +36,8 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
-import io.github.sjcross.sjcommon.process.IntensityMinMax;
+import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 /**
  * Created by sc13967 on 26/06/2017.

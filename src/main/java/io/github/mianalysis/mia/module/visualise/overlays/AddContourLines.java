@@ -7,10 +7,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.vecmath.Point2d;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
@@ -26,13 +27,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -49,8 +47,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.sjcommon.imagej.LUTs;
-import io.github.sjcross.sjcommon.mathfunc.CumStat;
+import io.github.mianalysis.mia.process.math.CumStat;
 
 
 /**

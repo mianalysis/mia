@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.object;
 
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 public interface VolumeTypesInterface {
     String OCTREE = "Octree";

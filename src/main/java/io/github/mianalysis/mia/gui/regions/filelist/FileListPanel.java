@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
     /**

@@ -11,12 +11,11 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.Tracks3D;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureTrackMotion;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.object.tracks.Track;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.tracks.Track;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 /**
  * Created by Stephen Cross on 09/08/2018.

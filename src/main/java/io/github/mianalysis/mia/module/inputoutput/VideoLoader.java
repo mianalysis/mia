@@ -53,8 +53,8 @@
 // import io.github.mianalysis.mia.object.system.Status;
 // import io.github.mianalysis.mia.object.units.SpatialUnit;
 // import io.github.mianalysis.mia.object.units.TemporalUnit;
-// import io.github.sjcross.sjcommon.metadataextractors.Metadata;
-// import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+// import io.github.mianalysis.mia.object.metadata.Metadata;
+// import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 // import ome.units.UNITS;
 // import ome.units.quantity.Time;
 // import ome.units.unit.Unit;

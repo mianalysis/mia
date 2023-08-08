@@ -17,24 +17,22 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.voxel.MidpointCircle;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.mathfunc.Indexer;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.SpatCal;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
-import io.github.sjcross.sjcommon.object.voxels.MidpointCircle;
-import io.github.sjcross.sjcommon.process.IntensityMinMax;
-import io.github.sjcross.sjcommon.process.houghtransform.transforms.CircleTransform;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
+import io.github.mianalysis.mia.process.houghtransform.transforms.CircleTransform;
+import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
+import io.github.mianalysis.mia.process.math.Indexer;
 
 /**
  * Created by sc13967 on 15/01/2018.

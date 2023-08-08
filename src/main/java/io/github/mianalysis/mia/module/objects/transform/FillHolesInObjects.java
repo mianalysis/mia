@@ -29,9 +29,9 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.object.Point;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 
 /**
  * Created by sc13967 on 16/01/2018.

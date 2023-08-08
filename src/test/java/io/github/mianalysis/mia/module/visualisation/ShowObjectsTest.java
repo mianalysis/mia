@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 import java.net.URLDecoder;
 import java.util.HashMap;

@@ -33,6 +33,9 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -52,12 +55,9 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.sjcommon.mathfunc.CumStat;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.SpatCal;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
-import io.github.sjcross.sjcommon.process.IntensityMinMax;
-import io.github.sjcross.sjcommon.process.skeletontools.BreakFixer;
+import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
+import io.github.mianalysis.mia.process.math.CumStat;
+import io.github.mianalysis.mia.process.skeleton.BreakFixer;
 
 /**
  * Created by sc13967 on 30/05/2017.

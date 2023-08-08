@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
-import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
