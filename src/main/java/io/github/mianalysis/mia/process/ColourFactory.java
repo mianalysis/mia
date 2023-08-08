@@ -13,6 +13,8 @@ import io.github.mianalysis.mia.process.math.CumStat;
 
 
 public class ColourFactory {
+    private static long randomSeed = 1;
+
     public interface ColourMaps {
         String BLACK_FIRE = "Black fire";
         String ICE = "Ice";
@@ -53,7 +55,7 @@ public class ColourFactory {
                 int ID = object.getID();
                 
                 // Default hue value in case none is assigned
-                float H = new Random().nextFloat();
+                float H = new Random(randomSeed).nextFloat();
                 
                 hues.put(ID, H);
                 

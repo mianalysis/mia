@@ -16,6 +16,9 @@ public class LUTs {
         public static LUT random = null;
         public static LUT randomVibrant = null;
 
+        private static long randomSeed = 1;
+
+
         public static LUT Ice() {
                 byte[] reds = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 5, 8, 11, 14, 17, 19, 20, 22, 23, 24,
@@ -553,7 +556,7 @@ public class LUTs {
         }
 
         public static LUT Random(boolean blackBackground) {
-                Random random = new Random(System.currentTimeMillis());
+                Random random = new Random(randomSeed);
 
                 byte[] r = new byte[256];
                 byte[] g = new byte[256];
@@ -581,7 +584,7 @@ public class LUTs {
         }
 
         public static LUT RandomVibrant(boolean blackBackground) {
-                Random random = new Random(System.currentTimeMillis());
+                Random random = new Random(randomSeed);
 
                 byte[] r = new byte[256];
                 byte[] g = new byte[256];
