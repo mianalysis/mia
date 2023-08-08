@@ -454,7 +454,7 @@
             </plugin>
 
             <!-- To be uncommented when creating release -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -522,7 +522,7 @@
                     <classpathScope>compile</classpathScope>
                     <mainClass>io.github.mianalysis.mia.process.documentation.MainGenerator</mainClass>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -531,6 +531,9 @@
             </plugin>
 
             <!-- To be uncommented when uploading to Maven Central -->
+            <!-- Use the following to deploy (will throw a "Missing staging repository" error, but should still work) -->
+            <!-- mvn clean deploy -Dscp=provided -P release -->
+
             <!-- <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -541,9 +544,9 @@
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
-            </plugin> -->
+            </plugin>
 
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.3.0</version>
@@ -556,7 +559,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -569,9 +572,9 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
 
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.1.0</version>
