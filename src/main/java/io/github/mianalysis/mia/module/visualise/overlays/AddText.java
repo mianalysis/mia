@@ -44,7 +44,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 import ome.units.UNITS;
 
 

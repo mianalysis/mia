@@ -38,7 +38,7 @@ import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 
 
 /**

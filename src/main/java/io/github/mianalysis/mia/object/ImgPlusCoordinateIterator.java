@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object;
 
 import java.util.Iterator;
 
-import io.github.sjcross.sjcommon.object.Point;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;

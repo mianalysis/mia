@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 import io.github.mianalysis.mia.process.logging.StatusPanelRenderer;
-import io.github.sjcross.sjcommon.system.FileCrawler;
+import io.github.mianalysis.mia.process.system.FileCrawler;
 
 /**
  * Created by Stephen on 20/05/2017.

@@ -35,8 +35,8 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.analysis.TextureCalculator;
-import io.github.sjcross.sjcommon.object.Point;
+import io.github.mianalysis.mia.process.analysis.TextureCalculator;
+import io.github.mianalysis.mia.object.coordinates.Point;
 
 
 

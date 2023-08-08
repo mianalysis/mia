@@ -23,8 +23,8 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
-import io.github.sjcross.sjcommon.analysis.LongestChordCalculator;
-import io.github.sjcross.sjcommon.mathfunc.CumStat;
+import io.github.mianalysis.mia.process.analysis.LongestChordCalculator;
+import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
  * Created by sc13967 on 20/06/2018.

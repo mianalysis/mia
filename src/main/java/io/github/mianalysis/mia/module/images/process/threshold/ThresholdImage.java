@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.filters.AutoLocalThreshold3D;
+import io.github.mianalysis.mia.process.imagej.AutoLocalThreshold3D;
 
 /**
  * Created by sc13967 on 06/06/2017.

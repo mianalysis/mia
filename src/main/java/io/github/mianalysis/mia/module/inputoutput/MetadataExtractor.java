@@ -10,12 +10,23 @@ import java.util.StringTokenizer;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.metadata.CV1000FilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.CV1000FoldernameExtractor;
+import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.FileExtractor;
+import io.github.mianalysis.mia.object.metadata.GenericExtractor;
+import io.github.mianalysis.mia.object.metadata.IncuCyteLongFilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.IncuCyteShortFilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.NameExtractor;
+import io.github.mianalysis.mia.object.metadata.OperaFileExtractor;
+import io.github.mianalysis.mia.object.metadata.OperaFilenameExtractor;
+import io.github.mianalysis.mia.object.metadata.OperaFoldernameExtractor;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -31,18 +42,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.metadataextractors.CV1000FilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.CV1000FoldernameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.CV7000FilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.FileExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.GenericExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.IncuCyteLongFilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.IncuCyteShortFilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.Metadata;
-import io.github.sjcross.sjcommon.metadataextractors.NameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.OperaFileExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.OperaFilenameExtractor;
-import io.github.sjcross.sjcommon.metadataextractors.OperaFoldernameExtractor;
 
 /**
  * Created by sc13967 on 05/05/2017.

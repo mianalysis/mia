@@ -4,9 +4,9 @@ import ij.gui.Roi;
 import ij.process.ByteProcessor;
 import ij.process.EllipseFitter;
 import ij.process.ImageProcessor;
-import io.github.sjcross.sjcommon.object.Point;
-import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
-import io.github.sjcross.sjcommon.object.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import math.geom2d.Point2D;
 import math.geom2d.conic.Ellipse2D;
 

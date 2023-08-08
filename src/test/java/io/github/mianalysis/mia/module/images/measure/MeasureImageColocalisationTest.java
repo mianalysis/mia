@@ -21,7 +21,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // import io.github.mianalysis.MIA.Object.Objs;
 // import io.github.mianalysis.MIA.Object.Workspace;
 // import io.github.mianalysis.MIA.Object.Workspaces;
-// import io.github.sjcross.sjcommon.object.volume.VolumeType;
+// import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 // 
 // public class MeasureImageColocalisationTest extends ModuleTest {
@@ -162,7 +162,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //import io.github.mianalysis.MIA.Object.Image;
 // //import io.github.mianalysis.MIA.Object.Objs;
 // //import io.github.mianalysis.MIA.Object.Workspace;
-// //import io.github.sjcross.sjcommon.object.volume.VolumeType;
+// //import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 // //
 // //import java.net.URLDecoder;
 // //

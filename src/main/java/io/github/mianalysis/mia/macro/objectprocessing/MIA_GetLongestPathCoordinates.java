@@ -8,12 +8,11 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectCurvature;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.sjcross.sjcommon.object.Point;
+import io.github.mianalysis.mia.object.coordinates.Point;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetLongestPathCoordinates extends MacroOperation {
