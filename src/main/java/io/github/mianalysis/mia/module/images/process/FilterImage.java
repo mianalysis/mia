@@ -310,28 +310,6 @@ public class FilterImage extends Module {
 
     }
 
-    public static void runLoG2DApproxFilter(ImagePlus imagePlus, double sigma) {
-        // We want to output a 32-bit image
-        ImageTypeConverter.process(imagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
-
-        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c, z, t);
-                    ImagePlus ipl1 = new ImagePlus("1", imagePlus.getProcessor().duplicate());
-                    ImagePlus ipl2 = new ImagePlus("2", imagePlus.getProcessor().duplicate());
-
-                    runGaussian2DFilter(ipl1, sigma);
-                    runGaussian2DFilter(ipl2, sigma * 1.6);
-
-                    imagePlus.setProcessor(ImageCalculator.run(ipl1, ipl2, "Subtract").getProcessor());
-
-                }
-            }
-        }
-        imagePlus.setPosition(1, 1, 1);
-    }
-
     public static void runDoG2DFilter(ImagePlus imagePlus, double sigma1, double sigma2) {
         // We want to output a 32-bit image
         ImageTypeConverter.process(imagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
@@ -668,7 +646,7 @@ public class FilterImage extends Module {
 
             case FilterModes.LOG2DAPPROX:
                 writeStatus("Applying " + filterMode + " filter");
-                runLoG2DApproxFilter(inputImagePlus, filterRadius);
+                runDoG2DFilter(inputImagePlus, filterRadius, filterRadius * 1.6);
                 break;
 
             case FilterModes.RIDGE_ENHANCEMENT:
