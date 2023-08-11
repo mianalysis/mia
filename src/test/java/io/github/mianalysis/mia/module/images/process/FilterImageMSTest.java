@@ -166,7 +166,7 @@ public class FilterImageMSTest extends ModuleTest {
 
         switch (filter) {
             case FDOG2D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.DOG2D);
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.LOG2DAPPROX);
                 break;
             case FGAUSS2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN2D);

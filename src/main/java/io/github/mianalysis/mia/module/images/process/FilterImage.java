@@ -50,64 +50,106 @@ import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
  */
 
 /**
-* Apply intensity filters to an image (or image stack) in the workspace.  Filters are applied to each Z-stack independently (i.e. channels and timepoints do not interact with each other).
-*/
+ * Apply intensity filters to an image (or image stack) in the workspace.
+ * Filters are applied to each Z-stack independently (i.e. channels and
+ * timepoints do not interact with each other).
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterImage extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image to apply filter to.
-	*/
+    /**
+     * Image to apply filter to.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
-	*/
+    /**
+     * Select if the filter should be applied directly to the input image, or if it
+     * should be applied to a duplicate, then stored as a different image in the
+     * workspace.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* Name of the output image created during the filtering process.  This image will be added to the workspace.
-	*/
+    /**
+     * Name of the output image created during the filtering process. This image
+     * will be added to the workspace.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FILTER_SEPARATOR = "Filter controls";
 
-	/**
-	* Filter to be applied to the image.<br><ul><li>"Difference of Gaussian 2D" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".</li><li>"Gaussian 2D" </li><li>"Gaussian 3D" </li><li>"Gradient 2D" </li><li>"Maximum 2D" </li><li>"Maximum 3D" </li><li>"Mean 2D" </li><li>"Mean 3D" </li><li>"Median 2D" </li><li>"Median 3D" </li><li>"Minimum 2D" </li><li>"Minimum 3D" </li><li>"Ridge enhancement 2D" Uses initial image processing steps from "Ridge Detection" plugin to enhance ridge-like structures.</li><li>"Rolling frame" Filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable</li><li>"Variance 2D" </li><li>"Variance 3D" </li></ul>
-	*/
+    /**
+     * Filter to be applied to the image.<br>
+     * <ul>
+     * <li>"Difference of Gaussian 2D" Difference of Gaussian filter (2D) Used to
+     * enhance spot-like features of sizes similar to the setting for "Filter
+     * radius".</li>
+     * <li>"Gaussian 2D"</li>
+     * <li>"Gaussian 3D"</li>
+     * <li>"Gradient 2D"</li>
+     * <li>"Maximum 2D"</li>
+     * <li>"Maximum 3D"</li>
+     * <li>"Mean 2D"</li>
+     * <li>"Mean 3D"</li>
+     * <li>"Median 2D"</li>
+     * <li>"Median 3D"</li>
+     * <li>"Minimum 2D"</li>
+     * <li>"Minimum 3D"</li>
+     * <li>"Ridge enhancement 2D" Uses initial image processing steps from "Ridge
+     * Detection" plugin to enhance ridge-like structures.</li>
+     * <li>"Rolling frame" Filters the image at each frame based on frames before
+     * and/after. The frame window over which the statistics are calculated is
+     * user-controllable</li>
+     * <li>"Variance 2D"</li>
+     * <li>"Variance 3D"</li>
+     * </ul>
+     */
     public static final String FILTER_MODE = "Filter mode";
 
-	/**
-	* Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.
-	*/
+    /**
+     * Range the filter is calculated over. Often also referred to as "sigma". Value
+     * specified in pixel units, unless "calibrated units" is enabled.
+     */
     public static final String FILTER_RADIUS = "Filter radius";
 
-	/**
-	* Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".
-	*/
+    /**
+     * Second filter value for when using DoG (difference of Gaussian) filter. Value
+     * specified in pixel units, unless "calibrated units" is enabled.
+     */
+    public static final String FILTER_RADIUS_2 = "Filter radius 2";
+
+    /**
+     * Choose if filter radius is specified in pixel (set to "false") or calibrated
+     * (set to "true") units. What units are used are controlled from "Input
+     * control".
+     */
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-	/**
-	* Statistic to apply for rolling frame filtering.
-	*/
+    /**
+     * Statistic to apply for rolling frame filtering.
+     */
     public static final String ROLLING_METHOD = "Rolling filter method";
 
-	/**
-	* When "Filter mode" is set to "Rolling frame", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to "-1,1" the statistic would be calculated based on the frames immediately before and after).
-	*/
+    /**
+     * When "Filter mode" is set to "Rolling frame", the rolling frame statistic
+     * will be calculated for each frame using these relative frames (i.e. with
+     * indices set to "-1,1" the statistic would be calculated based on the frames
+     * immediately before and after).
+     */
     public static final String WINDOW_INDICES = "Window indices";
 
-	/**
-	* When "Filter mode" is set to "Ridge enhancement 2D", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).
-	*/
+    /**
+     * When "Filter mode" is set to "Ridge enhancement 2D", this parameter controls
+     * whether the ridges to be enhanced are bright (brighter than the background)
+     * or dark (darker than the background).
+     */
     public static final String CONTOUR_CONTRAST = "Contour contrast";
 
     public FilterImage(Modules modules) {
@@ -115,10 +157,11 @@ public class FilterImage extends Module {
     }
 
     public interface FilterModes {
-        String DOG2D = "Difference of Gaussian 2D";
+        String DOG2D = "DoG 2D";
         String GAUSSIAN2D = "Gaussian 2D"; // Tested
         String GAUSSIAN3D = "Gaussian 3D"; // Tested
         String GRADIENT2D = "Gradient 2D";
+        String LOG2DAPPROX = "LoG 2D (approximation)";
         String MAXIMUM2D = "Maximum 2D";
         String MAXIMUM3D = "Maximum 3D";
         String MEAN2D = "Mean 2D";
@@ -132,7 +175,8 @@ public class FilterImage extends Module {
         String VARIANCE2D = "Variance 2D";
         String VARIANCE3D = "Variance 3D";
 
-        String[] ALL = new String[] { DOG2D, GAUSSIAN2D, GAUSSIAN3D, GRADIENT2D, MAXIMUM2D, MAXIMUM3D, MEAN2D, MEAN3D,
+        String[] ALL = new String[] { DOG2D, GAUSSIAN2D, GAUSSIAN3D, GRADIENT2D, LOG2DAPPROX, MAXIMUM2D, MAXIMUM3D,
+                MEAN2D, MEAN3D,
                 MEDIAN2D, MEDIAN3D, MINIMUM2D, MINIMUM3D, RIDGE_ENHANCEMENT, ROLLING_FRAME, VARIANCE2D, VARIANCE3D };
 
     }
@@ -230,7 +274,7 @@ public class FilterImage extends Module {
             case FilterModes.VARIANCE3D:
                 filter = Filters3D.VAR;
                 break;
-                
+
         }
 
         // Variance 3D will output a 32-bit image
@@ -266,7 +310,7 @@ public class FilterImage extends Module {
 
     }
 
-    public static void runDoG2DFilter(ImagePlus imagePlus, double sigma) {
+    public static void runLoG2DApproxFilter(ImagePlus imagePlus, double sigma) {
         // We want to output a 32-bit image
         ImageTypeConverter.process(imagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
 
@@ -279,6 +323,28 @@ public class FilterImage extends Module {
 
                     runGaussian2DFilter(ipl1, sigma);
                     runGaussian2DFilter(ipl2, sigma * 1.6);
+
+                    imagePlus.setProcessor(ImageCalculator.run(ipl1, ipl2, "Subtract").getProcessor());
+
+                }
+            }
+        }
+        imagePlus.setPosition(1, 1, 1);
+    }
+
+    public static void runDoG2DFilter(ImagePlus imagePlus, double sigma1, double sigma2) {
+        // We want to output a 32-bit image
+        ImageTypeConverter.process(imagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c, z, t);
+                    ImagePlus ipl1 = new ImagePlus("1", imagePlus.getProcessor().duplicate());
+                    ImagePlus ipl2 = new ImagePlus("2", imagePlus.getProcessor().duplicate());
+
+                    runGaussian2DFilter(ipl1, sigma1);
+                    runGaussian2DFilter(ipl2, sigma2);
 
                     imagePlus.setProcessor(ImageCalculator.run(ipl1, ipl2, "Subtract").getProcessor());
 
@@ -549,13 +615,16 @@ public class FilterImage extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
         double filterRadius = parameters.getValue(FILTER_RADIUS, workspace);
+        double filterRadius2 = parameters.getValue(FILTER_RADIUS_2, workspace);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
         String rollingMethod = parameters.getValue(ROLLING_METHOD, workspace);
         String windowIndices = parameters.getValue(WINDOW_INDICES, workspace);
         String contourContrast = parameters.getValue(CONTOUR_CONTRAST, workspace);
 
-        if (calibratedUnits)
+        if (calibratedUnits) {
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
+            filterRadius2 = inputImagePlus.getCalibration().getRawX(filterRadius2);
+        }
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
@@ -584,7 +653,7 @@ public class FilterImage extends Module {
 
             case FilterModes.DOG2D:
                 writeStatus("Applying " + filterMode + " filter");
-                runDoG2DFilter(inputImagePlus, filterRadius);
+                runDoG2DFilter(inputImagePlus, filterRadius, filterRadius2);
                 break;
 
             case FilterModes.GAUSSIAN2D:
@@ -595,6 +664,11 @@ public class FilterImage extends Module {
             case FilterModes.GRADIENT2D:
                 writeStatus("Applying " + filterMode + " filter");
                 runGradient2DFilter(inputImagePlus, filterRadius);
+                break;
+
+            case FilterModes.LOG2DAPPROX:
+                writeStatus("Applying " + filterMode + " filter");
+                runLoG2DApproxFilter(inputImagePlus, filterRadius);
                 break;
 
             case FilterModes.RIDGE_ENHANCEMENT:
@@ -633,8 +707,9 @@ public class FilterImage extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
-        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.DOG2D, FilterModes.ALL));
+        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.LOG2DAPPROX, FilterModes.ALL));
         parameters.add(new DoubleP(FILTER_RADIUS, this, 2d));
+        parameters.add(new DoubleP(FILTER_RADIUS_2, this, 3d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new ChoiceP(ROLLING_METHOD, this, RollingMethods.AVERAGE, RollingMethods.ALL));
         parameters.add(new StringP(WINDOW_INDICES, this, "-1-1"));
@@ -660,6 +735,8 @@ public class FilterImage extends Module {
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
         if (!parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.ROLLING_FRAME)) {
             returnedParameters.add(parameters.getParameter(FILTER_RADIUS));
+            if (((String) parameters.getValue(FILTER_MODE, workspace)).equals(FilterModes.DOG2D))
+                returnedParameters.add(parameters.getParameter(FILTER_RADIUS_2));
             returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         } else {
@@ -717,14 +794,17 @@ public class FilterImage extends Module {
         parameters.get(FILTER_MODE).setDescription("Filter to be applied to the image.<br><ul>"
 
                 + "<li>\"" + FilterModes.DOG2D
-                + "\" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for \""
-                + FILTER_RADIUS + "\".</li>"
+                + "\" Difference of Gaussian filter in 2D.</li>"
 
                 + "<li>\"" + FilterModes.GAUSSIAN2D + "\" </li>"
 
                 + "<li>\"" + FilterModes.GAUSSIAN3D + "\" </li>"
 
                 + "<li>\"" + FilterModes.GRADIENT2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.LOG2DAPPROX
+                + "\" Approximation of a Laplacian of Gaussian filter in 2D.  This is used to enhance spot-like features of sizes similar to the setting for \""
+                + FILTER_RADIUS + "\".</li>"
 
                 + "<li>\"" + FilterModes.MAXIMUM2D + "\" </li>"
 
