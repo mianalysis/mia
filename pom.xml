@@ -454,7 +454,7 @@
             </plugin>
 
             <!-- To be uncommented when creating release -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -505,7 +505,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -517,7 +517,7 @@
             <!-- Use the following to deploy (will throw a "Missing staging repository" error, but should still work) -->
             <!-- mvn clean deploy -Dscp=provided -P release -->
 
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.13</version>
@@ -570,7 +570,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 
