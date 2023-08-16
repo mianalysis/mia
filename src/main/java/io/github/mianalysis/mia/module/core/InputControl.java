@@ -435,6 +435,11 @@ public class InputControl extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone "
                 + "will be processed; however, selecting a folder will cause the system to iterate over all files and "

@@ -594,6 +594,11 @@ public class AddContourLines extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds overlay contour lines (and optional labels) to an image.  Lines correspond to contours of constant intensity in the input image.";
     }

@@ -277,6 +277,11 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Performs a volume-limited 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The volume of holes to be filled can be restricted with both minimum and maximum permissible holes.  This image will be 8-bit with binary logic determined by the \""
                 + BINARY_LOGIC

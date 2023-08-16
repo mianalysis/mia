@@ -54,6 +54,11 @@ public class MIA_IdentifyObjects extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Uses connected component labelling to convert a binary image to objects.  Connectivity must be set to "+
                 "either 6 or 26.";

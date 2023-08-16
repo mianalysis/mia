@@ -42,6 +42,11 @@ public class MIA_MeasureImageTexture extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure texture across the image.  Calculates the Haralick features.  Offset provided in pixel untis";
     }

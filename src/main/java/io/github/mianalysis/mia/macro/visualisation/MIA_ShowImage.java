@@ -45,6 +45,11 @@ public class MIA_ShowImage extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Duplicate an image from the MIA workspace and display it.  Note: As this is a duplicate image, "
         +"changes made to it won't be reflected in the MIA workspace copy";

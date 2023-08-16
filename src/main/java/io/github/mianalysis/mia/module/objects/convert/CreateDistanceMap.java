@@ -250,6 +250,11 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Creates a distance map for a selected object set.  Pixels in the output image are encoded with the distance to the nearest image edge or centroid (depending on setting).  A single distance map image is created for all objects in the specified set.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }

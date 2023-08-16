@@ -53,6 +53,11 @@ public class AddCustomMetadataItem extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "This module allows for a specific metadata item to be used.  An example of this would be to add a label for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word \"phase\" in them).  Output metadata values can themselves be constructed from existing metadata values, accessed using the M{[NAME]} form (e.g. M{Filename}.";
     }

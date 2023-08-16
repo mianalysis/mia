@@ -1,3 +1,0 @@
-Olenik, M., _et al._, "Fluctuations of cell geometry and their nonequilibrium thermodynamics in living epithelial tissue", _Phys. Rev. E_ (2023) **107** 014403, doi: [10.1103/PhysRevE.107.014403](https://doi.org/10.1103/PhysRevE.107.014403)
-
-Yadav, P., _et al._, "Chromogranin B (CHGB) is dimorphic and responsible for dominant anion channels delivered to cell surface via regulated secretion", _Front. Mol. Neurosci._ (2023) **16**, doi: [10.3389/fnmol.2023.1205516](https://doi.org/10.3389/fnmol.2023.1205516)

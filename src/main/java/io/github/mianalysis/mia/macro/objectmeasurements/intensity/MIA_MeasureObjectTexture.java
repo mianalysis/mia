@@ -44,6 +44,11 @@ public class MIA_MeasureObjectTexture extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure object texture across the image.  Calculates the Haralick features.  If \"calibratedOffset\" " +
                 "is true offsets are in calibrated units, otherwise units are in pixels.";

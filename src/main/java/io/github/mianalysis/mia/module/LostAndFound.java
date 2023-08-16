@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module;
 import java.util.HashMap;
 
 import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.images.process.FilterImage;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.WekaPixelClassification;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations;
@@ -313,10 +314,14 @@ public class LostAndFound {
 
         // FilterByMeasurementExtremes
         currentValues = new HashMap<>();
-        currentValues.put("Remove object with largest measurement", FilterByMeasurementExtremes.FilterMethods.REMOVE_LARGEST);
-        currentValues.put("Remove object with smallest measurement", FilterByMeasurementExtremes.FilterMethods.REMOVE_SMALLEST);
-        currentValues.put("Retain object with largest measurement", FilterByMeasurementExtremes.FilterMethods.RETAIN_LARGEST);
-        currentValues.put("Retain object with smallest measurement", FilterByMeasurementExtremes.FilterMethods.RETAIN_SMALLEST);
+        currentValues.put("Remove object with largest measurement",
+                FilterByMeasurementExtremes.FilterMethods.REMOVE_LARGEST);
+        currentValues.put("Remove object with smallest measurement",
+                FilterByMeasurementExtremes.FilterMethods.REMOVE_SMALLEST);
+        currentValues.put("Retain object with largest measurement",
+                FilterByMeasurementExtremes.FilterMethods.RETAIN_LARGEST);
+        currentValues.put("Retain object with smallest measurement",
+                FilterByMeasurementExtremes.FilterMethods.RETAIN_SMALLEST);
         currentParameterValues = new HashMap<>();
         currentParameterValues.put(FilterByMeasurementExtremes.FILTER_METHOD, currentValues);
         moduleName = new FilterByMeasurementExtremes(null).getClass().getSimpleName();
@@ -329,6 +334,14 @@ public class LostAndFound {
         currentParameterValues = new HashMap<>();
         currentParameterValues.put(CalculateNearestNeighbour.REFERENCE_MODE, currentValues);
         moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // FilterImage
+        currentValues = new HashMap<>();
+        currentValues.put("Difference of Gaussian 2D", FilterImage.FilterModes.LOG2DAPPROX);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(FilterImage.FILTER_MODE, currentValues);
+        moduleName = new FilterImage(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // ImageLoader
@@ -351,7 +364,7 @@ public class LostAndFound {
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // InputControl
-        currentValues = new HashMap<>(); 
+        currentValues = new HashMap<>();
         currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
         currentValues.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
@@ -450,4 +463,4 @@ public class LostAndFound {
 
     }
 }
-// <3 Ada and Evelyn 
+// <3 Ada and Evelyn

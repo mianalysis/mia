@@ -150,6 +150,11 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Flips the order of slices in stack.  This operation can be performed on the channel, time or Z axis.";
     }

@@ -142,6 +142,11 @@ public class MeasureTextureAlongPath extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Texture measures, largely from  Robert M. Haralick, K. Shanmugam, and Its'hak Dinstein, "
                 + "\"Textural Features for Image Classification\", IEEE Transactions on Systems, Man, and Cybernetics, 1973, SMC-3 (6): 610–621";

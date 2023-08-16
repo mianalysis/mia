@@ -229,6 +229,11 @@ public class ApplyDeepImageJModel extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Uses <a href=\"https://deepimagej.github.io/deepimagej/\">DeepImageJ</a> to run Tensorflow and Pytorch models from the <a href=\"https://bioimage.io/#/\">BioImage Model Zoo</a>.  This module will detect and run any models already installed in the active copy of Fiji.";
     }

@@ -41,6 +41,11 @@ public class MIA_MeasureObjectOverlap extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Calculates the total voxel and percentage overlap between objects.  Can be restricted to only "+
                 "comparing objects present in the same timepoint.";

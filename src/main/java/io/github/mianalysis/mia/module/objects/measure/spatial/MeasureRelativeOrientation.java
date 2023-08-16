@@ -372,6 +372,11 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measures the orientation of each object relative to a specific point.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point."
 

@@ -20,11 +20,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
-import org.scijava.Context;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.script.ScriptModule;
-import org.scijava.script.ScriptService;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -164,6 +162,11 @@ public class RunScript extends Module {
     @Override
     public Category getCategory() {
         return Categories.SCRIPT;
+    }
+
+    @Override
+    public String getVersionNumber() {
+        return "1.0.0";
     }
 
     @Override

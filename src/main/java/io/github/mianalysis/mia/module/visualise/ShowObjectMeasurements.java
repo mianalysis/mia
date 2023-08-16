@@ -47,6 +47,11 @@ public class ShowObjectMeasurements extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Displays all measurements associated with all objects of the specified object collection.";
     }

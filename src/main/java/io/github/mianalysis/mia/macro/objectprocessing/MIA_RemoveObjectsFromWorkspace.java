@@ -39,6 +39,11 @@ public class MIA_RemoveObjectsFromWorkspace extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Removes the specified objects from the workspace.  If \"Retain measurements\" is true, any "+
                 "measurements will be left available for export.";

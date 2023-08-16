@@ -145,6 +145,11 @@ public class FillHolesInObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Fills holes in all objects in a collection.  Holes are considered as non-object regions bounded on all sides by object coordinates.  This operation is performed on an object-by-object basis, so only holes bounded by coordinates of the same object will be filled.  Holes can be filled slice-by-slice in 2D (considering only coordiantes in a single XY plane using 4-way connectivity) or in full 3D (considering all surrounding coordinates using 6-way connectivity).  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.";
     }

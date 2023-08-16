@@ -568,6 +568,11 @@ public class TrackObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Track objects between frames.  Tracks are produced as separate \"parent\" objects to the \"child\" "
                 + "spots.  Track objects only serve to link different timepoint instances of objects together.  As such, "

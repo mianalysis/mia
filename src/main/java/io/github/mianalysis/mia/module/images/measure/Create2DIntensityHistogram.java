@@ -74,6 +74,11 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Creates a 2D intensity histogram for a pair of specified images.  Intensities along the x-axis correspond to the first input image and those along the y-axis to the second input image.  Output histogram is saved to the workspace as an image.  Works for N-dimensional image stacks (must have the same dimensions).  Uses the ImgLib2 implementation ND intensity histograms.";
     }

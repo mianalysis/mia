@@ -505,6 +505,11 @@ public class RelateObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object.  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
     }

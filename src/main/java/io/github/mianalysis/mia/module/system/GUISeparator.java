@@ -124,6 +124,11 @@ public class GUISeparator extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "GUI separators break the module list into sections, where all modules are considered to be in the \"section\" corresponding to the separator above them in the module list.  All modules contained within these sections can be enabled/disabled <i>en masse</i> by enabling/disabling their associated separator.  In processing view, the separator can be shown as a blue line, while in editing view it appears as a normal module entry albeit with blue text.  In both views it's possible to hide/show the contents of a separator section using the blue arrows.<br><br>"
         

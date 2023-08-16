@@ -56,6 +56,11 @@ public class MIA_ListImagesInWorkspace extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a list of images currently in the workspace.  \"Measurements only\" is true if the image data"+
                 " has been removed, leaving measurements only";

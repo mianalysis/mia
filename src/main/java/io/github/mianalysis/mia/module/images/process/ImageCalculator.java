@@ -338,6 +338,11 @@ public class ImageCalculator extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>"
                 + "Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.";

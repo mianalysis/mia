@@ -44,6 +44,11 @@ public class MIA_GetListOfWorkspaceIDs extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a list of all Workspace IDs.  These can be used to enable a specific Workspace using the \"MIA_EnableWorkspace\" macro";
     }

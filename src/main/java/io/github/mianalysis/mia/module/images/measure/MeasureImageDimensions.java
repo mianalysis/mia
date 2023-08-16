@@ -69,6 +69,11 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure dimensions of an image and store the values as measurements associated with that image.";
     }

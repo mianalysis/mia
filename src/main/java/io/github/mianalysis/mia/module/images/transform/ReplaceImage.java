@@ -46,6 +46,11 @@ public class ReplaceImage extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "This module duplicates an image into another, existing, image.  " +
                 "\nThis is useful when dealing with optional modules, where a specific input is required later on.";

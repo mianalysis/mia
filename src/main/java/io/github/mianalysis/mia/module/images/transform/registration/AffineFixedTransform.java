@@ -4,10 +4,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.drew.lang.annotations.Nullable;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -39,52 +39,50 @@ import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.AffineModel2D;
 
-
 /**
 * 
 */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineFixedTransform extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String TRANSFORMATION = "Transformation";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FILL_MODE = "Fill mode";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AffineFixedTransform(Modules modules) {
@@ -110,7 +108,7 @@ public class AffineFixedTransform extends Module {
 
         AffineModel2D model = new AffineModel2D();
         model.set(m00, m10, m01, m11, m02, m12);
-                
+
         return new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
     }
@@ -187,6 +185,11 @@ public class AffineFixedTransform extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public Category getCategory() {
         return Categories.IMAGES_TRANSFORM_REGISTRATION;
     }
@@ -196,12 +199,12 @@ public class AffineFixedTransform extends Module {
         IJ.setBackgroundColor(255, 255, 255);
 
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String transform = parameters.getValue(TRANSFORMATION,workspace);
-        String fillMode = parameters.getValue(FILL_MODE,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String transform = parameters.getValue(TRANSFORMATION, workspace);
+        String fillMode = parameters.getValue(FILL_MODE, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
@@ -244,13 +247,13 @@ public class AffineFixedTransform extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -265,27 +268,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

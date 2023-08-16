@@ -541,6 +541,11 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object (see \""
                 + new RelateManyToMany(null).getName() + "\" and \"" + new RelateOneToOne(null).getName()

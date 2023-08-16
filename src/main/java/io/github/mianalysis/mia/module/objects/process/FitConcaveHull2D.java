@@ -125,6 +125,11 @@ public class FitConcaveHull2D extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Fits a 2D concave hull to all objects in a collection.  Each input object will be fit with a single concave hull.  Even for non-contiguous input objects, a single concave hull will be created.  The smoothness of the output hull is controlled by the \"range\" parameter, with smaller range values more closely following the surface of the object.  Larger range values should be used to overcome gaps in object edges.<br><br>"
 

@@ -28,6 +28,7 @@ public abstract class MacroOperation extends ExtensionDescriptor implements SciJ
     public abstract int[] getArgumentTypes();
     public abstract String action(Object[] objects, Workspace workspace, Modules modules);
     public abstract String getArgumentsDescription();
+    public abstract String getVersionNumber();
     public abstract String getDescription();
 
 }

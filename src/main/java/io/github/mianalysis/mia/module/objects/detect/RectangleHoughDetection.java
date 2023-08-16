@@ -60,6 +60,11 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Detects rectangles within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the rectangular features must be brighter than their surrounding background and have dark centres (i.e. not be solid).  For solid rectangles, a gradient filter or equivalent should be applied to the image first.  Detected rectangles are output to the workspace as solid objects.  Rectangles are detected within a user-defined width, length and orientation range and must exceed a user-defined threshold score (based on the intensity of the rectangles feartures in the input image).";
 

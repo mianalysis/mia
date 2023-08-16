@@ -283,6 +283,11 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Extract a substack from the specified input image in terms of channels, slices and frames.  The output " +
                 "image is saved to the workspace for use later on in the workflow.";

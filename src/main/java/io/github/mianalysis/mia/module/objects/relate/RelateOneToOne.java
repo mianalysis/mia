@@ -377,6 +377,11 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can only be linked to one other object (see \""
                 + new RelateManyToMany(null).getName() + "\" and \"" + new RelateManyToOne(null).getName()

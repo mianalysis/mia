@@ -34,6 +34,11 @@ public class MIA_ClearWorkspace extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Removes all images and objects from the workspace.  This should be generateModuleList at the beginning of a macro.";
     }

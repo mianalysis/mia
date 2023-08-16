@@ -136,6 +136,11 @@ public class MeasureSpecificWidth extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measures the width of the object along the axis passing through two specified reference points.  Reference points can be the object centroid, an image measurement or a measurement associated with the object.  Widths are determined as the distance between the two points along the reference line with the greatest separation (i.e. it doesn't matter if there are gaps between them).";
     }

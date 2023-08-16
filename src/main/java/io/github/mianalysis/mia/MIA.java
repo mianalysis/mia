@@ -18,7 +18,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
-import org.scijava.util.VersionUtils;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;

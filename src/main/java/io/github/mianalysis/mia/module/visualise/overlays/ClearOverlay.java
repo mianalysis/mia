@@ -91,6 +91,11 @@ public class ClearOverlay extends AbstractOverlay {
     }
     
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Removes any overlay elements from specified image.";
         

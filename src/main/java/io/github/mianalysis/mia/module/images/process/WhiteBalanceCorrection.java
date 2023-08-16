@@ -203,6 +203,11 @@ return null;
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Apply whitebalance correction to an image based on a reference region (specified as an object).<br>" +
                 "<br>Method based on the <a href=\"https://github.com/pmascalchi/ImageJ_Auto-white-balance-correction\">macro</a> by Patrice Mascalchi ().";

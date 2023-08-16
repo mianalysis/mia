@@ -120,6 +120,11 @@ public class FilterByProximity extends AbstractObjectFilter {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Filters objects in close XY proximity based on a specific measurement.  For two, or more, objects within close proximity of each other the object with the largest (or smallest) measurement will be retained, whilst the others will be removed.  This can be used to filter instances of the same object being detected multiple times.  Distances are only considered in XY.  Any Z-axis information on object position will be ignored.";
         

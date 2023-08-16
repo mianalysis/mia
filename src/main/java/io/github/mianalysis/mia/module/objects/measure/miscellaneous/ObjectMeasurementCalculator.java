@@ -300,6 +300,11 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Perform a mathematical operation on measurements associated with each object of an object collection in the workspace.  The calculation can replace either or both values with fixed values, measurements associated with an image or a statistic of all measurements associated with another object collection (e.g. the mean volume of all objects).  The resulting measurements are associated with the corresponding input objects as new measurements.";
     }

@@ -156,6 +156,11 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "DEPRECATED: Please use separate \"" + new GetLocalObjectRegion(null).getName() + "\" and \""
                 + new MeasureObjectIntensity(null).getName() + "\" modules."

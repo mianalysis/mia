@@ -362,6 +362,11 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "";
     }

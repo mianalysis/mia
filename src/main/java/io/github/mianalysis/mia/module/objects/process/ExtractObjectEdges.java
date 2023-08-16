@@ -237,6 +237,11 @@ public class ExtractObjectEdges extends Module {
     }
     
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Extracts edge and interior objects for each object in a specified set.  The boundary defining the transition between edges and interiors can be specified either at a fixed distance from the object edge or as a percentage of the maximum edge-centroid distance for each object.  Output edge and interior objects are stored as children of the associated input object.    ";
     }

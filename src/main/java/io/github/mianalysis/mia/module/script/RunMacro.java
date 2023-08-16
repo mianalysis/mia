@@ -162,6 +162,11 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Run a specific ImageJ macro once (as opposed to the \"" + new RunMacroOnObjects(modules).getName()
                 + "\" module, which runs once per object).  This module can optionally open an image into ImageJ for the macro to run on.  It can also intercept the output image and store it in the MIA workspace.  Variables assigned during the macro can be extracted and stored as measurements associated with the input image.<br><br>"

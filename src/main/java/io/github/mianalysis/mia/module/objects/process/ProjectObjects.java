@@ -70,6 +70,11 @@ public class ProjectObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+    
+    @Override
     public Category getCategory() {
         return Categories.OBJECTS_PROCESS;
     }

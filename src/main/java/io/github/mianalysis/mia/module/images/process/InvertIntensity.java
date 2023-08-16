@@ -74,6 +74,11 @@ public class InvertIntensity extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Invert intensity of each pixel.  This uses the stock ImageJ intensity inversion function (\"Edit > Invert\")";
     }

@@ -203,6 +203,11 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Create a montage image showing orthogonal views of a specified input image from the workspace.  Orthogonal views are taken in the XY, XZ and YZ planes and all share a common coordinate.  This common coordinate can be the centre of the image or the centre of the largest object in a specified object collection.  The output orthogonal view is stored in the workspace as a separate image.";
     }

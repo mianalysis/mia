@@ -55,6 +55,11 @@ public class MIA_ListObjectMeasurementNames extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a list of available measurements for the specified object.  Use the macro Ext.MIA_ShowAllObjectMeasurements(objectsName) to get a table containing all measurement values for all objects.  Use the macro Ext.MIA_GetObjectMeasurement(objectsName, objectID, measurementID) to get a specific measurement value for a specific object.";
     }

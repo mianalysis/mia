@@ -13,14 +13,14 @@ ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framewor
 For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
 
 
-![](./docs/img/carousel/carousel1.png)
+![](./img/screenshot.png)
 
 Preprint and poster
 ------------
 
-You can check out the preprint of the MIA paper [here](https://www.biorxiv.org/content/10.1101/2023.06.12.544614v1) and the latest MIA poster from CBIAS 2022 [here](./docs/img/posters/CBIAS_poster_2022.jpg)
+You can check out the preprint of the MIA paper [here](https://www.biorxiv.org/content/10.1101/2023.06.12.544614v1) and the latest MIA poster from CBIAS 2022 [here](./img/CBIAS_poster_2022.jpg)
 <p align="middle">
-<a href="https://www.biorxiv.org/content/10.1101/2023.06.12.544614v1"><img src="./docs/img/posters/Preprint_thumb.jpg" height="200"></a> <a href="https://github.com/mianalysis/mia/tree/main/docs/img/posters/CBIAS_poster_2022.jpg"><img src="./docs/img/posters/CBIAS_poster_2022_thumb.jpg" height="200"></a>
+<a href="https://www.biorxiv.org/content/10.1101/2023.06.12.544614v1"><img src="./img/Preprint_thumb.jpg" height="200"></a> <a href="https://github.com/mianalysis/mia/tree/main/docs/img/CBIAS_poster_2022.jpg"><img src="./img/CBIAS_poster_2022_thumb.jpg" height="200"></a>
 </p>
 
 Installation
@@ -62,7 +62,7 @@ If you'd like to include the latest version of MIA in your project, you can add 
 <dependency>
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 

@@ -111,6 +111,11 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Extracts XY-plane cross-sections of specified objects.  The extracted cross-sections are stored as separate objects, which are children of the associated input object.  Slice indicies can be specified as fixed values or relative to image/object measurements (e.g. relative to the object centroids).";
     }

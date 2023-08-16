@@ -174,6 +174,11 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the \""
                 + BINARY_LOGIC

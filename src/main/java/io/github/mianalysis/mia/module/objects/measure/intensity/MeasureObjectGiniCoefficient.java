@@ -73,6 +73,11 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure the Gini coefficient of all pixels within each object on an object-by-object basis.  The Gini coefficient measures the inequality in intensity of pixels.  A coefficient of 0 indicates perfect intensity homogeneity (all pixels with the same value), while a value of 1 indicates the maximum possible inequality (all pixels are black, except for a single bright pixel).";
     }

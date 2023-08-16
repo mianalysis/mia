@@ -71,6 +71,11 @@ public class CombingCorrection extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Applies an integer pixel row shift to every other row (starting with top-most row).";
     }

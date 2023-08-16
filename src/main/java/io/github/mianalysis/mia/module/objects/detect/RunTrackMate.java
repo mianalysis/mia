@@ -430,6 +430,11 @@ public class RunTrackMate extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Uses the TrackMate plugin included with Fiji to detect and track spots in images.  For more information, see the <a href=\"https://imagej.net/TrackMate\">TrackMate</a> documentation.";
     }

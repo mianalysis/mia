@@ -68,6 +68,11 @@ public class GetObjectSurface extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Create surface objects for each input object.  Surface coordinates are those with at least one "
                 + "non-object neighbouring pixel (using 6-way connectivity).  Surfaces are stored as children of the "

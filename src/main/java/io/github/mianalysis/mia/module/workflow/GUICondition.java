@@ -104,6 +104,11 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "DEPRECATED: Please use \"" + new GlobalVariables(null).getName() + "\" module (in \""
                 + GlobalVariables.VariableTypes.CHOICE + "\" mode) in conjunction with \""

@@ -128,6 +128,11 @@ public class SetSpatialCalibration extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Update spatial calibration for XY and Z axes based on defined physical and corresponding image (pixel) distances.  Both physical and image distances can be drawn from a variety of sources including image and object measurements, fixed values and user-defined values (specified at runtime).  Calibration can be applied to XY and Z axes simultaneously or independently.";
     }

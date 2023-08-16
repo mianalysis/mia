@@ -48,6 +48,11 @@ public class MIA_GetObjectIDs extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a comma-delimited list of object ID numbers for the specified input objects.";
     }

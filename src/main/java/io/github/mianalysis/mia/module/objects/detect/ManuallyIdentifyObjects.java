@@ -571,6 +571,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process."
                 + "<br><br>This module will display a control panel and an image onto which selections are made.  "

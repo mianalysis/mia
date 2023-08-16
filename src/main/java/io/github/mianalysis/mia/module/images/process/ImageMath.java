@@ -168,6 +168,11 @@ public class ImageMath extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: "
                 + String.join(", ", CalculationModes.ALL);

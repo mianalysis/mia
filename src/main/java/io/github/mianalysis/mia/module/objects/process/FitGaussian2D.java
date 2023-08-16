@@ -386,6 +386,11 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Gaussian spot fitting.  Can take objects as estimated locations." + "\n***Only works in 2D***"
                 + "\n***Only works for refinement of existing spots***";

@@ -54,6 +54,11 @@ public class MIA_GetObjectCoordinates extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns the xyz object coordinates of the specified object as a string in the format \"x1,y1,z1;x2,y2,z2;...;xN,yN,zN\" where N is the number of coordinates.  X and Y values are specified in pixel units and Z in slice units.";
     }
