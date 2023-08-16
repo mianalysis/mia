@@ -64,6 +64,11 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure intensity statistics (mean, median, mode, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.";
     }

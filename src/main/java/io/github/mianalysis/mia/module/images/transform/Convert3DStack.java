@@ -87,6 +87,11 @@ public class Convert3DStack extends Module {
     }
     
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
     }

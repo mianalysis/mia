@@ -35,6 +35,11 @@ public class MIA_ShowAllObjectMeasurements extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Displays all measurements associated with an object";
     }

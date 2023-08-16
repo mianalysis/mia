@@ -205,6 +205,11 @@ public class SetLookupTable extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.";
     }

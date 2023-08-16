@@ -91,6 +91,11 @@ public class ConvertImageToObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.  For objects tracked through time, the image intensity can be interpreted as the ID of a parent track object."
 

@@ -51,6 +51,11 @@ public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Calculates the centroid of the single object with ID matching the specified value.";
     }

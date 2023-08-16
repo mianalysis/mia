@@ -422,6 +422,11 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Creates objects from an input binary image.  Each object is identified in 3D as a contiguous region of "
                 + "foreground labelled pixels.  All coordinates corresponding to that object are stored for use later.<br>"

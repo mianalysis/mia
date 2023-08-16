@@ -303,6 +303,11 @@ public class ThresholdImage extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the "
                 +

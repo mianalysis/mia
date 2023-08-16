@@ -234,6 +234,11 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.  3D metrics are calculated using the \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\" plugin.";
     }

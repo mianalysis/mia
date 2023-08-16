@@ -116,6 +116,11 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Interpolates Z-axis of image to match XY spatial calibration";
     }

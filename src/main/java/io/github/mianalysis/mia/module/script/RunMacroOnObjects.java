@@ -161,6 +161,11 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the \""
                 + new RunMacro(null).getName()

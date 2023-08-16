@@ -44,6 +44,11 @@ public class MIA_MeasureObjectShape extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure shape properties for the specified objects.";
     }

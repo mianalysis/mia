@@ -75,6 +75,11 @@ public class FitConvexHull2D extends Module {
     }
     
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Fit 2D convex hull to a 2D object.  If objects are in 3D, a convex hull is fit slice-by-slice.<br><br>"
         +

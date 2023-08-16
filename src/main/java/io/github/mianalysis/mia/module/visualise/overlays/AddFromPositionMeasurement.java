@@ -213,6 +213,11 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds an overlay to the specified input image representing each object by a single marker.  Unlike \""+new AddObjectCentroid(null).getName()+"\" the position of the marker is determined by measurements associated with the relevant object.";
     }

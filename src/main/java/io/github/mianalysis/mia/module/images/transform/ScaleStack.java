@@ -124,6 +124,11 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Applies independent X,Y and Z-axis scaling to an input image.  Output dimensions can be specified explicitly, matched to another image in the workspace or calculated with a scaling factor.";
     }

@@ -52,6 +52,11 @@ public class MIA_GetObjectChildIDs extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a comma-delimited list of child object ID numbers for the specified input object.";
     }

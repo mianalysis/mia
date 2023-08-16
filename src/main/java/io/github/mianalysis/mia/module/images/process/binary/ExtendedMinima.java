@@ -199,6 +199,11 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Detects extended minima or maxima in a specified input image.<br><br>As described in the <a href=\"https://imagej.net/imagej-wiki-static/MorphoLibJ\">MorphoLibJ documentation</a>: \"Extended maxima are defined as a connected region containing elements such that the difference of the value of each element within the region with the maximal value within the region is lower than the tolerance, and such that the neighbors of the regions all have values smaller than the maximum within the region minus the tolerance. This definition allows the identification of larger extrema, that better takes into account the noise within the image. The extended minima are defined in a similar way, and are efficiently used as pre-processing step for watershed segmentation.\".<br><br>This module uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }

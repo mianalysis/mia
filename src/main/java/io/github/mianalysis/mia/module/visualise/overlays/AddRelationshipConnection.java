@@ -497,6 +497,11 @@ public class AddRelationshipConnection extends AbstractOverlay {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds a series of line overlays, representing various relationship scenarios.  Lines extend between centroids of two objects.  Depicted relationships can be between mutual child of the same parent object, between partner objects of between children and parents.";
     }

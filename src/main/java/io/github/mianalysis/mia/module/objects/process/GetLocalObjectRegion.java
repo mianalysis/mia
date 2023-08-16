@@ -332,6 +332,11 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Creates a local object region (sphere or circle) for each object in a specified object collection.  The radius of each local region can be based on a fixed value, or taken from an object measurement.  Similarly, the output sphere or circle can either be centred on the input object centroid or a location specified by XYZ measurements.  Local object regions are stored as children of their respective input object.";
     }

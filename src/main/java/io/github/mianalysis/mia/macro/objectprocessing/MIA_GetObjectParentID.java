@@ -43,6 +43,11 @@ public class MIA_GetObjectParentID extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns the object ID for the parent of the specified input object.";
     }

@@ -865,6 +865,11 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "DEPRECATED - Please use individual overlay modules (e.g. \"" + new AddLabels(null).getName() + "\", \""
                 + new AddObjectOutline(null).getName() + "\", etc.).<br><br>"

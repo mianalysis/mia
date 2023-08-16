@@ -144,6 +144,11 @@ public class AddAllObjectPoints extends AbstractOverlay {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds an overlay to the specified input image with all points in the specified input objects rendered as small circles.";
     }

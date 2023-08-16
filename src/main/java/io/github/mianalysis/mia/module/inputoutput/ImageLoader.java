@@ -1249,6 +1249,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Load image into MIA workspace.  This module can be configured to import images from a variety of locations (selected using the \"Import mode\" control).";
     }

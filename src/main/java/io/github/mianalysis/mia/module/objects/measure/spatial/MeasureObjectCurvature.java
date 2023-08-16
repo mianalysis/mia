@@ -519,6 +519,11 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Fits a 2D spline to the backbone of objects.  Each object in the input collection will be reduced to a single (longest skeleton path) backbone, which will be fit with the spline.  Local curvature of the spline can be calculated and any measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Curvature values can be calculated as \"absolute\" (always greater than 0, irrespective of the direction of curvature), or \"signed\" (sign dependent on direction of curvature, but requires the \"start\" end of the backbone to be specified)."
 

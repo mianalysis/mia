@@ -51,6 +51,11 @@ public class MIA_GetSliceAsROI extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds the specific object Z-slice as a ROI in the ImageJ ROI Manager.";
     }

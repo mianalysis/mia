@@ -45,6 +45,11 @@ public class MIA_GetObjectTimepoint extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns the timepoint this object is present in.  Note: Numbering starts at 0.";
     }

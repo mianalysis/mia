@@ -577,6 +577,11 @@ public class FilterImage extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Apply intensity filters to an image (or image stack) in the workspace.  Filters are applied to each Z-stack independently (i.e. channels and timepoints do not interact with each other).";
     }

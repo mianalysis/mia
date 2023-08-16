@@ -104,6 +104,11 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Any objects entirely enclosed by another object in the same collection are reassigned as being part of the enclosing object.  This operation removes the enclosed object as a separate entity.<br><br>Note: MIA objects do not permit duplication of the same coordinate within a single object, so any duplicate coordinates will be ignored (i.e. only one copy will be stored).";
     }

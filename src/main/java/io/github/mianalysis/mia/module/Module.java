@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.scijava.plugin.SciJavaPlugin;
+import org.scijava.util.VersionUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -32,9 +33,12 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import java_cup.version;
 
 /**
- * Abstract MIA module.  Each module extending this class should perform a defined action such as image filtering, object detection or adding a component to an overlay
+ * Abstract MIA module. Each module extending this class should perform a
+ * defined action such as image filtering, object detection or adding a
+ * component to an overlay
  */
 public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     protected Modules modules;
@@ -62,7 +66,8 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     /**
      * The module constructor requires us to provide the name of this module.
-     * @param name The name of this module as seen from within the MIA GUI.
+     * 
+     * @param name    The name of this module as seen from within the MIA GUI.
      * @param modules The module constructor, when called from within MIA, provides
      *                all the modules currently in the workflow as an argument.
      */
@@ -75,62 +80,119 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     // ABSTRACT METHODS
 
     /**
-     * The module category within MIA in which this module will be placed. We can choose any of the default categories available in io.github.mianalysis.mia.module.Categories or use one created along with this module.
+     * The module category within MIA in which this module will be placed. We can
+     * choose any of the default categories available in
+     * io.github.mianalysis.mia.module.Categories or use one created along with this
+     * module.
+     * 
      * @return The category for this module to be placed in
      */
     public abstract Category getCategory();
 
     /**
-     * The method which is run as part of a workflow.  This method contains all the code for loading items from the MIA workspace, performing the action of this module and exporting any new items to the workspace.
+     * The version number for this module specified using standard x.x.x semantic
+     * versioning format.
      * 
-     * @param workspace The current workspace containing all available images and objects (i.e. those previously output by earlier modules in the workflow).
+     * @return Version number
+     */
+    public abstract String getVersionNumber();
+
+    /**
+     * The method which is run as part of a workflow. This method contains all the
+     * code for loading items from the MIA workspace, performing the action of this
+     * module and exporting any new items to the workspace.
+     * 
+     * @param workspace The current workspace containing all available images and
+     *                  objects (i.e. those previously output by earlier modules in
+     *                  the workflow).
      * @return Exit status
      */
     protected abstract Status process(Workspace workspace);
 
     /**
-     * Creates an instance of each parameter, each of which is stored in the "parameters" variable of the module.  Each new instance of the module will have a new set of parameters.  This method runs once, when the module is first created.
+     * Creates an instance of each parameter, each of which is stored in the
+     * "parameters" variable of the module. Each new instance of the module will
+     * have a new set of parameters. This method runs once, when the module is first
+     * created.
      */
     protected abstract void initialiseParameters();
 
     /**
-     * Returns the currently-active parameters for this module.  The returned parameters will change depending on what other parameters are set to.  The output of this module determines the parameters that are displayed in the GUI.
+     * Returns the currently-active parameters for this module. The returned
+     * parameters will change depending on what other parameters are set to. The
+     * output of this module determines the parameters that are displayed in the
+     * GUI.
+     * 
      * @return Currently-active parameters for this module
      */
     public abstract Parameters updateAndGetParameters();
 
     /**
-     * Measurements added to any images by this module are reported by adding their reference to an ImageMeasurementRefs collection.  When no measurements are added by this module, this method can simply return "null".  These references tell downstream modules what measurements are available for each image.  Returned references should be the original copies stored in the local "imageMeasurementRefs" object.
+     * Measurements added to any images by this module are reported by adding their
+     * reference to an ImageMeasurementRefs collection. When no measurements are
+     * added by this module, this method can simply return "null". These references
+     * tell downstream modules what measurements are available for each image.
+     * Returned references should be the original copies stored in the local
+     * "imageMeasurementRefs" object.
+     * 
      * @return Image measurement references currently active for this module
      */
     public abstract ImageMeasurementRefs updateAndGetImageMeasurementRefs();
 
     /**
-     * Measurements added to any objects by this module are reported by adding their reference to an ObjMeasurementRefs collection.  When no measurements are added by this module, this method can simply return "null".  These references tell downstream modules what measurements are available for each object of a specific object collection.  Returned references should be the original copies stored in the local "objectMeasurementRefs" object.
+     * Measurements added to any objects by this module are reported by adding their
+     * reference to an ObjMeasurementRefs collection. When no measurements are added
+     * by this module, this method can simply return "null". These references tell
+     * downstream modules what measurements are available for each object of a
+     * specific object collection. Returned references should be the original copies
+     * stored in the local "objectMeasurementRefs" object.
+     * 
      * @return Object measurement references currently active for this module
      */
     public abstract ObjMeasurementRefs updateAndGetObjectMeasurementRefs();
 
     /**
-     * Values added to the workspace's metadata collection by this module are reported by adding their reference to a MetadataRefs collection.  When no metadata values are added by this module, this method can simply return "null".  Metadata values are single values within a workspace that specify information such as the root filename or series number.  These references tell downstream modules what metadata is available.  Returned references should be the original copies stored in the local "metadataRefs" object.
+     * Values added to the workspace's metadata collection by this module are
+     * reported by adding their reference to a MetadataRefs collection. When no
+     * metadata values are added by this module, this method can simply return
+     * "null". Metadata values are single values within a workspace that specify
+     * information such as the root filename or series number. These references tell
+     * downstream modules what metadata is available. Returned references should be
+     * the original copies stored in the local "metadataRefs" object.
+     * 
      * @return Metadata references currently active for this module
      */
     public abstract MetadataRefs updateAndGetMetadataReferences();
 
     /**
-     * Any parent-child relationships established between objects by this module are reported by adding their reference to a ParentChildRefs collection.  When no parent-child relationships are added by this module, this method can simply return "null".  These references tell downstream modules what parent-child relationships are available.  Returned references should be the original copies stored in the local "parentChildRefs" object.
+     * Any parent-child relationships established between objects by this module are
+     * reported by adding their reference to a ParentChildRefs collection. When no
+     * parent-child relationships are added by this module, this method can simply
+     * return "null". These references tell downstream modules what parent-child
+     * relationships are available. Returned references should be the original
+     * copies stored in the local "parentChildRefs" object.
+     * 
      * @return Parent-child relationship references currently active for this module
      */
     public abstract ParentChildRefs updateAndGetParentChildRefs();
 
     /**
-     * Any partner-partner relationships established between objects by this module are reported by adding their reference to a PartnerRefs collection.  When no partner-partner relationships are added by this module, this method can simply return "null".  These references tell downstream modules what partner-partner relationships are available.  Returned references should be the original copies stored in the local "partnerRefs" object.
+     * Any partner-partner relationships established between objects by this module
+     * are reported by adding their reference to a PartnerRefs collection. When no
+     * partner-partner relationships are added by this module, this method can
+     * simply return "null". These references tell downstream modules what
+     * partner-partner relationships are available. Returned references should be
+     * the original copies stored in the local "partnerRefs" object.
+     * 
      * @return Partner relationship references currently active for this module
-     */    
+     */
     public abstract PartnerRefs updateAndGetPartnerRefs();
 
     /**
-     * Can be used to perform checks on parameters or other conditions to ensure the module is configured correctly.  This runs whenever a workflow is updated (e.g. a parameter in any module is changed).
+     * Can be used to perform checks on parameters or other conditions to ensure the
+     * module is configured correctly. This runs whenever a workflow is updated
+     * (e.g. a parameter in any module is changed).
+     * 
      * @return returns true if module checks pass
      */
     public abstract boolean verify();
@@ -255,10 +317,10 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         for (Parameter currParameter : currParameters.values()) {
             if (type.isInstance(currParameter))
                 parameters.add((T) currParameter);
-            
+
             if (currParameter instanceof ParameterGroup)
                 addParameterGroupParameters((ParameterGroup) currParameter, type, parameters);
-            
+
         }
 
         return parameters;
@@ -512,6 +574,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         element.setAttribute("SHOW_BASIC_TITLE", String.valueOf(showProcessingViewTitle));
         element.setAttribute("SHOW_OUTPUT", String.valueOf(showOutput));
         element.setAttribute("NOTES", notes);
+        element.setAttribute("VERSION", getVersionNumber());
 
     }
 
@@ -537,6 +600,76 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         }
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
         this.notes = map.getNamedItem("NOTES").getNodeValue();
+
+        if (map.getNamedItem("VERSION") != null) {
+            String workflowVersion = map.getNamedItem("VERSION").getNodeValue();
+            int comparison = compareVersions(getVersionNumber(), workflowVersion);
+
+            if (comparison != 0) {
+                String resultsWarning = "";
+                if (Math.abs(comparison) == 1)
+                    resultsWarning = "Differences in results possible, but unlikely";
+                if (Math.abs(comparison) == 2)
+                    resultsWarning = "Differences in results possible";
+                if (Math.abs(comparison) == 3)
+                    resultsWarning = "Differences in results likely";
+
+                MIA.log.writeWarning(
+                        "Module version mismatch.  Name: \""+name+"\",  workflow: "+workflowVersion+", this plugin: "+getVersionNumber()+".  "+resultsWarning+".");
+
+            }
+
+        }
+    }
+
+    /**
+     * Compares two version strings and returns a number indicating the location of
+     * the most significant version difference
+     * 
+     * @param v1 Version string 1
+     * @param v2 Version string 2
+     * @return Comparison number for version strings. A difference in major version
+     *         will return a value of 3, difference in minor version will return a
+     *         value of 2, difference in patch version will return 1 and matching
+     *         versions will return 0. Returned values are positive if the second
+     *         version is greater than the first and a negative value if the second
+     *         version is smaller.
+     */
+    public static int compareVersions(String v1, String v2) {
+        String[] elementStrings1 = v1.split("\\.");
+        String[] elementStrings2 = v2.split("\\.");
+
+        int[] elements1 = new int[] { Integer.parseInt(elementStrings1[0]), Integer.parseInt(elementStrings1[1]),
+                Integer.parseInt(elementStrings1[2]) };
+        int[] elements2 = new int[] { Integer.parseInt(elementStrings2[0]), Integer.parseInt(elementStrings2[1]),
+                Integer.parseInt(elementStrings2[2]) };
+
+        if (elements1[0] < elements2[0])
+            // Second version newer in major version
+            return 3;
+
+        else if (elements1[0] > elements2[0])
+            // Second version older in major version
+            return -3;
+
+        else if (elements1[1] < elements2[1])
+            // Second version newer in minor version
+            return 2;
+
+        else if (elements1[1] > elements2[1])
+            // Second version older in minor version
+            return -2;
+
+        else if (elements1[2] < elements2[2])
+            // Second version newer in patch version
+            return 1;
+
+        else if (elements1[2] > elements2[2])
+            // Second version older in patch version
+            return -1;
+
+        else
+            return 0;
 
     }
 

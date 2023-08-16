@@ -240,6 +240,11 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Sets the intensity to maximise the dynamic range of the image.\n"
                 + "\"Clipping fraction\" is the fraction of pixels at either end of the range that gets clipped."

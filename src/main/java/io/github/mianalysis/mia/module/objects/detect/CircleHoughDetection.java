@@ -69,6 +69,11 @@ public class CircleHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Detects circles within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the circle features must be brighter than their surrounding background and have dark centres (i.e. be rings).  For solid circles, a gradient filter or equivalent should be applied to the image first.  Detected circles are output to the workspace as solid objects.  Circles are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the circle feartures in the input image and the feature circularity).";
 

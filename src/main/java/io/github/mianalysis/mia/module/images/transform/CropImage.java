@@ -176,6 +176,11 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).";
     }

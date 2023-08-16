@@ -31,6 +31,11 @@ public class MIA_GetActiveWorkspaceID extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns ID of active Workspace.";
     }

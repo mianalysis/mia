@@ -188,6 +188,11 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "DEPRECATED: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will "
                 + "be removed in a future release.<br><br>"

@@ -372,6 +372,11 @@ public class BinaryOperations extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "DEPRECATED: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
                 "be removed in a future release.<br><br>"

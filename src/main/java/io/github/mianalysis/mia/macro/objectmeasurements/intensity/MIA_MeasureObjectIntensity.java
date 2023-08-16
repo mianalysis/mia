@@ -41,6 +41,11 @@ public class MIA_MeasureObjectIntensity extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure intensity for specified objects.";
     }

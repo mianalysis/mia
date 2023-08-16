@@ -243,6 +243,11 @@ public class AddObjectCentroid extends AbstractOverlay {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds an overlay to the specified input image representing each object by a single marker placed at the centroid of that object.";
     }

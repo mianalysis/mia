@@ -73,6 +73,11 @@ public class SphereHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Detects spheres within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the sphere features must be brighter than their surrounding background and have dark centres (i.e. be shells).  For solid spheres, a gradient filter or equivalent should be applied to the image first.  Detected spheres are output to the workspace as solid objects.  Spheres are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the spherical feartures in the input image and the feature sphericity.";
 

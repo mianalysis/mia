@@ -358,6 +358,11 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Metadata values can be extracted from a variety of sources and assigned to the current workspace.  These metadata values can subsequently be accessed in the form M{[NAME]}, where [NAME] is the metadata name.  Some common file and foldername formats are included as pre-defined metadata extraction methods, while other forms can be constructed using regular expressions.";
     }

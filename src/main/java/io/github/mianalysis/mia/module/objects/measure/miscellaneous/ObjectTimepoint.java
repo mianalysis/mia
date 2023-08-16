@@ -53,6 +53,11 @@ public class ObjectTimepoint extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Store object timepoint as a measurement.  Timepoint counting starts at 0 (e.g. the third frame will have a timepoint of 2).";
     }

@@ -305,6 +305,11 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>"
 

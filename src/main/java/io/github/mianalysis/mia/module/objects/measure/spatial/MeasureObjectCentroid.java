@@ -66,6 +66,11 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure mean XYZ centroid for all objects in an object colleciton.  <br>br>Note: Z-coordinates are specified in terms of slices (not pixels).";
     }

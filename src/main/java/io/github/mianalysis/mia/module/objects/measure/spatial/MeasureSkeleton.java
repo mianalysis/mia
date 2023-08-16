@@ -730,6 +730,11 @@ Workspace workspace = null;
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Creates and measures the skeletonised form of specified input objects.  This module uses the <a href=\"https://imagej.net/AnalyzeSkeleton\">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras."
                 + "<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.";

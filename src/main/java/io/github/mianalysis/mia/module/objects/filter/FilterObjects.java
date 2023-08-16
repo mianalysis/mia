@@ -506,6 +506,11 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "DEPRECATED:  Please use individual filter modules instead (e.g. \""+new FilterByMeasurement(null).getName()+"\").<br><br>"
         

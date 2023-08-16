@@ -56,6 +56,11 @@ public class MIA_SetObjectMeasurement extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Sets the value of the specified measurement for the specified object.";
     }

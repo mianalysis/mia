@@ -185,6 +185,11 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>"
 

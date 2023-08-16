@@ -41,6 +41,11 @@ public class MIA_SetActiveWorkspace extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Sets the active Workspace to that with the specified ID.  If there is no Workspace matching this ID, the active Workspace remains unchanged.  The active Workspace ID is returned.";
     }

@@ -58,6 +58,11 @@ public class MIA_GetLongestPathCoordinates extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Extracts the longest path of the specified skeleton object and returns its xyz object coordinates as a string in the format \"x1,y1,z1;x2,y2,z2;...;xN,yN,zN\" where N is the number of coordinates.  Coordinates are returned in order along the longest path.  X and Y values are specified in pixel units and Z in slice units.";
     }

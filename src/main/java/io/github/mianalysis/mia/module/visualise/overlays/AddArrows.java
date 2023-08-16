@@ -215,6 +215,11 @@ public class AddArrows extends AbstractOverlay {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds an overlay to the specified input image with each object represented by an arrow.  The size, colour and orientation of each arrow can be fixed or based on a measurement value.";
 

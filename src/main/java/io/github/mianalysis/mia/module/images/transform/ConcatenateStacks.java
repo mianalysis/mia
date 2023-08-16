@@ -351,6 +351,11 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br>"
                 +

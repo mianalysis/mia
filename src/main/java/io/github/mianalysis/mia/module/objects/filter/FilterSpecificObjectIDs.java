@@ -172,6 +172,11 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Filter an object collection based on user-defined list of object ID numbers.  When the module executes, the user is presented with a dialog box where they can enter a comma-separated list of object IDs to remove.  Once the list is complete, the user presses \"OK\" to proceed.  All objects with ID numbers matching those in the list can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  To assist with selection of ID numbers, an optional image can be displayed - this could be pre-prepared to display object ID numbers using the \""
                 + new AddLabels(null).getName()

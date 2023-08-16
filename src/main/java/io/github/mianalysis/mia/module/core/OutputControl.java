@@ -402,6 +402,11 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Controls data export for each analysis run (job) as well as providing the option to run a final macro on all data.  If running a single file analysis, by default, the spreadsheet will be saved with the same name as the input file and stored at the same location.  Whereas, in batch mode (running multiple files from a folder) the spreadsheet will be saved in that folder with the same name as the input folder.  Using the \""
                 + GROUP_SAVE_LOCATION

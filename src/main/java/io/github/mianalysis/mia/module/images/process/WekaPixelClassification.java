@@ -277,6 +277,11 @@ public class WekaPixelClassification extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Performs pixel classification using the WEKA Trainable Segmentation plugin."
                 + "<br><br>This module loads a previously-saved WEKA classifier model and applies it to the input image.  It then returns the multi-channel probability map."

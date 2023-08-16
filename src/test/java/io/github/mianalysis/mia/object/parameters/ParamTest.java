@@ -73,6 +73,11 @@ Workspace workspace = null;
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Just used as a blank module for testing Parameters.";
     }

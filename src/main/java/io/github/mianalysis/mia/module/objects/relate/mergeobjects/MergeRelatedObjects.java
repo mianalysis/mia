@@ -187,6 +187,11 @@ public class MergeRelatedObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Combine coordinates from related objects into a single object.  This module can either add coordinates from all child objects into the associated parent or create entirely new merged objects.  New merged objects can either contain just coordinates from child objects, or from the parent and its children.  Any duplicate coordinates arising from overlapping child objects will only be stored once.<br><br>Note: If updating the parent objects, any previously-measured object properties may be invalid (i.e. they are not updated).  To update such measurements it's necessary to re-run the relevant measurement modules.";
 

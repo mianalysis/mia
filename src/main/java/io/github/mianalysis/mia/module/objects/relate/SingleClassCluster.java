@@ -248,6 +248,11 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.  In K-Means++ [1], an optimisation of the standard K-Means algorithm, the points are assigned to a pre-determined number of clusters such that each point is assigned to its closest cluster mean position (this process is repeated until the cluster assignments stabilise or a maximum number of iterations is reached).  For DBSCAN [2], points are clustered based on a minimum number of neighbours within a specified spatial range.  As such, this algorithm doesn't require prior knowledge of the number of clusters.  Both algorithms use their respective <a href=\"https://commons.apache.org/proper/commons-math/\">Apache Commons Math implementations.</a><br><br>"
 

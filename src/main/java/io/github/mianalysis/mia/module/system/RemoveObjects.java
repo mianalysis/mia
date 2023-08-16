@@ -57,6 +57,11 @@ public class RemoveObjects extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Removes the specified object set(s) from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an object set can be retained for further use.";
     }

@@ -321,6 +321,11 @@ public class SpotDetection extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Detects spot-like features in 2D and 3D using TrackMate's LogDetector.  By default, detected spots are stored as individual, single pixel, objects centred on the detected feature.  Optionally, spots can be given area or volume based on the estimated size of the spot.  Adds measurements to each output spot for estimated radius and quality.  If sub-pixel localisation is specified, the sub-pixel centroid location in X,Y and Z is also stored as a measurement."
 

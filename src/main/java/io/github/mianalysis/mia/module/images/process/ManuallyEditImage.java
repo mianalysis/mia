@@ -79,6 +79,11 @@ public class ManuallyEditImage extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Displays an image from the workspace, allowing the user to make manual edits, before saving it back into the workspace.  Edited images can either be stored as a new image in the workspace or overwrite the input image.  Once the image has been displayed, the user makes edits until clicking \"OK\" in the dialog box that appears.  As such, this module is only suitable for running in GUI mode.";
     }

@@ -51,6 +51,11 @@ public class MIA_ListMetadataInWorkspace extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a list of metadata values currently in the workspace.";
     }

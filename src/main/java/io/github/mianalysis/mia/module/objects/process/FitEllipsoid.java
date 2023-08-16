@@ -285,6 +285,11 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Fit ellipsoids to all objects in a collection using \"<a href=\"https://imagej.net/BoneJ\">BoneJ</a>\".  Fit ellipsoids can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipsoid coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.";
     }

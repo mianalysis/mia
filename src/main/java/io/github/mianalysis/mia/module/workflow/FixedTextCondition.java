@@ -65,6 +65,11 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Implement variable workflow handling outcomes based on comparison of a fixed text value against a series of fixed conditions.  If the text test value matches any of the conditions the workflow handling outcome associated with that condition will be implemented.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to be looped, or sections of the workflow to be skipped.<br><br>"
 

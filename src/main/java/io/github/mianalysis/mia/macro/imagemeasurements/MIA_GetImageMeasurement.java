@@ -46,6 +46,11 @@ public class MIA_GetImageMeasurement extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns the specified measurement value for the specified image.";
     }

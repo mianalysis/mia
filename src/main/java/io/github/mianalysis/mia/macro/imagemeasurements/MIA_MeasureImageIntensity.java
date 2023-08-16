@@ -39,6 +39,11 @@ public class MIA_MeasureImageIntensity extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measure the intensity of the specified image.";
     }

@@ -268,6 +268,11 @@ return null;
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Fixes breaks (gaps) in binary skeleton images.  This considers each end point of the skeleton and tests it against multiple distance and orientation criteria to see if it can be linked to any other ends (or even midpoints) of the skeleton.  The path between linked ends is added to the binary image as a straight line.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.";
     }

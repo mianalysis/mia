@@ -445,6 +445,11 @@ public class CalculateNearestNeighbour extends AbstractSaver {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Measures the shortest distance between all objects in the specified input collection and all other objects in the same, or a different collection.  The shortest distance (nearest neighbour distance) is recorded as a measurement associated with the input object.  Optionally, the distances between all objects can be calculated and exported as a standalone spreadsheet.";
     }

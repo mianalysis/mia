@@ -440,6 +440,11 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can be linked to an unlimited number of other objects (see \""
                 + new RelateManyToOne(null).getName() + "\" and \"" + new RelateOneToOne(null).getName()

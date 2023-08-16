@@ -454,6 +454,11 @@ public class RidgeDetection extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the \"<a href=\"https://imagej.net/Ridge_Detection\">Ridge Detection</a>\" plugin, which itself is based on the paper \"An Unbiased Detector of Curvilinear Structures\" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125)."
 

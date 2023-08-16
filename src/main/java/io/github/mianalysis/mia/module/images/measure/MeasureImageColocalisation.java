@@ -493,6 +493,11 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Calculates colocalisation of two input images.  All measurements are associated with the first input image.  Measurements can be restricted to specific region using image or object-based masking.  To measure colocalisation on an object-by-object basis please use the \""
                 + new MeasureObjectColocalisation<>(null).getName() + "\" module.<br><br>"

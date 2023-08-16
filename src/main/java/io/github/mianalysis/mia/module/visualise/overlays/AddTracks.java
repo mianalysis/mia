@@ -195,6 +195,11 @@ public class AddTracks extends AbstractOverlay {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Adds an overlay to the specified input image showing the path of each track object.  The line is drawn between object centroids.";
     }

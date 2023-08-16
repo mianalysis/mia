@@ -165,6 +165,11 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Applies the mask image to the specified object collection.  Any object coordinates coincident with black "
                 + "pixels (intensity 0) will be removed.";

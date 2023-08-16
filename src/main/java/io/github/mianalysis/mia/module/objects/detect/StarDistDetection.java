@@ -209,6 +209,11 @@ public class StarDistDetection extends Module {
         return Categories.OBJECTS_DETECT;
     }
 
+    @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+    
     public String getDescription() {
         return "Implements the StarDist plugin to detect objects.  For more information on StarDist please see <a href=\"https://imagej.net/plugins/stardist\">https://imagej.net/plugins/stardist</a>.";
     }

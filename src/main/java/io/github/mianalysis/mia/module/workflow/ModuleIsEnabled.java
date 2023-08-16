@@ -89,6 +89,11 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>"
 

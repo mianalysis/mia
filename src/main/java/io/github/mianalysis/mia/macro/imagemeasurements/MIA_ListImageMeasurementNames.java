@@ -55,6 +55,11 @@ public class MIA_ListImageMeasurementNames extends MacroOperation {
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Returns a list of available measurements for the specified image.  Use the macro Ext.MIA_ShowAllImageMeasurements(imageName) to get a table containing all measurement values for the image.  Use the macro Ext.MIA_GetImageMeasurement(imageName, measurementID) to get a specific measurement value for a specific image.";
     }

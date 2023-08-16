@@ -489,6 +489,11 @@ return null;
     }
 
     @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
     public String getDescription() {
         return "Draws an overlay line between two specified points.<br><br>" + "Note: This currently only works in 2D.";
     }
