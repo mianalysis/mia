@@ -515,9 +515,9 @@
 
             <!-- To be uncommented when uploading to Maven Central -->
             <!-- Use the following to deploy (will throw a "Missing staging repository" error, but should still work) -->
-            <!-- mvn clean deploy -Dscp=provided -P release -->
+            <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -P release -->
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.13</version>
@@ -570,7 +570,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 
