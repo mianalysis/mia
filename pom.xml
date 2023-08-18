@@ -237,12 +237,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>ome</groupId>
             <artifactId>formats-bsd</artifactId>
             <scope>${scp}</scope>
