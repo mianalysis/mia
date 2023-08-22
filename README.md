@@ -46,6 +46,11 @@ Using MIA
 ------------
 Guides for using MIA can be found [here](https://mianalysis.github.io/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).
 
+Questions and feedback
+------------
+If you'd like to ask any questions about MIA, please do so via the [image.sc](https://forum.image.sc) forum using the tag [modular-image-analysis](https://forum.image.sc/tag/modular-image-analysis).
+
+For reporting bugs, please use our [GitHub Issues](https://github.com/mianalysis/mia/issues) page.
 
 Contributing
 ------------
