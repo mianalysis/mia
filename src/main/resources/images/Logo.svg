@@ -4,7 +4,7 @@
    inkscape:export-xdpi="9.4073963"
    inkscape:export-filename="Logo_text_UoB_64_DM.png"
    sodipodi:docname="Logo.svg"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:version="1.2.2 (b0a84865, 2022-12-01)"
    id="svg8"
    version="1.1"
    viewBox="0 0 210 297"
@@ -117,10 +117,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.0868212"
-       y="-0.54341062"
-       width="1.1315304"
-       x="-0.065765206"
+       height="1.9644241"
+       y="-0.48221204"
+       width="1.1054209"
+       x="-0.052710469"
        id="filter1126"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -130,10 +130,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.1281794"
-       y="-0.56408969"
-       width="1.12909"
-       x="-0.064545021"
+       height="2.0021927"
+       y="-0.50109635"
+       width="1.1048"
+       x="-0.052399983"
        id="filter1170"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -143,10 +143,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.1490121"
-       y="-0.57450607"
-       width="1.1278377"
-       x="-0.063918844"
+       height="2.020699"
+       y="-0.51034951"
+       width="1.1020235"
+       x="-0.051011752"
        id="filter1049"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -191,10 +191,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.1281794"
-       y="-0.56408969"
-       width="1.12909"
-       x="-0.064545021"
+       height="2.0021927"
+       y="-0.50109635"
+       width="1.1048"
+       x="-0.052399983"
        id="filter1170-5"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -204,10 +204,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.0868212"
-       y="-0.54341062"
-       width="1.1315304"
-       x="-0.065765206"
+       height="1.9644241"
+       y="-0.48221204"
+       width="1.1054209"
+       x="-0.052710469"
        id="filter1126-0"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -217,10 +217,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.1490121"
-       y="-0.57450607"
-       width="1.1278377"
-       x="-0.063918844"
+       height="2.020699"
+       y="-0.51034951"
+       width="1.1020235"
+       x="-0.051011752"
        id="filter1049-4"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -278,10 +278,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.0868212"
-       y="-0.54341062"
-       width="1.1315304"
-       x="-0.065765206"
+       height="1.9644241"
+       y="-0.48221204"
+       width="1.1054209"
+       x="-0.052710469"
        id="filter1126-7"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -291,10 +291,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.1281794"
-       y="-0.56408969"
-       width="1.12909"
-       x="-0.064545021"
+       height="2.0021927"
+       y="-0.50109635"
+       width="1.1048"
+       x="-0.052399983"
        id="filter1170-2"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -304,10 +304,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="2.1490121"
-       y="-0.57450607"
-       width="1.1278377"
-       x="-0.063918844"
+       height="2.020699"
+       y="-0.51034951"
+       width="1.1020235"
+       x="-0.051011752"
        id="filter1049-8"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -542,6 +542,28 @@
          result="color2"
          id="feColorMatrix935" />
     </filter>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1236-2-73-6-3">
+      <rect
+         y="785.69849"
+         x="-339.85941"
+         height="81"
+         width="119.95027"
+         id="rect1238-9-7-2-7"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.51215;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2390">
+      <rect
+         style="fill:#ffffff;stroke-width:0.893;stroke-linejoin:round;stop-color:#000000"
+         id="rect2392"
+         width="81"
+         height="81"
+         x="-320.3299"
+         y="785.69861" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      inkscape:document-rotation="0"
@@ -552,19 +574,19 @@
      inkscape:snap-smooth-nodes="true"
      inkscape:snap-intersection-paths="true"
      inkscape:guide-bbox="true"
-     showguides="false"
-     inkscape:window-maximized="1"
-     inkscape:window-y="-8"
-     inkscape:window-x="-8"
-     inkscape:window-height="1009"
-     inkscape:window-width="1920"
+     showguides="true"
+     inkscape:window-maximized="0"
+     inkscape:window-y="25"
+     inkscape:window-x="0"
+     inkscape:window-height="1027"
+     inkscape:window-width="1390"
      inkscape:snap-global="false"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="5447.5505"
-     inkscape:cx="4299.2091"
-     inkscape:zoom="0.1767767"
+     inkscape:cy="6584.7743"
+     inkscape:cx="1439.7002"
+     inkscape:zoom="0.58658047"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -2432,5 +2454,41 @@
            style="fill:#fefefe;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara912-6-7-9-6"
          style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:45.3333px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue Light';fill:#fefefe;fill-opacity:1">ModularImageAnalysis</flowPara></flowRoot>
+    <g
+       id="g1186-2-5-29-9"
+       clip-path="url(#clipPath2390)"
+       inkscape:export-filename="../../../../../../../../Desktop/MIA_logo.png"
+       inkscape:export-xdpi="160.55309"
+       inkscape:export-ydpi="160.55309"
+       transform="translate(756.20426,849.94262)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path981-3-5-7-0"
+         d="m -350.01457,884.28751 56.97662,-98.6847 12.32617,23.58006 13.86717,-23.78321 57.11734,98.93516 c -0.01,0.008 -20.28228,0.066 -20.28228,0.066 l -36.8917,-63.89958 -13.78905,23.8828 -12.86327,-22.68945 -36.16895,62.64844 z"
+         style="fill:#42b7d9;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path983-6-3-6-2"
+         d="m -323.95095,884.34303 30.35639,-52.58009 10.0039,17.64453 -20.14968,34.90215 c 0,0 -20.21061,0.0334 -20.21061,0.0334 z"
+         style="fill:#e98e32;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path985-1-2-7-3"
+         d="m -298.00761,884.37706 31.1064,-53.87584 31.14613,53.84181 c 0,0 -21.66858,-2e-5 -21.63613,0.0562 l -10.21898,-17.70073 -10.21865,17.70014 z"
+         style="fill:#59d844;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccccc" />
+      <rect
+         inkscape:export-ydpi="12.090315"
+         inkscape:export-xdpi="12.090315"
+         inkscape:export-filename="C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_left_47.png"
+         y="785.53015"
+         x="-350.00467"
+         height="98.740211"
+         width="119.50387"
+         id="rect1171-2-1-0-9"
+         style="opacity:1;fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:8.31368;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" />
+    </g>
   </g>
 </svg>
