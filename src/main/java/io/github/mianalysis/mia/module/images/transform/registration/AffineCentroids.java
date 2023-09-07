@@ -59,7 +59,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override

@@ -17,6 +17,7 @@ import ij.plugin.CanvasResizer;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -35,6 +36,8 @@ import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -425,18 +428,10 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     public static void replaceStack(Image targetImage, Image sourceImage, int channel, int timepoint) {
         ImagePlus targetIpl = targetImage.getImagePlus();
-        ImagePlus sourceIpl = sourceImage.getImagePlus();
-        ImageStack targetIst = targetIpl.getStack();
-        ImageStack sourceIst = sourceIpl.getStack();
+        ImageStack sourceIst = sourceImage.getImagePlus().getStack();
 
-        for (int z = 0; z < sourceIpl.getNSlices(); z++) {
-            int sourceIdx = sourceIpl.getStackIndex(1, z + 1, 1);
-            int targetIdx = targetIpl.getStackIndex(channel + 1, z + 1, timepoint + 1);
+        ImagePlusImage.getSetStack(targetIpl, timepoint, channel, sourceIst);
 
-            targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
-
-        }
-        targetImage.getImagePlus().updateAndDraw();
     }
 
     public static void replaceSlice(Image targetImage, Image sourceSlice, int slice) {
@@ -579,6 +574,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 inputImage.show();
             }
         }
+
+        inputImage.show(LUTs.BlackSpectrum());
 
         // Dealing with module outputs
         if (!applyToInput)
