@@ -575,8 +575,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             }
         }
 
-        inputImage.show(LUTs.BlackSpectrum());
-
         // Dealing with module outputs
         if (!applyToInput)
             workspace.addImage(inputImage);
