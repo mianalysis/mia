@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
+import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -36,7 +36,7 @@ public class MIA_GetLongestPathCoordinates extends MacroOperation {
             return "";
         
         Obj inputObject = inputObjects.get(inputObjectsID);
-        ArrayList<Point<Integer>> longestPath = MeasureSkeleton.getLargestShortestPath(inputObject);
+        ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
 
         StringBuilder sb = new StringBuilder();        
         for (Point<Integer> point : longestPath) {

@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.objects.measure.spatial;
+package io.github.mianalysis.mia.module.objects.process;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,9 +30,12 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.BinaryLogicInterface;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputSkeletonObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -50,95 +53,178 @@ import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
 
-
 /**
-* Creates and measures the skeletonised form of specified input objects.  This module uses the <a href="https://imagej.net/AnalyzeSkeleton">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras.<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.
-*/
+ * Creates and measures the skeletonised form of specified input objects. This
+ * module uses the
+ * <a href="https://imagej.net/AnalyzeSkeleton">AnalyzeSkeleton</a> plugin by
+ * Ignacio Arganda-Carreras.<br>
+ * <br>
+ * The optional, output skeleton object acts solely as a linking object for the
+ * edge, junction and loop objects. It doesn't itself hold any coordinate data.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class MeasureSkeleton extends Module {
+public class CreateSkeleton extends Module {
 
-	/**
-	* 
-	*/
-    public static final String INPUT_SEPARATOR = "Object input";
+    /**
+    * 
+    */
+    public static final String INPUT_SEPARATOR = "Image/object input";
 
-	/**
-	* Input objects from the workspace to be skeletonised.  These can be either 2D or 3D objects.  Skeleton measurements will be added to this object.
-	*/
+    /**
+     * Input image from the workspace to be skeletonised.
+     */
+    public static final String INPUT_MODE = "Input mode";
+
+    /**
+     * Input image from the workspace to be skeletonised.
+     */
+    public static final String INPUT_IMAGE = "Input image";
+
+    /**
+     * Controls whether objects are considered to be white (255 intensity) on a
+     * black (0 intensity) background, or black on a white background.
+     */
+    public static final String BINARY_LOGIC = "Binary logic";
+
+    /**
+     * Input objects from the workspace to be skeletonised. These can be either 2D
+     * or 3D objects. Skeleton measurements will be added to this object.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Object output";
 
-	/**
-	* When selected, the coordinates for the various skeleton components (edges, junctions and loops) will be stored as new objects.  These objects will all be children of a parent "Skeleton" object, which itself will be a child of the corresponding input object.
-	*/
+    /**
+     * When selected, the coordinates for the various skeleton components (edges,
+     * junctions and loops) will be stored as new objects. These objects will all be
+     * children of a parent "Skeleton" object, which itself will be a child of the
+     * corresponding input object.
+     */
     public static final String ADD_SKELETONS_TO_WORKSPACE = "Add skeletons to workspace";
 
-	/**
-	* If "Add skeletons to workspace" is selected, a single "Skeleton" object will be created per input object.  This skeleton object will act as a linking object (parent) for the edges, junctions and loops that comprise that skeleton.  As such, the skeleton object itself doesn't store any coordinate information.
-	*/
+    /**
+     * If "Add skeletons to workspace" is selected, a single "Skeleton" object will
+     * be created per input object. This skeleton object will act as a linking
+     * object (parent) for the edges, junctions and loops that comprise that
+     * skeleton. As such, the skeleton object itself doesn't store any coordinate
+     * information.
+     */
     public static final String OUTPUT_SKELETON_OBJECTS = "Output skeleton objects";
 
-	/**
-	* If "Add skeletons to workspace" is selected, the edges of each skeleton will be stored in these objects.  An "Edge" is comprised of a continuous run of points each with one (end points) or two neighbours.  These edge objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each edge object has a partner relationship with its adjacent "Junction" and (optionally) "Loop" objects (specified by the "Output junction objects" and "Output loop objects" parameters, respectively).
-	*/
+    /**
+     * If "Add skeletons to workspace" is selected, the edges of each skeleton will
+     * be stored in these objects. An "Edge" is comprised of a continuous run of
+     * points each with one (end points) or two neighbours. These edge objects are
+     * children of a "Skeleton" object (specified by the "Output skeleton objects"
+     * parameter), which itself is the child of the corresponding input object. Each
+     * edge object has a partner relationship with its adjacent "Junction" and
+     * (optionally) "Loop" objects (specified by the "Output junction objects" and
+     * "Output loop objects" parameters, respectively).
+     */
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
 
-	/**
-	* If "Add skeletons to workspace" is selected, the junctions of each skeleton will be stored in these objects.  A "Junction" is comprised of a contiguous regions of points each with three or neighbours.  These junction objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each junction object has a partner relationship with its adjacent "Edge" and (optionally) "Loop" objects (specified by the "Output edge objects" and "Output loop objects" parameters, respectively).
-	*/
+    /**
+     * If "Add skeletons to workspace" is selected, the junctions of each skeleton
+     * will be stored in these objects. A "Junction" is comprised of a contiguous
+     * regions of points each with three or neighbours. These junction objects are
+     * children of a "Skeleton" object (specified by the "Output skeleton objects"
+     * parameter), which itself is the child of the corresponding input object. Each
+     * junction object has a partner relationship with its adjacent "Edge" and
+     * (optionally) "Loop" objects (specified by the "Output edge objects" and
+     * "Output loop objects" parameters, respectively).
+     */
     public static final String OUTPUT_JUNCTION_OBJECTS = "Output junction objects";
 
-	/**
-	* When selected (and if "Add skeletons to workspace" is also selected), the loops of each skeleton will be stored in the workspace as new objects.  The name for the output loop objects is determined by the "Output loop objects" parameter.
-	*/
+    /**
+     * When selected (and if "Add skeletons to workspace" is also selected), the
+     * loops of each skeleton will be stored in the workspace as new objects. The
+     * name for the output loop objects is determined by the "Output loop objects"
+     * parameter.
+     */
     public static final String EXPORT_LOOP_OBJECTS = "Export loop objects";
 
-	/**
-	* If both "Add skeletons to workspace" and "Export loop objects" are selected, the loops of each skeleton will be stored in these objects.  A "Loop" is comprised of a continuous region of points bounded on all sides by either "Edge" or "Junction" points.  These loop objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each loop object has a partner relationship with its adjacent "Edge" and "Junction" objects (specified by the "Output edge objects" and "Output junction objects" parameters, respectively).
-	*/
+    /**
+     * If both "Add skeletons to workspace" and "Export loop objects" are selected,
+     * the loops of each skeleton will be stored in these objects. A "Loop" is
+     * comprised of a continuous region of points bounded on all sides by either
+     * "Edge" or "Junction" points. These loop objects are children of a "Skeleton"
+     * object (specified by the "Output skeleton objects" parameter), which itself
+     * is the child of the corresponding input object. Each loop object has a
+     * partner relationship with its adjacent "Edge" and "Junction" objects
+     * (specified by the "Output edge objects" and "Output junction objects"
+     * parameters, respectively).
+     */
     public static final String OUTPUT_LOOP_OBJECTS = "Output loop objects";
 
-	/**
-	* When selected, the largest shortest path between any two points in the skeleton will be stored in the workspace as a new object.  For each input object, the shortest path between all point pairs within the skeleton is calculated and the largest of all these paths stored as a new object.  The name for the output largest shortest path object associated with each input object is determined by the "Output largest shortest path" parameter.  <a href="https://imagej.net/plugins/analyze-skeleton/">Analyse Skeleton</a> calculates the largest shortest path using <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm">Floyd-Warshall algorithm</a>.  Note: These objects are not the same as the <a href="https://en.wikipedia.org/wiki/Longest_path_problem">longest possible path</a>.
-	*/
+    /**
+     * When selected, the largest shortest path between any two points in the
+     * skeleton will be stored in the workspace as a new object. For each input
+     * object, the shortest path between all point pairs within the skeleton is
+     * calculated and the largest of all these paths stored as a new object. The
+     * name for the output largest shortest path object associated with each input
+     * object is determined by the "Output largest shortest path" parameter.
+     * <a href="https://imagej.net/plugins/analyze-skeleton/">Analyse Skeleton</a>
+     * calculates the largest shortest path using <a href=
+     * "https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm">Floyd-Warshall
+     * algorithm</a>. Note: These objects are not the same as the
+     * <a href="https://en.wikipedia.org/wiki/Longest_path_problem">longest possible
+     * path</a>.
+     */
     public static final String EXPORT_LARGEST_SHORTEST_PATH = "Export largest shortest path";
 
-	/**
-	* If "Export largest shortest path"is selected, the largest shortest path for each skeleton will be stored in the workspace.  For each skeleton, the shortest path between all point pairs is calculated; the largest shortest path is the longest of all these paths.  The largest shortest path objects are children of the corresponding input object.
-	*/
+    /**
+     * If "Export largest shortest path"is selected, the largest shortest path for
+     * each skeleton will be stored in the workspace. For each skeleton, the
+     * shortest path between all point pairs is calculated; the largest shortest
+     * path is the longest of all these paths. The largest shortest path objects are
+     * children of the corresponding input object.
+     */
     public static final String OUTPUT_LARGEST_SHORTEST_PATH = "Output largest shortest path";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SKELETONISATION_SEPARATOR = "Skeletonisation settings";
 
-	/**
-	* The minimum length of a branch (edge terminating in point with just one neighbour) for it to be included in skeleton measurements and (optionally) exported as an object.
-	*/
+    /**
+     * The minimum length of a branch (edge terminating in point with just one
+     * neighbour) for it to be included in skeleton measurements and (optionally)
+     * exported as an object.
+     */
     public static final String MINIMUM_BRANCH_LENGTH = "Minimum branch length";
 
-	/**
-	* When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
-	*/
+    /**
+     * When selected, spatial values are assumed to be specified in calibrated units
+     * (as defined by the "Input control" parameter "Spatial unit"). Otherwise,
+     * pixel units are assumed.
+     */
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.
-	*/
+    /**
+     * Break the image down into strips, each one processed on a separate CPU
+     * thread. The overhead required to do this means it's best for large multi-core
+     * CPUs, but should be left disabled for small images or on CPUs with few cores.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public interface InputModes {
+        String IMAGE = "Image";
+        String OBJECTS = "Objects";
+
+        String[] ALL = new String[] { IMAGE, OBJECTS };
+
+    }
+
+    public interface BinaryLogic extends BinaryLogicInterface {
+    }
 
     public interface Measurements {
         String SUM_LENGTH_PX = "SKELETON // SUM_LENGTH_(PX)";
@@ -148,11 +234,11 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    public MeasureSkeleton(Modules modules) {
-        super("Measure skeleton", modules);
+    public CreateSkeleton(Modules modules) {
+        super("Create skeleton", modules);
     }
 
-    static Image getSkeletonImage(Obj inputObject) {
+    public static Image getSkeletonImage(Obj inputObject) {
         // Getting tight image of object
         Image skeletonImage = inputObject.getAsTightImage("Skeleton");
 
@@ -163,7 +249,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static Object[] initialiseAnalyzer(Obj inputObject, double minLengthFinal, boolean exportLargestShortestPathFinal) {
+    public static Object[] initialiseAnalyzer(Obj inputObject, double minLengthFinal,
+            boolean exportLargestShortestPathFinal) {
         Image skeletonImage = getSkeletonImage(inputObject);
 
         try {
@@ -181,13 +268,15 @@ public class MeasureSkeleton extends Module {
         }
     }
 
-    static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
+    public static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects,
+            Objs edgeObjects,
             Objs junctionObjects) {
         return createEdgeJunctionObjects(inputObject, result, skeletonObjects, edgeObjects, junctionObjects, true);
 
     }
 
-    static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
+    public static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects,
+            Objs edgeObjects,
             Objs junctionObjects, boolean addRelationship) {
 
         double[][] extents = inputObject.getExtents(true, false);
@@ -238,7 +327,7 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static void createLoopObjects(Objs loopObjects, String edgeObjectsName, String junctionObjectsName,
+    public static void createLoopObjects(Objs loopObjects, String edgeObjectsName, String junctionObjectsName,
             String loopObjectsName, Obj skeletonObject) {
 
         // Creating an object for the entire skeleton
@@ -284,7 +373,8 @@ public class MeasureSkeleton extends Module {
         }
     }
 
-    static Obj createEdgeObject(Obj skeletonObject, Objs edgeObjects, Edge edge, int xOffs, int yOffs, int zOffs) {
+    public static Obj createEdgeObject(Obj skeletonObject, Objs edgeObjects, Edge edge, int xOffs, int yOffs,
+            int zOffs) {
         Obj edgeObject = edgeObjects.createAndAddNewObject(VolumeType.POINTLIST);
         edgeObject.setT(skeletonObject.getT());
         skeletonObject.addChild(edgeObject);
@@ -303,7 +393,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static Obj createJunctionObject(Obj skeletonObject, Objs junctionObjects, Vertex junction, int xOffs, int yOffs,
+    public static Obj createJunctionObject(Obj skeletonObject, Objs junctionObjects, Vertex junction, int xOffs,
+            int yOffs,
             int zOffs) {
         Obj junctionObject = junctionObjects.createAndAddNewObject(VolumeType.POINTLIST);
         junctionObject.setT(skeletonObject.getT());
@@ -323,7 +414,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(Obj inputObject) {
+    public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(
+            Obj inputObject) {
         Object[] result = initialiseAnalyzer(inputObject, 0, true);
         AnalyzeSkeleton_ analyzeSkeleton = (AnalyzeSkeleton_) result[0];
         SkeletonResult skeletonResult = (SkeletonResult) result[1];
@@ -332,7 +424,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(Obj inputObject,
+    public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(
+            Obj inputObject,
             AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult) {
         ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points2 = new ArrayList<>();
 
@@ -366,17 +459,20 @@ public class MeasureSkeleton extends Module {
     }
 
     static void createLargestShortestPath(Obj inputObject, Objs largestShortestPathObjects,
-            AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult) {
+            AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult, boolean addRelationship) {
 
-        ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points = getLargestShortestPath(inputObject,
+        ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points = getLargestShortestPath(
+                inputObject,
                 analyzeSkeleton, skeletonResult);
 
         Obj largestShortestPath = largestShortestPathObjects.createAndAddNewObject(VolumeType.POINTLIST);
         largestShortestPath.getCoordinateSet().addAll(points);
         largestShortestPath.setT(inputObject.getT());
-        largestShortestPath.addParent(inputObject);
-        inputObject.addChild(largestShortestPath);
 
+        if (addRelationship) {
+            largestShortestPath.addParent(inputObject);
+            inputObject.addChild(largestShortestPath);
+        }
     }
 
     static void applyEdgeJunctionPartnerships(HashMap<Edge, Obj> edgeObjs, HashMap<Vertex, Obj> junctionObjs) {
@@ -452,24 +548,44 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.OBJECTS_MEASURE_SPATIAL;
+        return Categories.OBJECTS_PROCESS;
     }
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace);
-        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS,workspace);
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
-        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS,workspace);
-        boolean exportLoops = parameters.getValue(EXPORT_LOOP_OBJECTS,workspace);
-        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS,workspace);
-        boolean exportLargestShortestPath = parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH,workspace);
-        String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH,workspace);
-        double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH,workspace);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String inputMode = parameters.getValue(INPUT_MODE, workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        boolean addToWorkspace = (boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE, workspace)
+                || inputMode.equals(InputModes.IMAGE);
+        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS, workspace);
+        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS, workspace);
+        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS, workspace);
+        boolean exportLoops = parameters.getValue(EXPORT_LOOP_OBJECTS, workspace);
+        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS, workspace);
+        boolean exportLargestShortestPath = parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH, workspace);
+        String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH, workspace);
+        double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+
+        // If processing an image, create a temporary object set
+        Objs inputObjects;
+        switch (inputMode) {
+            case InputModes.IMAGE:
+                Image inputImage = workspace.getImage(inputImageName);
+                boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+                String detectionMode = IdentifyObjects.DetectionModes.THREE_D;
+                String volumeType = IdentifyObjects.VolumeTypes.QUADTREE;
+                inputObjects = IdentifyObjects.process(inputImage, "TempObjects", blackBackground, false, detectionMode,
+                        26, volumeType, multithread, 60, false);
+                break;
+            case InputModes.OBJECTS:
+            default:
+                inputObjects = workspace.getObjects(inputObjectsName);
+                break;
+        }
 
         if (inputObjects == null || inputObjects.size() == 0)
             return Status.PASS;
@@ -527,7 +643,7 @@ public class MeasureSkeleton extends Module {
                     if (addToWorkspace) {
 
                         Obj skeletonObject = createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
-                                skeletonObjects, edgeObjects, junctionObjects);
+                                skeletonObjects, edgeObjects, junctionObjects, inputMode.equals(InputModes.OBJECTS));
 
                         // Creating loop objects
                         if (exportLoops) {
@@ -540,9 +656,9 @@ public class MeasureSkeleton extends Module {
 
                     if (exportLargestShortestPathFinal)
                         createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0],
-                                (SkeletonResult) result[1]);
+                                (SkeletonResult) result[1], inputMode.equals(InputModes.OBJECTS));
 
-                    if (((SkeletonResult) result[1]) != null)
+                    if (((SkeletonResult) result[1]) != null && inputMode.equals(InputModes.OBJECTS))
                         addMeasurements(inputObject, (SkeletonResult) result[1]);
 
                 } catch (Throwable t) {
@@ -565,10 +681,19 @@ public class MeasureSkeleton extends Module {
         }
 
         if (showOutput) {
-            inputObjects.showMeasurements(this, modules);
-            if (addToWorkspace) {
-                edgeObjects.showMeasurements(this, modules);
-                skeletonObjects.convertToImageIDColours().show();
+            switch (inputMode) {
+                case InputModes.IMAGE:
+                    edgeObjects.showMeasurements(this, modules);
+                    skeletonObjects.convertToImageIDColours().show();
+                    break;
+
+                case InputModes.OBJECTS:
+                    inputObjects.showMeasurements(this, modules);
+                    if (addToWorkspace) {
+                        edgeObjects.showMeasurements(this, modules);
+                        skeletonObjects.convertToImageIDColours().show();
+                    }
+                    break;
             }
         }
 
@@ -579,6 +704,9 @@ public class MeasureSkeleton extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new ChoiceP(INPUT_MODE, this, InputModes.OBJECTS, InputModes.ALL));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
@@ -604,28 +732,40 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_MODE));
+        switch ((String) parameters.getValue(INPUT_MODE, workspace)) {
+            case InputModes.IMAGE:
+                returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+                returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
+                break;
+            case InputModes.OBJECTS:
+                returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                break;
+        }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_SKELETONS_TO_WORKSPACE));
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
+        if (((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.OBJECTS))
+            returnedParameters.add(parameters.getParameter(ADD_SKELETONS_TO_WORKSPACE));
+
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE, workspace)
+                || ((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.IMAGE)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SKELETON_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_JUNCTION_OBJECTS));
 
             returnedParameters.add(parameters.getParameter(EXPORT_LOOP_OBJECTS));
-            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS,workspace))
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS, workspace))
                 returnedParameters.add(parameters.getParameter(OUTPUT_LOOP_OBJECTS));
 
         }
 
         returnedParameters.add(parameters.getParameter(EXPORT_LARGEST_SHORTEST_PATH));
-        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH,workspace))
+        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_LARGEST_SHORTEST_PATH));
 
         returnedParameters.add(parameters.getParameter(SKELETONISATION_SEPARATOR));
@@ -641,26 +781,28 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        if (((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.OBJECTS)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+            ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_PX);
+            ref.setObjectsName(inputObjectsName);
+            returnedRefs.add(ref);
+            ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_CAL);
+            ref.setObjectsName(inputObjectsName);
+            returnedRefs.add(ref);
+        }
 
-        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_PX);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-        ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_CAL);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
-            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
-            ref = objectMeasurementRefs.getOrPut(Measurements.EDGE_LENGTH_PX);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE, workspace)
+                || ((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.IMAGE)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS, workspace);
+            ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.EDGE_LENGTH_PX);
             ref.setObjectsName(edgeObjectsName);
             returnedRefs.add(ref);
             ref = objectMeasurementRefs.getOrPut(Measurements.EDGE_LENGTH_CAL);
@@ -673,33 +815,37 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
-            String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS,workspace);
-            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
-            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS,workspace);
-            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS,workspace);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE, workspace)
+                || ((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.IMAGE)) {
+            String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS, workspace);
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS, workspace);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS, workspace);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS, workspace);
 
-            returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+            if (((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.OBJECTS))
+                returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+
             returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
             returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS,workspace))
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS, workspace))
                 returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
 
         }
 
-        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH,workspace)) {
-            String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH,workspace);
+        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH, workspace)
+                && ((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.OBJECTS)) {
+            String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH, workspace);
             returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, largestShortestPathName));
 
         }
@@ -710,16 +856,16 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
-            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
-            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS,workspace);
-            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS,workspace);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE, workspace)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS, workspace);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS, workspace);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS, workspace);
 
             returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
-            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS,workspace)) {
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS, workspace)) {
                 returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
                 returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
             }
@@ -731,7 +877,7 @@ Workspace workspace = null;
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -746,6 +892,12 @@ Workspace workspace = null;
     }
 
     void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Controls whether the skeleton will be created from existing objects in the workspace or taken from a binary image.");
+
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Input image from the workspace to be skeletonised.");
+
         parameters.get(INPUT_OBJECTS).setDescription(
                 "Input objects from the workspace to be skeletonised.  These can be either 2D or 3D objects.  Skeleton measurements will be added to this object.");
 

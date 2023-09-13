@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -588,7 +589,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject, absoluteCurvature, signedCurvature, useReference);
 
             // Getting the backbone of the object
-            ArrayList<Point<Integer>> longestPath = MeasureSkeleton.getLargestShortestPath(inputObject);
+            ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
             boolean isLoop = checkForLoop(longestPath);
 
             // If the object is too small to be fit

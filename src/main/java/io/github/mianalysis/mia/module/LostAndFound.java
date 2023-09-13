@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.module.objects.measure.miscellaneous.ReplaceMeas
 import io.github.mianalysis.mia.module.objects.measure.spatial.CalculateNearestNeighbour;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectCurvature;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectShape;
+import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.module.objects.process.FitActiveContours;
 import io.github.mianalysis.mia.module.objects.process.FitConvexHull2D;
 import io.github.mianalysis.mia.module.objects.process.FitGaussian2D;
@@ -74,6 +75,7 @@ public class LostAndFound {
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
         lostModules.put("WekaProbabilityMaps", new WekaPixelClassification(null).getClass().getSimpleName());
+        lostModules.put("Measure skeleton", new CreateSkeleton(null).getClass().getSimpleName());
 
         /// Populating hard-coded parameter reassignments ///
         HashMap<String, String> currentParameterNames = null;

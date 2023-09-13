@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
+import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -110,7 +110,7 @@ public class MeasureTextureAlongPath extends Module {
         }
 
         // Getting longest path
-        ArrayList<Point<Integer>> longestPath = MeasureSkeleton.getLargestShortestPath(object);
+        ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(object);
         for (int i = 0; i < longestPath.size() - offs; i++) {
             int x1 = longestPath.get(i).getX();
             int y1 = longestPath.get(i).getY();
