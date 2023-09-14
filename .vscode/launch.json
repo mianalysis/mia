@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MIA",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIA",
+            "projectName": "mia"
+        },
+        {
+            "type": "java",
             "name": "AddJavaDocToModules",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.documentation.AddJavaDocToModules",
