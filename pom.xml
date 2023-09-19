@@ -312,6 +312,11 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>Directionality_</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>Fiji_Plugins</artifactId>
             <scope>${scp}</scope>
         </dependency>
