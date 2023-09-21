@@ -1,11 +1,6 @@
 package io.github.mianalysis.mia.module.visualise.overlays;
 
 import java.awt.Color;
-import java.text.DateFormat;
-import java.time.Duration;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
