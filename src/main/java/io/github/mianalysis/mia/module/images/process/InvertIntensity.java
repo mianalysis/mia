@@ -3,8 +3,8 @@ package io.github.mianalysis.mia.module.images.process;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -60,12 +60,13 @@ public class InvertIntensity extends Module {
     }
 
     public static void process(Image inputImage) {
-        IJ.run(inputImage.getImagePlus(), "Invert", "stack");
+        process(inputImage.getImagePlus());
     }
 
     public static void process(ImagePlus inputImagePlus) {
-        IJ.run(inputImagePlus, "Invert", "stack");
-
+        ImageStack ist = inputImagePlus.getStack();
+        for (int idx=1;idx<=ist.size();idx++)
+            ist.getProcessor(idx).invert();
     }
 
     @Override

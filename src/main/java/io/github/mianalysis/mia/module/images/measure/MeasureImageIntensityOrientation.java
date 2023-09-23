@@ -18,9 +18,11 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -39,12 +41,22 @@ public class MeasureImageIntensityOrientation extends Module {
     /**
     * 
     */
-    public static final String INPUT_SEPARATOR = "Image input";
+    public static final String INPUT_SEPARATOR = "Image input/output";
 
     /**
     * 
     */
     public static final String INPUT_IMAGE = "Input image";
+
+    /**
+    * 
+    */
+    public static final String OUTPUT_ORIENTATION_MAP = "Output orientation map";
+
+    /**
+    * 
+    */
+    public static final String ORIENTATION_MAP_NAME = "Orientation map name";
 
     /**
     * 
@@ -141,10 +153,45 @@ public class MeasureImageIntensityOrientation extends Module {
 
     @Override
     public String getDescription() {
-        return "Note: This currently only calculates the histogram for the first image in a stack (i.e. first channel, slice and timepoint).  To measure for different images in a stack, please use the MeasureObjectIntensityOrientation module.";
+        return "Note: Calculations are merged for all slices of multi-slice images.";
     }
 
-    public double[] calculateSpreadMeasures(double[] dir, double[] binsRads) {
+    /**
+     * Default Directionality_ function is to create a histogram for each slice of
+     * an image. This method combines all histograms into a single, normalised
+     * histogram, thus allowing a single fit to be created for the whole stack. The
+     * input Directionality_ object will be updated such that it only contains the
+     * merged histogram.
+     * 
+     * @param directionality Input Directionality_ object which has already
+     *                       processed images
+     */
+    public static void mergeHistograms(Directionality_ directionality) {
+        // Combining histograms into one
+        ArrayList<double[]> histograms = directionality.getHistograms();
+
+        int nHist = histograms.size();
+        if (nHist > 1) {
+            double[] rootHistogram = histograms.get(0);
+            for (int i = 1; i < histograms.size(); i++) {
+                double[] currHistogram = histograms.get(i);
+                for (int j = 0; j < rootHistogram.length; j++)
+                    rootHistogram[j] = rootHistogram[j] + currHistogram[j];
+            }
+
+            // Normalising directionality
+            for (int j = 0; j < rootHistogram.length; j++)
+                rootHistogram[j] = rootHistogram[j] / nHist;
+
+            // Updating histograms with merged histogram and removing all others
+            histograms.set(0, rootHistogram);
+            for (int j = nHist - 1; j > 0; j--)
+                histograms.remove(j);
+
+        }
+    }
+
+    public static double[] calculateSpreadMeasures(double[] dir, double[] binsRads) {
         double n_meas = 0;
         double n_meas_sub = 0;
         double real = 0;
@@ -200,7 +247,7 @@ public class MeasureImageIntensityOrientation extends Module {
 
     }
 
-    public double[] BGSubDir(double[] dir) {
+    public static double[] BGSubDir(double[] dir) {
         double min = Double.POSITIVE_INFINITY;
 
         for (int i = 0; i < dir.length; i++)
@@ -219,6 +266,8 @@ public class MeasureImageIntensityOrientation extends Module {
     public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        boolean outputOrientationMap = parameters.getValue(OUTPUT_ORIENTATION_MAP, workspace);
+        String orientationMapName = parameters.getValue(ORIENTATION_MAP_NAME, workspace);
         String methodString = parameters.getValue(METHOD, workspace);
         int nBins = parameters.getValue(NUMBER_OF_BINS, workspace);
         double binStart = parameters.getValue(HISTOGRAM_START, workspace);
@@ -226,7 +275,7 @@ public class MeasureImageIntensityOrientation extends Module {
         boolean includeBinRange = parameters.getValue(INCLUDE_BIN_RANGE_IN_NAME, workspace);
         boolean includeBinNumber = parameters.getValue(INCLUDE_BIN_NUMBER_IN_NAME, workspace);
 
-        Image inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         AnalysisMethod method;
@@ -247,8 +296,11 @@ public class MeasureImageIntensityOrientation extends Module {
         directionality.setBinNumber(nBins);
         directionality.setBinRange(binStart, binEnd);
         directionality.setMethod(method);
+        directionality.setBuildOrientationMapFlag(outputOrientationMap);
 
+        // Process image
         directionality.computeHistograms();
+        mergeHistograms(directionality);
         directionality.fitHistograms();
 
         ArrayList<double[]> fitParameters = directionality.getFitAnalysis();
@@ -282,6 +334,15 @@ public class MeasureImageIntensityOrientation extends Module {
         name = getFullName(binStart, binEnd, nBins, Measurements.BACKGROUND, includeBinRange, includeBinNumber);
         inputImage.addMeasurement(new Measurement(name, extra_results[2]));
 
+        if (outputOrientationMap) {
+            ImagePlus oriIpl = new ImagePlus(orientationMapName, directionality.getOrientationMap());
+            Image oriImage = ImageFactory.createImage(orientationMapName, oriIpl);
+            workspace.addImage(oriImage);
+
+            if (showOutput)
+                oriImage.show();
+        }
+
         if (showOutput)
             inputImage.showMeasurements(this);
 
@@ -293,6 +354,8 @@ public class MeasureImageIntensityOrientation extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(OUTPUT_ORIENTATION_MAP, this, false));
+        parameters.add(new OutputImageP(ORIENTATION_MAP_NAME, this));
 
         parameters.add(new SeparatorP(ORIENTATION_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.FOURIER, Methods.ALL));
@@ -310,7 +373,25 @@ public class MeasureImageIntensityOrientation extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_ORIENTATION_MAP));
+        if ((boolean) parameters.getValue(OUTPUT_ORIENTATION_MAP, null))
+            returnedParameters.add(parameters.getParameter(ORIENTATION_MAP_NAME));
+
+        returnedParameters.add(parameters.getParameter(ORIENTATION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(METHOD));
+        returnedParameters.add(parameters.getParameter(NUMBER_OF_BINS));
+        returnedParameters.add(parameters.getParameter(HISTOGRAM_START));
+        returnedParameters.add(parameters.getParameter(HISTOGRAM_END));
+
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INCLUDE_BIN_RANGE_IN_NAME));
+        returnedParameters.add(parameters.getParameter(INCLUDE_BIN_NUMBER_IN_NAME));
+
+        return returnedParameters;
 
     }
 
