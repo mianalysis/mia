@@ -12,6 +12,8 @@ import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.process.analysis.PointSurfaceSeparatorCalculator;
 import io.github.mianalysis.mia.process.analysis.SurfaceSeparationCalculator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -699,21 +701,55 @@ public class Volume {
         
     }
 
+    public Image getAsTightImage(String imageName) {
+        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+
+        return getAsTightImage(imageName, borderWidths);
+
+    }
+
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         Volume sliceVol = getSlice(slice);
 
-        ImagePlus ipl = IJ.createImage("Slice", spatCal.width, spatCal.height, spatCal.nSlices, 8);
-        ImageProcessor ipr = ipl.getProcessor();
-        for (Point<Integer> point:sliceVol.coordinateSet)
-            ipr.set(point.x,point.y,255);
-        
+        ImageProcessor ipr = sliceVol.getAsTightImage("Crop").getImagePlus().getProcessor();
         ipr.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
         ipr.invert();
 
         Prefs.blackBackground = true;
         
-        return new ThresholdToSelection().convert(ipr);
+        Roi roi = new ThresholdToSelection().convert(ipr);
+        double[][] extents = getExtents(true, false);
+        roi.translate(extents[0][0], extents[1][0]);
+
+        return roi;
+
+    }
+
+    public Image getAsTightImage(String imageName, int[][] borderWidths) {
+        double[][] extents = getExtents(true, false);
+        int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
+        int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
+        int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
+
+        int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
+                + borderWidths[0][1] + 1;
+        int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
+                + borderWidths[1][1] + 1;
+        int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
+                + borderWidths[2][1] + 1;
+
+        ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
+        spatCal.setImageCalibration(ipl);
+
+        // Populating ipl
+        for (Point<Integer> point : getCoordinateSet()) {
+            ipl.setPosition(point.z - zOffs + 1);
+            ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
+
+        }
+
+        return ImageFactory.createImage("Tight", ipl);
 
     }
 

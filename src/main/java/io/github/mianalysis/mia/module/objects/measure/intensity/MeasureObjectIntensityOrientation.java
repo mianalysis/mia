@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.apache.commons.math3.complex.Complex;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -18,6 +17,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageIntensityOrientation;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -39,6 +39,9 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+/**
+* Calculates the orientation of structures in each object for a specific image.  This module uses the <a href=\"https://imagej.net/plugins/directionality\">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for all slices within an object; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements.<br><br>References:<br><ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectIntensityOrientation extends Module {
 
@@ -154,50 +157,51 @@ public class MeasureObjectIntensityOrientation extends Module {
 
     @Override
     public String getDescription() {
-        return "Note: Calculations are merged for all slices of multi-slice images.";
+        return "Calculates the orientation of structures in each object for a specific image.  This module uses the <a href=\"https://imagej.net/plugins/directionality\">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for all slices within an object; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements." +
+        "<br><br>References:<br>" +
+        "<ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>";
     }
 
     public static void processObject(Obj obj, Image inputImage, int nBins, double binStart, double binEnd,
             AnalysisMethod method, boolean includeBinRange, boolean includeBinNumber) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus().duplicate();
-        String inputImageName = inputImage.getName();
-
         ArrayList<double[]> tempHistograms = new ArrayList<>();
-
         HashMap<Integer, Roi> rois = obj.getRois();
-
         Directionality_ directionality = new Directionality_();
-        for (Roi roi:rois.values()) {
-            directionality = new Directionality_();
+
+        for (int z:rois.keySet()) {
+            // Getting current image slice
+            Image sliceImage = ExtractSubstack.extractSubstack(inputImage,"Slice","1",String.valueOf(z+1),String.valueOf(obj.getT()+1));
+            ImagePlus sliceIpl = sliceImage.getImagePlus();
+            sliceIpl.setRoi(rois.get(z));
 
             // Configuring Directionality plugin
-            inputImagePlus.setRoi(roi);
-            directionality.setImagePlus(inputImagePlus.crop());
+            directionality = new Directionality_();
+            directionality.setImagePlus(sliceIpl.crop());
             directionality.setBinNumber(nBins);
             directionality.setBinRange(binStart, binEnd);
             directionality.setMethod(method);
-            
+
+            // Running analysis on this slice for this object
             directionality.computeHistograms();
             ArrayList<double[]> currHistograms = directionality.getHistograms();
             tempHistograms.add(currHistograms.get(0));
 
         }
 
+        // Removing existing histograms (from the most recent run) and replacing with all histograms from each object slice
         ArrayList<double[]> histograms = directionality.getHistograms();
         histograms.clear();
         for (double[] histogram:tempHistograms)
             histograms.add(histogram);
         
-        // for (double[] histogram:directionality.getHistograms())
-        //     for (double v:histogram)
-        //     System.out.println(v);
-
         MeasureImageIntensityOrientation.mergeHistograms(directionality);
         directionality.fitHistograms();
 
+        // Adding measurements
         ArrayList<double[]> fitParameters = directionality.getFitAnalysis();
         double[] results = fitParameters.iterator().next();
 
+        String inputImageName = inputImage.getName();
         String name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.DIRECTION, includeBinRange,
                 includeBinNumber);
         obj.addMeasurement(new Measurement(name, Math.toDegrees(results[0])));

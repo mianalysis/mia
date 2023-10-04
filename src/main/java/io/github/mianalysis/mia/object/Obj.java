@@ -369,32 +369,6 @@ public class Obj extends Volume {
         if (rois.containsKey(slice))
             return (Roi) rois.get(slice).clone();
 
-        // // Getting the image corresponding to this slice
-        // Volume sliceVol = getSlice(slice);
-
-        // Objs objectCollection = new Objs("Slice", sliceVol.getSpatialCalibration(),
-        // 1, 1, null);
-        // Obj sliceObj =
-        // objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
-        // sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
-
-        // // Checking if the object exists in this slice
-        // if (sliceVol.size() == 0)
-        // return null;
-
-        // HashMap<Integer, Float> hues =
-        // ColourFactory.getSingleColourHues(objectCollection,
-        // ColourFactory.SingleColours.WHITE);
-        // Image objectImage = objectCollection.convertToImage("Output", hues, 8,
-        // false);
-        // IJ.run(objectImage.getImagePlus(), "Invert", "stack");
-
-        // ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
-        // ipr.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
-        // ThresholdToSelection selection = new ThresholdToSelection();
-
-        // Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
-
         Roi roi = super.getRoi(slice);
 
         if (roi == null)
@@ -406,6 +380,10 @@ public class Obj extends Volume {
 
     }
 
+    /**
+     * Accesses and generates all ROIs for the object
+     * @return HashMap containing each ROI. Keys are integers with zero-based numbering, specifying Z-axis slice.
+     */
     public HashMap<Integer, Roi> getRois() {
         // This will access and generate all ROIs for this object
         double[][] extents = getExtents(true, false);
@@ -517,40 +495,6 @@ public class Obj extends Volume {
                 ipl.getProcessor().putPixelValue(xPos, yPos, hue);
                 break;
         }
-    }
-
-    public Image getAsTightImage(String imageName) {
-        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
-
-        return getAsTightImage(imageName, borderWidths);
-
-    }
-
-    public Image getAsTightImage(String imageName, int[][] borderWidths) {
-        double[][] extents = getExtents(true, false);
-        int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
-        int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
-        int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
-
-        int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
-                + borderWidths[0][1] + 1;
-        int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
-                + borderWidths[1][1] + 1;
-        int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
-                + borderWidths[2][1] + 1;
-
-        ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
-        spatCal.setImageCalibration(ipl);
-
-        // Populating ipl
-        for (Point<Integer> point : getCoordinateSet()) {
-            ipl.setPosition(point.z - zOffs + 1);
-            ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
-
-        }
-
-        return ImageFactory.createImage("Tight", ipl);
-
     }
 
     public void removeOutOfBoundsCoords() {

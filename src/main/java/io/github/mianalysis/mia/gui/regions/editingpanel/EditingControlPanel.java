@@ -6,13 +6,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.abstrakt.ModuleControlButton;
@@ -134,10 +134,16 @@ public class EditingControlPanel extends JPanel {
         }
 
         // Adding modules
-        if (parentMenu != null)
-            for (Module module : GUI.getAvailableModules())
-                if (module.getCategory() == category)
-                    parentMenu.addMenuItem(module);
+        TreeMap<String,Module> sortedModules = new TreeMap<String,Module>();
+        if (parentMenu == null)
+            return;
+
+        for (Module module : GUI.getAvailableModules())
+            if (module.getCategory() == category)
+                sortedModules.put(module.getName(),module);
+        
+        for (Module module:sortedModules.values())
+            parentMenu.addMenuItem(module);
 
     }
 
