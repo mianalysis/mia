@@ -235,7 +235,7 @@ public class ApplyDeepImageJModel extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses <a href=\"https://deepimagej.github.io/deepimagej/\">DeepImageJ</a> to run Tensorflow and Pytorch models from the <a href=\"https://bioimage.io/#/\">BioImage Model Zoo</a>.  This module will detect and run any models already installed in the active copy of Fiji.";
+        return "Uses DeepImageJ to run Tensorflow and Pytorch models from the BioImage Model Zoo.  This module will detect and run any models already installed in the active copy of Fiji.  For more information on DeepImageJ and the BioImage Model Zoo, please go to <a href=\"https://deepimagej.github.io/deepimagej/\">DeepImageJ</a> and <a href=\"https://bioimage.io/#/\">BioImage Model Zoo</a>.";
     }
 
     protected void addParameterDescriptions() {

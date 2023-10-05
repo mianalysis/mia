@@ -60,7 +60,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override

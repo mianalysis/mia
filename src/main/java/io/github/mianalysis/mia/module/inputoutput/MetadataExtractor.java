@@ -300,9 +300,10 @@ public class MetadataExtractor extends Module {
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.toString().replace("\uFEFF", "");
                 String[] split = line.split(",");
-                if (split.length == 2)
+                if (split.length == 2) {
                     referenceValues.put(split[0], split[1]);
             }
+        }
             bufferedReader.close();
 
             if (metadata.containsKey(metadataItemToMatch)) {
@@ -359,7 +360,7 @@ public class MetadataExtractor extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
@@ -691,7 +692,7 @@ Workspace workspace = null;
                     String groupString = parameters.getValue(GROUPS,workspace);
                     String[] groups = getGroups(groupString);
                     for (String group : groups)
-                        metadataRefs.getOrPut((group));
+                        returnedRefs.add(metadataRefs.getOrPut((group)));
                 } else {
                     returnedRefs.add(metadataRefs.getOrPut((parameters.getValue(METADATA_VALUE_NAME,workspace))));
                 }

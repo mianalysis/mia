@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
+import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.module.objects.relate.mergeobjects.MergeRelatedObjects;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -105,8 +106,8 @@ public class MeasureObjectWidth extends Module {
             final Objs edgeObjects = new Objs("EdgesTemp", inputObjects);
             final Objs junctionObjects = new Objs("JunctionsTemp", inputObjects);
 
-            Object[] result = MeasureSkeleton.initialiseAnalyzer(inputObject, 0, false);
-            Obj skeleton = MeasureSkeleton.createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
+            Object[] result = CreateSkeleton.initialiseAnalyzer(inputObject, 0, false);
+            Obj skeleton = CreateSkeleton.createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
                     skeletonObjects, edgeObjects, junctionObjects, false);
             MergeRelatedObjects.mergeRelatedObjectsUpdateParent(skeletonObjects, "EdgesTemp",
                     MergeRelatedObjects.MergeModes.MERGE_PARENTS_AND_CHILDREN);

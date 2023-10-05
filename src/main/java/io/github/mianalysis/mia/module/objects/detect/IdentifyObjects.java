@@ -53,66 +53,105 @@ import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
  */
 
 /**
-* Creates objects from an input binary image.  Each object is identified in 3D as a contiguous region of foreground labelled pixels.  All coordinates corresponding to that object are stored for use later.<br><br>Note: Input binary images must be 8-bit and only contain values 0 and 255.<br><br>Note: Uses MorphoLibJ to perform connected components labelling in 3D.
-*/
+ * Creates objects from an input binary image. Each object is identified in 3D
+ * as a contiguous region of foreground labelled pixels. All coordinates
+ * corresponding to that object are stored for use later.<br>
+ * <br>
+ * Note: Input binary images must be 8-bit and only contain values 0 and
+ * 255.<br>
+ * <br>
+ * Note: Uses MorphoLibJ to perform connected components labelling in 3D.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class IdentifyObjects extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input, object output";
 
-	/**
-	* Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255.
-	*/
+    /**
+     * Input binary image from which objects will be identified. This image must be
+     * 8-bit and only contain values 0 and 255.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Name of output objects to be stored in workspace.
-	*/
+    /**
+     * Name of output objects to be stored in workspace.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String IDENTIFICATION_SEPARATOR = "Object identification";
 
-	/**
-	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
-	*/
+    /**
+     * Controls whether objects are considered to be white (255 intensity) on a
+     * black (0 intensity) background, or black on a white background.
+     */
     public static final String BINARY_LOGIC = "Binary logic";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String DETECTION_MODE = "Detection mode";
 
-	/**
-	* Add all pixels to a single output object.  Enabling this skips the connected-components step.
-	*/
+    /**
+     * Add all pixels to a single output object. Enabling this skips the
+     * connected-components step.
+     */
     public static final String SINGLE_OBJECT = "Identify as single object";
 
-	/**
-	* When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br><ul><li>"6" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.</li><li> - "26" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity.</li></ul>
-	*/
+    /**
+     * When performing connected components labelling, the connectivity determines
+     * which neighbouring pixels are considered to be in contact.<br>
+     * <ul>
+     * <li>"6" considers immediate neighbours to lie in the cardinal directions
+     * (i.e. left, right, in-front, behind, above and below). In 2D this is actually
+     * 4-way connectivity.</li>
+     * <li>- "26" (default) considers neighbours to include the cardinal directions
+     * as well as diagonal to the pixel in question. In 2D this is actually 8-way
+     * connectivity.</li>
+     * </ul>
+     */
     public static final String CONNECTIVITY = "Connectivity";
 
-	/**
-	* The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul><li>"Pointlist" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li><li>"Octree" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li><li>"Quadtree" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>
-	*/
+    /**
+     * The method used to store pixel coordinates. This only affects performance and
+     * memory usage, there is no difference in results obtained using difference
+     * storage methods.<br>
+     * <ul>
+     * <li>"Pointlist" (default) stores object coordinates as a list of XYZ
+     * coordinates. This is most efficient for small objects, very thin objects or
+     * objects with lots of holes.</li>
+     * <li>"Octree" stores objects in an octree format. Here, the coordinate space
+     * is broken down into cubes of different sizes, each of which is marked as
+     * foreground (i.e. an object) or background. Octrees are most efficient when
+     * there are lots of large cubic regions of the same label, as the space can be
+     * represented by larger (and thus fewer) cubes. This is best used when there
+     * are large, completely solid objects. If z-axis sampling is much larger than
+     * xy-axis sampling, it's typically best to opt for the quadtree method.</li>
+     * <li>"Quadtree" stores objects in a quadtree format. Here, each Z-plane of the
+     * object is broken down into squares of different sizes, each of which is
+     * marked as foreground (i.e. an object) or background. Quadtrees are most
+     * efficient when there are lots of large square regions of the same label, as
+     * the space can be represented by larger (and thus fewer) squares. This is best
+     * used when there are large, completely solid objects.</li>
+     * </ul>
+     */
     public static final String VOLUME_TYPE = "Volume type";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.
-	*/
+    /**
+     * Break the image down into strips, each one processed on a separate CPU
+     * thread. The overhead required to do this means it's best for large multi-core
+     * CPUs, but should be left disabled for small images or on CPUs with few cores.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
@@ -406,7 +445,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    private static int getConnectivity(String connectivityName) {
+    public static int getConnectivity(String connectivityName) {
         switch (connectivityName) {
             case Connectivity.SIX:
             default:
@@ -437,20 +476,20 @@ public class IdentifyObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
-        boolean singleObject = parameters.getValue(SINGLE_OBJECT,workspace);
-        String connectivityName = parameters.getValue(CONNECTIVITY,workspace);
-        String type = parameters.getValue(VOLUME_TYPE,workspace);
+        String detectionMode = parameters.getValue(DETECTION_MODE, workspace);
+        boolean singleObject = parameters.getValue(SINGLE_OBJECT, workspace);
+        String connectivityName = parameters.getValue(CONNECTIVITY, workspace);
+        String type = parameters.getValue(VOLUME_TYPE, workspace);
 
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
-        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH, workspace);
 
         // Getting options
         int connectivity = getConnectivity(connectivityName);
@@ -459,7 +498,6 @@ public class IdentifyObjects extends Module {
                 connectivity, type, multithread, minStripWidth, true);
 
         // Adding objects to workspace
-        writeStatus("Adding objects (" + outputObjectsName + ") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing objects
@@ -493,7 +531,7 @@ public class IdentifyObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -509,7 +547,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.get(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.get(ENABLE_MULTITHREADING));
-        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING,workspace)) {
+        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING, workspace)) {
             returnedParameters.add(parameters.get(MIN_STRIP_WIDTH));
         }
 
@@ -519,27 +557,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

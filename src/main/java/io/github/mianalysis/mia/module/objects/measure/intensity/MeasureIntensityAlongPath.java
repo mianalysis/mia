@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
-import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
+import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -130,7 +130,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
 
         // Ordering points
         LinkedHashSet<Point<Integer>> orderedPoints = new LinkedHashSet<>(
-                MeasureSkeleton.getLargestShortestPath(object));
+                CreateSkeleton.getLargestShortestPath(object));
 
         LinkedHashMap<Double, Double> rawIntensities = measureIntensityProfile(orderedPoints, image, object.getT(),
                 object.getSpatialCalibration());

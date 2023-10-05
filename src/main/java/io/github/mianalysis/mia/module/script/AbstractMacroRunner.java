@@ -138,13 +138,13 @@ public abstract class AbstractMacroRunner extends Module {
         collection.get(VARIABLE_TYPE)
                 .setDescription("Controls the data type of the variable that will be assigned within the macro:<br><ul>"
 
-                        + "\"" + VariableTypes.BOOLEAN
+                        + "<li>\"" + VariableTypes.BOOLEAN
                         + "\" Variable will be assigned a true/false value depending on whether the checkbox was selected/deselected (respectively).</li>."
 
-                        + "\"" + VariableTypes.NUMBER
+                        + "<li>\"" + VariableTypes.NUMBER
                         + "\" Variable will be assigned a numeric value to which mathematical operations can be applied.</li>."
 
-                        + "\"" + VariableTypes.TEXT
+                        + "<li>\"" + VariableTypes.TEXT
                         + "\" Variable will be assigned a text value.  Irrespective of whether the value contains only numeric characters this will be interpreted as text.</li></ul>.");
 
         collection.get(VARIABLE_CHECKBOX).setDescription("Boolean (true/false) value assigned to this variable if \""

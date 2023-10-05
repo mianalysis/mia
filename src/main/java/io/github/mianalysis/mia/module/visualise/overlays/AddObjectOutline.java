@@ -256,7 +256,7 @@ public class AddObjectOutline extends AbstractOverlay {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
@@ -296,7 +296,8 @@ public class AddObjectOutline extends AbstractOverlay {
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
-        addOverlay(ipl, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
+        if (inputObjects != null)
+            addOverlay(ipl, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
 
         Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 

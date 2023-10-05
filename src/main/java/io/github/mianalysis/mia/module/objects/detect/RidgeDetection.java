@@ -792,8 +792,7 @@ public class RidgeDetection extends Module {
                 "When selected, the output ridge objects will have the width applied (rather than having single pixel width).");
 
         parameters.get(OVERLAP_MODE).setDescription(
-                "Controls how intersecting lines should be handled.  For more information see <a href=\"https://imagej.net/Ridge_Detection.html#Overlap_resolution\">                \"Controls how intersecting lines should be handled.  For more information see <a href=\\\"https://imagej.net/Ridge_Detection.html#Overlap_resolution\\\">.<br><ul>\"\n" + //
-                        ".<br><ul>"
+                "Controls how intersecting lines should be handled.  For more information see <a href=\"https://imagej.net/Ridge_Detection.html#Overlap_resolution\">https://imagej.net/Ridge_Detection.html#Overlap_resolution</a>.<br><ul>"
 
                         + "<li>\"" + OverlapModes.NONE
                         + "\" Ridges are terminated at line intersections, so two overlapping ridges will likely be identified as at least four separate ridge objects.</li>"

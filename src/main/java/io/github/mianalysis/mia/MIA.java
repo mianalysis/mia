@@ -82,10 +82,10 @@ public class MIA implements Command {
                 new ij.ImageJ();
                 new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
             } else if (args.length == 1) {
-                Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
+                Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
                 new AnalysisRunner().run(analysis);
             } else if (args.length == 2) {
-                Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
+                Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
                 analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
                 new AnalysisRunner().run(analysis);
             }
