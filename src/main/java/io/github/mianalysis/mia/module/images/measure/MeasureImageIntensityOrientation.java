@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
-* Calculates the orientation of structures in an image.  This module uses the <a href=\"https://imagej.net/plugins/directionality\">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for the entire image stack; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements.  For multi-slice stacks, images can first be decomposed into whole-slice objects using the CreateWholeSliceObjects module, then processed on a per-object basis using the MeasureObjectIntensityOrientation module.<br><br>References:<br><ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>
+* Calculates the orientation of structures in an image.  This module uses the <a href="https://imagej.net/plugins/directionality">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for the entire image stack; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements.  For multi-slice stacks, images can first be decomposed into whole-slice objects using the CreateWholeSliceObjects module, then processed on a per-object basis using the MeasureObjectIntensityOrientation module.<br><br>References:<br><ol><li>Sun, M., et al. "Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>
 */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageIntensityOrientation extends Module {
@@ -208,11 +208,11 @@ public class MeasureImageIntensityOrientation extends Module {
         // index, the absolute values of orientation don't matter. As such, a new
         // normalised set of bins (of the same number as the input, binsRads) is created
         // in this range.
-        double binInterval = 2 * Math.PI / (binsRads.length - 1);
+        double binInterval = 2 * Math.PI / binsRads.length;
         double[] binsNorm = new double[binsRads.length];
         for (int i = 0; i < binsRads.length; i++)
             binsNorm[i] = -Math.PI + i * binInterval;
-
+        
         // Calculating the circular mean from the normalised bin range
         for (int i = 0; i < dir.length; i++) {
             real += dir[i] * Math.cos(binsNorm[i]);
