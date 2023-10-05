@@ -514,7 +514,7 @@
 
             <!-- To be uncommented when uploading to Maven Central -->
             <!-- Use the following to deploy (will throw a "Missing staging repository" error, but should still work) -->
-            <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -P release -->
+            <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -->
 
             <!-- <plugin>
                 <groupId>org.sonatype.plugins</groupId>
