@@ -1,0 +1,7 @@
+https://loading.io/spinner/dual-ring/-disqus-ring-donut-rotate
+
+Stroke width = 16
+Circle radius = 40
+Transparent = on
+Speed = 1
+Size = 12
