@@ -1,15 +1,18 @@
 package io.github.mianalysis.mia.module.objects.measure.intensity;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import fiji.analyze.directionality.Directionality_;
 import fiji.analyze.directionality.Directionality_.AnalysisMethod;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.module.Categories;
@@ -18,6 +21,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageIntensityOrientation;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
+import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
+import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
+import io.github.mianalysis.mia.module.visualise.overlays.AddText;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -28,6 +34,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
@@ -40,10 +47,25 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
-* Calculates the orientation of structures in each object for a specific image.  This module uses the <a href="https://imagej.net/plugins/directionality">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for all slices within an object; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements.<br><br>References:<br><ol><li>Sun, M., et al. "Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>
-*/
+ * Calculates the orientation of structures in each object for a specific image.
+ * This module uses the
+ * <a href="https://imagej.net/plugins/directionality">Directionality_</a>
+ * plugin to calculate core measures. Additional measurements, such as the
+ * Alignment Index [1] are also calculated. All measurements are made for all
+ * slices within an object; that is, the individual slice histograms are merged
+ * and normalised prior to calculation of all measurements.<br>
+ * <br>
+ * References:<br>
+ * <ol>
+ * <li>Sun, M., et al. "Rapid Quantification of 3D Collagen Fiber Alignment and
+ * Fiber Intersection Correlations with High Sensitivity" <i>PLOS ONE</i>
+ * (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li>
+ * </ol>
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class MeasureObjectIntensityOrientation extends Module {
+public class MeasureObjectIntensityOrientation extends AbstractSaver {
+    private static final int histWidth = 600;
+    private static final int histHeight = 400;
 
     /**
     * 
@@ -100,8 +122,33 @@ public class MeasureObjectIntensityOrientation extends Module {
     */
     public static final String INCLUDE_BIN_NUMBER_IN_NAME = "Include number of bins in name";
 
-    public MeasureObjectIntensityOrientation(Modules modules) {
-        super("Measure object intensity orientation", modules);
+    /**
+    * 
+    */
+    public static final String HISTOGRAM_SEPARATOR = "Histogram saving controls";
+
+    /**
+    * 
+    */
+    public static final String SAVE_HISTOGRAM = "Save histogram";
+
+    /**
+     * 
+     */
+    public static final String HISTOGRAM_GROUPING_MODE = "Histogram grouping";
+
+    /**
+     * 
+     */
+    public static final String PARENT_OBJECTS_NAME = "Parent objects name";
+
+    public interface HistogramGroupingModes {
+        String ALL_TOGETHER = "All together";
+        String GROUP_BY_PARENT = "Group by parent";
+        String INDIVIDUAL_FILES = "Individual files";
+
+        String[] ALL = new String[] { ALL_TOGETHER, GROUP_BY_PARENT, INDIVIDUAL_FILES };
+
     }
 
     public interface Methods {
@@ -124,6 +171,10 @@ public class MeasureObjectIntensityOrientation extends Module {
         String[] ALL = new String[] { DIRECTION, DISPERSION, AMOUNT, GOODNESS, ALIGNMENT_INDEX, ALIGNMENT_INDEX_BG_SUB,
                 BACKGROUND };
 
+    }
+
+    public MeasureObjectIntensityOrientation(Modules modules) {
+        super("Measure object intensity orientation", modules);
     }
 
     public static String getFullName(double binStart, double binEnd, int nBins, String imageName, String measurement,
@@ -152,31 +203,35 @@ public class MeasureObjectIntensityOrientation extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
     public String getDescription() {
-        return "Calculates the orientation of structures in each object for a specific image.  This module uses the <a href=\"https://imagej.net/plugins/directionality\">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for all slices within an object; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements." +
-        "<br><br>References:<br>" +
-        "<ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>";
+        return "Calculates the orientation of structures in each object for a specific image.  This module uses the <a href=\"https://imagej.net/plugins/directionality\">Directionality_</a> plugin to calculate core measures.  Additional measurements, such as the Alignment Index [1] are also calculated.  All measurements are made for all slices within an object; that is, the individual slice histograms are merged and normalised prior to calculation of all measurements."
+                +
+                "<br><br>References:<br>" +
+                "<ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>";
     }
 
-    public static void processObject(Obj obj, Image inputImage, int nBins, double binStart, double binEnd,
+    public static Directionality_ processObject(Obj obj, Image inputImage, int nBins, double binStart, double binEnd,
             AnalysisMethod method, boolean includeBinRange, boolean includeBinNumber) {
         ArrayList<double[]> tempHistograms = new ArrayList<>();
         HashMap<Integer, Roi> rois = obj.getRois();
         Directionality_ directionality = new Directionality_();
 
-        for (int z:rois.keySet()) {
+        for (int z : rois.keySet()) {
             // Getting current image slice
-            Image sliceImage = ExtractSubstack.extractSubstack(inputImage,"Slice","1",String.valueOf(z+1),String.valueOf(obj.getT()+1));
+            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z + 1),
+                    String.valueOf(obj.getT() + 1));
             ImagePlus sliceIpl = sliceImage.getImagePlus();
             sliceIpl.setRoi(rois.get(z));
+            ImagePlus cropIpl = sliceIpl.crop();
+            cropIpl.setTitle("Directionality");
 
             // Configuring Directionality plugin
             directionality = new Directionality_();
-            directionality.setImagePlus(sliceIpl.crop());
+            directionality.setImagePlus(cropIpl);
             directionality.setBinNumber(nBins);
             directionality.setBinRange(binStart, binEnd);
             directionality.setMethod(method);
@@ -188,12 +243,13 @@ public class MeasureObjectIntensityOrientation extends Module {
 
         }
 
-        // Removing existing histograms (from the most recent run) and replacing with all histograms from each object slice
+        // Removing existing histograms (from the most recent run) and replacing with
+        // all histograms from each object slice
         ArrayList<double[]> histograms = directionality.getHistograms();
         histograms.clear();
-        for (double[] histogram:tempHistograms)
+        for (double[] histogram : tempHistograms)
             histograms.add(histogram);
-        
+
         MeasureImageIntensityOrientation.mergeHistograms(directionality);
         directionality.fitHistograms();
 
@@ -236,6 +292,58 @@ public class MeasureObjectIntensityOrientation extends Module {
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.BACKGROUND, includeBinRange,
                 includeBinNumber);
         obj.addMeasurement(new Measurement(name, extra_results[2]));
+
+        return directionality;
+
+    }
+
+    void saveHistogramsAllTogether(Objs inputObjects, TreeMap<Integer, ImagePlus> histogramIpls, String outputPath) {
+        ImagePlus histIpl = IJ.createImage("Histograms", histWidth, histHeight, inputObjects.size(), 24);
+
+        int count = 1;
+        for (Obj obj : inputObjects.values()) {
+            ImagePlus currHistIpl = histogramIpls.get(obj.getID());
+            AddText.addOverlay(currHistIpl, "ID=" + obj.getID(), Color.RED, 14, 1, 20, 5, new int[] { 1 },
+                    new int[] { 1 }, false);
+            histIpl.setPosition(histIpl.getStackIndex(1, count++, 1));
+            histIpl.setProcessor(currHistIpl.flatten().getProcessor());
+        }
+
+        outputPath = outputPath + ".tif";
+        ImageSaver.saveImage(histIpl, ImageSaver.FileFormats.TIF, outputPath);
+
+    }
+
+    void saveHistogramsByParent(Objs parentObjects, String inputObjectsName, TreeMap<Integer, ImagePlus> histogramIpls,
+            String outputPath) {
+        for (Obj parent : parentObjects.values()) {
+            Objs children = parent.getChildren(inputObjectsName);
+            ImagePlus histIpl = IJ.createImage("Histograms", histWidth, histHeight, children.size(), 24);
+
+            int count = 1;
+            for (Obj obj : children.values()) {
+                ImagePlus currHistIpl = histogramIpls.get(obj.getID());
+                AddText.addOverlay(currHistIpl, "ID=" + obj.getID() + "_T=" + (obj.getT() + 1), Color.RED,
+                        14, 1, 20, 5,
+                        new int[] { 1 },
+                        new int[] { 1 }, false);
+                histIpl.setPosition(histIpl.getStackIndex(1, count++, 1));
+                histIpl.setProcessor(currHistIpl.flatten().getProcessor());
+            }
+
+            String finalOutputPath = outputPath + "_ID" + parent.getID() + ".tif";
+            ImageSaver.saveImage(histIpl, ImageSaver.FileFormats.TIF, finalOutputPath);
+        }
+    }
+
+    void saveHistogramsIndividually(Objs inputObjects, TreeMap<Integer, ImagePlus> histogramIpls, String outputPath) {
+        for (Obj obj : inputObjects.values()) {
+            ImagePlus currHistIpl = histogramIpls.get(obj.getID());
+            AddText.addOverlay(currHistIpl, "ID=" + obj.getID(), Color.RED, 14, 1, 20, 5, new int[] { 1 },
+                    new int[] { 1 }, false);
+            String finalOutputPath = outputPath + "_ID" + obj.getID() + ".tif";
+            ImageSaver.saveImage(currHistIpl.flatten(), ImageSaver.FileFormats.TIF, finalOutputPath);
+        }
     }
 
     @Override
@@ -249,6 +357,12 @@ public class MeasureObjectIntensityOrientation extends Module {
         double binEnd = parameters.getValue(HISTOGRAM_END, workspace);
         boolean includeBinRange = parameters.getValue(INCLUDE_BIN_RANGE_IN_NAME, workspace);
         boolean includeBinNumber = parameters.getValue(INCLUDE_BIN_NUMBER_IN_NAME, workspace);
+        boolean saveHistogram = parameters.getValue(SAVE_HISTOGRAM, workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
+        String histGroupMode = parameters.getValue(HISTOGRAM_GROUPING_MODE, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME, workspace);
 
         Image inputImage = workspace.getImage(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -264,8 +378,39 @@ public class MeasureObjectIntensityOrientation extends Module {
                 break;
         }
 
-        for (Obj obj:inputObjects.values())
-            processObject(obj, inputImage, nBins, binStart, binEnd, method, includeBinRange, includeBinNumber);
+        TreeMap<Integer, ImagePlus> histogramIpls = new TreeMap<>();
+        for (Obj obj : inputObjects.values()) {
+            Directionality_ directionality = processObject(obj, inputImage, nBins, binStart, binEnd, method,
+                    includeBinRange, includeBinNumber);
+
+            if (saveHistogram)
+                histogramIpls.put(obj.getID(),
+                        MeasureImageIntensityOrientation.getHistogramRGB(directionality).getImagePlus());
+
+        }
+
+        if (saveHistogram) {
+            // Constructing core filename
+            String outputPath = getOutputPath(modules, workspace);
+            String outputName = getOutputName(modules, workspace);
+            outputPath = outputPath + outputName;
+            outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+            outputPath = appendDateTime(outputPath, appendDateTimeMode);
+            outputPath = outputPath + suffix;
+
+            switch (histGroupMode) {
+                case HistogramGroupingModes.ALL_TOGETHER:
+                    saveHistogramsAllTogether(inputObjects, histogramIpls, outputPath);
+                    break;
+                case HistogramGroupingModes.GROUP_BY_PARENT:
+                    Objs parentObjects = workspace.getObjects(parentObjectsName);
+                    saveHistogramsByParent(parentObjects, inputObjectsName, histogramIpls, outputPath);
+                    break;
+                case HistogramGroupingModes.INDIVIDUAL_FILES:
+                    saveHistogramsIndividually(inputObjects, histogramIpls, outputPath);
+                    break;
+            }
+        }
 
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
@@ -276,6 +421,8 @@ public class MeasureObjectIntensityOrientation extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
@@ -290,13 +437,50 @@ public class MeasureObjectIntensityOrientation extends Module {
         parameters.add(new BooleanP(INCLUDE_BIN_RANGE_IN_NAME, this, true));
         parameters.add(new BooleanP(INCLUDE_BIN_NUMBER_IN_NAME, this, true));
 
+        parameters.add(new SeparatorP(HISTOGRAM_SEPARATOR, this));
+        parameters.add(new BooleanP(SAVE_HISTOGRAM, this, false));
+        parameters.add(new ChoiceP(HISTOGRAM_GROUPING_MODE, this, HistogramGroupingModes.ALL_TOGETHER,
+                HistogramGroupingModes.ALL));
+        parameters.add(new ParentObjectsP(PARENT_OBJECTS_NAME, this));
+
         addParameterDescriptions();
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+
+        returnedParameters.add(parameters.getParameter(ORIENTATION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(METHOD));
+        returnedParameters.add(parameters.getParameter(NUMBER_OF_BINS));
+        returnedParameters.add(parameters.getParameter(HISTOGRAM_START));
+        returnedParameters.add(parameters.getParameter(HISTOGRAM_END));
+
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INCLUDE_BIN_RANGE_IN_NAME));
+        returnedParameters.add(parameters.getParameter(INCLUDE_BIN_NUMBER_IN_NAME));
+
+        returnedParameters.add(parameters.getParameter(HISTOGRAM_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SAVE_HISTOGRAM));
+        if ((boolean) parameters.getValue(SAVE_HISTOGRAM, null)) {
+            returnedParameters.addAll(super.updateAndGetParameters());
+            returnedParameters.remove(FILE_SAVING_SEPARATOR);
+            returnedParameters.add(parameters.getParameter(HISTOGRAM_GROUPING_MODE));
+            switch ((String) parameters.getValue(HISTOGRAM_GROUPING_MODE, null)) {
+                case HistogramGroupingModes.GROUP_BY_PARENT:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECTS_NAME));
+                    ParentObjectsP parameter = parameters.getParameter(PARENT_OBJECTS_NAME);
+                    parameter.setChildObjectsName(parameters.getValue(INPUT_OBJECTS, null));
+                    break;
+            }
+        }
+
+        return returnedParameters;
 
     }
 
@@ -386,7 +570,10 @@ public class MeasureObjectIntensityOrientation extends Module {
         return true;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+
         parameters.get(INPUT_IMAGE).setDescription("");
 
     }

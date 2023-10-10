@@ -16,7 +16,7 @@ public class LUTs {
         public static LUT random = null;
         public static LUT randomVibrant = null;
 
-        private static long randomSeed = 1;
+        private static long randomSeed = 2;
 
 
         public static LUT Ice() {
