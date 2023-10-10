@@ -1,9 +1,9 @@
 package io.github.mianalysis.mia.object.parameters.text;
 
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
-import io.github.mianalysis.mia.gui.parametercontrols.SeriesSelector;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class SeriesSingleSelectorP extends IntegerP {
     public SeriesSingleSelectorP(String name, Module module, int value) {
@@ -24,12 +24,12 @@ public class SeriesSingleSelectorP extends IntegerP {
 
     @Override
     public ParameterControl getControl() {
-        return new SeriesSelector(this);
+        return ParameterControlFactory.getActiveFactory().getSeriesSelector(this);
     }
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name,newModule,value,getDescription());
+        SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name, newModule, value, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -1,10 +1,10 @@
 package io.github.mianalysis.mia.object.parameters;
 
-import io.github.mianalysis.mia.gui.parametercontrols.AdjustParameterGroupButton;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 /**
  * Created by Stephen Cross on 01/02/2019.
@@ -21,7 +21,7 @@ public class AdjustParameters extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new AdjustParameterGroupButton(this);
+        return ParameterControlFactory.getActiveFactory().getAdjustParameterGroupButton(this);
     }
 
     @Override

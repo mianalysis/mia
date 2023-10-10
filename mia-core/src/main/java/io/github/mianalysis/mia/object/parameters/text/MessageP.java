@@ -4,10 +4,12 @@ import java.awt.Color;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.gui.parametercontrols.MessageArea;
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
+
+
 
 public class MessageP extends TextAreaP {
     private Color color = Color.BLACK;
@@ -59,7 +61,7 @@ public class MessageP extends TextAreaP {
 
     @Override
     public ParameterControl getControl() {
-        return new MessageArea(this, controlHeight);
+        return ParameterControlFactory.getActiveFactory().getMessageTypeControl(this, controlHeight);
     }
 
     @Override

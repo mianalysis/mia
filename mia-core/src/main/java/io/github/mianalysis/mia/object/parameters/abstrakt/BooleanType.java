@@ -1,8 +1,8 @@
 package io.github.mianalysis.mia.object.parameters.abstrakt;
 
-import io.github.mianalysis.mia.gui.parametercontrols.BooleanParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public abstract class BooleanType extends Parameter {
     protected boolean selected = false;
@@ -41,7 +41,7 @@ public abstract class BooleanType extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new BooleanParameter(this);
+        return ParameterControlFactory.getActiveFactory().getBooleanControl(this);
     }
 
     @Override

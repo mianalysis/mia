@@ -4,9 +4,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.parametercontrols.ChoiceArrayParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public abstract class ChoiceType extends Parameter {
     protected String choice = "";
@@ -45,7 +45,7 @@ public abstract class ChoiceType extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new ChoiceArrayParameter(this);
+        return ParameterControlFactory.getActiveFactory().getChoiceTypeControl(this);
     }
 
     @Override

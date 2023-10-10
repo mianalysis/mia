@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Measurement;
@@ -13,6 +12,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.math.CumStat;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -223,7 +223,7 @@ public abstract class TextType extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new TextParameter(this);
+        return ParameterControlFactory.getActiveFactory().getTextTypeControl(this);
     }
 
     @Override

@@ -71,7 +71,6 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.parametercontrols.FileParameter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -81,6 +80,9 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -100,9 +102,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
-import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.process.system.FileCrawler;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -1112,7 +1112,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         if (previousPath != null) {
             String path = new File(previousPath).getPath();
-            path = FileParameter.checkPath(path);
+            path = FileCrawler.checkPath(path);
             fileChooser.setCurrentDirectory(new File(path));
         }
         fileChooser.showDialog(null, "Save");
@@ -1172,7 +1172,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         if (previousPath != null) {
             String path = new File(previousPath).getPath();
-            path = FileParameter.checkPath(path);
+            path = FileCrawler.checkPath(path);
             fileChooser.setCurrentDirectory(new File(path));
         }
         fileChooser.showDialog(null, "Load");

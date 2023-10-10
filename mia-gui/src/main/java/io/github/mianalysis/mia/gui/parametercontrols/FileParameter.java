@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.system.FileCrawler;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -82,7 +83,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
         if (((FileFolderType) parameter).getPath() != null) {
             String path = (String) ((FileFolderType) parameter).getPath();
-            path = checkPath(path);
+            path = FileCrawler.checkPath(path);
             fileChooser.setCurrentDirectory(new File(path));
         }
         fileChooser.showDialog(null, "Open");
@@ -107,24 +108,6 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
         GUI.updateModules();
         GUI.updateParameters();
-
-    }
-
-    public static String checkPath(String path) {
-        File file = new File(path);
-
-        // Check if the full path exists
-        if (file.exists())
-            return path;
-
-        // If this file doesn't exist, test to see if its parent does
-        String parentPath = file.getParent();
-
-        // If there's no parent (i.e. we're at the path root) return an empty string
-        if (parentPath == null)
-            return "";
-
-        return checkPath(parentPath);
 
     }
 }

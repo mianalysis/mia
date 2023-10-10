@@ -1,12 +1,12 @@
 package io.github.mianalysis.mia.object.parameters.text;
 
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
-import io.github.mianalysis.mia.gui.parametercontrols.SeriesSelector;
+import com.drew.lang.annotations.NotNull;
+
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
-
-import com.drew.lang.annotations.NotNull;
 
 public class SeriesListSelectorP extends StringP {
     public SeriesListSelectorP(String name, Module module) {
@@ -23,7 +23,7 @@ public class SeriesListSelectorP extends StringP {
 
     @Override
     public ParameterControl getControl() {
-        return new SeriesSelector(this);
+        return ParameterControlFactory.getActiveFactory().getSeriesSelector(this);
     }
 
     @Override

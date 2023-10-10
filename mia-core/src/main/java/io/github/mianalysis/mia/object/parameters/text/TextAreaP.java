@@ -2,13 +2,13 @@ package io.github.mianalysis.mia.object.parameters.text;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
-import io.github.mianalysis.mia.gui.parametercontrols.TextAreaParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class TextAreaP extends TextType {
     private String value = "";
@@ -57,7 +57,8 @@ public class TextAreaP extends TextType {
         this.controlHeight = controlHeight;
     }
 
-    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, String description, int controlHeight) {
+    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, String description,
+            int controlHeight) {
         super(name, module, description);
         this.value = value;
         this.editable = editable;
@@ -99,7 +100,7 @@ public class TextAreaP extends TextType {
     @Override
     public ParameterControl getControl() {
         if (control == null)
-            control = new TextAreaParameter(this,controlHeight);
+            control = ParameterControlFactory.getActiveFactory().getTextAreaParameter(this, controlHeight);
         return control;
     }
 
@@ -113,15 +114,16 @@ public class TextAreaP extends TextType {
 
     @Override
     public boolean verify() {
-        if (value.equals("")) return false;
+        if (value.equals(""))
+            return false;
 
-        return GlobalVariables.variablesPresent(value,module.getModules());
+        return GlobalVariables.variablesPresent(value, module.getModules());
 
     }
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        TextAreaP newParameter = new TextAreaP(name,newModule,value,editable,getDescription());
+        TextAreaP newParameter = new TextAreaP(name, newModule, value, editable, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

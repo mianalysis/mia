@@ -330,4 +330,22 @@ public class FileCrawler {
     public boolean getIgnoreCase() {
         return ignoreCase;
     }
+
+    public static String checkPath(String path) {
+        File file = new File(path);
+
+        // Check if the full path exists
+        if (file.exists())
+            return path;
+
+        // If this file doesn't exist, test to see if its parent does
+        String parentPath = file.getParent();
+
+        // If there's no parent (i.e. we're at the path root) return an empty string
+        if (parentPath == null)
+            return "";
+
+        return checkPath(parentPath);
+
+    }
 }

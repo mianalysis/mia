@@ -2,11 +2,11 @@ package io.github.mianalysis.mia.object.parameters;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.gui.parametercontrols.FileParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class FileFolderPathP extends FileFolderType {
     public FileFolderPathP(String name, Module module) {
@@ -23,7 +23,7 @@ public class FileFolderPathP extends FileFolderType {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new FileParameter(this,FileParameter.FileTypes.EITHER_TYPE);
+        return ParameterControlFactory.getActiveFactory().getFileFolderParameter(this,FileParameter.FileTypes.EITHER_TYPE);
     }
 
     @Override

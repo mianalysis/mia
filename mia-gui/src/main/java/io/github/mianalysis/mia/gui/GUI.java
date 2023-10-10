@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
 import io.github.mianalysis.mia.gui.regions.menubar.CustomMenuBar;
@@ -32,6 +33,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
@@ -84,6 +86,8 @@ public class GUI {
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
+
+        ParameterControlFactory.setActiveFactory(new SwingParameterControlFactory());
 
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
