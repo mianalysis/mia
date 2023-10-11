@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -31,7 +32,6 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.houghtransform.transforms.RectangleTransform;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 
 /**

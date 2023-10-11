@@ -8,9 +8,9 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.object.coordinates.voxel.BresenhamRectangle;
 import io.github.mianalysis.mia.process.houghtransform.accumulators.RectangleAccumulator;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.voxel.BresenhamRectangle;
 
 /**
  * Created by sc13967 on 12/01/2018.

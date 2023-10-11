@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.scijava.Priority;
 import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.Plugin;
@@ -68,6 +66,7 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 import io.github.mianalysis.mia.process.system.FileCrawler;
+import io.github.mianalysis.mia.process.system.FileTools;
 import io.scif.Plane;
 import io.scif.Reader;
 import io.scif.SCIFIO;
@@ -855,7 +854,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Getting list of all matching filenames
-        String[] filenames = getGenericNames(metadata, absolutePath);
+        String[] filenames = FileTools.getGenericNames(metadata, absolutePath);
 
         int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true, filenames.length);
 
@@ -1211,31 +1210,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static String getGenericName(Metadata metadata, String genericFormat)
-            throws ServiceException, DependencyException, FormatException, IOException {
-        // Returns the first generic name matching the specified format
-        return getGenericNames(metadata, genericFormat)[0];
-
-    }
-
-    public static String[] getGenericNames(Metadata metadata, String genericFormat)
-            throws ServiceException, DependencyException, FormatException, IOException {
-        String absolutePath = metadata.insertMetadataValues(genericFormat);
-        String filepath = FilenameUtils.getFullPath(absolutePath);
-        String filename = FilenameUtils.getName(absolutePath);
-
-        // If name includes "*" get first instance of wildcard
-        if (filename.contains("*")) {
-            String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
-
-            // Appending the filepath to the start of each name
-            return Arrays.stream(filenames).map(v -> filepath + v).sorted().toArray(s -> new String[s]);
-        }
-
-        return new String[] { filepath + filename };
-
-    }
-
     private void addCropMeasurements(Image image, int[] crop) {
         image.addMeasurement(new Measurement(Measurements.ROI_LEFT, crop[0]));
         image.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
@@ -1432,7 +1406,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                         case NameFormats.GENERIC:
                             metadata = (Metadata) workspace.getMetadata().clone();
-                            path = getGenericName(metadata, genericFormat);
+                            path = FileTools.getGenericName(metadata, genericFormat);
                             break;
                     }
 

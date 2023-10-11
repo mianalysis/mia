@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver.AppendDateTimeModes;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -37,7 +38,6 @@ import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.metadata.Metadata;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 /**
  * Created by sc13967 on 26/06/2017.

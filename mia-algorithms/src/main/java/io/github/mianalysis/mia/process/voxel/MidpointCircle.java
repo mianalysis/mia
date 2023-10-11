@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object.coordinates.voxel;
+package io.github.mianalysis.mia.process.voxel;
 
 // Implementation of the midpoint circle algorithm
 // Described at https://en.wikipedia.org/wiki/Midpoint_circle_algorithm (accessed 12-07-2016)

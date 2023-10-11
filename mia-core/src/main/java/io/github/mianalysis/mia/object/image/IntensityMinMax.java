@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.process.imagej;
+package io.github.mianalysis.mia.object.image;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -35,7 +35,7 @@ public class IntensityMinMax {
     }
 
     static void processSingle(ImagePlus ipl, double minClip, double maxClip, int mode) {
-        ImageStatistics stats = ImageStatistics.getStatistics(ipl.getProcessor(), ImageStatistics.MIN_MAX, null);
+        // ImageStatistics stats = ImageStatistics.getStatistics(ipl.getProcessor(), ImageStatistics.MIN_MAX, null);
 
         // Getting the minimum and maximum values
         double[] range = null;

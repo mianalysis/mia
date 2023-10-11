@@ -5,10 +5,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import ij.ImageStack;
-import io.github.mianalysis.mia.object.coordinates.voxel.SphereShell;
-import io.github.mianalysis.mia.object.coordinates.voxel.SphereShell.Connectivity;
 import io.github.mianalysis.mia.process.houghtransform.accumulators.SphereAccumulator;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.voxel.SphereShell;
+import io.github.mianalysis.mia.process.voxel.SphereShell.Connectivity;
 
 /**
  * Created by sc13967 on 12/01/2018.

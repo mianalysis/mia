@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object.coordinates.voxel;
+package io.github.mianalysis.mia.process.voxel;
 
 /**
  * Implements Bresenham's line algorithm to draw a straight line between two points.

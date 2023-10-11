@@ -4,19 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-import ij.ImagePlus;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.process.analysis.AngularPersistenceCalculator;
-import io.github.mianalysis.mia.process.analysis.CumulativePathLengthCalculator;
-import io.github.mianalysis.mia.process.analysis.DirectionalPersistenceCalculator;
-import io.github.mianalysis.mia.process.analysis.DirectionalityRatioCalculator;
-import io.github.mianalysis.mia.process.analysis.EuclideanDistanceCalculator;
-import io.github.mianalysis.mia.process.analysis.InstantaneousSpeedCalculator;
-import io.github.mianalysis.mia.process.analysis.InstantaneousStepSizeCalculator;
-import io.github.mianalysis.mia.process.analysis.InstantaneousVelocityCalculator;
-import io.github.mianalysis.mia.process.analysis.MSDCalculator;
-import io.github.mianalysis.mia.process.analysis.NearestNeighbourCalculator;
-import io.github.mianalysis.mia.process.analysis.SpotIntensity;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
@@ -69,58 +57,58 @@ public class Track extends TreeMap<Integer,Timepoint<Double>> {
 
     }
 
-    public CumStat[] getDirectionalPersistence() {
-        return DirectionalPersistenceCalculator.calculate(getF(),getX(),getY(),getZ());
+    // public CumStat[] getDirectionalPersistence() {
+    //     return DirectionalPersistenceCalculator.calculate(getF(),getX(),getY(),getZ());
 
-    }
+    // }
 
-    public TreeMap<Integer, CumStat> getMSD() {
-        return MSDCalculator.calculate(getF(),getX(),getY(),getZ());
+//     public TreeMap<Integer, CumStat> getMSD() {
+//         return MSDCalculator.calculate(getF(),getX(),getY(),getZ());
 
-    }
+//     }
 
-    public double[] getMSDLinearFit(int nPoints) {
-//        CumStat[] cs = MSDCalculator.calculate(getF(),getX(pixelDistances),getY(pixelDistances),getZ(pixelDistances));
-//
-//        double[] df = new double[cs.length];
-//        for (int i=0;i<cs.length;i++) {
-//            df[i] = i;
-//        }
-//        double[] MSD = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
+//     public double[] getMSDLinearFit(int nPoints) {
+// //        CumStat[] cs = MSDCalculator.calculate(getF(),getX(pixelDistances),getY(pixelDistances),getZ(pixelDistances));
+// //
+// //        double[] df = new double[cs.length];
+// //        for (int i=0;i<cs.length;i++) {
+// //            df[i] = i;
+// //        }
+// //        double[] MSD = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
 
-        TreeMap<Integer,CumStat> msd = getMSD();
-        int[] df = msd.keySet().stream().mapToInt(v->v).toArray();
-        double[] MSD = msd.values().stream().mapToDouble(CumStat::getMean).toArray();
+//         TreeMap<Integer,CumStat> msd = getMSD();
+//         int[] df = msd.keySet().stream().mapToInt(v->v).toArray();
+//         double[] MSD = msd.values().stream().mapToDouble(CumStat::getMean).toArray();
 
-        return MSDCalculator.getLinearFit(df,MSD,nPoints);
+//         return MSDCalculator.getLinearFit(df,MSD,nPoints);
 
-    }
+//     }
 
-    public TreeMap<Integer, Double> getInstantaneousSpeed() {
-        return new InstantaneousSpeedCalculator().calculate(this);
+    // public TreeMap<Integer, Double> getInstantaneousSpeed() {
+    //     return new InstantaneousSpeedCalculator().calculate(this);
 
-    }
+    // }
 
-    public TreeMap<Integer, Double> getInstantaneousXVelocity() {
-        return new InstantaneousVelocityCalculator().calculate(getF(),getX());
-    }
+    // public TreeMap<Integer, Double> getInstantaneousXVelocity() {
+    //     return new InstantaneousVelocityCalculator().calculate(getF(),getX());
+    // }
 
-    public TreeMap<Integer, Double> getInstantaneousYVelocity() {
-        return new InstantaneousVelocityCalculator().calculate(getF(),getY());
-    }
+    // public TreeMap<Integer, Double> getInstantaneousYVelocity() {
+    //     return new InstantaneousVelocityCalculator().calculate(getF(),getY());
+    // }
 
-    public TreeMap<Integer, Double> getInstantaneousZVelocity() {
-        return new InstantaneousVelocityCalculator().calculate(getF(),getZ());
-    }
+    // public TreeMap<Integer, Double> getInstantaneousZVelocity() {
+    //     return new InstantaneousVelocityCalculator().calculate(getF(),getZ());
+    // }
 
-    public TreeMap<Integer, Double> getInstantaneousStepSizes() {
-        return new InstantaneousStepSizeCalculator().calculate(this);
+    // public TreeMap<Integer, Double> getInstantaneousStepSizes() {
+    //     return new InstantaneousStepSizeCalculator().calculate(this);
 
-    }
+    // }
 
-    public TreeMap<Integer, Double> getAngularPersistence() {
-        return new AngularPersistenceCalculator().calculate(this);
-    }
+    // public TreeMap<Integer, Double> getAngularPersistence() {
+    //     return new AngularPersistenceCalculator().calculate(this);
+    // }
 
     public double getEuclideanDistance() {
         double[] x = getX();
@@ -135,45 +123,45 @@ public class Track extends TreeMap<Integer,Timepoint<Double>> {
 
     }
 
-    public double getTotalPathLength() {
-        TreeMap<Integer,Double> steps = getInstantaneousStepSizes();
+    // public double getTotalPathLength() {
+    //     TreeMap<Integer,Double> steps = getInstantaneousStepSizes();
 
-        double totalPathLength = 0;
-        for (double value:steps.values()) totalPathLength += value;
+    //     double totalPathLength = 0;
+    //     for (double value:steps.values()) totalPathLength += value;
 
-        return totalPathLength;
+    //     return totalPathLength;
 
-    }
+    // }
 
-    public double getDirectionalityRatio() {
-        return getEuclideanDistance()/getTotalPathLength();
+    // public double getDirectionalityRatio() {
+    //     return getEuclideanDistance()/getTotalPathLength();
 
-    }
+    // }
 
-    /**
-     * @return The Euclidean distance at all time steps
-     */
-    public TreeMap<Integer, Double> getRollingEuclideanDistance() {
-        return new EuclideanDistanceCalculator().calculate(this);
+    // /**
+    //  * @return The Euclidean distance at all time steps
+    //  */
+    // public TreeMap<Integer, Double> getRollingEuclideanDistance() {
+    //     return new EuclideanDistanceCalculator().calculate(this);
 
-    }
+    // }
 
-    /**
-     * @return The total path length up to each time step
-     */
-    public TreeMap<Integer, Double> getRollingTotalPathLength() {
-        return new CumulativePathLengthCalculator().calculate(this);
+    // /**
+    //  * @return The total path length up to each time step
+    //  */
+    // public TreeMap<Integer, Double> getRollingTotalPathLength() {
+    //     return new CumulativePathLengthCalculator().calculate(this);
 
-    }
+    // }
 
-    public TreeMap<Integer, Double> getRollingDirectionalityRatio() {
-        return new DirectionalityRatioCalculator().calculate(this);
+    // public TreeMap<Integer, Double> getRollingDirectionalityRatio() {
+    //     return new DirectionalityRatioCalculator().calculate(this);
 
-    }
+    // }
 
-    public TreeMap<Integer, double[]> getNearestNeighbourDistance(TrackCollection tracks) {
-        return new NearestNeighbourCalculator().calculate(this,tracks);
-    }
+    // public TreeMap<Integer, double[]> getNearestNeighbourDistance(TrackCollection tracks) {
+    //     return new NearestNeighbourCalculator().calculate(this,tracks);
+    // }
 
     public int getDuration() {
         int[] f = getF();
@@ -211,26 +199,26 @@ public class Track extends TreeMap<Integer,Timepoint<Double>> {
 
     }
 
-    public double[] getRollingIntensity(ImagePlus ipl, int radius) {
-        double[] x = getX();
-        double[] y = getY();
-        double[] z = getZ();
+    // public double[] getRollingIntensity(ImagePlus ipl, int radius) {
+    //     double[] x = getX();
+    //     double[] y = getY();
+    //     double[] z = getZ();
 
-        int[] f = getF();
-        double[] intensity = new double[x.length];
+    //     int[] f = getF();
+    //     double[] intensity = new double[x.length];
 
-        for (int i=0;i<x.length;i++) {
-            ipl.setPosition(0,(int) Math.round(z[i])+1,f[i]+1);
+    //     for (int i=0;i<x.length;i++) {
+    //         ipl.setPosition(0,(int) Math.round(z[i])+1,f[i]+1);
 
-            SpotIntensity spotIntensity = new SpotIntensity(ipl.getProcessor(),x[i],y[i],radius);
+    //         SpotIntensity spotIntensity = new SpotIntensity(ipl.getProcessor(),x[i],y[i],radius);
 
-            intensity[i] = spotIntensity.getMeanPointIntensity();
+    //         intensity[i] = spotIntensity.getMeanPointIntensity();
 
-        }
+    //     }
 
-        return intensity;
+    //     return intensity;
 
-    }
+    // }
 
     public boolean hasFrame(int frame) {
         return containsKey(frame);

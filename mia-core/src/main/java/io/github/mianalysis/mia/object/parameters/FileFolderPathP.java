@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
+import io.github.mianalysis.mia.process.system.FileTypes;
 
 public class FileFolderPathP extends FileFolderType {
     public FileFolderPathP(String name, Module module) {
@@ -23,7 +24,7 @@ public class FileFolderPathP extends FileFolderType {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getFileFolderParameter(this,FileParameter.FileTypes.EITHER_TYPE);
+        return ParameterControlFactory.getActiveFactory().getFileFolderParameter(this,FileTypes.EITHER_TYPE);
     }
 
     @Override

@@ -1,12 +1,8 @@
 package io.github.mianalysis.mia.object.coordinates.tracks;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.TreeMap;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.process.analysis.DirectionalPersistenceCalculator;
-import io.github.mianalysis.mia.process.analysis.MSDCalculator;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
@@ -18,244 +14,244 @@ public class TrackCollection extends LinkedHashMap<Integer,Track> {
 
     private static final long serialVersionUID = -6015686973069140664L;
 
-    public double[][] getAverageRollingEuclideanDistance(boolean relativeToTrackStart) {
-        // Determining the first and last frames
-        int firstFrame = Integer.MAX_VALUE;
-        int lastFrame = 0;
-        for (Track track:values()) {
-            int[] f = track.getF();
-            if (f[0] < firstFrame) {
-                firstFrame = f[0];
-            }
-            if (f[f.length-1] > lastFrame) {
-                lastFrame = f[f.length-1];
-            }
-        }
-        int longestDuration = lastFrame-firstFrame;
+    // public double[][] getAverageRollingEuclideanDistance(boolean relativeToTrackStart) {
+    //     // Determining the first and last frames
+    //     int firstFrame = Integer.MAX_VALUE;
+    //     int lastFrame = 0;
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         if (f[0] < firstFrame) {
+    //             firstFrame = f[0];
+    //         }
+    //         if (f[f.length-1] > lastFrame) {
+    //             lastFrame = f[f.length-1];
+    //         }
+    //     }
+    //     int longestDuration = lastFrame-firstFrame;
 
-        // Creating the CumStat array
-        CumStat[] cs = new CumStat[longestDuration+1];
-        for (int i=0;i<cs.length;i++) {
-            cs[i] = new CumStat();
-        }
+    //     // Creating the CumStat array
+    //     CumStat[] cs = new CumStat[longestDuration+1];
+    //     for (int i=0;i<cs.length;i++) {
+    //         cs[i] = new CumStat();
+    //     }
 
-        for (Track track:values()) {
-            int[] f = track.getF();
-            TreeMap<Integer,Double> rollingEuclideanDistance = track.getRollingEuclideanDistance();
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         TreeMap<Integer,Double> rollingEuclideanDistance = track.getRollingEuclideanDistance();
 
-            for (int i=0;i<rollingEuclideanDistance.size();i++) {
-                int pos = relativeToTrackStart ? f[i]-f[0] : f[i]-firstFrame;
-                cs[pos].addMeasure(rollingEuclideanDistance.get(f[i]));
-            }
-        }
+    //         for (int i=0;i<rollingEuclideanDistance.size();i++) {
+    //             int pos = relativeToTrackStart ? f[i]-f[0] : f[i]-firstFrame;
+    //             cs[pos].addMeasure(rollingEuclideanDistance.get(f[i]));
+    //         }
+    //     }
 
-        // Getting the frame numbers
-        double[] f = new double[longestDuration];
-        for (int i=0;i<f.length;i++) {
-            f[i] = i;
-        }
+    //     // Getting the frame numbers
+    //     double[] f = new double[longestDuration];
+    //     for (int i=0;i<f.length;i++) {
+    //         f[i] = i;
+    //     }
 
-        // Getting the average and standard deviations
-        double[] averageEuclideanDistance = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
-        double[] stdevEuclideanDistance = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
+    //     // Getting the average and standard deviations
+    //     double[] averageEuclideanDistance = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
+    //     double[] stdevEuclideanDistance = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
 
-        return new double[][]{f,averageEuclideanDistance,stdevEuclideanDistance};
+    //     return new double[][]{f,averageEuclideanDistance,stdevEuclideanDistance};
 
-    }
+    // }
 
-    public double[][] getAverageTotalPathLength(boolean relativeToTrackStart) {
-        // Determining the first and last frames
-        int firstFrame = Integer.MAX_VALUE;
-        int lastFrame = 0;
-        for (Track track:values()) {
-            int[] f = track.getF();
-            if (f[0] < firstFrame) {
-                firstFrame = f[0];
-            }
-            if (f[f.length-1] > lastFrame) {
-                lastFrame = f[f.length-1];
-            }
-        }
-        int longestDuration = lastFrame-firstFrame;
+    // public double[][] getAverageTotalPathLength(boolean relativeToTrackStart) {
+    //     // Determining the first and last frames
+    //     int firstFrame = Integer.MAX_VALUE;
+    //     int lastFrame = 0;
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         if (f[0] < firstFrame) {
+    //             firstFrame = f[0];
+    //         }
+    //         if (f[f.length-1] > lastFrame) {
+    //             lastFrame = f[f.length-1];
+    //         }
+    //     }
+    //     int longestDuration = lastFrame-firstFrame;
 
-        // Creating the CumStat array
-        CumStat[] cs = new CumStat[longestDuration+1];
-        for (int i=0;i<cs.length;i++) {
-            cs[i] = new CumStat();
-        }
+    //     // Creating the CumStat array
+    //     CumStat[] cs = new CumStat[longestDuration+1];
+    //     for (int i=0;i<cs.length;i++) {
+    //         cs[i] = new CumStat();
+    //     }
 
-        for (Track track:values()) {
-            int[] f = track.getF();
-            TreeMap<Integer,Double> rollingTotalPathLength = track.getRollingTotalPathLength();
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         TreeMap<Integer,Double> rollingTotalPathLength = track.getRollingTotalPathLength();
 
-            for (int i=0;i<rollingTotalPathLength.size();i++) {
-                int pos = relativeToTrackStart ? f[i]-f[0] : f[i]-firstFrame;
-                cs[pos].addMeasure(rollingTotalPathLength.get(f[i]));
-            }
-        }
+    //         for (int i=0;i<rollingTotalPathLength.size();i++) {
+    //             int pos = relativeToTrackStart ? f[i]-f[0] : f[i]-firstFrame;
+    //             cs[pos].addMeasure(rollingTotalPathLength.get(f[i]));
+    //         }
+    //     }
 
-        // Getting the frame numbers
-        double[] f = new double[longestDuration];
-        for (int i=0;i<f.length;i++) {
-            f[i] = i;
-        }
+    //     // Getting the frame numbers
+    //     double[] f = new double[longestDuration];
+    //     for (int i=0;i<f.length;i++) {
+    //         f[i] = i;
+    //     }
 
-        // Getting the average and standard deviations
-        double[] averageTotalPathLength = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
-        double[] stdevTotalPathLength = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
+    //     // Getting the average and standard deviations
+    //     double[] averageTotalPathLength = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
+    //     double[] stdevTotalPathLength = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
 
-        return new double[][]{f,averageTotalPathLength,stdevTotalPathLength};
+    //     return new double[][]{f,averageTotalPathLength,stdevTotalPathLength};
 
-    }
+    // }
 
-    public double[][] getAverageDirectionalityRatio(boolean relativeToTrackStart) {
-        // Determining the first and last frames
-        int firstFrame = Integer.MAX_VALUE;
-        int lastFrame = 0;
-        for (Track track:values()) {
-            int[] f = track.getF();
-            if (f[0] < firstFrame) {
-                firstFrame = f[0];
-            }
-            if (f[f.length-1] > lastFrame) {
-                lastFrame = f[f.length-1];
-            }
-        }
-        int longestDuration = lastFrame-firstFrame;
+    // public double[][] getAverageDirectionalityRatio(boolean relativeToTrackStart) {
+    //     // Determining the first and last frames
+    //     int firstFrame = Integer.MAX_VALUE;
+    //     int lastFrame = 0;
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         if (f[0] < firstFrame) {
+    //             firstFrame = f[0];
+    //         }
+    //         if (f[f.length-1] > lastFrame) {
+    //             lastFrame = f[f.length-1];
+    //         }
+    //     }
+    //     int longestDuration = lastFrame-firstFrame;
 
-        // Creating the CumStat array
-        CumStat[] cs = new CumStat[longestDuration+1];
-        for (int i=0;i<cs.length;i++) {
-            cs[i] = new CumStat();
-        }
+    //     // Creating the CumStat array
+    //     CumStat[] cs = new CumStat[longestDuration+1];
+    //     for (int i=0;i<cs.length;i++) {
+    //         cs[i] = new CumStat();
+    //     }
 
-        for (Track track:values()) {
-            int[] f = track.getF();
-            TreeMap<Integer,Double> rollingDirectionalityRatio = track.getRollingDirectionalityRatio();
-            for (int i=0;i<rollingDirectionalityRatio.size();i++) {
-                int pos = relativeToTrackStart ? f[i]-f[0] : f[i]-firstFrame;
-                cs[pos].addMeasure(rollingDirectionalityRatio.get(f[i]));
-            }
-        }
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         TreeMap<Integer,Double> rollingDirectionalityRatio = track.getRollingDirectionalityRatio();
+    //         for (int i=0;i<rollingDirectionalityRatio.size();i++) {
+    //             int pos = relativeToTrackStart ? f[i]-f[0] : f[i]-firstFrame;
+    //             cs[pos].addMeasure(rollingDirectionalityRatio.get(f[i]));
+    //         }
+    //     }
 
-        // Getting the frame numbers
-        double[] f = new double[longestDuration];
-        for (int i=0;i<f.length;i++) {
-            f[i] = i;
-        }
+    //     // Getting the frame numbers
+    //     double[] f = new double[longestDuration];
+    //     for (int i=0;i<f.length;i++) {
+    //         f[i] = i;
+    //     }
 
-        // Getting the average and standard deviations
-        double[] averageDirectionalityRatio = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
-        double[] stdDirectionalityRatio = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
+    //     // Getting the average and standard deviations
+    //     double[] averageDirectionalityRatio = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
+    //     double[] stdDirectionalityRatio = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
 
-        return new double[][]{f,averageDirectionalityRatio,stdDirectionalityRatio};
+    //     return new double[][]{f,averageDirectionalityRatio,stdDirectionalityRatio};
 
-    }
+    // }
 
-    /**
-     * Average directional persistence.  Values are stored as the average for each frame gap.
-     * @return Average directional persistence
-     */
-    public double[][] getAverageDirectionalPersistence() {
-        // Determining the longest duration.  This is also the largest possible frame gap.
-        int longestDuration = 0;
-        for (Track track:values()) {
-            if (track.getDuration() > longestDuration) {
-                longestDuration = track.getDuration();
-            }
-        }
+    // /**
+    //  * Average directional persistence.  Values are stored as the average for each frame gap.
+    //  * @return Average directional persistence
+    //  */
+    // public double[][] getAverageDirectionalPersistence() {
+    //     // Determining the longest duration.  This is also the largest possible frame gap.
+    //     int longestDuration = 0;
+    //     for (Track track:values()) {
+    //         if (track.getDuration() > longestDuration) {
+    //             longestDuration = track.getDuration();
+    //         }
+    //     }
 
-        // Creating the CumStat array
-        CumStat[] cs = new CumStat[longestDuration+1];
-        for (int i=0;i<cs.length;i++) {
-            cs[i] = new CumStat();
-        }
+    //     // Creating the CumStat array
+    //     CumStat[] cs = new CumStat[longestDuration+1];
+    //     for (int i=0;i<cs.length;i++) {
+    //         cs[i] = new CumStat();
+    //     }
 
-        for (Track track:values()) {
-            DirectionalPersistenceCalculator.calculate(cs,track.getF(),track.getX(),track.getY(),track.getZ());
-        }
+    //     for (Track track:values()) {
+    //         DirectionalPersistenceCalculator.calculate(cs,track.getF(),track.getX(),track.getY(),track.getZ());
+    //     }
 
-        // Getting the frame intervals
-        double[] df = new double[longestDuration];
-        for (int i=0;i<df.length;i++) {
-            df[i] = i;
-        }
+    //     // Getting the frame intervals
+    //     double[] df = new double[longestDuration];
+    //     for (int i=0;i<df.length;i++) {
+    //         df[i] = i;
+    //     }
 
-        // Getting the average and standard deviations
-        double[] averageDirectionalPersistence = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
-        double[] stdevDirectionalPersistence = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
+    //     // Getting the average and standard deviations
+    //     double[] averageDirectionalPersistence = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
+    //     double[] stdevDirectionalPersistence = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
 
-        return new double[][]{df,averageDirectionalPersistence,stdevDirectionalPersistence};
+    //     return new double[][]{df,averageDirectionalPersistence,stdevDirectionalPersistence};
 
-    }
+    // }
 
-    /**
-     * Average MSD.  Values are stored as the average for each frame gap.
-     * @return Average MSD
-     */
-    public TreeMap<Integer,CumStat> getAverageMSD() {
-        // Determining the longest duration.  This is also the largest possible frame gap.
-        int longestDuration = 0;
-        for (Track track:values()) {
-            if (track.getDuration() > longestDuration) {
-                longestDuration = track.getDuration();
-            }
-        }
+    // /**
+    //  * Average MSD.  Values are stored as the average for each frame gap.
+    //  * @return Average MSD
+    //  */
+    // public TreeMap<Integer,CumStat> getAverageMSD() {
+    //     // Determining the longest duration.  This is also the largest possible frame gap.
+    //     int longestDuration = 0;
+    //     for (Track track:values()) {
+    //         if (track.getDuration() > longestDuration) {
+    //             longestDuration = track.getDuration();
+    //         }
+    //     }
 
-        // Creating the CumStat array
-        TreeMap<Integer,CumStat> msd = new TreeMap<>();
-        for (Track track:values()) {
-            MSDCalculator.calculate(msd,track.getF(),track.getX(),track.getY(),track.getZ());
-        }
+    //     // Creating the CumStat array
+    //     TreeMap<Integer,CumStat> msd = new TreeMap<>();
+    //     for (Track track:values()) {
+    //         MSDCalculator.calculate(msd,track.getF(),track.getX(),track.getY(),track.getZ());
+    //     }
 
-        return msd;
+    //     return msd;
 
-    }
+    // }
 
-    public double[][] getAverageNearestNeighbourDistance() {
-        // Determining the first and last frames
-        int firstFrame = Integer.MAX_VALUE;
-        int lastFrame = 0;
-        for (Track track:values()) {
-            int[] f = track.getF();
-            if (f[0] < firstFrame) {
-                firstFrame = f[0];
-            }
-            if (f[f.length-1] > lastFrame) {
-                lastFrame = f[f.length-1];
-            }
-        }
-        int longestDuration = lastFrame-firstFrame;
+    // public double[][] getAverageNearestNeighbourDistance() {
+    //     // Determining the first and last frames
+    //     int firstFrame = Integer.MAX_VALUE;
+    //     int lastFrame = 0;
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         if (f[0] < firstFrame) {
+    //             firstFrame = f[0];
+    //         }
+    //         if (f[f.length-1] > lastFrame) {
+    //             lastFrame = f[f.length-1];
+    //         }
+    //     }
+    //     int longestDuration = lastFrame-firstFrame;
 
-        // Creating the CumStat array
-        CumStat[] cs = new CumStat[longestDuration+1];
-        for (int i=0;i<cs.length;i++) {
-            cs[i] = new CumStat();
-        }
+    //     // Creating the CumStat array
+    //     CumStat[] cs = new CumStat[longestDuration+1];
+    //     for (int i=0;i<cs.length;i++) {
+    //         cs[i] = new CumStat();
+    //     }
 
-        for (Track track:values()) {
-            int[] f = track.getF();
-            TreeMap<Integer,double[]> nearestNeighbourDistance = track.getNearestNeighbourDistance(this);
+    //     for (Track track:values()) {
+    //         int[] f = track.getF();
+    //         TreeMap<Integer,double[]> nearestNeighbourDistance = track.getNearestNeighbourDistance(this);
 
-            for (int i=0;i<nearestNeighbourDistance.size();i++) {
-                int pos = f[i]-firstFrame;
-                cs[pos].addMeasure(nearestNeighbourDistance.get(f[i])[1]);
-            }
-        }
+    //         for (int i=0;i<nearestNeighbourDistance.size();i++) {
+    //             int pos = f[i]-firstFrame;
+    //             cs[pos].addMeasure(nearestNeighbourDistance.get(f[i])[1]);
+    //         }
+    //     }
 
-        // Getting the frame numbers
-        double[] f = new double[longestDuration];
-        for (int i=0;i<f.length;i++) {
-            f[i] = i;
-        }
+    //     // Getting the frame numbers
+    //     double[] f = new double[longestDuration];
+    //     for (int i=0;i<f.length;i++) {
+    //         f[i] = i;
+    //     }
 
-        // Getting the average and standard deviations
-        double[] averageNearestNeighbourDistance = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
-        double[] stdevNearestNeighbourDistance = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
+    //     // Getting the average and standard deviations
+    //     double[] averageNearestNeighbourDistance = Arrays.stream(cs).mapToDouble(CumStat::getMean).toArray();
+    //     double[] stdevNearestNeighbourDistance = Arrays.stream(cs).mapToDouble(CumStat::getStd).toArray();
 
-        return new double[][]{f,averageNearestNeighbourDistance,stdevNearestNeighbourDistance};
+    //     return new double[][]{f,averageNearestNeighbourDistance,stdevNearestNeighbourDistance};
 
-    }
+    // }
 
     public int[][] getNumberOfObjects(boolean relativeToTrackStart) {
         // Determining the first and last frames
@@ -348,32 +344,32 @@ public class TrackCollection extends LinkedHashMap<Integer,Track> {
 
     }
 
-    public double getMaximumInstantaneousSpeed() {
-        double maxVelocity = 0;
+    // public double getMaximumInstantaneousSpeed() {
+    //     double maxVelocity = 0;
 
-        for (Track track:values()) {
-            TreeMap<Integer,Double> velocities = track.getInstantaneousSpeed();
+    //     for (Track track:values()) {
+    //         TreeMap<Integer,Double> velocities = track.getInstantaneousSpeed();
 
-            for (double velocity:velocities.values()) {
-                maxVelocity = Math.max(maxVelocity,velocity);
-            }
-        }
+    //         for (double velocity:velocities.values()) {
+    //             maxVelocity = Math.max(maxVelocity,velocity);
+    //         }
+    //     }
 
-        return maxVelocity;
+    //     return maxVelocity;
 
-    }
+    // }
 
-    public double getMaximumTotalPathLength() {
-        double maxTotalPathLength = 0;
+    // public double getMaximumTotalPathLength() {
+    //     double maxTotalPathLength = 0;
 
-        for (Track track:values()) {
-            TreeMap<Integer,Double> lengths = track.getRollingTotalPathLength();
+    //     for (Track track:values()) {
+    //         TreeMap<Integer,Double> lengths = track.getRollingTotalPathLength();
 
-            maxTotalPathLength = Math.max(maxTotalPathLength, lengths.lastKey().doubleValue());
+    //         maxTotalPathLength = Math.max(maxTotalPathLength, lengths.lastKey().doubleValue());
 
-        }
+    //     }
 
-        return maxTotalPathLength;
+    //     return maxTotalPathLength;
 
-    }
+    // }
 }

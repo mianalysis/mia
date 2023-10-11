@@ -6,7 +6,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.RotatedRectRoi;
-import io.github.mianalysis.mia.object.coordinates.voxel.MidpointCircle;
+import io.github.mianalysis.mia.process.voxel.MidpointCircle;
 
 public class RectangleAccumulator extends AbstractAccumulator {
     /**

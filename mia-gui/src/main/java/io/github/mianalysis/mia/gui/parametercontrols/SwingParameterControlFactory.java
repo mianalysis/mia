@@ -1,6 +1,11 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
+import io.github.mianalysis.mia.object.parameters.GenericButtonP;
+import io.github.mianalysis.mia.object.parameters.ModuleP;
+import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.BooleanType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
@@ -12,8 +17,13 @@ import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class SwingParameterControlFactory extends ParameterControlFactory {
     @Override
-    public ParameterControl getAdjustParameterGroupButton(AdjustParameters parameters) {
-        return new AdjustParameterGroupButton(parameters);
+    public ParameterControl getAddParametersButton(ParameterGroup parameter) {
+        return new AddParametersButton(parameter);
+    }
+
+    @Override
+    public ParameterControl getAdjustParameterGroupButton(AdjustParameters parameter) {
+        return new AdjustParameterGroupButton(parameter);
     }
 
     @Override
@@ -32,8 +42,28 @@ public class SwingParameterControlFactory extends ParameterControlFactory {
     }
 
     @Override
+    public ParameterControl getGenericButton(GenericButtonP parameter) {
+        return new GenericButton(parameter);
+    }
+
+    @Override
     public ParameterControl getMessageTypeControl(MessageP parameter, int controlHeight) {
         return new MessageArea(parameter, controlHeight);
+    }
+
+    @Override
+    public ParameterControl getModuleChoice(ModuleP parameter) {
+        return new ModuleChoiceParameter(parameter);
+    }
+
+    @Override
+    public ParameterControl getRefSelectorParameter(ObjMeasurementSelectorP parameter) {
+        return new RefSelectorParameter(parameter);
+    }
+
+    @Override
+    public ParameterControl getSeparatorParameter(SeparatorP parameter) {
+        return new SeparatorParameter(parameter);
     }
 
     @Override

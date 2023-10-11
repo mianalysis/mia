@@ -11,7 +11,7 @@ import org.apache.commons.math3.stat.descriptive.rank.Min;
 import org.apache.commons.math3.stat.descriptive.summary.Sum;
 
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.object.coordinates.voxel.MidpointCircle;
+import io.github.mianalysis.mia.process.voxel.MidpointCircle;
 
 public class SpotIntensity {
     private double[] int_arr;

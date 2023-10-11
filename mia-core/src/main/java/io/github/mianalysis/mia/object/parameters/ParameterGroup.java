@@ -9,11 +9,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.github.mianalysis.mia.gui.parametercontrols.AddParametersButton;
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 
 /**
@@ -142,7 +142,7 @@ public class ParameterGroup extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new AddParametersButton(this);
+        return ParameterControlFactory.getActiveFactory().getAddParametersButton(this);
     }
 
     @Override

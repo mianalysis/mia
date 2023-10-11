@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -55,7 +56,6 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 import io.github.mianalysis.mia.process.math.CumStat;
 import io.github.mianalysis.mia.process.skeleton.BreakFixer;
 

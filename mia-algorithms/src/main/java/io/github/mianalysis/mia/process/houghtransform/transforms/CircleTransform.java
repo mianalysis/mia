@@ -9,9 +9,9 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.object.coordinates.voxel.MidpointCircle;
 import io.github.mianalysis.mia.process.houghtransform.accumulators.CircleAccumulator;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.process.voxel.MidpointCircle;
 
 /**
  * Created by sc13967 on 12/01/2018.

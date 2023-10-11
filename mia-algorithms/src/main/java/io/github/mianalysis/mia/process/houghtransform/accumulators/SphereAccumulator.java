@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import ij.IJ;
 import ij.ImagePlus;
-import io.github.mianalysis.mia.object.coordinates.voxel.SphereSolid;
+import io.github.mianalysis.mia.process.voxel.SphereSolid;
 
 /**
  * Created by sc13967 on 13/01/2018.

@@ -8,7 +8,7 @@ import ij.gui.Overlay;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 
 public class ImagePlusRenderer implements ImageRenderer {
     @Override

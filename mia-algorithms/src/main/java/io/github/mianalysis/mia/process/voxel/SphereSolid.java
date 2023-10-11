@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object.coordinates.voxel;
+package io.github.mianalysis.mia.process.voxel;
 
 import ij.IJ;
 import ij.ImageJ;

@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object.coordinates.voxel;
+package io.github.mianalysis.mia.process.voxel;
 
 public class BresenhamRectangle {
     public static int[][] getRectangle(int width, int length, int thetaDegs) {

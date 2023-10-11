@@ -11,12 +11,12 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -38,7 +38,7 @@ import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
-import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
@@ -329,7 +329,7 @@ public class WorkflowHandling extends Module {
     public static boolean testFileExists(Metadata metadata, String genericFormat) {
         String name = "";
         try {
-            name = ImageLoader.getGenericName(metadata, genericFormat);
+            name = FileTools.getGenericName(metadata, genericFormat);
         } catch (ServiceException | DependencyException | FormatException | IOException e) {
             return false;
         }

@@ -9,7 +9,7 @@ import ij.plugin.ImageCalculator;
 import ij.plugin.filter.Convolver;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.voxel.BresenhamLine;
+import io.github.mianalysis.mia.process.voxel.BresenhamLine;
 
 public class BreakFixer {
     private double angleWeight = 1;

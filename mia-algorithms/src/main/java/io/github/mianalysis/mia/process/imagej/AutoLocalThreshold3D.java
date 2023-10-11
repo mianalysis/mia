@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.Filters3D;
 import ij.plugin.PlugIn;
 import ij.process.ImageConverter;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 
 /**
  * Created by sc13967 on 14/11/2017.

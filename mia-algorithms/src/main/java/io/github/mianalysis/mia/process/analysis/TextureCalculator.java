@@ -7,7 +7,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.process.math.CumStat;
 import io.github.mianalysis.mia.process.math.Indexer;
 

@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.system.FileCrawler;
+import io.github.mianalysis.mia.process.system.FileTypes;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -25,13 +26,6 @@ import io.github.mianalysis.mia.process.system.FileCrawler;
 public class FileParameter extends ParameterControl implements ActionListener {
     private String fileType;
     private JButton control;
-
-    public interface FileTypes {
-        String FILE_TYPE = "File";
-        String FOLDER_TYPE = "Folder";
-        String EITHER_TYPE = "Either";
-
-    }
 
     public FileParameter(FileFolderType parameter, String fileType) {
         super(parameter);

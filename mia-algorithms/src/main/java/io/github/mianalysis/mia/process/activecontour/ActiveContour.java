@@ -8,6 +8,7 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.process.activecontour.energies.BendingEnergy;
 import io.github.mianalysis.mia.process.activecontour.energies.ElasticEnergy;
 import io.github.mianalysis.mia.process.activecontour.energies.EnergyCollection;
@@ -15,7 +16,6 @@ import io.github.mianalysis.mia.process.activecontour.energies.PathEnergy;
 import io.github.mianalysis.mia.process.activecontour.minimisers.GreedyMinimiser;
 import io.github.mianalysis.mia.process.activecontour.physicalmodel.NodeCollection;
 import io.github.mianalysis.mia.process.activecontour.visualisation.GridOverlay;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 /**
  * Created by Stephen on 08/09/2016.

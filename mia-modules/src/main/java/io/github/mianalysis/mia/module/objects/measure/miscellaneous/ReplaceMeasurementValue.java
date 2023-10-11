@@ -1,14 +1,13 @@
 package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;

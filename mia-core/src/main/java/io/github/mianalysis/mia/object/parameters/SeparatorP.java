@@ -1,10 +1,10 @@
 package io.github.mianalysis.mia.object.parameters;
 
-import io.github.mianalysis.mia.gui.parametercontrols.SeparatorParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class SeparatorP extends Parameter {
     public SeparatorP(String name, Module module) {
@@ -15,8 +15,7 @@ public class SeparatorP extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new SeparatorParameter(this);
-
+        return ParameterControlFactory.getActiveFactory().getSeparatorParameter(this);
     }
 
     @Override
@@ -46,13 +45,13 @@ public class SeparatorP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        SeparatorP newParameter = new SeparatorP(name,newModule);
+        SeparatorP newParameter = new SeparatorP(name, newModule);
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());
 
         return (T) newParameter;
-        
+
     }
 }

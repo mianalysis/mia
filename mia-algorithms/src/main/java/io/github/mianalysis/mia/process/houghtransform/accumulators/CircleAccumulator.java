@@ -6,7 +6,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
-import io.github.mianalysis.mia.object.coordinates.voxel.MidpointCircle;
+import io.github.mianalysis.mia.process.voxel.MidpointCircle;
 
 /**
  * Created by sc13967 on 13/01/2018.

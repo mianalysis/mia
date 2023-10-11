@@ -3,13 +3,13 @@ package io.github.mianalysis.mia.object.parameters;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.parametercontrols.GenericButton;
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import ij.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class GenericButtonP extends Parameter {
     public enum DefaultModes {
@@ -87,7 +87,7 @@ public class GenericButtonP extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new GenericButton(this);
+        return ParameterControlFactory.getActiveFactory().getGenericButton(this);
     }
 
     @Override

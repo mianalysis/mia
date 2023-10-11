@@ -2,9 +2,9 @@ package io.github.mianalysis.mia.process.activecontour.energies;
 
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.object.coordinates.voxel.BresenhamLine;
 import io.github.mianalysis.mia.process.activecontour.physicalmodel.Vertex;
 import io.github.mianalysis.mia.process.math.CumStat;
+import io.github.mianalysis.mia.process.voxel.BresenhamLine;
 
 /**
  * Created by sc13967 on 23/09/2016.

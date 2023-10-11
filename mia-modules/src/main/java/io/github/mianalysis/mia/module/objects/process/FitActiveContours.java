@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -42,7 +43,6 @@ import io.github.mianalysis.mia.process.activecontour.physicalmodel.NodeCollecti
 import io.github.mianalysis.mia.process.activecontour.physicalmodel.Vertex;
 import io.github.mianalysis.mia.process.activecontour.visualisation.GridOverlay;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
-import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 /**
  * Created by sc13967 on 16/01/2018.

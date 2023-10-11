@@ -6,20 +6,20 @@ import java.util.regex.Pattern;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
-import io.github.mianalysis.mia.gui.parametercontrols.RefSelectorParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 /**
  * Created by Stephen Cross on 18/02/2020.
  */
 public class ObjMeasurementSelectorP extends Parameter {
     private String objectName = "";
-    private TreeMap<String,Boolean> measurementStates = new TreeMap<>();
+    private TreeMap<String, Boolean> measurementStates = new TreeMap<>();
 
     public ObjMeasurementSelectorP(String name, Module module) {
         super(name, module);
@@ -37,7 +37,7 @@ public class ObjMeasurementSelectorP extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new RefSelectorParameter(this);
+        return ParameterControlFactory.getActiveFactory().getRefSelectorParameter(this);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ObjMeasurementSelectorP extends Parameter {
 
     @Override
     public <T> void setValue(T value) {
-        measurementStates = (TreeMap<String,Boolean>) value;
+        measurementStates = (TreeMap<String, Boolean>) value;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ObjMeasurementSelectorP extends Parameter {
 
         StringBuilder builder = new StringBuilder();
 
-        for (String measurementName:measurementStates.keySet()) {
+        for (String measurementName : measurementStates.keySet()) {
             builder.append("[NAME:")
                     .append(measurementName)
                     .append(",STATE:")
@@ -75,7 +75,7 @@ public class ObjMeasurementSelectorP extends Parameter {
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
-            measurementStates.put(matcher.group(1),Boolean.valueOf(matcher.group(2)));
+            measurementStates.put(matcher.group(1), Boolean.valueOf(matcher.group(2)));
         }
     }
 
@@ -98,7 +98,8 @@ public class ObjMeasurementSelectorP extends Parameter {
     }
 
     /**
-     * Iterate over all measurements.  If they're not present in the current object, remove them.  If they're
+     * Iterate over all measurements. If they're not present in the current object,
+     * remove them. If they're
      * missing, add them.
      */
     public void validateStates() {
@@ -115,8 +116,8 @@ public class ObjMeasurementSelectorP extends Parameter {
         measurementStates.keySet().removeIf(measurementName -> !refs.keySet().contains(measurementName));
 
         // Iterate over all measurements and add any that are missing
-        for (ObjMeasurementRef ref:refs.values()) {
-            measurementStates.putIfAbsent(ref.getName(),true);
+        for (ObjMeasurementRef ref : refs.values()) {
+            measurementStates.putIfAbsent(ref.getName(), true);
         }
     }
 
