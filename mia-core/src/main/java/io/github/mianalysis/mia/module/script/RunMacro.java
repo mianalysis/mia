@@ -27,7 +27,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -286,7 +285,6 @@ public class RunMacro extends AbstractMacroRunner {
         parameters.add(new TextAreaP(MACRO_TEXT, this, "// A variable has been pre-defined for the input image name."
                 + "\n\nrun(\"Enable MIA Extensions\");\n\n", true));
         parameters.add(new FilePathP(MACRO_FILE, this));
-        parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         parameters.add(new SeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(INTERCEPT_OUTPUT_IMAGE, this, true));

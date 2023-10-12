@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
@@ -146,12 +147,9 @@ public class ApplyDeepImageJModel extends Module {
 
     @Override
     protected void initialiseParameters() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new MessageP(AXES_ORDER, this, Colours.getBlue(darkMode), 20));
+        parameters.add(new MessageP(AXES_ORDER, this, ParameterState.MESSAGE, 20));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(MODEL_SEPARATOR, this));

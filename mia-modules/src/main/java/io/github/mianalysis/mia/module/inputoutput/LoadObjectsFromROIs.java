@@ -26,11 +26,14 @@ import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -46,8 +49,7 @@ import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
@@ -266,7 +268,7 @@ public class LoadObjectsFromROIs extends Module {
         switch (filePathMode) {
             case FilePathModes.GENERIC_PATH:
                 try {
-                    filePath = ImageLoader.getGenericName(workspace.getMetadata(), genericFilePath);
+                    filePath = FileTools.getGenericName(workspace.getMetadata(), genericFilePath);
                 } catch (ServiceException | DependencyException | FormatException | IOException e) {
                     e.printStackTrace();
                 }
@@ -301,9 +303,6 @@ public class LoadObjectsFromROIs extends Module {
 
     @Override
     protected void initialiseParameters() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new BooleanP(ASSIGN_TRACKS, this, false));
@@ -313,7 +312,7 @@ public class LoadObjectsFromROIs extends Module {
         parameters.add(new SeparatorP(PATH_SEPARATOR, this));
         parameters.add(new ChoiceP(FILE_PATH_MODE, this, FilePathModes.GENERIC_PATH, FilePathModes.ALL));
         parameters.add(new StringP(GENERIC_FILE_PATH, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, ParameterState.MESSAGE, 170));
         parameters.add(new FilePathP(SPECIFIC_FILE_PATH, this));
 
         addParameterDescriptions();

@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class DisableRefsButton extends JButton implements ActionListener {
     /**
@@ -37,7 +38,9 @@ public class DisableRefsButton extends JButton implements ActionListener {
         setName("DisableAllMeasurements");
         setToolTipText("Disable all measurements");
         addActionListener(this);
-        if (MIA.getPreferences().darkThemeEnabled())
+
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        if (isDark)
             setIcon(iconDM);
         else
             setIcon(icon);

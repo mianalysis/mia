@@ -17,6 +17,7 @@ import javax.swing.JTextPane;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.ModuleSearcher.SearchMatch;
 
 public class ResultsPanel extends JPanel {
@@ -52,7 +53,8 @@ public class ResultsPanel extends JPanel {
         for (SearchMatch match : matches) {
             Module module = match.getModule();
 
-            if (!module.isDeprecated() || MIA.getPreferences().showDeprecated()) {
+            boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+            if (!module.isDeprecated() || isDark) {
                 JLabel moduleName = new JLabel(module.getName());
                 Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
                 if (module.isDeprecated()) {

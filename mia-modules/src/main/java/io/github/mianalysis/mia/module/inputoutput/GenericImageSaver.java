@@ -8,7 +8,6 @@ import org.scijava.plugin.Plugin;
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -21,9 +20,11 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver.Append
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.IntensityMinMax;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
@@ -34,10 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.metadata.Metadata;
 
 /**
  * Created by sc13967 on 26/06/2017.
@@ -202,14 +200,11 @@ public class GenericImageSaver extends Module {
 
     @Override
     protected void initialiseParameters() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, ParameterState.MESSAGE, 170));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
 
         parameters.add(new SeparatorP(FORMAT_SEPARATOR, this));

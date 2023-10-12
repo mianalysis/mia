@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by Stephen on 08/06/2017.
@@ -70,9 +71,11 @@ public class EvalButton extends JButton implements ActionListener {
     public void updateState() {
         int idx = GUI.getModules().indexOf(module);
 
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(amberIconDM);
             else
                 setIcon(amberIcon);
@@ -84,7 +87,7 @@ public class EvalButton extends JButton implements ActionListener {
 
         if (idx <= GUI.getLastModuleEval()) {
             if (module.isRunnable()) {
-                if (MIA.getPreferences().darkThemeEnabled()) {
+                if (isDark) {
                     setIcon(greenIconDM);
                     setRolloverIcon(greenIconDM);
                 } else {
@@ -92,7 +95,7 @@ public class EvalButton extends JButton implements ActionListener {
                     setRolloverIcon(greenIcon);
                 }
             } else {
-                if (MIA.getPreferences().darkThemeEnabled()) {
+                if (isDark) {
                     setIcon(redClosedIconDM);
                     setRolloverIcon(redClosedIconDM);
                 } else {
@@ -102,7 +105,7 @@ public class EvalButton extends JButton implements ActionListener {
             }
         } else {
             if (module.isRunnable()) {
-                if (MIA.getPreferences().darkThemeEnabled()) {
+                if (isDark) {
                     setIcon(blackIconDM);
                     setRolloverIcon(blackIconDM);
                 } else {
@@ -110,7 +113,7 @@ public class EvalButton extends JButton implements ActionListener {
                     setRolloverIcon(blackIcon);
                 }
             } else {
-                if (MIA.getPreferences().darkThemeEnabled()) {
+                if (isDark) {
                     setIcon(redOpenIconDM);
                     setRolloverIcon(redOpenIconDM);
                 } else {

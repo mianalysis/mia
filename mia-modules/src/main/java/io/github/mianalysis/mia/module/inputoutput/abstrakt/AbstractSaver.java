@@ -15,12 +15,14 @@ import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
@@ -174,7 +176,7 @@ public abstract class AbstractSaver extends Module {
                     return filePath + File.separator;
 
                 case SaveLocations.SPECIFIC_LOCATION_GENERIC:
-                    filePath = ImageLoader.getGenericName(workspace.getMetadata(), filePathGeneric);
+                    filePath = FileTools.getGenericName(workspace.getMetadata(), filePathGeneric);
                     return filePath + File.separator;
             }
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
@@ -194,7 +196,7 @@ public abstract class AbstractSaver extends Module {
                     return FilenameUtils.removeExtension(rootFile.getName());
 
                 case SaveNameModes.SPECIFIC_NAME:
-                    saveFileName = ImageLoader.getGenericName(workspace.getMetadata(), saveFileName);
+                    saveFileName = FileTools.getGenericName(workspace.getMetadata(), saveFileName);
                     return FilenameUtils.removeExtension(saveFileName);
             }
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
@@ -206,9 +208,6 @@ public abstract class AbstractSaver extends Module {
 
     @Override
     protected void initialiseParameters() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));
@@ -216,7 +215,7 @@ public abstract class AbstractSaver extends Module {
         parameters.add(new StringP(SAVE_FILE_PATH_GENERIC, this));
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, ParameterState.MESSAGE, 170));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));

@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.moduledependencies.Dependency;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ListUnavailableModules extends JMenuItem implements ActionListener {
     private int count = 0;
@@ -28,7 +29,8 @@ public class ListUnavailableModules extends JMenuItem implements ActionListener 
         else
         setText(count+" unavailable modules");
 
-        if (MIA.getPreferences().darkThemeEnabled())
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        if (isDark)
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/alert_darkgreyDM_12px.png"), ""));
         else
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/alert_black_12px.png"), ""));

@@ -9,6 +9,7 @@ import javax.swing.JPopupMenu;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by Stephen on 28/07/2017.
@@ -34,7 +35,8 @@ public class ModuleListMenu extends JMenu implements Comparable {
     }
 
     public void addMenuItem(Module module) {
-        if (!module.isDeprecated() || MIA.getPreferences().showDeprecated())
+        boolean showDeprecated = ((SwingPreferences) MIA.getPreferences()).showDeprecated();
+        if (!module.isDeprecated() || showDeprecated)
             add(new PopupMenuItem(module, topLevelMenu));
     }
 

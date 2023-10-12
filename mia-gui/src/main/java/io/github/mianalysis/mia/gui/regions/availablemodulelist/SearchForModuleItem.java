@@ -9,11 +9,14 @@ import javax.swing.JMenuItem;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class SearchForModuleItem extends JMenuItem implements ActionListener {
     public SearchForModuleItem() {
         setText("Search for module");
-        if (MIA.getPreferences().darkThemeEnabled())
+        
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        if (isDark)
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/search_darkgreyDM_12px.png"), ""));
         else
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/search_black_12px.png"), ""));

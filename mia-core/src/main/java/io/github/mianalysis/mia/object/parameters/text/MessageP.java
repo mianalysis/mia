@@ -1,10 +1,9 @@
 package io.github.mianalysis.mia.object.parameters.text;
 
-import java.awt.Color;
-
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
@@ -12,47 +11,47 @@ import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 
 public class MessageP extends TextAreaP {
-    private Color color = Color.BLACK;
+    private ParameterState state = ParameterState.NORMAL;
     private int controlHeight = 50;
 
-    public MessageP(String name, Module module, Color color) {
+    public MessageP(String name, Module module, ParameterState state) {
         super(name, module, false);
-        this.color = color;
+        this.state = state;
         setExported(false);
     }
 
-    public MessageP(String name, Module module, Color color, int controlHeight) {
+    public MessageP(String name, Module module, ParameterState state, int controlHeight) {
         super(name, module, false);
-        this.color = color;
+        this.state = state;
         this.controlHeight = controlHeight;
         setExported(false);
     }
 
-    public MessageP(String name, Module module, @NotNull String value, Color color) {
+    public MessageP(String name, Module module, @NotNull String value, ParameterState state) {
         super(name, module, value, false);
-        this.color = color;
+        this.state = state;
         setExported(false);
     }
 
-    public MessageP(String name, Module module, @NotNull String value, Color color, int controlHeight) {
+    public MessageP(String name, Module module, @NotNull String value, ParameterState state, int controlHeight) {
         super(name, module, value, false);
-        this.color = color;
+        this.state = state;
         this.controlHeight = controlHeight;
         setExported(false);
     }
 
-    public MessageP(String name, Module module, @NotNull String value, Color color, String description) {
+    public MessageP(String name, Module module, @NotNull String value, ParameterState state, String description) {
         super(name, module, value, false, description);
-        this.color = color;
+        this.state = state;
         setExported(false);
     }
 
-    public Color getColor() {
-        return color;
+    public ParameterState getState() {
+        return state;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setState(ParameterState state) {
+        this.state = state;
     }
 
     public void setControlHeight(int controlHeight) {
@@ -66,7 +65,7 @@ public class MessageP extends TextAreaP {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        MessageP newParameter = new MessageP(name, newModule, getRawStringValue(), color, getDescription());
+        MessageP newParameter = new MessageP(name, newModule, getRawStringValue(), state, getDescription());
         
         newParameter.setControlHeight(controlHeight);
         newParameter.setNickname(getNickname());

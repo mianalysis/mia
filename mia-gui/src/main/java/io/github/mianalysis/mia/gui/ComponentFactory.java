@@ -51,6 +51,7 @@ import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -95,8 +96,7 @@ public class ComponentFactory {
         parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
             String value = parameter.getAlternativeString();
@@ -130,8 +130,8 @@ public class ComponentFactory {
             paramPanel.add(parameterName, c);
 
             if (!parameter.isValid()) {
-                parameterName.setForeground(Colours.getRed(darkMode));
-                if (darkMode)
+                parameterName.setForeground(Colours.getRed(isDark));
+                if (isDark)
                     parameterName.setIcon(warningIconDM);
                 else
                     parameterName.setIcon(warningIcon);
@@ -255,8 +255,7 @@ public class ComponentFactory {
     }
 
     public JPanel createProcessingSeparator(Module module) {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -280,12 +279,12 @@ public class ComponentFactory {
         BooleanP expandedProcessing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_PROCESSING);
         JLabel leftArrowLabel = new JLabel();
         if (expandedProcessing.isSelected()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 leftArrowLabel.setIcon(downArrowDM);
             else
                 leftArrowLabel.setIcon(downArrow);
         } else {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 leftArrowLabel.setIcon(rightArrowDM);
             else
                 leftArrowLabel.setIcon(rightArrow);
@@ -296,8 +295,8 @@ public class ComponentFactory {
         panel.add(leftArrowLabel, c);
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Colours.getDarkBlue(darkMode));
-        separatorLeft.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(darkMode)));
+        separatorLeft.setForeground(Colours.getDarkBlue(isDark));
+        separatorLeft.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
         c.weightx = 1;
         c.gridx++;
         panel.add(separatorLeft, c);
@@ -305,15 +304,15 @@ public class ComponentFactory {
         JLabel label = new JLabel();
         label.setText(module.getNickname());
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        label.setForeground(Colours.getDarkBlue(darkMode));
+        label.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0, 0, 0, 0);
         panel.add(label, c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Colours.getDarkBlue(darkMode));
-        separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(darkMode)));
+        separatorRight.setForeground(Colours.getDarkBlue(isDark));
+        separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
         c.weightx = 1;
         c.gridx++;
         c.anchor = GridBagConstants.EAST;
@@ -322,12 +321,12 @@ public class ComponentFactory {
 
         JLabel rightArrowLabel = new JLabel();
         if (expandedProcessing.isSelected()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 rightArrowLabel.setIcon(downArrowDM);
             else
                 rightArrowLabel.setIcon(downArrow);
         } else {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 rightArrowLabel.setIcon(leftArrowDM);
             else
                 rightArrowLabel.setIcon(leftArrow);

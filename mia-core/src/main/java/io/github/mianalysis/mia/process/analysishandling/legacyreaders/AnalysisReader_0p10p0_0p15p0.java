@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -26,28 +24,18 @@ import org.xml.sax.SAXException;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.module.objects.measure.miscellaneous.ChildObjectCount;
-import io.github.mianalysis.mia.module.objects.measure.miscellaneous.ObjectTimepoint;
-import io.github.mianalysis.mia.module.objects.measure.miscellaneous.ParentObjectID;
-import io.github.mianalysis.mia.module.objects.measure.miscellaneous.PartnerObjectCount;
-import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
-import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
-import io.github.mianalysis.mia.object.refs.ParentChildRef;
-import io.github.mianalysis.mia.object.refs.PartnerRef;
-import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
-import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -73,6 +61,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
+        MIA.log.writeWarning("Pre MIA v0.15.0 workflow loaded.  Child object counts and parent ID numbers will need to be manually added as new modules");
 
         return analysis;
 
@@ -95,7 +84,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         if (MIA.isHeadless())
             LogRenderer.setProgress(0);
         else
-            GUI.updateProgressBar(0);
+            ProgressBar.getActiveProgressBar().updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF"))
             xml = xml.substring(1);
@@ -116,8 +105,6 @@ public class AnalysisReader_0p10p0_0p15p0 {
     public static Modules loadModules(Document doc)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Modules modules = new Modules();
-        ArrayList<Node> relationshipsToCovert = new ArrayList<>();
-
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
         // Reflections tool
@@ -129,7 +116,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
             // Creating an empty Module matching the input type. If none was found the loop
             // skips to the next Module
-            Module module = initialiseModule(moduleNode, modules, availableModuleNames, relationshipsToCovert);
+            Module module = initialiseModule(moduleNode, modules, availableModuleNames);
             if (module == null)
                 continue;
 
@@ -145,18 +132,11 @@ public class AnalysisReader_0p10p0_0p15p0 {
             }
         }
 
-        // Adding relationships
-        convertRelationshipRefs(modules, relationshipsToCovert);
-
-        // Adding timepoint measurements for all objects
-        addTimepointMeasurements(modules);
-
         return modules;
 
     }
 
-    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModuleNames,
-            ArrayList<Node> relationshipsToCovert)
+    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModuleNames)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -169,7 +149,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         // Trying to load from available modules
         for (String availableModuleName : availableModuleNames) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModuleName))) {
-                return initialiseModule(moduleNode, modules, availableModuleName, relationshipsToCovert);
+                return initialiseModule(moduleNode, modules, availableModuleName);
             }
         }
 
@@ -180,8 +160,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, Modules modules, String availableModuleName,
-            ArrayList<Node> relationshipsToCovert)
+    public static Module initialiseModule(Node moduleNode, Modules modules, String availableModuleName)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
@@ -213,11 +192,6 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
                 case "METADATA":
                     populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                    break;
-
-                case "RELATIONSHIPS":
-                case "PARENT_CHILD":
-                    relationshipsToCovert.add(moduleChildNodes.item(i));
                     break;
             }
         }
@@ -313,226 +287,6 @@ public class AnalysisReader_0p10p0_0p15p0 {
             // Getting measurement properties
             ObjMeasurementRef ref = new ObjMeasurementRef(referenceNodes.item(i));
             module.addObjectMeasurementRef(ref);
-        }
-    }
-
-    public static void convertRelationshipRefs(Modules modules, ArrayList<Node> relationshipsToCovert) {
-        Module separator = null;
-        int nAdded = 0;
-
-        // Storing ParentChildRefs and PartnerRefs to prevent duplicate entries
-        RefPairCollection parentChildRefs = new RefPairCollection();
-        RefPairCollection partnerRefs = new RefPairCollection();
-
-        // Getting final list of available objects
-        LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
-        HashSet<String> availableObjectNames = new HashSet<>();
-        for (OutputObjectsP availableObject : availableObjects)
-            availableObjectNames.add(availableObject.getValue(null));
-
-        for (Node moduleNode : relationshipsToCovert) {
-            NodeList referenceNodes = moduleNode.getChildNodes();
-
-            // Iterating over all references of this type
-            for (int i = 0; i < referenceNodes.getLength(); i++) {
-                Node node = referenceNodes.item(i);
-
-                // ParentChildRef and PartnerRef no longer supports exporting, so have to use
-                // new,
-                // LegacySummaryRef to get export options
-                LegacySummaryRef lRef = new LegacySummaryRef(node);
-
-                // If this reference exports anything, new ObjectCount and ParentID measurement
-                // modules must be added at the end of the analysis
-                if (!lRef.isExportGlobal() && !lRef.isExportIndividual() && !lRef.isExportMax() && !lRef.isExportMean()
-                        && !lRef.isExportMin() && !lRef.isExportStd() && !lRef.isExportSum())
-                    continue;
-
-                // Adding a GUI separator. If no relationships are added, this will be removed
-                if (separator == null)
-                    separator = addRefSeparatorModule(modules);
-
-                switch (node.getNodeName()) {
-                    case "RELATIONSHIP":
-                    case "PARENT_CHILD":
-                        // Getting relationship properties and modules
-                        ParentChildRef pcRef = new ParentChildRef(node);
-                        String parentName = pcRef.getParentName();
-                        String childName = pcRef.getChildName();
-
-                        // Checking if this pair has already been added
-                        if (parentChildRefs.contains(parentName, childName))
-                            continue;
-                        else
-                            parentChildRefs.addPair(parentName, childName);
-
-                        // Checking objects still exist (i.e. haven't been removed)
-                        if (!availableObjectNames.contains(parentName))
-                            continue;
-
-                        if (!availableObjectNames.contains(childName))
-                            continue;
-
-                        addChildCountModule(modules, lRef, parentName, childName);
-                        addParentIDModule(modules, lRef, parentName, childName);
-
-                        nAdded += 2;
-
-                        break;
-
-                    case "PARTNER":
-                        // Getting relationship properties and module
-                        PartnerRef pRef = new PartnerRef(node);
-                        String object1Name = pRef.getObject1Name();
-                        String object2Name = pRef.getObject2Name();
-
-                        // Checking if this pair has already been added
-                        if (partnerRefs.contains(object1Name, object2Name))
-                            continue;
-                        else
-                            partnerRefs.addPair(object1Name, object2Name);
-
-                        // Checking objects still exist (i.e. haven't been removed)
-                        if (!availableObjectNames.contains(object1Name))
-                            continue;
-
-                        if (!availableObjectNames.contains(object2Name))
-                            continue;
-
-                        addPartnerCountModule(modules, lRef, object1Name, object2Name);
-                        addPartnerCountModule(modules, lRef, object2Name, object1Name);
-
-                        nAdded += 2;
-
-                        break;
-                }
-
-                // Display a message if any relationship modules were added, otherwise remove
-                // the redundant separator
-                if (nAdded > 0)
-                    MIA.log.writeMessage(
-                            "Pre-v0.15.0 analysis loaded.  Analysis has been automatically updated to store exported child/partner counts and parent IDs as measurements.");
-                else
-                    modules.remove(separator);
-
-            }
-        }
-    }
-
-    public static void addTimepointMeasurements(Modules modules) {
-        LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
-
-        if (availableObjects.size() == 0)
-            return;
-
-        GUISeparator guiSeparator = new GUISeparator(modules);
-        modules.add(guiSeparator);
-
-        guiSeparator.updateParameterValue(GUISeparator.SHOW_PROCESSING, false);
-        guiSeparator.setNickname("[AUTOGEN] Timepoint measurements");
-        guiSeparator.setNotes(
-                "The following modules were automatically added to aid compatibility with MIA v0.18.0 and above.  Object timepoints are now exported as measurements.");
-
-        for (OutputObjectsP availableObject : availableObjects) {
-            // Creating the object count module
-            ObjectTimepoint timepointModule = new ObjectTimepoint(modules);
-            modules.add(timepointModule);
-            timepointModule.updateParameterValue(PartnerObjectCount.INPUT_OBJECTS, availableObject.getObjectsName());
-
-            // Getting relevant measurement
-            ObjMeasurementRefs measRefs = timepointModule.updateAndGetObjectMeasurementRefs();
-            ObjMeasurementRef measRef = measRefs.get("TIMEPOINT");
-
-            // Setting measurement export states
-            measRef.setExportGlobal(true);
-            measRef.setExportIndividual(true);
-            measRef.setExportMax(false);
-            measRef.setExportMean(false);
-            measRef.setExportMin(false);
-            measRef.setExportStd(false);
-            measRef.setExportSum(false);
-
-        }
-    }
-
-    static GUISeparator addRefSeparatorModule(Modules modules) {
-        GUISeparator guiSeparator = new GUISeparator(modules);
-        modules.add(guiSeparator);
-
-        guiSeparator.updateParameterValue(GUISeparator.SHOW_PROCESSING, false);
-        guiSeparator.setNickname("[AUTOGEN] Object relationships");
-        guiSeparator.setNotes(
-                "The following modules were automatically added to aid compatibility with MIA v0.15.0 and above.  Child object counts, parent IDs and partner object counts are now stored as measurements.  The following modules add the same data exporting as present in the original analysis.  Note: Spreadsheet column headers may have changed.");
-
-        return guiSeparator;
-
-    }
-
-    static void addChildCountModule(Modules modules, LegacySummaryRef lRef, String parentName,
-            String childName) {
-        // Creating the object count module
-        ChildObjectCount countModule = new ChildObjectCount(modules);
-        modules.add(countModule);
-        countModule.updateParameterValue(ChildObjectCount.INPUT_OBJECTS, parentName);
-        countModule.updateParameterValue(ChildObjectCount.CHILD_OBJECTS, childName);
-
-        // Getting relevant measurement
-        String measurementName = ChildObjectCount.getFullName(childName);
-        ObjMeasurementRefs measRefs = countModule.updateAndGetObjectMeasurementRefs();
-        ObjMeasurementRef measRef = measRefs.get(measurementName);
-
-        // Setting measurement export states
-        measRef.setExportGlobal(lRef.isExportGlobal());
-        measRef.setExportIndividual(lRef.isExportIndividual());
-        measRef.setExportMax(lRef.isExportMax());
-        measRef.setExportMean(lRef.isExportMean());
-        measRef.setExportMin(lRef.isExportMin());
-        measRef.setExportStd(lRef.isExportStd());
-        measRef.setExportSum(lRef.isExportSum());
-
-    }
-
-    static void addParentIDModule(Modules modules, LegacySummaryRef lRef, String parentName,
-            String childName) {
-        // Creating the object count module
-        ParentObjectID idModule = new ParentObjectID(modules);
-        modules.add(idModule);
-        idModule.updateParameterValue(ParentObjectID.INPUT_OBJECTS, childName);
-        idModule.updateParameterValue(ParentObjectID.PARENT_OBJECT, parentName);
-
-        // There's no need to set export states here, as this measurement should already
-        // be set to only appear as an individual measurement with no statistics.
-
-    }
-
-    static void addPartnerCountModule(Modules modules, LegacySummaryRef lRef, String object1Name,
-            String object2Name) {
-        // Creating the object count module
-        PartnerObjectCount countModule = new PartnerObjectCount(modules);
-        modules.add(countModule);
-        countModule.updateParameterValue(PartnerObjectCount.INPUT_OBJECTS, object1Name);
-        countModule.updateParameterValue(PartnerObjectCount.PARTNER_OBJECTS, object2Name);
-
-        // Getting relevant measurement
-        String measurementName = PartnerObjectCount.getFullName(object2Name);
-        ObjMeasurementRefs measRefs = countModule.updateAndGetObjectMeasurementRefs();
-        ObjMeasurementRef measRef = measRefs.get(measurementName);
-
-        // Setting measurement export states
-        measRef.setExportGlobal(lRef.isExportGlobal());
-        measRef.setExportIndividual(lRef.isExportIndividual());
-        measRef.setExportMax(lRef.isExportMax());
-        measRef.setExportMean(lRef.isExportMean());
-        measRef.setExportMin(lRef.isExportMin());
-        measRef.setExportStd(lRef.isExportStd());
-        measRef.setExportSum(lRef.isExportSum());
-
-    }
-
-    static class LegacySummaryRef extends SummaryRef {
-        LegacySummaryRef(Node node) {
-            super(node);
-            super.setAttributesFromXML(node);
         }
     }
 

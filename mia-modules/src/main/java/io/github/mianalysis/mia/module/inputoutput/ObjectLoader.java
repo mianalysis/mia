@@ -22,11 +22,16 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -44,10 +49,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.mianalysis.mia.object.metadata.Metadata;
-import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
@@ -309,7 +311,7 @@ public class ObjectLoader extends Module {
                         default:
                             Metadata metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(prefix);
-                            return new File(ImageLoader.getGenericName(metadata, genericFormat));
+                            return new File(FileTools.getGenericName(metadata, genericFormat));
                         case NameFormats.INPUT_FILE_PREFIX:
                             metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(prefix);
@@ -618,9 +620,6 @@ public class ObjectLoader extends Module {
 
     @Override
     protected void initialiseParameters() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
@@ -628,7 +627,7 @@ public class ObjectLoader extends Module {
         parameters.add(new ChoiceP(COORDINATE_SOURCE, this, CoordinateSources.CURRENT_FILE, CoordinateSources.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, ParameterState.MESSAGE, 170));
         parameters.add(new StringP(PREFIX, this));
         parameters.add(new StringP(SUFFIX, this));
         parameters.add(new StringP(EXTENSION, this));

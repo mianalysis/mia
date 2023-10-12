@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.system.FileCrawler;
-import io.github.mianalysis.mia.process.system.FileTypes;
+import io.github.mianalysis.mia.process.system.FileTools.FileTypes;
 
 /**
  * Created by Stephen on 20/05/2017.

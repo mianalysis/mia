@@ -36,6 +36,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
@@ -256,8 +257,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 progressBar.setString("");
                 progressBar.setToolTipText(String.valueOf((double) value));
 
-                Preferences preferences = MIA.getPreferences();
-                boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+                boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
                 // Set a special colour if the analysis is marked as having failed
                 Status status = ((Workspace) model.getValueAt(row, COL_WORKSPACE)).getStatus();
@@ -265,16 +265,16 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                     case PASS:
                     case REDIRECT:
                         if (progress == 100)
-                            progressBar.setForeground(Colours.getGreen(darkMode));
+                            progressBar.setForeground(Colours.getGreen(isDark));
                         else
-                            progressBar.setForeground(Colours.getBlue(darkMode));
+                            progressBar.setForeground(Colours.getBlue(isDark));
                         break;
                     case FAIL:
-                        progressBar.setForeground(Colours.getRed(darkMode));
+                        progressBar.setForeground(Colours.getRed(isDark));
                         break;
                     case TERMINATE:
                     case TERMINATE_SILENT:
-                        progressBar.setForeground(Colours.getOrange(darkMode));
+                        progressBar.setForeground(Colours.getOrange(isDark));
                         break;
                 }
 

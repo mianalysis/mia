@@ -11,8 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class MessageArea extends ParameterControl {
     protected JPanel control;
@@ -20,6 +22,8 @@ public class MessageArea extends ParameterControl {
 
     public MessageArea(MessageP parameter, int controlHeight) {
         super(parameter);
+
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         control = new JPanel();
         control.setLayout(new GridBagLayout());
@@ -36,7 +40,7 @@ public class MessageArea extends ParameterControl {
         textArea.setBackground(null);
         textArea.setText(parameter.getRawStringValue());
         textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        textArea.setForeground(parameter.getColor());
+        textArea.setForeground(SwingParameterControlFactory.getColor(parameter.getState(),isDark));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);

@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.process;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
 import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -23,7 +22,6 @@ public abstract class ParameterControlFactory {
     public abstract ParameterControl getBooleanControl(BooleanType parameter);
     public abstract ParameterControl getChoiceTypeControl(ChoiceType parameter);
     public abstract ParameterControl getFileFolderParameter(FileFolderType parameter, String fileType);
-    public abstract ParameterControl getGenericButton(GenericButtonP parameter);
     public abstract ParameterControl getMessageTypeControl(MessageP parameter, int controlHeight);
     public abstract ParameterControl getModuleChoice(ModuleP parameter);
     public abstract ParameterControl getRefSelectorParameter(ObjMeasurementSelectorP parameter);
@@ -31,6 +29,7 @@ public abstract class ParameterControlFactory {
     public abstract ParameterControl getSeparatorParameter(SeparatorP parameter);
     public abstract ParameterControl getTextAreaParameter(TextAreaP parameter, int controlHeight);
     public abstract ParameterControl getTextTypeControl(TextType parameter);
+
 
     public static ParameterControlFactory getActiveFactory() {
         if (factory == null)

@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -67,38 +68,37 @@ public class ShowOutputButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         if ((state && module.isEnabled()) && module.isReachable() && module.isRunnable()) {
-            if (darkMode)
+            if (isDark)
                 setIcon(blackOpenIconDM);
             else
                 setIcon(blackOpenIcon);
         } else if ((state && module.isEnabled()) & !module.isReachable()) {
-            if (darkMode)
+            if (isDark)
                 setIcon(orangeOpenIconDM);
             else
                 setIcon(orangeOpenIcon);
         } else if ((state && module.isEnabled()) & !module.isRunnable()) {
-            if (darkMode)
+            if (isDark)
                 setIcon(redOpenIconDM);
             else
                 setIcon(redOpenIcon);
         } else if (state & !module.isEnabled()) {
             setIcon(greyOpenIcon);
         } else if ((!state && module.isEnabled()) && module.isReachable() && module.isRunnable()) {
-            if (darkMode)
+            if (isDark)
                 setIcon(blackClosedIconDM);
             else
                 setIcon(blackClosedIcon);
         } else if ((!state && module.isEnabled()) & !module.isReachable()) {
-            if (darkMode)
+            if (isDark)
                 setIcon(orangeClosedIconDM);
             else
                 setIcon(orangeClosedIcon);
         } else if ((!state && module.isEnabled()) & !module.isRunnable()) {
-            if (darkMode)
+            if (isDark)
                 setIcon(redClosedIconDM);
             else
                 setIcon(redClosedIcon);

@@ -21,6 +21,7 @@ import org.commonmark.renderer.html.HtmlRenderer;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class DocumentationPanel {
     public static void showAbout() {
@@ -103,7 +104,8 @@ public class DocumentationPanel {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            if (MIA.getPreferences().darkThemeEnabled())
+            boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+            if (isDark)
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64_DM.png").toString());
             else
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
@@ -155,7 +157,9 @@ public class DocumentationPanel {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            if (MIA.getPreferences().darkThemeEnabled())
+            
+            boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+            if (isDark)
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64_DM.png").toString());
             else
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());

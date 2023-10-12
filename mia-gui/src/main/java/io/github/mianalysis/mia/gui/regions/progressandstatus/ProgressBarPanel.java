@@ -7,6 +7,7 @@ import javax.swing.JProgressBar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ProgressBarPanel extends JProgressBar {
     /**
@@ -17,8 +18,7 @@ public class ProgressBarPanel extends JProgressBar {
     public ProgressBarPanel() {
         super(0, 100);
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();  
 
         setValue(0);
         setBorderPainted(false);
@@ -26,7 +26,7 @@ public class ProgressBarPanel extends JProgressBar {
         setMaximumSize(new Dimension(1, 15));
         setStringPainted(true);
         setString("");
-        setForeground(Colours.getOrange(darkMode));
+        setForeground(Colours.getOrange(isDark));
 
     }
 
@@ -34,12 +34,11 @@ public class ProgressBarPanel extends JProgressBar {
     public void setValue(int value) {
         super.setValue(value);
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         if (value == 100)
-            setForeground(Colours.getGreen(darkMode));
+            setForeground(Colours.getGreen(isDark));
         else
-            setForeground(Colours.getBlue(darkMode));
+            setForeground(Colours.getBlue(isDark));
     }
 }

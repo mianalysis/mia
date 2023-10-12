@@ -1,15 +1,14 @@
 package io.github.mianalysis.mia.module.visualise;
 
-import java.awt.Color;
-
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -24,14 +23,14 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Displays all measurements associated with an image.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Displays all measurements associated with an image.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ShowMetadata extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MESSAGE = "Message";
 
     public ShowMetadata(Modules modules) {
@@ -52,7 +51,6 @@ public class ShowMetadata extends Module {
         return "Displays all measurements associated with an image.";
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.VISUALISATION;
@@ -60,7 +58,8 @@ public class ShowMetadata extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        if (showOutput) workspace.showMetadata();
+        if (showOutput)
+            workspace.showMetadata();
 
         return Status.PASS;
 
@@ -68,39 +67,38 @@ public class ShowMetadata extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new MessageP(MESSAGE,this,"There are no parameters for this module", Color.BLACK));
+        parameters.add(new MessageP(MESSAGE, this, "There are no parameters for this module", ParameterState.NORMAL));
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

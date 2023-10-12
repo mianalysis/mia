@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ResetExport extends JButton implements ActionListener {
     /**
@@ -31,7 +32,9 @@ public class ResetExport extends JButton implements ActionListener {
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
-        if (MIA.getPreferences().darkThemeEnabled())
+
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        if (isDark)
             setIcon(refreshIconDM);
         else
             setIcon(refreshIcon);

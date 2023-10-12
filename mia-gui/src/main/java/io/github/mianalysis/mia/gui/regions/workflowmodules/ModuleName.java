@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ModuleName extends JLabel {
     private Module module;
@@ -36,8 +37,7 @@ public class ModuleName extends JLabel {
         this.table = table;
         this.isSelected = isSelected;
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         setBorder(new EmptyBorder(2, 5, 0, 0));
         setOpaque(true);
@@ -55,7 +55,7 @@ public class ModuleName extends JLabel {
         updateState();
 
         if (isSelected)
-            setBackground(Colours.getLightBlue(darkMode));
+            setBackground(Colours.getLightBlue(isDark));
         else
             setBackground(table.getBackground());
 
@@ -63,12 +63,11 @@ public class ModuleName extends JLabel {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         if (isSelected)
-            setBackground(Colours.getLightBlue(darkMode));
+            setBackground(Colours.getLightBlue(isDark));
         else
             setBackground(table.getBackground());
     }
@@ -76,11 +75,10 @@ public class ModuleName extends JLabel {
     public void updateState() {
         setIcon(null);
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         if (isSelected)
-            setBackground(Colours.getLightBlue(darkMode));
+            setBackground(Colours.getLightBlue(isDark));
         else
             setBackground(table.getBackground());
 
@@ -89,23 +87,23 @@ public class ModuleName extends JLabel {
             deprecationMessage = " (deprecated)";
 
         if (module instanceof GUISeparator) {
-            setForeground(Colours.getDarkBlue(darkMode));
+            setForeground(Colours.getDarkBlue(isDark));
             setToolTipText("Module separator");
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
             setForeground(defaultColour);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: OK" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isReachable()) {
-            setForeground(Colours.getOrange(darkMode));
-            if (MIA.getPreferences().darkThemeEnabled())
+            setForeground(Colours.getOrange(isDark));
+            if (isDark)
                 setIcon(skipIconDM);
             else
                 setIcon(skipIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: Skipped" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isRunnable()) {
-            setForeground(Colours.getRed(darkMode));
-            if (darkMode)
+            setForeground(Colours.getRed(isDark));
+            if (isDark)
                 setIcon(warningIconDM);
             else
                 setIcon(warningIcon);

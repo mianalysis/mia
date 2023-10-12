@@ -25,7 +25,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -295,7 +294,6 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
                         + "\n\nrun(\"Enable MIA Extensions\");\n\n",
                 true));
         parameters.add(new FilePathP(MACRO_FILE, this));
-        parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         Parameters collection = new Parameters();

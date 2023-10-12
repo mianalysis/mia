@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.process.exporting.Exporter;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
 
@@ -130,7 +131,7 @@ public class AnalysisRunner {
             LogRenderer.setProgress(100);
             MIA.log.writeStatus("Complete!\n");
         } else {
-            GUI.updateProgressBar(100);
+            ProgressBar.getActiveProgressBar().updateProgressBar(100);
             MIA.log.writeStatus("Complete!");
         }
     }
@@ -360,7 +361,8 @@ public class AnalysisRunner {
         GUI.setModuleBeingEval(-1);
         GUI.updateModules();
         GUI.updateParameters();
-        GUI.updateProgressBar();
+
+        ProgressBar.getActiveProgressBar().updateProgressBar();
 
         Thread.currentThread().getThreadGroup().interrupt();
         pool.shutdownNow();

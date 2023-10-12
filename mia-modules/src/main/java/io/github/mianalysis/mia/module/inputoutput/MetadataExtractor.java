@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.object.metadata.OperaFoldernameExtractor;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
+// import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.MetadataItemP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -473,7 +473,7 @@ public class MetadataExtractor extends Module {
         parameters.add(new TextAreaP(IDENTIFIED_GROUPS, this, false));
         parameters.add(new BooleanP(REGEX_SPLITTING, this, false));
         parameters.add(new StringP(METADATA_VALUE_NAME, this));
-        parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
+        // parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         addParameterDescriptions();
 

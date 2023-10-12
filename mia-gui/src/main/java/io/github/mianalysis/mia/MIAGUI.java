@@ -5,23 +5,18 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.scijava.Context;
 import org.scijava.command.Command;
-import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.PluginService;
-import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
-import net.imagej.ImageJService;
-import net.imagej.ops.OpService;
 
 /**
  * Created by Stephen Cross on 14/07/2017.
@@ -49,6 +44,7 @@ public class MIAGUI extends MIA implements Command {
     @Override
     public void run() {
         headless = false;
+        setPreferences(new SwingPreferences(null));
         try {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));

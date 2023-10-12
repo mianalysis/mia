@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -51,20 +52,22 @@ public class SeparatorButton extends JButton implements ActionListener {
     }
 
     public void setIcon() {
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
         BooleanP expandedEditing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING);
         if (expandedEditing.isSelected()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(expandedIconDM);
             else
                 setIcon(expandedIcon);
         } else {
             if (left) {
-                if (MIA.getPreferences().darkThemeEnabled())
+                if (isDark)
                     setIcon(collapsedLeftIconDM);
                 else
                     setIcon(collapsedLeftIcon);
             } else {
-                if (MIA.getPreferences().darkThemeEnabled())
+                if (isDark)
                     setIcon(collapsedRightIconDM);
                 else
                     setIcon(collapsedRightIcon);

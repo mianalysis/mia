@@ -25,7 +25,6 @@ import org.xml.sax.SAXException;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
@@ -40,6 +39,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_0p10p0_0p15p0;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_Pre_0p10p0;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -92,7 +92,7 @@ public class AnalysisReader {
         if (MIA.isHeadless())
             LogRenderer.setProgress(0);
         else
-            GUI.updateProgressBar(0);
+            ProgressBar.getActiveProgressBar().updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF"))
             xml = xml.substring(1);
@@ -160,7 +160,7 @@ public class AnalysisReader {
 
         // Adding timepoint measurements for all objects
         if (VersionUtils.compare("0.18.0", loadedVersion) > 0)
-            AnalysisReader_0p10p0_0p15p0.addTimepointMeasurements(modules);
+            MIA.log.writeWarning("Pre MIA v0.18.0 workflow loaded.  Timepoints will no be included in results file by default.  To add this in, please add the \"Object timepoint\" module.");
 
         return modules;
 

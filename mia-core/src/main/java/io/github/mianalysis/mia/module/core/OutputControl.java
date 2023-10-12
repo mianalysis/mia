@@ -22,7 +22,6 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.MetadataItemP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -441,7 +440,6 @@ public class OutputControl extends AbstractMacroRunner {
                 "run(\"Enable MIA Extensions\");\n\n// Get a list of Workspace IDs with Ext.MIA_GetListOfWorkspaceIDs() and set active workspace with Ext.MIA_SetActiveWorkspace(ID).",
                 true));
         parameters.add(new FilePathP(MACRO_FILE, this));
-        parameters.add(new GenericButtonP(TEST_BUTTON, this, "Test macro", GenericButtonP.DefaultModes.TEST_MACRO));
 
         parameters.add(new SeparatorP(EXPORT_SEPARATOR, this));
         parameters.add(new ChoiceP(EXPORT_MODE, this, ExportModes.ALL_TOGETHER, ExportModes.ALL));

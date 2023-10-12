@@ -144,6 +144,10 @@ public class MIA {
         return headless;
     }
 
+    public static void setPreferences(Preferences newPreferences) {
+        preferences = newPreferences;
+    }
+
     public static Preferences getPreferences() {
         if (preferences == null)
             preferences = new Preferences(null);

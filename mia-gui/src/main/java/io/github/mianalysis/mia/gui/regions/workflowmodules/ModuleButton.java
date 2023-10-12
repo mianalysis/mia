@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -49,19 +50,18 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     // PUBLIC METHODS
 
     public void updateState() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         setText(module.getNickname());
 
         if (module.getClass() == GUISeparator.class)
-            setForeground(Colours.getDarkBlue(darkMode));
+            setForeground(Colours.getDarkBlue(isDark));
         else if (module.isEnabled() && module.isReachable() && module.isRunnable())
             setForeground(defaultColour);
         else if (module.isEnabled() & !module.isReachable())
-            setForeground(Colours.getOrange(darkMode));
+            setForeground(Colours.getOrange(isDark));
         else if (module.isEnabled() & !module.isRunnable())
-            setForeground(Colours.getRed(darkMode));
+            setForeground(Colours.getRed(isDark));
         else
             setForeground(Color.GRAY);
 

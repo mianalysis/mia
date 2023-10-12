@@ -1,10 +1,13 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
+import java.awt.Color;
+
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
 import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.BooleanType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
@@ -13,6 +16,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
+import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class SwingParameterControlFactory extends ParameterControlFactory {
@@ -39,11 +43,6 @@ public class SwingParameterControlFactory extends ParameterControlFactory {
     @Override
     public ParameterControl getFileFolderParameter(FileFolderType parameter, String fileType) {
         return new FileParameter(parameter, fileType);
-    }
-
-    @Override
-    public ParameterControl getGenericButton(GenericButtonP parameter) {
-        return new GenericButton(parameter);
     }
 
     @Override
@@ -79,5 +78,26 @@ public class SwingParameterControlFactory extends ParameterControlFactory {
     @Override
     public ParameterControl getTextTypeControl(TextType parameter) {
         return new TextParameter(parameter);
+    }
+
+    public static ParameterControl getGenericButton(GenericButtonP parameter) {
+        return new GenericButton(parameter);
+    }
+
+    public static Color getColor(ParameterState state, boolean isDark) {
+        switch (state) {
+            case NORMAL:
+            default:
+                if (isDark)
+                    return Color.BLACK;
+                else
+                    return Color.WHITE;
+            case MESSAGE:
+                return Colours.getDarkBlue(isDark);
+            case WARNING:
+                return Colours.getOrange(isDark);
+            case ERROR:
+                return Colours.getRed(isDark);
+        }
     }
 }

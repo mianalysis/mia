@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpPanel;
 import io.github.mianalysis.mia.gui.regions.helpandnotes.NotesPanel;
 import io.github.mianalysis.mia.gui.regions.search.SearchPanel;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ClosePanelButton extends JButton implements ActionListener {
     private final JPanel panel;
@@ -21,7 +22,9 @@ public class ClosePanelButton extends JButton implements ActionListener {
     public ClosePanelButton(JPanel panel) {
         this.panel = panel;
 
-        if (MIA.getPreferences().darkThemeEnabled())
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
+        if (isDark)
             setIcon(new ImageIcon(
                     ClosePanelButton.class.getResource("/icons/close_window_darkgreyDM_12px.png"), ""));
         else

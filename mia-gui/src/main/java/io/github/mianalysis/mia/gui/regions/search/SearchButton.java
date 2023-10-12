@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class SearchButton extends JButton implements ActionListener {
     private SearchPanel searchPanel;
@@ -15,7 +16,8 @@ public class SearchButton extends JButton implements ActionListener {
     public SearchButton(SearchPanel searchPanel) {
         this.searchPanel = searchPanel;
 
-        if (MIA.getPreferences().darkThemeEnabled())
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        if (isDark)
             setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_darkgreyDM_12px.png"), ""));
         else
             setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_black_12px.png"), ""));

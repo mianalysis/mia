@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class SeparatorParameter extends ParameterControl {
     protected JPanel control;
@@ -21,8 +21,7 @@ public class SeparatorParameter extends ParameterControl {
     public SeparatorParameter(SeparatorP parameter) {
         super(parameter);
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         control = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -35,7 +34,7 @@ public class SeparatorParameter extends ParameterControl {
         c.anchor = GridBagConstraints.EAST;
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Colours.getDarkBlue(darkMode));
+        separatorLeft.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0, 0, 0, 5);
@@ -43,14 +42,14 @@ public class SeparatorParameter extends ParameterControl {
 
         JLabel label = new JLabel();
         label.setText(parameter.getNickname());
-        label.setForeground(Colours.getDarkBlue(darkMode));
+        label.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0, 0, 0, 0);
         control.add(label, c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Colours.getDarkBlue(darkMode));
+        separatorRight.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0, 5, 0, 0);

@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 22/05/2017.
@@ -101,11 +101,10 @@ class ModuleListRenderer extends DefaultListCellRenderer {
         if (value == null)
             return c;
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         if (c instanceof JLabel && value instanceof GUISeparator)
-            c.setForeground(Colours.getDarkBlue(darkMode));
+            c.setForeground(Colours.getDarkBlue(isDark));
 
         return c;
     }

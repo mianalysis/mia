@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
@@ -242,9 +243,6 @@ public class AddText extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
@@ -255,7 +253,7 @@ public class AddText extends AbstractOverlay {
         parameters.add(new StringP(TEXT, this));
         parameters.add(new MessageP(DYNAMIC_VALUES, this,
                 "The current slice and/or frame can be inserted into the rendered text by including one of the following: D{FRAME}, D{SLICE}.  Elapsed time can be inserted in the form T{HH:mm:ss.SSS}.",
-                Colours.getDarkBlue(darkMode)));
+                ParameterState.MESSAGE));
         parameters.add(new IntegerP(X_POSITION, this, 0));
         parameters.add(new IntegerP(Y_POSITION, this, 0));
         parameters.add(new StringP(Z_RANGE, this, "1-end"));

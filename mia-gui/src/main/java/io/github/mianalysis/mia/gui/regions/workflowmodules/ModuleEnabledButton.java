@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GUISeparator;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -58,28 +59,30 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
         if (module instanceof GUISeparator && module.isEnabled()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(darkBlueIconDM);
             else
                 setIcon(darkBlueIcon);
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(greenIconDM);
             else
                 setIcon(greenIcon);
         } else if (module.isEnabled() & !module.isReachable()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(orangeIconDM);
             else
                 setIcon(orangeIcon);
         } else if (module.isEnabled() & !module.isRunnable()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(redIconDM);
             else
                 setIcon(redIcon);
         } else {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(blackIconDM);
             else
                 setIcon(blackIcon);

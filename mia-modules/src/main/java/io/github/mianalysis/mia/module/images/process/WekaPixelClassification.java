@@ -39,6 +39,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.system.FileTools;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -325,7 +326,7 @@ public class WekaPixelClassification extends Module {
             case PathTypes.MATCHING_FORMAT:
                 Metadata metadata = (Metadata) workspace.getMetadata().clone();
                 try {
-                    classifierFilePath = ImageLoader.getGenericName(metadata, genericFormat);
+                    classifierFilePath = FileTools.getGenericName(metadata, genericFormat);
                 } catch (ServiceException | DependencyException | FormatException | IOException e) {
                     MIA.log.writeError(e);
                 }

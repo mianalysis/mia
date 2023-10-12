@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
-import io.github.mianalysis.mia.process.system.FileTypes;
+import io.github.mianalysis.mia.process.system.FileTools.FileTypes;
 
 public class FolderPathP extends FileFolderType {
     public FolderPathP(String name, Module module) {

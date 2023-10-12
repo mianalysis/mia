@@ -22,8 +22,8 @@ import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
@@ -36,8 +36,6 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -459,13 +457,10 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        Preferences preferences = MIA.getPreferences();
-        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
-
         parameters.add(new SeparatorP(MESSAGE_SEPARATOR, this));
         parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
                 "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",
-                Colours.getOrange(darkMode)));
+                ParameterState.WARNING));
 
         parameters.add(new SeparatorP(IMPORT_SEPARATOR, this));
         parameters.add(new FileFolderPathP(INPUT_PATH, this));
@@ -475,7 +470,6 @@ public class InputControl extends Module {
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
         parameters.add(new BooleanP(LOAD_FIRST_MATCHING_GROUP, this, false));
         parameters.add(new StringP(PATTERN, this));
-        parameters.add(new GenericButtonP(REFRESH_FILE, this, REFRESH_FILE, GenericButtonP.DefaultModes.REFRESH_FILE));
 
         parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
@@ -494,7 +488,7 @@ public class InputControl extends Module {
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1));
         parameters.add(new MessageP(MACRO_WARNING, this,
                 "Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",
-                Colours.getRed(darkMode)));
+                ParameterState.ERROR));
 
         addParameterDescriptions();
 

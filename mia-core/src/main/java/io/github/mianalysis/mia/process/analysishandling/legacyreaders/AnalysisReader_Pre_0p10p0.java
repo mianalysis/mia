@@ -24,7 +24,6 @@ import org.xml.sax.SAXException;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
@@ -58,8 +57,8 @@ import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
-import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -85,6 +84,7 @@ public class AnalysisReader_Pre_0p10p0 {
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
+        MIA.log.writeWarning("Pre MIA v0.15.0 workflow loaded.  Child object counts and parent ID numbers will need to be manually added as new modules");
 
         return analysis;
 
@@ -107,7 +107,7 @@ public class AnalysisReader_Pre_0p10p0 {
         if (MIA.isHeadless())
             LogRenderer.setProgress(0);
         else
-            GUI.updateProgressBar(0);
+            ProgressBar.getActiveProgressBar().updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) {
             xml = xml.substring(1);
@@ -120,7 +120,6 @@ public class AnalysisReader_Pre_0p10p0 {
 
         Analysis analysis = new Analysis();
         Modules modules = analysis.getModules();
-        ArrayList<Node> relationshipsToCovert = new ArrayList<>();
 
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
@@ -133,7 +132,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
             // Creating an empty Module matching the input type. If none was found the loop
             // skips to the next Module
-            Module module = initialiseModule(moduleNode, modules, availableModules, relationshipsToCovert);
+            Module module = initialiseModule(moduleNode, modules, availableModules);
             if (module == null)
                 continue;
 
@@ -158,22 +157,15 @@ public class AnalysisReader_Pre_0p10p0 {
             if (MIA.isHeadless())
                 LogRenderer.setProgress(progress);
             else
-                GUI.updateProgressBar(progress);
-
+                ProgressBar.getActiveProgressBar().updateProgressBar(progress);
+            
         }
-
-        // Adding relationships
-        AnalysisReader_0p10p0_0p15p0.convertRelationshipRefs(modules, relationshipsToCovert);
-
-        // Adding timepoint measurements for all objects
-        AnalysisReader_0p10p0_0p15p0.addTimepointMeasurements(modules);
 
         return analysis;
 
     }
 
-    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModules,
-            ArrayList<Node> relationshipsToCovert)
+    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModules)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -225,10 +217,6 @@ public class AnalysisReader_Pre_0p10p0 {
                             populateModuleMetadataRefs(moduleChildNodes.item(j), module);
                             break;
 
-                        case "RELATIONSHIPS":
-                            relationshipsToCovert.add(moduleChildNodes.item(j));
-                            // populateModuleParentChildRefs(moduleChildNodes.item(j), module);
-                            break;
                     }
                 }
 

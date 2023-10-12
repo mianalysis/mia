@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -45,13 +46,15 @@ public class ExportEnableButton extends JButton implements ActionListener {
     }
 
     public void setIcon() {
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
         if (ref.isExportGlobal()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(greenIconDM);
             else
                 setIcon(greenIcon);
         } else {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(blackIconDM);
             else
                 setIcon(blackIcon);

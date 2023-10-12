@@ -2,10 +2,8 @@ package io.github.mianalysis.mia.object.system;
 
 import java.awt.Color;
 
-import ij.IJ;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -13,6 +11,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -30,10 +29,6 @@ import loci.formats.Memoizer;
  * Created by Stephen on 24/08/2021.
  */
 public class Preferences extends Module {
-    public static final String GUI_SEPARATOR = "GUI parameters";
-    public static final String THEME = "Theme";
-    public static final String SHOW_DEPRECATED = "Show deprecated modules (editing mode)";
-
     public static final String WORKFLOW_SEPARATOR = "Workflow parameters";
     public static final String IMAGE_DISPLAY_MODE = "Image display mode";
 
@@ -54,9 +49,6 @@ public class Preferences extends Module {
 
     }
 
-    public interface Themes extends io.github.mianalysis.mia.gui.Themes {
-    };
-
     // public interface DataStorageModes {
     // // String AUTOMATIC = "Automatic"; // This mode will look at each image and
     // send
@@ -67,49 +59,6 @@ public class Preferences extends Module {
     // String[] ALL = new String[] { KEEP_IN_RAM, STREAM_FROM_DRIVE };
 
     // }
-
-    public void setTheme() {
-        String theme = parameters.getValue(THEME, null);
-
-        Prefs.set("MIA.GUI.theme", theme);
-        IJ.showMessage("Theme will be applied after restarting Fiji");
-
-        //// Applying here and now appears to cause a StackOverflowError
-        // parameters.getParameter(THEME).setValue(theme);
-        // try {
-        // LookAndFeel lookAndFeel = getThemeClass(theme);
-        // UIManager.setLookAndFeel(lookAndFeel);
-        // } catch (ClassNotFoundException | InstantiationException |
-        //// IllegalAccessException
-        // | UnsupportedLookAndFeelException | IllegalArgumentException |
-        //// InvocationTargetException | NoSuchMethodException | SecurityException e) {
-        // e.printStackTrace();
-        // }
-
-        // if (GUI.initialised)
-        // GUI.refreshLookAndFeel();
-
-    }
-
-    public boolean darkThemeEnabled() {
-        return io.github.mianalysis.mia.gui.Themes.isDarkTheme(parameters.getValue(THEME, null));
-    }
-
-    public boolean showDeprecated() {
-        return parameters.getValue(SHOW_DEPRECATED, null);
-    }
-
-    public void setShowDeprecated(boolean showDeprecated) {
-        Prefs.set("MIA.GUI.showDeprecated", showDeprecated);
-        parameters.get(SHOW_DEPRECATED).setValue(showDeprecated);
-        GUI.updateAvailableModules();
-    }
-
-    public void setShowDeprecated() {
-        boolean showDeprecated = parameters.getValue(SHOW_DEPRECATED, null);
-        Prefs.set("MIA.GUI.showDeprecated", showDeprecated);
-        GUI.updateAvailableModules();
-    }
 
     public String imageDisplayMode() {
         return parameters.getValue(IMAGE_DISPLAY_MODE, null);
@@ -226,26 +175,9 @@ public class Preferences extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
-        // GUI parameters
-        parameters.add(new SeparatorP(GUI_SEPARATOR, this));
-
-        Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
-        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-            if (evt.getOldValue() != null)
-                setTheme();
-        });
-        parameters.add(parameter);
-
-        parameter = new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false));
-        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-            if (evt.getOldValue() != null)
-                setShowDeprecated();
-        });
-        parameters.add(parameter);
-
+    protected void initialiseParameters() {        
         parameters.add(new SeparatorP(WORKFLOW_SEPARATOR, this));
-        parameter = new ChoiceP(IMAGE_DISPLAY_MODE, this,
+        Parameter parameter = new ChoiceP(IMAGE_DISPLAY_MODE, this,
                 Prefs.get("MIA.Workflow.imageDisplayMode", ImageDisplayModes.COMPOSITE), ImageDisplayModes.ALL);
         parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
             if (evt.getOldValue() != null)
@@ -265,7 +197,7 @@ public class Preferences extends Module {
         parameters.add(new IntegerP(MEMOIZER_THRESHOLD_S, this,
                 (int) Prefs.get("MIA.data.memoizerThreshold", 3)));
 
-        parameters.add(new MessageP(KRYO_MESSAGE, this, "Memoizer requires Kryo version 5.4.0 or greater", Color.ORANGE));
+        parameters.add(new MessageP(KRYO_MESSAGE, this, "Memoizer requires Kryo version 5.4.0 or greater", ParameterState.WARNING));
 
         // parameter = new ChoiceP(DATA_STORAGE_MODE, this,
         // Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM),
@@ -299,10 +231,6 @@ public class Preferences extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
-
-        returnedParameters.add(parameters.getParameter(GUI_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(THEME));
-        returnedParameters.add(parameters.getParameter(SHOW_DEPRECATED));
 
         returnedParameters.add(parameters.getParameter(WORKFLOW_SEPARATOR));
         returnedParameters.add(parameters.getParameter(IMAGE_DISPLAY_MODE));
@@ -359,9 +287,6 @@ public class Preferences extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(SHOW_DEPRECATED).setDescription(
-                "When selected, deprecated modules will appear in the editing view available modules list.  These modules will be marked with a strikethrough their name, but otherwise act as normal.  Note: Modules marked as deprecated will be removed from future versions of MIA.");
-
         parameters.get(MEMOIZER_THRESHOLD_S).setDescription(
                 "When loading an image, if BioFormats takes longer than this threshold to read the metadata, a \"bfmemo\" file will be generated.  This file contains the contents of the imported metadata and can be read on subsequent file loads instead of reimporting the metadata.  For very large files, this can cut subsequent file loads from many minutes to seconds.");
 

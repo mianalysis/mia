@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -44,13 +45,15 @@ public class VisibleCheck extends JButton implements ActionListener {
     }
 
     public void updateIcon() {
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
         if (parameter.isVisible()) {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(openIconDM);
             else
                 setIcon(openIcon);
         } else {
-            if (MIA.getPreferences().darkThemeEnabled())
+            if (isDark)
                 setIcon(closedIconDM);
             else
                 setIcon(closedIcon);

@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
@@ -13,6 +12,7 @@ import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -101,7 +101,7 @@ public class Analysis {
             if (MIA.isHeadless())
                 LogRenderer.setProgress(workspace.getWorkspaces());
             else
-                GUI.updateProgressBar();
+                ProgressBar.getActiveProgressBar().updateProgressBar();
 
         }
 
