@@ -10,9 +10,11 @@ import javax.swing.JButton;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.system.Status;
@@ -182,6 +184,12 @@ public class EvalButton extends JButton implements ActionListener {
             GUI.updateModuleStates();
             t.stop();
             return;
+        }
+
+        // Transferring MacroHandler back to test workspace
+        if (modules.hasModuleMatchingType(AbstractMacroRunner.class)) {
+            MacroHandler.setWorkspace(GUI.getTestWorkspace());
+            MacroHandler.setModules(GUI.getModules());
         }
 
         // If the module is ready to be evaluated

@@ -127,12 +127,6 @@ public class Analysis {
 
         }
 
-        // Transferring MacroHandler back to test workspace
-        if (modules.hasModuleMatchingType(AbstractMacroRunner.class)) {
-            MacroHandler.setWorkspace(GUI.getTestWorkspace());
-            MacroHandler.setModules(GUI.getModules());
-        }
-
         return true;
 
     }

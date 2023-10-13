@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -357,10 +356,6 @@ public class AnalysisRunner {
     public static void stopAnalysis() {
         MIA.log.writeWarning("STOPPING");
         Prefs.setThreads(origThreads);
-
-        GUI.setModuleBeingEval(-1);
-        GUI.updateModules();
-        GUI.updateParameters();
 
         ProgressBar.getActiveProgressBar().updateProgressBar();
 

@@ -109,6 +109,9 @@ public class GUIAnalysisHandler {
     public static void stopAnalysis() {
         MIA.log.writeStatus("Shutting system down");
         AnalysisRunner.stopAnalysis();
+        GUI.setModuleBeingEval(-1);
+        GUI.updateModules();
+        GUI.updateParameters();
     }
 
     public static void enableAllModules() {
