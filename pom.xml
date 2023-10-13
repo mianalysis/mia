@@ -453,7 +453,7 @@
             </plugin>
 
             <!-- To be uncommented when creating release -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -504,7 +504,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -513,8 +513,12 @@
             </plugin>
 
             <!-- To be uncommented when uploading to Maven Central -->
-            <!-- Use the following to deploy (will throw a "Missing staging repository" error, but should still work) -->
+            <!-- Use the following to deploy -->
+            <!-- Manually delete "target" folder -->
             <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -->
+            <!-- CHECK GENERATED MIA JAR RUNS IN FIJI (sometimes it generates a larger jar which fails to run - maybe when "target" isn't deleted first)-->
+            <!-- Release to Maven Central using following -->
+            <!-- mvn nexus-staging:release -->
 
             <!-- <plugin>
                 <groupId>org.sonatype.plugins</groupId>
