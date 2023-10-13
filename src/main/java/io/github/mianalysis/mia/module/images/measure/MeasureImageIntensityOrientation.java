@@ -1,13 +1,12 @@
 package io.github.mianalysis.mia.module.images.measure;
 
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
-
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 
 import org.apache.commons.math3.complex.Complex;
 import org.scijava.Priority;
@@ -325,13 +324,20 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
         frame.setPreferredSize(new Dimension(histWidth, histHeight));
         frame.pack();        
         frame.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        frame.setVisible(true);
+        frame.setVisible(true);        
 
-        BufferedImage img = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);        
+        try {
+            // This pause helps ensure the frame has rendered
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         frame.paint(img.getGraphics());
-        frame.dispose();
-
+        
         ImagePlus histIpl = new ImagePlus("Histogram", img);
+
+        frame.dispose();
         
         return ImageFactory.createImage("Histogram", histIpl);
 

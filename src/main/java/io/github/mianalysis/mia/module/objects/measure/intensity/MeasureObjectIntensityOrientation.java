@@ -222,7 +222,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
         for (int z : rois.keySet()) {
             // Getting current image slice
-            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z + 1),
+            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z+1),
                     String.valueOf(obj.getT() + 1));
             ImagePlus sliceIpl = sliceImage.getImagePlus();
             sliceIpl.setRoi(rois.get(z));

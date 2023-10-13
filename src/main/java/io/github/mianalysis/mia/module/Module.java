@@ -448,7 +448,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
     }
-    
+
     public IL2Support getIL2Support() {
         return il2Support;
     }
@@ -619,8 +619,11 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
                 if (Math.abs(comparison) == 3)
                     resultsWarning = "Differences in results likely";
 
-                MIA.log.writeWarning(
-                        "Module version mismatch.  Name: \""+name+"\",  workflow: "+workflowVersion+", this plugin: "+getVersionNumber()+".  "+resultsWarning+".");
+                MIA.log.writeWarning("Module version mismatch:");
+                MIA.log.writeWarning("    Module name: \"" + name + "\"");
+                MIA.log.writeWarning("    Workflow version: " + workflowVersion);
+                MIA.log.writeWarning("    Plugin version: " + getVersionNumber());
+                MIA.log.writeWarning("    Status: " + resultsWarning+".");
 
             }
 

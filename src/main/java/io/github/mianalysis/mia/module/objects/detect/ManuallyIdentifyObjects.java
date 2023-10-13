@@ -76,6 +76,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -543,11 +544,21 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         // of the stack separately
         for (int z = 1; z <= nSlices; z++) {
             // Extracting the slice and interpolating
-            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
-            if (!checkStackForInterpolation(sliceIpl.getStack()))
+            ImagePlus sliceIpl = ExtractSubstack.extractSubstack(binaryIpl,"Substack","1-1", z + "-" + z, "1-" + nFrames);
+            // ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
+            ImageStack sliceIst = sliceIpl.getStack();
+            MIA.log.writeDebug(sliceIst.size());
+            
+            if (!checkStackForInterpolation(sliceIst))
                 continue;
 
-            binaryInterpolator.run(sliceIpl.getStack());
+            binaryInterpolator.run(sliceIst);
+            
+            // Replacing interpolated slices in binaryImage
+            for (int t=1;t<=sliceIst.size();t++) {
+                int idx = binaryIpl.getStackIndex(1, z, t);
+                binaryIpl.getStack().setProcessor(sliceIst.getProcessor(t), idx);
+            }
         }
     }
 
@@ -572,7 +583,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
