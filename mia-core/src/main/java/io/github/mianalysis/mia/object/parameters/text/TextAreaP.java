@@ -100,7 +100,7 @@ public class TextAreaP extends TextType {
     @Override
     public ParameterControl getControl() {
         if (control == null)
-            control = ParameterControlFactory.getActiveFactory().getTextAreaParameter(this, controlHeight);
+            control = ParameterControlFactory.getTextAreaControl(this, controlHeight);
         return control;
     }
 

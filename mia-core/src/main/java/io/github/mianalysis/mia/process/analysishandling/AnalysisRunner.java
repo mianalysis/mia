@@ -130,7 +130,7 @@ public class AnalysisRunner {
             LogRenderer.setProgress(100);
             MIA.log.writeStatus("Complete!\n");
         } else {
-            ProgressBar.getActiveProgressBar().updateProgressBar(100);
+            ProgressBar.update(100);
             MIA.log.writeStatus("Complete!");
         }
     }
@@ -357,7 +357,7 @@ public class AnalysisRunner {
         MIA.log.writeWarning("STOPPING");
         Prefs.setThreads(origThreads);
 
-        ProgressBar.getActiveProgressBar().updateProgressBar();
+        ProgressBar.update();
 
         Thread.currentThread().getThreadGroup().interrupt();
         pool.shutdownNow();

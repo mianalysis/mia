@@ -94,11 +94,6 @@ public class RunMacro extends AbstractMacroRunner {
     public static final String MACRO_FILE = "Macro file";
 
 	/**
-	* This button refreshes the macro code as stored within MIA.  Clicking this will create an "undo" checkpoint.
-	*/
-    public static final String REFRESH_BUTTON = "Refresh macro";
-
-	/**
 	* 
 	*/
     public static final String IMAGE_OUTPUT_SEPARATOR = "Image output";
@@ -322,7 +317,6 @@ public class RunMacro extends AbstractMacroRunner {
                 break;
             case MacroModes.MACRO_TEXT:
                 returnedParameters.add(parameters.getParameter(MACRO_TEXT));
-                returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
                 break;
         }
 
@@ -420,9 +414,6 @@ public class RunMacro extends AbstractMacroRunner {
 
         parameters.get(MACRO_FILE)
                 .setDescription("Select a macro file (.ijm) to run once, after all analysis runs have completed.");
-
-        parameters.get(REFRESH_BUTTON).setDescription(
-                "This button refreshes the macro code as stored within MIA.  Clicking this will create an \"undo\" checkpoint.");
 
         parameters.get(INTERCEPT_OUTPUT_IMAGE).setDescription(
                 "When selected, the image currently active in ImageJ at completion of the macro can be stored into the workspace.  This can either overwrite the input image in the workspace or be stored as a new image (controlled by \""

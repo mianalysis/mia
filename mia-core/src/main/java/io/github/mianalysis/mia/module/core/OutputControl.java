@@ -71,11 +71,6 @@ public class OutputControl extends AbstractMacroRunner {
 	*/
     public static final String MACRO_FILE = "Macro file";
 
-	/**
-	* Runs the macro on the currently-active workspace.  This requires that the analysis has been run at least once already, either by clicking the "Run" button or by evaluating all modules (or some, if not all required for macro) using the arrow buttons.
-	*/
-    public static final String TEST_BUTTON = "Test macro";
-
 
 	/**
 	* 
@@ -487,7 +482,6 @@ Workspace workspace = null;
                     returnedParameters.add(parameters.getParameter(MACRO_TEXT));
                     break;
             }
-            returnedParameters.add(parameters.getParameter(TEST_BUTTON));
         }
 
         returnedParameters.add(parameters.getParameter(EXPORT_SEPARATOR));
@@ -612,9 +606,6 @@ return null;
 
         parameters.get(MACRO_FILE)
                 .setDescription("Select a macro file (.ijm) to run once, after all analysis runs have completed.");
-
-        parameters.get(TEST_BUTTON).setDescription(
-                "Runs the macro on the currently-active workspace.  This requires that the analysis has been run at least once already, either by clicking the \"Run\" button or by evaluating all modules (or some, if not all required for macro) using the arrow buttons.");
 
         parameters.get(EXPORT_MODE).setDescription(
                 "Controls the number of results spreadsheets that are exported and what they contain:<br><ul>"

@@ -92,7 +92,7 @@ public class AnalysisReader {
         if (MIA.isHeadless())
             LogRenderer.setProgress(0);
         else
-            ProgressBar.getActiveProgressBar().updateProgressBar(0);
+            ProgressBar.update(0);
 
         if (xml.startsWith("\uFEFF"))
             xml = xml.substring(1);

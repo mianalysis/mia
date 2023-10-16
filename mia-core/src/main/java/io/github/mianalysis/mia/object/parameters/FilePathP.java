@@ -35,7 +35,7 @@ public class FilePathP extends FileFolderType {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getFileFolderParameter(this, FileTypes.FILE_TYPE);
+        return ParameterControlFactory.getFileFolderSelectionControl(this, FileTypes.FILE_TYPE);
     }
 
     @Override

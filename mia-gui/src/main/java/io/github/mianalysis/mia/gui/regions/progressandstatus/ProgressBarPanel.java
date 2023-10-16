@@ -6,7 +6,6 @@ import javax.swing.JProgressBar;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ProgressBarPanel extends JProgressBar {

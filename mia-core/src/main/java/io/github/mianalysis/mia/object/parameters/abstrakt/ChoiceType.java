@@ -45,7 +45,7 @@ public abstract class ChoiceType extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getChoiceTypeControl(this);
+        return ParameterControlFactory.getChoiceTypeControl(this);
     }
 
     @Override

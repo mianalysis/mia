@@ -37,7 +37,7 @@ public class ObjMeasurementSelectorP extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getRefSelectorParameter(this);
+        return ParameterControlFactory.getRefSelectorControl(this);
     }
 
     @Override

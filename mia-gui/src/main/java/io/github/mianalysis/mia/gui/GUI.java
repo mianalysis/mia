@@ -87,8 +87,6 @@ public class GUI {
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
 
-        ParameterControlFactory.setActiveFactory(new SwingParameterControlFactory());
-
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
         initialiseAvailableModules(detectedModules);
@@ -156,7 +154,7 @@ public class GUI {
             } catch (Exception e) {
                 MIA.log.writeWarning(
                         "Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion() + ".");
-                MIA.log.writeWarning(e);
+             e.printStackTrace();
             }
         }
     }

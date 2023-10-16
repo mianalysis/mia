@@ -115,11 +115,6 @@ public class InputControl extends Module {
 	*/
     public static final String PATTERN = "Pattern";
 
-	/**
-	* When pressed, MIA will update the active file used in test mode (i.e. when executing individual modules from editing mode) based on the currently-selected input file/folder and series settings.
-	*/
-    public static final String REFRESH_FILE = "Refresh test file";
-
 
 	/**
 	* 
@@ -517,7 +512,6 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
         if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP, workspace))
             returnedParameters.add(parameters.getParameter(PATTERN));
-        returnedParameters.add(parameters.getParameter(REFRESH_FILE));
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
@@ -615,9 +609,6 @@ public class InputControl extends Module {
 
         parameters.get(PATTERN).setDescription("Regular expression pattern to use when \"" + LOAD_FIRST_MATCHING_GROUP
                 + "\" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).");
-
-        parameters.get(REFRESH_FILE).setDescription(
-                "When pressed, MIA will update the active file used in test mode (i.e. when executing individual modules from editing mode) based on the currently-selected input file/folder and series settings.");
 
         Parameters templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
         templateParameters.get(FILTER_SOURCE).setDescription("Type of filter to add.");

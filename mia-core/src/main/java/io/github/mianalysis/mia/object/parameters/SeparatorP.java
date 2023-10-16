@@ -15,7 +15,7 @@ public class SeparatorP extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getSeparatorParameter(this);
+        return ParameterControlFactory.getSeparatorControl(this);
     }
 
     @Override

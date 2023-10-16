@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.process.analysis;
+package io.github.mianalysis.mia.process.coordinates;
 
 import java.util.Iterator;
 

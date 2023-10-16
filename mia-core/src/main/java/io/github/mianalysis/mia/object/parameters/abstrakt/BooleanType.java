@@ -41,7 +41,7 @@ public abstract class BooleanType extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getBooleanControl(this);
+        return ParameterControlFactory.getBooleanControl(this);
     }
 
     @Override

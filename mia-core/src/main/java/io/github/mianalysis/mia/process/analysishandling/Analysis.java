@@ -101,7 +101,7 @@ public class Analysis {
             if (MIA.isHeadless())
                 LogRenderer.setProgress(workspace.getWorkspaces());
             else
-                ProgressBar.getActiveProgressBar().updateProgressBar();
+                ProgressBar.update();
 
         }
 

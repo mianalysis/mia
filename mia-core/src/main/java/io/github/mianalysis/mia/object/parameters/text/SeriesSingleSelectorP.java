@@ -24,7 +24,7 @@ public class SeriesSingleSelectorP extends IntegerP {
 
     @Override
     public ParameterControl getControl() {
-        return ParameterControlFactory.getActiveFactory().getSeriesSelector(this);
+        return ParameterControlFactory.getSeriesSelectorControl(this);
     }
 
     @Override

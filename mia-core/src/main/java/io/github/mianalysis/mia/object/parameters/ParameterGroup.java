@@ -142,7 +142,7 @@ public class ParameterGroup extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getAddParametersButton(this);
+        return ParameterControlFactory.getAddParametersControl(this);
     }
 
     @Override

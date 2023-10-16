@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MIA",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIA",
+            "projectName": "mia-core"
+        },
+        {
+            "type": "java",
+            "name": "MIAGUI",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIAGUI",
+            "projectName": "mia-gui"
+        },
+        {
+            "type": "java",
             "name": "MIAGUI",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIAGUI",

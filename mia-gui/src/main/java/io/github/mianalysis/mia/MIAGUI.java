@@ -11,9 +11,11 @@ import org.scijava.ui.UIService;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
+import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
@@ -34,7 +36,7 @@ public class MIAGUI extends MIA implements Command {
 
         try {
             new ij.ImageJ();
-            new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
+            new ImageJ().command().run("io.github.mianalysis.mia.MIAGUI", false);
 
         } catch (Exception e) {
             MIA.log.writeError(e);
@@ -44,7 +46,13 @@ public class MIAGUI extends MIA implements Command {
     @Override
     public void run() {
         headless = false;
+
+        // Setting the ParameterControlFactory
+        ParameterControlFactory.setActive(new SwingParameterControlFactory());
+
+        // Replacing the default Preferences
         setPreferences(new SwingPreferences(null));
+
         try {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
@@ -68,7 +76,6 @@ public class MIAGUI extends MIA implements Command {
             // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
 
-        preferences = new Preferences(null);
         log.addRenderer(logHistory);
 
         // Run the dependency validator. If updates were required, return.

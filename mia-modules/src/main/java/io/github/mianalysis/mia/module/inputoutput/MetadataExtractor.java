@@ -30,7 +30,6 @@ import io.github.mianalysis.mia.object.metadata.OperaFoldernameExtractor;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
-// import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.MetadataItemP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -146,10 +145,6 @@ public class MetadataExtractor extends Module {
 	*/
     public static final String METADATA_VALUE_NAME = "Metadata value name";
 
-	/**
-	* When testing regular expression forms, clicking this button will test the extraction and display any detected metadata values in the "Identified groups" window.
-	*/
-    public static final String REFRESH_BUTTON = "Refresh parameters";
 
     public MetadataExtractor(Modules modules) {
         super("Extract metadata", modules);
@@ -473,7 +468,6 @@ public class MetadataExtractor extends Module {
         parameters.add(new TextAreaP(IDENTIFIED_GROUPS, this, false));
         parameters.add(new BooleanP(REGEX_SPLITTING, this, false));
         parameters.add(new StringP(METADATA_VALUE_NAME, this));
-        // parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         addParameterDescriptions();
 
@@ -563,8 +557,6 @@ Workspace workspace = null;
             String groupsString = getTestString(pattern, groups, exampleString, caseInsensitive);
             TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
             identifiedGroups.setValue(groupsString);
-
-            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
 
         }
 
@@ -829,10 +821,6 @@ return null;
 
         parameters.get(IDENTIFIED_GROUPS).setDescription("If testing a regular expression form (\"" + SHOW_TEST
                 + "\" selected), the extracted metadata values will be displayed here.");
-
-        parameters.get(REFRESH_BUTTON).setDescription(
-                "When testing regular expression forms, clicking this button will test the extraction and display any detected metadata values in the \""
-                        + IDENTIFIED_GROUPS + "\" window.");
 
     }
 }

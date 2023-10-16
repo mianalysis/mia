@@ -53,7 +53,7 @@ public class SwingPreferences extends Preferences {
     protected void initialiseParameters() {    
         super.initialiseParameters();
 
-    // GUI parameters
+        // GUI parameters
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
 
         Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
@@ -69,6 +69,8 @@ public class SwingPreferences extends Preferences {
                 setShowDeprecated();
         });
         parameters.add(parameter);
+
+        addSwingParameterDescriptions();
 
     }
 
@@ -86,8 +88,7 @@ public class SwingPreferences extends Preferences {
 
     }
 
-    @Override
-    void addParameterDescriptions() {
+    void addSwingParameterDescriptions() {
         super.addParameterDescriptions();
 
     parameters.get(SHOW_DEPRECATED).setDescription(

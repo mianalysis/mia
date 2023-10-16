@@ -21,7 +21,7 @@ public class AdjustParameters extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getAdjustParameterGroupButton(this);
+        return ParameterControlFactory.getAdjustParameterGroupControl(this);
     }
 
     @Override

@@ -78,7 +78,7 @@ public class ModuleP extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return ParameterControlFactory.getActiveFactory().getModuleChoice(this);
+        return ParameterControlFactory.getModuleChoiceControl(this);
     }
 
     public boolean getShowNonRunnable() {

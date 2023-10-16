@@ -60,7 +60,7 @@ public class MessageP extends TextAreaP {
 
     @Override
     public ParameterControl getControl() {
-        return ParameterControlFactory.getActiveFactory().getMessageTypeControl(this, controlHeight);
+        return ParameterControlFactory.getMessageTypeControl(this, controlHeight);
     }
 
     @Override

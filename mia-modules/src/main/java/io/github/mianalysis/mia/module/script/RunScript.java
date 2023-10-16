@@ -92,11 +92,6 @@ public class RunScript extends Module {
 	*/
     public static final String SCRIPT_FILE = "Script file";
 
-	/**
-	* This button refreshes the script code as stored within MIA.  Clicking this will create an "undo" checkpoint and validate any global variables that have been used.
-	*/
-    public static final String REFRESH_BUTTON = "Refresh script";
-
 
 	/**
 	* 
@@ -318,7 +313,6 @@ public class RunScript extends Module {
             case ScriptModes.SCRIPT_TEXT:
                 returnedParameters.add(parameters.getParameter(SCRIPT_LANGUAGE));
                 returnedParameters.add(parameters.getParameter(SCRIPT_TEXT));
-                returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
                 break;
         }
 
@@ -462,9 +456,6 @@ public class RunScript extends Module {
         parameters.get(SCRIPT_FILE).setDescription("Select a script file to be run by this module.  As with the \""
                 + SCRIPT_TEXT
                 + "\" parameter, this script can start with the lines \"#@ io.github.mianalysis.mia.object.Workspace workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\", which provide access to the active workspace and this module.");
-
-        parameters.get(REFRESH_BUTTON).setDescription(
-                "This button refreshes the script code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_OUTPUT);
         Parameters collection = group.getTemplateParameters();

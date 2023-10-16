@@ -23,7 +23,7 @@ public class SeriesListSelectorP extends StringP {
 
     @Override
     public ParameterControl getControl() {
-        return ParameterControlFactory.getActiveFactory().getSeriesSelector(this);
+        return ParameterControlFactory.getSeriesSelectorControl(this);
     }
 
     @Override

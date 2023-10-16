@@ -84,7 +84,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         if (MIA.isHeadless())
             LogRenderer.setProgress(0);
         else
-            ProgressBar.getActiveProgressBar().updateProgressBar(0);
+            ProgressBar.update(0);
 
         if (xml.startsWith("\uFEFF"))
             xml = xml.substring(1);

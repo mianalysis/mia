@@ -3,6 +3,9 @@ package io.github.mianalysis.mia.module.script;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -10,10 +13,8 @@ import ij.macro.Interpreter;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Measurement;
@@ -21,14 +22,13 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -100,11 +100,6 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 	* Select a macro file (.ijm) to be run by this module.  As with the "Macro text" parameter, this macro should start with the "run("Enable MIA Extensions");" command.
 	*/
     public static final String MACRO_FILE = "Macro file";
-
-	/**
-	* This button refreshes the macro code as stored within MIA.  Clicking this will create an "undo" checkpoint and validate any global variables that have been used.
-	*/
-    public static final String REFRESH_BUTTON = "Refresh parameters";
 
 	/**
 	* 
@@ -329,7 +324,6 @@ Workspace workspace = null;
                 break;
             case MacroModes.MACRO_TEXT:
                 returnedParameters.add(parameters.getParameter(MACRO_TEXT));
-                returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
                 break;
         }
 
@@ -414,9 +408,6 @@ return null;
         parameters.get(MACRO_FILE).setDescription("Select a macro file (.ijm) to be run by this module.  As with the \""
                 + MACRO_TEXT
                 + "\" parameter, this macro should start with the \"run(\"Enable MIA Extensions\");\" command.");
-
-        parameters.get(REFRESH_BUTTON).setDescription(
-                "This button refreshes the macro code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");
 
         parameters.get(ADD_INTERCEPTED_VARIABLE).setDescription(
                 "This allows variables assigned in the macro to be stored as measurements associated with the current object.");
