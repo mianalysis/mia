@@ -14,6 +14,8 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
+import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 
@@ -369,6 +371,29 @@ public class Volume {
         } catch (IntegerOverflowException | PointOutOfRangeException e) {
             return Double.NaN;
         }
+    }
+
+    public double getSurfaceSeparation(Volume volume2, boolean pixelDistances) {
+        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, false);
+        return calculator.getMinDist(pixelDistances);
+    }
+
+    public double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean force2D) {
+        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, force2D);
+        return calculator.getMinDist(pixelDistances);
+    }
+
+    public double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances) {
+        return getPointSurfaceSeparation(point, pixelDistances, false);
+    }
+
+    public double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances, boolean force2D) {
+        // If this object is only 2D, ensure the Z-position of the point is also zero
+        if (is2D() || force2D)
+            point = new Point<>(point.x, point.y, 0d);
+
+        PointSurfaceSeparatorCalculator calculator = new PointSurfaceSeparatorCalculator(this, point);
+        return calculator.getMinDist(pixelDistances);
     }
 
     public double getXMean(boolean pixelDistances) {

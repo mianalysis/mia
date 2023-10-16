@@ -33,6 +33,14 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.analysis.AngularPersistenceCalculator;
+import io.github.mianalysis.mia.process.analysis.CumulativePathLengthCalculator;
+import io.github.mianalysis.mia.process.analysis.DirectionalityRatioCalculator;
+import io.github.mianalysis.mia.process.analysis.EuclideanDistanceCalculator;
+import io.github.mianalysis.mia.process.analysis.InstantaneousSpeedCalculator;
+import io.github.mianalysis.mia.process.analysis.InstantaneousStepSizeCalculator;
+import io.github.mianalysis.mia.process.analysis.InstantaneousVelocityCalculator;
+import io.github.mianalysis.mia.process.analysis.TotalPathLengthCalculator;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
@@ -266,10 +274,10 @@ public class MeasureTrackMotion extends Module {
             double distPerPxXY = trackObject.getDppXY();
             double distPerPxZ = trackObject.getDppZ();
 
-            TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
-            TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();
-            TreeMap<Integer, Double> zVelocity = track.getInstantaneousZVelocity();
-            TreeMap<Integer, Double> speed = track.getInstantaneousSpeed();
+            TreeMap<Integer, Double> xVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getX());
+            TreeMap<Integer, Double> yVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getY());
+            TreeMap<Integer, Double> zVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getZ());
+            TreeMap<Integer, Double> speed = new InstantaneousSpeedCalculator().calculate(track);
 
             CumStat cumStatX = new CumStat();
             CumStat cumStatY = new CumStat();
@@ -343,7 +351,7 @@ public class MeasureTrackMotion extends Module {
             // If the track has a single time-point there's no velocity to measure
             double distPerPxXY = trackObject.getDppXY();
             double euclideanDistance = track.getEuclideanDistance();
-            double totalPathLength = track.getTotalPathLength();
+            double totalPathLength = new TotalPathLengthCalculator().calculate(track);
 
             String name = getFullName(Measurements.EUCLIDEAN_DISTANCE_PX, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, euclideanDistance));
@@ -354,9 +362,19 @@ public class MeasureTrackMotion extends Module {
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_CAL, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, totalPathLength * distPerPxXY));
             name = getFullName(Measurements.DIRECTIONALITY_RATIO, averageSubtracted);
-            trackObject.addMeasurement(new Measurement(name, track.getDirectionalityRatio()));
+            trackObject.addMeasurement(new Measurement(name, euclideanDistance/totalPathLength));
 
         }
+    }
+
+    public double getTotalPathLength(Track track) {
+        TreeMap<Integer,Double> steps = new InstantaneousStepSizeCalculator().calculate(track);
+
+        double totalPathLength = 0;
+        for (double value:steps.values()) totalPathLength += value;
+
+        return totalPathLength;
+
     }
 
     public static void calculateInstantaneousVelocity(Obj trackObject, Track track, String inputSpotObjectsName,
@@ -364,10 +382,10 @@ public class MeasureTrackMotion extends Module {
         double distPerPxXY = trackObject.getDppXY();
         double distPerPxZ = trackObject.getDppZ();
 
-        TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
-        TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();
-        TreeMap<Integer, Double> zVelocity = track.getInstantaneousZVelocity();
-        TreeMap<Integer, Double> speed = track.getInstantaneousSpeed();
+        TreeMap<Integer, Double> xVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getX());
+        TreeMap<Integer, Double> yVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getY());
+        TreeMap<Integer, Double> zVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getZ());
+        TreeMap<Integer, Double> speed = new InstantaneousSpeedCalculator().calculate(track);
 
         // Getting the first timepoint
         int minT = Integer.MAX_VALUE;
@@ -425,10 +443,10 @@ public class MeasureTrackMotion extends Module {
         double distPerPxXY = trackObject.getDppXY();
 
         // Calculating rolling values
-        TreeMap<Integer, Double> pathLength = track.getRollingTotalPathLength();
-        TreeMap<Integer, Double> euclidean = track.getRollingEuclideanDistance();
-        TreeMap<Integer, Double> dirRatio = track.getRollingDirectionalityRatio();
-        TreeMap<Integer, Double> angularPersistence = track.getAngularPersistence();
+        TreeMap<Integer, Double> pathLength = new CumulativePathLengthCalculator().calculate(track);
+        TreeMap<Integer, Double> euclidean = new EuclideanDistanceCalculator().calculate(track);
+        TreeMap<Integer, Double> dirRatio = new DirectionalityRatioCalculator().calculate(track);
+        TreeMap<Integer, Double> angularPersistence = new AngularPersistenceCalculator().calculate(track);
 
         // Applying the relevant measurement to each spot
         for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {

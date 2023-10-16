@@ -2,10 +2,13 @@ package io.github.mianalysis.mia.process.analysis;
 
 import java.util.TreeMap;
 
+import io.github.mianalysis.mia.object.coordinates.tracks.Track;
+
 /**
  * Created by Stephen on 15/04/2017.
  */
 public class InstantaneousStepSizeCalculator implements SpatialCalculator {
+    @Override
     public TreeMap<Integer,Double> calculate(double[] x, double[] y, double[] z, int[] f) {
         TreeMap<Integer,Double> steps = new TreeMap<>();
 

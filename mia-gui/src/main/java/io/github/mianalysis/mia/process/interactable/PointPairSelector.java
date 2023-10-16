@@ -32,8 +32,8 @@ import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 
 public class PointPairSelector implements ActionListener {
     private static final String ADD_PAIRS = "Add pair(s)";
@@ -356,34 +356,5 @@ public class PointPairSelector implements ActionListener {
 
         return pairs;
 
-    }
-
-    public static class PointPair {
-        private PointRoi p1;
-        private PointRoi p2;
-        private int ID;
-
-        public PointPair(PointRoi p1, PointRoi p2, int ID) {
-            this.p1 = p1;
-            this.p2 = p2;
-            this.ID = ID;
-        }
-
-        public PointRoi getPoint1() {
-            return p1;
-        }
-
-        public PointRoi getPoint2() {
-            return p2;
-        }
-
-        public int getID() {
-            return ID;
-        }
-
-        @Override
-        public String toString() {
-            return "Pair "+ID;
-        }
     }
 }
