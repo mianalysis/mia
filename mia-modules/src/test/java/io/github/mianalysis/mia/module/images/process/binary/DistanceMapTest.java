@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.github.mianalysis.TestUtils;
+import io.github.mianalysis.mia.TestUtils;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;

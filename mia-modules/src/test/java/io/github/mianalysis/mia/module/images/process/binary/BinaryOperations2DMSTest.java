@@ -8,13 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.Logic;
