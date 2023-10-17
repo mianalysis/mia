@@ -31,6 +31,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
@@ -57,56 +60,88 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 /**
  * Created by Stephen on 12/05/2021.
  */
 
 /**
-* Run Fiji-compatible scripts directly within a MIA workflow.  These can be used to perform advanced actions, such as making measurements that aren't explicitly supported in MIA or running additional plugins.  Each script has access to the current workspace, thus providing a route to interact with and specify new images and objects.  Scripts also have access to this module, which in turn can be used to access all modules in the current workflow.  Scripts are run once per workflow execution.
-*/
+ * Run Fiji-compatible scripts directly within a MIA workflow. These can be used
+ * to perform advanced actions, such as making measurements that aren't
+ * explicitly supported in MIA or running additional plugins. Each script has
+ * access to the current workspace, thus providing a route to interact with and
+ * specify new images and objects. Scripts also have access to this module,
+ * which in turn can be used to access all modules in the current workflow.
+ * Scripts are run once per workflow execution.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunScript extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SCRIPT_SEPARATOR = "Script definition";
 
-	/**
-	* Select the source for the script code:<br><ul><li>"Script file" Load the macro from the file specified by the "Script file" parameter.</li><li>"Script text" Script code is written directly into the "Script text" box.</li></ul>
-	*/
+    /**
+     * Select the source for the script code:<br>
+     * <ul>
+     * <li>"Script file" Load the macro from the file specified by the "Script file"
+     * parameter.</li>
+     * <li>"Script text" Script code is written directly into the "Script text"
+     * box.</li>
+     * </ul>
+     */
     public static final String SCRIPT_MODE = "Script mode";
 
-	/**
-	* Specify the language of the script written in the "Script text" box.  This parameter is not necessary when loading a script from file, since the file extension provides the language information.
-	*/
+    /**
+     * Specify the language of the script written in the "Script text" box. This
+     * parameter is not necessary when loading a script from file, since the file
+     * extension provides the language information.
+     */
     public static final String SCRIPT_LANGUAGE = "Script language";
 
-	/**
-	* Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code ("#@ io.github.mianalysis.mia.object.Workspace workspace" and "#@ io.github.mianalysis.mia.module.Module thisModule"), which are included by default.  With these lines present in the script, the workspace can be accessed via the "workspace" variable and the current module (i.e. this script module) via the "thisModule" variable.
-	*/
+    /**
+     * Script code to be executed. Access to the active MIA workspace and module are
+     * provided by the first two lines of code ("#@
+     * io.github.mianalysis.mia.object.Workspace workspace" and "#@
+     * io.github.mianalysis.mia.module.Module thisModule"), which are included by
+     * default. With these lines present in the script, the workspace can be
+     * accessed via the "workspace" variable and the current module (i.e. this
+     * script module) via the "thisModule" variable.
+     */
     public static final String SCRIPT_TEXT = "Script text";
 
-	/**
-	* Select a script file to be run by this module.  As with the "Script text" parameter, this script can start with the lines "#@ io.github.mianalysis.mia.object.Workspace workspace" and "#@ io.github.mianalysis.mia.module.Module thisModule", which provide access to the active workspace and this module.
-	*/
+    /**
+     * Select a script file to be run by this module. As with the "Script text"
+     * parameter, this script can start with the lines "#@
+     * io.github.mianalysis.mia.object.Workspace workspace" and "#@
+     * io.github.mianalysis.mia.module.Module thisModule", which provide access to
+     * the active workspace and this module.
+     */
     public static final String SCRIPT_FILE = "Script file";
 
-	/**
-	* This button refreshes the script code as stored within MIA.  Clicking this will create an "undo" checkpoint and validate any global variables that have been used.
-	*/
+    /**
+     * This button refreshes the script code as stored within MIA. Clicking this
+     * will create an "undo" checkpoint and validate any global variables that have
+     * been used.
+     */
     public static final String REFRESH_BUTTON = "Refresh script";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String IMAGE_OUTPUT_SEPARATOR = "Script outputs";
 
-	/**
-	* If images or new object collections have been added to the workspace during script execution they must be added here, so subsequent modules are aware of their presence.  The act of adding an output via this method simply tells subsequent MIA modules the relevant images/object collections were added to the workspace; the image/object collection must be added to the workspace during script execution using the "workspace.addImage([image])" or "workspace.addObjects([object collection])" commands.
-	*/
+    /**
+     * If images or new object collections have been added to the workspace during
+     * script execution they must be added here, so subsequent modules are aware of
+     * their presence. The act of adding an output via this method simply tells
+     * subsequent MIA modules the relevant images/object collections were added to
+     * the workspace; the image/object collection must be added to the workspace
+     * during script execution using the "workspace.addImage([image])" or
+     * "workspace.addObjects([object collection])" commands.
+     */
     public static final String ADD_OUTPUT = "Add output";
     public static final String OUTPUT_TYPE = "Output type";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -197,6 +232,47 @@ public class RunScript extends Module {
 
     }
 
+    /**
+     * Some imports may have moved since the script was written. This method
+     * replaces some commonly occurring ones.
+     */
+    String redirectImports(String scriptText, String extension) {
+        HashMap<String, String> movedClasses = new HashMap<>();
+        movedClasses.put("io.github.sjcross.sjcommon.exceptions.IntegerOverflowException",
+                IntegerOverflowException.class.getName());
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException",
+                PointOutOfRangeException.class.getName());
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
+        movedClasses.put("io.github.sjcross.common.exceptions.IntegerOverflowException",
+                IntegerOverflowException.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",
+                PointOutOfRangeException.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.volume.SpatCal", SpatCal.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.volume.VolumeType", VolumeType.class.getName());
+
+        for (String oldLocation : movedClasses.keySet()) {
+            String newLocation = movedClasses.get(oldLocation);
+
+            if (extension.equals("py")) {
+                int oldIdx = oldLocation.lastIndexOf(".");
+                oldLocation = oldLocation.substring(0, oldIdx) + " import " + oldLocation.substring(oldIdx + 1);
+
+                int newIdx = newLocation.lastIndexOf(".");
+                newLocation = newLocation.substring(0, newIdx) + " import " + newLocation.substring(newIdx + 1);
+            }
+
+            if (scriptText.contains(oldLocation))
+                scriptText = scriptText.replace(oldLocation, newLocation);
+
+        }
+
+        System.out.println(scriptText);
+
+        return scriptText;
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
@@ -205,72 +281,69 @@ public class RunScript extends Module {
         String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE, workspace);
         String scriptFile = parameters.getValue(SCRIPT_FILE, workspace);
 
-        // try {
-            Map<String, Object> scriptParameters = new HashMap<>();
-            String extension = "";
-            switch (scriptMode) {
-                case ScriptModes.SCRIPT_FILE:
-                    extension = FilenameUtils.getExtension(scriptFile);
-                    try {
-                        scriptText = new String(Files.readAllBytes(Paths.get(scriptFile)), StandardCharsets.UTF_8);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                        return Status.FAIL;                        
-                    }
-                    scriptText = GlobalVariables.convertString(scriptText, modules);
-                    scriptText = TextType.applyCalculation(scriptText);
-                    break;
-                case ScriptModes.SCRIPT_TEXT:
-                    extension = getLanguageExtension(scriptLanguage);
-                    break;
-            }
+        Map<String, Object> scriptParameters = new HashMap<>();
+        String extension = "";
+        switch (scriptMode) {
+            case ScriptModes.SCRIPT_FILE:
+                extension = FilenameUtils.getExtension(scriptFile);
+                try {
+                    scriptText = new String(Files.readAllBytes(Paths.get(scriptFile)), StandardCharsets.UTF_8);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                    return Status.FAIL;
+                }
+                scriptText = GlobalVariables.convertString(scriptText, modules);
+                scriptText = TextType.applyCalculation(scriptText);
+                break;
+            case ScriptModes.SCRIPT_TEXT:
+                extension = getLanguageExtension(scriptLanguage);
+                break;
+        }
 
-            if (scriptText.contains("@ io.github.mianalysis.mia.object.Workspace workspace"))
-                scriptParameters.put("workspace", workspace);
+        if (scriptText.contains("@ io.github.mianalysis.mia.object.Workspace workspace"))
+            scriptParameters.put("workspace", workspace);
 
-            if (scriptText.contains("@ io.github.mianalysis.mia.module.Module thisModule"))
-                scriptParameters.put("thisModule", this);
+        if (scriptText.contains("@ io.github.mianalysis.mia.module.Module thisModule"))
+            scriptParameters.put("thisModule", this);
 
-            // Running script
-            try {
-                ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters).get();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        // Resolving moved files
+        scriptText = redirectImports(scriptText, extension);
 
-            // Displaying output images/objects
-            if (showOutput) {
-                LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT, workspace);
-                for (Parameters parameterCollection : parameterCollections.values()) {
-                    String outputType = parameterCollection.getValue(OUTPUT_TYPE, workspace);
-                    switch (outputType) {
-                        case OutputTypes.IMAGE:
-                            workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE, workspace)).show();
-                            break;
-                        case OutputTypes.IMAGE_MEASUREMENT:
-                            workspace.getImage(parameterCollection.getValue(ASSOCIATED_IMAGE, workspace))
-                                    .showMeasurements(this);
-                            break;
-                        case OutputTypes.METADATA:
-                            workspace.showMetadata(this);
-                            break;
-                        case OutputTypes.OBJECTS:
-                            workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
-                                    .convertToImageIDColours().show();
-                            break;
-                        case OutputTypes.OBJECT_MEASUREMENT:
-                            workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
-                                    .showMeasurements(this, modules);
-                            break;
-                    }
+        // Running script
+        try {
+            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters)
+                    .get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Displaying output images/objects
+        if (showOutput) {
+            LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT, workspace);
+            for (Parameters parameterCollection : parameterCollections.values()) {
+                String outputType = parameterCollection.getValue(OUTPUT_TYPE, workspace);
+                switch (outputType) {
+                    case OutputTypes.IMAGE:
+                        workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE, workspace)).show();
+                        break;
+                    case OutputTypes.IMAGE_MEASUREMENT:
+                        workspace.getImage(parameterCollection.getValue(ASSOCIATED_IMAGE, workspace))
+                                .showMeasurements(this);
+                        break;
+                    case OutputTypes.METADATA:
+                        workspace.showMetadata(this);
+                        break;
+                    case OutputTypes.OBJECTS:
+                        workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
+                                .convertToImageIDColours().show();
+                        break;
+                    case OutputTypes.OBJECT_MEASUREMENT:
+                        workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
+                                .showMeasurements(this, modules);
+                        break;
                 }
             }
-
-        // } catch (InterruptedException e) {
-        //     // Do nothing as the user has selected this
-        // } catch (Exception e) {
-        //     MIA.log.writeError(e);
-        // }
+        }
 
         return Status.PASS;
 
