@@ -201,7 +201,7 @@ public class RunScript extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
