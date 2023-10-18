@@ -240,7 +240,7 @@ public class RunScript extends Module {
         HashMap<String, String> movedClasses = new HashMap<>();
         movedClasses.put("io.github.sjcross.sjcommon.exceptions.IntegerOverflowException",
                 IntegerOverflowException.class.getName());
-        movedClasses.put("io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException",
+        movedClasses.put("io.github.sjcross.sjcommon.exceptions.PointOutOfRangeException",
                 PointOutOfRangeException.class.getName());
         movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
         movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
@@ -266,8 +266,6 @@ public class RunScript extends Module {
                 scriptText = scriptText.replace(oldLocation, newLocation);
 
         }
-
-        System.out.println(scriptText);
 
         return scriptText;
 
