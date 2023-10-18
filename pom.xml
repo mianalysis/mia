@@ -119,6 +119,7 @@
         <module>mia-headless</module>
         <module>mia-macros</module>
         <module>mia-modules</module>
+        <module>mia-plugin</module>
     </modules>
 
     <repositories>
@@ -417,7 +418,6 @@
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
         </dependency>
-
     </dependencies>
 
     <distributionManagement>
@@ -444,76 +444,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
-
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <finalName>MIA_-${project.version}</finalName>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>io.github.mianalysis.mia.MIA</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin> -->
-
-            <!-- To be uncommented when creating release -->
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeScope>provided</excludeScope>
-                            <includeScope>runtime</includeScope>
-
-                            <excludeArtifactIds>
-                                commons-codec,commons-collections4,commons-io,guava,ij,jama,javassist,junit,MorphoLibJ_,Skeletonize3D_,vecmath</excludeArtifactIds>
-
-                            <outputDirectory>${project.build.directory}/jars/</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
