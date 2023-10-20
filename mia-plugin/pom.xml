@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>io.github.mianalysis</groupId>
-        <artifactId>mia</artifactId>
+        <artifactId>pom-mia</artifactId>
         <version>1.5.0-SNAPSHOT</version>
     </parent>
 
@@ -127,60 +127,60 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-algorithms</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-gui</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <artifactId>mia-gui-swing</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-headless</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-macros</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-modules</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     
     <build>
         <plugins>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
                     <finalName>MIA_-${project.version}</finalName>
-                    <!-- <archive>
+                    <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             <mainClass>io.github.mianalysis.mia.MIAGUI</mainClass>
                         </manifest>
-                    </archive> -->
+                    </archive>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
             <!-- To be uncommented when creating release -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -228,6 +228,33 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <!-- <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration> -->
+                <executions>
+                    <execution>
+                        <id>distro-assembly</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/plugin.xml</descriptor>
+                            </descriptors>
+                            <finalName>MIA_-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
                 </executions>

@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia</artifactId>
+    <artifactId>pom-mia</artifactId>
     <version>1.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MIA</name>
@@ -115,7 +115,7 @@
     <modules>
         <module>mia-algorithms</module>
         <module>mia-core</module>
-        <module>mia-gui</module>
+        <module>mia-gui-swing</module>
         <module>mia-headless</module>
         <module>mia-macros</module>
         <module>mia-modules</module>

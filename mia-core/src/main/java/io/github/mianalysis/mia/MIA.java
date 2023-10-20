@@ -13,12 +13,8 @@ import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
 
 import io.github.mianalysis.mia.module.LostAndFound;
-import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
-import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
-import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
@@ -29,7 +25,7 @@ import net.imagej.ops.OpService;
 /**
  * Created by Stephen Cross on 14/07/2017.
  */
-public class MIA {
+public abstract class MIA {
     @Parameter
     protected static ImageJService ijService;
 
@@ -61,25 +57,25 @@ public class MIA {
      */
     protected static final boolean imagePlusMode = true;
 
-    public static void main(String[] args) throws Exception {
-        debug = true;
+    // public static void main(String[] args) throws Exception {
+    //     debug = true;
 
-        try {
-            if (args.length == 0) {
-                System.err.println("No workflow file path specified as command line argument");
-            } else if (args.length == 1) {
-                Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
-                new AnalysisRunner().run(analysis);
-            } else if (args.length == 2) {
-                Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
-                analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
-                new AnalysisRunner().run(analysis);
-            }
+    //     try {
+    //         if (args.length == 0) {
+    //             System.err.println("No workflow file path specified as command line argument");
+    //         } else if (args.length == 1) {
+    //             Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
+    //             new AnalysisRunner().run(analysis);
+    //         } else if (args.length == 2) {
+    //             Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
+    //             analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
+    //             new AnalysisRunner().run(analysis);
+    //         }
 
-        } catch (Exception e) {
-            MIA.log.writeError(e);
-        }
-    }
+    //     } catch (Exception e) {
+    //         MIA.log.writeError(e);
+    //     }
+    // }
 
     private static String extractVersion() {
         // Determining the version number from the pom file
