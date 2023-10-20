@@ -100,7 +100,6 @@ public class RemoveImages extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         return parameters;
 
     }

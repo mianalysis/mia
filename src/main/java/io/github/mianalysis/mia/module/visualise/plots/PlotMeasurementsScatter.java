@@ -1,6 +1,6 @@
 // TODO: Add NaN exclusion for 2D plot (will have to remove items from an array (may involve intermediate ArrayLists)
 
-package io.github.mianalysis.mia.module.visualise;
+package io.github.mianalysis.mia.module.visualise.plots;
 
 import java.awt.Color;
 
@@ -120,7 +120,7 @@ public class PlotMeasurementsScatter extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.VISUALISATION;
+        return Categories.VISUALISATION_PLOTS;
     }
 
     @Override

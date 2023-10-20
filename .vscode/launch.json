@@ -2,16 +2,16 @@
     "configurations": [
         {
             "type": "java",
-            "name": "RunScript",
+            "name": "MIA",
             "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.module.script.RunScript",
+            "mainClass": "io.github.mianalysis.mia.MIA",
             "projectName": "mia"
         },
         {
             "type": "java",
-            "name": "MIA",
+            "name": "RunScript",
             "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.MIA",
+            "mainClass": "io.github.mianalysis.mia.module.script.RunScript",
             "projectName": "mia"
         }
     ]
