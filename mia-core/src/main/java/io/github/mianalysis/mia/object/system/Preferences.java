@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.object.system;
 
-import java.awt.Color;
+import java.util.HashMap;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
@@ -40,6 +40,8 @@ public class Preferences extends Module {
     // public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache
     // directory";
     // public static final String CACHE_DIRECTORY = "Cache directory";
+
+    protected HashMap<String, String> currentValues = new HashMap<>();
 
     public interface ImageDisplayModes {
         String COMPOSITE = "Composite";
@@ -175,29 +177,31 @@ public class Preferences extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {        
+    protected void initialiseParameters() {
+        if (currentValues == null)
+            currentValues = new HashMap<>();
+
         parameters.add(new SeparatorP(WORKFLOW_SEPARATOR, this));
         Parameter parameter = new ChoiceP(IMAGE_DISPLAY_MODE, this,
                 Prefs.get("MIA.Workflow.imageDisplayMode", ImageDisplayModes.COMPOSITE), ImageDisplayModes.ALL);
-        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-            if (evt.getOldValue() != null)
-                setImageDisplayMode();
-        });
+        System.out.println("P "+parameter);
+        System.out.println("Raw "+parameter);
+                System.out.println("cv "+currentValues);
+
+
+                currentValues.put(IMAGE_DISPLAY_MODE, parameter.getRawStringValue());
         parameters.add(parameter);
 
         // Data parameters
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));
-
         parameter = new BooleanP(USE_MEMOIZER, this, Prefs.get("MIA.data.useMemoizer", false));
-        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-            if (evt.getOldValue() != null)
-                setUseMemoizer();
-        });
+        currentValues.put(USE_MEMOIZER, parameter.getRawStringValue());
         parameters.add(parameter);
         parameters.add(new IntegerP(MEMOIZER_THRESHOLD_S, this,
                 (int) Prefs.get("MIA.data.memoizerThreshold", 3)));
 
-        parameters.add(new MessageP(KRYO_MESSAGE, this, "Memoizer requires Kryo version 5.4.0 or greater", ParameterState.WARNING));
+        parameters.add(new MessageP(KRYO_MESSAGE, this, "Memoizer requires Kryo version 5.4.0 or greater",
+                ParameterState.WARNING));
 
         // parameter = new ChoiceP(DATA_STORAGE_MODE, this,
         // Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM),
@@ -234,13 +238,24 @@ public class Preferences extends Module {
 
         returnedParameters.add(parameters.getParameter(WORKFLOW_SEPARATOR));
         returnedParameters.add(parameters.getParameter(IMAGE_DISPLAY_MODE));
+        String newValue = parameters.getParameter(IMAGE_DISPLAY_MODE).getRawStringValue();
+        if (!currentValues.get(IMAGE_DISPLAY_MODE).equals(newValue)) {
+            setImageDisplayMode();
+            currentValues.put(IMAGE_DISPLAY_MODE, newValue);
+        }
 
         returnedParameters.add(parameters.getParameter(DATA_SEPARATOR));
         if (MIA.kryoCheck()) {
             returnedParameters.add(parameters.getParameter(USE_MEMOIZER));
+            newValue = parameters.getParameter(USE_MEMOIZER).getRawStringValue();
+            if (!currentValues.get(USE_MEMOIZER).equals(newValue)) {
+                setUseMemoizer();
+                currentValues.put(USE_MEMOIZER, newValue);
+            }
             if ((boolean) parameters.getValue(USE_MEMOIZER, null))
                 returnedParameters.add(parameters.getParameter(MEMOIZER_THRESHOLD_S));
-        } else {
+        
+            } else {
             returnedParameters.add(parameters.get(KRYO_MESSAGE));
         }
         // returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));

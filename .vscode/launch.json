@@ -2,6 +2,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MinimalExample",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.MinimalExample",
+            "projectName": "mia-modules"
+        },
+        {
+            "type": "java",
+            "name": "MinimalExample",
+            "request": "launch",
+            "mainClass": "MinimalExample",
+            "projectName": "pom-mia"
+        },
+        {
+            "type": "java",
+            "name": "MinimalExample",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.example.MinimalExample",
+            "projectName": "mia-examples"
+        },
+        {
+            "type": "java",
             "name": "MIA",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA",
