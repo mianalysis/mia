@@ -59,7 +59,6 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
@@ -93,10 +92,10 @@ public class Exporter {
 
     // PUBLIC METHODS
 
-    public void exportResults(Workspaces workspaces, Analysis analysis, String exportFilePath) throws IOException {
+    public void exportResults(Workspaces workspaces, Modules modules, String exportFilePath) throws IOException {
         switch (exportMode) {
             case ALL_TOGETHER:
-                export(workspaces, analysis, exportFilePath);
+                export(workspaces, modules, exportFilePath);
                 break;
 
             case GROUP_BY_METADATA:
@@ -126,7 +125,7 @@ public class Exporter {
 
                     String name = exportFilePath + "_" + metadataItemForGrouping + "-" + metadataValue;
 
-                    export(currentWorkspaces, analysis, name);
+                    export(currentWorkspaces, modules, name);
 
                 }
 
@@ -135,18 +134,15 @@ public class Exporter {
         }
     }
 
-    public void exportResults(Workspace workspace, Analysis analysis, String name) throws IOException {
+    public void exportResults(Workspace workspace, Modules modules, String name) throws IOException {
         Workspaces currentWorkspaces = new Workspaces();
         currentWorkspaces.add(workspace);
 
-        export(currentWorkspaces, analysis, name);
+        export(currentWorkspaces, modules, name);
 
     }
 
-    public void export(Workspaces workspaces, Analysis analysis, String name) throws IOException {
-        // Getting modules
-        Modules modules = analysis.getModules();
-
+    public void export(Workspaces workspaces, Modules modules, String name) throws IOException {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
 
@@ -156,7 +152,7 @@ public class Exporter {
         if (exportIndividualObjects)
             prepareObjectsXLS(workbook, workspaces, modules);
 
-        prepareConfiguration(workbook, analysis);
+        prepareConfiguration(workbook, modules);
         prepareLog(workbook);
 
         // Writing the workbook to file
@@ -198,7 +194,7 @@ public class Exporter {
         return inputName + "_(" + dateTime + ").xlsx";
     }
 
-    private int appendConfigurationReport(Sheet sheet, Analysis analysis, int rowIdx) {
+    private int appendConfigurationReport(Sheet sheet, Modules modules, int rowIdx) {
         Workbook workbook = sheet.getWorkbook();
 
         // Creating bold font
@@ -222,7 +218,7 @@ public class Exporter {
 
         row = sheet.createRow(rowIdx++);
         row.createCell(0).setCellValue("WORKFLOW FILENAME");
-        row.createCell(1).setCellValue(analysis.getAnalysisFilename());
+        row.createCell(1).setCellValue(modules.getAnalysisFilename());
 
         row = sheet.createRow(rowIdx++);
         row.createCell(0).setCellValue("OS NAME");
@@ -244,14 +240,14 @@ public class Exporter {
 
     }
 
-    private void prepareConfiguration(SXSSFWorkbook workbook, Analysis analysis) {
+    private void prepareConfiguration(SXSSFWorkbook workbook, Modules modules) {
         // Creating a sheet for parameters
         Sheet paramSheet = workbook.createSheet("Configuration");
 
         int rowIdx = 0;
 
         // Adding configuration information about the system
-        rowIdx = appendConfigurationReport(paramSheet, analysis, rowIdx);
+        rowIdx = appendConfigurationReport(paramSheet, modules, rowIdx);
 
         // Adding a header row for the parameter titles
         rowIdx += 3;
@@ -269,7 +265,7 @@ public class Exporter {
         cell.setCellStyle(cellStyle);
 
         try {
-            Document doc = AnalysisWriter.prepareAnalysisDocument(analysis);
+            Document doc = AnalysisWriter.prepareAnalysisDocument(modules);
             StringWriter stringWriter = new StringWriter();
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(new DOMSource(doc), new StreamResult(stringWriter));

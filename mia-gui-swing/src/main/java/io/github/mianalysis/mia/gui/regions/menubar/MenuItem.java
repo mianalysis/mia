@@ -66,15 +66,15 @@ public class MenuItem extends JMenuItem implements ActionListener {
                 break;
 
             case LOAD_WORKFLOW:
-                GUIAnalysisHandler.loadAnalysis();
+                GUIAnalysisHandler.loadModules();
                 break;
 
             case SAVE_WORKFLOW:
-                GUIAnalysisHandler.saveAnalysis();
+                GUIAnalysisHandler.saveModules();
                 break;
 
             case SAVE_WORKFLOW_AS:
-                GUIAnalysisHandler.saveAnalysisAs();
+                GUIAnalysisHandler.saveModulesAs();
                 break;
 
             case UNDO:

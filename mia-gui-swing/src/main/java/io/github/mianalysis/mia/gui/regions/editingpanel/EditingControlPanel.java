@@ -85,19 +85,19 @@ public class EditingControlPanel extends JPanel {
         add(moveModuleDownButton, c);
 
         // Load analysis protocol button
-        AnalysisControlButton loadAnalysisButton = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS,
+        AnalysisControlButton loadModulesButton = new AnalysisControlButton(AnalysisControlButton.LOAD_MODULES,
                 bigButtonSize);
         c.gridy++;
         c.weighty = 1;
         c.anchor = GridBagConstraints.PAGE_END;
-        add(loadAnalysisButton, c);
+        add(loadModulesButton, c);
 
         // Save analysis protocol button
-        AnalysisControlButton saveAnalysisButton = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS,
+        AnalysisControlButton saveModulesButton = new AnalysisControlButton(AnalysisControlButton.SAVE_MODULES,
                 bigButtonSize);
         c.gridy++;
         c.weighty = 0;
-        add(saveAnalysisButton, c);
+        add(saveModulesButton, c);
 
         // Start analysis button
         AnalysisControlButton startAnalysisButton = new AnalysisControlButton(AnalysisControlButton.START_ANALYSIS,

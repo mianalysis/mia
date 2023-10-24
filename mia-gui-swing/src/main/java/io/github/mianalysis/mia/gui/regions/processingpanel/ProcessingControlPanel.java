@@ -9,7 +9,6 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 import javax.swing.*;
@@ -62,13 +61,13 @@ public class ProcessingControlPanel extends JScrollPane {
         AnalysisTester.testModule(outputControl, GUI.getModules());
         AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace());
 
-        Analysis analysis = GUI.getAnalysis();
+        Modules modules = GUI.getModules();
         ComponentFactory componentFactory = GUI.getComponentFactory();
 
         panel.removeAll();
 
         // Check if there are no controls to be displayed
-        if (!analysis.hasVisibleParameters()) {
+        if (!modules.hasVisibleParameters()) {
             showUsageMessage();
             return;
         }
@@ -99,7 +98,6 @@ public class ProcessingControlPanel extends JScrollPane {
 
         // Adding module buttons
         GUISeparator separator = loadSeparator;
-        Modules modules = analysis.getModules();
         for (Module module : modules) {
             // If the module is the special-case GUISeparator, create this module, then
             // return

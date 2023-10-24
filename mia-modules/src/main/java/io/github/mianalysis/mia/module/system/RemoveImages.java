@@ -27,28 +27,28 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Removes the specified image(s) from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an image can be retained for further use.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Removes the specified image(s) from the workspace. Doing this helps keep
+ * memory usage down. Measurements associated with an image can be retained for
+ * further use.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RemoveImages extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REMOVAL_SEPARATOR = "Images to remove";
     public static final String INPUT_IMAGE = "Input image";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
-	/**
-	* Mark another image from the workspace for removal.
-	*/
+    /**
+     * Mark another image from the workspace for removal.
+     */
     public static final String REMOVE_ANOTHER_IMAGE = "Remove another image";
 
     public RemoveImages(Modules modules) {
-        super("Remove images",modules);
+        super("Remove images", modules);
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -69,15 +69,15 @@ public class RemoveImages extends Module {
     public Status process(Workspace workspace) {
         // Getting input image
         ParameterGroup parameterGroup = parameters.getParameter(REMOVE_ANOTHER_IMAGE);
-        LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, Parameters> collections = parameterGroup.getCollections(false);
 
-        for (Parameters collection:collections.values()) {
-            String inputImageName = collection.getValue(INPUT_IMAGE,null);
-            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS,null);
+        for (Parameters collection : collections.values()) {
+            String inputImageName = collection.getValue(INPUT_IMAGE, null);
+            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS, null);
 
             // Removing the relevant image from the workspace
-            writeStatus("Removing image ("+inputImageName+") from workspace");
-            workspace.removeImage(inputImageName,retainMeasurements);
+            writeStatus("Removing image (" + inputImageName + ") from workspace");
+            workspace.removeImage(inputImageName, retainMeasurements);
 
         }
 
@@ -87,11 +87,11 @@ public class RemoveImages extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(REMOVAL_SEPARATOR,this));
+        parameters.add(new SeparatorP(REMOVAL_SEPARATOR, this));
 
         Parameters collection = new Parameters();
-        collection.add(new RemovedImageP(INPUT_IMAGE,this));
-        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
+        collection.add(new RemovedImageP(INPUT_IMAGE, this));
+        collection.add(new BooleanP(RETAIN_MEASUREMENTS, this, false));
         parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE, this, collection, 1));
 
         addParameterDescriptions();
@@ -100,34 +100,34 @@ public class RemoveImages extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -141,7 +141,8 @@ return null;
 
         collection.get(INPUT_IMAGE).setDescription("Name of the image to be removed from the workspace.");
 
-        collection.get(RETAIN_MEASUREMENTS).setDescription("Retain measurements for this image, or remove everything.  When selected, the image intensity information will be removed, as this is typically where most memory us used, however any measurements associated with it will be retained.");
+        collection.get(RETAIN_MEASUREMENTS).setDescription(
+                "Retain measurements for this image, or remove everything.  When selected, the image intensity information will be removed, as this is typically where most memory us used, however any measurements associated with it will be retained.");
 
         parameters.get(REMOVE_ANOTHER_IMAGE).setDescription("Mark another image from the workspace for removal.");
 

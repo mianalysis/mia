@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
@@ -30,23 +29,24 @@ public class MIAHeadless extends MIA implements Command {
     @Parameter
     protected static ImageJService ijService;
 
-    @Parameter (required = false, visibility = ItemVisibility.MESSAGE)
+    @Parameter(required = false, visibility = ItemVisibility.MESSAGE)
     private String workFlowSelectionMessage = "<html><b>Workflow selection</b></html>";
 
     @Parameter(label = "Workflow file path", required = true)
     public File workflowPath = null;
 
-    @Parameter (required = false, visibility = ItemVisibility.MESSAGE)
+    @Parameter(required = false, visibility = ItemVisibility.MESSAGE)
     private String workFlowConfigMessage = "<html><b>Workflow configuration (optional)</b></html>";
 
-    // The following currently has to be a String as there's seemingly no way to select either a file or folder
+    // The following currently has to be a String as there's seemingly no way to
+    // select either a file or folder
     @Parameter(label = "Input path", required = false, persist = false)
     public String inputPath = null;
 
     @Parameter(label = "Variables", required = false, persist = false)
     public String variables = null;
 
-    @Parameter (required = false, visibility = ItemVisibility.MESSAGE)
+    @Parameter(required = false, visibility = ItemVisibility.MESSAGE)
     private String loggingMessage = "<html><b>Logging configuration</b></html>";
 
     @Parameter(label = "Show debug", required = false, persist = false)
@@ -66,8 +66,6 @@ public class MIAHeadless extends MIA implements Command {
 
     @Parameter(label = "Verbose messages", required = false, persist = false)
     public boolean verbose = false;
-
-
 
     @Override
     public void run() {
@@ -98,23 +96,22 @@ public class MIAHeadless extends MIA implements Command {
 
             Module.setVerbose(verbose);
 
-            Analysis analysis;
+            Modules modules;
             if (inputPath == null) {
-                analysis = AnalysisReader.loadAnalysis(workflowPath);
+                modules = AnalysisReader.loadModules(workflowPath);
             } else {
-                analysis = AnalysisReader.loadAnalysis(workflowPath);
-                analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
-                        inputPath);
+                modules = AnalysisReader.loadModules(workflowPath);
+                modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH, inputPath);
             }
 
             // Inserting variables
             if (variables != null)
-                applyGlobalVariables(analysis.getModules(), variables);
+                applyGlobalVariables(modules, variables);
 
             // Running analysis
             Thread t = new Thread(() -> {
                 try {
-                    new AnalysisRunner().run(analysis);
+                    new AnalysisRunner().run(modules);
 
                     if (GraphicsEnvironment.isHeadless())
                         java.lang.System.exit(0);

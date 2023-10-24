@@ -45,7 +45,7 @@ import io.github.mianalysis.mia.process.logging.ProgressBar;
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisReader {
-    public static Analysis loadAnalysis()
+    public static Modules loadModules()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         // We always want to open at the last place a workflow was opened from (not just
@@ -66,7 +66,7 @@ public class AnalysisReader {
         Prefs.set("MIA.PreviousWorkflowPath", file.getAbsolutePath());
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
 
-        Analysis analysis = loadAnalysis(file);
+        Modules analysis = loadModules(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
@@ -75,16 +75,16 @@ public class AnalysisReader {
 
     }
 
-    public static Analysis loadAnalysis(File file)
+    public static Modules loadModules(File file)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         String xml = FileUtils.readFileToString(file, "UTF-8");
 
-        return loadAnalysis(xml);
+        return loadModules(xml);
 
     }
 
-    public static Analysis loadAnalysis(String xml)
+    public static Modules loadModules(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
@@ -115,15 +115,11 @@ public class AnalysisReader {
         }
 
         if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
-            return AnalysisReader_Pre_0p10p0.loadAnalysis(xml);
+            return AnalysisReader_Pre_0p10p0.loadModules(xml);
         else if (VersionUtils.compare("0.15.0", loadedVersion) > 0)
-            return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
+            return AnalysisReader_0p10p0_0p15p0.loadModules(xml);
 
-        Analysis analysis = new Analysis();
-        Modules modules = loadModules(doc, loadedVersion);
-        analysis.setModules(modules);
-
-        return analysis;
+        return loadModules(doc, loadedVersion);
 
     }
 

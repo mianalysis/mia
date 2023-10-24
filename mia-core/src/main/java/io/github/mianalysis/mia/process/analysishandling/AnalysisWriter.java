@@ -34,18 +34,18 @@ import io.github.mianalysis.mia.object.refs.collections.Refs;
  * Created by Stephen on 22/06/2018.
  */
 public class AnalysisWriter {
-    public static void saveAnalysisAs(Analysis analysis, String outputFileName)
+    public static void saveModulesAs(Modules modules, String outputFileName)
             throws IOException, ParserConfigurationException, TransformerException {
         if (outputFileName == null || outputFileName.equals("")) {
-            saveAnalysis(analysis);
+            saveModules(modules);
             return;
         }
 
         // Updating the analysis filename
-        analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
+        modules.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 
         // Creating the document to save
-        Document doc = prepareAnalysisDocument(analysis);
+        Document doc = prepareAnalysisDocument(modules);
 
         // Preparing the target file for
         FileOutputStream outputStream = new FileOutputStream(outputFileName);
@@ -57,9 +57,9 @@ public class AnalysisWriter {
 
     }
 
-    public static void saveAnalysis(Analysis analysis)
+    public static void saveModules(Modules modules)
             throws IOException, ParserConfigurationException, TransformerException {
-        JFileChooser fileChooser = new JFileChooser(analysis.getAnalysisFilename());
+        JFileChooser fileChooser = new JFileChooser(modules.getAnalysisFilename());
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.showDialog(null, "Save workflow");
 
@@ -72,16 +72,16 @@ public class AnalysisWriter {
 
         // Updating the analysis filename
         String outputFileName = file.getAbsolutePath();
-        analysis.setAnalysisFilename(outputFileName);
+        modules.setAnalysisFilename(outputFileName);
 
         if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
             outputFileName = FilenameUtils.removeExtension(outputFileName) + ".mia";
         }
-        saveAnalysisAs(analysis, outputFileName);
+        saveModulesAs(modules, outputFileName);
 
     }
 
-    public static Document prepareAnalysisDocument(Analysis analysis) throws ParserConfigurationException {
+    public static Document prepareAnalysisDocument(Modules modules) throws ParserConfigurationException {
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = doc.createElement("ROOT");
@@ -94,12 +94,12 @@ public class AnalysisWriter {
         // Creating a module collection holding the single-instance modules (input,
         // output and global variables)
         Modules singleModules = new Modules();
-        singleModules.add(analysis.getModules().getInputControl());
-        singleModules.add(analysis.getModules().getOutputControl());
+        singleModules.add(modules.getInputControl());
+        singleModules.add(modules.getOutputControl());
 
         // Adding module elements
         root.appendChild(prepareModulesXML(doc, singleModules));
-        root.appendChild(prepareModulesXML(doc, analysis.getModules()));
+        root.appendChild(prepareModulesXML(doc, modules));
         doc.appendChild(root);
 
         return doc;

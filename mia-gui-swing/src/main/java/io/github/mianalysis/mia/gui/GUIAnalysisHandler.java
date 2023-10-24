@@ -6,7 +6,6 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
@@ -34,15 +33,14 @@ public class GUIAnalysisHandler {
             case -1: // Cancel (don't create new workflow)
                 return;
             case 0: // Save
-                saveAnalysis();
+                saveModules();
                 break;
         }
 
-        Analysis analysis = new Analysis();
-        Modules modules = analysis.getModules();
+        Modules modules = new Modules();
         modules.add(new ImageLoader<>(modules));
 
-        GUI.setAnalysis(analysis);
+        GUI.setModules(modules);
         GUI.updateModules();
         GUI.updateParameters();
         GUI.updateHelpNotes();
@@ -51,19 +49,19 @@ public class GUIAnalysisHandler {
 
     }
 
-    public static void loadAnalysis() {
-        Analysis newAnalysis = null;
+    public static void loadModules() {
+        Modules newModules = null;
         try {
-            newAnalysis = AnalysisReader.loadAnalysis();
+            newModules = AnalysisReader.loadModules();
         } catch (SAXException | IllegalAccessException | IOException | InstantiationException
                 | ParserConfigurationException | ClassNotFoundException | NoSuchMethodException
                 | InvocationTargetException e) {
             MIA.log.writeError(e);
         }
-        if (newAnalysis == null)
+        if (newModules == null)
             return;
 
-        GUI.setAnalysis(newAnalysis);
+        GUI.setModules(newModules);
         GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
         // new Thread(() -> {
@@ -74,17 +72,17 @@ public class GUIAnalysisHandler {
         // }).start();
     }
 
-    public static void saveAnalysis() {
+    public static void saveModules() {
         try {
-            AnalysisWriter.saveAnalysisAs(GUI.getAnalysis(), GUI.getAnalysis().getAnalysisFilename());
+            AnalysisWriter.saveModulesAs(GUI.getModules(), GUI.getModules().getAnalysisFilename());
         } catch (IOException | ParserConfigurationException | TransformerException e) {
             MIA.log.writeError(e);
         }
     }
 
-    public static void saveAnalysisAs() {
+    public static void saveModulesAs() {
         try {
-            AnalysisWriter.saveAnalysis(GUI.getAnalysis());
+            AnalysisWriter.saveModules(GUI.getModules());
         } catch (IOException | ParserConfigurationException | TransformerException e) {
             MIA.log.writeError(e);
         }
@@ -96,7 +94,7 @@ public class GUIAnalysisHandler {
             try {
                 GUI.updateProgressBar(0);
                 GUI.resetJobNumbers();
-                GUI.getAnalysisRunner().run(GUI.getAnalysis());
+                GUI.getAnalysisRunner().run(GUI.getModules());
             } catch (IOException e) {
                 MIA.log.writeError(e);
             } catch (InterruptedException e) {
@@ -155,7 +153,7 @@ public class GUIAnalysisHandler {
             return;
 
         // Getting lowest index
-        Modules modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getModules();
         int lowestIdx = modules.indexOf(activeModules[0]);
         if (lowestIdx <= lastModuleEval)
             GUI.setLastModuleEval(lowestIdx - 1);
@@ -175,7 +173,7 @@ public class GUIAnalysisHandler {
     public static void moveModuleUp() {
         GUI.addUndo();
 
-        Modules modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
@@ -199,7 +197,7 @@ public class GUIAnalysisHandler {
     public static void moveModuleDown() {
         GUI.addUndo();
 
-        Modules modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
@@ -231,9 +229,7 @@ public class GUIAnalysisHandler {
         copyModules.addAll(Arrays.asList(selectedModules));
 
         try {
-            Analysis analysis = new Analysis();
-            analysis.setModules(copyModules);
-            Document doc = AnalysisWriter.prepareAnalysisDocument(analysis);
+            Document doc = AnalysisWriter.prepareAnalysisDocument(copyModules);
             StringWriter stringWriter = new StringWriter();
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(new DOMSource(doc), new StreamResult(stringWriter));
@@ -264,7 +260,7 @@ public class GUIAnalysisHandler {
             // DataFlavor dataFlavor = new ModulesDataFlavor();
             Transferable contents = clipboard.getContents(null);
             String copyString = (String) contents.getTransferData(DataFlavor.stringFlavor);
-            Modules pasteModules = AnalysisReader.loadAnalysis(copyString).getModules();
+            Modules pasteModules = AnalysisReader.loadModules(copyString);
 
             // Ensuring the copied modules are linked to the present Modules and
             // have a unique ID
@@ -315,7 +311,7 @@ public class GUIAnalysisHandler {
             selectedModule.setEnabled(!selectedModule.isEnabled());
 
         int lastModuleEval = GUI.getLastModuleEval();
-        int firstIdx = GUI.getAnalysis().getModules().indexOf(selectedModules[0]);
+        int firstIdx = GUI.getModules().indexOf(selectedModules[0]);
         if (firstIdx <= lastModuleEval)
             GUI.setLastModuleEval(firstIdx - 1);
 

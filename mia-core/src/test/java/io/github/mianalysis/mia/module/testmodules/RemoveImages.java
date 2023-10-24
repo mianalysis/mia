@@ -1,0 +1,102 @@
+package io.github.mianalysis.mia.module.testmodules;
+
+import java.util.LinkedHashMap;
+
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.RemovedImageP;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
+import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
+
+public class RemoveImages extends Module {
+    public static final String REMOVAL_SEPARATOR = "Images to remove";
+    public static final String INPUT_IMAGE = "Input image";
+    public static final String RETAIN_MEASUREMENTS = "Retain measurements";
+    public static final String REMOVE_ANOTHER_IMAGE = "Remove another image";
+
+    public RemoveImages(Modules modules) {
+        super("Remove images", modules);
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.SYSTEM;
+    }
+
+    @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Removes the specified image(s) from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an image can be retained for further use.";
+    }
+
+    @Override
+    public Status process(Workspace workspace) {
+        return Status.PASS;
+
+    }
+
+    @Override
+    protected void initialiseParameters() {
+        parameters.add(new SeparatorP(REMOVAL_SEPARATOR, this));
+
+        Parameters collection = new Parameters();
+        collection.add(new RemovedImageP(INPUT_IMAGE, this));
+        collection.add(new BooleanP(RETAIN_MEASUREMENTS, this, false));
+        parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE, this, collection, 1));
+
+    }
+
+    @Override
+    public Parameters updateAndGetParameters() {
+        return parameters;
+
+    }
+
+    @Override
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefs updateAndGetPartnerRefs() {
+        return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
+}

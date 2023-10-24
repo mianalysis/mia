@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.objects.process;
+package io.github.mianalysis.mia.module.objects.transform;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.module.objects.process.ProjectObjects;
+import io.github.mianalysis.mia.module.objects.transform.ProjectObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;

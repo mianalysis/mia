@@ -4,12 +4,19 @@
 
 package io.github.mianalysis.mia.module;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.RemovedImageP;
@@ -24,6 +31,9 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
+import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -35,6 +45,114 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     private static final long serialVersionUID = -2862089290555674650L;
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
+    private String analysisFilename = "";
+
+    public boolean execute(Workspace workspace) {
+        return execute(workspace, true);
+    }
+
+    /*
+     * The method that gets called by the AnalysisRunner. This shouldn't have any
+     * user interaction elements
+     */
+    public boolean execute(Workspace workspace, boolean clearMemoryAtEnd) {
+        MIA.log.writeDebug("Processing file \"" + workspace.getMetadata().getFile().getAbsolutePath() + "\"");
+
+        // Setting the MacroHandler to the current workspace (only if macro modules are
+        // present)
+        if (hasModuleMatchingType(AbstractMacroRunner.class)) {
+            MacroHandler.setWorkspace(workspace);
+            MacroHandler.setModules(this);
+        }
+
+        // Running through modules
+        Status status = Status.PASS;
+
+        for (int i = 0; i < size(); i++) {
+            Module module = get(i);
+
+            if (Thread.currentThread().isInterrupted())
+                break;
+
+            if (status == Status.PASS && module.isEnabled() && module.isRunnable()) {
+                status = module.execute(workspace);
+                workspace.setStatus(status);
+
+                switch (status) {
+                    case PASS:
+                        break;
+                    case FAIL:
+                        MIA.log.writeWarning("Analysis failed for file \"" + workspace.getMetadata().getFile()
+                                + "\" (series " + workspace.getMetadata().getSeriesNumber() + ") by module \""
+                                + module.getName() + "\" (\"" + module.getNickname() + "\").");
+                        break;
+                    case REDIRECT:
+                        // Getting index of module before one to move to
+                        Module redirectModule = module.getRedirectModule(workspace);
+                        if (redirectModule == null)
+                            break;
+                        i = indexOf(redirectModule) - 1;
+                        status = Status.PASS;
+                        break;
+                    case TERMINATE:
+                        MIA.log.writeWarning("Analysis terminated early for file \"" + workspace.getMetadata().getFile()
+                                + "\" (series " + workspace.getMetadata().getSeriesNumber() + ") by module \""
+                                + module.getName() + "\" (\"" + module.getNickname() + "\").");
+                        break;
+                    case TERMINATE_SILENT:
+                        break;
+                }
+            }
+
+            // Updating progress bar
+            double fractionComplete = ((double) (i + 1)) / ((double) size());
+            workspace.setProgress(fractionComplete);
+
+            if (MIA.isHeadless())
+                LogRenderer.setProgress(workspace.getWorkspaces());
+            else
+                ProgressBar.update();
+
+        }
+
+        // We're only interested in the measurements now, so clearing images and object
+        // coordinates
+        if (clearMemoryAtEnd) {
+            workspace.clearAllImages(true);
+            workspace.clearAllObjects(true);
+        }
+        // If enabled, write the current memory usage to the console
+        if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
+            double totalMemory = Runtime.getRuntime().totalMemory();
+            double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+            DecimalFormat df = new DecimalFormat("#.0");
+
+            String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
+                    + ", ANALYSIS COMPLETE, DATE/TIME = " + dateTime + ", FILE = \"" + workspace.getMetadata().getFile()
+                    + "\"";
+
+            MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
+
+        }
+
+        return true;
+
+    }
+
+    public void removeAllModules() {
+        clear();
+
+    }
+
+    public String getAnalysisFilename() {
+        return analysisFilename;
+    }
+
+    public void setAnalysisFilename(String analysisFilename) {
+        this.analysisFilename = analysisFilename;
+    }
 
     public Module getModuleByID(String ID) {
         for (Module module : this) {

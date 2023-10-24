@@ -128,17 +128,17 @@ public class ProcessingPanel extends AbstractPanel {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // Load analysis protocol button
-        AnalysisControlButton loadAnalysisButton
-                = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS,bigButtonSize);
+        AnalysisControlButton loadModulesButton
+                = new AnalysisControlButton(AnalysisControlButton.LOAD_MODULES,bigButtonSize);
         c.gridx++;
         c.anchor = GridBagConstraints.PAGE_END;
-        processingControlPanel.add(loadAnalysisButton, c);
+        processingControlPanel.add(loadModulesButton, c);
 
         // Save analysis protocol button
-        AnalysisControlButton saveAnalysisButton
-                = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS,bigButtonSize);
+        AnalysisControlButton saveModulesButton
+                = new AnalysisControlButton(AnalysisControlButton.SAVE_MODULES,bigButtonSize);
         c.gridx++;
-        processingControlPanel.add(saveAnalysisButton, c);
+        processingControlPanel.add(saveModulesButton, c);
 
         // Start analysis button
         AnalysisControlButton startAnalysisButton

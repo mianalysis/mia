@@ -149,8 +149,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         add(blankMenu);
         blankMenu.add(new MenuItem(MenuItem.SHOW_PONY));
 
-        KeyStroke saveAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
-        registerKeyboardAction(this, "Save", saveAnalysis, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        KeyStroke saveModules = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+        registerKeyboardAction(this, "Save", saveModules, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         KeyStroke newAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
         registerKeyboardAction(this, "New", newAnalysis, JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -209,7 +209,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
                 GUIAnalysisHandler.newAnalysis();
                 break;
             case "Save":
-                GUIAnalysisHandler.saveAnalysis();
+                GUIAnalysisHandler.saveModules();
                 break;
             case "Undo":
                 GUI.undo();

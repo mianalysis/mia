@@ -12,14 +12,10 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.refs.abstrakt.SpreadsheetWriter;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 
 public class XLSXExporter {
 
-    public void exportSummary(String path, Workspaces workspaces, Analysis analysis) {
-        // Getting modules
-        Modules modules = analysis.getModules();
-
+    public void exportSummary(String path, Workspaces workspaces, Modules modules) {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Summary");

@@ -184,12 +184,7 @@ public class Preferences extends Module {
         parameters.add(new SeparatorP(WORKFLOW_SEPARATOR, this));
         Parameter parameter = new ChoiceP(IMAGE_DISPLAY_MODE, this,
                 Prefs.get("MIA.Workflow.imageDisplayMode", ImageDisplayModes.COMPOSITE), ImageDisplayModes.ALL);
-        System.out.println("P "+parameter);
-        System.out.println("Raw "+parameter);
-                System.out.println("cv "+currentValues);
-
-
-                currentValues.put(IMAGE_DISPLAY_MODE, parameter.getRawStringValue());
+        currentValues.put(IMAGE_DISPLAY_MODE, parameter.getRawStringValue());
         parameters.add(parameter);
 
         // Data parameters
@@ -254,8 +249,8 @@ public class Preferences extends Module {
             }
             if ((boolean) parameters.getValue(USE_MEMOIZER, null))
                 returnedParameters.add(parameters.getParameter(MEMOIZER_THRESHOLD_S));
-        
-            } else {
+
+        } else {
             returnedParameters.add(parameters.get(KRYO_MESSAGE));
         }
         // returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));

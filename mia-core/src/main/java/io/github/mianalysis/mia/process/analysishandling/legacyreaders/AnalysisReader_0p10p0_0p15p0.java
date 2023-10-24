@@ -33,7 +33,6 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.ProgressBar;
 
@@ -41,7 +40,7 @@ import io.github.mianalysis.mia.process.logging.ProgressBar;
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisReader_0p10p0_0p15p0 {
-    public static Analysis loadAnalysis()
+    public static Modules loadModules()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
@@ -57,7 +56,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
 
-        Analysis analysis = loadAnalysis(file);
+        Modules analysis = loadModules(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
@@ -67,16 +66,16 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Analysis loadAnalysis(File file)
+    public static Modules loadModules(File file)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         String xml = FileUtils.readFileToString(file, "UTF-8");
 
-        return loadAnalysis(xml);
+        return loadModules(xml);
 
     }
 
-    public static Analysis loadAnalysis(String xml)
+    public static Modules loadModules(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
@@ -94,11 +93,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
         doc.getDocumentElement().normalize();
 
-        Analysis analysis = new Analysis();
-        Modules modules = loadModules(doc);
-        analysis.setModules(modules);
-
-        return analysis;
+        return loadModules(doc);
 
     }
 

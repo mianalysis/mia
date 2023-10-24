@@ -15,8 +15,8 @@ public class AnalysisControlButton extends JButton implements ActionListener {
      *
      */
     private static final long serialVersionUID = 258574628718719585L;
-    public static final String LOAD_ANALYSIS = "Load";
-    public static final String SAVE_ANALYSIS = "Save";
+    public static final String LOAD_MODULES = "Load";
+    public static final String SAVE_MODULES = "Save";
     public static final String START_ANALYSIS = "Run";
     public static final String STOP_ANALYSIS = "Stop";
 
@@ -34,12 +34,12 @@ public class AnalysisControlButton extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (getText()) {
-            case LOAD_ANALYSIS:
-                GUIAnalysisHandler.loadAnalysis();
+            case LOAD_MODULES:
+                GUIAnalysisHandler.loadModules();
                 break;
 
-            case SAVE_ANALYSIS:
-                GUIAnalysisHandler.saveAnalysis();
+            case SAVE_MODULES:
+                GUIAnalysisHandler.saveModules();
                 break;
 
             case START_ANALYSIS:

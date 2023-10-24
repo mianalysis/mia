@@ -1,43 +1,44 @@
-// package io.github.mianalysis.mia.object;
+package io.github.mianalysis.mia.object;
 
-// import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// import io.github.mianalysis.mia.module.images.process.FilterImage;
+import org.junit.jupiter.api.Test;
 
-// import static org.junit.jupiter.api.Assertions.*;
+import io.github.mianalysis.mia.module.testmodules.FilterImage;
 
-// public class MeasurementTest {
-//     @Test
-//     public void testConstructionNameOnly() {
-//         Measurement measurement = new Measurement("Meas 1");
+public class MeasurementTest {
+    @Test
+    public void testConstructionNameOnly() {
+        Measurement measurement = new Measurement("Meas 1");
 
-//         assertEquals("Meas 1", measurement.getName());
-//         assertTrue(Double.isNaN(measurement.getValue()));
-//     }
+        assertEquals("Meas 1", measurement.getName());
+        assertTrue(Double.isNaN(measurement.getValue()));
+    }
 
-//     @Test
-//     public void testConstructionNameSource() {
-//         FilterImage filterImage = new FilterImage(null);
-//         Measurement measurement = new Measurement("Meas 1");
+    @Test
+    public void testConstructionNameSource() {
+        FilterImage filterImage = new FilterImage(null);
+        Measurement measurement = new Measurement("Meas 1");
 
-//         assertEquals("Meas 1", measurement.getName());
-//         assertTrue(Double.isNaN(measurement.getValue()));
-//     }
+        assertEquals("Meas 1", measurement.getName());
+        assertTrue(Double.isNaN(measurement.getValue()));
+    }
 
-//     @Test
-//     public void testConstructionNameValue() {
-//         Measurement measurement = new Measurement("Meas 1",-4.2);
+    @Test
+    public void testConstructionNameValue() {
+        Measurement measurement = new Measurement("Meas 1",-4.2);
 
-//         assertEquals("Meas 1", measurement.getName());
-//         assertEquals(-4.2,measurement.getValue(),0);
-//     }
+        assertEquals("Meas 1", measurement.getName());
+        assertEquals(-4.2,measurement.getValue(),0);
+    }
 
-//     @Test
-//     public void testConstructionNameValueSource() {
-//         FilterImage filterImage = new FilterImage(null);
-//         Measurement measurement = new Measurement("Meas 1",-4.2);
+    @Test
+    public void testConstructionNameValueSource() {
+        FilterImage filterImage = new FilterImage(null);
+        Measurement measurement = new Measurement("Meas 1",-4.2);
 
-//         assertEquals("Meas 1", measurement.getName());
-//         assertEquals(-4.2,measurement.getValue(),0);
-//     }
-// }
+        assertEquals("Meas 1", measurement.getName());
+        assertEquals(-4.2,measurement.getValue(),0);
+    }
+}

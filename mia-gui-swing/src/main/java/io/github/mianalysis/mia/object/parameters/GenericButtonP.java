@@ -171,7 +171,7 @@ public class GenericButtonP extends Parameter {
                 new Thread(() -> {
                     GUI.addUndo();
 
-                    OutputControl outputControl = GUI.getAnalysis().getModules().getOutputControl();
+                    OutputControl outputControl = GUI.getModules().getOutputControl();
                     outputControl.runMacro(GUI.getTestWorkspace());
                 }).start();
             }

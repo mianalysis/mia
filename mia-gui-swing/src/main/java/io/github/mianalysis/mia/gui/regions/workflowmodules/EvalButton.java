@@ -235,7 +235,7 @@ public class EvalButton extends JButton implements ActionListener {
     }
 
     public boolean evaluateModule(Module module) {
-        Modules modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getModules();
         Workspace testWorkspace = GUI.getTestWorkspace();
 
         // Setting the index to the previous module. This will make the

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
@@ -43,24 +44,24 @@ public class AnalysisRunner {
 
     // PUBLIC METHODS
 
-    public void run(Analysis analysis) throws InterruptedException, IOException {
-        run(analysis, true);
+    public void run(Modules modules) throws InterruptedException, IOException {
+        run(modules, true);
     }
 
-    public void run(Analysis analysis, boolean clearMemoryAtEnd) throws InterruptedException, IOException {
+    public void run(Modules modules, boolean clearMemoryAtEnd) throws InterruptedException, IOException {
         MIA.clearLogHistory();
         counter = 0;
 
-        AnalysisTester.testModules(analysis.getModules(), null);
+        AnalysisTester.testModules(modules, null);
 
-        HashSet<Job> jobs = getJobs(analysis);
+        HashSet<Job> jobs = getJobs(modules);
         if (jobs.size() == 0) {
             MIA.log.writeWarning("No valid images found at specified path");
             return;
         }
 
-        InputControl inputControl = analysis.getModules().getInputControl();
-        OutputControl outputControl = analysis.getModules().getOutputControl();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
 
         // Initialising Exporter
         Exporter exporter = initialiseExporter(outputControl);
@@ -75,7 +76,7 @@ public class AnalysisRunner {
         // (these don't work with simultaneous jobs).
         int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS, null);
         nSimultaneousJobs = Math.min(jobs.size(), nSimultaneousJobs);
-        if (analysis.getModules().hasModuleMatchingType(AbstractMacroRunner.class) && nSimultaneousJobs > 1) {
+        if (modules.hasModuleMatchingType(AbstractMacroRunner.class) && nSimultaneousJobs > 1) {
             MIA.log.writeWarning(
                     "Only 1 simultaneous job possible when using macros.  Setting \"Simultaneous jobs\" to 1.");
             nSimultaneousJobs = 1;
@@ -106,7 +107,7 @@ public class AnalysisRunner {
         }
 
         for (Workspace workspace : workspaces)            
-            pool.submit(createRunnable(analysis, workspace, exporter, clearMemoryAtEnd));
+            pool.submit(createRunnable(modules, workspace, exporter, clearMemoryAtEnd));
         
         // Telling the pool not to accept any more jobs and to wait until all queued
         // jobs have completed
@@ -119,7 +120,7 @@ public class AnalysisRunner {
             MIA.log.writeStatus("Exporting data");
             File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH, null));
             String name = outputControl.getGroupOutputPath(outputFile);
-            exporter.exportResults(workspaces, analysis, name);
+            exporter.exportResults(workspaces, modules, name);
         }
 
         // Running macro (if enabled)
@@ -135,10 +136,10 @@ public class AnalysisRunner {
         }
     }
 
-    public HashSet<Job> getJobs(Analysis analysis) {
+    public HashSet<Job> getJobs(Modules modules) {
         HashSet<Job> jobs = new HashSet<>();
 
-        InputControl inputControl = analysis.getModules().getInputControl();
+        InputControl inputControl = modules.getInputControl();
 
         File inputFile = getInputFile(inputControl);
 
@@ -299,19 +300,19 @@ public class AnalysisRunner {
 
     }
 
-    Runnable createRunnable(Analysis analysis, Workspace workspace, Exporter exporter, boolean clearMemoryAtEnd) {
+    Runnable createRunnable(Modules modules, Workspace workspace, Exporter exporter, boolean clearMemoryAtEnd) {
         return () -> {
             File file = workspace.getMetadata().getFile();
             int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
             try {
-                InputControl inputControl = analysis.getModules().getInputControl();
-                OutputControl outputControl = analysis.getModules().getOutputControl();
+                InputControl inputControl = modules.getInputControl();
+                OutputControl outputControl = modules.getOutputControl();
                 boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT, null);
                 int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N, null);
 
                 // Running the current analysis
-                analysis.execute(workspace, clearMemoryAtEnd);
+                modules.execute(workspace, clearMemoryAtEnd);
 
                 // Getting the number of completed and total tasks
                 incrementCounter();
@@ -324,14 +325,14 @@ public class AnalysisRunner {
 
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
-                    exporter.exportResults(workspace, analysis, name);
+                    exporter.exportResults(workspace, modules, name);
                     if (clearMemoryAtEnd) {
                         workspace.clearAllObjects(false);
                         workspace.clearAllImages(false);
                     }
                 } else if (continuousExport && getCounter() % saveNFiles == 0) {
                     String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
-                    exporter.exportResults(workspace, analysis, name);
+                    exporter.exportResults(workspace, modules, name);
                 }
 
             } catch (Throwable t) {

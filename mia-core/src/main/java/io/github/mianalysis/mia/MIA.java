@@ -12,7 +12,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
 
-import io.github.mianalysis.mia.module.LostAndFound;
+import io.github.mianalysis.mia.module.lostandfound.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
@@ -64,10 +64,10 @@ public abstract class MIA {
     //         if (args.length == 0) {
     //             System.err.println("No workflow file path specified as command line argument");
     //         } else if (args.length == 1) {
-    //             Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
+    //             Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
     //             new AnalysisRunner().run(analysis);
     //         } else if (args.length == 2) {
-    //             Analysis analysis = AnalysisReader.loadAnalysis(new File(args[0]));
+    //             Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
     //             analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
     //             new AnalysisRunner().run(analysis);
     //         }

@@ -34,7 +34,6 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 import io.github.mianalysis.mia.process.logging.StatusPanelRenderer;
@@ -46,7 +45,7 @@ import io.github.mianalysis.mia.process.system.FileCrawler;
 public class GUI {
     public static boolean initialised = false;
 
-    private static Analysis analysis = new Analysis();
+    private static Modules modules = new Modules();
     private static AnalysisRunner analysisRunner = new AnalysisRunner();
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
@@ -95,7 +94,7 @@ public class GUI {
         editingPanel = new EditingPanel();
 
         // Adding a new ImageLoader module to the empty analysis
-        analysis.getModules().add(new ImageLoader<>(getModules()));
+        modules.add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
         if (MIA.isDebug())
@@ -139,7 +138,7 @@ public class GUI {
                 // Checking dependencies have been met
                 if (!MIA.getDependencies().compatible(shortName, false))
                     continue;
-                
+
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
                     // Skip any abstract Modules
@@ -154,7 +153,7 @@ public class GUI {
             } catch (Exception e) {
                 MIA.log.writeWarning(
                         "Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion() + ".");
-             e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }
@@ -237,8 +236,8 @@ public class GUI {
 
     }
 
-    public static void updateModuleStates() {        
-        AnalysisTester.testModules(getModules(),testWorkspace);
+    public static void updateModuleStates() {
+        AnalysisTester.testModules(getModules(), testWorkspace);
         mainPanel.updateModuleStates();
     }
 
@@ -258,13 +257,13 @@ public class GUI {
         return mainPanel == processingPanel;
     }
 
-    public static void setAnalysis(Analysis analysis) {
-        GUI.analysis = analysis;
-        MacroHandler.setModules(analysis.getModules());
+    public static void setModules(Modules modules) {
+        GUI.modules = modules;
+        MacroHandler.setModules(modules);
     }
 
     public static Modules getModules() {
-        return analysis.getModules();
+        return modules;
     }
 
     public synchronized static void updateProgressBar(int val) {
@@ -281,7 +280,7 @@ public class GUI {
     public static void updateTestFile(boolean verbose) {
         // Ensuring the input file specified in the InputControl is active in the test
         // workspace
-        InputControl inputControl = analysis.getModules().getInputControl();
+        InputControl inputControl = modules.getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
 
         // Getting the next file
@@ -389,15 +388,15 @@ public class GUI {
 
         // The input and output controls are special cases
         if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -1) {
-            selectedModules = new Module[] { analysis.getModules().getInputControl() };
+            selectedModules = new Module[] { modules.getInputControl() };
             return;
         } else if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -2) {
-            selectedModules = new Module[] { analysis.getModules().getOutputControl() };
+            selectedModules = new Module[] { modules.getOutputControl() };
             return;
         }
 
         // If the largest index is out of range disable all selections
-        if (selectedModuleIndices[selectedModuleIndices.length - 1] >= analysis.getModules().size()) {
+        if (selectedModuleIndices[selectedModuleIndices.length - 1] >= modules.size()) {
             selectedModules = new Module[0];
             return;
         }
@@ -405,19 +404,15 @@ public class GUI {
         selectedModules = new Module[selectedModuleIndices.length];
         for (int i = 0; i < selectedModuleIndices.length; i++) {
             if (selectedModuleIndices[i] == -1) {
-                selectedModules[i] = analysis.getModules().getInputControl();
+                selectedModules[i] = modules.getInputControl();
             } else {
-                selectedModules[i] = analysis.getModules().get(selectedModuleIndices[i]);
+                selectedModules[i] = modules.get(selectedModuleIndices[i]);
             }
         }
     }
 
     public static void setSelectedModules(Module[] selectedModules) {
         GUI.selectedModules = selectedModules;
-    }
-
-    public static Analysis getAnalysis() {
-        return analysis;
     }
 
     public static AnalysisRunner getAnalysisRunner() {
@@ -507,18 +502,18 @@ public class GUI {
     }
 
     public static void addUndo() {
-        undoRedoStore.addUndo(analysis.getModules());
+        undoRedoStore.addUndo(modules);
         menuBar.setUndoRedoStatus(undoRedoStore);
     }
 
     public static void undo() {
         int[] selectedIndices = getSelectedModuleIndices();
 
-        Modules newModules = undoRedoStore.getNextUndo(analysis.getModules());
+        Modules newModules = undoRedoStore.getNextUndo(modules);
 
         if (newModules == null)
             return;
-        analysis.setModules(newModules);
+        GUI.modules = newModules;
 
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
@@ -533,10 +528,11 @@ public class GUI {
     public static void redo() {
         int[] selectedIndices = getSelectedModuleIndices();
 
-        Modules newModules = undoRedoStore.getNextRedo(analysis.getModules());
+        Modules newModules = undoRedoStore.getNextRedo(modules);
         if (newModules == null)
             return;
-        analysis.setModules(newModules);
+
+        GUI.modules = newModules;
 
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);

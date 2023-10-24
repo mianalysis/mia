@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.objects.process;
+package io.github.mianalysis.mia.module.objects.transform;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;

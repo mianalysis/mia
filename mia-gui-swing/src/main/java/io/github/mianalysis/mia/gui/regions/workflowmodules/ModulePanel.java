@@ -10,9 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 public class ModulePanel extends JPanel {
@@ -57,16 +57,16 @@ public class ModulePanel extends JPanel {
     }
 
     public void updatePanel() {
-        Analysis analysis = GUI.getAnalysis();
-        InputControl inputControl = analysis.getModules().getInputControl();
-        OutputControl outputControl = analysis.getModules().getOutputControl();
+        Modules modules = GUI.getModules();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
 
-        boolean runnable = AnalysisTester.testModule(inputControl, analysis.getModules());
+        boolean runnable = AnalysisTester.testModule(inputControl, modules);
         inputControl.setRunnable(runnable);
         inputPanel.updateButtonState();
         inputPanel.updatePanel(inputControl);
 
-        runnable = AnalysisTester.testModule(outputControl, analysis.getModules());
+        runnable = AnalysisTester.testModule(outputControl, modules);
         outputControl.setRunnable(runnable);
         outputPanel.updateButtonState();
         outputPanel.updatePanel(outputControl);

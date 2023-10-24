@@ -33,7 +33,6 @@ import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 
 public class ParametersPanel extends JScrollPane {
     private static final long serialVersionUID = 1455273666893303846L;
@@ -65,12 +64,11 @@ public class ParametersPanel extends JScrollPane {
     }
 
     public void updatePanel(Module module) {
-        Analysis analysis = GUI.getAnalysis();
         Modules modules = GUI.getModules();
 
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        InputControl inputControl = analysis.getModules().getInputControl();
-        OutputControl outputControl = analysis.getModules().getOutputControl();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
 
         panel.removeAll();
 

@@ -13,7 +13,6 @@ import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 
@@ -35,13 +34,13 @@ public class MIA_RunWorkflow extends MacroOperation {
         String inputPath = (String) objects[1];
 
         try {
-            Analysis analysis = AnalysisReader.loadAnalysis(workflowPath);
+            Modules loadedModules = AnalysisReader.loadModules(workflowPath);
             if (inputPath != null)
-                analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, inputPath);
+                loadedModules.getInputControl().updateParameterValue(InputControl.INPUT_PATH, inputPath);
                     
             // Running analysis
             AnalysisRunner runner = new AnalysisRunner();
-            runner.run(analysis,false);
+            runner.run(loadedModules,false);
             MacroHandler.setWorkspace(runner.getWorkspaces().iterator().next());
 
             if (GraphicsEnvironment.isHeadless())
