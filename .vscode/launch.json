@@ -48,6 +48,13 @@
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA",
             "projectName": "mia"
+        },
+        {
+            "type": "java",
+            "name": "RunScript",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.script.RunScript",
+            "projectName": "mia"
         }
     ]
 }
