@@ -4,7 +4,7 @@
 [![Testing](https://github.com/mianalysis/mia/actions/workflows/tests.yml/badge.svg)](https://github.com/mianalysis/mia/actions/workflows/tests.yml)
 
 
-[![Wolfson Bioimaging](./src/main/resources/images/Logo_text_UoB_128.png)](https://www.bristol.ac.uk/wolfson-bioimaging/)
+[![Wolfson Bioimaging](./mia-gui-swing/src/main/resources/images/Logo_text_UoB_128.png)](https://www.bristol.ac.uk/wolfson-bioimaging/)
 
 About MIA
 ------------
