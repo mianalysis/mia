@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.lostandfound.visualise;
 import java.util.HashMap;
 
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
-import io.github.mianalysis.mia.module.visualise.PlotMeasurementsScatter;
+import io.github.mianalysis.mia.module.visualise.plots.PlotMeasurementsScatter;
 
 public class PlotMeasurementsScatterLostFound extends LostAndFoundItem {
 

@@ -123,6 +123,10 @@ public class ImageSaver extends AbstractSaver {
         super("Save image", modules);
     }
 
+    public static void saveImage(Image inputImage, String fileFormat, String path) {
+        saveImage(inputImage.getImagePlus(), fileFormat, path);
+    }
+
     public static void saveImage(ImagePlus inputImagePlus, String fileFormat, String path) {
         switch (fileFormat) {
             case FileFormats.TIF:

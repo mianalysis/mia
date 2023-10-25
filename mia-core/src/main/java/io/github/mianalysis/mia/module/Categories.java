@@ -17,7 +17,8 @@ public class Categories {
                         "Non-pixel operations such as setting display ranges or spatial calibrations.",
                         IMAGES);
         public final static Category IMAGES_MEASURE = new Category("Measure",
-                        "Operations making measurements on images. Measurements are associated with the input images for later use.", IMAGES);
+                        "Operations making measurements on images. Measurements are associated with the input images for later use.",
+                        IMAGES);
         public final static Category IMAGES_PROCESS = new Category("Process",
                         "Image processing operations which act on a pixel level, such as image filtering or thresholding.",
                         IMAGES);
@@ -84,6 +85,10 @@ public class Categories {
                         ROOT);
         public final static Category VISUALISATION_OVERLAYS = new Category("Overlays",
                         "Modules adding ImageJ overlay elements to images.  For example, object outlines, object ID labels or fixed text.",
+                        VISUALISATION);
+
+        public final static Category VISUALISATION_PLOTS = new Category("Plots",
+                        "Modules creating measurement plots",
                         VISUALISATION);
 
         public final static Category WORKFLOW = new Category("Workflow",

@@ -11,7 +11,6 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -20,8 +19,6 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -203,8 +200,7 @@ public abstract class AbstractSaver extends Module {
             MIA.log.writeWarning(e);
             return null;
         }
-        }
-
+    }
 
     @Override
     protected void initialiseParameters() {
