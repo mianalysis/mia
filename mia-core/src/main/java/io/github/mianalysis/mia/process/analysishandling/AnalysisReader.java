@@ -145,13 +145,13 @@ public class AnalysisReader {
             module.setAttributesFromXML(moduleNode);
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new InputControl(modules))) {
+            if (module.getClass().isInstance(new InputControl(modules)))
                 modules.setInputControl((InputControl) module);
-            } else if (module.getClass().isInstance(new OutputControl(modules))) {
+            else if (module.getClass().isInstance(new OutputControl(modules)))
                 modules.setOutputControl((OutputControl) module);
-            } else {
+            else
                 modules.add(module);
-            }
+            
         }
 
         // Adding timepoint measurements for all objects

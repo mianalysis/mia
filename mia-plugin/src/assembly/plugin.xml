@@ -11,7 +11,7 @@
             <includes>
                 <include>io.github.mianalysis:mia-core</include>
                 <include>io.github.mianalysis:mia-algorithms</include>
-                <include>io.github.mianalysis:mia-gui</include>
+                <include>io.github.mianalysis:mia-gui-swing</include>
                 <include>io.github.mianalysis:mia-headless</include>
                 <include>io.github.mianalysis:mia-macros</include>
                 <include>io.github.mianalysis:mia-modules</include>

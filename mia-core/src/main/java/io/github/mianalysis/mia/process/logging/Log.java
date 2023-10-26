@@ -23,7 +23,6 @@ public class Log {
     public void write(String message, Level level) {
         for (LogRenderer renderer : renderers)
             renderer.write(message, level);
-
     }
 
     public void writeError(String message) {

@@ -21,8 +21,11 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.Priority;
+import org.scijava.log.LogListener;
+import org.scijava.log.LogMessage;
 import org.scijava.plugin.Plugin;
 import org.scijava.script.ScriptModule;
+import org.scijava.script.ScriptService;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -60,6 +63,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 
 /**
  * Created by Stephen on 12/05/2021.
@@ -259,8 +263,6 @@ public class RunScript extends Module {
 
         }
 
-        System.out.println(scriptText);
-
         return scriptText;
 
     }
@@ -303,10 +305,9 @@ public class RunScript extends Module {
 
         // Running script
         try {
-            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters)
-                    .get();
+            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters).get();
         } catch (Exception e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         // Displaying output images/objects

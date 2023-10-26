@@ -18,22 +18,31 @@ public class LostAndFound {
         List<PluginInfo<LostAndFoundItem>> lostAndFoundItems = new ClassHunter<LostAndFoundItem>()
                 .getPlugins(LostAndFoundItem.class);
 
-        for (PluginInfo<LostAndFoundItem> lostAndFoundItem:lostAndFoundItems) {
+        for (PluginInfo<LostAndFoundItem> lostAndFoundItem : lostAndFoundItems) {
             try {
                 LostAndFoundItem item = lostAndFoundItem.createInstance();
 
                 String moduleName = item.getModuleName();
 
-                for (String previousName:item.getPreviousModuleNames())
+                for (String previousName : item.getPreviousModuleNames())
                     lostModules.put(previousName, moduleName);
 
                 lostParameterNames.put(moduleName, item.getPreviousParameterNames());
                 lostParameterValues.put(moduleName, item.getPreviousParameterValues());
-                
+
             } catch (InstantiableException e) {
                 MIA.log.writeError(e);
             }
         }
+    }
+
+    public LostAndFound(HashMap<String, String> lostModules,
+            HashMap<String, HashMap<String, String>> lostParameterNames,
+            HashMap<String, HashMap<String, HashMap<String, String>>> lostParameterValues) {
+                this.lostModules = lostModules;
+                this.lostParameterNames = lostParameterNames;
+                this.lostParameterValues = lostParameterValues;
+                
     }
 
     public String findModule(String oldName) {

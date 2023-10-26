@@ -8,6 +8,9 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.Context;
+import org.scijava.log.LogLevel;
+import org.scijava.log.LogListener;
+import org.scijava.log.LogMessage;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
@@ -19,6 +22,7 @@ import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import net.imagej.ImageJService;
 import net.imagej.ops.OpService;
 
@@ -58,23 +62,25 @@ public abstract class MIA {
     protected static final boolean imagePlusMode = true;
 
     // public static void main(String[] args) throws Exception {
-    //     debug = true;
+    // debug = true;
 
-    //     try {
-    //         if (args.length == 0) {
-    //             System.err.println("No workflow file path specified as command line argument");
-    //         } else if (args.length == 1) {
-    //             Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
-    //             new AnalysisRunner().run(analysis);
-    //         } else if (args.length == 2) {
-    //             Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
-    //             analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
-    //             new AnalysisRunner().run(analysis);
-    //         }
+    // try {
+    // if (args.length == 0) {
+    // System.err.println("No workflow file path specified as command line
+    // argument");
+    // } else if (args.length == 1) {
+    // Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
+    // new AnalysisRunner().run(analysis);
+    // } else if (args.length == 2) {
+    // Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
+    // analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
+    // args[1]);
+    // new AnalysisRunner().run(analysis);
+    // }
 
-    //     } catch (Exception e) {
-    //         MIA.log.writeError(e);
-    //     }
+    // } catch (Exception e) {
+    // MIA.log.writeError(e);
+    // }
     // }
 
     private static String extractVersion() {
@@ -167,6 +173,11 @@ public abstract class MIA {
 
     }
 
+    public static void setLostAndFound(LostAndFound newLostAndFound) {
+        lostAndFound = newLostAndFound;
+
+    }
+
     public static ImageJService getIJService() {
         if (headless || ijService == null) {
             Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
@@ -207,6 +218,24 @@ public abstract class MIA {
 
     }
 
+    public static void linkLogServiceToLogHistory() {
+        // Making sure errors written to the script service log are stored and output in
+        // the Excel file
+        MIA.getScriptService().log().addLogListener(new LogListener() {
+            @Override
+            public void messageLogged(LogMessage message) {
+                if (message.level() == LogLevel.DEBUG && logHistory.isWriteEnabled(Level.DEBUG))
+                    logHistory.write(message.toString(), Level.DEBUG);
+                else if (message.level() == LogLevel.INFO && logHistory.isWriteEnabled(Level.MESSAGE))
+                    logHistory.write(message.toString(), Level.MESSAGE);
+                else if (message.level() == LogLevel.ERROR && logHistory.isWriteEnabled(Level.ERROR))
+                    logHistory.write(message.toString(), Level.ERROR);
+                else if (message.level() == LogLevel.WARN && logHistory.isWriteEnabled(Level.WARNING))
+                    logHistory.write(message.toString(), Level.WARNING);
+            }
+        });
+    }
+
     public static void setIJService(ImageJService ijService) {
         MIA.ijService = ijService;
     }
@@ -222,7 +251,6 @@ public abstract class MIA {
     public static void setScriptService(ScriptService scriptService) {
         MIA.scriptService = scriptService;
     }
-
 
     // Checking if Kryo is greater than or equal to version 5.4.0.
     // If it isn't, the Memoizer will be disabled (an issue since Bio-Formats

@@ -47,6 +47,9 @@ public class MIAGUI extends MIA implements Command {
     public void run() {
         headless = false;
 
+        // Adding LogService to LogHistory
+        MIA.linkLogServiceToLogHistory();
+
         // Setting the ParameterControlFactory
         ParameterControlFactory.setActive(new SwingParameterControlFactory());
 

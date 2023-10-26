@@ -19,6 +19,10 @@ public class AvailableModules {
 
     }
 
+    public static void setModuleNames(List<String> newModuleNames) {
+        moduleNames = newModuleNames;
+    }
+
     public static <T extends Module> void addModuleName(Class<T> clazz) {
         if (moduleNames == null)
             getModuleNames(true);

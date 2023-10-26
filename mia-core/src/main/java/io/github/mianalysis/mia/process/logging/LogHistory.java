@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.process.logging;
 import java.util.HashMap;
 
 public class LogHistory extends LogRenderer {
-    private static HashMap<Level,String> logHistory = new HashMap<>();
+    private HashMap<Level,String> logHistory = new HashMap<>();
 
     public LogHistory() {
         levelStatus.put(Level.DEBUG,false);
