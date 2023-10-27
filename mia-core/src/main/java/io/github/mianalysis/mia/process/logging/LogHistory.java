@@ -22,7 +22,7 @@ public class LogHistory extends LogRenderer {
             return;
         
         logHistory.putIfAbsent(level, "");
-        logHistory.put(level, logHistory.get(level) + message);
+        logHistory.put(level, logHistory.get(level) +"\n"+ message);
         
     }
     

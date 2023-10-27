@@ -209,8 +209,6 @@ public class Exporter {
         cell.setCellValue("SYSTEM CONFIGURATION");
         cell.setCellStyle(cellStyle);
 
-        rowIdx++;
-
         // Adding information about the system used
         row = sheet.createRow(rowIdx++);
         row.createCell(0).setCellValue("MIA_VERSION");
@@ -294,7 +292,7 @@ public class Exporter {
         // Creating a sheet for parameters
         Sheet errorSheet = workbook.createSheet("Log");
 
-        // Getting error write text and split by line returns
+        // Getting error text and split by line returns
         String logText = MIA.getLogHistory().getLogHistory(Level.ERROR);
         StringTokenizer tokenizer = new StringTokenizer(logText, "\n");
 
@@ -310,10 +308,25 @@ public class Exporter {
         // Adding headings
         Row row = errorSheet.createRow(rowIdx++);
         Cell cell = row.createCell(0);
-        cell.setCellValue("LOG");
+        cell.setCellValue("ERROR LOG");
         cell.setCellStyle(cellStyle);
 
-        rowIdx++;
+        while (tokenizer.hasMoreTokens()) {
+            row = errorSheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(tokenizer.nextToken());
+        }
+
+        // Getting warning text and split by line returns
+        logText = MIA.getLogHistory().getLogHistory(Level.WARNING);
+        tokenizer = new StringTokenizer(logText, "\n");
+
+        // Adding headings after a couple of lines gap
+        errorSheet.createRow(rowIdx++);
+        errorSheet.createRow(rowIdx++);
+        row = errorSheet.createRow(rowIdx++);
+        cell = row.createCell(0);
+        cell.setCellValue("WARNING LOG");
+        cell.setCellStyle(cellStyle);
 
         while (tokenizer.hasMoreTokens()) {
             row = errorSheet.createRow(rowIdx++);
