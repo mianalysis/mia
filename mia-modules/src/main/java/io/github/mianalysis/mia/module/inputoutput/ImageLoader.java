@@ -97,216 +97,331 @@ import ome.xml.model.primitives.Color;
  */
 
 /**
-* Load image into MIA workspace.  This module can be configured to import images from a variety of locations (selected using the "Import mode" control).
-*/
+ * Load image into MIA workspace. This module can be configured to import images
+ * from a variety of locations (selected using the "Import mode" control).
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LOADER_SEPARATOR = "Core image loading controls";
 
-	/**
-	* Name assigned to the image.
-	*/
+    /**
+     * Name assigned to the image.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* Controls where the image will be loaded from:<br><ul><li>"Current file" (default option) will import the current root-file for the workspace (this is the file specified in the "Input control" module).</li><li>"From ImageJ" will load the active image fromm ImageJ.</li><li>"Image sequence (alphabetical)" will load a series of images matching a specified name format in alphabetical order.  The format of the names to be loaded is specified by the "Sequence root name" parameter.</li><li>"Image sequence (zero-based)" will load a series of images with numbered elements.  The format of the names to be loaded is specified by the "Sequence root name" parameter.</li><li>"Matching format" will load the image matching a filename based on the root-file for the workspace and a series of rules.</li><li>"Specific file" will load the image at the location specified by "File path".</li></ul>
-	*/
+    /**
+     * Controls where the image will be loaded from:<br>
+     * <ul>
+     * <li>"Current file" (default option) will import the current root-file for the
+     * workspace (this is the file specified in the "Input control" module).</li>
+     * <li>"From ImageJ" will load the active image fromm ImageJ.</li>
+     * <li>"Image sequence (alphabetical)" will load a series of images matching a
+     * specified name format in alphabetical order. The format of the names to be
+     * loaded is specified by the "Sequence root name" parameter.</li>
+     * <li>"Image sequence (zero-based)" will load a series of images with numbered
+     * elements. The format of the names to be loaded is specified by the "Sequence
+     * root name" parameter.</li>
+     * <li>"Matching format" will load the image matching a filename based on the
+     * root-file for the workspace and a series of rules.</li>
+     * <li>"Specific file" will load the image at the location specified by "File
+     * path".</li>
+     * </ul>
+     */
     public static final String IMPORT_MODE = "Import mode";
 
-	/**
-	* Set the reader for importing the image:<br><ul><li>"Bio-Formats" will use the Bio-Formats plugin.  This is best for most cases (especially proprietary formats).</li><li>"ImageJ" will use the stock ImageJ file reader.</li></ul>
-	*/
+    /**
+     * Set the reader for importing the image:<br>
+     * <ul>
+     * <li>"Bio-Formats" will use the Bio-Formats plugin. This is best for most
+     * cases (especially proprietary formats).</li>
+     * <li>"ImageJ" will use the stock ImageJ file reader.</li>
+     * </ul>
+     */
     public static final String READER = "Reader";
 
-	/**
-	* Template filename for loading multiple image sequence files (those with names in the format "image0001.tif", "image0002.tif", "image0003.tif",etc.).  Template filenames are constructed in a generic manner, whereby metadata values stored in the workspace can be inserted into the name using the notation  "M{name}".  This allows names to be created dynamically for each analysis run.  The location in the filenam of the variable image number is specified using the "Z{0000}" notation, where the number of "0" characters specifies the number of digits.  It is also necessary to specify the filepath (input file filepath stored as metadata value "M{Filepath}".   <br><br>For example, loading the sequence "image0001.tif", etc. from the same folder as the input file would require the format "M{Filepath}\\imageZ{0000}.tif".  Note: Backslash characters specifying the folder path need to be double typed (standard Java formatting).
-	*/
+    /**
+     * Template filename for loading multiple image sequence files (those with names
+     * in the format "image0001.tif", "image0002.tif", "image0003.tif",etc.).
+     * Template filenames are constructed in a generic manner, whereby metadata
+     * values stored in the workspace can be inserted into the name using the
+     * notation "M{name}". This allows names to be created dynamically for each
+     * analysis run. The location in the filenam of the variable image number is
+     * specified using the "Z{0000}" notation, where the number of "0" characters
+     * specifies the number of digits. It is also necessary to specify the filepath
+     * (input file filepath stored as metadata value "M{Filepath}". <br>
+     * <br>
+     * For example, loading the sequence "image0001.tif", etc. from the same folder
+     * as the input file would require the format "M{Filepath}\\imageZ{0000}.tif".
+     * Note: Backslash characters specifying the folder path need to be double typed
+     * (standard Java formatting).
+     */
     public static final String SEQUENCE_ROOT_NAME = "Sequence root name";
 
-	/**
-	* Method to use for generation of the input filename:<br><ul><li>"Generic (from metadata)" (default) will generate a name from metadata values stored in the current workspace.</li><li>"Huygens" will generate a name matching the SVI Huygens format, where channel numbers are specified as "ch00", "ch01", etc.</li><li>"Incucyte short filename" will generate a name matching the short Incucyte Zoom format.  The root name is specified as the parameter "Comment".</li><li>"Yokogowa" will generate a name matching the Yokogawa high content microscope name format.</li></ul>
-	*/
+    /**
+     * Method to use for generation of the input filename:<br>
+     * <ul>
+     * <li>"Generic (from metadata)" (default) will generate a name from metadata
+     * values stored in the current workspace.</li>
+     * <li>"Huygens" will generate a name matching the SVI Huygens format, where
+     * channel numbers are specified as "ch00", "ch01", etc.</li>
+     * <li>"Incucyte short filename" will generate a name matching the short
+     * Incucyte Zoom format. The root name is specified as the parameter
+     * "Comment".</li>
+     * <li>"Yokogowa" will generate a name matching the Yokogawa high content
+     * microscope name format.</li>
+     * </ul>
+     */
     public static final String NAME_FORMAT = "Name format";
 
-	/**
-	* Root name for generation of Incucyte Zoom filenames.  This will be added before the standard well and field values.
-	*/
+    /**
+     * Root name for generation of Incucyte Zoom filenames. This will be added
+     * before the standard well and field values.
+     */
     public static final String COMMENT = "Comment";
 
-	/**
-	* Extension for the generated filename.
-	*/
+    /**
+     * Extension for the generated filename.
+     */
     public static final String EXTENSION = "Extension";
 
-	/**
-	* Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.
-	*/
+    /**
+     * Format for a generic filename. Plain text can be mixed with global variables
+     * or metadata values currently stored in the workspace. Global variables are
+     * specified using the "V{name}" notation, where "name" is the name of the
+     * variable to insert. Similarly, metadata values are specified with the
+     * "M{name}" notation.
+     */
     public static final String GENERIC_FORMAT = "Generic format";
 
-	/**
-	* Channel to load when constructing a "Yokogawa" format name.
-	*/
+    /**
+     * Channel to load when constructing a "Yokogawa" format name.
+     */
     public static final String CHANNEL = "Channel";
 
-	/**
-	* List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.
-	*/
+    /**
+     * List of the currently-available metadata values for this workspace. These can
+     * be used when compiling a generic filename.
+     */
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
-	/**
-	* Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file.
-	*/
+    /**
+     * Option to include the current series number when compiling filenames. This
+     * may be necessary when working with multi-series files, as there will be
+     * multiple analyses completed for the same root file.
+     */
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
 
-	/**
-	* Path to file to be loaded.
-	*/
+    /**
+     * Path to file to be loaded.
+     */
     public static final String FILE_PATH = "File path";
 
-	/**
-	* Controls which series should be loaded for multiseries files (e.g. Leica LIF files):<br><ul><li>"Current series" will load the same series as the current root file (i.e. that selected via "Input control").</li><li>"Specific series" will load a specific series specified by the "Series number"parameter.</li></ul>
-	*/
+    /**
+     * Controls which series should be loaded for multiseries files (e.g. Leica LIF
+     * files):<br>
+     * <ul>
+     * <li>"Current series" will load the same series as the current root file (i.e.
+     * that selected via "Input control").</li>
+     * <li>"Specific series" will load a specific series specified by the "Series
+     * number"parameter.</li>
+     * </ul>
+     */
     public static final String SERIES_MODE = "Series mode";
 
-	/**
-	* If a specific series is being loaded ("Series mode" set to "Specific series"), this is the series that will be used.
-	*/
+    /**
+     * If a specific series is being loaded ("Series mode" set to "Specific
+     * series"), this is the series that will be used.
+     */
     public static final String SERIES_NUMBER = "Series number";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RANGE_SEPARATOR = "Dimension ranges";
 
-	/**
-	* Range of channels to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. "4-7" will load channels 4,5,6 and 7) or as a range loading every nth channel (e.g. "4-10-2" will load channels 4,6,8 and 10).  The "end" keyword will be converted to the total number of available channels at runtime.
-	*/
+    /**
+     * Range of channels to be loaded for the current file. These can be specified
+     * as a comma-separated list, using a range (e.g. "4-7" will load channels 4,5,6
+     * and 7) or as a range loading every nth channel (e.g. "4-10-2" will load
+     * channels 4,6,8 and 10). The "end" keyword will be converted to the total
+     * number of available channels at runtime.
+     */
     public static final String CHANNELS = "Channels";
 
-	/**
-	* Range of slices to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. "4-7" will load slices 4,5,6 and 7) or as a range loading every nth slice (e.g. "4-10-2" will load slices 4,6,8 and 10).  The "end" keyword will be converted to the total number of available slices at runtime.
-	*/
+    /**
+     * Range of slices to be loaded for the current file. These can be specified as
+     * a comma-separated list, using a range (e.g. "4-7" will load slices 4,5,6 and
+     * 7) or as a range loading every nth slice (e.g. "4-10-2" will load slices
+     * 4,6,8 and 10). The "end" keyword will be converted to the total number of
+     * available slices at runtime.
+     */
     public static final String SLICES = "Slices";
 
-	/**
-	* Range of frames to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. "4-7" will load frames 4,5,6 and 7) or as a range loading every nth frame (e.g. "4-10-2" will load frames 4,6,8 and 10).  The "end" keyword will be converted to the total number of available frames at runtime.
-	*/
+    /**
+     * Range of frames to be loaded for the current file. These can be specified as
+     * a comma-separated list, using a range (e.g. "4-7" will load frames 4,5,6 and
+     * 7) or as a range loading every nth frame (e.g. "4-10-2" will load frames
+     * 4,6,8 and 10). The "end" keyword will be converted to the total number of
+     * available frames at runtime.
+     */
     public static final String FRAMES = "Frames";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CROP_SEPARATOR = "Image cropping";
 
-	/**
-	* Choice of loading the entire image, or cropping in XY:<br><ul><li>"None" (default) will load the entire image in XY.</li><li>"Fixed" will apply a pre-defined crop to the input image based on the parameters "Left", "Top","Width" and "Height".</li><li>"From reference" will display a specified image and ask the user to select a region to crop the input image to.</li><li>"Object collection limits" will crop to the limits of the objects in the collection specified by "Objects for limits".</li></ul>
-	*/
+    /**
+     * Choice of loading the entire image, or cropping in XY:<br>
+     * <ul>
+     * <li>"None" (default) will load the entire image in XY.</li>
+     * <li>"Fixed" will apply a pre-defined crop to the input image based on the
+     * parameters "Left", "Top","Width" and "Height".</li>
+     * <li>"From reference" will display a specified image and ask the user to
+     * select a region to crop the input image to.</li>
+     * <li>"Object collection limits" will crop to the limits of the objects in the
+     * collection specified by "Objects for limits".</li>
+     * </ul>
+     */
     public static final String CROP_MODE = "Crop mode";
 
-	/**
-	* The image to be displayed for selection of the cropping region if the cropping mode is set to "From reference".
-	*/
+    /**
+     * The image to be displayed for selection of the cropping region if the
+     * cropping mode is set to "From reference".
+     */
     public static final String REFERENCE_IMAGE = "Reference image";
 
-	/**
-	* Left coordinate limit for image cropping (specified in pixel units).
-	*/
+    /**
+     * Left coordinate limit for image cropping (specified in pixel units).
+     */
     public static final String LEFT = "Left coordinate";
 
-	/**
-	* Top coordinate limit for image cropping (specified in pixel units).
-	*/
+    /**
+     * Top coordinate limit for image cropping (specified in pixel units).
+     */
     public static final String TOP = "Top coordinate";
 
-	/**
-	* Width of the final cropped region (specified in pixel units).
-	*/
+    /**
+     * Width of the final cropped region (specified in pixel units).
+     */
     public static final String WIDTH = "Width";
 
-	/**
-	* Height of the final cropped region (specified in pixel units).
-	*/
+    /**
+     * Height of the final cropped region (specified in pixel units).
+     */
     public static final String HEIGHT = "Height";
 
-	/**
-	* If "Crop mode" is set to "Object collection limits", this is the object collection that will define the limits of the cropped region.
-	*/
+    /**
+     * If "Crop mode" is set to "Object collection limits", this is the object
+     * collection that will define the limits of the cropped region.
+     */
     public static final String OBJECTS_FOR_LIMITS = "Objects for limits";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SCALE_SEPARATOR = "Image scaling";
 
-	/**
-	* Controls if the input image is scaled upon importing.  This only works for scaling in X and Y (magnitudes determined by the "X scale factor" and "Y scale factor" parameters):<br><ul><li>"Scaling (bicubic)" Scales the input images using a bicubic filter.  This leads to smooth intensity transitions between interpolated pixels.</li><li>"Scaling (bilinear)" Scales the input images using a bilinear filter.  This leads to smooth intensity transitions between interpolated pixels.</li><li>"No scaling" (default) Input images are not scaled.  They are loaded into the workspace at their native resolutions.</li><li>"Scaling (no interpolation)" Scales the input images using a nearest-neighbour approach.  This leads to a "blocky" apppearance to scaled images.</li></ul>
-	*/
+    /**
+     * Controls if the input image is scaled upon importing. This only works for
+     * scaling in X and Y (magnitudes determined by the "X scale factor" and "Y
+     * scale factor" parameters):<br>
+     * <ul>
+     * <li>"Scaling (bicubic)" Scales the input images using a bicubic filter. This
+     * leads to smooth intensity transitions between interpolated pixels.</li>
+     * <li>"Scaling (bilinear)" Scales the input images using a bilinear filter.
+     * This leads to smooth intensity transitions between interpolated pixels.</li>
+     * <li>"No scaling" (default) Input images are not scaled. They are loaded into
+     * the workspace at their native resolutions.</li>
+     * <li>"Scaling (no interpolation)" Scales the input images using a
+     * nearest-neighbour approach. This leads to a "blocky" apppearance to scaled
+     * images.</li>
+     * </ul>
+     */
     public static final String SCALE_MODE = "Scale mode";
 
-	/**
-	* Scale factor applied to X-axis of input images (if "Scale mode" is in an image scaling mode).  Values less than 1 will reduce image width, while values greater than 1 will increase it.
-	*/
+    /**
+     * Scale factor applied to X-axis of input images (if "Scale mode" is in an
+     * image scaling mode). Values less than 1 will reduce image width, while values
+     * greater than 1 will increase it.
+     */
     public static final String SCALE_FACTOR_X = "X scale factor";
 
-	/**
-	* Scale factor applied to Y-axis of input images (if "Scale mode" is in an image scaling mode).  Values less than 1 will reduce image height, while values greater than 1 will increase it.
-	*/
+    /**
+     * Scale factor applied to Y-axis of input images (if "Scale mode" is in an
+     * image scaling mode). Values less than 1 will reduce image height, while
+     * values greater than 1 will increase it.
+     */
     public static final String SCALE_FACTOR_Y = "Y scale factor";
 
-	/**
-	* If loading an image sequence from separate files, this parameter controls how dimensions mismatches between images are handled:<br><ul><li>"Crop (centred)" The images will be centred-aligned and cropped to the smallest image dimensions.  This prevents empty borders around some images, but means information is lost from larger images.</li><li>"Pad (centred)" The images will be centre-aligned and padded to the largest image dimensions.  This prevents any image infomation being lost at edges, but means smaller images will have borders.</li><li>"Disallow (fail upon mismatch)" All images must have exactly the same dimensions.  If a dimension mismatch is detected, the image loading process will fail.</li></ul>
-	*/
+    /**
+     * If loading an image sequence from separate files, this parameter controls how
+     * dimensions mismatches between images are handled:<br>
+     * <ul>
+     * <li>"Crop (centred)" The images will be centred-aligned and cropped to the
+     * smallest image dimensions. This prevents empty borders around some images,
+     * but means information is lost from larger images.</li>
+     * <li>"Pad (centred)" The images will be centre-aligned and padded to the
+     * largest image dimensions. This prevents any image infomation being lost at
+     * edges, but means smaller images will have borders.</li>
+     * <li>"Disallow (fail upon mismatch)" All images must have exactly the same
+     * dimensions. If a dimension mismatch is detected, the image loading process
+     * will fail.</li>
+     * </ul>
+     */
     public static final String DIMENSION_MISMATCH_MODE = "Dimension mismatch mode";
 
-	/**
-	* If loading an image series from separate files and "Dimension mismatch mode" is set to "Pad (centred)" this parameter will control the intensity of the padding border around images smaller than the largest loaded image.
-	*/
+    /**
+     * If loading an image series from separate files and "Dimension mismatch mode"
+     * is set to "Pad (centred)" this parameter will control the intensity of the
+     * padding border around images smaller than the largest loaded image.
+     */
     public static final String PAD_INTENSITY_MODE = "Pad intensity mode";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CALIBRATION_SEPARATOR = "Spatial and intensity calibration";
 
-	/**
-	* Option to use the automatically-applied spatial calibration or manually specify these values.
-	*/
+    /**
+     * Option to use the automatically-applied spatial calibration or manually
+     * specify these values.
+     */
     public static final String SET_SPATIAL_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
 
-	/**
-	* Option to use the automatically-applied temporal calibration or manually specify this value.
-	*/
+    /**
+     * Option to use the automatically-applied temporal calibration or manually
+     * specify this value.
+     */
     public static final String SET_TEMPORAL_CAL = "Set manual temporal calibration";
     public static final String FRAME_INTERVAL = "Frame interval (time/frame)";
 
-	/**
-	* Enable to force the output image to adopt a specific bit-depth.
-	*/
+    /**
+     * Enable to force the output image to adopt a specific bit-depth.
+     */
     public static final String FORCE_BIT_DEPTH = "Force bit depth";
 
-	/**
-	* Output bit depth of the loaded image.
-	*/
+    /**
+     * Output bit depth of the loaded image.
+     */
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
 
-	/**
-	* Minimum intensity in the input image when in the native bit depth.  This is used for scaling intensities to the desired bit depth.
-	*/
+    /**
+     * Minimum intensity in the input image when in the native bit depth. This is
+     * used for scaling intensities to the desired bit depth.
+     */
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
 
-	/**
-	* Maximum intensity in the input image when in the native bit depth.  This is used for scaling intensities to the desired bit depth.
-	*/
+    /**
+     * Maximum intensity in the input image when in the native bit depth. This is
+     * used for scaling intensities to the desired bit depth.
+     */
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
 
     public static void main(String[] args) throws io.scif.FormatException, IOException {
@@ -1255,13 +1370,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         int height = parameters.getValue(HEIGHT, workspace);
         String objectsForLimitsName = parameters.getValue(OBJECTS_FOR_LIMITS, workspace);
         String scaleMode = parameters.getValue(SCALE_MODE, workspace);
-        double scaleFactorX = parameters.getValue(SCALE_FACTOR_X, workspace);
-        double scaleFactorY = parameters.getValue(SCALE_FACTOR_Y, workspace);
         String dimensionMismatchMode = parameters.getValue(DIMENSION_MISMATCH_MODE, workspace);
         String padIntensityMode = parameters.getValue(PAD_INTENSITY_MODE, workspace);
         boolean setSpatialCalibration = parameters.getValue(SET_SPATIAL_CAL, workspace);
-        double xyCal = parameters.getValue(XY_CAL, workspace);
-        double zCal = parameters.getValue(Z_CAL, workspace);
         boolean setTemporalCalibration = parameters.getValue(SET_TEMPORAL_CAL, workspace);
         double frameInterval = parameters.getValue(FRAME_INTERVAL, workspace);
         boolean forceBitDepth = parameters.getValue(FORCE_BIT_DEPTH, workspace);
@@ -1309,9 +1420,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
-        if (scaleMode.equals(ScaleModes.NONE)) {
-            scaleFactorX = 1;
-            scaleFactorY = 1;
+        double scaleFactorX = 1;
+        double scaleFactorY = 1;
+        if (!scaleMode.equals(ScaleModes.NONE)) {
+            scaleFactorX = parameters.getValue(SCALE_FACTOR_X, workspace);
+            scaleFactorY = parameters.getValue(SCALE_FACTOR_Y, workspace);
         }
         double[] scaleFactors = new double[] { scaleFactorX, scaleFactorY };
 
@@ -1466,6 +1579,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If necessary, setting the spatial calibration
         if (setSpatialCalibration) {
+            double xyCal = parameters.getValue(XY_CAL, workspace);
+            double zCal = parameters.getValue(Z_CAL, workspace);
+            
             writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal +
                     ")");
             Calibration calibration = ipl.getCalibration();
