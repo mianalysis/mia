@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -26,54 +26,70 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.imagej.LUTs;
-
 
 /**
-* Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.
-*/
+ * Set look-up table (LUT) for an image or a specific channel of an image. The
+ * look-up table determines what colour ImageJ will render each intensity value
+ * of an image.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetLookupTable extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input";
 
-	/**
-	* Image to set look-up table for.
-	*/
+    /**
+     * Image to set look-up table for.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LUT_SEPARATOR = "Lookup table selection";
 
-	/**
-	* Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br>
-	*/
+    /**
+     * Control if the same look-up table is applied to all channels, or just
+     * one:<br>
+     * <br>
+     * - "All channels" Apply the same look-up table to all channels of the input
+     * image.<br>
+     * <br>
+     * - "Specific channels" Only apply the look-up table to the channel specified
+     * by the "Channel" parameter. All other channels will remain unaffected.<br>
+     */
     public static final String CHANNEL_MODE = "Channel mode";
 
-	/**
-	* When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.
-	*/
+    /**
+     * When in "Specific channels" mode, this is the channel the look-up table will
+     * be applied to. Channel numbering starts at 1.
+     */
     public static final String CHANNEL = "Channel";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REFERENCE_IMAGE = "Reference image";
 
-	/**
-	* Look-up table to apply to the relevant channels.  Choices are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.
-	*/
+    /**
+     * Look-up table to apply to the relevant channels. Choices are: Grey, Red,
+     * Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum,
+     * Thermal, Random.
+     */
     public static final String LOOKUP_TABLE = "Lookup table";
 
-	/**
-	* Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br>
-	*/
+    /**
+     * Controls how the minimum value in the look-up table should be rendered:<br>
+     * <br>
+     * - "Full range" Use the full colour range of the look-up table. This is the
+     * default look-up table without modifications.<br>
+     * <br>
+     * - "Set zero to black" Uses the standard look-up table, except for the lowest
+     * value, which is always set to black. This is useful for cases where the
+     * background will be 0 or NaN and should be rendered as black.<br>
+     */
     public static final String DISPLAY_MODE = "Display mode";
 
     public SetLookupTable(Modules modules) {
@@ -199,6 +215,14 @@ public class SetLookupTable extends Module {
 
     }
 
+    public static void copyLUTFromImage(Image inputImage, Image referenceImage) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        LUT[] luts = referenceImage.getImagePlus().getLuts();
+        for (int ch = 0; ch < Math.min(inputIpl.getNChannels(), luts.length); ch++)
+            setLUT(inputImage, luts[ch], ChannelModes.SPECIFIC_CHANNELS, ch + 1);
+
+    }
+
     @Override
     public Category getCategory() {
         return Categories.IMAGES_CONFIGURE;
@@ -217,15 +241,15 @@ public class SetLookupTable extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String lookupTableName = parameters.getValue(LOOKUP_TABLE,workspace);
-        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
-        int channel = parameters.getValue(CHANNEL,workspace);
-        String displayMode = parameters.getValue(DISPLAY_MODE,workspace);
+        String lookupTableName = parameters.getValue(LOOKUP_TABLE, workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE, workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
+        int channel = parameters.getValue(CHANNEL, workspace);
+        String displayMode = parameters.getValue(DISPLAY_MODE, workspace);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -248,12 +272,9 @@ public class SetLookupTable extends Module {
                 }
                 setLUT(inputImage, lut, channelMode, channel);
                 break;
-                case ChannelModes.COPY_FROM_IMAGE:
-                    ImagePlus inputIpl = inputImage.getImagePlus();
-                    LUT[] luts = workspace.getImage(referenceImageName).getImagePlus().getLuts();
-                    for (int ch = 0; ch < Math.min(inputIpl.getNChannels(),luts.length); ch++)
-                        setLUT(inputImage, luts[ch], ChannelModes.SPECIFIC_CHANNELS, ch+1);
-                    
+            case ChannelModes.COPY_FROM_IMAGE:
+                Image referenceImage = workspace.getImage(referenceImageName);
+                copyLUTFromImage(inputImage, referenceImage);
                 break;
         }
 
@@ -284,7 +305,7 @@ public class SetLookupTable extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -293,7 +314,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(LUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
 
-        switch ((String) parameters.getValue(CHANNEL_MODE,workspace)) {
+        switch ((String) parameters.getValue(CHANNEL_MODE, workspace)) {
             case ChannelModes.ALL_CHANNELS:
                 returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
@@ -314,27 +335,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

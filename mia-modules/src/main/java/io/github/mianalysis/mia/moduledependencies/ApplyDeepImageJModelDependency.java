@@ -17,7 +17,7 @@ public class ApplyDeepImageJModelDependency extends Dependency {
 
     @Override
     public String getMessage() {
-        return "MIA currently only supports DeepImageJ up to version 2.1.16.  Compatibility with DeepImageJ version 3 and above will be added in the coming weeks (target end of August 2023).  DeepImageJ 2.1.16 and its dependencies can be downloaded from https://github.com/deepimagej/deepimagej-plugin/releases/tag/2.1.16.";
+        return "MIA currently only supports DeepImageJ up to version 2.1.16.  Compatibility with DeepImageJ version 3 and above will be added soon.  DeepImageJ 2.1.16 and its dependencies can be downloaded from https://github.com/deepimagej/deepimagej-plugin/releases/tag/2.1.16.";
     }
 
     @Override
