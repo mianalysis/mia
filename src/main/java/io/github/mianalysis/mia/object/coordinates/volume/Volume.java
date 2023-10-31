@@ -701,13 +701,6 @@ public class Volume {
         
     }
 
-    public Image getAsTightImage(String imageName) {
-        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
-
-        return getAsTightImage(imageName, borderWidths);
-
-    }
-
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         Volume sliceVol = getSlice(slice);
@@ -719,10 +712,17 @@ public class Volume {
         Prefs.blackBackground = true;
         
         Roi roi = new ThresholdToSelection().convert(ipr);
-        double[][] extents = getExtents(true, false);
+        double[][] extents = sliceVol.getExtents(true, false);
         roi.translate(extents[0][0], extents[1][0]);
 
         return roi;
+
+    }
+
+    public Image getAsTightImage(String imageName) {
+        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+
+        return getAsTightImage(imageName, borderWidths);
 
     }
 

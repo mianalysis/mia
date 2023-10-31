@@ -46,7 +46,7 @@ import io.github.mianalysis.mia.module.script.RunSingleCommand;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.module.system.RemoveImages;
-import io.github.mianalysis.mia.module.visualise.PlotMeasurementsScatter;
+import io.github.mianalysis.mia.module.visualise.plots.PlotMeasurementsScatter;
 import io.github.mianalysis.mia.module.workflow.WorkflowHandling;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
