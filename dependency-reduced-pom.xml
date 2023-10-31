@@ -9,8 +9,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mianalysis</groupId>
   <artifactId>mia</artifactId>
+  <packaging>pom</packaging>
   <name>MIA</name>
-  <version>1.4.4</version>
+  <version>1.5.0-SNAPSHOT</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -161,6 +162,14 @@
       </plugin>
     </plugins>
   </build>
+  <modules>
+    <module>mia-algorithms</module>
+    <module>mia-core</module>
+    <module>mia-gui</module>
+    <module>mia-headless</module>
+    <module>mia-macros</module>
+    <module>mia-modules</module>
+  </modules>
   <repositories>
     <repository>
       <id>scijava.public</id>

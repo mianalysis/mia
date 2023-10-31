@@ -12,6 +12,7 @@ target/site/*
 !target/site/images/
 models/*
 lib/*
+*/target/*
 
 *.log
 .vscode/settings.json
