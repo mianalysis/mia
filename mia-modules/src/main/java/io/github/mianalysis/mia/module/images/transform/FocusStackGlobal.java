@@ -44,6 +44,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -502,7 +503,11 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         // Adding the new image to the Workspace
-        return ImageFactory.createImage(outputImageName, outputImagePlus);
+        Image focusedImage = ImageFactory.createImage(outputImageName, outputImagePlus);
+
+        SetLookupTable.copyLUTFromImage(focusedImage, inputImage);
+
+        return focusedImage;
 
     }
 
