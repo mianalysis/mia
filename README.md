@@ -15,12 +15,12 @@ For the full documentation, please go to [mianalysis.github.io](https://mianalys
 
 ![](./img/screenshot.png)
 
-Preprint and poster
+Paper and poster
 ------------
 
-You can check out the preprint of the MIA paper [here](https://www.biorxiv.org/content/10.1101/2023.06.12.544614v1) and the latest MIA poster from CBIAS 2022 [here](./img/CBIAS_poster_2022.jpg)
+You can check out the MIA paper [here](https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227) and the latest MIA poster from CBIAS 2022 [here](./img/CBIAS_poster_2022.jpg)
 <p align="middle">
-<a href="https://www.biorxiv.org/content/10.1101/2023.06.12.544614v1"><img src="./img/Preprint_thumb.jpg" height="200"></a> <a href="https://github.com/mianalysis/mia/tree/main/docs/img/CBIAS_poster_2022.jpg"><img src="./img/CBIAS_poster_2022_thumb.jpg" height="200"></a>
+<a href="https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227"><img src="./resources/img/Paper_thumb.png" height="200"></a> <a href="https://github.com/mianalysis/mia/tree/main/docs/img/CBIAS_poster_2022.jpg"><img src="./resources/img/CBIAS_poster_2022_thumb.jpg" height="200"></a>
 </p>
 
 Installation
@@ -80,7 +80,11 @@ Special thanks to all MIA users who have provided vital feedback over the years.
 
 Citing MIA
 ------------
-We hope you find MIA useful.  If you've used MIA in your research, please cite it using the Zenodo DOI for that version of the plugin.  Zenodo DOIs for MIA can be found [here](https://doi.org/10.5281/zenodo.1201320).
+We hope you find MIA useful.  If you've used MIA in your research, please cite the following paper:
+
+Cross, S.J., Fisher, J.D.J.R. & Jepson, M.A., "ModularImageAnalysis (MIA): Assembly of modularised image and object analysis workflows in ImageJ", _Journal of Microscopy_ (2023), doi: [110.1111/jmi.13227](https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227).
+
+MIA is also archived at Zenodo, which provides a unique DOI for each released version. Zenodo DOIs can be found [here](https://doi.org/10.5281/zenodo.1201320).
 
 Publications
 ------------

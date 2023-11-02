@@ -161,6 +161,9 @@ public class Workspace {
     }
 
     public Objs getObjects(String name) {
+        if (name.contains(" // ")) 
+            name = name.substring(name.lastIndexOf(" // ")+4);
+
         return objects.get(name);
 
     }
