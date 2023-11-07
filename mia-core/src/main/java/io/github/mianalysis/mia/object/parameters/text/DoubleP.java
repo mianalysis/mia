@@ -44,10 +44,14 @@ public class DoubleP extends TextType {
                 this.value = value;
             } catch (NumberFormatException e) {
                 MIA.log.writeWarning("Module \"" + module.getName() + "\", parameter \"" + getName()
-                        + " \". Must either:" + "\n    - Be a double-precision number"
-                        + "\n    - Be a global variable handle (e.g. V{name}) "
-                        + "\n    - Contain a calculation (e.g. C{3-6}.  "
-                        + "\nNote: Global variables and calculations can be combined (e.g. C{V{name1} + V{name2} - 4})");
+                        + " \". Must either:" 
+                        + "\n    - A double-precision value,"
+                        + "\n    - A global variable handle in the form V{[VARIABLE NAME]} (e.g. V{name}),"
+                        + "\n    - Contain a calculation in the form CD{[EQUATION]} for double-precision outputs or CI{[EQUATION]} for integer-precision outputs (e.g. CD{3/4}),"
+                        + "\n    - Contain an image measurement in the form Im{[IMAGE NAME|MEASUREMENT NAME]} (e.g. Im{RedChannel|DIMENSIONS // WIDTH}),"
+                        + "\n    - Contain an object collection measurement statistic in the form Os{[OBJECTS NAME|MEASUREMENT NAME|STATISTIC]} (e.g. Os{Nuclei|SHAPE // N_VOXELS|MEAN}),"
+                        + "\n    - Contain an object count in the form Oc{[OBJECTS NAME]} (e.g. Os{Nuclei}),"
+                        + "\nNote: Global variables, dynamic values and calculations can be combined (e.g. CD{V{name1} + Oc{name2} - 4})");
             }
         }
     }

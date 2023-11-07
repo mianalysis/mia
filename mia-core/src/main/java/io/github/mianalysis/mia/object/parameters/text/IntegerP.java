@@ -44,10 +44,11 @@ public class IntegerP extends TextType {
                 this.value = value;
             } catch (NumberFormatException e) {
                 MIA.log.writeWarning("Module \"" + module.getName() + "\", parameter \"" + getName()
-                        + " \". Must either:" + "\n    - Be an integer number"
-                        + "\n    - Be a global variable handle (e.g. V{name}) "
-                        + "\n    - Contain a calculation (e.g. C{3-6}."
-                        + "\nNote: Global variables and calculations can be combined (e.g. C{V{name1} + V{name2} - 4})");
+                + " \". Must either:" 
+                + "\n    - An integer-precision value,"
+                + "\n    - A global variable handle in the form V{[VARIABLE NAME]} (e.g. V{name}),"
+                + "\n    - Contain a calculation in the form CI{[EQUATION]} (e.g. CI{3-4}),"
+                + "\nNote: Global variables and calculations can be combined (e.g. CI{V{name1} + V{name2} - 4})");
             }
         }
     }
