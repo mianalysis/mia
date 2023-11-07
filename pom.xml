@@ -343,6 +343,12 @@
             <scope>${scp}</scope>
         </dependency>
         <!-- <dependency>
+            <groupId>com.github.deepimagej</groupId>
+            <artifactId>deepimagej-plugin</artifactId>
+            <version>bb15220</version>
+            <scope>${scp}</scope>
+        </dependency> -->
+        <!-- <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
         </dependency>
