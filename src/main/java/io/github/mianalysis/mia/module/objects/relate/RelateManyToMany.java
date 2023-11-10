@@ -129,96 +129,139 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
-
 /**
-* Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can be linked to an unlimited number of other objects (see "Relate many-to-one" and "Relate one-to-one" modules for alternatives).  As such, the assigned relationships can form a network of relationships, with each object connected to multiple others.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with these relationship (e.g. a record of whether each object was linked) are stored as measurements of the relevant object.
-*/
+ * Relate objects of two classes based on spatial proximity or overlap. With
+ * this module, each object from a collection can be linked to an unlimited
+ * number of other objects (see "Relate many-to-one" and "Relate one-to-one"
+ * modules for alternatives). As such, the assigned relationships can form a
+ * network of relationships, with each object connected to multiple others.
+ * Related objects are assigned partner relationships and can optionally also be
+ * related by a common cluster (parent) object. Measurements associated with
+ * these relationship (e.g. a record of whether each object was linked) are
+ * stored as measurements of the relevant object.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateManyToMany extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Objects input/output";
 
-	/**
-	* Controls whether the objects from the same class should be related to each other, or whether objects from two different classes should be related.
-	*/
+    /**
+     * Controls whether the objects from the same class should be related to each
+     * other, or whether objects from two different classes should be related.
+     */
     public static final String OBJECT_SOURCE_MODE = "Object source mode";
 
-	/**
-	* First objection collection from the workspace to relate objects for.  If "Object source mode" is set to "Different classes", these objects will be related to the objects from the collection specified by "Input objects 2"; however, if set to "Same class", the objects from this collection will be related to each other.  Related objects will be given partner relationships.
-	*/
+    /**
+     * First objection collection from the workspace to relate objects for. If
+     * "Object source mode" is set to "Different classes", these objects will be
+     * related to the objects from the collection specified by "Input objects 2";
+     * however, if set to "Same class", the objects from this collection will be
+     * related to each other. Related objects will be given partner relationships.
+     */
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
 
-	/**
-	* Second object collection from the workspace to relate objects for.  This object collection will only be used if "Object source mode" is set to "Different classes", in which case these objects will be related to those from the collection specified by "Input objects 1".  Related objects will be given partner relationships.
-	*/
+    /**
+     * Second object collection from the workspace to relate objects for. This
+     * object collection will only be used if "Object source mode" is set to
+     * "Different classes", in which case these objects will be related to those
+     * from the collection specified by "Input objects 1". Related objects will be
+     * given partner relationships.
+     */
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
 
-	/**
-	* When selected, new "cluster" objects will be created and added to the workspace.  These objects contain no spatial information, but act as links between all objects that were related.  All objects identified as relating to each other are stored as children of the same cluster object.
-	*/
+    /**
+     * When selected, new "cluster" objects will be created and added to the
+     * workspace. These objects contain no spatial information, but act as links
+     * between all objects that were related. All objects identified as relating to
+     * each other are stored as children of the same cluster object.
+     */
     public static final String CREATE_CLUSTER_OBJECTS = "Create cluster objects";
 
-	/**
-	* If storing cluster objects (when "Create cluster objects" is selected), the output cluster objects will be added to the workspace with this name.
-	*/
+    /**
+     * If storing cluster objects (when "Create cluster objects" is selected), the
+     * output cluster objects will be added to the workspace with this name.
+     */
     public static final String OUTPUT_OBJECTS_NAME = "Output cluster objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SPATIAL_LINKING_SEPARATOR = "Spatial linking settings";
 
-	/**
-	* Controls the type of calculation used when determining which objects are related:<br><ul><li>"Centroid separation" Distances are calculated from object centroid to object centroid.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Spatial overlap" The percentage of each object, which overlaps with another object is calculated.</li><li>"Surface separation" Distances are calculated between the closest points on the object surfaces.  These distances increase in magnitude the greater the minimum object-object surface distance is; however, they are assigned a negative value if the one of the closest surface points is inside the other object (this should only occur if one object is entirely enclosed by the other) or a positive value otherwise (i.e. if the objects are separate).  Note: Any instances where the object surfaces overlap will be recorded as "0px" distance.</li></ul>
-	*/
+    /**
+     * Controls the type of calculation used when determining which objects are
+     * related:<br>
+     * <ul>
+     * <li>"Centroid separation" Distances are calculated from object centroid to
+     * object centroid. These distances are always positive; increasing as the
+     * distance between centroids increases.</li>
+     * <li>"Spatial overlap" The percentage of each object, which overlaps with
+     * another object is calculated.</li>
+     * <li>"Surface separation" Distances are calculated between the closest points
+     * on the object surfaces. These distances increase in magnitude the greater the
+     * minimum object-object surface distance is; however, they are assigned a
+     * negative value if the one of the closest surface points is inside the other
+     * object (this should only occur if one object is entirely enclosed by the
+     * other) or a positive value otherwise (i.e. if the objects are separate).
+     * Note: Any instances where the object surfaces overlap will be recorded as
+     * "0px" distance.</li>
+     * </ul>
+     */
     public static final String SPATIAL_SEPARATION_MODE = "Spatial separation mode";
 
-	/**
-	* If "Spatial separation mode" is set to "Centroid separation" or "Surface separation", this is the maximum separation two objects can have and still be related.
-	*/
+    /**
+     * If "Spatial separation mode" is set to "Centroid separation" or "Surface
+     * separation", this is the maximum separation two objects can have and still be
+     * related.
+     */
     public static final String MAXIMUM_SEPARATION = "Maximum separation";
 
-	/**
-	* When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
-	*/
+    /**
+     * When selected, spatial values are assumed to be specified in calibrated units
+     * (as defined by the "Input control" parameter "Spatial unit"). Otherwise,
+     * pixel units are assumed.
+     */
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-	/**
-	* When selected and "Spatial separation mode" is set to "Surface separation", any instances of objects fully enclosed within another are accepted as being related.  Otherwise, the absolute distance between object surfaces will be used.
-	*/
+    /**
+     * When selected and "Spatial separation mode" is set to "Surface separation",
+     * any instances of objects fully enclosed within another are accepted as being
+     * related. Otherwise, the absolute distance between object surfaces will be
+     * used.
+     */
     public static final String ACCEPT_ALL_INSIDE = "Accept all fully enclosed objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String THRESHOLD_MODE = "Threshold mode";
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
     public static final String HIGHER_OVERLAP_PC = "Higher overlap threshold (%)";
     public static final String LOWER_OVERLAP_PC = "Lower overlap threshold (%)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String ADDITIONAL_MEASUREMENTS_SEPARATOR = "Additional measurement settings";
 
-	/**
-	* Add additional measurement criteria the two objects must satisfy in order to be related.
-	*/
+    /**
+     * Add additional measurement criteria the two objects must satisfy in order to
+     * be related.
+     */
     public static final String ADD_MEASUREMENT = "Add measurement";
     public static final String MEASUREMENT_1 = "Measurement 1";
     public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String CALCULATION = "Calculation";
     public static final String MEASUREMENT_LIMIT = "Measurement limit";
 
-	/**
-	* When selected, child and parent objects must be in the same time frame for them to be linked.
-	*/
+    /**
+     * When selected, child and parent objects must be in the same time frame for
+     * them to be linked.
+     */
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     public interface ObjectSourceModes {
