@@ -401,7 +401,7 @@
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
-            <version>1.5.0</version>
+            <!-- <version>1.5.0</version> -->
             <scope>${scp}</scope>
         </dependency>
 

@@ -2,9 +2,12 @@
 
 package io.github.mianalysis.mia.module.objects.detect;
 
+import java.util.HashMap;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -13,6 +16,7 @@ import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
+import io.github.mianalysis.mia.module.objects.transform.MaskObjects;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -22,6 +26,7 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.choiceinterfaces.BinaryLogicInterface;
@@ -35,6 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.ColourFactory;
 import net.imagej.ImgPlus;
 import net.imglib2.Point;
 import net.imglib2.loops.LoopBuilder;
@@ -51,95 +57,122 @@ import net.imglib2.type.numeric.RealType;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module {
 
-	/**
-	* 
-	*/
-    public static final String INPUT_SEPARATOR = "Image input";
+    /**
+    * 
+    */
+    public static final String INPUT_SEPARATOR = "Image controls";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
+    public static final String INPUT_MODE = "Input mode";
+
+    /**
+    * 
+    */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String BINARY_LOGIC = "Binary logic";
 
+    /**
+    * 
+    */
+    public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Object output";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String BAND_MODE = "Band mode";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String VOLUME_TYPE = "Volume type";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
+    public static final String PARENT_OBJECTS_MODE = "Parent objects mode";
+
+    /**
+    * 
+    */
     public static final String MERGE_BANDS = "Merge bands";
 
+    /**
+    * 
+    */
+    public static final String PARENT_OBJECTS = "Parent objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String BAND_SEPARATOR = "Band controls";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MATCH_Z_TO_X = "Match Z to XY";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String WEIGHT_MODE = "Weight mode";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String BAND_WIDTH = "Band width";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String APPLY_MINIMUM_BAND_DISTANCE = "Apply minimum band distance";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MINIMUM_BAND_DISTANCE = "Minimum band distance";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String APPLY_MAXIMUM_BAND_DISTANCE = "Apply maximum band distance";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MAXIMUM_BAND_DISTANCE = "Maximum band distance";
 
     public DistanceBands(Modules modules) {
         super("Distance bands", modules);
+    }
+
+    public interface InputModes {
+        String IMAGE = "Image";
+        String OBJECT_CENTROIDS = "Object centroids";
+        String OBJECT_SURFACE = "Object surface";
+
+        String[] ALL = new String[] { IMAGE, OBJECT_CENTROIDS, OBJECT_SURFACE };
+
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {
@@ -151,6 +184,16 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
         String OUTSIDE_OBJECTS = "Outside objects";
 
         String[] ALL = new String[] { INSIDE_AND_OUTSIDE, INSIDE_OBJECTS, OUTSIDE_OBJECTS };
+
+    }
+
+    public interface ParentObjectsMode {
+        String NONE = "None";
+        String OVERLAP = "Overlap";
+        // String PROXIMITY = "Proximity";
+
+        // String[] ALL = new String[] { NONE, OVERLAP, PROXIMITY };
+        String[] ALL = new String[] { NONE, OVERLAP };
 
     }
 
@@ -188,7 +231,7 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -299,6 +342,33 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
 
     }
 
+    public static Objs applyParentMasking(Objs tempBandObjects, Objs parentObjects) {
+        Objs bandObjects = new Objs(tempBandObjects.getName(), tempBandObjects);
+
+        for (Obj parentObject : parentObjects.values()) {
+            Image maskImage = parentObject.getAsImage("Mask", false);
+            for (Obj tempBandObject : tempBandObjects.values()) {
+                Obj bandObject = MaskObjects.maskObject(tempBandObject, maskImage, tempBandObjects.getName());
+
+                if (bandObject.size() == 0)
+                    continue;
+
+                bandObject.setID(bandObjects.getAndIncrementID());
+                for (Measurement measurement : tempBandObject.getMeasurements().values())
+                    bandObject.addMeasurement(new Measurement(measurement.getName(), measurement.getValue()));
+
+                bandObject.addParent(parentObject);
+                parentObject.addChild(bandObject);
+
+                bandObjects.add(bandObject);
+
+            }
+        }
+
+        return bandObjects;
+
+    }
+
     static <T extends RealType<T> & NativeType<T>> void addMeasurements(Objs bands, Image<T> distPx, double bandWidthPx,
             boolean internalObjects) {
         double dppXY = bands.getDppXY();
@@ -329,13 +399,17 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
+        String inputMode = parameters.getValue(INPUT_MODE, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         String bandMode = parameters.getValue(BAND_MODE, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
         String type = parameters.getValue(VOLUME_TYPE, workspace);
+        String parentObjectsMode = parameters.getValue(PARENT_OBJECTS_MODE, workspace);
         boolean mergeBands = parameters.getValue(MERGE_BANDS, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
         String weightMode = parameters.getValue(WEIGHT_MODE, workspace);
         double bandWidth = parameters.getValue(BAND_WIDTH, workspace);
@@ -346,7 +420,26 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
         double maxDist = parameters.getValue(MAXIMUM_BAND_DISTANCE, workspace);
 
         // Getting input image
-        Image<T> inputImage = workspace.getImage(inputImageName);
+        Image<T> inputImage = null;
+        switch (inputMode) {
+            case InputModes.IMAGE:
+            default:
+                inputImage = workspace.getImage(inputImageName);
+                break;
+            case InputModes.OBJECT_CENTROIDS:
+                blackBackground = true;
+                Objs inputObjects = workspace.getObjects(inputObjectsName);
+                HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects,
+                        ColourFactory.SingleColours.WHITE);
+                inputImage = inputObjects.convertCentroidsToImage("Objects", hues, 8, blackBackground);
+                break;
+            case InputModes.OBJECT_SURFACE:
+                blackBackground = true;
+                inputObjects = workspace.getObjects(inputObjectsName);
+                hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
+                inputImage = inputObjects.convertToImage("Objects", hues, 8, blackBackground);
+                break;
+        }
 
         // Applying spatial calibration
         if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
@@ -363,20 +456,33 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
             maxDist = Double.MAX_VALUE;
 
         // Getting internal bands
-        Objs bandObjects;
+        Objs tempBandObjects;
         switch (bandMode) {
             case BandModes.INSIDE_AND_OUTSIDE:
             default:
-                bandObjects = getAllBands(inputImage, outputObjectsName, blackBackground, weightMode,
+                tempBandObjects = getAllBands(inputImage, outputObjectsName, blackBackground, weightMode,
                         matchZToXY, bandWidth, minDist, maxDist, type, mergeBands);
                 break;
             case BandModes.INSIDE_OBJECTS:
-                bandObjects = getInternalBandsOnly(inputImage, outputObjectsName, blackBackground, weightMode,
+                tempBandObjects = getInternalBandsOnly(inputImage, outputObjectsName, blackBackground, weightMode,
                         matchZToXY, bandWidth, minDist, maxDist, type, mergeBands);
                 break;
             case BandModes.OUTSIDE_OBJECTS:
-                bandObjects = getExternalBandsOnly(inputImage, outputObjectsName, blackBackground, weightMode,
+                tempBandObjects = getExternalBandsOnly(inputImage, outputObjectsName, blackBackground, weightMode,
                         matchZToXY, bandWidth, minDist, maxDist, type, mergeBands);
+                break;
+        }
+
+        // Applying parent-based masking
+        Objs bandObjects;
+        switch (parentObjectsMode) {
+            case ParentObjectsMode.NONE:
+            default:
+                bandObjects = tempBandObjects;
+                break;
+            case ParentObjectsMode.OVERLAP:
+                Objs parentObjects = workspace.getObjects(parentObjectsName);
+                bandObjects = applyParentMasking(tempBandObjects, parentObjects);
                 break;
         }
 
@@ -394,14 +500,18 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new ChoiceP(INPUT_MODE, this, InputModes.IMAGE, InputModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(BAND_MODE, this, BandModes.INSIDE_AND_OUTSIDE, BandModes.ALL));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.QUADTREE, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(PARENT_OBJECTS_MODE, this, ParentObjectsMode.NONE, ParentObjectsMode.ALL));
         parameters.add(new BooleanP(MERGE_BANDS, this, false));
+        parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
 
         parameters.add(new SeparatorP(BAND_SEPARATOR, this));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
@@ -422,14 +532,32 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.get(INPUT_IMAGE));
-        returnedParameters.add(parameters.get(BINARY_LOGIC));
+        returnedParameters.add(parameters.get(INPUT_MODE));
+        switch ((String) parameters.getValue(INPUT_MODE, null)) {
+            case InputModes.IMAGE:
+                returnedParameters.add(parameters.get(INPUT_IMAGE));
+                returnedParameters.add(parameters.get(BINARY_LOGIC));
+                break;
+            case InputModes.OBJECT_CENTROIDS:
+            case InputModes.OBJECT_SURFACE:
+                returnedParameters.add(parameters.get(INPUT_OBJECTS));
+                break;
+        }
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.get(BAND_MODE));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
-        returnedParameters.add(parameters.get(MERGE_BANDS));
+        returnedParameters.add(parameters.get(PARENT_OBJECTS_MODE));
+        switch ((String) parameters.getValue(PARENT_OBJECTS_MODE, null)) {
+            case ParentObjectsMode.NONE:
+                returnedParameters.add(parameters.get(MERGE_BANDS));
+                break;
+            case ParentObjectsMode.OVERLAP:
+                // case ParentObjectsMode.PROXIMITY:
+                returnedParameters.add(parameters.get(PARENT_OBJECTS));
+                break;
+        }
 
         returnedParameters.add(parameters.get(BAND_SEPARATOR));
         returnedParameters.add(parameters.get(MATCH_Z_TO_X));
@@ -499,7 +627,19 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+        switch ((String) parameters.getValue(PARENT_OBJECTS_MODE, null)) {
+            case ParentObjectsMode.NONE:
+            default:
+                return null;
+            case ParentObjectsMode.OVERLAP:
+                ParentChildRefs returnedRefs = new ParentChildRefs();
+
+                String parentObjectsName = parameters.getValue(PARENT_OBJECTS, null);
+                String childObjectsName = parameters.getValue(OUTPUT_OBJECTS, null);
+                returnedRefs.add(parentChildRefs.getOrPut(parentObjectsName, childObjectsName));
+
+                return returnedRefs;
+        }
     }
 
     @Override

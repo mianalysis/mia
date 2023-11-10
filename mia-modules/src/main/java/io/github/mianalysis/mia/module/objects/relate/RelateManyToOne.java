@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objects.relate;
 
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -8,18 +9,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.ImagePlus;
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -34,75 +41,142 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
-import io.github.mianalysis.mia.object.coordinates.Point;
-
+import io.github.mianalysis.mia.process.ColourFactory;
 
 /**
-* Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input "child" objects can be related to at most, one "parent" object (see "Relate many-to-many" and "Relate one-to-one" modules for alternatives).  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Relate objects of two classes based on a variety of metrics (e.g. spatial
+ * overlap or proximity). The assigned relationships are of the form
+ * many-to-one, where many input "child" objects can be related to at most, one
+ * "parent" object (see "Relate many-to-many" and "Relate one-to-one" modules
+ * for alternatives). Measurements associated with this relationship (e.g.
+ * distance from child to parent surface) are stored as measurements of the
+ * relevant child object.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateManyToOne extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String PARENT_OBJECTS = "Parent (larger) objects";
     public static final String CHILD_OBJECTS = "Child (smaller) objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
 
-	/**
-	* The metric by which parent and child objects will be related:<br><ul><li>"Matching IDs" Parents and children will be related if they have the same ID number.  Since object ID numbers are unique within an object collection there will always be no more than one parent to a child.</li><li>"Proximity" Children are related to the spatially-closest object from the parent collection.  The exact distances used (e.g. centroid to centroid or surface to surface) are controlled by the "Reference mode" parameter.</li><li>"Spatial overlap" Children are related to the object from the parent collection they have the greatest spatial overlap with.  Spatial overlap is defined as the number of coincident object coordinates.</li></ul>
-	*/
+    /**
+     * The metric by which parent and child objects will be related:<br>
+     * <ul>
+     * <li>"Matching IDs" Parents and children will be related if they have the same
+     * ID number. Since object ID numbers are unique within an object collection
+     * there will always be no more than one parent to a child.</li>
+     * <li>"Proximity" Children are related to the spatially-closest object from the
+     * parent collection. The exact distances used (e.g. centroid to centroid or
+     * surface to surface) are controlled by the "Reference mode" parameter.</li>
+     * <li>"Spatial overlap" Children are related to the object from the parent
+     * collection they have the greatest spatial overlap with. Spatial overlap is
+     * defined as the number of coincident object coordinates.</li>
+     * </ul>
+     */
     public static final String RELATE_MODE = "Method to relate objects";
 
-	/**
-	* Controls the method used for determining proximity-based relationships:<br><ul><li>"Centroid" Distances are from child object centroids to parent object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Child centroid to parent surface" Distances are from child object centroids to the closest point on parent object surfaces.  These distances increase in magnitude the further from the parent surface a child centroid is; however, they are assigned a positive value if the child is outside the parent and a negative value if the child is inside the parent.  For example, a centroid 5px outside the object will be simply "5px", whereas a centroid 5px from the surface, but contained within the parent object will be recorded as "-5px".</li><li>"Surface" Distances are between the closest points on the child and parent surfaces.  These distances increase in magnitude the greater the minimum parent-child surface distance is; however, they are assigned a positive value if the closest child surface point is outside the parent and a negative value if the closest child surface point is inside the parent.  For example, a closest child surface point 5px outside the object will be simply "5px", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as "-5px".  Note: Any instances where the child and parent surfaces overlap will be recorded as "0px" distance.</li></ul>
-	*/
+    /**
+     * Controls the method used for determining proximity-based relationships:<br>
+     * <ul>
+     * <li>"Centroid" Distances are from child object centroids to parent object
+     * centroids. These distances are always positive; increasing as the distance
+     * between centroids increases.</li>
+     * <li>"Child centroid to parent surface" Distances are from child object
+     * centroids to the closest point on parent object surfaces. These distances
+     * increase in magnitude the further from the parent surface a child centroid
+     * is; however, they are assigned a positive value if the child is outside the
+     * parent and a negative value if the child is inside the parent. For example, a
+     * centroid 5px outside the object will be simply "5px", whereas a centroid 5px
+     * from the surface, but contained within the parent object will be recorded as
+     * "-5px".</li>
+     * <li>"Surface" Distances are between the closest points on the child and
+     * parent surfaces. These distances increase in magnitude the greater the
+     * minimum parent-child surface distance is; however, they are assigned a
+     * positive value if the closest child surface point is outside the parent and a
+     * negative value if the closest child surface point is inside the parent. For
+     * example, a closest child surface point 5px outside the object will be simply
+     * "5px", whereas a closest child surface point 5px from the surface, but
+     * contained within the parent object will be recorded as "-5px". Note: Any
+     * instances where the child and parent surfaces overlap will be recorded as
+     * "0px" distance.</li>
+     * </ul>
+     */
     public static final String REFERENCE_MODE = "Reference mode";
 
-	/**
-	* When selected, objects will only be related if the distance between them (as calculated by the "Reference mode" metric) is less than or equal to the distance defined by "Maximum linking distance (px)".
-	*/
+    /**
+     * When selected, objects will only be related if the distance between them (as
+     * calculated by the "Reference mode" metric) is less than or equal to the
+     * distance defined by "Maximum linking distance (px)".
+     */
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
 
-	/**
-	* When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: Inside and outside (all distances), Inside only (distances less than 0), Inside and on surface (distances less than or equal to 0), On surface only (distances equal to 0), Outside and on surface (distances greater than or equal to 0), Outside only (distances greater than 0).
-	*/
+    /**
+     * When relating children to parent surfaces it's possible to only include
+     * children inside, outside or on the edge of the parent.This parameter controls
+     * which children are allowed to be related to the parents. Choices are: Inside
+     * and outside (all distances), Inside only (distances less than 0), Inside and
+     * on surface (distances less than or equal to 0), On surface only (distances
+     * equal to 0), Outside and on surface (distances greater than or equal to 0),
+     * Outside only (distances greater than 0).
+     */
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
     public static final String MINIMUM_OVERLAP = "Minimum overlap (%)";
 
-	/**
-	* When selected, child objects are only related to a parent if their centroid is inside the parent object (i.e. the child object centroid is coincident with a parent object coordinate).
-	*/
+    /**
+     * When selected, child objects are only related to a parent if their centroid
+     * is inside the parent object (i.e. the child object centroid is coincident
+     * with a parent object coordinate).
+     */
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
 
-	/**
-	* When selected, child and parent objects must be in the same time frame for them to be linked.
-	*/
+    /**
+     * When selected, child and parent objects must be in the same time frame for
+     * them to be linked.
+     */
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-	/**
-	* When selected, the fractional distance of the child object between the centre and surface of the parent is calculated.  This option is only available when relating children to the parent surface.  The calculation can be computationally intensive when dealing with many objects.
-	*/
+    /**
+     * When selected, the fractional distance of the child object between the centre
+     * and surface of the parent is calculated. This option is only available when
+     * relating children to the parent surface. The calculation can be
+     * computationally intensive when dealing with many objects.
+     */
     public static final String CALCULATE_FRACTIONAL_DISTANCE = "Calculate fractional distance";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple object relationships simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple object relationships simultaneously. This can provide a
+     * speed improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    /**
+    * 
+    */
+    public static final String SHOW_OUTPUT_SEPARATOR = "Show output controls";
+
+    /**
+    * 
+    */
+    public static final String SHOW_OBJECTS = "Show objects";
+
+    /**
+    * 
+    */
+    public static final String SHOW_MEASUREMENTS = "Show measurements";
 
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
@@ -542,7 +616,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
@@ -555,23 +629,25 @@ public class RelateManyToOne extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
         Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
-        String childObjectName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String childObjectName = parameters.getValue(CHILD_OBJECTS, workspace);
         Objs childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
-        String relateMode = parameters.getValue(RELATE_MODE,workspace);
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace);
-        double linkingDistance = parameters.getValue(LINKING_DISTANCE,workspace);
-        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE,workspace);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP,workspace);
-        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP,workspace);
-        boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE,workspace);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String relateMode = parameters.getValue(RELATE_MODE, workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE, workspace);
+        double linkingDistance = parameters.getValue(LINKING_DISTANCE, workspace);
+        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE, workspace);
+        double minOverlap = parameters.getValue(MINIMUM_OVERLAP, workspace);
+        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP, workspace);
+        boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE, workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+        boolean showObjects = parameters.getValue(SHOW_OBJECTS, workspace);
+        boolean showMeasurements = parameters.getValue(SHOW_MEASUREMENTS, workspace);
 
         if (!limitLinking)
             linkingDistance = Double.MAX_VALUE;
@@ -616,8 +692,26 @@ public class RelateManyToOne extends Module {
         applyLinkMeasurements(parentObjects, childObjects);
 
         if (showOutput) {
-            childObjects.showMeasurements(this, modules);
-            parentObjects.showMeasurements(this, modules);
+            if (showObjects) {
+                int maxID = 0;
+                for (int ID:parentObjects.keySet())
+                    maxID = Math.max(ID, maxID);
+
+                Image parentImage = parentObjects.convertToImageIDColours();
+                SetDisplayRange.setDisplayRangeManual(parentImage, new double[]{0, maxID});
+                parentImage.show(false);
+
+                HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
+                Image childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
+                SetDisplayRange.setDisplayRangeManual(childImage, new double[]{0,maxID});
+                childImage.show(childObjectName,LUTs.Random(true, false),false,false);
+                
+            }
+
+            if (showMeasurements) {
+                childObjects.showMeasurements(this, modules);
+                parentObjects.showMeasurements(this, modules);
+            }
         }
 
         return Status.PASS;
@@ -645,13 +739,17 @@ public class RelateManyToOne extends Module {
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        parameters.add(new SeparatorP(SHOW_OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(SHOW_OBJECTS, this, true));
+        parameters.add(new BooleanP(SHOW_MEASUREMENTS, this, false));
+
         addParameterDescriptions();
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -661,14 +759,14 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        switch ((String) parameters.getValue(RELATE_MODE,workspace)) {
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        switch ((String) parameters.getValue(RELATE_MODE, workspace)) {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace))
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE, workspace))
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
-                
+
                 if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
@@ -687,29 +785,33 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
+        returnedParameters.add(parameters.getParameter(SHOW_OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
+        returnedParameters.add(parameters.getParameter(SHOW_MEASUREMENTS));
+
         return returnedParameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
 
         if (parentObjectName == null || childObjectsName == null)
             return returnedRefs;
 
-        switch ((String) parameters.getValue(RELATE_MODE,workspace)) {
+        switch ((String) parameters.getValue(RELATE_MODE, workspace)) {
             case RelateModes.PROXIMITY:
-                switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
+                switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
                     case ReferenceModes.CENTROID:
                         String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjectName);
                         ObjMeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName);
@@ -774,7 +876,7 @@ Workspace workspace = null;
                         distCentSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentSurfCal);
 
-                        if ((boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE,workspace)) {
+                        if ((boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE, workspace)) {
                             measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObjectName);
                             ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
                             distCentSurfFrac.setDescription(
@@ -819,17 +921,18 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
-                .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS,workspace), parameters.getValue(CHILD_OBJECTS,workspace)));
+                .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS, workspace),
+                        parameters.getValue(CHILD_OBJECTS, workspace)));
 
         return returnedRelationships;
 
@@ -837,7 +940,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

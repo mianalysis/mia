@@ -155,6 +155,10 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
         show(name, null, overlay);
     }
 
+    public void show(boolean normalise  ) {
+        show(name, null, normalise, false);
+    }
+
     @Deprecated
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         show(title, lut, normalise, composite);

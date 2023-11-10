@@ -110,8 +110,8 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image maskImage) {
-        Objs tempObjects = new Objs("Mask objects", inputObject.getObjectCollection());
+    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage, String maskObjectsName) {
+        Objs tempObjects = new Objs(maskObjectsName, inputObject.getObjectCollection());
 
         // Creating the mask object
         Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
@@ -188,7 +188,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         boolean removeEmptyObjects = parameters.getValue(REMOVE_EMPTY_OBJECTS, workspace);
 
         // If masking by objects, converting mask objects to an image
-        Image maskImage;
+        Image<T> maskImage;
         switch (maskMode) {
             default:
                 MIA.log.writeWarning("Mask not found");
@@ -226,7 +226,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         int total = inputObjects.size();
 
         for (Obj inputObject : inputObjects.values()) {
-            Obj maskedObject = maskObject(inputObject, maskImage);
+            Obj maskedObject = maskObject(inputObject, maskImage, maskObjectsName);
 
             switch (outputMode) {
                 case OutputModes.CREATE_NEW_OBJECT:
