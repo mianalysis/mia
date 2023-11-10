@@ -396,8 +396,6 @@ public class AddRelationshipConnection extends AbstractOverlay {
         double x2 = object2.getXMean(true) + 0.5;
         double y2 = object2.getYMean(true) + 0.5;
 
-        MIA.log.writeDebug(x1+"_"+x2+"_"+y1+"_"+y2);
-
         for (int z = 0; z < nSlices; z++) {
             Line line = new Line(x1, y1, x2, y2);
             if (ipl.isHyperStack()) {
