@@ -35,72 +35,112 @@ import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
  */
 
 /**
-* Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>Note: Unlike the "Normalise intensity" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.
-*/
+ * Set the minimum and maximum displayed intensities for a specified image from
+ * the workspace. Any pixels with intensities outside the set displayed range
+ * will be rendered with the corresponding extreme value (i.e. any pixels with
+ * intensities less than the minimum display value will be shown with the same
+ * as the value at the minimum display value). Display ranges can be calculated
+ * automatically or specified manually. One or both extrema can be set at a
+ * time.<br>
+ * <br>
+ * Note: Unlike the "Normalise intensity" module, pixel values are unchanged by
+ * this module. The only change is to the way ImageJ/Fiji renders the image.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetDisplayRange extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image from the workspace for which the updated intensity display range will be calculated.
-	*/
+    /**
+     * Image from the workspace for which the updated intensity display range will
+     * be calculated.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Select if the new intensity display range should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.
-	*/
+    /**
+     * Select if the new intensity display range should be applied directly to the
+     * input image, or if it should be applied to a duplicate image, then stored as
+     * a different image in the workspace.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If storing the processed image separately in the workspace, this is the name of the output image.
-	*/
+    /**
+     * If storing the processed image separately in the workspace, this is the name
+     * of the output image.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RANGE_SEPARATOR = "Intensity range";
 
-	/**
-	* Controls how the display range is calculated:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum displayed intensities are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul>
-	*/
+    /**
+     * Controls how the display range is calculated:<br>
+     * <ul>
+     * <li>"Fast" All intensity values in the image are collected in a histogram. As
+     * such, for 8 and 16-bit this is fast to calculate as there are a limited
+     * number of bins. In this instance, the clip fraction corresponds to the
+     * fraction of bins.</li>
+     * <li>"Manual" The minimum and maximum displayed intensities are manually
+     * specified with the "Minimum range value" and "Maximum range value"
+     * parameters.</li>
+     * <li>"Precise" All intensity values are ordered by their intensity and the
+     * clip fraction corresponds to the fraction of pixels (rather than the fraction
+     * of unique intensities as with "Fast" mode. As such, this method is more
+     * precise; however, can take a much longer time (especially for large
+     * images).</li>
+     * </ul>
+     */
     public static final String CALCULATION_MODE = "Calculation mode";
 
-	/**
-	* This parameter controls whether the display range (min, max) will be determined from the input image or another image:<br><ul><li>"External" The image for which the display range is calculated is different to the image that the final display will be applied to.  For example, this could be a single representative slice or substack.  Using this could significantly reduce run-time for large stacks, especially when "Calculation mode" is set to "Precise".</li><li>"Internal" The display range will be determined from the same image or stack onto which the display will be applied.</li></ul>
-	*/
+    /**
+     * This parameter controls whether the display range (min, max) will be
+     * determined from the input image or another image:<br>
+     * <ul>
+     * <li>"External" The image for which the display range is calculated is
+     * different to the image that the final display will be applied to. For
+     * example, this could be a single representative slice or substack. Using this
+     * could significantly reduce run-time for large stacks, especially when
+     * "Calculation mode" is set to "Precise".</li>
+     * <li>"Internal" The display range will be determined from the same image or
+     * stack onto which the display will be applied.</li>
+     * </ul>
+     */
     public static final String CALCULATION_SOURCE = "Calculation source";
 
-	/**
-	* 
-	*/
-    public static final String EXTERNAL_SOURCE = "External source";    
+    /**
+    * 
+    */
+    public static final String EXTERNAL_SOURCE = "External source";
     public static final String CLIP_FRACTION_MIN = "Clipping fraction (min)";
     public static final String CLIP_FRACTION_MAX = "Clipping fraction (max)";
 
-	/**
-	* When selected, the minimum displayed intensity will be updated.  Otherwise, the value will be unchanged.
-	*/
+    /**
+     * When selected, the minimum displayed intensity will be updated. Otherwise,
+     * the value will be unchanged.
+     */
     public static final String SET_MINIMUM_VALUE = "Set minimum value";
 
-	/**
-	* When selected, the maximum displayed intensity will be updated.  Otherwise, the value will be unchanged.
-	*/
+    /**
+     * When selected, the maximum displayed intensity will be updated. Otherwise,
+     * the value will be unchanged.
+     */
     public static final String SET_MAXIMUM_VALUE = "Set maximum value";
 
-	/**
-	* If manually setting the minimum displayed intensity, this is the value that will be applied.
-	*/
+    /**
+     * If manually setting the minimum displayed intensity, this is the value that
+     * will be applied.
+     */
     public static final String MIN_RANGE = "Minimum range value";
 
-	/**
-	* If manually setting the maximum displayed intensity, this is the value that will be applied.
-	*/
+    /**
+     * If manually setting the maximum displayed intensity, this is the value that
+     * will be applied.
+     */
     public static final String MAX_RANGE = "Maximum range value";
 
     public SetDisplayRange(Modules modules) {
@@ -124,7 +164,11 @@ public class SetDisplayRange extends Module {
 
     }
 
-    public static void setDisplayRangeManual(ImagePlus ipl, String calculationMode, double[] intRange) {
+    public static void setDisplayRangeManual(Image image, double[] intRange) {
+        setDisplayRangeManual(image.getImagePlus(), intRange);
+    }
+
+    public static void setDisplayRangeManual(ImagePlus ipl, double[] intRange) {
         // Get min max values for whole stack
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             if (ipl.isHyperStack())
@@ -139,6 +183,12 @@ public class SetDisplayRange extends Module {
         // Resetting location of the image
         ipl.setPosition(1, 1, 1);
 
+    }
+
+    public static void setDisplayRangeAuto(Image image, String calculationMode, double[] clipFraction,
+            boolean[] setRange, @Nullable Image externalImage) {
+        setDisplayRangeAuto(image.getImagePlus(), calculationMode, clipFraction, setRange,
+                externalImage.getImagePlus());
     }
 
     public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double[] clipFraction,
@@ -186,7 +236,7 @@ public class SetDisplayRange extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
@@ -243,7 +293,7 @@ public class SetDisplayRange extends Module {
                 setDisplayRangeAuto(inputImagePlus, calculationMode, clipFraction, setRange, externalIpl);
                 break;
             case CalculationModes.MANUAL:
-                setDisplayRangeManual(inputImagePlus, calculationMode, manualRange);
+                setDisplayRangeManual(inputImagePlus, manualRange);
                 break;
         }
 
@@ -253,11 +303,11 @@ public class SetDisplayRange extends Module {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.showImage(outputImageName, null, false, true);
+                outputImage.show(outputImageName, null, false, true);
 
         } else {
             if (showOutput)
-                inputImage.showImage(inputImageName, null, false, true);
+                inputImage.show(inputImageName, null, false, true);
 
         }
 
@@ -301,7 +351,7 @@ public class SetDisplayRange extends Module {
 
         returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
-        
+
         if (!((String) parameters.getValue(CALCULATION_MODE, workspace)).equals(CalculationModes.MANUAL)) {
             returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
             switch ((String) parameters.getValue(CALCULATION_SOURCE, workspace)) {
