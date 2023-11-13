@@ -382,7 +382,9 @@ public class Obj extends Volume {
 
     /**
      * Accesses and generates all ROIs for the object
-     * @return HashMap containing each ROI. Keys are integers with zero-based numbering, specifying Z-axis slice.
+     * 
+     * @return HashMap containing each ROI. Keys are integers with zero-based
+     *         numbering, specifying Z-axis slice.
      */
     public HashMap<Integer, Roi> getRois() {
         // This will access and generate all ROIs for this object
@@ -446,6 +448,25 @@ public class Obj extends Volume {
             // ipl.setPosition(point.getZ() + 1);
             // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
         }
+
+        return ImageFactory.createImage(imageName, ipl);
+
+    }
+
+    public Image getCentroidAsImage(String imageName, boolean singleTimepoint) {
+        int nFrames = singleTimepoint ? 1 : objCollection.getNFrames();
+        int t = singleTimepoint ? 0 : getT();
+
+        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
+        spatCal.setImageCalibration(ipl);
+
+        Point<Double> centroid = getMeanCentroid(true, false);
+        int x = (int) Math.round(centroid.getX());
+        int y = (int) Math.round(centroid.getY());
+        int z = (int) Math.round(centroid.getZ());
+
+        int idx = ipl.getStackIndex(1, z + 1, t + 1);
+        ipl.getStack().getProcessor(idx).set(x, y, 255);
 
         return ImageFactory.createImage(imageName, ipl);
 
