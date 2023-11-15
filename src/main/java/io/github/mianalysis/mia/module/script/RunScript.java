@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
@@ -201,7 +202,7 @@ public class RunScript extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.1";
+        return "1.0.2";
     }
 
     @Override
@@ -249,6 +250,7 @@ public class RunScript extends Module {
         movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",
                 PointOutOfRangeException.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.SpatCal", SpatCal.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.VolumeType", VolumeType.class.getName());
 
         for (String oldLocation : movedClasses.keySet()) {

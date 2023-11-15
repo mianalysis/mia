@@ -160,7 +160,7 @@ public class Volume {
                 break;
         }
 
-        Volume sliceVol = new Volume(outputType, spatCal.width, spatCal.height, 1, spatCal.dppXY, spatCal.dppZ,
+        Volume sliceVol = new Volume(outputType, spatCal.width, spatCal.height, spatCal.nSlices, spatCal.dppXY, spatCal.dppZ,
                 spatCal.units);
         sliceVol.setCoordinateSet(coordinateSet.getSlice(slice));
 
@@ -226,7 +226,6 @@ public class Volume {
 
     public boolean is2D() {
         return spatCal.nSlices == 1;
-
     }
 
     @Deprecated

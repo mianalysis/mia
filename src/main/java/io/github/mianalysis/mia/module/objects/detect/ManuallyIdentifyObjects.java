@@ -583,7 +583,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public String getVersionNumber() {
-        return "1.0.1";
+        return "1.0.2";
     }
 
     @Override
