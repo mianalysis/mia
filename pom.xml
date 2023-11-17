@@ -115,11 +115,10 @@
     <modules>
         <module>mia-algorithms</module>
         <module>mia-core</module>
-        <module>mia-gui-swing</module>
+        <module>mia-gui</module>
         <module>mia-headless</module>
         <module>mia-macros</module>
         <module>mia-modules</module>
-        <module>mia-plugin</module>
     </modules>
 
     <repositories>
@@ -196,6 +195,7 @@
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>3.1.1</version>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -272,6 +272,7 @@
             <groupId>org.scijava</groupId>
             <artifactId>script-editor</artifactId>
             <version>0.7.6</version>
+            <scope>${scp}</scope>
         </dependency>
         <!-- <dependency>
             <groupId>net.imagej</groupId>

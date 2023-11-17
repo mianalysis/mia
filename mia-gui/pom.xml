@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-gui-swing</artifactId>
+    <artifactId>mia-gui</artifactId>
     <version>1.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>mia-gui-swing</name>
+    <name>mia-gui</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -110,7 +110,7 @@
         <system>GitHub Actions</system>
         <url>https://github.com/mianalysis/mia</url>
     </ciManagement>
-    
+
     <repositories>
         <repository>
             <id>scijava.public</id>
@@ -135,6 +135,18 @@
             <artifactId>mia-modules</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-macros</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-algorithms</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -157,6 +169,34 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+
+                            <excludeArtifactIds>
+                                commons-codec,commons-collections4,commons-compress,commons-io,commons-math3,slf4j-api,xml-apis
+                            </excludeArtifactIds>
+
+                            <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

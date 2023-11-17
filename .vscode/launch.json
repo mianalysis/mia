@@ -5,7 +5,7 @@
             "name": "MIAGUI",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIAGUI",
-            "projectName": "mia-gui-swing"
+            "projectName": "mia-gui"
         },
         {
             "type": "java",
