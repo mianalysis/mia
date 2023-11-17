@@ -350,12 +350,12 @@ public class MeasureRelativeOrientation extends Module {
         // Putting it into the range -90 to +90 degrees (or radian equivalent)
         switch (measurementRange) {
             case MeasurementRanges.ZERO_NINETY:
-                if (angle >= Math.PI / 2)
+                while (angle >= Math.PI / 2)
                     angle = angle - Math.PI;
                 break;
 
             case MeasurementRanges.ZERO_ONE_EIGHTY:
-                if (angle >= Math.PI)
+                while (angle >= Math.PI)
                     angle = angle - 2 * Math.PI;
                 break;
 
@@ -509,6 +509,7 @@ public class MeasureRelativeOrientation extends Module {
         // break;
         // }
 
+        returnedParameters.add(parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT));
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ObjectMeasurementP) parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT)).setObjectName(inputObjectsName);
         // ((ObjectMeasurementP)

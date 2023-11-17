@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.scijava.plugin.SciJavaPlugin;
-import org.scijava.util.VersionUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -17,8 +16,8 @@ import org.w3c.dom.Node;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
@@ -33,7 +32,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
-import java_cup.version;
 
 /**
  * Abstract MIA module. Each module extending this class should perform a
