@@ -436,20 +436,10 @@ public class Obj extends Volume {
     }
 
     public Image getAsImage(String imageName, boolean singleTimepoint) {
-        int nFrames = singleTimepoint ? 1 : objCollection.getNFrames();
-        int t = singleTimepoint ? 0 : getT();
-
-        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
-        spatCal.setImageCalibration(ipl);
-
-        for (Point<Integer> point : getCoordinateSet()) {
-            int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
-            ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);
-            // ipl.setPosition(point.getZ() + 1);
-            // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
-        }
-
-        return ImageFactory.createImage(imageName, ipl);
+        if (singleTimepoint)
+            return getAsImage(imageName, getT(), objCollection.getNFrames());
+        else
+            return getAsImage(imageName, 0, 1);
 
     }
 

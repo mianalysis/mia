@@ -752,6 +752,21 @@ public class Volume {
 
     }
 
+    public Image getAsImage(String imageName, int t, int nFrames) {
+        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
+        spatCal.setImageCalibration(ipl);
+
+        for (Point<Integer> point : getCoordinateSet()) {
+            int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
+            ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);
+            // ipl.setPosition(point.getZ() + 1);
+            // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
+        }
+
+        return ImageFactory.createImage(imageName, ipl);
+
+    }
+
     public Iterator<Point<Double>> getCalibratedIterator(boolean pixelDistances, boolean matchXY) {
         return new VolumeIterator(pixelDistances, matchXY);
     }

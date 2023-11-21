@@ -2,12 +2,9 @@
 
 package io.github.mianalysis.mia.module.objects.process;
 
-import java.util.HashMap;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -18,7 +15,6 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
-import io.github.mianalysis.mia.module.objects.transform.MaskObjects;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -41,7 +37,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ColourFactory;
 import net.imagej.ImgPlus;
 import net.imglib2.Point;
 import net.imglib2.loops.LoopBuilder;
@@ -193,7 +188,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     @Override
     public String getVersionNumber() {
-        return "1.1.0";
+        return "1.2.0";
     }
 
     @Override
@@ -232,7 +227,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 : ImageCalculator.CalculationMethods.NOT;
         ImageCalculator.process(distPx, maskImage, calculation,
                 ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, true, false);
-
+    
         ImgPlus<T> distPxImg = distPx.getImgPlus();
         LoopBuilder.setImages(distPxImg).forEachPixel((s) -> s.setReal(Math.ceil(s.getRealDouble())));
         distPx.setImgPlus(distPxImg);
@@ -340,22 +335,22 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             switch (relativeMode) {
                 default:
                 case RelativeModes.OBJECT_CENTROID:
-                    inputImage = inputObject.getCentroidAsImage("Binary", false);
-                    InvertIntensity.process(inputImage);
+                    inputImage = inputObject.getCentroidAsImage("Binary", true);
                     break;
                 case RelativeModes.OBJECT_SURFACE:
-                    inputImage = inputObject.getAsImage("Binary", false);
+                    inputImage = inputObject.getSurface().getAsImage("Binary", 0, 1);
+                    // inputImage = inputObject.getAsImage("Binary", true);
                     break;
                 case RelativeModes.PARENT_CENTROID:
                     Obj parentObject = inputObject.getParent(parentObjectsName);
                     if (parentObject == null)
                         continue;
-                    inputImage = parentObject.getCentroidAsImage("Binary", false);
-                    InvertIntensity.process(inputImage);
+                    inputImage = parentObject.getCentroidAsImage("Binary", true);                    
                     break;
             }
+            InvertIntensity.process(inputImage);
 
-            Image<T> maskImage = inputObject.getAsImage("Mask", false);
+            Image<T> maskImage = inputObject.getAsImage("Mask", true);
 
             Objs tempBandObjects;
             switch (bandMode) {
@@ -379,6 +374,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 tempBandObject.setID(bandObjects.getAndIncrementID());
                 for (Measurement measurement : tempBandObject.getMeasurements().values())
                     tempBandObject.addMeasurement(new Measurement(measurement.getName(), measurement.getValue()));
+
+                tempBandObject.setT(inputObject.getT());
 
                 tempBandObject.addParent(inputObject);
                 inputObject.addChild(tempBandObject);
