@@ -6,6 +6,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.WindowManager;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.plugin.SubHyperstackMaker;
@@ -18,6 +19,8 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -25,6 +28,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
+    private static ImageRenderer defaultImageRenderer = new ImagePlusRenderer();
     private ImagePlus imagePlus;
 
     // CONSTRUCTORS
@@ -361,5 +365,15 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     @Override
     public String toString() {
         return "ImagePlusImage (" + name + ")";
+    }
+
+    @Override
+    public ImageRenderer getDefaultRenderer() {
+        return defaultImageRenderer;
+    }
+
+    @Override
+    public void setDefaultRenderer(ImageRenderer imageRenderer) {
+        defaultImageRenderer = imageRenderer;
     }
 }

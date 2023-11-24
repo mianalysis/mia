@@ -161,7 +161,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     public static <T extends RealType<T> & NativeType<T>> Image project(Image inputImage, String outputImageName,
             String projectionAxis, String projectionMode) {
         ImgPlus<T> img = inputImage.getImgPlus();
-
+        
         // Getting key axis indices
         // AxisType xType = getAxis(outputXAxis);
         // AxisType yType = getAxis(outputYAxis);

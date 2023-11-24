@@ -39,6 +39,7 @@ import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -375,9 +376,10 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     int[] getBestFocusManual(Image refImage) {
         if (refImage != null) {
-            displayImagePlus = refImage.getImagePlus().duplicate();
+            String uniqueName = WindowManager.getUniqueName("Select timepoints");
+            refImage.show(uniqueName);            
+            displayImagePlus = WindowManager.getImage(uniqueName);
             displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
-            displayImagePlus.show();
         }
 
         showOptionsPanel();

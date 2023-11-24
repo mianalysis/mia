@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.drew.lang.annotations.Nullable;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import ij.ImagePlus;
 import ij.gui.Overlay;
@@ -30,24 +31,28 @@ import net.imglib2.type.numeric.RealType;
  * Created by stephen on 30/04/2017.
  */
 public abstract class Image<T extends RealType<T> & NativeType<T>> {
-    protected static ImageRenderer defaultRenderer = null; // If specified, all new images will use this
+    private static ImageRenderer globalDefaultImageRenderer = new ImagePlusRenderer();
+    private static boolean useGlobalImageRenderer = false; // When true, all image types will use the same image
+                                                           // renderer
 
     protected String name;
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
     protected ImageRenderer renderer;
-    
 
     // Constructor
 
     public Image() {
-        if (defaultRenderer == null)
-            renderer = getImageRenderer();
+        if (useGlobalImageRenderer)
+            renderer = globalDefaultImageRenderer;
         else
             renderer = getDefaultRenderer();
     }
 
-    
     // Abstract methods
+
+    public abstract ImageRenderer getDefaultRenderer();
+
+    public abstract void setDefaultRenderer(ImageRenderer imageRenderer);
 
     public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite);
 
@@ -78,8 +83,15 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     public abstract void setOverlay(Overlay overlay);
 
-
     // PUBLIC METHODS
+
+    public static void setUseGlobalImageRenderer(boolean state) {
+        useGlobalImageRenderer = state;
+    }
+
+    public static boolean getUseGlobalImageRenderer() {
+        return useGlobalImageRenderer;
+    }
 
     public Objs convertImageToObjects(String outputObjectsName) {
         String type = getVolumeType(VolumeType.POINTLIST);
@@ -111,20 +123,9 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     }
 
-    public static ImageRenderer getDefaultRenderer() {
-        return defaultRenderer;
-    }
-
-    public static void setDefaultRenderer(ImageRenderer imageRenderer) {
-        defaultRenderer = imageRenderer;
-    }
-
     public ImageRenderer getImageRenderer() {
-        if (renderer == null)
-            return new ImagePlusRenderer();
-
         return renderer;
-        
+
     }
 
     public void setImageRenderer(ImageRenderer imageRenderer) {
@@ -155,7 +156,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
         show(name, null, overlay);
     }
 
-    public void show(boolean normalise  ) {
+    public void show(boolean normalise) {
         show(name, null, normalise, false);
     }
 

@@ -17,6 +17,9 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
@@ -35,6 +38,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
+    private static ImageRenderer defaultImageRenderer = new ImgPlusRenderer();
     private ImgPlus<T> img;
     private Overlay overlay = new Overlay();
 
@@ -44,6 +48,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
         this.overlay = imagePlus.getOverlay();
+        this.renderer = new ImgPlusRenderer();
 
     }
 
@@ -292,7 +297,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         setCalibration(ipl, img);
         ipl.setOverlay(overlay);
 
-        return ipl.duplicate();
+        return ipl;
 
     }
 
@@ -418,6 +423,16 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     @Override
     public String toString() {
         return "ImgPlusImage (" + name + ")";
+    }
+
+    @Override
+    public ImageRenderer getDefaultRenderer() {
+        return defaultImageRenderer;
+    }
+
+    @Override
+    public void setDefaultRenderer(ImageRenderer imageRenderer) {
+        defaultImageRenderer = imageRenderer;
     }
 
     public static DiskCachedCellImgOptions getCellImgOptions() {

@@ -27,6 +27,8 @@ public class ImgPlusRenderer implements ImageRenderer {
         ImgPlusImage.setCalibration(ipl, img);
         ipl.setOverlay(overlay);
 
+        ipl.setTitle(title);
+
         ipl.show();
 
     }
