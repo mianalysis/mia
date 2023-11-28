@@ -235,7 +235,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
                 childObjectsName = childObjectsName + names[i] + " // ";
             childObjectsName = childObjectsName + inputObjectsName;
 
-            Objs parentObjects = workspace.getObjects(parentObjectsName);
+            Objs parentObjects = workspace.getObjects(names[names.length-1]);
             for (Obj parentObject : parentObjects.values()) {
                 Objs childObjects = parentObject.getChildren(childObjectsName);
                 toRemove.addAll(getIDsToRemove(childObjects, measName, filterMethod, perTimepoint, nMeas));
