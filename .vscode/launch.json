@@ -1,12 +1,12 @@
 {
     "configurations": [
-        // {
-        //     "type": "java",
-        //     "name": "MIA",
-        //     "request": "launch",
-        //     "mainClass": "io.github.mianalysis.mia.MIA",
-        //     "projectName": "pom-mia"
-        // },
+        {
+            "type": "java",
+            "name": "MIA",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIA",
+            "projectName": "pom-mia"
+        },
         {
             "type": "java",
             "name": "MIA-main",

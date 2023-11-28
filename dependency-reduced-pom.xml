@@ -3,7 +3,7 @@
   <parent>
     <artifactId>pom-scijava</artifactId>
     <groupId>org.scijava</groupId>
-    <version>36.0.0</version>
+    <version>37.0.0</version>
     <relativePath>pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -386,9 +386,53 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>io.scif</groupId>
+      <artifactId>scifio</artifactId>
+      <version>0.45.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>scifio-jai-imageio</artifactId>
+          <groupId>io.scif</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2-cache</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.scif</groupId>
+      <artifactId>scifio-bf-compat</artifactId>
+      <version>4.1.1</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>formats-api</artifactId>
+          <groupId>ome</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scifio-ome-xml</artifactId>
+          <groupId>io.scif</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>ome</groupId>
       <artifactId>bio-formats_plugins</artifactId>
-      <version>6.14.0</version>
+      <version>7.0.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -404,10 +448,6 @@
           <groupId>org.openmicroscopy</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>formats-api</artifactId>
-          <groupId>ome</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jgoodies-forms</artifactId>
           <groupId>com.jgoodies</groupId>
         </exclusion>
@@ -415,12 +455,16 @@
           <artifactId>ij</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>formats-api</artifactId>
+          <groupId>ome</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>ome</groupId>
       <artifactId>formats-bsd</artifactId>
-      <version>6.14.0</version>
+      <version>7.0.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -488,19 +532,19 @@
           <groupId>org.openmicroscopy</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>formats-api</artifactId>
-          <groupId>ome</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jgoodies-forms</artifactId>
           <groupId>com.jgoodies</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>formats-api</artifactId>
+          <groupId>ome</groupId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>ome</groupId>
       <artifactId>formats-gpl</artifactId>
-      <version>6.14.0</version>
+      <version>7.0.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -518,10 +562,6 @@
         <exclusion>
           <artifactId>cdm-core</artifactId>
           <groupId>edu.ucar</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>JWlz</artifactId>
-          <groupId>woolz</groupId>
         </exclusion>
         <exclusion>
           <artifactId>json</artifactId>
@@ -552,13 +592,9 @@
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>imagej</artifactId>
-      <version>2.14.0</version>
+      <version>2.15.0</version>
       <scope>provided</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>imagej-common</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>imagej-launcher</artifactId>
           <groupId>net.imagej</groupId>
@@ -570,10 +606,6 @@
         <exclusion>
           <artifactId>imagej-updater</artifactId>
           <groupId>net.imagej</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>scifio</artifactId>
-          <groupId>io.scif</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imagej-deprecated</artifactId>
@@ -608,6 +640,10 @@
           <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>scifio-labeling</artifactId>
+          <groupId>io.scif</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>scijava-io-http</artifactId>
           <groupId>org.scijava</groupId>
         </exclusion>
@@ -635,6 +671,10 @@
           <artifactId>script-editor-scala</artifactId>
           <groupId>org.scijava</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -643,10 +683,6 @@
       <version>1.0.1</version>
       <scope>provided</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>imglib2-roi</artifactId>
           <groupId>net.imglib2</groupId>
@@ -660,16 +696,20 @@
           <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imagej-common</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imagej-deprecated</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imagej-updater</artifactId>
           <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -712,16 +752,16 @@
           <groupId>gov.nist.math</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imglib2-roi</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imagej-common</artifactId>
           <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -816,12 +856,12 @@
           <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>ij</artifactId>
           <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
         </exclusion>
       </exclusions>
     </dependency>

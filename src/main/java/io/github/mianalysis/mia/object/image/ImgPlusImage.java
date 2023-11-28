@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import net.imagej.ImgPlus;
@@ -297,7 +296,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         setCalibration(ipl, img);
         ipl.setOverlay(overlay);
 
-        return ipl;
+        return ipl.duplicate();
 
     }
 
@@ -447,5 +446,30 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
         return options;
 
+    }
+
+    @Override
+    public long getWidth() {            
+        return img.dimension(img.dimensionIndex(Axes.X));
+    }
+
+    @Override
+    public long getHeight() {
+        return img.dimension(img.dimensionIndex(Axes.Y));
+    }
+
+    @Override
+    public long getNChannels() {
+        return img.dimension(img.dimensionIndex(Axes.CHANNEL));
+    }
+
+    @Override
+    public long getNSlices() {
+        return img.dimension(img.dimensionIndex(Axes.Z));
+    }
+
+    @Override
+    public long getNFrames() {
+        return img.dimension(img.dimensionIndex(Axes.TIME));
     }
 }

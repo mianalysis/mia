@@ -36,7 +36,6 @@ import net.imagej.ops.special.computer.UnaryComputerOp;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
-import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -277,7 +276,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
                 break;
         }
 
-        CellImgFactory<T> factory = new CellImgFactory<T>(type);
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>(type);
         ImgPlus<T> outImg = new ImgPlus<>(factory.create(projected_dimensions));
 
         if (projectionMode.equals(ProjectionModes.STDEV))

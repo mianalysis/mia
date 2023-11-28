@@ -376,4 +376,29 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     public void setDefaultRenderer(ImageRenderer imageRenderer) {
         defaultImageRenderer = imageRenderer;
     }
+
+    @Override
+    public long getWidth() {
+        return imagePlus.getWidth();
+    }
+
+    @Override
+    public long getHeight() {
+        return imagePlus.getHeight();
+    }
+
+    @Override
+    public long getNChannels() {
+        return imagePlus.getNChannels();
+    }
+
+    @Override
+    public long getNSlices() {
+        return imagePlus.getNSlices();
+    }
+
+    @Override
+    public long getNFrames() {
+        return imagePlus.getNFrames();
+    }
 }

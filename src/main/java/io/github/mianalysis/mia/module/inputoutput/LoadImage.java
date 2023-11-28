@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.module.inputoutput;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.apache.commons.io.FilenameUtils;
@@ -53,6 +54,9 @@ import net.imglib2.type.numeric.RealType;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
+    // @Parameter
+    // private LocationService locationService;
+
     /**
     * 
     */
@@ -187,10 +191,24 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         return "1.0.0";
     }
 
-    public Image<T> loadImage(String filePath, int seriesNumber, String outputImageName) {
+    public Image<T> loadImage(String filePath, int seriesNumber, String outputImageName)
+            throws IOException, URISyntaxException, io.scif.FormatException {
         SCIFIOConfig config = new SCIFIOConfig();
         config.imgOpenerSetImgModes(ImgMode.CELL);
         config.imgOpenerSetIndex(seriesNumber - 1);
+
+        // BioFormatsFormat format = new BioFormatsFormat();
+        // Reader reader = format.createReader();
+        // io.scif.bf.BioFormatsFormat.Metadata metadata = (io.scif.bf.BioFormatsFormat.Metadata) reader.getMetadata();
+        // metadata.setReader(new Memoizer(metadata.getReader()));
+        // Location location = locationService.resolve(filePath);
+        // reader.setSource(location);
+        //         List<SCIFIOImgPlus<?>> imgs = new ImgOpener(MIA.getPluginService().getContext()).openImgs(reader,config);
+        // MIA.log.writeDebug(imgs.size());
+        // MIA.log.writeDebug(imgs.get(0));
+        //  SCIFIOImgPlus<?> img = imgs.get(0);
+
+
         ImgPlus<T> img = (ImgPlus<T>) IO.open(filePath, config);
 
         int xIdx = img.dimensionIndex(Axes.X);
@@ -291,7 +309,14 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
             return Status.FAIL;
         }
 
-        Image<T> image = loadImage(file.getAbsolutePath(), seriesNumber, outputImageName);
+        Image<T> image;
+        try {
+            image = loadImage(file.getAbsolutePath(), seriesNumber, outputImageName);
+        } catch (IOException | URISyntaxException | io.scif.FormatException e) {
+            // TODO Auto-generated catch block
+            MIA.log.writeWarning(e);
+            return Status.FAIL;
+        }
         workspace.addImage(image);
 
         if (showOutput)

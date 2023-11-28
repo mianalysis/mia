@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.drew.lang.annotations.Nullable;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import ij.ImagePlus;
 import ij.gui.Overlay;
@@ -18,11 +17,11 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -58,6 +57,16 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite,
             Overlay overlay);
+
+    public abstract long getWidth();
+
+    public abstract long getHeight();
+
+    public abstract long getNChannels();
+
+    public abstract long getNSlices();
+
+    public abstract long getNFrames();
 
     public abstract ImagePlus getImagePlus();
 
@@ -299,4 +308,5 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
     public void setMeasurements(LinkedHashMap<String, Measurement> singleMeasurements) {
         this.measurements = singleMeasurements;
     }
+
 }
