@@ -41,7 +41,7 @@ import net.imagej.axis.AxisType;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -259,7 +259,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         }
 
         // Creating the new Img
-        CellImgFactory<T> factory = new CellImgFactory<>((T) imgPlus.firstElement());
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>((T) imgPlus.firstElement());
         ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOutCombined));
         imgOut.setAxis(new DefaultLinearAxis(Axes.X, 1), 0);
         imgOut.setAxis(new DefaultLinearAxis(Axes.Y, 1), 1);

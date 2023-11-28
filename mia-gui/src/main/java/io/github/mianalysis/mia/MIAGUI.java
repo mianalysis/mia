@@ -55,6 +55,7 @@ public class MIAGUI extends MIA implements Command {
 
         // Replacing the default Preferences
         setPreferences(new SwingPreferences(null));
+        getPreferences().updateAndGetParameters();
 
         try {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());

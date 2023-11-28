@@ -151,6 +151,7 @@ public abstract class MIA {
     }
 
     public static Preferences getPreferences() {
+        MIA.log.writeDebug(preferences.getClass().getSimpleName());
         if (preferences == null)
             preferences = new Preferences(null);
 

@@ -39,12 +39,12 @@ import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -69,7 +69,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -354,8 +354,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     }
 
     boolean isSingleSlice(Image image) {
-        return image.getImagePlus().getNSlices() == 1;
-
+        return image.getNSlices() == 1;
     }
 
     int[] getBestFocusAuto(Image inputImage, Image calculationImage, Stat stat, MinMaxMode minMax, int channel) {
@@ -376,9 +375,10 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     int[] getBestFocusManual(Image refImage) {
         if (refImage != null) {
-            displayImagePlus = refImage.getImagePlus().duplicate();
+            String uniqueName = WindowManager.getUniqueName("Select timepoints");
+            refImage.show(uniqueName);            
+            displayImagePlus = WindowManager.getImage(uniqueName);
             displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
-            displayImagePlus.show();
         }
 
         showOptionsPanel();
@@ -394,7 +394,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
         // If an insufficient number of points were specified, perform polynomial
         // fitting
-        int nFrames = refImage.getImagePlus().getNFrames();
+        int nFrames = Math.toIntExact(refImage.getNFrames());
         if (refs.size() < nFrames) {
             return getFitValues(nFrames);
         } else {
@@ -414,7 +414,6 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
         LinearInterpolator splineInterpolator = new LinearInterpolator();
         PolynomialSplineFunction splineFunction = splineInterpolator.interpolate(x, y);
-
         int[] fitValues = new int[nFrames];
         for (int j = 0; j < nFrames; j++) {
             fitValues[j] = (int) Math.floor(splineFunction.value(j + 1));
@@ -496,18 +495,15 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             writeProgressStatus(f + 1, (int) nFrames, "frames", "Focus stack (global)");
         }
 
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
-        outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
-        if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z)) == 1)
-            outputImagePlus.getCalibration().pixelDepth = 1;
-        ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
+        return ImageFactory.createImage(outputImageName, outputImg);
+        // ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
+        // outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
+        // if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z)) == 1)
+        //     outputImagePlus.getCalibration().pixelDepth = 1;
+        // ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
-        // Adding the new image to the Workspace
-        Image focusedImage = ImageFactory.createImage(outputImageName, outputImagePlus);
-
-        SetLookupTable.copyLUTFromImage(focusedImage, inputImage);
-
-        return focusedImage;
+        // // Adding the new image to the Workspace
+        // return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
@@ -522,7 +518,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         dims[inputImg.dimensionIndex(Axes.Z)] = nSlices;
 
         // Creating the output image and copying over the pixel coordinates
-        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg.firstElement());
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg.firstElement());
         ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
         ImgPlusTools.copyAxes(inputImg, outputImg);
 

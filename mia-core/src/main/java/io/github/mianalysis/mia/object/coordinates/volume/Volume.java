@@ -160,7 +160,7 @@ public class Volume {
                 break;
         }
 
-        Volume sliceVol = new Volume(outputType, spatCal.width, spatCal.height, 1, spatCal.dppXY, spatCal.dppZ,
+        Volume sliceVol = new Volume(outputType, spatCal.width, spatCal.height, spatCal.nSlices, spatCal.dppXY, spatCal.dppZ,
                 spatCal.units);
         sliceVol.setCoordinateSet(coordinateSet.getSlice(slice));
 
@@ -226,7 +226,6 @@ public class Volume {
 
     public boolean is2D() {
         return spatCal.nSlices == 1;
-
     }
 
     @Deprecated
@@ -773,6 +772,21 @@ public class Volume {
         }
 
         return ImageFactory.createImage("Tight", ipl);
+
+    }
+
+    public Image getAsImage(String imageName, int t, int nFrames) {
+        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
+        spatCal.setImageCalibration(ipl);
+
+        for (Point<Integer> point : getCoordinateSet()) {
+            int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
+            ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);
+            // ipl.setPosition(point.getZ() + 1);
+            // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
+        }
+
+        return ImageFactory.createImage(imageName, ipl);
 
     }
 

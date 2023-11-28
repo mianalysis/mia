@@ -21,11 +21,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.Priority;
-import org.scijava.log.LogListener;
-import org.scijava.log.LogMessage;
 import org.scijava.plugin.Plugin;
 import org.scijava.script.ScriptModule;
-import org.scijava.script.ScriptService;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -34,6 +31,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
@@ -63,7 +61,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
-import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 
 /**
  * Created by Stephen on 12/05/2021.
@@ -197,7 +194,7 @@ public class RunScript extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.1";
+        return "1.0.2";
     }
 
     @Override
@@ -245,6 +242,7 @@ public class RunScript extends Module {
         movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",
                 PointOutOfRangeException.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.SpatCal", SpatCal.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.VolumeType", VolumeType.class.getName());
 
         for (String oldLocation : movedClasses.keySet()) {

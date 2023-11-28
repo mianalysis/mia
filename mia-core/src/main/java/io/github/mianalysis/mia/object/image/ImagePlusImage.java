@@ -13,11 +13,13 @@ import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -25,6 +27,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
+    private static ImageRenderer defaultImageRenderer = new ImagePlusRenderer();
     private ImagePlus imagePlus;
 
     // CONSTRUCTORS
@@ -361,5 +364,40 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     @Override
     public String toString() {
         return "ImagePlusImage (" + name + ")";
+    }
+
+    @Override
+    public ImageRenderer getDefaultRenderer() {
+        return defaultImageRenderer;
+    }
+
+    @Override
+    public void setDefaultRenderer(ImageRenderer imageRenderer) {
+        defaultImageRenderer = imageRenderer;
+    }
+
+    @Override
+    public long getWidth() {
+        return imagePlus.getWidth();
+    }
+
+    @Override
+    public long getHeight() {
+        return imagePlus.getHeight();
+    }
+
+    @Override
+    public long getNChannels() {
+        return imagePlus.getNChannels();
+    }
+
+    @Override
+    public long getNSlices() {
+        return imagePlus.getNSlices();
+    }
+
+    @Override
+    public long getNFrames() {
+        return imagePlus.getNFrames();
     }
 }

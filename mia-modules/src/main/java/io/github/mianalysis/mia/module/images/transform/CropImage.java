@@ -33,7 +33,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -147,7 +147,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         dimsOut[yIdx] = height;
 
         // Creating the output image and copying over the pixel coordinates
-        CellImgFactory<T> factory = new CellImgFactory<>(inputImg.firstElement());
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>(inputImg.firstElement());
         ImgPlus<T> outputImg = new ImgPlus<>(factory.create(dimsOut));
         ImgPlusTools.copyAxes(inputImg, outputImg);
 

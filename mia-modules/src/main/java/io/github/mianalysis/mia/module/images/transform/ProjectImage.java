@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -37,7 +36,6 @@ import net.imagej.ops.special.computer.UnaryComputerOp;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
-import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -162,7 +160,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     public static <T extends RealType<T> & NativeType<T>> Image project(Image inputImage, String outputImageName,
             String projectionAxis, String projectionMode) {
         ImgPlus<T> img = inputImage.getImgPlus();
-
+        
         // Getting key axis indices
         // AxisType xType = getAxis(outputXAxis);
         // AxisType yType = getAxis(outputYAxis);
@@ -278,7 +276,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
                 break;
         }
 
-        CellImgFactory<T> factory = new CellImgFactory<T>(type);
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>(type);
         ImgPlus<T> outImg = new ImgPlus<>(factory.create(projected_dimensions));
 
         if (projectionMode.equals(ProjectionModes.STDEV))
@@ -364,7 +362,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     @Override
     public String getVersionNumber() {
-        return "1.0.1";
+        return "1.0.0";
     }
 
     @Override
@@ -389,9 +387,6 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         // Image outputImage = project(inputImage, outputImageName, xAxis, yAxis,
         // projectionAxis, projectionMode);
         Image outputImage = project(inputImage, outputImageName, projectionAxis, projectionMode);
-
-        // Applying LUTs from input image
-        SetLookupTable.copyLUTFromImage(outputImage, inputImage);
 
         // Adding projected image to workspace
         workspace.addImage(outputImage);

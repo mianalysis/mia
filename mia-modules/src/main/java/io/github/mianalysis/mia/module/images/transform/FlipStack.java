@@ -26,12 +26,12 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
-import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
 
@@ -109,12 +109,12 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Creating the new Img
-        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg .firstElement());
         long[] dims = new long[inputImg.numDimensions()];
         for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
         ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
         ImgPlusTools.copyAxes(inputImg,outputImg);
-
+ 
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
         if (axisIndex == -1)
@@ -124,14 +124,17 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         long[] offsetOut = new long[outputImg.numDimensions()];
         offsetOut[axisIndex] = -dims[axisIndex] + 1;
 
-        Cursor<T> targetCursor = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dims).localizingCursor();
-        RandomAccess<T> sourceRandomAccess = Views.offsetInterval(inputImg,offsetIn,dims).randomAccess();
+        IntervalView<T> source = Views.offsetInterval(inputImg,offsetIn,dims);
+        IntervalView<T> target = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dims);
+        LoopBuilder.setImages(source,target).forEachPixel((s,t) -> t.set(s));
 
-        while (targetCursor.hasNext()) {
-            targetCursor.fwd();
-            sourceRandomAccess.setPosition(targetCursor);
-            targetCursor.get().set(sourceRandomAccess.get());
-        }
+        // Cursor<T> targetCursor = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dims).localizingCursor();
+        // RandomAccess<T> sourceRandomAccess = Views.offsetInterval(inputImg,offsetIn,dims).randomAccess();
+        // while (targetCursor.hasNext()) {
+        //     targetCursor.fwd();
+        //     sourceRandomAccess.setPosition(targetCursor);
+        //     targetCursor.get().set(sourceRandomAccess.get());
+        // }
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it

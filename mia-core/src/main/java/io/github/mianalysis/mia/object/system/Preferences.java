@@ -41,7 +41,7 @@ public class Preferences extends Module {
     // directory";
     // public static final String CACHE_DIRECTORY = "Cache directory";
 
-    protected HashMap<String, String> currentValues = new HashMap<>();
+    protected HashMap<String, String> currentValues;
 
     public interface ImageDisplayModes {
         String COMPOSITE = "Composite";
@@ -234,7 +234,7 @@ public class Preferences extends Module {
         returnedParameters.add(parameters.getParameter(WORKFLOW_SEPARATOR));
         returnedParameters.add(parameters.getParameter(IMAGE_DISPLAY_MODE));
         String newValue = parameters.getParameter(IMAGE_DISPLAY_MODE).getRawStringValue();
-        if (!currentValues.get(IMAGE_DISPLAY_MODE).equals(newValue)) {
+        if (!currentValues.containsKey(IMAGE_DISPLAY_MODE) || !currentValues.get(IMAGE_DISPLAY_MODE).equals(newValue)) {
             setImageDisplayMode();
             currentValues.put(IMAGE_DISPLAY_MODE, newValue);
         }
@@ -253,6 +253,7 @@ public class Preferences extends Module {
         } else {
             returnedParameters.add(parameters.get(KRYO_MESSAGE));
         }
+
         // returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));
         // switch ((String) parameters.getValue(DATA_STORAGE_MODE,null)) {
         // case DataStorageModes.STREAM_FROM_DRIVE:
