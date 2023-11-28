@@ -1,13 +1,7 @@
 package io.github.mianalysis.mia.object.image;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 import ij.ImagePlus;
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.system.Preferences;
 import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 

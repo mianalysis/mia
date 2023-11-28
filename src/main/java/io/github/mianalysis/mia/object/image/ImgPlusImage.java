@@ -17,6 +17,8 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
@@ -35,6 +37,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
+    private static ImageRenderer defaultImageRenderer = new ImgPlusRenderer();
     private ImgPlus<T> img;
     private Overlay overlay = new Overlay();
 
@@ -44,6 +47,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
         this.overlay = imagePlus.getOverlay();
+        this.renderer = new ImgPlusRenderer();
 
     }
 
@@ -420,6 +424,16 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         return "ImgPlusImage (" + name + ")";
     }
 
+    @Override
+    public ImageRenderer getDefaultRenderer() {
+        return defaultImageRenderer;
+    }
+
+    @Override
+    public void setDefaultRenderer(ImageRenderer imageRenderer) {
+        defaultImageRenderer = imageRenderer;
+    }
+
     public static DiskCachedCellImgOptions getCellImgOptions() {
         int[] cellSize = new int[] { 32, 32, 32 };
 
@@ -432,5 +446,30 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
         return options;
 
+    }
+
+    @Override
+    public long getWidth() {            
+        return img.dimension(img.dimensionIndex(Axes.X));
+    }
+
+    @Override
+    public long getHeight() {
+        return img.dimension(img.dimensionIndex(Axes.Y));
+    }
+
+    @Override
+    public long getNChannels() {
+        return img.dimension(img.dimensionIndex(Axes.CHANNEL));
+    }
+
+    @Override
+    public long getNSlices() {
+        return img.dimension(img.dimensionIndex(Axes.Z));
+    }
+
+    @Override
+    public long getNFrames() {
+        return img.dimension(img.dimensionIndex(Axes.TIME));
     }
 }

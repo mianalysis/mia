@@ -1,29 +1,13 @@
 package io.github.mianalysis.mia.module.visualise;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
-import net.imagej.ImgPlus;
-import net.imglib2.Cursor;
-import net.imglib2.FinalInterval;
-import net.imglib2.Interval;
-import net.imglib2.RealRandomAccessible;
-import net.imglib2.img.Img;
-import net.imglib2.img.cell.CellImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
-import net.imglib2.realtransform.AffineTransform2D;
-import net.imglib2.realtransform.RealViews;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
-import net.imglib2.view.IntervalView;
-import net.imglib2.view.Views;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -41,6 +25,21 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import net.imagej.ImgPlus;
+import net.imglib2.Cursor;
+import net.imglib2.FinalInterval;
+import net.imglib2.Interval;
+import net.imglib2.RealRandomAccessible;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
+import net.imglib2.realtransform.AffineTransform2D;
+import net.imglib2.realtransform.RealViews;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.IntervalView;
+import net.imglib2.view.Views;
 
 /**
  * Created by sc13967 on 05/02/2018.
@@ -126,7 +125,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
         long border = 10;
 
         // Creating a single image, large enough to hold all images
-        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg.firstElement());
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg.firstElement());
         final long[] orthoDims = new long[] { dims[0] + dims[2] + border, dims[1] + dims[2] + border };
         Img<T> orthoImg = factory.create(orthoDims, inputImg.firstElement());
         Cursor<T> cursorOrtho = orthoImg.cursor();
@@ -161,7 +160,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
         viewYZ = Views.interval(RealViews.affine(interpYZ, affine2D), intervalYZ);
 
         // Creating a single image, large enough to hold all images
-        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg.firstElement());
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg.firstElement());
         final long[] orthoDims = new long[] { dims[0] + dims[2] + border, dims[1] + dims[2] + border };
         Img<T> orthoImg = factory.create(orthoDims, viewXY.firstElement());
         Cursor<T> cursorOrtho = orthoImg.cursor();

@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>36.0.0</version>
+        <version>37.0.0</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia</artifactId>
-    <version>1.4.8</version>
+    <version>1.4.8-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -95,9 +95,9 @@
 
     <mailingLists>
         <mailingList>
-			<name>Image.sc Forum</name>
-			<archive>https://forum.image.sc/tag/modular-image-analysis</archive>
-		</mailingList>
+            <name>Image.sc Forum</name>
+            <archive>https://forum.image.sc/tag/modular-image-analysis</archive>
+        </mailingList>
     </mailingLists>
 
     <scm>
@@ -108,9 +108,9 @@
     </scm>
 
     <ciManagement>
-		<system>GitHub Actions</system>
-		<url>https://github.com/mianalysis/mia</url>
-	</ciManagement>
+        <system>GitHub Actions</system>
+        <url>https://github.com/mianalysis/mia</url>
+    </ciManagement>
 
     <repositories>
         <repository>
@@ -222,6 +222,18 @@
             <groupId>net.objecthunter</groupId>
             <artifactId>exp4j</artifactId>
             <version>0.4.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio-bf-compat</artifactId>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -495,7 +507,7 @@
                             <includeScope>runtime</includeScope>
 
                             <excludeArtifactIds>
-            commons-codec,commons-collections4,commons-io,guava,ij,jama,javassist,junit,MorphoLibJ_,Skeletonize3D_,vecmath</excludeArtifactIds>
+                                commons-codec,commons-collections4,commons-io,guava,ij,jama,javassist,junit,MorphoLibJ_,Skeletonize3D_,vecmath</excludeArtifactIds>
 
                             <outputDirectory>${project.build.directory}/jars/</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
@@ -516,7 +528,8 @@
             <!-- Use the following to deploy -->
             <!-- Manually delete "target" folder -->
             <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -->
-            <!-- CHECK GENERATED MIA JAR RUNS IN FIJI (sometimes it generates a larger jar which fails to run - maybe when "target" isn't deleted first)-->
+            <!-- CHECK GENERATED MIA JAR RUNS IN FIJI (sometimes it generates a larger jar which
+            fails to run - maybe when "target" isn't deleted first)-->
             <!-- Release to Maven Central using following -->
             <!-- mvn nexus-staging:release -->
 
