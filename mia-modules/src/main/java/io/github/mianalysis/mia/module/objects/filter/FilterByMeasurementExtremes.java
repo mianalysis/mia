@@ -109,9 +109,13 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     public static ArrayList<Integer> getIDsToRemove(Objs inputObjects, String measName, String filterMethod,
             boolean perTimepoint, int nMeas) {
+        ArrayList<Integer> toRemove = new ArrayList<>();
+
+        if (inputObjects.size() == 0)
+            return toRemove;
+
         // Getting reference limits
         HashMap<Integer, double[]> minMax = getMeasurementExtremes(inputObjects, measName, perTimepoint, nMeas);
-        ArrayList<Integer> toRemove = new ArrayList<>();
 
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -231,11 +235,11 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
             // parentObjectsName into a childObjectsName form
             String[] names = parentObjectsName.split(" // ");
             String childObjectsName = "";
-            for (int i=names.length-2;i>=0;i--)
+            for (int i = names.length - 2; i >= 0; i--)
                 childObjectsName = childObjectsName + names[i] + " // ";
             childObjectsName = childObjectsName + inputObjectsName;
 
-            Objs parentObjects = workspace.getObjects(parentObjectsName);
+            Objs parentObjects = workspace.getObjects(names[names.length - 1]);
             for (Obj parentObject : parentObjects.values()) {
                 Objs childObjects = parentObject.getChildren(childObjectsName);
                 toRemove.addAll(getIDsToRemove(childObjects, measName, filterMethod, perTimepoint, nMeas));
