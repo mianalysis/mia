@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.scijava.Priority;
+import org.scijava.io.location.Location;
+import org.scijava.io.location.LocationService;
 import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.MIA;
@@ -35,16 +38,18 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.scif.Reader;
+import io.scif.SCIFIO;
+import io.scif.bf.BioFormatsFormat;
 import io.scif.config.SCIFIOConfig;
 import io.scif.config.SCIFIOConfig.ImgMode;
-import io.scif.img.IO;
+import io.scif.img.ImgOpener;
+import io.scif.img.SCIFIOImgPlus;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
-import net.imagej.ImgPlus;
+import loci.formats.Memoizer;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imglib2.type.NativeType;
@@ -198,19 +203,29 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         config.imgOpenerSetImgModes(ImgMode.CELL);
         config.imgOpenerSetIndex(seriesNumber - 1);
 
+        LocationService locationService = MIA.getPluginService().getContext().getService(LocationService.class);
+        Location location = locationService.resolve(filePath);
+        SCIFIO scifio = new SCIFIO();
+        Reader reader = scifio.initializer().initializeReader(location, config);
+
+        if (reader.getMetadata() instanceof BioFormatsFormat.Metadata) {
+            BioFormatsFormat.Metadata metadata = (BioFormatsFormat.Metadata) reader.getMetadata();
+            metadata.setReader(new Memoizer(metadata.getReader()));
+        }
+
         // BioFormatsFormat format = new BioFormatsFormat();
         // Reader reader = format.createReader();
-        // io.scif.bf.BioFormatsFormat.Metadata metadata = (io.scif.bf.BioFormatsFormat.Metadata) reader.getMetadata();
+        // io.scif.bf.BioFormatsFormat.Metadata metadata =
+        // (io.scif.bf.BioFormatsFormat.Metadata) reader.getMetadata();
         // metadata.setReader(new Memoizer(metadata.getReader()));
         // Location location = locationService.resolve(filePath);
         // reader.setSource(location);
-        //         List<SCIFIOImgPlus<?>> imgs = new ImgOpener(MIA.getPluginService().getContext()).openImgs(reader,config);
+        List<SCIFIOImgPlus<?>> imgs = new ImgOpener().openImgs(reader, config);
         // MIA.log.writeDebug(imgs.size());
         // MIA.log.writeDebug(imgs.get(0));
-        //  SCIFIOImgPlus<?> img = imgs.get(0);
+        SCIFIOImgPlus<?> img = imgs.get(0);
 
-
-        ImgPlus<T> img = (ImgPlus<T>) IO.open(filePath, config);
+        // ImgPlus<T> img = (ImgPlus<T>) IO.open(filePath, config);
 
         int xIdx = img.dimensionIndex(Axes.X);
         if (xIdx != -1) {
