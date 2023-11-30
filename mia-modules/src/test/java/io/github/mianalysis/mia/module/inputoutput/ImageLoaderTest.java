@@ -155,8 +155,14 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
 
+        System.out.println("IFL "+imageFileLoader);
+        System.out.println("W "+workspace);
         // Running module
+        try {
         imageFileLoader.execute(workspace);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());

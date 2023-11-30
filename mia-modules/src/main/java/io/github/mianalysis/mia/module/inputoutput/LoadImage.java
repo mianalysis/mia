@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.scijava.Context;
 import org.scijava.Priority;
 import org.scijava.io.location.Location;
 import org.scijava.io.location.LocationService;
@@ -49,7 +50,6 @@ import io.scif.img.SCIFIOImgPlus;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
-import loci.formats.Memoizer;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imglib2.type.NativeType;
@@ -203,26 +203,23 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         config.imgOpenerSetImgModes(ImgMode.CELL);
         config.imgOpenerSetIndex(seriesNumber - 1);
 
-        LocationService locationService = MIA.getPluginService().getContext().getService(LocationService.class);
+        Context context = MIA.getPluginService().getContext();
+        LocationService locationService = context.getService(LocationService.class);
         Location location = locationService.resolve(filePath);
         SCIFIO scifio = new SCIFIO();
         Reader reader = scifio.initializer().initializeReader(location, config);
 
-        if (reader.getMetadata() instanceof BioFormatsFormat.Metadata) {
-            BioFormatsFormat.Metadata metadata = (BioFormatsFormat.Metadata) reader.getMetadata();
-            metadata.setReader(new Memoizer(metadata.getReader()));
-        }
-
         // BioFormatsFormat format = new BioFormatsFormat();
+        // format.setContext(context);
         // Reader reader = format.createReader();
-        // io.scif.bf.BioFormatsFormat.Metadata metadata =
-        // (io.scif.bf.BioFormatsFormat.Metadata) reader.getMetadata();
-        // metadata.setReader(new Memoizer(metadata.getReader()));
-        // Location location = locationService.resolve(filePath);
+        // MIA.log.writeDebug("RRR "+reader);
+        // reader.setMetadata(new BioFormatsFormat.Metadata());
+        // MIA.log.writeDebug("MMM "+reader.getMetadata());
+        // BioFormatsFormat.Metadata metadata = (BioFormatsFormat.Metadata) reader.getMetadata();
+        // MIA.log.writeDebug("BFRRR "+metadata.getReader());
+        // metadata.setReader(MIA.getPreferences().getReader(metadata.getReader()));
         // reader.setSource(location);
         List<SCIFIOImgPlus<?>> imgs = new ImgOpener().openImgs(reader, config);
-        // MIA.log.writeDebug(imgs.size());
-        // MIA.log.writeDebug(imgs.get(0));
         SCIFIOImgPlus<?> img = imgs.get(0);
 
         // ImgPlus<T> img = (ImgPlus<T>) IO.open(filePath, config);
