@@ -36,7 +36,7 @@ public class ChildObjectCount extends Module {
 	/**
 	* 
 	*/
-    public static final String INPUT_SEPARATOR = "Object and image input";
+    public static final String INPUT_SEPARATOR = "Object input";
 
 	/**
 	* For each object in this collection the number of associated child objects (from the collection specified by "Child objects") will be calculated.  The count is stored as a measurement associated with each input object.  The measurement is evaluated at the time of access (unlike "normal" measurements which have fixed values), so should always be correct.

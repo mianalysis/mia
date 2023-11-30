@@ -14,6 +14,7 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Modules;
@@ -26,6 +27,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.interfaces.MeasurementPositionProvider;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -54,7 +56,7 @@ import io.github.mianalysis.mia.process.ColourFactory;
  * object. The line is drawn between object centroids.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class AddTracks extends AbstractOverlay {
+public class AddTracks extends AbstractOverlay implements MeasurementPositionProvider {
 
     /**
     * 
@@ -109,6 +111,11 @@ public class AddTracks extends AbstractOverlay {
     /**
     * 
     */
+    public static final String POSITION_SEPARATOR = "Position controls";
+
+    /**
+    * 
+    */
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
 
     /**
@@ -137,6 +144,7 @@ public class AddTracks extends AbstractOverlay {
      */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+
     public AddTracks(Modules modules) {
         super("Add tracks", modules);
     }
@@ -149,7 +157,7 @@ public class AddTracks extends AbstractOverlay {
 
     }
 
-    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour,
+    public void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour,
             double lineWidth, int history, @Nullable HashMap<Integer, Color> instantaneousColours) {
         Objs pointObjects = object.getChildren(spotObjectsName);
 
@@ -159,19 +167,23 @@ public class AddTracks extends AbstractOverlay {
 
         // Putting the current track points into a TreeMap stored by the frame
         TreeMap<Integer, Obj> points = new TreeMap<>();
-        for (Obj pointObject : pointObjects.values()) {
+        for (Obj pointObject : pointObjects.values())
             points.put(pointObject.getT(), pointObject);
-        }
-
+        
         // Iterating over all points in the track, drawing lines between them
         int nFrames = ipl.getNFrames();
         Obj p1 = null;
         for (Obj p2 : points.values()) {
             if (p1 != null) {
-                double x1 = p1.getXMean(true) + 0.5;
-                double y1 = p1.getYMean(true) + 0.5;
-                double x2 = p2.getXMean(true) + 0.5;
-                double y2 = p2.getYMean(true) + 0.5;
+                double[] position1 = getObjectPosition(p1, parameters);
+                double[] position2 = getObjectPosition(p2, parameters);
+
+                double x1 = position1[0] + 0.5;
+                double y1 = position1[1] + 0.5;
+                double x2 = position2[0] + 0.5;
+                double y2 = position2[1] + 0.5;
+
+                // MIA.log.writeDebug(x1+"_"+y1+"_"+x2+"_"+y2);
 
                 int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames, p2.getT() + history);
                 for (int t = p2.getT(); t <= maxFrame - 1; t++) {
@@ -292,7 +304,7 @@ public class AddTracks extends AbstractOverlay {
 
             addOverlay(object, spotObjectsName, ipl, colour, lineWidth, history, instantaneousColours);
 
-            writeProgressStatus(count.getAndIncrement(), inputObjects.size(), "objects");
+            writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
 
         }
 
@@ -322,6 +334,9 @@ public class AddTracks extends AbstractOverlay {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
+
+        parameters.add(new SeparatorP(POSITION_SEPARATOR, this));
+        parameters.addAll(initialisePositionParameters(this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
@@ -362,6 +377,10 @@ public class AddTracks extends AbstractOverlay {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
+
+        returnedParameters.add(parameters.getParameter(POSITION_SEPARATOR));
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS, workspace);
+        returnedParameters.addAll(updateAndGetPositionParameters(spotObjectsName, parameters));
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         if (((String) parameters.getValue(COLOUR_MODE, workspace))

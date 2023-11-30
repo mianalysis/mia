@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.tracks.Timepoint;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
+import io.github.mianalysis.mia.object.interfaces.MeasurementPositionProvider;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -43,7 +44,7 @@ import io.github.mianalysis.mia.process.math.CumStat;
 * Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.
 */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class MeasureTrackMotion extends Module {
+public class MeasureTrackMotion extends Module implements MeasurementPositionProvider {
 
 	/**
 	* 
@@ -84,6 +85,8 @@ public class MeasureTrackMotion extends Module {
     public MeasureTrackMotion(Modules modules) {
         super("Measure track motion", modules);
     }
+
+    
 
     public interface OrientationModes {
         String RELATIVE_TO_BOTH = "Relative to both points";
@@ -140,16 +143,14 @@ public class MeasureTrackMotion extends Module {
         return "TRACK_ANALYSIS // " + measurement;
     }
 
-    public static Track createTrack(Obj trackObject, String spotObjectsName) {
+    Track createTrack(Obj trackObject, String spotObjectsName) {
         // Getting the corresponding spots for this track
         Track track = new Track("px");
         for (Obj spotObject : trackObject.getChildren(spotObjectsName).values()) {
-            double x = spotObject.getXMean(true);
-            double y = spotObject.getYMean(true);
-            double z = spotObject.getZMean(true, true);
+            double[] position = getObjectPosition(spotObject, parameters);
 
             int t = spotObject.getT();
-            track.addTimepoint(x, y, z, t);
+            track.addTimepoint(position[0], position[1], position[2], t);
 
         }
 
@@ -609,6 +610,7 @@ public class MeasureTrackMotion extends Module {
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS, this));
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
+        parameters.addAll(initialisePositionParameters(this));
         parameters.add(new BooleanP(SUBTRACT_AVERAGE_MOTION, this, false));
         parameters.add(new BooleanP(IDENTIFY_LEADING_POINT, this, false));
         parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.RELATIVE_TO_BOTH, OrientationModes.ALL));
@@ -626,16 +628,17 @@ public class MeasureTrackMotion extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
-        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
-        ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
+        String trackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
+        ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(trackObjectsName);
 
+        String spotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.addAll(updateAndGetPositionParameters(spotObjectsName, parameters));
         returnedParameters.add(parameters.getParameter(SUBTRACT_AVERAGE_MOTION));
         returnedParameters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace))
             returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
-        }
-
+        
         return returnedParameters;
 
     }
