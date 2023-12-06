@@ -296,6 +296,12 @@
         </dependency>
 
         <dependency>
+            <groupId>ch.epfl.biop</groupId>
+            <artifactId>ijl-utilities-wrappers</artifactId>
+            <version>0.9.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>de.csbdresden</groupId>
             <artifactId>csbdeep</artifactId>
             <version>0.6.0</version>
