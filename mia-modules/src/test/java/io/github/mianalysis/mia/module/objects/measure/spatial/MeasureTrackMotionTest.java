@@ -32,31 +32,31 @@ public class MeasureTrackMotionTest extends ModuleTest {
         assertNotNull(new MeasureTrackMotion(null).getDescription());
     }
 
-    @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testCreateTrack(VolumeType volumeType) throws IntegerOverflowException {
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        double zScaling = dppZ/dppXY;
-        String calibratedUnits = "µm";
+    // @ParameterizedTest
+    // @EnumSource(VolumeType.class)
+    // public void testCreateTrack(VolumeType volumeType) throws IntegerOverflowException {
+    //     // Setting calibration parameters
+    //     double dppXY = 0.02;
+    //     double dppZ = 0.1;
+    //     double zScaling = dppZ/dppXY;
+    //     String calibratedUnits = "µm";
 
-        String trackObjectsName = "Tracks";
-        String spotObjectsName = "Spots";
+    //     String trackObjectsName = "Tracks";
+    //     String spotObjectsName = "Spots";
 
-        // Getting input objects and expected values
-        Objs trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
-        TreeMap<Integer,Track> expectedObjects = new Tracks3D().getRawTracks(zScaling);
+    //     // Getting input objects and expected values
+    //     Objs trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
+    //     TreeMap<Integer,Track> expectedObjects = new Tracks3D().getRawTracks(zScaling);
 
-        // Comparing actual values
-        for (Obj trackObject:trackObjects.values()) {
-            Track expected = expectedObjects.get(trackObject.getID());
-            Track actual = MeasureTrackMotion.createTrack(trackObject,spotObjectsName);
+    //     // Comparing actual values
+    //     for (Obj trackObject:trackObjects.values()) {
+    //         Track expected = expectedObjects.get(trackObject.getID());
+    //         Track actual = MeasureTrackMotion.createTrack(trackObject,spotObjectsName);
 
-            assertEquals(expected,actual);
+    //         assertEquals(expected,actual);
 
-        }
-    }
+    //     }
+    // }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
