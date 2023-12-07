@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
+import net.imagej.patcher.LegacyInjector;
 
 /**
  * Created by Stephen Cross on 14/07/2017.
@@ -41,6 +42,10 @@ public class MIAGUI extends MIA implements Command {
         } catch (Exception e) {
             MIA.log.writeError(e);
         }
+    }
+
+    static {
+        LegacyInjector.preinit();
     }
 
     @Override
