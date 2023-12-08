@@ -6,7 +6,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ch.epfl.biop.wrappers.cellpose.Cellpose;
-import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeFactory;
+import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.Cellpose_SegmentImgPlusOwnModelAdvanced;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
@@ -138,34 +138,32 @@ public class CellposeDetection extends Module {
         Cellpose.setUseGpu(useGPU);
         Cellpose.setUseResample(useResample);
 
-        CellposeFactory factory = new CellposeFactory();
-        factory.setImagePlus(ipl);
-        factory.setDiameter(diameter);
+        CellposeWrapper cellpose = new CellposeWrapper();
+        cellpose.setImagePlus(ipl);
+        cellpose.setDiameter(diameter);
         switch ((String) parameters.getValue(CELLPOSE_VERSION, workspace)) {
             case CellposeVersions.V0P6:
             case CellposeVersions.V0P7:
-                factory.setCellProbabilityThreshold(cellProbThresh);
+                cellpose.setCellProbabilityThreshold(cellProbThresh);
                 break;
         }
 
-        Cellpose_SegmentImgPlusOwnModelAdvanced cellpose = factory.getCellpose();
-
-        cellpose.flow_threshold = 0.4;
-        cellpose.anisotropy = 1;
-        cellpose.diam_threshold = 12;
-        cellpose.model_path = new File("cellpose");
-        cellpose.model = "cyto";
-        cellpose.nuclei_channel = -1;
-        cellpose.cyto_channel = 1;
-        cellpose.dimensionMode = "2D";
-        cellpose.stitch_threshold = 0;
-        cellpose.omni = false;
-        cellpose.cluster = false;
-        cellpose.additional_flags = "";
+        // cellpose.flow_threshold = 0.4;
+        // cellpose.anisotropy = 1;
+        // cellpose.diam_threshold = 12;
+        // cellpose.model_path = new File("cellpose");
+        // cellpose.model = "cyto";
+        // cellpose.nuclei_channel = -1;
+        // cellpose.cyto_channel = 1;
+        // cellpose.dimensionMode = "2D";
+        // cellpose.stitch_threshold = 0;
+        // cellpose.omni = false;
+        // cellpose.cluster = false;
+        // cellpose.additional_flags = "";
 
         cellpose.run();
 
-        Image cellsImage = ImageFactory.createImage("Objects", factory.getImagePlus());
+        Image cellsImage = ImageFactory.createImage("Objects", cellpose.getImagePlus());
         Objs outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
 
         workspace.addObjects(outputObjects);
