@@ -14,8 +14,9 @@ public abstract class FileFolderType extends Parameter {
         super(name, module);
     }
 
-    public FileFolderType(String name, Module module, String description) {
+    public FileFolderType(String name, Module module, @NotNull String path) {
         super(name, module);
+        this.path = path;
     }
 
     public FileFolderType(String name, Module module, @NotNull String path, String description) {

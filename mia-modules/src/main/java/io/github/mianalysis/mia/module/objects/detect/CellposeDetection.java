@@ -9,6 +9,8 @@ import ch.epfl.biop.wrappers.cellpose.Cellpose;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.Cellpose_SegmentImgPlusOwnModelAdvanced;
 import ij.ImagePlus;
+import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -163,7 +165,7 @@ public class CellposeDetection extends Module {
 
         cellpose.run();
 
-        Image cellsImage = ImageFactory.createImage("Objects", cellpose.getImagePlus());
+        Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
         Objs outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
 
         workspace.addObjects(outputObjects);
@@ -177,22 +179,51 @@ public class CellposeDetection extends Module {
 
     @Override
     protected void initialiseParameters() {
+        // Getting defaults
+        String keyPrefix = Cellpose.class.getName() + ".";
+
+        String defaultEnv = EnvironmentTypes.CONDA;
+        switch (Prefs.get(keyPrefix + "envType", "conda")) {
+            case "conda":
+                defaultEnv = EnvironmentTypes.CONDA;
+                break;
+            case "venv":
+                defaultEnv = EnvironmentTypes.VENV;
+                break;
+        }
+
+        String defaultVersion = CellposeVersions.V2P0;
+        switch (Prefs.get(keyPrefix + "version", "2.0")) {
+            case "0.6":
+                defaultVersion = CellposeVersions.V0P6;
+                break;
+            case "0.7":
+                defaultVersion = CellposeVersions.V0P7;
+                break;
+            case "1.0":
+                defaultVersion = CellposeVersions.V1P0;
+                break;
+            case "2.0":
+                defaultVersion = CellposeVersions.V2P0;
+                break;
+        }
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(CELLPOSE_SEPARATOR, this));
-        parameters.add(new FolderPathP(CELLPOSE_PATH, this));
-        parameters.add(new ChoiceP(ENVIRONMENT_TYPE, this, EnvironmentTypes.CONDA, EnvironmentTypes.ALL));
-        parameters.add(new ChoiceP(CELLPOSE_VERSION, this, CellposeVersions.V2P0, CellposeVersions.ALL));
-        parameters.add(new BooleanP(USE_MXNET, this, false));
-        parameters.add(new BooleanP(USE_RESAMPLE, this, false));
-        parameters.add(new BooleanP(USE_GPU, this, false));
-        parameters.add(new BooleanP(USE_FASTMODE, this, false));
+        parameters.add(new FolderPathP(CELLPOSE_PATH, this, Prefs.get(keyPrefix + "envDirPath", "")));
+        parameters.add(new ChoiceP(ENVIRONMENT_TYPE, this, defaultEnv, EnvironmentTypes.ALL));
+        parameters.add(new ChoiceP(CELLPOSE_VERSION, this, defaultVersion, CellposeVersions.ALL));
+        parameters.add(new BooleanP(USE_MXNET, this, Prefs.get(keyPrefix + "useMxnet", false)));
+        parameters.add(new BooleanP(USE_RESAMPLE, this, Prefs.get(keyPrefix + "useResample", false)));
+        parameters.add(new BooleanP(USE_GPU, this, Prefs.get(keyPrefix + "useGpu", false)));
+        parameters.add(new BooleanP(USE_FASTMODE, this, Prefs.get(keyPrefix + "useFastMode", false)));
 
         parameters.add(new SeparatorP(SEGMENTATION_SEPARATOR, this));
         parameters.add(new IntegerP(DIAMETER, this, 30));
-        parameters.add(new DoubleP(CELLPOSE_VERSION, this, 0.0));
+        parameters.add(new DoubleP(CELL_PROBABILITY_THRESHOLD, this, 0.0));
 
     }
 
@@ -230,6 +261,44 @@ public class CellposeDetection extends Module {
                 returnedParameters.add(parameters.getParameter(CELL_PROBABILITY_THRESHOLD));
                 break;
         }
+
+        // Updating default parameters
+        String keyPrefix = Cellpose.class.getName() + ".";
+
+        Prefs.set(keyPrefix + "envDirPath", parameters.getValue(CELLPOSE_PATH, workspace));
+
+        String defaultEnv = "conda";
+        switch ((String) parameters.getValue(ENVIRONMENT_TYPE, workspace)) {
+            case EnvironmentTypes.CONDA:
+                defaultEnv = "conda";
+                break;
+            case EnvironmentTypes.VENV:
+                defaultEnv = "venv";
+                break;
+        }
+        Prefs.set(keyPrefix + "envType", defaultEnv);
+
+        String defaultVersion = "2.0";
+        switch ((String) parameters.getValue(CELLPOSE_VERSION, workspace)) {
+            case CellposeVersions.V0P6:
+                defaultVersion = "0.6";
+                break;
+            case CellposeVersions.V0P7:
+                defaultVersion = "0.7";
+                break;
+            case CellposeVersions.V1P0:
+                defaultVersion = "1.0";
+                break;
+            case CellposeVersions.V2P0:
+                defaultVersion = "2.0";
+                break;
+        }
+        Prefs.set(keyPrefix + "version", defaultVersion);
+        
+        Prefs.set(keyPrefix + "useMxnet", parameters.getValue(USE_MXNET, workspace).toString());
+        Prefs.set(keyPrefix + "useResample", parameters.getValue(USE_RESAMPLE, workspace).toString());
+        Prefs.set(keyPrefix + "useGpu", parameters.getValue(USE_GPU, workspace).toString());
+        Prefs.set(keyPrefix + "useFastMode", parameters.getValue(USE_FASTMODE, workspace).toString());
 
         return returnedParameters;
 

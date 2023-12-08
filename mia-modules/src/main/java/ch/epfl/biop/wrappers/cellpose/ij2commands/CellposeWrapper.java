@@ -3,7 +3,7 @@ package ch.epfl.biop.wrappers.cellpose.ij2commands;
 import ij.ImagePlus;
 
 public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
-    public ImagePlus getImagePlus() {
+    public ImagePlus getLabels() {
         return this.cellpose_imp;
     }
 
