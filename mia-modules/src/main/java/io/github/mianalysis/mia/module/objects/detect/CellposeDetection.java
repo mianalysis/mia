@@ -7,10 +7,8 @@ import org.scijava.plugin.Plugin;
 
 import ch.epfl.biop.wrappers.cellpose.Cellpose;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
-import ch.epfl.biop.wrappers.cellpose.ij2commands.Cellpose_SegmentImgPlusOwnModelAdvanced;
 import ij.ImagePlus;
 import ij.Prefs;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -67,6 +65,13 @@ public class CellposeDetection extends Module {
 
     public static final String CELL_PROBABILITY_THRESHOLD = "Cell probability threshold";
 
+    public static final String FLOW_THRESHOLD = "Flow threshold";
+
+    public static final String ANISOTROPY = "Anisotropy";
+
+    public static final String DIAMETER_THRESHOLD = "Diameter threshold";
+
+
     public interface EnvironmentTypes {
         String CONDA = "Conda";
         String VENV = "Venv";
@@ -120,6 +125,9 @@ public class CellposeDetection extends Module {
 
         int diameter = parameters.getValue(DIAMETER, workspace);
         double cellProbThresh = parameters.getValue(CELL_PROBABILITY_THRESHOLD, workspace);
+        double flowThreshold = parameters.getValue(FLOW_THRESHOLD, workspace);
+        double anisotropy = parameters.getValue(ANISOTROPY, workspace);
+        double diameterThreshold = parameters.getValue(DIAMETER_THRESHOLD, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
@@ -143,16 +151,11 @@ public class CellposeDetection extends Module {
         CellposeWrapper cellpose = new CellposeWrapper();
         cellpose.setImagePlus(ipl);
         cellpose.setDiameter(diameter);
-        switch ((String) parameters.getValue(CELLPOSE_VERSION, workspace)) {
-            case CellposeVersions.V0P6:
-            case CellposeVersions.V0P7:
-                cellpose.setCellProbabilityThreshold(cellProbThresh);
-                break;
-        }
+        cellpose.setCellProbabilityThreshold(cellProbThresh);
+        cellpose.setFlowThreshold(flowThreshold);
+        cellpose.setAnisotropy(anisotropy);
+        cellpose.setDiameterThreshold(diameterThreshold);
 
-        // cellpose.flow_threshold = 0.4;
-        // cellpose.anisotropy = 1;
-        // cellpose.diam_threshold = 12;
         // cellpose.model_path = new File("cellpose");
         // cellpose.model = "cyto";
         // cellpose.nuclei_channel = -1;
@@ -224,6 +227,9 @@ public class CellposeDetection extends Module {
         parameters.add(new SeparatorP(SEGMENTATION_SEPARATOR, this));
         parameters.add(new IntegerP(DIAMETER, this, 30));
         parameters.add(new DoubleP(CELL_PROBABILITY_THRESHOLD, this, 0.0));
+        parameters.add(new DoubleP(FLOW_THRESHOLD, this, 0.4));
+        parameters.add(new DoubleP(ANISOTROPY, this, 1.0));
+        parameters.add(new DoubleP(DIAMETER_THRESHOLD, this, 12));
 
     }
 
@@ -254,11 +260,30 @@ public class CellposeDetection extends Module {
         returnedParameters.add(parameters.getParameter(USE_FASTMODE));
 
         returnedParameters.add(parameters.getParameter(SEGMENTATION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(DIAMETER));
         switch ((String) parameters.getValue(CELLPOSE_VERSION, workspace)) {
             case CellposeVersions.V0P6:
-            case CellposeVersions.V0P7:
+                returnedParameters.add(parameters.getParameter(DIAMETER));
                 returnedParameters.add(parameters.getParameter(CELL_PROBABILITY_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(FLOW_THRESHOLD));
+                break;
+            case CellposeVersions.V0P7:
+                returnedParameters.add(parameters.getParameter(DIAMETER));
+                returnedParameters.add(parameters.getParameter(CELL_PROBABILITY_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(FLOW_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(ANISOTROPY));
+                returnedParameters.add(parameters.getParameter(DIAMETER_THRESHOLD));
+                break;
+            case CellposeVersions.V1P0:
+                returnedParameters.add(parameters.getParameter(DIAMETER));
+                returnedParameters.add(parameters.getParameter(CELL_PROBABILITY_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(FLOW_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(DIAMETER_THRESHOLD));
+                break;
+            case CellposeVersions.V2P0:
+                returnedParameters.add(parameters.getParameter(DIAMETER));
+                returnedParameters.add(parameters.getParameter(CELL_PROBABILITY_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(FLOW_THRESHOLD));
+                returnedParameters.add(parameters.getParameter(ANISOTROPY));
                 break;
         }
 
@@ -294,7 +319,7 @@ public class CellposeDetection extends Module {
                 break;
         }
         Prefs.set(keyPrefix + "version", defaultVersion);
-        
+
         Prefs.set(keyPrefix + "useMxnet", parameters.getValue(USE_MXNET, workspace).toString());
         Prefs.set(keyPrefix + "useResample", parameters.getValue(USE_RESAMPLE, workspace).toString());
         Prefs.set(keyPrefix + "useGpu", parameters.getValue(USE_GPU, workspace).toString());

@@ -18,4 +18,16 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
     public void setCellProbabilityThreshold(double cellProbabilityThreshold) {
         this.cellproba_threshold = cellProbabilityThreshold;
     }
+
+    public void setFlowThreshold(double flowThreshold) {
+        this.flow_threshold = flowThreshold;
+    }
+
+    public void setAnisotropy(double anisotropy) {
+        this.anisotropy = anisotropy;
+    }
+
+    public void setDiameterThreshold(double diameterThreshold) {
+        this.diam_threshold = diameterThreshold;
+    }
 }
