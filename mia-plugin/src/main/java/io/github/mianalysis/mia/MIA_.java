@@ -25,7 +25,7 @@ import net.imagej.patcher.LegacyInjector;
  * Created by Stephen Cross on 14/07/2017.
  */
 @Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>MIA", visible = true)
-public class MIAGUI extends MIA implements Command {
+public class MIA_ extends MIA implements Command {
     /*
      * Gearing up for the transition from ImagePlus to ImgLib2 formats. Modules can
      * use this to addRef compatibility.
@@ -37,7 +37,7 @@ public class MIAGUI extends MIA implements Command {
 
         try {
             new ij.ImageJ();
-            new ImageJ().command().run("io.github.mianalysis.mia.MIAGUI", false);
+            new ImageJ().command().run("io.github.mianalysis.mia.MIA_", false);
 
         } catch (Exception e) {
             MIA.log.writeError(e);

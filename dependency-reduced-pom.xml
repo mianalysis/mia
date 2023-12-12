@@ -165,10 +165,10 @@
   <modules>
     <module>mia-algorithms</module>
     <module>mia-core</module>
-    <module>mia-gui</module>
     <module>mia-headless</module>
     <module>mia-macros</module>
     <module>mia-modules</module>
+    <module>mia-plugin</module>
   </modules>
   <repositories>
     <repository>

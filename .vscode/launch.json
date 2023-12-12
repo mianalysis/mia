@@ -2,13 +2,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "MIAGUI",
-            "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.MIAGUI",
-            "projectName": "mia-gui"
-        },
-        {
-            "type": "java",
             "name": "AnalysisReader",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.analysishandling.AnalysisReader",
@@ -44,17 +37,10 @@
         },
         {
             "type": "java",
-            "name": "MIAGUI",
+            "name": "MIA_",
             "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.MIAGUI",
-            "projectName": "mia-gui"
-        },
-        {
-            "type": "java",
-            "name": "MIAGUI",
-            "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.MIAGUI",
-            "projectName": "io.github.mianalysis-mia-modules"
+            "mainClass": "io.github.mianalysis.mia.MIA_",
+            "projectName": "mia-plugin"
         },
         {
             "type": "java",

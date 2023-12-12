@@ -114,7 +114,7 @@ public class MeasureObjectWidth extends Module {
             MergeRelatedObjects.mergeRelatedObjectsUpdateParent(skeletonObjects, "JunctionsTemp",
                     MergeRelatedObjects.MergeModes.MERGE_PARENTS_AND_CHILDREN);
 
-            CumStat cs = MeasureObjectIntensity.measureIntensity(skeleton, distanceMap, false);
+            CumStat cs = MeasureObjectIntensity.measureIntensity(skeleton, distanceMap, false, false);
 
             inputObject.addMeasurement(new Measurement(Measurements.MEAN_WIDTH_PX,cs.getMean()));
             inputObject.addMeasurement(new Measurement(Measurements.MEAN_WIDTH_CAL,cs.getMean()*dppXY));

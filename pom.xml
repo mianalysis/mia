@@ -115,10 +115,10 @@
     <modules>
         <module>mia-algorithms</module>
         <module>mia-core</module>
-        <module>mia-gui</module>
         <module>mia-headless</module>
         <module>mia-macros</module>
         <module>mia-modules</module>
+        <module>mia-plugin</module>
     </modules>
 
     <repositories>
@@ -249,11 +249,13 @@
         <dependency>
             <groupId>io.scif</groupId>
             <artifactId>scifio</artifactId>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>io.scif</groupId>
             <artifactId>scifio-bf-compat</artifactId>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -299,6 +301,7 @@
             <groupId>ch.epfl.biop</groupId>
             <artifactId>ijl-utilities-wrappers</artifactId>
             <version>0.9.4</version>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>

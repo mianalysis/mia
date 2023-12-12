@@ -108,7 +108,7 @@ public class ConvertImageToObjects extends Module {
 
         for (Obj inputObject : inputObjects.values()) {
             // Taking parent ID as the largest intensity within the object
-            CumStat cs = MeasureObjectIntensity.measureIntensity(inputObject, image, false);
+            CumStat cs = MeasureObjectIntensity.measureIntensity(inputObject, image, false, false);
             int ID = (int) Math.round(cs.getMax());
 
             // Getting corresponding parent object

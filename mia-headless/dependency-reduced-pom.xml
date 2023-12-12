@@ -94,7 +94,7 @@
             <manifest>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-              <mainClass>io.github.mianalysis.mia.MIAGUI</mainClass>
+              <mainClass>io.github.mianalysis.mia.MIA_</mainClass>
             </manifest>
           </archive>
         </configuration>

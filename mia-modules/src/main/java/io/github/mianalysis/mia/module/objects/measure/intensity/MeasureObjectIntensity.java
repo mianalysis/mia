@@ -4,6 +4,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 
 import java.util.ArrayList;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -38,35 +39,48 @@ import io.github.mianalysis.mia.process.math.CumStat;
  */
 
 /**
-* Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.  By default, basic measurements such as mean, minimum and maximum will be calculated.  Additional measurements can optionally be enabled.
-*/
+ * Measure intensity of each object in a specified image. Measurements of
+ * intensity are taken at all pixel coordinates corresponding to each object. By
+ * default, basic measurements such as mean, minimum and maximum will be
+ * calculated. Additional measurements can optionally be enabled.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectIntensity extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object and image input";
 
-	/**
-	* Objects from the workspace for which intensities will be measured.
-	*/
+    /**
+     * Objects from the workspace for which intensities will be measured.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Image from which pixel intensities will be measured.  This image can be 8-bit, 16-bit or 32-bit.  Measurements are always taken from the first channel if more than one channel is present (to measure additional channels, please first use the "Extract substack" module).
-	*/
+    /**
+     * Image from which pixel intensities will be measured. This image can be 8-bit,
+     * 16-bit or 32-bit. Measurements are always taken from the first channel if
+     * more than one channel is present (to measure additional channels, please
+     * first use the "Extract substack" module).
+     */
     public static final String INPUT_IMAGE = "Input image";
 
+    /**
+    * 
+    */
+    public static final String OPTIONAL_MEASUREMENTS_SEPARATOR = "Optional measurements";
 
-	/**
-	* 
-	*/
-    public static final String WEIGHTED_CENTRE_SEPARATOR = "Weighted centre";
+    /**
+     * When selected, the median intensity of each input object will be calculated.
+     * For very large objects, this can require a lot of memory.
+     */
+    public static final String MEASURE_MEDIAN = "Measure median intensity";
 
-	/**
-	* When selected, the intensity-weighted centroid of each input object will be calculated.  With this, the greater the intensity in a particular region of an object, the more the "centre of mass" will be drawn towards it.
-	*/
+    /**
+     * When selected, the intensity-weighted centroid of each input object will be
+     * calculated. With this, the greater the intensity in a particular region of an
+     * object, the more the "centre of mass" will be drawn towards it.
+     */
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
 
     public MeasureObjectIntensity(Modules modules) {
@@ -75,6 +89,7 @@ public class MeasureObjectIntensity extends Module {
 
     public interface Measurements {
         String MEAN = "MEAN";
+        String MEDIAN = "MEDIAN";
         String MIN = "MIN";
         String MAX = "MAX";
         String SUM = "SUM";
@@ -100,7 +115,7 @@ public class MeasureObjectIntensity extends Module {
         return "INTENSITY // " + imageName + "_" + measurement;
     }
 
-    public static CumStat measureIntensity(Obj object, Image image, boolean addMeasurements) {
+    public static CumStat measureIntensity(Obj object, Image image, boolean measureMedian, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -109,11 +124,19 @@ public class MeasureObjectIntensity extends Module {
         int t = object.getT();
         CumStat cs = new CumStat();
 
+        double[] vals = null;
+        if (measureMedian)
+            vals = new double[object.size()];
+
+        int i = 0;
         ImagePlus ipl = image.getImagePlus();
         for (Point<Integer> point : object.getCoordinateSet()) {
             ipl.setPosition(1, point.getZ() + 1, t + 1);
             float value = ipl.getProcessor().getf(point.getX(), point.getY());
             cs.addMeasure(value);
+
+            if (measureMedian)
+                vals[i++] = value;
         }
 
         // Calculating mean, std, min and max intensity
@@ -124,6 +147,10 @@ public class MeasureObjectIntensity extends Module {
             object.addMeasurement(
                     new Measurement(getFullName(imageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
             object.addMeasurement(new Measurement(getFullName(imageName, Measurements.SUM), cs.getSum()));
+
+            if (measureMedian)
+                object.addMeasurement(
+                        new Measurement(getFullName(imageName, Measurements.MEDIAN), new Median().evaluate(vals)));
         }
 
         return cs;
@@ -196,14 +223,17 @@ public class MeasureObjectIntensity extends Module {
         String imageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(imageName);
 
+        boolean measureMedian = parameters.getValue(MEASURE_MEDIAN, workspace);
+        boolean measureWeightedCentre = parameters.getValue(MEASURE_WEIGHTED_CENTRE, workspace);
+
         // Measuring intensity for each object and adding the measurement to that object
         int count = 0;
         int total = objects.size();
         for (Obj object : objects.values()) {
-            measureIntensity(object, inputImage, true);
+            measureIntensity(object, inputImage, measureMedian, true);
 
             // If specified, measuring weighted centre for intensity
-            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE, workspace))
+            if (measureWeightedCentre)
                 measureWeightedCentre(object, inputImage, true);
 
             writeProgressStatus(++count, total, "objects");
@@ -223,7 +253,8 @@ public class MeasureObjectIntensity extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(WEIGHTED_CENTRE_SEPARATOR, this));
+        parameters.add(new SeparatorP(OPTIONAL_MEASUREMENTS_SEPARATOR, this));
+        parameters.add(new BooleanP(MEASURE_MEDIAN, this, false));
         parameters.add(new BooleanP(MEASURE_WEIGHTED_CENTRE, this, false));
 
         addParameterDescriptions();
@@ -238,7 +269,8 @@ public class MeasureObjectIntensity extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
 
-        returnedParameters.add(parameters.getParameter(WEIGHTED_CENTRE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(OPTIONAL_MEASUREMENTS_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MEASURE_MEDIAN));
         returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_CENTRE));
 
         return returnedParameters;
@@ -292,6 +324,16 @@ public class MeasureObjectIntensity extends Module {
         sum.setDescription("Sum intensity of pixels from the image \"" + inputImageName + "\" contained within each"
                 + " \"" + inputObjectsName + "\" object");
         returnedRefs.add(sum);
+
+        if ((boolean) parameters.getValue(MEASURE_MEDIAN, workspace)) {
+            name = getFullName(inputImageName, Measurements.MEDIAN);
+            ObjMeasurementRef median = objectMeasurementRefs.getOrPut(name);
+            median.setObjectsName(inputObjectsName);
+            median.setDescription(
+                    "Median intensity of pixels from the image \"" + inputImageName + "\" contained within each"
+                            + " \"" + inputObjectsName + "\" object");
+            returnedRefs.add(median);
+        }
 
         if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE, workspace)) {
             name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
@@ -372,6 +414,9 @@ public class MeasureObjectIntensity extends Module {
         parameters.get(INPUT_IMAGE).setDescription(
                 "Image from which pixel intensities will be measured.  This image can be 8-bit, 16-bit or 32-bit.  Measurements are always taken from the first channel if more than one channel is present (to measure additional channels, please first use the \""
                         + new ExtractSubstack(null).getName() + "\" module).");
+
+        parameters.get(MEASURE_MEDIAN).setDescription(
+                "When selected, the median intensity of each input object will be calculated.  For very large objects, this can require a lot of memory");
 
         parameters.get(MEASURE_WEIGHTED_CENTRE).setDescription(
                 "When selected, the intensity-weighted centroid of each input object will be calculated.  With this, the greater the intensity in a particular region of an object, the more the \"centre of mass\" will be drawn towards it.");
