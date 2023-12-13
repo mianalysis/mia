@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -71,6 +72,15 @@ public class CellposeDetection extends Module {
 
     public static final String DIAMETER_THRESHOLD = "Diameter threshold";
 
+    public static final String MODEL_MODE = "Model mode";
+
+    public static final String CUSTOM_MODEL_PATH = "Custom model path";
+
+    public static final String MODEL = "Model";
+
+    public static final String NUCLEI_CHANNEL = "Nuclei channel";
+
+    public static final String CYTO_CHANNEL = "Cyto channel";
 
     public interface EnvironmentTypes {
         String CONDA = "Conda";
@@ -87,6 +97,25 @@ public class CellposeDetection extends Module {
         String V2P0 = "2.0";
 
         String[] ALL = new String[] { V0P6, V0P7, V1P0, V2P0 };
+
+    }
+
+    public interface ModelModes {
+        String CUSTOM = "Custom";
+        String INCLUDED = "Included";
+
+        String[] ALL = new String[] { CUSTOM, INCLUDED };
+
+    }
+
+    public interface Models {
+        String BACT_OMNI = "Bact omni";
+        String CYTO = "Cyto";
+        String CYTO2 = "Cyto 2";
+        String CYTO2_OMNI = "Cyto 2 omni";
+        String NUCLEI = "Nuclei";
+
+        String[] ALL = new String[] { BACT_OMNI, CYTO, CYTO2, CYTO2_OMNI, NUCLEI };
 
     }
 
@@ -109,6 +138,27 @@ public class CellposeDetection extends Module {
         return "";
     }
 
+    public static String getModelName(String model) {
+        switch (model) {
+            case Models.BACT_OMNI:
+                return "bact_omni";
+            case Models.CYTO:
+                return "cyto";
+            case Models.CYTO2:
+                return "cyto2";
+            case Models.CYTO2_OMNI:
+                return "cyto2_omni";
+            case Models.NUCLEI:
+            default:
+                return "nuclei";
+        }
+    }
+
+    public static String getCustomModelType(String model) {
+        return "own model " + getModelName(model);
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
@@ -128,6 +178,12 @@ public class CellposeDetection extends Module {
         double flowThreshold = parameters.getValue(FLOW_THRESHOLD, workspace);
         double anisotropy = parameters.getValue(ANISOTROPY, workspace);
         double diameterThreshold = parameters.getValue(DIAMETER_THRESHOLD, workspace);
+
+        String modelMode = parameters.getValue(MODEL_MODE, workspace);
+        String customModelPath = parameters.getValue(CUSTOM_MODEL_PATH, workspace);
+        String model = parameters.getValue(MODEL, workspace);
+        int nucleiChannel = parameters.getValue(NUCLEI_CHANNEL, workspace);
+        int cytoChannel = parameters.getValue(CYTO_CHANNEL, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
@@ -156,10 +212,33 @@ public class CellposeDetection extends Module {
         cellpose.setAnisotropy(anisotropy);
         cellpose.setDiameterThreshold(diameterThreshold);
 
-        // cellpose.model_path = new File("cellpose");
-        // cellpose.model = "cyto";
-        // cellpose.nuclei_channel = -1;
-        // cellpose.cyto_channel = 1;
+        switch (modelMode) {
+            case ModelModes.CUSTOM:
+                cellpose.setModel(getCustomModelType(model));
+                cellpose.setModelPath(new File(customModelPath));
+                break;
+            case ModelModes.INCLUDED:
+                cellpose.setModel(getModelName(model));
+                break;
+        }
+
+        switch (model) {
+            case Models.BACT_OMNI:
+                cellpose.setNucleiChannel(-1);
+                cellpose.setCytoChannel(cytoChannel);
+                break;
+            case Models.CYTO:
+            case Models.CYTO2:
+            case Models.CYTO2_OMNI:
+                cellpose.setNucleiChannel(nucleiChannel);
+                cellpose.setCytoChannel(cytoChannel);
+                break;
+            case Models.NUCLEI:
+                cellpose.setNucleiChannel(nucleiChannel);
+                cellpose.setCytoChannel(-1);
+                break;
+        }
+
         // cellpose.dimensionMode = "2D";
         // cellpose.stitch_threshold = 0;
         // cellpose.omni = false;
@@ -230,6 +309,11 @@ public class CellposeDetection extends Module {
         parameters.add(new DoubleP(FLOW_THRESHOLD, this, 0.4));
         parameters.add(new DoubleP(ANISOTROPY, this, 1.0));
         parameters.add(new DoubleP(DIAMETER_THRESHOLD, this, 12));
+        parameters.add(new ChoiceP(MODEL_MODE, this, ModelModes.INCLUDED, ModelModes.ALL));
+        parameters.add(new FilePathP(CUSTOM_MODEL_PATH, this));
+        parameters.add(new ChoiceP(MODEL, this, Models.NUCLEI, Models.ALL));
+        parameters.add(new IntegerP(NUCLEI_CHANNEL, this, 1));
+        parameters.add(new IntegerP(CYTO_CHANNEL, this, 1));
 
     }
 
@@ -284,6 +368,28 @@ public class CellposeDetection extends Module {
                 returnedParameters.add(parameters.getParameter(CELL_PROBABILITY_THRESHOLD));
                 returnedParameters.add(parameters.getParameter(FLOW_THRESHOLD));
                 returnedParameters.add(parameters.getParameter(ANISOTROPY));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(MODEL_MODE));
+        switch ((String) parameters.getValue(MODEL_MODE, workspace)) {
+            case ModelModes.CUSTOM:
+                returnedParameters.add(parameters.getParameter(CUSTOM_MODEL_PATH));
+                break;
+        }
+        returnedParameters.add(parameters.getParameter(MODEL));
+        switch ((String) parameters.getValue(MODEL, workspace)) {
+            case Models.BACT_OMNI:
+                returnedParameters.add(parameters.getParameter(CYTO_CHANNEL));
+                break;
+            case Models.CYTO:
+            case Models.CYTO2:
+            case Models.CYTO2_OMNI:
+                returnedParameters.add(parameters.getParameter(NUCLEI_CHANNEL));
+                returnedParameters.add(parameters.getParameter(CYTO_CHANNEL));
+                break;
+            case Models.NUCLEI:
+                returnedParameters.add(parameters.getParameter(NUCLEI_CHANNEL));
                 break;
         }
 

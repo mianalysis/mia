@@ -1,5 +1,7 @@
 package ch.epfl.biop.wrappers.cellpose.ij2commands;
 
+import java.io.File;
+
 import ij.ImagePlus;
 
 public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
@@ -29,5 +31,21 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
 
     public void setDiameterThreshold(double diameterThreshold) {
         this.diam_threshold = diameterThreshold;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setModelPath(File modelPath) {
+        this.model_path = modelPath;
+    }
+
+    public void setNucleiChannel(int nucleiChannel) {
+        this.nuclei_channel = nucleiChannel;
+    }
+
+    public void setCytoChannel(int cytoChannel) {
+        this.cyto_channel = cytoChannel;
     }
 }
