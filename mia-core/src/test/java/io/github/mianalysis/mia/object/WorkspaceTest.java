@@ -13,12 +13,12 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import ij.ImagePlus;
 import ome.units.UNITS;
-import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class WorkspaceTest {
     @ParameterizedTest

@@ -1,10 +1,9 @@
 package io.github.mianalysis.mia.expectedobjects;
 
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import ome.units.UNITS;
 
 public class MergedObjects3D extends ExpectedObjects {

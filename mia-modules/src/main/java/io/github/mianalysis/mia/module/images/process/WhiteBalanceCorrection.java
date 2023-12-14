@@ -69,9 +69,9 @@ public class WhiteBalanceCorrection extends Module {
         ImagePlus[] channels = ChannelSplitter.split(image.getImagePlus());
 
         // Getting RGB mean intensities
-        double redMean = IntensityCalculator.calculate(channels[0].getImageStack(),refObj).getMean();
-        double greenMean = IntensityCalculator.calculate(channels[1].getImageStack(),refObj).getMean();
-        double blueMean = IntensityCalculator.calculate(channels[2].getImageStack(),refObj).getMean();
+        double redMean = IntensityCalculator.calculate(channels[0].getImageStack(),refObj.getCoordinateSet()).getMean();
+        double greenMean = IntensityCalculator.calculate(channels[1].getImageStack(),refObj.getCoordinateSet()).getMean();
+        double blueMean = IntensityCalculator.calculate(channels[2].getImageStack(),refObj.getCoordinateSet()).getMean();
 
         return new double[]{redMean,greenMean,blueMean};
 

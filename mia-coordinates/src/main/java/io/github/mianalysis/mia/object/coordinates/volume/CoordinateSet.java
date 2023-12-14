@@ -2,9 +2,7 @@ package io.github.mianalysis.mia.object.coordinates.volume;
 
 import java.util.AbstractSet;
 
-
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.process.math.CumStat;
 
 public abstract class CoordinateSet extends AbstractSet<Point<Integer>> {
     public abstract boolean add(int x, int y, int z);
@@ -101,18 +99,4 @@ public abstract class CoordinateSet extends AbstractSet<Point<Integer>> {
 
     public abstract CoordinateSet getSlice(int slice);
 
-    public Point<Double> calculateMeanCentroid() {
-        CumStat csX = new CumStat();
-        CumStat csY = new CumStat();
-        CumStat csZ = new CumStat();
-
-        for (Point<Integer> point : this) {
-            csX.addMeasure(point.x);
-            csY.addMeasure(point.y);
-            csZ.addMeasure(point.z);
-        }
-
-        return new Point<>(csX.getMean(), csY.getMean(), csZ.getMean());
-
-    }
 }

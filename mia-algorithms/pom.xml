@@ -126,7 +126,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-core</artifactId>
+            <artifactId>mia-coordinates</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

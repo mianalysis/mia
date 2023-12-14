@@ -1,12 +1,14 @@
-package io.github.mianalysis.mia.object.image;
+package io.github.mianalysis.mia.process.imagej;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+import org.checkerframework.checker.units.qual.Volume;
+
 import ij.ImagePlus;
 import ij.process.ImageStatistics;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 
 /**
  * Created by Stephen on 15/04/2017.
@@ -94,8 +96,8 @@ public class IntensityMinMax {
 
     }
 
-    public static double[] getWeightedChannelRangeFast(ImagePlus ipl, Volume volume, int channel, int frame, double minClip, double maxClip) {
-        double[] minMax = volume == null ? getAbsoluteRange(ipl,channel) : getAbsoluteRange(ipl,volume,channel,frame);
+    public static double[] getWeightedChannelRangeFast(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame, double minClip, double maxClip) {
+        double[] minMax = coordinateSet == null ? getAbsoluteRange(ipl,channel) : getAbsoluteRange(ipl,coordinateSet,channel,frame);
         double range = minMax[1]-minMax[0];
 
         double minI = minMax[0] + range*minClip;
@@ -110,8 +112,8 @@ public class IntensityMinMax {
 
     }
 
-    public static double[] getWeightedChannelRangePrecise(ImagePlus ipl, Volume volume, int channel, int frame, double minClip, double maxClip) {
-        ArrayList<Float> pixels = volume == null ? getPixels(ipl,channel) : getPixels(ipl,volume,channel,frame);
+    public static double[] getWeightedChannelRangePrecise(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame, double minClip, double maxClip) {
+        ArrayList<Float> pixels = coordinateSet == null ? getPixels(ipl,channel) : getPixels(ipl,coordinateSet,channel,frame);
         pixels.sort(Float::compareTo);
 
         // Getting the min and max bins
@@ -155,12 +157,11 @@ public class IntensityMinMax {
 
     }
 
-    public static double[] getAbsoluteRange(ImagePlus ipl, Volume volume, int channel, int frame) {
+    public static double[] getAbsoluteRange(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame) {
         float minI = Float.MAX_VALUE;
         float maxI = -Float.MAX_VALUE;
 
-        TreeSet<Point<Integer>> points = volume.getPoints();
-        for (Point<Integer> point:points) {
+        for (Point<Integer> point:coordinateSet) {
             ipl.setPosition(channel + 1, point.getZ() + 1, frame + 1);
             float val = ipl.getProcessor().getf(point.getX(),point.getY());
 
@@ -195,12 +196,11 @@ public class IntensityMinMax {
 
     }
 
-    public static ArrayList<Float> getPixels(ImagePlus ipl, Volume volume, int channel, int frame) {
+    public static ArrayList<Float> getPixels(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame) {
         // Arranging pixel values into ArrayList, then ordering by value
         ArrayList<Float> pixels = new ArrayList<>();
 
-        TreeSet<Point<Integer>> points = volume.getPoints();
-        for (Point<Integer> point:points) {
+        for (Point<Integer> point:coordinateSet) {
             ipl.setPosition(channel + 1, point.getZ() + 1, frame + 1);
             pixels.add(ipl.getProcessor().getf(point.getX(),point.getY()));
         }

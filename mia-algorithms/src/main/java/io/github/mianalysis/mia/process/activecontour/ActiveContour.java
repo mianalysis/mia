@@ -8,7 +8,6 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
-import io.github.mianalysis.mia.object.image.IntensityMinMax;
 import io.github.mianalysis.mia.process.activecontour.energies.BendingEnergy;
 import io.github.mianalysis.mia.process.activecontour.energies.ElasticEnergy;
 import io.github.mianalysis.mia.process.activecontour.energies.EnergyCollection;
@@ -60,7 +59,6 @@ public class ActiveContour {
 
         ipl.deleteRoi();
         ImagePlus dispIpl = new Duplicator().run(ipl);
-        IntensityMinMax.run(dispIpl,true);
         dispIpl.show();
 
         for (int i=0;i<1000;i++) {

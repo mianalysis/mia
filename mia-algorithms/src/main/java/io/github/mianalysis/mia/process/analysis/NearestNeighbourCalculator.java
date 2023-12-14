@@ -3,13 +3,13 @@ package io.github.mianalysis.mia.process.analysis;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
-import io.github.mianalysis.mia.object.coordinates.tracks.TrackCollection;
+import io.github.mianalysis.mia.object.coordinates.tracks.Tracks;
 
 /**
  * Created by sc13967 on 22/01/2018.
  */
 public class NearestNeighbourCalculator {
-    public TreeMap<Integer,double[]> calculate(Track track, TrackCollection testTracks) {
+    public TreeMap<Integer,double[]> calculate(Track track, Tracks testTracks) {
         TreeMap<Integer,double[]> links = new TreeMap<>();
 
         // Iterating over all frames in this track

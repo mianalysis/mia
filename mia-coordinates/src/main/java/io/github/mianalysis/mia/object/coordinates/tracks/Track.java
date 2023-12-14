@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
  * Created by sc13967 on 03/02/2017.
@@ -43,19 +42,19 @@ public class Track extends TreeMap<Integer,Timepoint<Double>> {
         put(f,new Timepoint<Double>(x,y,z,f));
     }
 
-    /**
-     *
-     * @return Mean position as double[][]{meanX,meanY,meanZ}{stdevX,stdevY,stdevZ}
-     */
-    public double[][] getMeanPosition() {
-        CumStat csX = new CumStat(getX());
-        CumStat csY = new CumStat(getY());
-        CumStat csZ = new CumStat(getZ());
+    // /**
+    //  *
+    //  * @return Mean position as double[][]{meanX,meanY,meanZ}{stdevX,stdevY,stdevZ}
+    //  */
+    // public double[][] getMeanPosition() {
+    //     CumStat csX = new CumStat(getX());
+    //     CumStat csY = new CumStat(getY());
+    //     CumStat csZ = new CumStat(getZ());
 
-        return new double[][]{{csX.getMean(),csY.getMean(),csZ.getMean()},
-                {csX.getStd(),csY.getStd(),csZ.getStd()}};
+    //     return new double[][]{{csX.getMean(),csY.getMean(),csZ.getMean()},
+    //             {csX.getStd(),csY.getStd(),csZ.getStd()}};
 
-    }
+    // }
 
     // public CumStat[] getDirectionalPersistence() {
     //     return DirectionalPersistenceCalculator.calculate(getF(),getX(),getY(),getZ());

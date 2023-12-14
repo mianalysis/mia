@@ -134,7 +134,7 @@ public class MeasureObjectTexture extends Module {
             timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-" + nSlices, t + "-" + t).getStack();
         }
 
-        textureCalculator.calculate(timeStack, object, (int) offs[0], (int) offs[1], (int) offs[2]);
+        textureCalculator.calculate(timeStack, object.getCoordinateSet(), (int) offs[0], (int) offs[1], (int) offs[2]);
 
         // Acquiring measurements
         String name = getFullName(image.getName(), Measurements.ASM, offs, calibratedOffset);

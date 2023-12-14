@@ -31,42 +31,57 @@ import io.github.mianalysis.mia.process.math.CumStat;
  */
 
 /**
-* Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Measures the longest chord of each object in a specified object collection
+ * from the workspace. The longest chord of an object is defined as the line
+ * passing between the two furthest-spaced points on the surface of the object.
+ * This can act as an approximate measure of object length. In addition to the
+ * longest chord length, the distance of all object surface points from the
+ * longest chord can be measured, which themselves act as an approximation of
+ * object width.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitLongestChord extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.
-	*/
+    /**
+     * Objects from workspace to measure longest chord for. Measurements will be
+     * associated with the corresponding object in this collection.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CALCULATION_SEPARATOR = "Longest chord calculation";
 
-	/**
-	* When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.
-	*/
+    /**
+     * When selected the width of the object from the longest chord will be
+     * estimated. The distance of all object surface points (those with at least one
+     * non-object neighbour in 4/6-way connectivity) from the longest chord are
+     * calculated. Statistics (mean, minimum, maximum, sum and standard deviation)
+     * of these distances for an object are stored as measurements associated with
+     * that object.
+     */
     public static final String MEASURE_OBJECT_WIDTH = "Measure object width";
 
-	/**
-	* When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).
-	*/
+    /**
+     * When selected, the orientation of the line in the XY plane is measured and
+     * this measurement associated with the corresponding object. Orientations are
+     * reported in degree units and are relative to positive x-axis (positive above
+     * x-axis, negative below x-axis).
+     */
     public static final String MEASURE_OBJECT_ORIENTATION = "Measure object orientation";
 
-	/**
-	* When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.
-	*/
+    /**
+     * When selected, the two coordinates corresponding to the end points of the
+     * longest chord (the two furthest-spaced points on the object surface) are
+     * stored as measurements associated with the corresponding input object.
+     */
     public static final String STORE_END_POINTS = "Store end points";
-
 
     public FitLongestChord(Modules modules) {
         super("Fit longest chord", modules);
@@ -91,10 +106,12 @@ public class FitLongestChord extends Module {
 
     }
 
-    public static void processObject(Obj object, boolean measureWidth, boolean measureOrientation, boolean storeEndPoints) {
+    public static void processObject(Obj object, boolean measureWidth, boolean measureOrientation,
+            boolean storeEndPoints) {
         double dppXY = object.getDppXY();
 
-        LongestChordCalculator calculator = new LongestChordCalculator(object);
+        LongestChordCalculator calculator = new LongestChordCalculator(object.getCoordinateSet(), object.getDppXY(),
+                object.getDppZ());
 
         double longestChordLength = calculator.getLCLength();
         object.addMeasurement(new Measurement(Measurements.LENGTH_PX, longestChordLength));
@@ -144,8 +161,6 @@ public class FitLongestChord extends Module {
         }
     }
 
-
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_PROCESS;
@@ -159,19 +174,19 @@ public class FitLongestChord extends Module {
     @Override
     public String getDescription() {
         return "Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.";
-        
+
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
-        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH,workspace);
-        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION,workspace);
-        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS,workspace);
+        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH, workspace);
+        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION, workspace);
+        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS, workspace);
 
         // Running through each object, taking measurements and adding new object to the
         // workspace where necessary
@@ -205,25 +220,25 @@ public class FitLongestChord extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH,workspace);
-        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION,workspace);
-        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH, workspace);
+        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION, workspace);
+        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS, workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
         reference.setObjectsName(inputObjectsName);
@@ -340,18 +355,18 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -360,13 +375,17 @@ return null;
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_OBJECTS).setDescription("Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.");
 
-      parameters.get(MEASURE_OBJECT_WIDTH).setDescription("When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.");
+        parameters.get(MEASURE_OBJECT_WIDTH).setDescription(
+                "When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.");
 
-      parameters.get(MEASURE_OBJECT_ORIENTATION).setDescription("When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).");
+        parameters.get(MEASURE_OBJECT_ORIENTATION).setDescription(
+                "When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).");
 
-      parameters.get(STORE_END_POINTS).setDescription("When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.");
+        parameters.get(STORE_END_POINTS).setDescription(
+                "When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.");
 
     }
 }

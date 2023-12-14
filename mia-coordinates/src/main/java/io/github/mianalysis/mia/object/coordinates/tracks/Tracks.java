@@ -2,13 +2,10 @@ package io.github.mianalysis.mia.object.coordinates.tracks;
 
 import java.util.LinkedHashMap;
 
-import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.process.math.CumStat;
-
 /**
  * Created by sc13967 on 13/06/2017.
  */
-public class TrackCollection extends LinkedHashMap<Integer,Track> {
+public class Tracks extends LinkedHashMap<Integer,Track> {
 
     // PUBLIC METHODS
 
@@ -323,24 +320,6 @@ public class TrackCollection extends LinkedHashMap<Integer,Track> {
         }
 
         return limits;
-
-    }
-
-    public Point getMeanPoint(int frame) {
-        CumStat[] cs = new CumStat[3];
-
-        for (int i=0;i<3;i++) cs[i] = new CumStat();
-
-        for (Track track:values()) {
-            if (track.hasFrame(frame)) {
-                cs[0].addMeasure(track.get(frame).getX());
-                cs[1].addMeasure(track.get(frame).getY());
-                cs[2].addMeasure(track.get(frame).getZ());
-
-            }
-        }
-
-        return new Timepoint(cs[0].getMean(),cs[1].getMean(),cs[2].getMean(),frame);
 
     }
 

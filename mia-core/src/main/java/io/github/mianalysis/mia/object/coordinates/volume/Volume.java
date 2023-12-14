@@ -14,6 +14,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.process.analysis.CentroidCalculator;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -179,7 +180,7 @@ public class Volume {
 
     public Point<Double> getMeanCentroid(boolean pixelDistances, boolean matchXY) {
         if (meanCentroidPx == null)
-            meanCentroidPx = coordinateSet.calculateMeanCentroid();
+        meanCentroidPx = CentroidCalculator.calculateMeanCentroid(coordinateSet);
 
         if (pixelDistances) {
             if (matchXY) {

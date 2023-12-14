@@ -6,8 +6,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.image.IntensityMinMax;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 import io.github.mianalysis.mia.process.math.CumStat;
 import io.github.mianalysis.mia.process.math.Indexer;
 
@@ -31,7 +30,7 @@ public class TextureCalculator {
     }
 
 
-    public void calculate(ImageStack image, Volume volume, int xOffs, int yOffs, int zOffs) {
+    public void calculate(ImageStack image, CoordinateSet coordinateSet, int xOffs, int yOffs, int zOffs) {
         if (image.getBitDepth() != 8)
             image = convertTo8Bit(image);
 
@@ -41,12 +40,12 @@ public class TextureCalculator {
 
         // Running through all specified positions,
         int count = 0;
-        for (Point<Integer> point : volume.getCoordinateSet()) {
+        for (Point<Integer> point : coordinateSet) {
             int x = point.getX();
             int y = point.getY();
             int z = point.getZ();
 
-            if (volume.contains(new Point<>(x + xOffs, y + yOffs, z + zOffs))) {
+            if (coordinateSet.contains(new Point<>(x + xOffs, y + yOffs, z + zOffs))) {
                 addValueToConfusionMatrix(image, x, y, z, x + xOffs, y + yOffs, z + zOffs);
                 count = count + 2;
             }
@@ -215,7 +214,7 @@ public class TextureCalculator {
         // Duplicating the image, so the original isn't affected
         ImagePlus ipl = new ImagePlus("Temp", image.duplicate());
 
-        IntensityMinMax.run(ipl, true);
+        // IntensityMinMax.run(ipl, true);
         IJ.run(ipl, "8-bit", null);
 
         return ipl.getImageStack();

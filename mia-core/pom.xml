@@ -122,6 +122,14 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-algorithms</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
