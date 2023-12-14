@@ -13,6 +13,26 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
         this.imp = ipl;
     }
 
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setModelPath(File modelPath) {
+        this.model_path = modelPath;
+    }
+
+    public void setNucleiChannel(int nucleiChannel) {
+        this.nuclei_channel = nucleiChannel;
+    }
+
+    public void setCytoChannel(int cytoChannel) {
+        this.cyto_channel = cytoChannel;
+    }
+
+    public void setDimensionMode(String dimensionMode) {
+        this.dimensionMode = dimensionMode;
+    }
+
     public void setDiameter(int diameter) {
         this.diameter = diameter;
     }
@@ -33,19 +53,19 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
         this.diam_threshold = diameterThreshold;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setStitchThreshold(double stitchThreshold) {
+        this.stitch_threshold = stitchThreshold;
     }
 
-    public void setModelPath(File modelPath) {
-        this.model_path = modelPath;
+    public void setUseOmni(boolean useOmni) {
+        this.omni = useOmni;
+    }
+    
+    public void setUseClustering(boolean useClustering) {
+        this.cluster = useClustering;
     }
 
-    public void setNucleiChannel(int nucleiChannel) {
-        this.nuclei_channel = nucleiChannel;
-    }
-
-    public void setCytoChannel(int cytoChannel) {
-        this.cyto_channel = cytoChannel;
+    public void setAdditionalFlags(String additionalFlags) {
+        this.additional_flags = additionalFlags;
     }
 }
