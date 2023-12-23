@@ -298,12 +298,12 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>ch.epfl.biop</groupId>
             <artifactId>ijl-utilities-wrappers</artifactId>
             <version>0.9.4</version>
             <scope>${scp}</scope>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>de.csbdresden</groupId>

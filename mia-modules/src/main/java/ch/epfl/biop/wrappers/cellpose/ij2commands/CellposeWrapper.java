@@ -1,18 +1,23 @@
-package ch.epfl.biop.wrappers.cellpose.ij2commands;
+// package ch.epfl.biop.wrappers.cellpose.ij2commands;
 
+<<<<<<< Updated upstream
 import java.io.File;
 
 import ij.ImagePlus;
+=======
+// import ij.ImagePlus;
+>>>>>>> Stashed changes
 
-public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
-    public ImagePlus getLabels() {
-        return this.cellpose_imp;
-    }
+// public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
+//     public ImagePlus getLabels() {
+//         return this.cellpose_imp;
+//     }
 
-    public void setImagePlus(ImagePlus ipl) {
-        this.imp = ipl;
-    }
+//     public void setImagePlus(ImagePlus ipl) {
+//         this.imp = ipl;
+//     }
 
+<<<<<<< Updated upstream
     public void setModel(String model) {
         this.model = model;
     }
@@ -36,19 +41,25 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
     public void setDiameter(int diameter) {
         this.diameter = diameter;
     }
+=======
+//     public void setDiameter(int diameter) {
+//         this.diameter = diameter;
+//     }
+>>>>>>> Stashed changes
 
-    public void setCellProbabilityThreshold(double cellProbabilityThreshold) {
-        this.cellproba_threshold = cellProbabilityThreshold;
-    }
+//     public void setCellProbabilityThreshold(double cellProbabilityThreshold) {
+//         this.cellproba_threshold = cellProbabilityThreshold;
+//     }
 
-    public void setFlowThreshold(double flowThreshold) {
-        this.flow_threshold = flowThreshold;
-    }
+//     public void setFlowThreshold(double flowThreshold) {
+//         this.flow_threshold = flowThreshold;
+//     }
 
-    public void setAnisotropy(double anisotropy) {
-        this.anisotropy = anisotropy;
-    }
+//     public void setAnisotropy(double anisotropy) {
+//         this.anisotropy = anisotropy;
+//     }
 
+<<<<<<< Updated upstream
     public void setDiameterThreshold(double diameterThreshold) {
         this.diam_threshold = diameterThreshold;
     }
@@ -69,3 +80,9 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
         this.additional_flags = additionalFlags;
     }
 }
+=======
+//     public void setDiameterThreshold(double diameterThreshold) {
+//         this.diam_threshold = diameterThreshold;
+//     }
+// }
+>>>>>>> Stashed changes
