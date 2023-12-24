@@ -1,9 +1,7 @@
 package io.github.mianalysis.mia.macro;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.scijava.InstantiableException;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginInfo;
