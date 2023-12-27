@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -110,7 +111,9 @@ public class FitLongestChord extends Module {
             boolean storeEndPoints) {
         double dppXY = object.getDppXY();
 
-        LongestChordCalculator calculator = new LongestChordCalculator(object.getCoordinateSet(), object.getDppXY(),
+        CoordinateSet surface = object.getSurface().getCoordinateSet();
+
+        LongestChordCalculator calculator = new LongestChordCalculator(surface, object.getDppXY(),
                 object.getDppZ());
 
         double longestChordLength = calculator.getLCLength();

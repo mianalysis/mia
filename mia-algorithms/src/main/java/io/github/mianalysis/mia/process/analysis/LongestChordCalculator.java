@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.process.math.GeneralOps;
 */
 public class LongestChordCalculator {
     private double tolerance = 1E-10;
-    private final CoordinateSet coordinateSet;
+    private final CoordinateSet surfaceCoordinateSet;
     private final double dppXY;
     private final double dppZ;
     
@@ -22,7 +22,7 @@ public class LongestChordCalculator {
     private final double[][] LC; //Longest chord
     
     public LongestChordCalculator(CoordinateSet coordinateSet, double dppXY, double dppZ) {
-        this.coordinateSet = coordinateSet;
+        this.surfaceCoordinateSet = coordinateSet;
         this.dppXY = dppXY;
         this.dppZ = dppZ;
         
@@ -38,8 +38,8 @@ public class LongestChordCalculator {
         double[][] lc = new double[2][3];
         
         double len = 0;
-        for (Point<Integer> point1:coordinateSet) {
-            for (Point<Integer> point2:coordinateSet) {
+        for (Point<Integer> point1:surfaceCoordinateSet) {
+            for (Point<Integer> point2:surfaceCoordinateSet) {
                 if (point1 == point2) continue;
                 
                 double[] a = {point1.x, point1.y, getXYScaledZ(point1.z)};
@@ -76,7 +76,7 @@ public class LongestChordCalculator {
             return null;
         }
         
-        for (Point<Integer> point:coordinateSet) {
+        for (Point<Integer> point:surfaceCoordinateSet) {
             Vector3D p1 = new Vector3D(point.x,point.y,getXYScaledZ(point.z));
             cumStat.addMeasure(line.distance(p1));
         }
