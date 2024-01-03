@@ -3,13 +3,13 @@
   <parent>
     <artifactId>pom-mia</artifactId>
     <groupId>io.github.mianalysis</groupId>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mianalysis</groupId>
   <artifactId>mia-plugin</artifactId>
   <name>mia-plugin</name>
-  <version>1.5.0-SNAPSHOT</version>
+  <version>1.5.0</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -847,38 +847,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>ch.epfl.biop</groupId>
-      <artifactId>ijl-utilities-wrappers</artifactId>
-      <version>0.9.4</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>imagej-legacy</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>itextpdf</artifactId>
-          <groupId>com.itextpdf</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>batik-bridge</artifactId>
-          <groupId>org.apache.xmlgraphics</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>batik-svg-dom</artifactId>
-          <groupId>org.apache.xmlgraphics</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>batik-gvt</artifactId>
-          <groupId>org.apache.xmlgraphics</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>scijava-ui-swing</artifactId>
-          <groupId>org.scijava</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>de.csbdresden</groupId>
       <artifactId>csbdeep</artifactId>
       <version>0.6.0</version>
@@ -969,12 +937,12 @@
           <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imglib2-algorithm</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>itextpdf</artifactId>
           <groupId>com.itextpdf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2-algorithm</artifactId>
+          <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
           <artifactId>ij</artifactId>
@@ -1175,6 +1143,10 @@
           <groupId>com.google.code.gson</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>itextpdf</artifactId>
+          <groupId>com.itextpdf</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
         </exclusion>
@@ -1189,10 +1161,6 @@
         <exclusion>
           <artifactId>imglib2-roi</artifactId>
           <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>itextpdf</artifactId>
-          <groupId>com.itextpdf</groupId>
         </exclusion>
         <exclusion>
           <artifactId>jfreechart</artifactId>
