@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -27,6 +28,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -59,6 +61,24 @@ public class CellposeDetection extends Module {
 
     public static final String USE_FASTMODE = "Use fast mode";
 
+    public static final String MODEL_SEPARATOR = "Model settings";
+
+    public static final String MODEL_MODE = "Model mode";
+
+    public static final String CUSTOM_MODEL_PATH = "Custom model path";
+
+    public static final String MODEL = "Model";
+
+    public static final String USE_NUCLEI_CHANNEL = "Use nuclei channel";
+
+    public static final String NUCLEI_CHANNEL = "Nuclei channel";
+
+    public static final String USE_CYTO_CHANNEL = "Use cyto channel";
+
+    public static final String CYTO_CHANNEL = "Cyto channel";
+
+    public static final String DIMENSION_MODE = "Dimension mode";
+
     public static final String SEGMENTATION_SEPARATOR = "Segmentation settings";
 
     public static final String DIAMETER = "Diameter";
@@ -71,6 +91,13 @@ public class CellposeDetection extends Module {
 
     public static final String DIAMETER_THRESHOLD = "Diameter threshold";
 
+    public static final String STITCH_THRESHOLD = "Stitch threshold";
+
+    public static final String USE_OMNI = "Use Omnipose mask reconstruction features";
+
+    public static final String USE_CLUSTERING = "Use DBSCAN clustering";
+
+    public static final String ADDITIONAL_FLAGS = "Additional flags";
 
     public interface EnvironmentTypes {
         String CONDA = "Conda";
@@ -87,6 +114,33 @@ public class CellposeDetection extends Module {
         String V2P0 = "2.0";
 
         String[] ALL = new String[] { V0P6, V0P7, V1P0, V2P0 };
+
+    }
+
+    public interface ModelModes {
+        String CUSTOM = "Custom";
+        String INCLUDED = "Included";
+
+        String[] ALL = new String[] { CUSTOM, INCLUDED };
+
+    }
+
+    public interface Models {
+        String BACT_OMNI = "Bact omni";
+        String CYTO = "Cyto";
+        String CYTO2 = "Cyto 2";
+        String CYTO2_OMNI = "Cyto 2 omni";
+        String NUCLEI = "Nuclei";
+
+        String[] ALL = new String[] { BACT_OMNI, CYTO, CYTO2, CYTO2_OMNI, NUCLEI };
+
+    }
+
+    public interface DimensionModes {
+        String TWOD = "2D";
+        String THREED = "3D";
+
+        String[] ALL = new String[] { TWOD, THREED };
 
     }
 
@@ -109,6 +163,27 @@ public class CellposeDetection extends Module {
         return "";
     }
 
+    public static String getModelName(String model) {
+        switch (model) {
+            case Models.BACT_OMNI:
+                return "bact_omni";
+            case Models.CYTO:
+                return "cyto";
+            case Models.CYTO2:
+                return "cyto2";
+            case Models.CYTO2_OMNI:
+                return "cyto2_omni";
+            case Models.NUCLEI:
+            default:
+                return "nuclei";
+        }
+    }
+
+    public static String getCustomModelType(String model) {
+        return "own model " + getModelName(model);
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
@@ -123,11 +198,24 @@ public class CellposeDetection extends Module {
         boolean useGPU = parameters.getValue(USE_GPU, workspace);
         boolean useResample = parameters.getValue(USE_RESAMPLE, workspace);
 
+        String modelMode = parameters.getValue(MODEL_MODE, workspace);
+        String customModelPath = parameters.getValue(CUSTOM_MODEL_PATH, workspace);
+        String model = parameters.getValue(MODEL, workspace);
+        boolean useNucleiChannel = parameters.getValue(USE_NUCLEI_CHANNEL, workspace);
+        int nucleiChannel = parameters.getValue(NUCLEI_CHANNEL, workspace);
+        boolean useCytoChannel = parameters.getValue(USE_CYTO_CHANNEL, workspace);
+        int cytoChannel = parameters.getValue(CYTO_CHANNEL, workspace);
+        String dimensionMode = parameters.getValue(DIMENSION_MODE, workspace);
+
         int diameter = parameters.getValue(DIAMETER, workspace);
         double cellProbThresh = parameters.getValue(CELL_PROBABILITY_THRESHOLD, workspace);
         double flowThreshold = parameters.getValue(FLOW_THRESHOLD, workspace);
         double anisotropy = parameters.getValue(ANISOTROPY, workspace);
         double diameterThreshold = parameters.getValue(DIAMETER_THRESHOLD, workspace);
+        double stitchThreshold = parameters.getValue(STITCH_THRESHOLD, workspace);
+        boolean useOmni = parameters.getValue(USE_OMNI, workspace);
+        boolean useClustering = parameters.getValue(USE_CLUSTERING, workspace);
+        String additionalFlags = parameters.getValue(ADDITIONAL_FLAGS, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
@@ -150,21 +238,53 @@ public class CellposeDetection extends Module {
 
         CellposeWrapper cellpose = new CellposeWrapper();
         cellpose.setImagePlus(ipl);
+
+        switch (modelMode) {
+            case ModelModes.CUSTOM:
+                cellpose.setModel(getCustomModelType(model));
+                cellpose.setModelPath(new File(customModelPath));
+                break;
+            case ModelModes.INCLUDED:
+                cellpose.setModel(getModelName(model));
+                break;
+        }
+
+        switch (model) {
+            case Models.BACT_OMNI:
+                cellpose.setNucleiChannel(-1);
+                cellpose.setCytoChannel(cytoChannel);
+                break;
+            case Models.CYTO:
+            case Models.CYTO2:
+            case Models.CYTO2_OMNI:
+                if (useNucleiChannel)
+                    cellpose.setNucleiChannel(nucleiChannel);
+                else
+                    cellpose.setNucleiChannel(-1);
+
+                if (useCytoChannel)
+                    cellpose.setCytoChannel(cytoChannel);
+                else
+                    cellpose.setCytoChannel(-1);
+                    
+                break;
+            case Models.NUCLEI:
+                cellpose.setNucleiChannel(nucleiChannel);
+                cellpose.setCytoChannel(-1);
+                break;
+        }
+
+        cellpose.setDimensionMode(dimensionMode.toLowerCase());
+
         cellpose.setDiameter(diameter);
         cellpose.setCellProbabilityThreshold(cellProbThresh);
         cellpose.setFlowThreshold(flowThreshold);
         cellpose.setAnisotropy(anisotropy);
         cellpose.setDiameterThreshold(diameterThreshold);
-
-        // cellpose.model_path = new File("cellpose");
-        // cellpose.model = "cyto";
-        // cellpose.nuclei_channel = -1;
-        // cellpose.cyto_channel = 1;
-        // cellpose.dimensionMode = "2D";
-        // cellpose.stitch_threshold = 0;
-        // cellpose.omni = false;
-        // cellpose.cluster = false;
-        // cellpose.additional_flags = "";
+        cellpose.setStitchThreshold(stitchThreshold);
+        cellpose.setUseOmni(useOmni);
+        cellpose.setUseClustering(useClustering);
+        cellpose.setAdditionalFlags(additionalFlags);
 
         cellpose.run();
 
@@ -174,7 +294,7 @@ public class CellposeDetection extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().show();
+            outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 
@@ -224,12 +344,26 @@ public class CellposeDetection extends Module {
         parameters.add(new BooleanP(USE_GPU, this, Prefs.get(keyPrefix + "useGpu", false)));
         parameters.add(new BooleanP(USE_FASTMODE, this, Prefs.get(keyPrefix + "useFastMode", false)));
 
+        parameters.add(new SeparatorP(MODEL_SEPARATOR, this));
+        parameters.add(new ChoiceP(MODEL_MODE, this, ModelModes.INCLUDED, ModelModes.ALL));
+        parameters.add(new FilePathP(CUSTOM_MODEL_PATH, this));
+        parameters.add(new ChoiceP(MODEL, this, Models.NUCLEI, Models.ALL));
+        parameters.add(new BooleanP(USE_NUCLEI_CHANNEL, this, true));
+        parameters.add(new IntegerP(NUCLEI_CHANNEL, this, 1));
+        parameters.add(new BooleanP(USE_CYTO_CHANNEL, this, true));
+        parameters.add(new IntegerP(CYTO_CHANNEL, this, 1));
+        parameters.add(new ChoiceP(DIMENSION_MODE, this, DimensionModes.TWOD, DimensionModes.ALL));
+
         parameters.add(new SeparatorP(SEGMENTATION_SEPARATOR, this));
         parameters.add(new IntegerP(DIAMETER, this, 30));
         parameters.add(new DoubleP(CELL_PROBABILITY_THRESHOLD, this, 0.0));
         parameters.add(new DoubleP(FLOW_THRESHOLD, this, 0.4));
         parameters.add(new DoubleP(ANISOTROPY, this, 1.0));
         parameters.add(new DoubleP(DIAMETER_THRESHOLD, this, 12));
+        parameters.add(new DoubleP(STITCH_THRESHOLD, this, -1d));
+        parameters.add(new BooleanP(USE_OMNI, this, false));
+        parameters.add(new BooleanP(USE_CLUSTERING, this, false));
+        parameters.add(new StringP(ADDITIONAL_FLAGS, this));
 
     }
 
@@ -259,6 +393,34 @@ public class CellposeDetection extends Module {
         returnedParameters.add(parameters.getParameter(USE_GPU));
         returnedParameters.add(parameters.getParameter(USE_FASTMODE));
 
+        returnedParameters.add(parameters.getParameter(MODEL_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MODEL_MODE));
+        switch ((String) parameters.getValue(MODEL_MODE, workspace)) {
+            case ModelModes.CUSTOM:
+                returnedParameters.add(parameters.getParameter(CUSTOM_MODEL_PATH));
+                break;
+        }
+        returnedParameters.add(parameters.getParameter(MODEL));
+        switch ((String) parameters.getValue(MODEL, workspace)) {
+            case Models.BACT_OMNI:
+                returnedParameters.add(parameters.getParameter(CYTO_CHANNEL));
+                break;
+            case Models.CYTO:
+            case Models.CYTO2:
+            case Models.CYTO2_OMNI:
+                returnedParameters.add(parameters.getParameter(USE_NUCLEI_CHANNEL));
+                if ((boolean) parameters.getValue(USE_NUCLEI_CHANNEL, workspace))
+                    returnedParameters.add(parameters.getParameter(NUCLEI_CHANNEL));
+                returnedParameters.add(parameters.getParameter(USE_CYTO_CHANNEL));
+                if ((boolean) parameters.getValue(USE_CYTO_CHANNEL, workspace))
+                    returnedParameters.add(parameters.getParameter(CYTO_CHANNEL));
+                break;
+            case Models.NUCLEI:
+                returnedParameters.add(parameters.getParameter(NUCLEI_CHANNEL));
+                break;
+        }
+        returnedParameters.add(parameters.getParameter(DIMENSION_MODE));
+
         returnedParameters.add(parameters.getParameter(SEGMENTATION_SEPARATOR));
         switch ((String) parameters.getValue(CELLPOSE_VERSION, workspace)) {
             case CellposeVersions.V0P6:
@@ -286,6 +448,11 @@ public class CellposeDetection extends Module {
                 returnedParameters.add(parameters.getParameter(ANISOTROPY));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(STITCH_THRESHOLD));
+        returnedParameters.add(parameters.getParameter(USE_OMNI));
+        returnedParameters.add(parameters.getParameter(USE_CLUSTERING));
+        returnedParameters.add(parameters.getParameter(ADDITIONAL_FLAGS));
 
         // Updating default parameters
         String keyPrefix = Cellpose.class.getName() + ".";
