@@ -116,7 +116,6 @@
         <module>mia-algorithms</module>
         <module>mia-coordinates</module>
         <module>mia-core</module>
-        <module>mia-headless</module>
         <module>mia-macros</module>
         <module>mia-modules</module>
         <module>mia-plugin</module>
@@ -195,7 +194,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.1.1</version>
+            <version>3.3</version>
             <scope>${scp}</scope>
         </dependency>
 
