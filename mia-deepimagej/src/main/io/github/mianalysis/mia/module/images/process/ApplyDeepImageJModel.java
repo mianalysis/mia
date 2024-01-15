@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import deepimagej.DeepImageJ;
 import ij.IJ;
 import ij.ImagePlus;
-import io.github.mianalysis.mia.MIA;
+import ij.ImageStack;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -28,8 +28,6 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
 
@@ -120,6 +118,8 @@ public class ApplyDeepImageJModel extends Module {
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
 
+        ImagePlus outputIpl = inputIpl.duplicate();
+        
         // Running deep learning model
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
 
@@ -132,10 +132,18 @@ public class ApplyDeepImageJModel extends Module {
 
         String format = PrepareDeepImageJ.getFormats(modelName)[0];
         PrepareDeepImageJ pDIJ = new PrepareDeepImageJ();
-        ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
+
+        ImageStack istIn = inputIpl.getStack();
+        ImageStack istOut = outputIpl.getStack();
+
+        for (int i = 0; i < istIn.size(); i++) {
+            inputIpl = new ImagePlus("Temp", istIn.getProcessor(i + 1));
+            outputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
+            istOut.setProcessor(outputIpl.getProcessor(),i+1);
+        }
 
         // Storing output image
-        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl.duplicate());
         workspace.addImage(outputImage);
 
         if (showOutput)

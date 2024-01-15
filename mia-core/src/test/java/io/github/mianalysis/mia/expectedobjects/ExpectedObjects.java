@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -21,7 +24,6 @@ import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
-import util.opencsv.CSVReader;
 
 /**
  * Created by sc13967 on 12/02/2018.
@@ -131,7 +133,7 @@ public abstract class ExpectedObjects {
 
             return coords;
 
-        } catch (IOException e) {
+        } catch (IOException | CsvValidationException e) {
             MIA.log.writeError(e);
             return null;
         }
