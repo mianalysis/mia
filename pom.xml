@@ -247,7 +247,7 @@
             <artifactId>imagej</artifactId>
             <scope>${scp}</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>
@@ -271,13 +271,7 @@
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Fiji_Plugins</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
+        </dependency>        
     </dependencies>
 
     <distributionManagement>

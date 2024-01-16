@@ -14,6 +14,7 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -215,8 +216,8 @@ public class AffineFixedTransform extends Module {
         // Applying the transformation
         try {
             applyTransformation(inputImage, transform, fillMode, multithread);
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+        } catch (Exception e) {
+            MIA.log.writeError(e);
             return Status.FAIL;
         }
 

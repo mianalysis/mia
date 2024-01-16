@@ -13,8 +13,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
-import org.apache.batik.ext.swing.GridBagConstants;
-
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.module.Module;
@@ -136,7 +134,7 @@ public class NotesPanel extends JPanel {
         usageMessage.setOpaque(false);
         c.weighty = 1;
         c.gridy++;
-        c.fill = GridBagConstants.NONE;
+        c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
         add(usageMessage,c);
 

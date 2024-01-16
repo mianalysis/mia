@@ -15,6 +15,7 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.registration.AffineFixedTransform;
 import io.github.mianalysis.mia.object.Workspace;
@@ -208,8 +209,8 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
                 warpedIpr = flip(warpedIpr);
                 resBest = testTransforms(referenceIpr, warpedIpr, aParam, true, transform, resBest);
             }
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+        } catch (Exception e) {
+            MIA.log.writeError(e);
         }
 
         if (resBest == null)
