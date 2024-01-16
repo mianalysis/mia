@@ -162,6 +162,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // Replacing all images in this slice of the input with the registered images
             replaceSlice(inputImage, currInputImage, z);
 
+            MIA.log.writeDebug("Replaced slice (independent)");
+
         }
     }
 
@@ -216,6 +218,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             Transform transform = getTransform(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param, showDetectedPoints);
 
+            MIA.log.writeDebug("Transform" + transform.toString());
+
             if (transform == null) {
                 MIA.log.writeWarning("Unable to align images at position " + (t + 1));
                 continue;
@@ -225,14 +229,19 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
+                MIA.log.writeDebug("Applying c" + c);
                 Image warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1),
                         "1-end", String.valueOf(t + 1));
+                MIA.log.writeDebug("Applied c" + c);
+
                 try {
                     applyTransformation(warpedChannel, transform, fillMode, multithread);
                 } catch (InterruptedException e) {
                 }
 
                 replaceStack(inputImage, warpedChannel, c, t);
+
+                MIA.log.writeDebug("Replaced c"+c);
 
             }
 
@@ -381,7 +390,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             ArrayList<Image> images = new ArrayList<>();
             images.add(inputImage);
             images.add(referenceImage);
+
             return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
+        
         }
 
         return inputImage;
@@ -572,6 +583,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 inputImage.show();
             }
         }
+
+        inputImage.show();
+        // inputImage.setImagePlus(inputImage.getImagePlus().duplicate());
 
         // Dealing with module outputs
         if (!applyToInput)

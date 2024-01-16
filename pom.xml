@@ -121,6 +121,7 @@
         <module>mia-macros</module>
         <module>mia-modules</module>
         <module>mia-plugin</module>
+        <module>mia-ptbiop</module>
         <module>mia-stardist</module>
     </modules>
 
