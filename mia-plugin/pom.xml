@@ -183,6 +183,7 @@
             <groupId>mpicbg</groupId>
             <artifactId>mpicbg</artifactId>
             <version>1.5.0</version>
+            <scope>${scp}</scope>
         </dependency>
     </dependencies>
 
