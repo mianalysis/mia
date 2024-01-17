@@ -114,12 +114,15 @@
 
     <modules>
         <module>mia-algorithms</module>
+        <module>mia-bonej</module>
         <module>mia-coordinates</module>
         <module>mia-core</module>
-        <module>mia-headless</module>
+        <module>mia-deepimagej</module>
         <module>mia-macros</module>
         <module>mia-modules</module>
         <module>mia-plugin</module>
+        <module>mia-ptbiop</module>
+        <module>mia-stardist</module>
     </modules>
 
     <repositories>
@@ -193,37 +196,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>3.1.1</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-lite</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
             <version>2.18.0</version>
@@ -276,22 +248,20 @@
             <artifactId>imagej</artifactId>
             <scope>${scp}</scope>
         </dependency>
+
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>
             <scope>${scp}</scope>
         </dependency>
+
         <dependency>
             <groupId>org.scijava</groupId>
             <artifactId>script-editor</artifactId>
             <version>0.7.6</version>
             <scope>${scp}</scope>
         </dependency>
-        <!-- <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-legacy</artifactId>
-            <scope>${scp}</scope>
-        </dependency> -->
+
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ops</artifactId>
@@ -299,145 +269,10 @@
         </dependency>
 
         <dependency>
-            <groupId>de.csbdresden</groupId>
-            <artifactId>csbdeep</artifactId>
-            <version>0.6.0</version>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>AnalyzeSkeleton_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Auto_Local_Threshold</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>bUnwarpJ_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Colocalisation_Analysis</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Colour_Deconvolution</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>CorrectBleach_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Directionality_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Fiji_Plugins</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.stardist</groupId>
-            <artifactId>stardist-imagej</artifactId>
-            <version>0.3.0</version>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.deepimagej</groupId>
-            <artifactId>deepimagej-plugin</artifactId>
-            <version>2.1.15</version>
-            <scope>${scp}</scope>
-        </dependency>
-        <!-- <dependency>
-            <groupId>com.github.deepimagej</groupId>
-            <artifactId>deepimagej-plugin</artifactId>
-            <version>bb15220</version>
-            <scope>${scp}</scope>
-        </dependency> -->
-        <!-- <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.bioimage</groupId>
-            <artifactId>dl-modelrunner</artifactId>
-            <version>0.3.10</version>
-        </dependency> -->
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>TrackMate</artifactId>
-            <version>7.10.0</version>
-            <scope>${scp}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Trainable_Segmentation</artifactId>
-            <version>3.3.2</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <!-- <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.5.2</version>
-            <scope>${scp}</scope>
-        </dependency> -->
-
-        <!-- <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv</artifactId>
-            <version>1.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>1.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>4.0.1-1.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco.javacpp-presets</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.0.1-1.4.4</version>
-        </dependency> -->
-
-        <dependency>
-            <groupId>fr.inra.ijpb</groupId>
-            <artifactId>MorphoLibJ_</artifactId>
-            <!-- <version>1.5.0</version> -->
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.biomedical-imaging.imagej</groupId>
-            <artifactId>ij_ridge_detect</artifactId>
-            <version>1.4.1</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bonej</groupId>
-            <artifactId>bonej-legacy-util_</artifactId>
-            <version>7.0.15</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-        </dependency>
+        </dependency>        
     </dependencies>
 
     <distributionManagement>

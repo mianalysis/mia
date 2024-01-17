@@ -129,10 +129,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
         try {
             BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, translationModel, p.blockR, p.blockR,
                     p.searchR, p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return null;
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             MIA.log.writeError(e);
             return null;
         }
@@ -188,7 +185,6 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

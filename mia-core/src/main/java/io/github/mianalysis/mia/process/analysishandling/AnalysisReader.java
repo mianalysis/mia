@@ -105,7 +105,16 @@ public class AnalysisReader {
         // If loading a suitably old version, use the relevant legacy loader. Also, has
         // handling for older versions still, which didn't include a version number.
         Node versionNode = doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION");
+
+        if (versionNode == null)
+            return AnalysisReader_Pre_0p10p0.loadModules(xml);
+
         String loadedVersion = versionNode.getNodeValue();
+
+        if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
+            return AnalysisReader_Pre_0p10p0.loadModules(xml);
+        else if (VersionUtils.compare("0.15.0", loadedVersion) > 0)
+            return AnalysisReader_0p10p0_0p15p0.loadModules(xml);
 
         if (VersionUtils.compare(MIA.getVersion(), loadedVersion) != 0) {
             MIA.log.writeMessage("Loaded workflow created in different version of MIA.");
@@ -113,11 +122,6 @@ public class AnalysisReader {
             MIA.log.writeMessage("    Workflow version: " + loadedVersion);
             MIA.log.writeMessage("    Installed version: " + MIA.getVersion());
         }
-
-        if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
-            return AnalysisReader_Pre_0p10p0.loadModules(xml);
-        else if (VersionUtils.compare("0.15.0", loadedVersion) > 0)
-            return AnalysisReader_0p10p0_0p15p0.loadModules(xml);
 
         return loadModules(doc, loadedVersion);
 
@@ -151,12 +155,13 @@ public class AnalysisReader {
                 modules.setOutputControl((OutputControl) module);
             else
                 modules.add(module);
-            
+
         }
 
         // Adding timepoint measurements for all objects
         if (VersionUtils.compare("0.18.0", loadedVersion) > 0)
-            MIA.log.writeWarning("Pre MIA v0.18.0 workflow loaded.  Timepoints will no be included in results file by default.  To add this in, please add the \"Object timepoint\" module.");
+            MIA.log.writeWarning(
+                    "Pre MIA v0.18.0 workflow loaded.  Timepoints will no be included in results file by default.  To add this in, please add the \"Object timepoint\" module.");
 
         return modules;
 
@@ -173,7 +178,7 @@ public class AnalysisReader {
         try {
             moduleName = MIA.getLostAndFound().findModule(moduleName);
         } catch (Exception e) {
-            MIA.log.writeWarning("Unable to load module \""+moduleName+"\"");
+            MIA.log.writeWarning("Unable to load module \"" + moduleName + "\"");
         }
 
         // Trying to load from available modules

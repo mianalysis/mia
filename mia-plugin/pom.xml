@@ -144,8 +144,46 @@
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-algorithms</artifactId>
+            <artifactId>mia-bonej</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-deepimagej</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-ptbiop</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-stardist</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.3</version>
+            <scope>${scp}</scope>
+        </dependency>   
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>bUnwarpJ_</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mpicbg</groupId>
+            <artifactId>mpicbg</artifactId>
+            <version>1.5.0</version>
+            <scope>${scp}</scope>
         </dependency>
     </dependencies>
 

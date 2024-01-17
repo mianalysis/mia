@@ -116,7 +116,6 @@
         <module>mia-algorithms</module>
         <module>mia-coordinates</module>
         <module>mia-core</module>
-        <module>mia-headless</module>
         <module>mia-macros</module>
         <module>mia-modules</module>
         <module>mia-plugin</module>

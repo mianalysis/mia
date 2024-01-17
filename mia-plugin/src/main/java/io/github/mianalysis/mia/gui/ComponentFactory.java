@@ -18,8 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import org.apache.batik.ext.swing.GridBagConstants;
-
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableRefsButton;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableableCheck;
@@ -314,7 +312,7 @@ public class ComponentFactory {
         separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
         c.weightx = 1;
         c.gridx++;
-        c.anchor = GridBagConstants.EAST;
+        c.anchor = GridBagConstraints.EAST;
         c.insets = new Insets(0, 5, 0, 0);
         panel.add(separatorRight, c);
 
