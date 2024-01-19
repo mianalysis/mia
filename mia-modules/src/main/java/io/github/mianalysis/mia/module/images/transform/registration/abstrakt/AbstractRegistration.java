@@ -155,14 +155,12 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             Image currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(), "1-end",
                     String.valueOf(z + 1), "1-end");
 
-            // Performing the registration on this slice
+                    // Performing the registration on this slice
             processLinked(currInputImage, currCalcImage, referenceMode, numPrevFrames, prevFrameStatMode, param,
                     fillMode, showDetectedPoints, multithread, reference);
-
+            
             // Replacing all images in this slice of the input with the registered images
             replaceSlice(inputImage, currInputImage, z);
-
-            MIA.log.writeDebug("Replaced slice (independent)");
 
         }
     }
@@ -218,8 +216,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             Transform transform = getTransform(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param, showDetectedPoints);
 
-            MIA.log.writeDebug("Transform" + transform.toString());
-
             if (transform == null) {
                 MIA.log.writeWarning("Unable to align images at position " + (t + 1));
                 continue;
@@ -229,19 +225,15 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
-                MIA.log.writeDebug("Applying c" + c);
                 Image warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1),
                         "1-end", String.valueOf(t + 1));
-                MIA.log.writeDebug("Applied c" + c);
 
                 try {
                     applyTransformation(warpedChannel, transform, fillMode, multithread);
                 } catch (InterruptedException e) {
                 }
-
-                replaceStack(inputImage, warpedChannel, c, t);
-
-                MIA.log.writeDebug("Replaced c"+c);
+                
+                replaceStack(inputImage, warpedChannel, c+1, t+1);
 
             }
 
@@ -253,7 +245,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 } catch (InterruptedException e) {
                     return;
                 }
-                replaceStack(calculationImage, warped, 0, t);
+                replaceStack(calculationImage, warped, 1, t+1);
             }
 
             transform = null;
@@ -306,10 +298,11 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
 
-        int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        // int nThreads = multithread ? Prefs.getThreads() : 1;
+        // ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+        //         new LinkedBlockingQueue<>());
 
+        
         for (int c = 1; c <= nChannels; c++) {
             for (int z = 1; z <= nSlices; z++) {
                 for (int t = 1; t <= nFrames; t++) {
@@ -317,22 +310,20 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     int finalZ = z;
                     int finalT = t;
 
-                    Runnable task = () -> {
+                    // Runnable task = () -> {
                         ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
                         int fillValue = getFillValue(fillMode, slice);
                         ImageProcessor alignedSlice = applyTransform(slice, transform, fillValue);
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
-
                         getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
-
-                    };
-                    pool.submit(task);
+                    // };
+                    // pool.submit(task);
                 }
             }
         }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        // pool.shutdown();
+        // pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -424,7 +415,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     synchronized public static ImagePlus getSetSlice(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {
-            // Get mode
             return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice,
                     timepoint + "-" + timepoint);
         } else {
@@ -446,19 +436,16 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static void replaceSlice(Image targetImage, Image sourceSlice, int slice) {
         ImagePlus targetIpl = targetImage.getImagePlus();
         ImagePlus sourceIpl = sourceSlice.getImagePlus();
-        ImageStack targetIst = targetIpl.getStack();
-        ImageStack sourceIst = sourceIpl.getStack();
 
         for (int channel = 0; channel < targetIpl.getNChannels(); channel++) {
             for (int timepoint = 0; timepoint < targetIpl.getNFrames(); timepoint++) {
-                int sourceIdx = sourceIpl.getStackIndex(channel + 1, 1, timepoint + 1);
-                int targetIdx = targetIpl.getStackIndex(channel + 1, slice + 1, timepoint + 1);
+                int sourceIdx = sourceIpl.getStackIndex(channel+1,1,timepoint+1);
+                int targetIdx = targetIpl.getStackIndex(channel+1,slice+1,timepoint+1);
 
-                targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
+                targetIpl.getStack().setProcessor(sourceIpl.getStack().getProcessor(sourceIdx), targetIdx);
 
             }
-        }
-        targetImage.getImagePlus().updateAndDraw();
+        }        
     }
 
     @Override
@@ -583,9 +570,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 inputImage.show();
             }
         }
-
-        inputImage.show();
-        // inputImage.setImagePlus(inputImage.getImagePlus().duplicate());
 
         // Dealing with module outputs
         if (!applyToInput)
