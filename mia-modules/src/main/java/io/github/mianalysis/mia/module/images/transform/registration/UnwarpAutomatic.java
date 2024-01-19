@@ -19,11 +19,22 @@ import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.Ab
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 
-
 /**
-* Apply slice-by-slice (2D) B-spline unwarping-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be "linked" (all frames given the same registration) or "independent" (each stack registered separately).<br><br>This module uses the <a href="https://imagej.net/BUnwarpJ">BUnwarpJ</a> plugin to calculate and apply the necessary 2D transforms.  Detailed information about how the BUnwarpJ process works can be found at <a href="https://imagej.net/BUnwarpJ">https://imagej.net/BUnwarpJ</a>.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Apply slice-by-slice (2D) B-spline unwarping-based image registration to a
+ * multi-dimensional stack. Images can be aligned relative to the first frame in
+ * the stack, the previous frame or a separate image in the workspace. The
+ * registration transform can also be calculated from a separate stack to the
+ * one that it will be applied to. Registration can be performed along either
+ * the time or Z axes. The non-registered axis (e.g. time axis when registering
+ * in Z) can be "linked" (all frames given the same registration) or
+ * "independent" (each stack registered separately).<br>
+ * <br>
+ * This module uses the <a href="https://imagej.net/BUnwarpJ">BUnwarpJ</a>
+ * plugin to calculate and apply the necessary 2D transforms. Detailed
+ * information about how the BUnwarpJ process works can be found at
+ * <a href="https://imagej.net/BUnwarpJ">https://imagej.net/BUnwarpJ</a>.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class UnwarpAutomatic extends AbstractBUnwarpJRegistration {
     public UnwarpAutomatic(Modules modules) {
         super("Unwarp (automatic)", modules);
@@ -40,7 +51,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration {
 
                 + "<br><br>This module uses the <a href=\"https://imagej.net/BUnwarpJ\">BUnwarpJ</a> plugin to calculate and apply the necessary 2D transforms.  Detailed information about how the BUnwarpJ process works can be found at <a href=\"https://imagej.net/BUnwarpJ\">https://imagej.net/BUnwarpJ</a>.";
     }
-        
+
     @Override
     public AutomaticBUnwarpJParam createParameterSet() {
         return new AutomaticBUnwarpJParam();
@@ -53,7 +64,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration {
 
     @Override
     public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
-    boolean showDetectedPoints) {
+            boolean showDetectedPoints) {
 
         AutomaticBUnwarpJParam p = (AutomaticBUnwarpJParam) param;
 
@@ -87,12 +98,11 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration {
         super.initialiseParameters();
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -110,7 +120,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration {
 
     }
 
-public class AutomaticBUnwarpJParam extends BUnwarpJParam {
+    public class AutomaticBUnwarpJParam extends BUnwarpJParam {
 
     }
 }

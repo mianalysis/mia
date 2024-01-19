@@ -39,51 +39,55 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
 import net.imagej.axis.DefaultLinearAxis;
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
-
 /**
-* Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br><br>Note: Image stack dimensions and bit-depths must be compatible.
-*/
+ * Combine two or more image stacks into a single stack. This module allows
+ * images to be combined along any of the axes X,Y,C,Z or T.<br>
+ * <br>
+ * Note: Image stack dimensions and bit-depths must be compatible.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input";
 
-	/**
-	* Add another image for concatenation.
-	*/
+    /**
+     * Add another image for concatenation.
+     */
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules.
-	*/
+    /**
+     * If enabled, the moduule can ignore any images specified for inclusion that
+     * aren't present in the workspace. This is useful if an image's existence is
+     * dependent on optional modules.
+     */
     public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Image output";
 
-	/**
-	* The resultant image of concatenation to be added to the workspace.
-	*/
+    /**
+     * The resultant image of concatenation to be added to the workspace.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* Axis along which to concatenate input images.
-	*/
+    /**
+     * Axis along which to concatenate input images.
+     */
     public static final String AXIS_MODE = "Axis mode";
 
     public ConcatenateStacks(Modules modules) {
@@ -139,54 +143,14 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg,
-            long[] offset, long[] dims) {
-        int xIdxIn1 = sourceImg.dimensionIndex(Axes.X);
-        int yIdxIn1 = sourceImg.dimensionIndex(Axes.Y);
-        int cIdxIn1 = sourceImg.dimensionIndex(Axes.CHANNEL);
-        int zIdxIn1 = sourceImg.dimensionIndex(Axes.Z);
-        int tIdxIn1 = sourceImg.dimensionIndex(Axes.TIME);
+    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus<T> targetImg,
+            long[] offsetOut, long[] dimsOut) {
+        IntervalView<T> target = Views.offsetInterval(targetImg, offsetOut, dimsOut);
 
-        // Adding the first image to the output
-        Cursor<T> cursor1 = sourceImg.localizingCursor();
-        RandomAccess<T> randomAccess1 = Views.offsetInterval(targetImg, offset, dims).randomAccess();
-        while (cursor1.hasNext()) {
-            cursor1.fwd();
+        RandomAccessibleInterval<T> source = ImgPlusTools.forceImgPlusToXYCZT(sourceImg);
 
-            // Getting position
-            long[] posIn = new long[sourceImg.numDimensions()];
-            cursor1.localize(posIn);
+        LoopBuilder.setImages(source, target).forEachPixel((s, t) -> t.set(s));
 
-            // Assigning position
-            long[] location = new long[5];
-            if (xIdxIn1 == -1)
-                location[0] = 0;
-            else
-                location[0] = posIn[xIdxIn1];
-
-            if (yIdxIn1 == -1)
-                location[1] = 0;
-            else
-                location[1] = posIn[yIdxIn1];
-
-            if (cIdxIn1 == -1)
-                location[2] = 0;
-            else
-                location[2] = posIn[cIdxIn1];
-
-            if (zIdxIn1 == -1)
-                location[3] = 0;
-            else
-                location[3] = posIn[zIdxIn1];
-
-            if (tIdxIn1 == -1)
-                location[4] = 0;
-            else
-                location[4] = posIn[tIdxIn1];
-
-            randomAccess1.setPositionAndGet(location).set(cursor1.get());
-
-        }
     }
 
     public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> concatenateImages(ImgPlus<T> imgPlus,
@@ -284,7 +248,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         // Appending any additional images
         for (int i = 2; i < inputImages.size(); i++)
             imgOut = concatenateImages(imgOut, inputImages.get(i).getImgPlus(), axis);
-        
+
         // If concatenation failed (for example, if the dimensions were inconsistent) it
         // returns null
         if (imgOut == null)
