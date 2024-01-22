@@ -24,7 +24,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ConcatenateStacks<>(null).getDescription());
+        assertNotNull(new ConcatenateStacks2<>(null).getDescription());
     }
 
 
@@ -50,14 +50,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -94,14 +94,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Y);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -138,14 +138,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -182,14 +182,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -226,14 +226,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -273,14 +273,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -317,14 +317,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Y);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -361,14 +361,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -405,14 +405,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -449,14 +449,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -496,14 +496,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -540,14 +540,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Y);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -584,14 +584,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -628,14 +628,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -672,14 +672,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -716,14 +716,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -760,14 +760,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -804,14 +804,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -848,14 +848,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -892,14 +892,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -936,14 +936,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -983,14 +983,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1027,14 +1027,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Y);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1071,14 +1071,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks5D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1115,14 +1115,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1159,14 +1159,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks5D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1206,14 +1206,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1250,14 +1250,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Y);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1294,14 +1294,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1338,14 +1338,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.Z);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1382,14 +1382,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.TIME);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1429,14 +1429,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1473,14 +1473,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);
@@ -1517,14 +1517,14 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
-        concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
-        concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
+        ConcatenateStacks2 concatenateStacks = new ConcatenateStacks2(null);
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.OUTPUT_IMAGE,"Test_output");
+        concatenateStacks.updateParameterValue(ConcatenateStacks2.AXIS_MODE, ConcatenateStacks2.AxisModes.X);
 
-        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE, workspace);
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks2.ADD_INPUT_IMAGE, workspace);
         Iterator<Parameters> iterator = parameterCollections.values().iterator();
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
-        iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image1");
+        iterator.next().updateValue(ConcatenateStacks2.INPUT_IMAGE,"Test_image2");
 
         // Running Module
         concatenateStacks.execute(workspace);

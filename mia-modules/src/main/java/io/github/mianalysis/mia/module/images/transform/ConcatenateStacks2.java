@@ -39,55 +39,60 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
 import net.imagej.axis.DefaultLinearAxis;
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
-
 /**
-* Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br><br>Note: Image stack dimensions and bit-depths must be compatible.
-*/
+ * Combine two or more image stacks into a single stack. This module allows
+ * images to be combined along any of the axes X,Y,C,Z or T.<br>
+ * <br>
+ * Note: Image stack dimensions and bit-depths must be compatible.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Module {
+public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input";
 
-	/**
-	* Add another image for concatenation.
-	*/
+    /**
+     * Add another image for concatenation.
+     */
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules.
-	*/
+    /**
+     * If enabled, the moduule can ignore any images specified for inclusion that
+     * aren't present in the workspace. This is useful if an image's existence is
+     * dependent on optional modules.
+     */
     public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Image output";
 
-	/**
-	* The resultant image of concatenation to be added to the workspace.
-	*/
+    /**
+     * The resultant image of concatenation to be added to the workspace.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* Axis along which to concatenate input images.
-	*/
+    /**
+     * Axis along which to concatenate input images.
+     */
     public static final String AXIS_MODE = "Axis mode";
 
-    public ConcatenateStacks(Modules modules) {
-        super("Concatenate stacks", modules);
+    public ConcatenateStacks2(Modules modules) {
+        super("Concatenate stacks 2", modules);
+        deprecated = true; // Marked as deprecated to hide until ready to replace main ConcatenateStacks code
     }
 
     public interface AxisModes {
@@ -101,12 +106,12 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(Workspace workspace,
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace,
             LinkedHashMap<Integer, Parameters> collections) {
-        ArrayList<Image> available = new ArrayList<>();
+        ArrayList<Image<T>> available = new ArrayList<>();
 
         for (Parameters collection : collections.values()) {
-            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE, workspace));
+            Image<T> image = workspace.getImage(collection.getValue(INPUT_IMAGE, workspace));
             if (image != null)
                 available.add(image);
         }
@@ -115,180 +120,59 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> long getCombinedAxisLength(ImgPlus<T> img1, ImgPlus<T> img2,
-            AxisType axis) {
-        long lengthIn1 = getAxisLength(img1, axis);
-        long lengthIn2 = getAxisLength(img2, axis);
+    public static int getAxisIndex(String axis) {
+        switch (axis) {
+            default:
+            case AxisModes.X:
+                return 0;
 
-        return lengthIn1 + lengthIn2;
+            case AxisModes.Y:
+                return 1;
 
-    }
+            case AxisModes.CHANNEL:
+                return 2;
 
-    static <T extends RealType<T> & NativeType<T>> boolean checkAxisEquality(ImgPlus<T> img1, ImgPlus<T> img2,
-            AxisType axis) {
-        long lengthIn1 = getAxisLength(img1, axis);
-        long lengthIn2 = getAxisLength(img2, axis);
+            case AxisModes.Z:
+                return 3;
 
-        return lengthIn1 == lengthIn2;
-
-    }
-
-    static <T extends RealType<T> & NativeType<T>> long getAxisLength(ImgPlus<T> img, AxisType axis) {
-        int idxIn = img.dimensionIndex(axis);
-        return idxIn == -1 ? 1 : img.dimension(idxIn);
-
-    }
-
-    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg,
-            long[] offset, long[] dims) {
-        int xIdxIn1 = sourceImg.dimensionIndex(Axes.X);
-        int yIdxIn1 = sourceImg.dimensionIndex(Axes.Y);
-        int cIdxIn1 = sourceImg.dimensionIndex(Axes.CHANNEL);
-        int zIdxIn1 = sourceImg.dimensionIndex(Axes.Z);
-        int tIdxIn1 = sourceImg.dimensionIndex(Axes.TIME);
-
-        // Adding the first image to the output
-        Cursor<T> cursor1 = sourceImg.localizingCursor();
-        RandomAccess<T> randomAccess1 = Views.offsetInterval(targetImg, offset, dims).randomAccess();
-        while (cursor1.hasNext()) {
-            cursor1.fwd();
-
-            // Getting position
-            long[] posIn = new long[sourceImg.numDimensions()];
-            cursor1.localize(posIn);
-
-            // Assigning position
-            long[] location = new long[5];
-            if (xIdxIn1 == -1)
-                location[0] = 0;
-            else
-                location[0] = posIn[xIdxIn1];
-
-            if (yIdxIn1 == -1)
-                location[1] = 0;
-            else
-                location[1] = posIn[yIdxIn1];
-
-            if (cIdxIn1 == -1)
-                location[2] = 0;
-            else
-                location[2] = posIn[cIdxIn1];
-
-            if (zIdxIn1 == -1)
-                location[3] = 0;
-            else
-                location[3] = posIn[zIdxIn1];
-
-            if (tIdxIn1 == -1)
-                location[4] = 0;
-            else
-                location[4] = posIn[tIdxIn1];
-
-            randomAccess1.setPositionAndGet(location).set(cursor1.get());
+            case AxisModes.TIME:
+                return 4;
 
         }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> concatenateImages(ImgPlus<T> imgPlus,
-            ImgPlus<T> imgPlus2, String axis) {
-        long[] dimsOutCombined = new long[5];
-        long[] offsetOut1 = new long[5];
-        long[] offsetOut2 = new long[5];
-        long[] dimsOut1 = ImgPlusTools.getDimensionsXYCZT(imgPlus);
-        long[] dimsOut2 = ImgPlusTools.getDimensionsXYCZT(imgPlus2);
+    public static <T extends RealType<T> & NativeType<T>> Image<T> process(ArrayList<Image<T>> inputImages,
+            String axis, String outputImageName) {
+        long[] dimsOut = getOutputImageDimensions(inputImages, axis);
+        long[] offsetOut = new long[5];
+        int axisIdx = getAxisIndex(axis);
 
-        // Checking bit depths
-        if (imgPlus.firstElement().getBitsPerPixel() != imgPlus2.firstElement().getBitsPerPixel()) {
-            MIA.log.writeWarning("Concatenate stacks: Image bit depths not the same");
-            return null;
-        }
-
-        if (axis.equals(AxisModes.X)) {
-            dimsOutCombined[0] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.X);
-            offsetOut2[0] = getAxisLength(imgPlus, Axes.X);
-        } else {
-            if (!checkAxisEquality(imgPlus, imgPlus2, Axes.X)) {
-                MIA.log.writeWarning("Concatenate stacks: Axes not equal along X axis");
-                return null;
-            }
-            dimsOutCombined[0] = getAxisLength(imgPlus, Axes.X);
-        }
-
-        if (axis.equals(AxisModes.Y)) {
-            dimsOutCombined[1] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.Y);
-            offsetOut2[1] = getAxisLength(imgPlus, Axes.Y);
-        } else {
-            if (!checkAxisEquality(imgPlus, imgPlus2, Axes.Y)) {
-                MIA.log.writeWarning("Concatenate stacks: Axes not equal along Y axis");
-                return null;
-            }
-            dimsOutCombined[1] = getAxisLength(imgPlus, Axes.Y);
-        }
-
-        if (axis.equals(AxisModes.CHANNEL)) {
-            dimsOutCombined[2] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.CHANNEL);
-            offsetOut2[2] = getAxisLength(imgPlus, Axes.CHANNEL);
-        } else {
-            if (!checkAxisEquality(imgPlus, imgPlus2, Axes.CHANNEL)) {
-                MIA.log.writeWarning("Concatenate stacks: Axes not equal along channel axis");
-                return null;
-            }
-            dimsOutCombined[2] = getAxisLength(imgPlus, Axes.CHANNEL);
-        }
-
-        if (axis.equals(AxisModes.Z)) {
-            dimsOutCombined[3] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.Z);
-            offsetOut2[3] = getAxisLength(imgPlus, Axes.Z);
-        } else {
-            if (!checkAxisEquality(imgPlus, imgPlus2, Axes.Z)) {
-                MIA.log.writeWarning("Concatenate stacks: Axes not equal along Z axis");
-                return null;
-            }
-            dimsOutCombined[3] = getAxisLength(imgPlus, Axes.Z);
-        }
-
-        if (axis.equals(AxisModes.TIME)) {
-            dimsOutCombined[4] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.TIME);
-            offsetOut2[4] = getAxisLength(imgPlus, Axes.TIME);
-        } else {
-            if (!checkAxisEquality(imgPlus, imgPlus2, Axes.TIME)) {
-                MIA.log.writeWarning("Concatenate stacks: Axes not equal along time axis");
-                return null;
-            }
-            dimsOutCombined[4] = getAxisLength(imgPlus, Axes.TIME);
-        }
+        ImgPlus<T> inputImgRef = inputImages.get(0).getImgPlus();
 
         // Creating the new Img
-        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>((T) imgPlus.firstElement());
-        ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOutCombined));
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>((T) inputImgRef.firstElement());
+        ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOut));
         imgOut.setAxis(new DefaultLinearAxis(Axes.X, 1), 0);
         imgOut.setAxis(new DefaultLinearAxis(Axes.Y, 1), 1);
         imgOut.setAxis(new DefaultLinearAxis(Axes.CHANNEL, 1), 2);
         imgOut.setAxis(new DefaultLinearAxis(Axes.Z, 1), 3);
         imgOut.setAxis(new DefaultLinearAxis(Axes.TIME, 1), 4);
 
-        copyPixels(imgPlus, imgOut, offsetOut1, dimsOut1);
-        copyPixels(imgPlus2, imgOut, offsetOut2, dimsOut2);
+        for (int i = 0; i < inputImages.size(); i++) {
+            ImgPlus<T> inputImg = inputImages.get(i).getImgPlus();
+            long[] dimsIn = ImgPlusTools.getDimensionsXYCZT(inputImg);
 
-        return imgOut;
+            // Copying pixels from input to output
+            IntervalView<T> target = Views.offsetInterval(imgOut, offsetOut, dimsIn);
+            RandomAccessibleInterval<T> source = ImgPlusTools.forceImgPlusToXYCZT(inputImg);
+            LoopBuilder.setImages(source, target).forEachPixel((s, t) -> t.set(s));
 
-    }
+            // Updating the output offset
+            offsetOut[axisIdx] = offsetOut[axisIdx] + dimsIn[axisIdx];
 
-    public static <T extends RealType<T> & NativeType<T>> Image concatenateImages(ArrayList<Image> inputImages,
-            String axis, String outputImageName) {
-        // Processing first two images
-        ImgPlus<T> im1 = inputImages.get(0).getImgPlus();
-        ImgPlus<T> im2 = inputImages.get(1).getImgPlus();
-        ImgPlus<T> imgOut = concatenateImages(im1, im2, axis);
+            writeProgressStatus(i+1, inputImages.size(), "stacks", "Concatenate stacks");
 
-        // Appending any additional images
-        for (int i = 2; i < inputImages.size(); i++)
-            imgOut = concatenateImages(imgOut, inputImages.get(i).getImgPlus(), axis);
-        
-        // If concatenation failed (for example, if the dimensions were inconsistent) it
-        // returns null
-        if (imgOut == null)
-            return null;
+        }
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves
         // strangely, but this can be remedied
@@ -301,7 +185,45 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static LUT[] getLUTs(Image[] images) {
+    public static <T extends RealType<T> & NativeType<T>> long[] getOutputImageDimensions(
+            ArrayList<Image<T>> inputImages,
+            String axis) {
+        long[] dimsOut = new long[5];
+
+        ImgPlus<T> inputImgRef = inputImages.get(0).getImgPlus();
+        long[] dimsRef = ImgPlusTools.getDimensionsXYCZT(inputImgRef);
+
+        int axisIdx = getAxisIndex(axis);
+
+        for (int i = 0; i < inputImages.size(); i++) {
+            ImgPlus<T> inputImg = inputImages.get(i).getImgPlus();
+            long[] dimsIn = ImgPlusTools.getDimensionsXYCZT(inputImg);
+
+            // Checking bit depths
+            if (inputImgRef.firstElement().getBitsPerPixel() != inputImg.firstElement().getBitsPerPixel()) {
+                MIA.log.writeWarning("Concatenate stacks: Image bit depths not the same");
+                return null;
+            }
+
+            // Adding current dimension length
+            for (int dim = 0; dim < 5; dim++) {
+                if (dim == axisIdx) {
+                    dimsOut[dim] = dimsOut[dim] + dimsIn[dim];
+                } else {
+                    if (dimsRef[dim] != dimsIn[dim]) {
+                        MIA.log.writeWarning("Concatenate stacks: Axes not equal along " + axis + " axis");
+                        return null;
+                    }
+                    dimsOut[dim] = dimsRef[dim];
+                }
+            }
+        }
+
+        return dimsOut;
+
+    }
+
+    static <T extends RealType<T> & NativeType<T>> LUT[] getLUTs(Image<T>[] images) {
         int count = 0;
         for (int i = 0; i < images.length; i++) {
             count = count + images[i].getImagePlus().getNChannels();
@@ -321,8 +243,8 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image image,
-            ArrayList<Image> inputImages) {
+    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image<T> image,
+            ArrayList<Image<T>> inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
         int nChannels = ipl.getNChannels();
@@ -352,12 +274,14 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
     public String getDescription() {
-        return "Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br>"
+        return "This is a candidate replacement for the original ConcatenateStacks.  For now, it's marked as \"deprecated\" to keep it hidden.<br>" + 
+        
+            "Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br>"
                 +
                 "<br>Note: Image stack dimensions and bit-depths must be compatible.";
     }
@@ -371,7 +295,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
         // Creating a collection of images
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);
-        ArrayList<Image> inputImages = getAvailableImages(workspace, collections);
+        ArrayList<Image<T>> inputImages = getAvailableImages(workspace, collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
             MIA.log.writeError("Input images missing.");
@@ -381,18 +305,19 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         // If only one image was specified, simply create a duplicate of the input,
         // otherwise do concatenation.
         Image outputImage;
-        if (inputImages.size() == 1) {
+        if (inputImages.size() == 1)
             outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
-        } else {
-            outputImage = concatenateImages(inputImages, axisMode, outputImageName);
-        }
+        else
+            outputImage = process(inputImages, axisMode, outputImageName);
 
         if (outputImage == null)
             return Status.FAIL;
         if (axisMode.equals(AxisModes.CHANNEL))
             convertToColour(outputImage, inputImages);
+
         if (showOutput)
             outputImage.show();
+
         workspace.addImage(outputImage);
 
         return Status.PASS;
