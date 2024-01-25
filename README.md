@@ -61,12 +61,14 @@ If you'd like to include the latest version of MIA in your project, you can add 
 ```
 <dependency>
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia</artifactId>
-    <version>1.4.0</version>
+    <artifactId>mia-plugin</artifactId>
+    <version>1.5.0</version>
 </dependency>
 ```
 
-The JavaDoc for MIA is available [here](https://javadoc.io/doc/io.github.mianalysis/mia).
+Alternatively, if you only want to use a part of MIA (e.g. the quadtree coordinate system), you can find a list of MIA's Maven modules [here](https://central.sonatype.com/namespace/io.github.mianalysis).
+
+The JavaDocs for MIA are available [here](https://javadoc.io/doc/io.github.mianalysis).
 
 Acknowledgements
 ------------
