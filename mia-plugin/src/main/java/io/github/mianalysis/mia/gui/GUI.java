@@ -16,7 +16,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
 import io.github.mianalysis.mia.gui.regions.menubar.CustomMenuBar;
@@ -33,10 +32,11 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
-import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
+import io.github.mianalysis.mia.process.logging.ProgressBar;
 import io.github.mianalysis.mia.process.logging.StatusPanelRenderer;
+import io.github.mianalysis.mia.process.logging.SwingProgressBar;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
 /**
@@ -79,6 +79,8 @@ public class GUI {
 
         Splash splash = new Splash();
         splash.setVisible(true);
+
+        ProgressBar.setActive(new SwingProgressBar());
 
         // Creating main Frame
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

@@ -138,8 +138,11 @@ public class ApplyDeepImageJModel extends Module {
 
         for (int i = 0; i < istIn.size(); i++) {
             inputIpl = new ImagePlus("Temp", istIn.getProcessor(i + 1));
-            outputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
-            istOut.setProcessor(outputIpl.getProcessor(),i+1);
+            ImagePlus tempOutputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
+            istOut.setProcessor(tempOutputIpl.getProcessor(),i+1);
+            
+            writeProgressStatus(i+1, istIn.size(), "slices");
+            
         }
 
         // Storing output image

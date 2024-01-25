@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
+import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Measurement;
@@ -566,17 +566,17 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image inputImage, Image referenceImage) {
+    static <T extends RealType<T> & NativeType<T>> Image<T> createOverlay(Image<T> inputImage, Image<T> referenceImage) {
         // Only create the overlay if the two images have matching dimensions
         ImagePlus ipl1 = inputImage.getImagePlus();
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
-            String axis = ConcatenateStacks.AxisModes.CHANNEL;
-            ArrayList<Image> images = new ArrayList<>();
+            String axis = ConcatenateStacks2.AxisModes.CHANNEL;
+            ArrayList<Image<T>> images = new ArrayList<>();
             images.add(inputImage);
             images.add(referenceImage);
-            return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
+            return ConcatenateStacks2.process(images, axis, "Overlay");
         }
 
         return inputImage;
@@ -594,12 +594,12 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
 
         // Creating a reference image
-        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+        Image<T> projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
                 ProjectImage.ProjectionModes.MAX);
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image dupImage = ImageFactory.createImage("Registered", dupIpl);
+        Image<T> dupImage = ImageFactory.createImage("Registered", dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -614,7 +614,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 1; c <= dupImage.getImagePlus().getNChannels(); c++) {
-                Image warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end",
+                Image<T> warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end",
                         String.valueOf(t));
                 try {
                     applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
@@ -630,10 +630,10 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         }
 
-        ArrayList<Image> images = new ArrayList<>();
+        ArrayList<Image<T>> images = new ArrayList<>();
         images.add(reference);
         images.add(dupImage);
-        ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
+        ConcatenateStacks2.process(images, ConcatenateStacks2.AxisModes.CHANNEL, "Registration comparison")
                 .show();
 
     }

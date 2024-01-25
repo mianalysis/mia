@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
-// import net.imagej.patcher.LegacyInjector;
+import net.imagej.patcher.LegacyInjector;
 
 /**
  * Created by Stephen Cross on 14/07/2017.
@@ -31,6 +31,10 @@ public class MIA_ extends MIA implements Command {
      * use this to add compatibility.
      */
     protected static final boolean imagePlusMode = true;
+
+    static {
+        LegacyInjector.preinit();
+    }
 
     public static void main(String[] args) throws Exception {
         debug = true;
@@ -45,7 +49,7 @@ public class MIA_ extends MIA implements Command {
     }
 
     // static {
-    //     LegacyInjector.preinit();
+    // LegacyInjector.preinit();
     // }
 
     @Override

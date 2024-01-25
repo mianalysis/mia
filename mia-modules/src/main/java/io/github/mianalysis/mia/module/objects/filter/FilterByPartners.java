@@ -21,22 +21,30 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Filter an object collection based on the number of partners each object has from another object collection.  The threshold (reference) value can be either a fixed value (same for all objects), a measurement associated with an image (same for all objects within a single analysis run) or a measurement associated with a parent object (potentially different for all objects).  Objects which satisfy the specified numeric filter (less than, equal to, greater than, etc.) can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Filter an object collection based on the number of partners each object has
+ * from another object collection. The threshold (reference) value can be either
+ * a fixed value (same for all objects), a measurement associated with an image
+ * (same for all objects within a single analysis run) or a measurement
+ * associated with a parent object (potentially different for all objects).
+ * Objects which satisfy the specified numeric filter (less than, equal to,
+ * greater than, etc.) can be removed from the input collection, moved to
+ * another collection (and removed from the input collection) or simply counted
+ * (but retained in the input collection). The number of objects failing the
+ * filter can be stored as a metadata value.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByPartners extends AbstractNumericObjectFilter {
 
-	/**
-	* Objects will be filtered against the number of partners they have from this object collection.
-	*/
+    /**
+     * Objects will be filtered against the number of partners they have from this
+     * object collection.
+     */
     public static final String PARTNER_OBJECTS = "Partner objects";
 
     public FilterByPartners(Modules modules) {
         super("Number of partners", modules);
     }
-
 
     @Override
     public Category getCategory() {
@@ -57,16 +65,16 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
-        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
-        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
-        boolean storeSummary = parameters.getValue(STORE_SUMMARY_RESULTS,workspace);
-        boolean storeIndividual = parameters.getValue(STORE_INDIVIDUAL_RESULTS,workspace);
+        String filterMode = parameters.getValue(FILTER_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
+        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
+        boolean storeSummary = parameters.getValue(STORE_SUMMARY_RESULTS, workspace);
+        boolean storeIndividual = parameters.getValue(STORE_INDIVIDUAL_RESULTS, workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -79,15 +87,10 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
             Obj inputObject = iterator.next();
             Objs partnerObjects = inputObject.getPartners(partnerObjectsName);
 
-            // Removing the object if it has no partners
-            if (partnerObjects == null) {
-                count++;
-                if (remove)
-                    processRemoval(inputObject, outputObjects, iterator);
-                continue;
-            }
+            double value = 0;
+            if (partnerObjects != null)
+                value = partnerObjects.size();
 
-            double value = partnerObjects.size();
             double refValue = getReferenceValue(workspace, inputObject);
             boolean conditionMet = testFilter(value, refValue, filterMethod);
 
@@ -135,11 +138,11 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS));
         ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS)).setPartnerObjectsName(inputObjectsName);
 
@@ -151,22 +154,22 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = super.updateAndGetObjectMeasurementRefs();
 
-        if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS,workspace)) {
-            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+        if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS, workspace)) {
+            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
             String measurementName = getIndividualMeasurementName(partnerObjectsName, null);
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
             returnedRefs.add(new ObjMeasurementRef(measurementName, inputObjectsName));
-            if (parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.MOVE_FILTERED)) {
-                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+            if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
+                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
                 returnedRefs.add(new ObjMeasurementRef(measurementName, outputObjectsName));
             }
         }
@@ -176,14 +179,14 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set
-        if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS,workspace)) {
-            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+        if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS, workspace)) {
+            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
             String metadataName = getSummaryMeasurementName(partnerObjectsName, null);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
@@ -197,8 +200,9 @@ Workspace workspace = null;
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
-        parameters.get(PARTNER_OBJECTS).setDescription("Objects will be filtered against the number of partners they have from this object collection.");
+
+        parameters.get(PARTNER_OBJECTS).setDescription(
+                "Objects will be filtered against the number of partners they have from this object collection.");
 
     }
 }

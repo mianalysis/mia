@@ -1,10 +1,8 @@
 package io.github.mianalysis.mia.module.images.transform.registration.abstrakt;
 
 import bunwarpj.bUnwarpJ_;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;

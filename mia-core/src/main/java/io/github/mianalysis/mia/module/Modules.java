@@ -111,7 +111,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             if (MIA.isHeadless())
                 LogRenderer.setProgress(workspace.getWorkspaces());
             else
-                ProgressBar.update();
+                ProgressBar.update(workspace.getWorkspaces().getOverallProgress()); 
 
         }
 

@@ -20,16 +20,25 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Filter an object collection based on the number of children each object has from another object collection.  The threshold (reference) value can be either a fixed value (same for all objects), a measurement associated with an image (same for all objects within a single analysis run) or a measurement associated with a parent object (potentially different for all objects).  Objects which satisfy the specified numeric filter (less than, equal to, greater than, etc.) can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.
-*/
+ * Filter an object collection based on the number of children each object has
+ * from another object collection. The threshold (reference) value can be either
+ * a fixed value (same for all objects), a measurement associated with an image
+ * (same for all objects within a single analysis run) or a measurement
+ * associated with a parent object (potentially different for all objects).
+ * Objects which satisfy the specified numeric filter (less than, equal to,
+ * greater than, etc.) can be removed from the input collection, moved to
+ * another collection (and removed from the input collection) or simply counted
+ * (but retained in the input collection). The number of objects failing the
+ * filter can be stored as a metadata value.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByChildren extends AbstractNumericObjectFilter {
 
-	/**
-	* Objects will be filtered against the number of children they have from this object collection.
-	*/
+    /**
+     * Objects will be filtered against the number of children they have from this
+     * object collection.
+     */
     public static final String CHILD_OBJECTS = "Child objects";
 
     public FilterByChildren(Modules modules) {
@@ -76,15 +85,10 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
             Obj inputObject = iterator.next();
             Objs childObjects = inputObject.getChildren(childObjectsName);
 
-            // Removing the object if it has no children
-            if (childObjects == null) {
-                count++;
-                if (remove)
-                    processRemoval(inputObject, outputObjects, iterator);
-                continue;
-            }
-
-            double value = childObjects.size();
+            double value = 0;
+            if (childObjects != null)
+                value = childObjects.size();
+            
             double refValue = getReferenceValue(workspace, inputObject);
             boolean conditionMet = testFilter(value, refValue, filterMethod);
 

@@ -13,7 +13,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
+import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
@@ -190,8 +190,8 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
         // Duplicating image
-        Image image1 = ImageFactory.createImage("Registered", ipl1);
-        Image image2 = ImageFactory.createImage("Reference", ipl2);
+        Image<T> image1 = ImageFactory.createImage("Registered", ipl1);
+        Image<T> image2 = ImageFactory.createImage("Reference", ipl2);
 
         AbstractAffineModel2D model = getModel(transformationMode);
         final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
@@ -214,10 +214,10 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             // Do nothing as the user has selected this
         }
 
-        ArrayList<Image> images = new ArrayList<>();
+        ArrayList<Image<T>> images = new ArrayList<>();
         images.add(image1);
         images.add(image2);
-        ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
+        ConcatenateStacks2.process(images, ConcatenateStacks2.AxisModes.CHANNEL, "Registration comparison")
                 .show();
 
     }
