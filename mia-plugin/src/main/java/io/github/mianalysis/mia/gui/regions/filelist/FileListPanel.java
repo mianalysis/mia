@@ -33,11 +33,10 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
-import io.github.mianalysis.mia.object.metadata.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
     /**

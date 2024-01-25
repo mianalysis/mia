@@ -17,4 +17,4 @@ lib/*
 *.log
 .vscode/settings.json
 lib/macosx/.crashed
-.DS_Store
+**/.DS_Store

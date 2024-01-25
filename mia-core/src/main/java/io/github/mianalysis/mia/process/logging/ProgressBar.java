@@ -23,4 +23,9 @@ public abstract class ProgressBar {
         if (activeProgressBar != null)
             activeProgressBar.updateProgressBar(val);
     }
+
+    public static void update(double val) {
+        if (activeProgressBar != null)
+            activeProgressBar.updateProgressBar((int) (val*100));
+    }
 }
