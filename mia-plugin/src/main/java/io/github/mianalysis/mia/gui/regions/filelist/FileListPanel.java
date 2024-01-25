@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +54,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     private final static int preferredWidth = 300;
 
     public static final int COL_JOB_ID = 0;
-    public static final int COL_WORKSPACE = 1;
+    public static final int COL_FILENAME = 1;
     public static final int COL_SERIESNAME = 2;
     public static final int COL_SERIESNUMBER = 3;
     public static final int COL_PROGRESS = 4;
@@ -118,13 +119,13 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
-        columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
+        columnModel.getColumn(COL_FILENAME).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
         columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
 
         columns.put(COL_JOB_ID, columnModel.getColumn(COL_JOB_ID));
-        columns.put(COL_WORKSPACE, columnModel.getColumn(COL_WORKSPACE));
+        columns.put(COL_FILENAME, columnModel.getColumn(COL_FILENAME));
         columns.put(COL_SERIESNAME, columnModel.getColumn(COL_SERIESNAME));
         columns.put(COL_SERIESNUMBER, columnModel.getColumn(COL_SERIESNUMBER));
         columns.put(COL_PROGRESS, columnModel.getColumn(COL_PROGRESS));
@@ -159,12 +160,12 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         HashSet<Workspace> currentWorkspaces = new HashSet<>();
         if (model.getRowCount() > 0) {
             for (int row = model.getRowCount() - 1; row >= 0; row--) {
-                Workspace workspace = (Workspace) model.getValueAt(row, COL_WORKSPACE);
+                Workspace workspace = (Workspace) model.getValueAt(row, COL_PROGRESS);
                 if (!workspaces.contains(workspace)) {
                     model.removeRow(row);
                 } else {
                     currentWorkspaces.add(workspace);
-                    model.setValueAt(workspace.getProgress(), row, COL_PROGRESS);
+                    model.setValueAt(workspace, row, COL_PROGRESS);
                 }
             }
         }
@@ -174,11 +175,12 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
             if (!currentWorkspaces.contains(workspace)) {
                 JobNumber jobNumber = new JobNumber(++maxJob);
                 Metadata metadata = workspace.getMetadata();
+                File file = metadata.getFile();
                 String seriesName = metadata.getSeriesName();
                 String seriesNumber = String.valueOf(metadata.getSeriesNumber());
-                double progress = workspace.getProgress();
+                // double progress = workspace.getProgress();
 
-                model.addRow(new Object[] { jobNumber, workspace, seriesName, seriesNumber, progress });
+                model.addRow(new Object[] { jobNumber, file, seriesName, seriesNumber, workspace });
 
             }
         }
@@ -234,10 +236,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 return label;
 
             case "Filename":
-                Metadata metadata = ((Workspace) value).getMetadata();
+                File file = ((File) value);
                 label = new JLabel();
-                label.setText(" " + metadata.getFilename());
-                label.setToolTipText(metadata.getFile().getAbsolutePath());
+                label.setText(" " + file.getName());
+                label.setToolTipText(file.getAbsolutePath());
                 return label;
 
             case "Ser. name":
@@ -248,18 +250,19 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 return label;
 
             case "Progress":
-                int progress = (int) Math.round(((double) value) * 100);
+                Workspace workspace = (Workspace) value;
+                int progress = (int) Math.round(((double) workspace.getProgress()) * 100);
                 JProgressBar progressBar = new JProgressBar(0, 100);
-                progressBar.setValue(progress);
                 progressBar.setBorderPainted(false);
                 progressBar.setStringPainted(true);
                 progressBar.setString("");
-                progressBar.setToolTipText(String.valueOf((double) value));
+                progressBar.setValue(progress);
+                progressBar.setToolTipText(String.valueOf((double) progress));
 
                 boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
                 // Set a special colour if the analysis is marked as having failed
-                Status status = ((Workspace) model.getValueAt(row, COL_WORKSPACE)).getStatus();
+                Status status = workspace.getStatus();
                 switch (status) {
                     case PASS:
                     case REDIRECT:

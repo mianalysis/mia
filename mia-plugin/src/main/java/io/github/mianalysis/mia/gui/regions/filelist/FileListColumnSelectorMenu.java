@@ -68,7 +68,7 @@ public class FileListColumnSelectorMenu extends JPopupMenu implements ActionList
                     showJobID.setSelected(!showJobID.isSelected());
                 break;
             case "Show filename":
-                state = panel.showColumn(FileListPanel.COL_WORKSPACE, showFilename.isSelected());
+                state = panel.showColumn(FileListPanel.COL_FILENAME, showFilename.isSelected());
                 if (!state)
                     showFilename.setSelected(!showFilename.isSelected());
                 break;
