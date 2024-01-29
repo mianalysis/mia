@@ -2,10 +2,14 @@ package io.github.mianalysis.mia.lostandfound.core;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class InputControlLostFound extends LostAndFoundItem {
 
     @Override

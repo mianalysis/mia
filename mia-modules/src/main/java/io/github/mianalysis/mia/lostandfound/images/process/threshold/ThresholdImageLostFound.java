@@ -2,9 +2,13 @@ package io.github.mianalysis.mia.lostandfound.images.process.threshold;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.images.process.threshold.ThresholdImage;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class ThresholdImageLostFound extends LostAndFoundItem {
 
     @Override

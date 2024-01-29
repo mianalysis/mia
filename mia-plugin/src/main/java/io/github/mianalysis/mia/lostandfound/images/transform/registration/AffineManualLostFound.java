@@ -2,10 +2,14 @@ package io.github.mianalysis.mia.lostandfound.images.transform.registration;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.images.transform.registration.AffineManual;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class AffineManualLostFound extends LostAndFoundItem {
 
     @Override

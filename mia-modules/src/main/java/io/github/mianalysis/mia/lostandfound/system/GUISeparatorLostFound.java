@@ -2,9 +2,13 @@ package io.github.mianalysis.mia.lostandfound.system;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class GUISeparatorLostFound extends LostAndFoundItem {
 
     @Override

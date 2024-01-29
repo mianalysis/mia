@@ -2,11 +2,14 @@ package io.github.mianalysis.mia.lostandfound.images.transform.registration;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.images.transform.registration.AffineSIFT;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
-import java_cup.lalr_item;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class AffineSIFTLostFound extends LostAndFoundItem {
 
     @Override

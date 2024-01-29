@@ -188,7 +188,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     @Override
     public String getVersionNumber() {
-        return "1.2.0";
+        return "1.2.1";
     }
 
     @Override
@@ -407,7 +407,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
         parameters.add(new ChoiceP(BAND_MODE, this, BandModes.INSIDE_AND_OUTSIDE, BandModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
-        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7, WeightModes.ALL));
+        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.W13_18_22_29_31, WeightModes.ALL));
         parameters.add(new DoubleP(BAND_WIDTH, this, 1));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new BooleanP(APPLY_MINIMUM_BAND_DISTANCE, this, false));

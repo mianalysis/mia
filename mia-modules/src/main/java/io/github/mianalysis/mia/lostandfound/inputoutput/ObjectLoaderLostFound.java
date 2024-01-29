@@ -2,9 +2,13 @@ package io.github.mianalysis.mia.lostandfound.inputoutput;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.inputoutput.ObjectLoader;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class ObjectLoaderLostFound extends LostAndFoundItem {
 
     @Override
