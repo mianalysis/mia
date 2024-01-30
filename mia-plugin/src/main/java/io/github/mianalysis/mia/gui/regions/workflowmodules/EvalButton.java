@@ -4,6 +4,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,6 +18,9 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -28,6 +32,8 @@ public class EvalButton extends JButton implements ActionListener {
      *
      */
     private static final long serialVersionUID = 5495286052011521092L;
+
+    private static Parameters previousParameters = null;
 
     private static Thread t;
 
@@ -135,24 +141,67 @@ public class EvalButton extends JButton implements ActionListener {
         return module;
     }
 
+    private boolean checkForTestFileUpdate(Parameters currentParameters, Parameters previousParameters) {
+        // This is the first load, so check for new file
+        if (previousParameters == null)
+            return true;
+        
+        // Checking each parameter to see if it's the same as before
+        for (String currentParameterName : currentParameters.keySet()) {
+            Parameter currentParameter = currentParameters.get(currentParameterName);
+
+            if (!previousParameters.containsKey(currentParameterName))
+                return true;
+            
+            Parameter previousParameter = previousParameters.get(currentParameterName);
+
+            // Comparing values
+            if (previousParameter instanceof ParameterGroup) {
+                ParameterGroup previousGroup = (ParameterGroup) previousParameter;
+                ParameterGroup currentGroup = (ParameterGroup) currentParameter;
+
+                LinkedHashMap<Integer, Parameters> previousCollection = previousGroup.getCollections(true);
+                LinkedHashMap<Integer, Parameters> currentCollection = currentGroup.getCollections(true);
+
+                if (previousCollection.size() != currentCollection.size())
+                    return true;
+                
+                // Comparing collection (assumes they're in the same order)
+                for (int collectionIndex:currentCollection.keySet()) {
+                    Parameters currentCollectionParameters = currentCollection.get(collectionIndex);
+
+                    if (!previousCollection.containsKey(collectionIndex))
+                        return true;
+
+                    Parameters previousCollectionParameters = previousCollection.get(collectionIndex);
+
+                    if (checkForTestFileUpdate(currentCollectionParameters, previousCollectionParameters))
+                        return true;
+                                       
+                }
+
+            } else {
+                if (!previousParameter.getRawStringValue().equals(currentParameter.getRawStringValue()))
+                    return true;
+                
+            }
+        }
+
+        return false;
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Modules modules = GUI.getModules();
 
-        // Checking a test file is specified, but not loaded or if it's different to
-        // that loaded.
-        String inputControlPath = modules.getInputControl().getParameterValue(InputControl.INPUT_PATH, null);
-        File testWorkspaceFile = GUI.getTestWorkspace().getMetadata().getFile();
-        String testWorkspacePath = testWorkspaceFile == null ? "" : testWorkspaceFile.getAbsolutePath();
-
-        boolean reload = true;
-        if (new File(inputControlPath).isFile())
-            reload = !inputControlPath.equals(testWorkspacePath);
-        else 
-            if (testWorkspaceFile != null)
-                reload = !testWorkspacePath.contains(inputControlPath);
+        // Checking if InputControl has changed since last eval
+        Parameters currentParameters = modules.getInputControl().getAllParameters();
+        boolean reload = checkForTestFileUpdate(currentParameters, previousParameters);
 
         if (reload) {
+            previousParameters = currentParameters.duplicate();
+
             // Make first module look like it's being evaluated while the test file updates
             GUI.setLastModuleEval(-1);
             if (modules.size() > 2)
@@ -178,7 +227,7 @@ public class EvalButton extends JButton implements ActionListener {
         }
 
         // If it's currently evaluating, this will kill the thread
-        if (idx == GUI.getModuleBeingEval() &! reload) {
+        if (idx == GUI.getModuleBeingEval() & !reload) {
             MIA.log.writeStatus("Stopping");
             GUI.setModuleBeingEval(-1);
             GUI.updateModuleStates();
