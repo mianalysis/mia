@@ -2,9 +2,13 @@ package io.github.mianalysis.mia.lostandfound.objects.process;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 import io.github.mianalysis.mia.module.objects.process.FitConvexHull2D;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class FitConvexHull2DLostFound extends LostAndFoundItem {
 
     @Override

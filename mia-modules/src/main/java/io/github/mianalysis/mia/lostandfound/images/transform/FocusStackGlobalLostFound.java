@@ -2,9 +2,13 @@ package io.github.mianalysis.mia.lostandfound.images.transform;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.images.transform.FocusStackGlobal;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class FocusStackGlobalLostFound extends LostAndFoundItem {
 
     @Override

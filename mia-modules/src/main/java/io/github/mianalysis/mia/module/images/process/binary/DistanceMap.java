@@ -11,6 +11,7 @@ import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.binary.distmap.ChamferMask3D;
+import inra.ijpb.binary.distmap.ChamferMasks3D;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -37,65 +38,97 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Creates a 32-bit greyscale image from an input binary image, where the value of each foreground pixel in the input image is equal to its Euclidean distance to the nearest background pixel.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  The output image will have pixel values of 0 coincident with background pixels in the input image and values greater than zero coincident with foreground pixels.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
-*/
+ * Creates a 32-bit greyscale image from an input binary image, where the value
+ * of each foreground pixel in the input image is equal to its Euclidean
+ * distance to the nearest background pixel. This image will be 8-bit with
+ * binary logic determined by the "Binary logic" parameter. The output image
+ * will have pixel values of 0 coincident with background pixels in the input
+ * image and values greater than zero coincident with foreground pixels. Uses
+ * the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DistanceMap extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image from workspace to calculate distance map for.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
-	*/
+    /**
+     * Image from workspace to calculate distance map for. This image will be 8-bit
+     * with binary logic determined by the "Binary logic" parameter.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.
-	*/
+    /**
+     * The output distance map will be saved to the workspace with this name. This
+     * image will be 32-bit format.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
 
-	/**
-	* The pre-defined set of weights that are used to compute the 3D distance transform using chamfer approximations of the euclidean metric (descriptions taken from <a href="https://ijpb.github.io/MorphoLibJ/javadoc/">https://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br><ul><li>"Borgefors (3,4,5)" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors and 5 for cube-diagonals (best approximation for 3-by-3-by-3 masks).</li><li>"Chessboard (1,1,1)" Use weight values of 1 for all neighbours.</li><li>"City-Block (1,2,3)" Use weight values of 1 for orthogonal neighbors, 2 for diagonal neighbors and 3 for cube-diagonals.</li><li>"Svensson (3,4,5,7)" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors, 5 for cube-diagonals and 7 for (2,1,1) shifts. Good approximation using only four weights, and keeping low value of orthogonal weight.</li></ul>
-	*/
+    /**
+     * The pre-defined set of weights that are used to compute the 3D distance
+     * transform using chamfer approximations of the euclidean metric (descriptions
+     * taken from <a href=
+     * "https://ijpb.github.io/MorphoLibJ/javadoc/">https://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br>
+     * <ul>
+     * <li>"Borgefors (3,4,5)" Use weight values of 3 for orthogonal neighbors, 4
+     * for diagonal neighbors and 5 for cube-diagonals (best approximation for
+     * 3-by-3-by-3 masks).</li>
+     * <li>"Chessboard (1,1,1)" Use weight values of 1 for all neighbours.</li>
+     * <li>"City-Block (1,2,3)" Use weight values of 1 for orthogonal neighbors, 2
+     * for diagonal neighbors and 3 for cube-diagonals.</li>
+     * <li>"Svensson (3,4,5,7)" Use weight values of 3 for orthogonal neighbors, 4
+     * for diagonal neighbors, 5 for cube-diagonals and 7 for (2,1,1) shifts. Good
+     * approximation using only four weights, and keeping low value of orthogonal
+     * weight.</li>
+     * </ul>
+     */
     public static final String WEIGHT_MODE = "Weight modes";
 
-	/**
-	* When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.
-	*/
+    /**
+     * When selected, an image is interpolated in Z (so that all pixels are
+     * isotropic) prior to calculation of the distance map. This prevents warping of
+     * the distance map along the Z-axis if XY and Z sampling aren't equal.
+     */
     public static final String MATCH_Z_TO_X = "Match Z to XY";
 
-	/**
-	* Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
-	*/
+    /**
+     * Controls whether spatial values are assumed to be specified in calibrated
+     * units (as defined by the "Input control" parameter "Spatial unit") or pixel
+     * units.
+     */
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
-	/**
-	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
-	*/
+    /**
+     * Controls whether objects are considered to be white (255 intensity) on a
+     * black (0 intensity) background, or black on a white background.
+     */
     public static final String BINARY_LOGIC = "Binary logic";
 
     public interface WeightModes {
-        String BORGEFORS = "Borgefors (3,4,5)";
+        String BORGEFORS = "Borgefors (3,4,5) (Emax = 0.1181)";
         String CHESSBOARD = "Chessboard (1,1,1)";
-        String CITY_BLOCK = "City-Block (1,2,3)";
-        // String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
-        String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7)";
+        String CITY_BLOCK = "City-Block (1,2,3) (Emax = 0.2679)";
+        String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
+        String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7) (Emax = 0.0809)";
+        String W8_11_14_18_20 = "8_11_14_18_20 (Emax = 0.0653)";
+        String W13_18_22_29_31 = "13_18_22_29_31 (Emax = 0.0397)";
+        String W7_10_12_16_17_21 = "7_10_12_16_17_21 (Emax = 0.0524)";
+        String W10_14_17_22_34_30 = "10_14_17_22_34_30 (Emax = 0.0408)";
+
+        String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK,
+                QUASI_EUCLIDEAN, WEIGHTS_3_4_5_7, W8_11_14_18_20, W13_18_22_29_31, W7_10_12_16_17_21,
+                W10_14_17_22_34_30 };
 
         // String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK,
-        // QUASI_EUCLIDEAN,
         // WEIGHTS_3_4_5_7 };
-        String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK, WEIGHTS_3_4_5_7 };
 
     }
 
@@ -201,16 +234,24 @@ public class DistanceMap extends Module {
     static ChamferMask3D getFloatWeights(String weightMode) {
         switch (weightMode) {
             case WeightModes.BORGEFORS:
-                return ChamferMask3D.BORGEFORS;
+                return ChamferMasks3D.BORGEFORS.getMask();
             case WeightModes.CHESSBOARD:
-                return ChamferMask3D.CHESSBOARD;
+                return ChamferMasks3D.CHESSBOARD.getMask();
             case WeightModes.CITY_BLOCK:
-                return ChamferMask3D.CITY_BLOCK;
-            // case WeightModes.QUASI_EUCLIDEAN:
-            // return ChamferMask3D.QUASI_EUCLIDEAN;
+                return ChamferMasks3D.CITY_BLOCK.getMask();
+            case WeightModes.QUASI_EUCLIDEAN:
+                return ChamferMasks3D.QUASI_EUCLIDEAN.getMask();
             case WeightModes.WEIGHTS_3_4_5_7:
-            default:
                 return ChamferMask3D.SVENSSON_3_4_5_7;
+            case WeightModes.W8_11_14_18_20:
+                return ChamferMasks3D.WEIGHTS_8_11_14_18_20.getMask();
+            default:
+            case WeightModes.W13_18_22_29_31:
+                return ChamferMasks3D.WEIGHTS_13_18_22_29_31.getMask();
+            case WeightModes.W7_10_12_16_17_21:
+                return ChamferMasks3D.WEIGHTS_7_10_12_16_17_21.getMask();
+            case WeightModes.W10_14_17_22_34_30:
+                return ChamferMasks3D.WEIGHTS_10_14_17_22_34_30.getMask();
         }
     }
 
@@ -227,7 +268,7 @@ public class DistanceMap extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
@@ -278,7 +319,7 @@ public class DistanceMap extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(DISTANCE_MAP_SEPARATOR, this));
-        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7, WeightModes.ALL));
+        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.W13_18_22_29_31, WeightModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));

@@ -15,9 +15,9 @@ public class LostAndFound {
     private HashMap<String, HashMap<String, HashMap<String, String>>> lostParameterValues = new HashMap<>();
 
     public LostAndFound() {
-        List<PluginInfo<LostAndFoundItem>> lostAndFoundItems = new ClassHunter<LostAndFoundItem>()
-                .getPlugins(LostAndFoundItem.class);
-
+        new ClassHunter<LostAndFoundItem>();
+        List<PluginInfo<LostAndFoundItem>> lostAndFoundItems = ClassHunter.getPlugins(LostAndFoundItem.class);
+            
         for (PluginInfo<LostAndFoundItem> lostAndFoundItem : lostAndFoundItems) {
             try {
                 LostAndFoundItem item = lostAndFoundItem.createInstance();
@@ -30,10 +30,10 @@ public class LostAndFound {
                 lostParameterNames.put(moduleName, item.getPreviousParameterNames());
                 lostParameterValues.put(moduleName, item.getPreviousParameterValues());
 
-            } catch (InstantiableException e) {
+            } catch (Exception e) {
                 MIA.log.writeError(e);
             }
-        }
+        }        
     }
 
     public LostAndFound(HashMap<String, String> lostModules,

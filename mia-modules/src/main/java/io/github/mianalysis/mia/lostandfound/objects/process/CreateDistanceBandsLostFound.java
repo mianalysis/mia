@@ -1,19 +1,18 @@
-package io.github.mianalysis.mia.lostandfound.images.process;
+package io.github.mianalysis.mia.lostandfound.objects.process;
 
 import java.util.HashMap;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.module.images.process.FilterImage;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
+import io.github.mianalysis.mia.module.objects.process.CreateDistanceBands;
 
 @Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
-public class FilterImageLostFound extends LostAndFoundItem {
-
+public class CreateDistanceBandsLostFound extends LostAndFoundItem {
     @Override
     public String getModuleName() {
-        return new FilterImage(null).getClass().getSimpleName();
+        return new CreateDistanceBands<>(null).getClass().getSimpleName();
     }
 
     @Override
@@ -23,10 +22,7 @@ public class FilterImageLostFound extends LostAndFoundItem {
 
     @Override
     public HashMap<String, String> getPreviousParameterNames() {
-        HashMap<String,String> parameterNames = new HashMap<String,String>();
-        
-        return parameterNames;
-
+        return new HashMap<String, String>();
     }
 
     @Override
@@ -35,13 +31,13 @@ public class FilterImageLostFound extends LostAndFoundItem {
         HashMap<String, HashMap<String, String>> parameterValues = null;
 
         values = new HashMap<>();
-        values.put("Difference of Gaussian 2D", FilterImage.FilterModes.LOG2DAPPROX);
-
+        values.put("Borgefors (3,4,5)", CreateDistanceBands.WeightModes.BORGEFORS);
+        values.put("City-Block (1,2,3)", CreateDistanceBands.WeightModes.CITY_BLOCK);
+        values.put("Svensson (3,4,5,7)", CreateDistanceBands.WeightModes.WEIGHTS_3_4_5_7);
         parameterValues = new HashMap<>();
-        parameterValues.put(FilterImage.FILTER_MODE, values);
-
+        parameterValues.put(CreateDistanceBands.WEIGHT_MODE, values);
+        
         return parameterValues;
 
     }
-    
 }

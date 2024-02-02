@@ -2,9 +2,13 @@ package io.github.mianalysis.mia.lostandfound.images.process;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
+@Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class ImageMathLostFound extends LostAndFoundItem {
 
     @Override
