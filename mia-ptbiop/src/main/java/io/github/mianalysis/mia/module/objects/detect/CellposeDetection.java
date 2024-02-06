@@ -274,8 +274,7 @@ public class CellposeDetection extends Module {
                 break;
         }
 
-        cellpose.setDimensionMode(dimensionMode.toLowerCase());
-
+        cellpose.setDimensionMode(dimensionMode);
         cellpose.setDiameter(diameter);
         cellpose.setCellProbabilityThreshold(cellProbThresh);
         cellpose.setFlowThreshold(flowThreshold);

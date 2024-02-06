@@ -10,6 +10,24 @@
             }
         },
         {
+            "label": "maven: package-modules-quick",
+            "type": "shell",
+            "command": "mvn clean package -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip -pl mia-modules -am",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "maven: set-version",
+            "type": "shell",
+            "command": "mvn versions:set -DnewVersion=1.5.2",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
             "label": "maven: package-complete",
             "type": "shell",
             "command": "mvn clean package -Dscp=provided site",
