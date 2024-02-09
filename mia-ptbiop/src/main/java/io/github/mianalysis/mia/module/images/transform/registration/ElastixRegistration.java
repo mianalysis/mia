@@ -6,8 +6,9 @@ import org.scijava.plugin.Plugin;
 import ch.epfl.biop.fiji.imageplusutils.ImagePlusFunctions;
 import ch.epfl.biop.wrappers.elastix.Elastix;
 import ch.epfl.biop.wrappers.elastix.RegisterHelper;
-import ch.epfl.biop.wrappers.elastix.ij2commands.Elastix_Register;
+import ch.epfl.biop.wrappers.elastix.ij2commands.Mod_Elastix_Register;
 import ch.epfl.biop.wrappers.transformix.DefaultTransformixTask;
+import ch.epfl.biop.wrappers.transformix.Mod_TransformHelper;
 import ch.epfl.biop.wrappers.transformix.TransformHelper;
 import ch.epfl.biop.wrappers.transformix.Transformix;
 import ij.ImagePlus;
@@ -59,6 +60,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
         elastixParam.rigid = parameters.getValue(RIGID, workspace);
         elastixParam.spline = parameters.getValue(SPLINE, workspace);
         elastixParam.splineGridSpacing = parameters.getValue(SPLINE_GRID_SPACING, workspace);
+        elastixParam.enableMultiThreading = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
     }
 
@@ -71,11 +73,12 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
 
         ImagePlus outputIpl = ImagePlusFunctions.splitApplyRecompose(
                 imp -> {
-                    TransformHelper th = new TransformHelper();
+                    Mod_TransformHelper th = new Mod_TransformHelper();
                     th.setDefaultOutputDir();
                     th.setTransformFile(rh);
                     th.setImage(imp);
                     th.transform(new DefaultTransformixTask());
+                    th.setNThreads(elastixTransform.enableMultiThreading ? Prefs.getThreads() : 1);
                     return ((ImagePlus) (th.getTransformedImage().to(ImagePlus.class)));
                 }, new ImagePlus("Warped", inputIpr));
 
@@ -95,7 +98,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
             boolean showDetectedPoints) {
         ElastixParam p = (ElastixParam) param;
 
-        Elastix_Register elastixRegister = new Elastix_Register();
+        Mod_Elastix_Register elastixRegister = new Mod_Elastix_Register();
         elastixRegister.affine = p.affine;
         elastixRegister.fast_affine = p.fastAffine;
         elastixRegister.rigid = p.rigid;
@@ -103,11 +106,13 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
         elastixRegister.splineGridSpacing = p.splineGridSpacing;
         elastixRegister.fixedImage = new ImagePlus("Fixed", referenceIpr);
         elastixRegister.movingImage = new ImagePlus("Moving", warpedIpr);
+        elastixRegister.nThreads = p.enableMultiThreading ? Prefs.getThreads() : 1;
 
         elastixRegister.run();
 
         ElastixTransform transform = new ElastixTransform();
         transform.registerHelper = elastixRegister.rh;
+        transform.enableMultiThreading = p.enableMultiThreading;
 
         return transform;
 
@@ -124,8 +129,8 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
 
         parameters.add(new SeparatorP(ELASTIX_SEPARATOR, this));
 
-        parameters.add(new FilePathP(ELASTIX_EXE, this, Prefs.get(Elastix.class.getName()+".exePath","")));
-        parameters.add(new FilePathP(TRANSFORMIX_EXE, this, Prefs.get(Transformix.class.getName()+".exePath","")));
+        parameters.add(new FilePathP(ELASTIX_EXE, this, Prefs.get(Elastix.class.getName() + ".exePath", "")));
+        parameters.add(new FilePathP(TRANSFORMIX_EXE, this, Prefs.get(Transformix.class.getName() + ".exePath", "")));
         parameters.add(new BooleanP(AFFINE, this, true));
         parameters.add(new BooleanP(FAST_AFFINE, this, false));
         parameters.add(new BooleanP(RIGID, this, false));
@@ -162,10 +167,12 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
         public boolean rigid = false;
         public boolean spline = false;
         public int splineGridSpacing = 3;
+        public boolean enableMultiThreading = true;
 
     }
 
     public class ElastixTransform extends Transform {
         public RegisterHelper registerHelper = null;
+        public boolean enableMultiThreading = true;
     }
 }
