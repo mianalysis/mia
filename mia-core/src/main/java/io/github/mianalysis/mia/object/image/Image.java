@@ -94,6 +94,10 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     // PUBLIC METHODS
 
+    public static void setGlobalDefaultRenderer(ImageRenderer imageRenderer) {
+        globalDefaultImageRenderer = imageRenderer;
+    }
+
     public static void setUseGlobalImageRenderer(boolean state) {
         useGlobalImageRenderer = state;
     }
