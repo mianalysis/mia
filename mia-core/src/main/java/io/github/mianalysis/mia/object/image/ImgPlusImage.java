@@ -16,9 +16,9 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
@@ -37,7 +37,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
-    private static ImageRenderer defaultImageRenderer = new ImgPlusRenderer();
+    private static ImageRenderer renderer = new ImgPlusRenderer();
     private ImgPlus<T> img;
     private Overlay overlay = new Overlay();
 
@@ -47,7 +47,6 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
         this.overlay = imagePlus.getOverlay();
-        this.renderer = new ImgPlusRenderer();
 
     }
 
@@ -264,7 +263,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
-        renderer.render(this, title, lut, normalise, composite, overlay);
+        getRenderer().render(this, title, lut, normalise, composite, overlay);
 
     }
 
@@ -425,13 +424,16 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public ImageRenderer getDefaultRenderer() {
-        return defaultImageRenderer;
+    public ImageRenderer getRenderer() {
+        if (getUseGlobalImageRenderer())
+            return getGlobalImageRenderer();
+        else
+            return renderer;
     }
 
     @Override
-    public void setDefaultRenderer(ImageRenderer imageRenderer) {
-        defaultImageRenderer = imageRenderer;
+    public void setRenderer(ImageRenderer imageRenderer) {
+        renderer = imageRenderer;
     }
 
     public static DiskCachedCellImgOptions getCellImgOptions() {
@@ -449,7 +451,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public long getWidth() {            
+    public long getWidth() {
         return img.dimension(img.dimensionIndex(Axes.X));
     }
 

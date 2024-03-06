@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import org.scijava.Priority;
+import org.scijava.convert.ConvertService;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.NotNull;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
@@ -20,6 +22,7 @@ import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -27,6 +30,8 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.RemovableInputImageP;
+import io.github.mianalysis.mia.object.parameters.RemovedImageP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -41,6 +46,7 @@ import net.imagej.axis.AxisType;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
+import net.imglib2.img.ImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
@@ -75,6 +81,8 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
      */
     public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
 
+    public static final String REMOVE_INPUT_IMAGES = "Remove input images";
+
     /**
     * 
     */
@@ -92,7 +100,8 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
     public ConcatenateStacks2(Modules modules) {
         super("Concatenate stacks 2", modules);
-        deprecated = true; // Marked as deprecated to hide until ready to replace main ConcatenateStacks code
+        deprecated = true; // Marked as deprecated to hide until ready to replace main ConcatenateStacks
+                           // code
     }
 
     public interface AxisModes {
@@ -170,13 +179,12 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
             // Updating the output offset
             offsetOut[axisIdx] = offsetOut[axisIdx] + dimsIn[axisIdx];
 
-            writeProgressStatus(i+1, inputImages.size(), "stacks", "Concatenate stacks");
+            writeProgressStatus(i + 1, inputImages.size(), "stacks", "Concatenate stacks");
 
         }
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves
-        // strangely, but this can be remedied
-        // by duplicating it
+        // strangely, but this can be remedied by duplicating it
         ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut, outputImageName).duplicate();
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyDimensions(imgOut, outputImagePlus);
@@ -223,25 +231,26 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> LUT[] getLUTs(Image<T>[] images) {
-        int count = 0;
-        for (int i = 0; i < images.length; i++) {
-            count = count + images[i].getImagePlus().getNChannels();
-        }
+    // static <T extends RealType<T> & NativeType<T>> LUT[] getLUTs(Image<T>[]
+    // images) {
+    // int count = 0;
+    // for (int i = 0; i < images.length; i++) {
+    // count = count + images[i].getImagePlus().getNChannels();
+    // }
 
-        LUT[] luts = new LUT[count];
-        count = 0;
-        for (int i = 0; i < images.length; i++) {
-            ImagePlus currIpl = images[i].getImagePlus();
-            for (int c = 0; c < currIpl.getNChannels(); c++) {
-                currIpl.setPosition(c + 1, 1, 1);
-                luts[count++] = currIpl.getProcessor().getLut();
-            }
-        }
+    // LUT[] luts = new LUT[count];
+    // count = 0;
+    // for (int i = 0; i < images.length; i++) {
+    // ImagePlus currIpl = images[i].getImagePlus();
+    // for (int c = 0; c < currIpl.getNChannels(); c++) {
+    // currIpl.setPosition(c + 1, 1, 1);
+    // luts[count++] = currIpl.getProcessor().getLut();
+    // }
+    // }
 
-        return luts;
+    // return luts;
 
-    }
+    // }
 
     public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image<T> image,
             ArrayList<Image<T>> inputImages) {
@@ -279,9 +288,10 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public String getDescription() {
-        return "This is a candidate replacement for the original ConcatenateStacks.  For now, it's marked as \"deprecated\" to keep it hidden.<br>" + 
-        
-            "Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br>"
+        return "This is a candidate replacement for the original ConcatenateStacks.  For now, it's marked as \"deprecated\" to keep it hidden.<br>"
+                +
+
+                "Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br>"
                 +
                 "<br>Note: Image stack dimensions and bit-depths must be compatible.";
     }
@@ -290,8 +300,10 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     protected Status process(Workspace workspace) {
         // Getting parameters
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
+        boolean removeInputImages = parameters.getValue(REMOVE_INPUT_IMAGES, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String axisMode = parameters.getValue(AXIS_MODE, workspace);
+        int axisIdx = getAxisIndex(axisMode);
 
         // Creating a collection of images
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);
@@ -307,8 +319,23 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
         Image outputImage;
         if (inputImages.size() == 1)
             outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
-        else
-            outputImage = process(inputImages, axisMode, outputImageName);
+        else {
+            if (removeInputImages) {
+                ArrayList<RandomAccessibleInterval<T>> inputImgs = new ArrayList<>();
+                for (Image<T> inputImage : inputImages)
+                    inputImgs.add(ImgPlusTools.forceImgPlusToXYCZT(inputImage.getImgPlus()));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+
+                ConvertService convertService = MIA.getIJService().getContext().getService(ConvertService.class);
+                RandomAccessibleInterval<T> outputRAI = Views.concatenate(axisIdx, inputImgs);
+                ImgPlus<T> outputImgPlus = convertService.convert(outputRAI, ImgPlus.class);
+                ImgPlusTools.initialiseXYCZTAxes(outputImgPlus);
+                ImgPlusTools.applyAxes(inputImages.get(0).getImgPlus(),outputImgPlus);
+                outputImage = ImageFactory.createImage(outputImageName, outputImgPlus, ImageType.IMGLIB2);
+                
+            } else {
+                outputImage = process(inputImages, axisMode, outputImageName);
+            }
+        }
 
         if (outputImage == null)
             return Status.FAIL;
@@ -333,6 +360,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
                 .add(new ParameterGroup(ADD_INPUT_IMAGE, this, collection, 2, "Add another image for concatenation."));
         parameters.add(new BooleanP(ALLOW_MISSING_IMAGES, this, false,
                 "If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules."));
+        parameters.add(new BooleanP(REMOVE_INPUT_IMAGES, this, false));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
@@ -346,11 +374,13 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     public Parameters updateAndGetParameters() {
         Workspace workspace = null;
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
+        boolean removeInputImages = parameters.getValue(REMOVE_INPUT_IMAGES, workspace);
 
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);
         for (Parameters collection : collections.values()) {
             CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
             parameter.setAllowMissingImages(allowMissingImages);
+            parameter.setRemoveInputImages(removeInputImages);
         }
 
         return parameters;
@@ -390,7 +420,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     // Creating a custom class for this module, which always returns true. This way
     // channels can go missing and
     // this will still work.
-    class CustomInputImageP extends InputImageP {
+    class CustomInputImageP extends RemovableInputImageP {
         private boolean allowMissingImages = false;
 
         private CustomInputImageP(String name, Module module) {

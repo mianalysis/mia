@@ -30,28 +30,18 @@ import net.imglib2.type.numeric.RealType;
  * Created by stephen on 30/04/2017.
  */
 public abstract class Image<T extends RealType<T> & NativeType<T>> {
-    private static ImageRenderer globalDefaultImageRenderer = new ImagePlusRenderer();
+    private static ImageRenderer globalImageRenderer = new ImagePlusRenderer();
     private static boolean useGlobalImageRenderer = false; // When true, all image types will use the same image
                                                            // renderer
 
     protected String name;
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
-    protected ImageRenderer renderer;
-
-    // Constructor
-
-    public Image() {
-        if (useGlobalImageRenderer)
-            renderer = globalDefaultImageRenderer;
-        else
-            renderer = getDefaultRenderer();
-    }
 
     // Abstract methods
 
-    public abstract ImageRenderer getDefaultRenderer();
+    public abstract ImageRenderer getRenderer();
 
-    public abstract void setDefaultRenderer(ImageRenderer imageRenderer);
+    public abstract void setRenderer(ImageRenderer imageRenderer);
 
     public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite);
 
@@ -94,8 +84,12 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     // PUBLIC METHODS
 
-    public static void setGlobalDefaultRenderer(ImageRenderer imageRenderer) {
-        globalDefaultImageRenderer = imageRenderer;
+    public static ImageRenderer getGlobalImageRenderer() {
+        return globalImageRenderer;
+    }
+    
+    public static void setGlobalRenderer(ImageRenderer imageRenderer) {
+        globalImageRenderer = imageRenderer;
     }
 
     public static void setUseGlobalImageRenderer(boolean state) {
@@ -134,15 +128,6 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
     public Measurement getMeasurement(String name) {
         return measurements.get(name);
 
-    }
-
-    public ImageRenderer getImageRenderer() {
-        return renderer;
-
-    }
-
-    public void setImageRenderer(ImageRenderer imageRenderer) {
-        this.renderer = imageRenderer;
     }
 
     public void show(String title, LUT lut, Overlay overlay) {
