@@ -114,14 +114,14 @@ public class ParametersPanel extends JScrollPane {
             MetadataRefs metadataRefs = modules.getMetadataRefs();
             addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
 
-            LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null);
+            LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null,false);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
                 ImageMeasurementRefs measurementReferences = modules.getImageMeasurementRefs(imageName);
                 addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c);
             }
 
-            LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null);
+            LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null,false);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
                 ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName);

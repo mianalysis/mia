@@ -38,6 +38,15 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     private double frameInterval;
     private Unit<Time> temporalUnit;
 
+    public Objs(String name, double dppXY, double dppZ, String units, int width, int height, int nSlices, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
+        this.name = name;
+        this.spatCal = new SpatCal(dppXY, dppZ, units, width, height, nSlices);
+        this.nFrames = nFrames;
+        this.frameInterval = frameInterval;
+        this.temporalUnit = temporalUnit;
+
+    }
+
     public Objs(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
         this.name = name;
         this.spatCal = cal;

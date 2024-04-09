@@ -1,16 +1,16 @@
 package io.github.mianalysis.mia.module.images.transform;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.
+* Ensures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.
 */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Convert3DStack extends Module {
@@ -93,7 +93,7 @@ public class Convert3DStack extends Module {
 
     @Override
     public String getDescription() {
-        return "Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
+        return "Ensures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
     }
 
     public static void process(ImagePlus inputImagePlus, String mode) {
