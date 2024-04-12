@@ -27,7 +27,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
-    private static ImageRenderer defaultImageRenderer = new ImagePlusRenderer();
+    private static ImageRenderer renderer = new ImagePlusRenderer();
     private ImagePlus imagePlus;
 
     // CONSTRUCTORS
@@ -198,7 +198,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
-        renderer.render(this, title, lut, normalise, composite, overlay);
+        getRenderer().render(this, title, lut, normalise, composite, overlay);
     }
 
     public ImagePlusImage duplicate(String outputImageName) {
@@ -367,13 +367,16 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     @Override
-    public ImageRenderer getDefaultRenderer() {
-        return defaultImageRenderer;
+    public ImageRenderer getRenderer() {
+        if (getUseGlobalImageRenderer())
+            return getGlobalImageRenderer();
+        else
+            return renderer;
     }
 
     @Override
-    public void setDefaultRenderer(ImageRenderer imageRenderer) {
-        defaultImageRenderer = imageRenderer;
+    public void setRenderer(ImageRenderer imageRenderer) {
+        renderer = imageRenderer;
     }
 
     @Override

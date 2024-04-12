@@ -32,10 +32,93 @@ public class ImgPlusTools {
 
     }
 
+    // public static <T> void copyAxes(ImgPlus<T> sourceImg, ImgPlus<T> targetImg) {
+    // for (int i = 0; i < sourceImg.numDimensions(); i++) {
+    // targetImg.setAxis(sourceImg.axis(i), i);
+    // }
+    // }
+
+    public static <T> void initialiseXYCZTAxes(ImgPlus<T> img) {
+        img.setAxis(new DefaultLinearAxis(Axes.X, "", 1), 0);
+        img.setAxis(new DefaultLinearAxis(Axes.Y, "", 1), 1);
+        img.setAxis(new DefaultLinearAxis(Axes.CHANNEL, "", 1), 2);
+        img.setAxis(new DefaultLinearAxis(Axes.Z, "", 1), 3);
+        img.setAxis(new DefaultLinearAxis(Axes.TIME, "", 1), 4);
+
+    }
+
+    public static <T> void setMissingXYCZTAxes(ImgPlus<T> img) {
+        // Setting calibration
+        int xIdx = img.dimensionIndex(Axes.X);
+        if (xIdx == -1)
+            img.setAxis(new DefaultLinearAxis(Axes.X, "", 1), xIdx);
+
+        int yIdx = img.dimensionIndex(Axes.Y);
+        if (yIdx == -1)
+            img.setAxis(new DefaultLinearAxis(Axes.Y, "", 1), yIdx);
+
+        int cIdx = img.dimensionIndex(Axes.CHANNEL);
+        if (cIdx == -1)
+            img.setAxis(new DefaultLinearAxis(Axes.CHANNEL, "", 1), cIdx);
+
+        int zIdx = img.dimensionIndex(Axes.Z);
+        if (zIdx == -1)
+            img.setAxis(new DefaultLinearAxis(Axes.Z, "", 1), zIdx);
+
+        int tIdx = img.dimensionIndex(Axes.TIME);
+        if (tIdx == -1)
+            img.setAxis(new DefaultLinearAxis(Axes.TIME, "", 1), tIdx);
+
+    }
+
     public static <T> void copyAxes(ImgPlus<T> sourceImg, ImgPlus<T> targetImg) {
         for (int i = 0; i < sourceImg.numDimensions(); i++) {
             targetImg.setAxis(sourceImg.axis(i), i);
         }
+    }
+
+    public static <T> void applyAxes(ImgPlus<T> sourceImg, ImgPlus<T> targetImg) {
+        // Setting calibration
+        int xSourceIdx = sourceImg.dimensionIndex(Axes.X);
+        int xTargetIdx = targetImg.dimensionIndex(Axes.X);
+        if (xTargetIdx != -1)
+            if (xSourceIdx == -1)
+                targetImg.setAxis(new DefaultLinearAxis(Axes.X, "", 1), xTargetIdx);
+            else
+                targetImg.setAxis(sourceImg.axis(xSourceIdx), xTargetIdx);
+
+        int ySourceIdx = sourceImg.dimensionIndex(Axes.Y);
+        int yTargetIdx = targetImg.dimensionIndex(Axes.Y);
+        if (yTargetIdx != -1)
+            if (ySourceIdx == -1)
+                targetImg.setAxis(new DefaultLinearAxis(Axes.Y, "", 1), yTargetIdx);
+            else
+                targetImg.setAxis(sourceImg.axis(ySourceIdx), yTargetIdx);
+
+        int cSourceIdx = sourceImg.dimensionIndex(Axes.CHANNEL);
+        int cTargetIdx = targetImg.dimensionIndex(Axes.CHANNEL);
+        if (cTargetIdx != -1)
+            if (cSourceIdx == -1)
+                targetImg.setAxis(new DefaultLinearAxis(Axes.CHANNEL, "", 1), cTargetIdx);
+            else
+                targetImg.setAxis(sourceImg.axis(cSourceIdx), cTargetIdx);
+
+        int zSourceIdx = sourceImg.dimensionIndex(Axes.Z);
+        int zTargetIdx = targetImg.dimensionIndex(Axes.Z);
+        if (zTargetIdx != -1)
+            if (zSourceIdx == -1)
+                targetImg.setAxis(new DefaultLinearAxis(Axes.Z, "", 1), zTargetIdx);
+            else
+                targetImg.setAxis(sourceImg.axis(zSourceIdx), zTargetIdx);
+
+        int tSourceIdx = sourceImg.dimensionIndex(Axes.TIME);
+        int tTargetIdx = targetImg.dimensionIndex(Axes.TIME);
+        if (tTargetIdx != -1)
+            if (tSourceIdx == -1)
+                targetImg.setAxis(new DefaultLinearAxis(Axes.TIME, "", 1), tTargetIdx);
+            else
+                targetImg.setAxis(sourceImg.axis(tSourceIdx), tTargetIdx);
+
     }
 
     public static <T> void applyAxes(ImgPlus<T> sourceImg, ImagePlus targetImagePlus) {

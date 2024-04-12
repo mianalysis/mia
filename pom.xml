@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>36.0.0</version>
+        <version>37.0.0</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>

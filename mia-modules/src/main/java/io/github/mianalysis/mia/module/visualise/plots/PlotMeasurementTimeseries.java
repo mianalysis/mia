@@ -1,9 +1,8 @@
 package io.github.mianalysis.mia.module.visualise.plots;
 
-import java.awt.Color;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 import org.scijava.Priority;
@@ -159,7 +158,7 @@ public class PlotMeasurementTimeseries extends Module {
     }
 
     public static double[] getYValues(Obj trackObject, String objectsName, String measurementName, int[] xValues) {
-        HashMap<Integer, Double> yValues = new HashMap<>();
+        TreeMap<Integer, Double> yValues = new TreeMap<>();
         for (int xValue : xValues)
             yValues.put(xValue, Double.NaN);
 
@@ -168,6 +167,7 @@ public class PlotMeasurementTimeseries extends Module {
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             yValues.put(inputObject.getT(), value);
+
         }
 
         return Doubles.toArray(yValues.values());
@@ -202,6 +202,7 @@ public class PlotMeasurementTimeseries extends Module {
 
             // Getting values to plot
             int[] xValues = getXValues(trackObjects, trackObject, inputObjectsName, xRangeMode, xRangeMin, xRangeMax);
+
             double[] xValuesDouble = Arrays.stream(xValues).asDoubleStream().toArray();
 
             for (Parameters currParameters : measurementCollection.values()) {
@@ -233,7 +234,10 @@ public class PlotMeasurementTimeseries extends Module {
 
             ImagePlus currIpl = plot.getImagePlus();
             if (ipl == null)
-                ipl = IJ.createImage("Plots", currIpl.getWidth(), currIpl.getHeight(), trackObjects.size(), 24);
+                if (trackObjects.size() == 1)
+                    ipl = currIpl;
+                else
+                    ipl = IJ.createImage("Plots", currIpl.getWidth(), currIpl.getHeight(), trackObjects.size(), 24);
 
             ipl.getStack().setProcessor(currIpl.getProcessor(), count++ + 1);
 
@@ -330,7 +334,7 @@ public class PlotMeasurementTimeseries extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {        
         return null;
     }
 

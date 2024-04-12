@@ -48,10 +48,6 @@ public class MIA_ extends MIA implements Command {
         }
     }
 
-    // static {
-    // LegacyInjector.preinit();
-    // }
-
     @Override
     public void run() {
         headless = false;

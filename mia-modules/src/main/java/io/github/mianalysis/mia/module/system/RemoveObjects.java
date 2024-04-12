@@ -2,18 +2,17 @@ package io.github.mianalysis.mia.module.system;
 
 import java.util.LinkedHashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.RemovedObjectsP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -28,28 +27,28 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Removes the specified object set(s) from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an object set can be retained for further use.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Removes the specified object set(s) from the workspace. Doing this helps keep
+ * memory usage down. Measurements associated with an object set can be retained
+ * for further use.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RemoveObjects extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REMOVAL_SEPARATOR = "Objects to remove";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
-	/**
-	* Mark another object set from the workspace for removal.
-	*/
+    /**
+     * Mark another object set from the workspace for removal.
+     */
     public static final String REMOVE_ANOTHER_OBJECT_SET = "Remove another object set";
 
     public RemoveObjects(Modules modules) {
-        super("Remove objects",modules);
+        super("Remove objects", modules);
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -70,29 +69,29 @@ public class RemoveObjects extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         ParameterGroup parameterGroup = parameters.getParameter(REMOVE_ANOTHER_OBJECT_SET);
-        LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, Parameters> collections = parameterGroup.getCollections(false);
 
         for (Parameters collection : collections.values()) {
-            String inputObjectsName = collection.getValue(INPUT_OBJECTS,null);
-            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS,null);
+            String inputObjectsName = collection.getValue(INPUT_OBJECTS, null);
+            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS, null);
 
             // Removing the relevant object set from the workspace
             writeStatus("Removing objects (" + inputObjectsName + ") from workspace");
             workspace.removeObjects(inputObjectsName, retainMeasurements);
 
         }
-        
+
         return Status.PASS;
 
     }
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(REMOVAL_SEPARATOR,this));
+        parameters.add(new SeparatorP(REMOVAL_SEPARATOR, this));
 
         Parameters collection = new Parameters();
-        collection.add(new RemovedObjectsP(INPUT_OBJECTS,this));
-        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
+        collection.add(new RemovedObjectsP(INPUT_OBJECTS, this));
+        collection.add(new BooleanP(RETAIN_MEASUREMENTS, this, false));
         parameters.add(new ParameterGroup(REMOVE_ANOTHER_OBJECT_SET, this, collection, 1));
 
         addParameterDescriptions();
@@ -101,33 +100,32 @@ public class RemoveObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -141,9 +139,11 @@ return null;
 
         collection.get(INPUT_OBJECTS).setDescription("Name of the object set to be removed from the workspace.");
 
-        collection.get(RETAIN_MEASUREMENTS).setDescription("Retain measurements for this object set, or remove everything.  When selected, the object coordinates will be removed, as this is typically where most memory us used, however any measurements associated with each object will be retained.");
+        collection.get(RETAIN_MEASUREMENTS).setDescription(
+                "Retain measurements for this object set, or remove everything.  When selected, the object coordinates will be removed, as this is typically where most memory us used, however any measurements associated with each object will be retained.");
 
-        parameters.get(REMOVE_ANOTHER_OBJECT_SET).setDescription("Mark another object set from the workspace for removal.");
+        parameters.get(REMOVE_ANOTHER_OBJECT_SET)
+                .setDescription("Mark another object set from the workspace for removal.");
 
     }
 }

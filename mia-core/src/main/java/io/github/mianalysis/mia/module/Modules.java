@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.RemovableInputImageP;
 import io.github.mianalysis.mia.object.parameters.RemovedImageP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -449,8 +450,8 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             if (!ignoreRemoved || removedObjects == null)
                 continue;
 
-            for (Parameter removedImage : removedObjects) {
-                String removeObjectName = removedImage.getRawStringValue();
+            for (Parameter removedObject : removedObjects) {
+                String removeObjectName = removedObject.getRawStringValue();
                 objects.removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
             }
         }
@@ -507,6 +508,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             // Get the added and removed images
             LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
             LinkedHashSet<RemovedImageP> removedImages = module.getParametersMatchingType(RemovedImageP.class);
+            LinkedHashSet<RemovableInputImageP> removableImages = module.getParametersMatchingType(RemovableInputImageP.class);
 
             // Adding new images
             if (addedImages != null)
@@ -518,6 +520,14 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
             for (Parameter removedImage : removedImages) {
                 String removeImageName = removedImage.getRawStringValue();
+                images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+            }
+
+            for (RemovableInputImageP removeableImage : removableImages) {
+                if (!removeableImage.isRemoveInputImages())
+                    continue;
+
+                String removeImageName = removeableImage.getRawStringValue();
                 images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
             }
         }

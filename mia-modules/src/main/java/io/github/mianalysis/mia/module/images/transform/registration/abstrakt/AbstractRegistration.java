@@ -2,9 +2,6 @@ package io.github.mianalysis.mia.module.images.transform.registration.abstrakt;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.drew.lang.annotations.Nullable;
 
@@ -12,7 +9,6 @@ import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.Prefs;
 import ij.plugin.CanvasResizer;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;

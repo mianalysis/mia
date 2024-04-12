@@ -53,7 +53,7 @@ public class GUI {
     private static Workspace testWorkspace = new Workspaces().getNewWorkspace(null, 1);
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
-    private static int minimumFrameHeight = 600;
+    private static int minimumFrameHeight = 520;
     private static int frameHeight = 850;
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
@@ -87,6 +87,7 @@ public class GUI {
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
+        frameHeight = Math.max(frameHeight,minimumFrameHeight);
 
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
