@@ -334,7 +334,7 @@ public class PlotMeasurementTimeseries extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {        
         return null;
     }
 
