@@ -4,7 +4,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
-public abstract class BooleanType extends Parameter {
+public abstract class BooleanType extends TextSwitchableParameter {
     protected boolean selected = false;
 
     public BooleanType(String name, Module module, boolean selected) {

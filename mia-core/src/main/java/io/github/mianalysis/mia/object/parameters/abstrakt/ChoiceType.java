@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.object.parameters.abstrakt;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -10,10 +9,8 @@ import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
-public abstract class ChoiceType extends Parameter {
+public abstract class ChoiceType extends TextSwitchableParameter {
     protected String choice = "";
-    protected boolean showChoice = true; // When true GUI shows a choice drop-down, when false GUI shows a text entry
-                                         // box
 
     public ChoiceType(String name, Module module) {
         super(name, module);
@@ -35,14 +32,6 @@ public abstract class ChoiceType extends Parameter {
     }
 
     public abstract String[] getChoices();
-
-    public void setShowChoice(boolean showChoice) {
-        this.showChoice = showChoice;
-    }
-
-    public boolean isShowChoice() {
-        return this.showChoice;
-    }
 
     @Override
     public String getRawStringValue() {
@@ -79,14 +68,6 @@ public abstract class ChoiceType extends Parameter {
     }
 
     @Override
-    public void appendXMLAttributes(Element element) {
-        super.appendXMLAttributes(element);
-
-        element.setAttribute("SHOW_CHOICE", Boolean.toString(isShowChoice()));
-
-    }
-
-    @Override
     public void setAttributesFromXML(Node node) {
         super.setAttributesFromXML(node);
 
@@ -100,14 +81,13 @@ public abstract class ChoiceType extends Parameter {
 
         setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));
 
-        if (map.getNamedItem("SHOW_CHOICE") != null)
-            setShowChoice(Boolean.parseBoolean(map.getNamedItem("SHOW_CHOICE").getNodeValue()));
-
     }
 
     @Override
     public boolean verify() {
-        if (isShowChoice()) {
+        if (isShowText()) {
+            return super.verify();
+        } else {
             // Verifying the choice is present in the choices. When we generateModuleList
             // getChoices, we should be getting the valid
             // options only.
@@ -118,8 +98,7 @@ public abstract class ChoiceType extends Parameter {
                     return true;
 
             return false;
-        } else {
-            return GlobalVariables.variablesPresent(getRawStringValue(), module.getModules());
+
         }
     }
 }
