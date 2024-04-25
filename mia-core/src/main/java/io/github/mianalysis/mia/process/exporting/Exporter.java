@@ -821,7 +821,7 @@ public class Exporter {
                 continue;
 
             // Creating relevant sheet prefixed with "OBJ"
-            objectSheets.put(objectName, workbook.createSheet(objectName));
+            objectSheets.put(objectName, workbook.createSheet(objectName.replace("/", "⁄")));
 
             objectRows.put(objectName, 1);
             Row objectHeaderRow = objectSheets.get(objectName).createRow(0);
