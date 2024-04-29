@@ -544,6 +544,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
                 break;
             case MaskingModes.MASK_OBJECTS:
                 maskImage = getObjectMask(objects, objectMaskLogic);
+                if (objects == null || objects.size() == 0)
+                    return Status.PASS;
                 break;
             default:
             case MaskingModes.NONE:
