@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.RenameListMenu;
+import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 /**
@@ -19,11 +19,11 @@ public class ExportName extends JLabel implements MouseListener {
      */
     private static final long serialVersionUID = 5017487558283084852L;
     private Ref reference;
-    private RenameListMenu renameListMenu ;
+    private ReferenceEditingMenu refEditingMenu ;
 
     public ExportName(Ref ref) {
         this.reference = ref;
-        renameListMenu = new RenameListMenu(ref);
+        refEditingMenu = new ReferenceEditingMenu(ref);
 
         setText(ref.getNickname());
         addMouseListener(this);
@@ -36,9 +36,9 @@ public class ExportName extends JLabel implements MouseListener {
         if (e.getButton() != MouseEvent.BUTTON3) return;
 
         // Populating the list containing all available modules
-        renameListMenu.show(GUI.getFrame(), 0, 0);
-        renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
-        renameListMenu.setVisible(true);
+        refEditingMenu.show(GUI.getFrame(), 0, 0);
+        refEditingMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
+        refEditingMenu.setVisible(true);
 
     }
 
