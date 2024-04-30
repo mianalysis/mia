@@ -1,5 +1,3 @@
-// TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
-
 package io.github.mianalysis.mia.module.images.process.threshold;
 
 import org.scijava.Priority;

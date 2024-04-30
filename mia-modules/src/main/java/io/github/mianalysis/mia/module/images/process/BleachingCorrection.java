@@ -146,7 +146,9 @@ public class BleachingCorrection extends Module {
         switch (correctionMode) {
             case CorrectionModes.EXPONENTIAL_FIT:
                 try {
-                    new BleachCorrection_ExpoFit(inputImagePlus, roi).core();
+                    BleachCorrection_ExpoFit bleachCorrectionExpoFit = new BleachCorrection_ExpoFit(inputImagePlus, roi);
+                    bleachCorrectionExpoFit.setHeadlessProcessing(true);
+                    bleachCorrectionExpoFit.core();
                 } catch (NullPointerException e) {
                     MIA.log.writeWarning("Bleach correction failed (possible lack of exponential decay in signal)");
                 }
