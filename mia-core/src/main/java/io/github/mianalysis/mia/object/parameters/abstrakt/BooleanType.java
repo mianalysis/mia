@@ -5,38 +5,38 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public abstract class BooleanType extends TextSwitchableParameter {
-    protected boolean selected = false;
+    protected String value = "false";
 
     public BooleanType(String name, Module module, boolean selected) {
         super(name,module);
-        this.selected = selected;
+        this.setSelected(selected);
     }
 
     public BooleanType(String name, Module module, boolean selected, String description) {
         super(name,module,description);
-        this.selected = selected;
+        this.setSelected(selected);
     }
 
     public boolean isSelected() {
-        return selected;
+        return Boolean.parseBoolean(value);
     }
 
     public void setSelected(boolean selected) {
-        this.selected = selected;
+        this.value = Boolean.toString(selected);
     }
 
     public void flipBoolean() {
-        selected = !selected;
+        setSelected(!isSelected());
     }
 
     @Override
     public String getRawStringValue() {
-        return Boolean.toString(isSelected());
+        return value;
     }
 
     @Override
     public void setValueFromString(String value) {
-        selected = Boolean.parseBoolean(value);
+        this.value = value;
     }
 
     @Override
@@ -46,12 +46,12 @@ public abstract class BooleanType extends TextSwitchableParameter {
 
     @Override
     public <T> T getValue(Workspace workspace) {
-        return (T) (Boolean) selected;
+        return (T) (Boolean) Boolean.parseBoolean(value);
     }
 
     @Override
     public <T> void setValue(T value) {
-        selected = (Boolean) value;
+        this.value = ((Boolean) value).toString();
     }
 
     @Override

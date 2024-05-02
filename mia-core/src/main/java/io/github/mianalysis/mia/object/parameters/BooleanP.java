@@ -21,5 +21,6 @@ public class BooleanP extends BooleanType {
         newParameter.setExported(isExported());
 
         return (T) newParameter;
+        
     }
 }

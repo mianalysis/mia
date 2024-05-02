@@ -11,12 +11,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.parametercontrols.TextAreaParameter;
 import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
 import io.github.mianalysis.mia.gui.parametercontrols.TextSwitchableParameterControl;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextSwitchableParameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
@@ -301,10 +304,9 @@ class DynamicVariableActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String inputString = parameter.getRawStringValue();
         int position = inputString.length();
-        if (parameter.getControl() instanceof TextParameter)
-            position = ((TextParameter) parameter.getControl()).getCaretPosition();
-        else if (parameter.getControl() instanceof TextSwitchableParameterControl)
-            position = ((TextSwitchableParameterControl) parameter.getControl()).getCaretPosition();
+        
+        if (parameter.getControl() instanceof CaretReporter)
+            position = ((CaretReporter) parameter.getControl()).getCaretPosition();
 
         parameter
                 .setValueFromString(inputString.substring(0, position) + stringToAdd + inputString.substring(position));

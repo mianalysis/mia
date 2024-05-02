@@ -76,7 +76,7 @@ public class ProjectObjects extends Module {
     
     @Override
     public Category getCategory() {
-        return Categories.OBJECTS_PROCESS;
+        return Categories.OBJECTS_TRANSFORM;
     }
 
     @Override

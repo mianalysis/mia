@@ -9,10 +9,11 @@ import javax.swing.JTextField;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextSwitchableParameter;
 
-public abstract class TextSwitchableParameterControl extends ParameterControl implements FocusListener {
+public abstract class TextSwitchableParameterControl extends ParameterControl implements CaretReporter, FocusListener {
     private JTextField textControl;
     protected int caretPosition = 0;
 

@@ -7,12 +7,14 @@ import org.scijava.plugin.Plugin;
 
 import ch.epfl.biop.wrappers.cellpose.Cellpose;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
-import ij.ImagePlus;
 import ij.Prefs;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
@@ -218,7 +220,6 @@ public class CellposeDetection extends Module {
         String additionalFlags = parameters.getValue(ADDITIONAL_FLAGS, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
 
         Cellpose.setEnvDirPath(new File(cellposePath));
         Cellpose.setEnvType(environmentType);
@@ -237,7 +238,6 @@ public class CellposeDetection extends Module {
         Cellpose.setUseResample(useResample);
 
         CellposeWrapper cellpose = new CellposeWrapper();
-        cellpose.setImagePlus(ipl);
 
         switch (modelMode) {
             case ModelModes.CUSTOM:
@@ -266,7 +266,7 @@ public class CellposeDetection extends Module {
                     cellpose.setCytoChannel(cytoChannel);
                 else
                     cellpose.setCytoChannel(-1);
-                    
+
                 break;
             case Models.NUCLEI:
                 cellpose.setNucleiChannel(nucleiChannel);
@@ -285,10 +285,44 @@ public class CellposeDetection extends Module {
         cellpose.setUseClustering(useClustering);
         cellpose.setAdditionalFlags(additionalFlags);
 
-        cellpose.run();
+        Objs outputObjects = null;
+        int count = 0;
+        if (dimensionMode.equals(DimensionModes.TWOD) && inputImage.getImagePlus().getNSlices() > 1) {
+            // Processing Z-stacks as timeseries since the cellpose integration appears to process the wrong axis when dealing with 3D stacks using the 2D logic
+            for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
+                Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end", "1-end", String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
+                Convert3DStack.process(currImage, Convert3DStack.Modes.OUTPUT_TIMESERIES);
 
-        Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-        Objs outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+                cellpose.setImagePlus(currImage.getImagePlus());
+                cellpose.run();
+
+                Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                Convert3DStack.process(cellsImage, Convert3DStack.Modes.OUTPUT_Z_STACK);
+
+                Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+                currOutputObjects.setNFrmes(inputImage.getImagePlus().getNFrames());
+                for (Obj currOutputObject:currOutputObjects.values())
+                    currOutputObject.setT(t);
+
+                if (outputObjects == null) {
+                    outputObjects = currOutputObjects;
+                } else {
+                    int id = outputObjects.getLargestID() + 1;
+                    for (Obj currOutputObject:currOutputObjects.values()) {
+                        currOutputObject.setID(id++);
+                        outputObjects.add(currOutputObject);
+                    }
+                }
+
+                writeProgressStatus(++count, inputImage.getImagePlus().getNFrames(), "frames");
+
+            }
+        } else {
+            cellpose.setImagePlus(inputImage.getImagePlus());
+            cellpose.run();
+            Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+            outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+        }
 
         workspace.addObjects(outputObjects);
 

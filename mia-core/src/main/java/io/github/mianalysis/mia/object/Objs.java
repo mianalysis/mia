@@ -194,11 +194,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     public int getLargestID() {
         int largestID = 0;
-        for (Obj obj : values()) {
+        for (Obj obj : values())
             if (obj.getID() > largestID)
                 largestID = obj.getID();
-        }
-
+        
         return largestID;
 
     }

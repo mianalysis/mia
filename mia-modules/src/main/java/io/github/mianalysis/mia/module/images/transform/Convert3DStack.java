@@ -96,6 +96,15 @@ public class Convert3DStack extends Module {
         return "Ensures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
     }
 
+    public static void process(Image inputImage, String mode) {
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
+
+        process(inputImagePlus, mode);
+
+        inputImage.setImagePlus(inputImagePlus);
+        
+    }
+
     public static void process(ImagePlus inputImagePlus, String mode) {
         int nChannels = inputImagePlus.getNChannels();
         int nFrames = inputImagePlus.getNFrames();
