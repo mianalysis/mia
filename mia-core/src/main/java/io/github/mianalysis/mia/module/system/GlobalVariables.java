@@ -115,6 +115,10 @@ public class GlobalVariables extends Module {
 
     }
 
+    public static HashMap<StringP, String> getGlobalVariables() {
+        return globalVariables;
+    }
+
     public static boolean containsValue(String string) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);

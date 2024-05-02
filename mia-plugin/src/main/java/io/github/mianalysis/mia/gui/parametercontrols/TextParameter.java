@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
  */
 public class TextParameter extends ParameterControl implements FocusListener {
     protected JTextField control;
+    protected int caretPosition = 0;
 
     public TextParameter(TextType parameter) {
         super(parameter);
@@ -29,6 +30,10 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     }
 
+    public int getCaretPosition() {
+        return caretPosition;
+    }
+
     @Override
     public void focusGained(FocusEvent e) {
 
@@ -36,6 +41,7 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
+        caretPosition = control.getCaretPosition();
         GUI.addUndo();
 
         parameter.setValueFromString(control.getText());

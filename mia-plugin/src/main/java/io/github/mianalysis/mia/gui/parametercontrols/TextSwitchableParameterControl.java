@@ -1,17 +1,10 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Font;
-import java.awt.MouseInfo;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import io.github.mianalysis.mia.gui.GUI;
@@ -21,6 +14,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.TextSwitchableParamet
 
 public abstract class TextSwitchableParameterControl extends ParameterControl implements FocusListener {
     private JTextField textControl;
+    protected int caretPosition = 0;
 
     public abstract JComponent getDefaultComponent();
     public abstract void updateDefaultControl();
@@ -33,6 +27,10 @@ public abstract class TextSwitchableParameterControl extends ParameterControl im
         textControl.setText(parameter.getRawStringValue());
         textControl.addFocusListener(this);
 
+    }
+
+    public int getCaretPosition() {
+        return caretPosition;
     }
 
     @Override
@@ -48,7 +46,7 @@ public abstract class TextSwitchableParameterControl extends ParameterControl im
     }
 
     public void updateTextControl() {
-        
+        textControl.setText(parameter.getRawStringValue());
     }
 
     @Override
@@ -66,6 +64,7 @@ public abstract class TextSwitchableParameterControl extends ParameterControl im
 
     @Override
     public void focusLost(FocusEvent e) {
+        caretPosition = textControl.getCaretPosition();
         GUI.addUndo();
 
         parameter.setValueFromString(textControl.getText());
