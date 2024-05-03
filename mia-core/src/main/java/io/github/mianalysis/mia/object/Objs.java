@@ -538,7 +538,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         Objs outputObjects = new Objs(outputObjectsName, this);
 
         // Setting output objects collection to have one frame
-        outputObjects.setNFrmes(1);
+        outputObjects.setNFrames(1);
 
         // Iterating over objects, getting those in this frame
         for (Obj obj:values()) {
@@ -567,7 +567,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         return temporalUnit;
     }
 
-    public void setNFrmes(int nFrames) {
+    public void setNFrames(int nFrames) {
         this.nFrames = nFrames;
     }
 }

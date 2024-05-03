@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
@@ -369,6 +370,7 @@ public class Obj extends Volume {
         if (rois.containsKey(slice))
             return (Roi) rois.get(slice).clone();
 
+        MIA.log.writeDebug("ID "+ID);
         Roi roi = super.getRoi(slice);
 
         if (roi == null)

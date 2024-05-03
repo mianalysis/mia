@@ -11,6 +11,7 @@ import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -736,6 +737,8 @@ public class Volume {
         
         Roi roi = new ThresholdToSelection().convert(ipr);
         double[][] extents = sliceVol.getExtents(true, false);
+        MIA.log.writeDebug("ROI "+roi);
+        MIA.log.writeDebug("Ex "+extents);
         roi.translate(extents[0][0], extents[1][0]);
 
         return roi;

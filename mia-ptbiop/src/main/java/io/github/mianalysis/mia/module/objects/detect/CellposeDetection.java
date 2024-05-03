@@ -17,6 +17,8 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -37,6 +39,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CellposeDetection extends Module {
@@ -288,34 +291,34 @@ public class CellposeDetection extends Module {
         Objs outputObjects = null;
         int count = 0;
         if (dimensionMode.equals(DimensionModes.TWOD) && inputImage.getImagePlus().getNSlices() > 1) {
-            // Processing Z-stacks as timeseries since the cellpose integration appears to process the wrong axis when dealing with 3D stacks using the 2D logic
-            for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
-                Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end", "1-end", String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
-                Convert3DStack.process(currImage, Convert3DStack.Modes.OUTPUT_TIMESERIES);
+            SpatCal spatCal = SpatCal.getFromImage(inputImage.getImagePlus());
+            int nFrames = inputImage.getImagePlus().getNFrames();
+            double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
+            outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval,
+                    TemporalUnit.getOMEUnit());
 
-                cellpose.setImagePlus(currImage.getImagePlus());
-                cellpose.run();
+            for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
+                for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
+                    Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end",
+                            String.valueOf(z + 1) + "-" + String.valueOf(z + 1),
+                            String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
 
-                Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                Convert3DStack.process(cellsImage, Convert3DStack.Modes.OUTPUT_Z_STACK);
+                    cellpose.setImagePlus(currImage.getImagePlus());
+                    cellpose.run();
 
-                Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
-                currOutputObjects.setNFrmes(inputImage.getImagePlus().getNFrames());
-                for (Obj currOutputObject:currOutputObjects.values())
-                    currOutputObject.setT(t);
+                    Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                    Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
 
-                if (outputObjects == null) {
-                    outputObjects = currOutputObjects;
-                } else {
-                    int id = outputObjects.getLargestID() + 1;
-                    for (Obj currOutputObject:currOutputObjects.values()) {
-                        currOutputObject.setID(id++);
-                        outputObjects.add(currOutputObject);
+                    for (Obj currOutputObject : currOutputObjects.values()) {
+                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                        outputObject.setT(t);
+                        outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
+                        outputObject.translateCoords(0, 0, z);
                     }
+
+                    writeProgressStatus(++count, inputImage.getImagePlus().getStackSize(), "slices");
+
                 }
-
-                writeProgressStatus(++count, inputImage.getImagePlus().getNFrames(), "frames");
-
             }
         } else {
             cellpose.setImagePlus(inputImage.getImagePlus());
