@@ -103,6 +103,7 @@ import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
 import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -286,8 +287,12 @@ public class RelateOneToOne extends Module {
         DefaultCostMatrixCreator<Integer, Integer> creator = new DefaultCostMatrixCreator<>(IDs1, IDs2, costs,
                 alternativeCostFactor, percentile);
 
-        if (!creator.checkInput() || !creator.process())
+        
+
+        if (!creator.checkInput() || !creator.process()) {
+            MIA.log.writeError(creator.getErrorMessage());
             return null;
+        }            
 
         return creator;
 
