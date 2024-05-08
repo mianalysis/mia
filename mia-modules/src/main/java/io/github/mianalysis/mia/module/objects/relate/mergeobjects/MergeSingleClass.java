@@ -21,26 +21,29 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Combines all objects at a single timepoint from a specific object collection into a single object.  Due to the fact objects are stored in 3D, there are still separate objects for each timepoint.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Combines all objects at a single timepoint from a specific object collection
+ * into a single object. Due to the fact objects are stored in 3D, there are
+ * still separate objects for each timepoint.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MergeSingleClass extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public final static String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* Input object collection that will have all objects from each timepoint merged into a single object.
-	*/
+    /**
+     * Input object collection that will have all objects from each timepoint merged
+     * into a single object.
+     */
     public final static String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Output merged objects (one per input timepoint).  These objects will be stored in the workspace and accessible via this name.
-	*/
+    /**
+     * Output merged objects (one per input timepoint). These objects will be stored
+     * in the workspace and accessible via this name.
+     */
     public static final String OUTPUT_OBJECTS = "Output merged objects";
 
     public MergeSingleClass(Modules modules) {
@@ -64,22 +67,24 @@ public class MergeSingleClass extends Module {
 
     public static Objs mergeSingleClass(Objs inputObjects, String outputObjectsName) {
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
-        
+
         // Iterating over all input objects, adding their coordinates to the relevant
         // object
         for (Obj inputObject : inputObjects.values()) {
             // Getting the current timepoint instance
             int t = inputObject.getT();
-            
+
             // If it doesn't already exist, creating a new object for this timepoint. The ID
             // of this object is the timepoint index (numbering starting at 1).
-            if (!outputObjects.containsKey(t+1))
-                outputObjects.add(new Obj(outputObjects, t + 1, inputObject));
-            
+            if (!outputObjects.containsKey(t + 1)) {
+                Obj outputObject = new Obj(outputObjects, t + 1, inputObject);
+                outputObject.setT(t);
+                outputObjects.add(outputObject);
+            }
+
             // Adding coordinates to this object
             Obj outputObject = outputObjects.get(t + 1);
             outputObject.getCoordinateSet().addAll(inputObject.getCoordinateSet());
-            
 
         }
 
@@ -89,9 +94,9 @@ public class MergeSingleClass extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Merging objects
         Objs outputObjects = mergeSingleClass(inputObjects, outputObjectsName);
@@ -119,33 +124,33 @@ public class MergeSingleClass extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
