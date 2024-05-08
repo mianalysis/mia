@@ -193,7 +193,7 @@ public class AddArrows extends AbstractOverlay {
         double x2 = arrowLength * Math.cos(oriRads);
         double y2 = arrowLength * Math.sin(oriRads);
 
-        Arrow arrow = new Arrow(xMean, yMean, xMean + x2, yMean + y2);
+        Arrow arrow = new Arrow(xMean, yMean, xMean - x2, yMean - y2);
         arrow.setHeadSize(headSize);
         arrow.setStrokeColor(colour);
         arrow.setStrokeWidth(lineWidth);

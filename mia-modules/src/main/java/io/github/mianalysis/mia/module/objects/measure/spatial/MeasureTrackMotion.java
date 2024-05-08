@@ -8,6 +8,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -95,6 +96,8 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
      */
     public static final String SUBTRACT_AVERAGE_MOTION = "Subtract average motion";
 
+    public static final String CALCULATE_ORIENTATION = "Calculate orientation";
+
     /**
      * When selected, the "leading point" of each object in the track will be
      * determined and stored as X,Y,Z coordinate measurements associated with the
@@ -161,7 +164,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         String ANGULAR_PERSISTENCE = "ANGULAR_PERSISTENCE";
         String DETECTION_FRACTION = "DETECTION_FRACTION";
         String RELATIVE_FRAME = "RELATIVE_FRAME";
-        String ORIENTATION = "ORIENTATION";
+        String ORIENTATION = "ORIENTATION_(DEGS)";
         String LEADING_X_PX = "LEADING_POINT_X_(PX)";
         String LEADING_Y_PX = "LEADING_POINT_Y_(PX)";
         String LEADING_Z_PX = "LEADING_POINT_Z_(PX)";
@@ -298,9 +301,12 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             double distPerPxXY = trackObject.getDppXY();
             double distPerPxZ = trackObject.getDppZ();
 
-            TreeMap<Integer, Double> xVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getX());
-            TreeMap<Integer, Double> yVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getY());
-            TreeMap<Integer, Double> zVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getZ());
+            TreeMap<Integer, Double> xVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),
+                    track.getX());
+            TreeMap<Integer, Double> yVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),
+                    track.getY());
+            TreeMap<Integer, Double> zVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),
+                    track.getZ());
             TreeMap<Integer, Double> speed = new InstantaneousSpeedCalculator().calculate(track);
 
             CumStat cumStatX = new CumStat();
@@ -386,16 +392,17 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_CAL, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, totalPathLength * distPerPxXY));
             name = getFullName(Measurements.DIRECTIONALITY_RATIO, averageSubtracted);
-            trackObject.addMeasurement(new Measurement(name, euclideanDistance/totalPathLength));
+            trackObject.addMeasurement(new Measurement(name, euclideanDistance / totalPathLength));
 
         }
     }
 
     public double getTotalPathLength(Track track) {
-        TreeMap<Integer,Double> steps = new InstantaneousStepSizeCalculator().calculate(track);
+        TreeMap<Integer, Double> steps = new InstantaneousStepSizeCalculator().calculate(track);
 
         double totalPathLength = 0;
-        for (double value:steps.values()) totalPathLength += value;
+        for (double value : steps.values())
+            totalPathLength += value;
 
         return totalPathLength;
 
@@ -406,9 +413,12 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         double distPerPxXY = trackObject.getDppXY();
         double distPerPxZ = trackObject.getDppZ();
 
-        TreeMap<Integer, Double> xVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getX());
-        TreeMap<Integer, Double> yVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getY());
-        TreeMap<Integer, Double> zVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),track.getZ());
+        TreeMap<Integer, Double> xVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),
+                track.getX());
+        TreeMap<Integer, Double> yVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),
+                track.getY());
+        TreeMap<Integer, Double> zVelocity = new InstantaneousVelocityCalculator().calculate(track.getF(),
+                track.getZ());
         TreeMap<Integer, Double> speed = new InstantaneousSpeedCalculator().calculate(track);
 
         // Getting the first timepoint
@@ -494,6 +504,20 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
+    public static void calculateOrientation(Objs objects, String orientationMode, boolean averageSubtracted) {
+        String name = getFullName(Measurements.ORIENTATION, averageSubtracted);
+
+        for (Obj obj : objects.values()) {
+            double angle = getInstantaneousOrientationRads(obj, objects, orientationMode);
+
+            if (Double.isNaN(angle))
+                obj.addMeasurement(new Measurement(name, Double.NaN));
+            else
+                obj.addMeasurement(new Measurement(name, Math.toDegrees(angle)));
+
+        }
+    }
+
     public static double getInstantaneousOrientationRads(Obj object, Objs objects, String orientationMode) {
         double prevAngle = Double.NaN;
         double nextAngle = Double.NaN;
@@ -525,16 +549,25 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
     }
 
-    public static void identifyLeading(Objs objects, String orientationMode) {
+    public static void identifyLeading(Objs objects, String orientationMode, boolean averageSubtracted) {
         for (Obj obj : objects.values()) {
-            double angle = getInstantaneousOrientationRads(obj, objects, orientationMode);
+            // Get previously-calculated orientation
+            String name = getFullName(Measurements.ORIENTATION, averageSubtracted);
+            Measurement orientation = obj.getMeasurement(name);
+            double angle = Double.NaN;
+            if (orientation != null)
+                angle = orientation.getValue();
 
             if (Double.isNaN(angle)) {
                 // Adding furthest point coordinates to measurements
-                obj.addMeasurement(new Measurement(Measurements.ORIENTATION, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX, Double.NaN));
+                name = getFullName(Measurements.LEADING_X_PX, averageSubtracted);
+                obj.addMeasurement(new Measurement(name, Double.NaN));
+
+                name = getFullName(Measurements.LEADING_Y_PX, averageSubtracted);
+                obj.addMeasurement(new Measurement(name, Double.NaN));
+
+                name = getFullName(Measurements.LEADING_Z_PX, averageSubtracted);
+                obj.addMeasurement(new Measurement(name, Double.NaN));
 
             } else {
                 double xCent = obj.getXMean(true);
@@ -569,10 +602,14 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
                 }
 
                 // Adding furthest point coordinates to measurements
-                obj.addMeasurement(new Measurement(Measurements.ORIENTATION, Math.toDegrees(angle)));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX, furthestPoint.getX()));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX, furthestPoint.getY()));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX, 0));
+                name = getFullName(Measurements.LEADING_X_PX, averageSubtracted);
+                obj.addMeasurement(new Measurement(name, furthestPoint.getX()));
+
+                name = getFullName(Measurements.LEADING_Y_PX, averageSubtracted);
+                obj.addMeasurement(new Measurement(name, furthestPoint.getY()));
+
+                name = getFullName(Measurements.LEADING_Z_PX, averageSubtracted);
+                obj.addMeasurement(new Measurement(name, 0));
 
             }
         }
@@ -603,8 +640,13 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
         boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION, workspace);
+        boolean calculateOrientation = parameters.getValue(CALCULATE_ORIENTATION, workspace);
         boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT, workspace);
         String orientationMode = parameters.getValue(ORIENTATION_MODE, workspace);
+
+        // Always need to calculate orientation if identifying the leading point
+        if (identifyLeading)
+            calculateOrientation = true;
 
         // If necessary, creating the average track
         Track averageTrack = null;
@@ -629,10 +671,16 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
         }
 
+        // Determining the orientation
+        if (calculateOrientation) {
+            Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
+            calculateOrientation(spotObjects, orientationMode, subtractAverage);
+        }
+
         // Determining the leading point in the object (to next object)
         if (identifyLeading) {
             Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
-            identifyLeading(spotObjects, orientationMode);
+            identifyLeading(spotObjects, orientationMode, subtractAverage);
         }
 
         if (showOutput)
@@ -653,6 +701,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
         parameters.addAll(initialisePositionParameters(this));
         parameters.add(new BooleanP(SUBTRACT_AVERAGE_MOTION, this, false));
+        parameters.add(new BooleanP(CALCULATE_ORIENTATION, this, false));
         parameters.add(new BooleanP(IDENTIFY_LEADING_POINT, this, false));
         parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.RELATIVE_TO_BOTH, OrientationModes.ALL));
 
@@ -676,9 +725,11 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.addAll(updateAndGetPositionParameters(spotObjectsName, parameters));
         returnedParameters.add(parameters.getParameter(SUBTRACT_AVERAGE_MOTION));
-        returnedParameters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace))
+        returnedParameters.add(parameters.getParameter(CALCULATE_ORIENTATION));
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)
+                || (boolean) parameters.getValue(CALCULATE_ORIENTATION, workspace))
             returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
+        returnedParameters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
 
         return returnedParameters;
 
@@ -857,12 +908,16 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         reference.setObjectsName(inputSpotObjects);
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)
+                || (boolean) parameters.getValue(CALCULATE_ORIENTATION, workspace)) {
             name = getFullName(Measurements.ORIENTATION, subtractAverage);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputSpotObjects);
             returnedRefs.add(reference);
 
+        }
+
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)) {
             name = getFullName(Measurements.LEADING_X_PX, subtractAverage);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputSpotObjects);

@@ -168,6 +168,10 @@ public class TrackObjects extends Module {
 	* 
 	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement cost";
+
+    /**
+	* 
+	*/
     public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
 
 	/**
