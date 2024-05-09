@@ -41,6 +41,7 @@ public class Obj extends Volume {
     private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
     private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     private HashMap<Integer, Roi> rois = new HashMap<>();
 
     // CONSTRUCTORS
@@ -110,6 +111,32 @@ public class Obj extends Volume {
         name = TemporalUnit.replace(name);
 
         measurements.remove(name);
+
+    }
+
+    public void addMetadataItem(ObjMetadata metadataItem) {
+        if (metadataItem == null)
+            return;
+        metadata.put(metadataItem.getName(), metadataItem);
+
+    }
+
+    public ObjMetadata getMetadataItem(String name) {
+        if (metadata.get(name) == null)
+            return null;
+
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        return metadata.get(name);
+
+    }
+
+    public void removeMetadataItem(String name) {
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        metadata.remove(name);
 
     }
 
@@ -362,6 +389,15 @@ public class Obj extends Volume {
 
     public void setMeasurements(LinkedHashMap<String, Measurement> measurements) {
         this.measurements = measurements;
+
+    }
+
+    public LinkedHashMap<String, ObjMetadata> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(LinkedHashMap<String, ObjMetadata> metadata) {
+        this.metadata = metadata;
 
     }
 

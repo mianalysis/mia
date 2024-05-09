@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
 
@@ -183,7 +184,12 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
+    }
+
+    @Override
+    public MetadataRefs updateAndGetMetadataReferences() {
 Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 

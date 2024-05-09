@@ -22,12 +22,14 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.ParentChildRef;
 import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -44,6 +46,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     protected Parameters parameters = new Parameters();
     protected ImageMeasurementRefs imageMeasurementRefs = new ImageMeasurementRefs();
     protected ObjMeasurementRefs objectMeasurementRefs = new ObjMeasurementRefs();
+    protected ObjMetadataRefs objectMetadataRefs = new ObjMetadataRefs();
     protected MetadataRefs metadataRefs = new MetadataRefs();
     protected ParentChildRefs parentChildRefs = new ParentChildRefs();
     protected PartnerRefs partnerRefs = new PartnerRefs();
@@ -151,6 +154,18 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     public abstract ObjMeasurementRefs updateAndGetObjectMeasurementRefs();
 
     /**
+     * Metadata added to any objects by this module are reported by adding their
+     * reference to an ObjMetadataRefs collection. When no metadata items are added
+     * by this module, this method can simply return "null". These references tell
+     * downstream modules what metadata items are available for each object of a
+     * specific object collection. Returned references should be the original copies
+     * stored in the local "objectMetadataRefs" object.
+     * 
+     * @return Object metadata references currently active for this module
+     */
+    public abstract ObjMetadataRefs updateAndGetObjectMetadataRefs();
+
+    /**
      * Values added to the workspace's metadata collection by this module are
      * reported by adding their reference to a MetadataRefs collection. When no
      * metadata values are added by this module, this method can simply return
@@ -245,6 +260,10 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         objectMeasurementRefs.add(ref);
     }
 
+    public void addObjectMetadataRef(ObjMetadataRef ref) {
+        objectMetadataRefs.add(ref);
+    }
+
     public ImageMeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);
     }
@@ -255,6 +274,10 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     public ObjMeasurementRef getObjectMeasurementRef(String name) {
         return objectMeasurementRefs.getOrPut(name);
+    }
+
+    public ObjMetadataRef getObjectMetadataRef(String name) {
+        return objectMetadataRefs.getOrPut(name);
     }
 
     public MetadataRef getMetadataRef(String name) {
@@ -501,6 +524,14 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
             newObjMeasurementRefs.add(newRef);
         }
 
+        ObjMetadataRefs newObjMetadataRefs = newModule.objectMetadataRefs;
+        for (ObjMetadataRef ref : objectMetadataRefs.values()) {
+            ObjMetadataRef newRef = ref.duplicate();
+            if (newRef == null)
+                continue;
+            newObjMetadataRefs.add(newRef);
+        }
+
         ImageMeasurementRefs newImageMeasurementRefs = newModule.imageMeasurementRefs;
         for (ImageMeasurementRef ref : imageMeasurementRefs.values()) {
             ImageMeasurementRef newRef = ref.duplicate();
@@ -621,7 +652,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
                 MIA.log.writeWarning("    Module name: \"" + name + "\"");
                 MIA.log.writeWarning("    Workflow version: " + workflowVersion);
                 MIA.log.writeWarning("    Plugin version: " + getVersionNumber());
-                MIA.log.writeWarning("    Status: " + resultsWarning+".");
+                MIA.log.writeWarning("    Status: " + resultsWarning + ".");
 
             }
 

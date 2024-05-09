@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -205,9 +206,9 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public String getVersionNumber() {
-      return "1.0.0";
+    return "1.0.0";
   }
-  
+
   @Override
   public String getDescription() {
     return "Creates an image showing all objects in a specified collection.  The value (intensity) of each pixel can be based on object (or relative) ID numbers as well as various metrics, such as measurements or relationship counts.  Output images will be 32-bit type, except when in \""
@@ -408,12 +409,16 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-    Workspace workspace = null;
     return null;
   }
 
   @Override
   public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+    return null;
+  }
+
+  @Override
+  public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
     return null;
   }
 

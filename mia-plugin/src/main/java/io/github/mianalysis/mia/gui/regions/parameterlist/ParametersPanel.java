@@ -32,6 +32,7 @@ import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
 
 public class ParametersPanel extends JScrollPane {
@@ -124,6 +125,8 @@ public class ParametersPanel extends JScrollPane {
             LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null,false);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
+                ObjMetadataRefs objectMetadataReferences = modules.getObjectMetadataRefs(objectName);
+                addRefExportControls(objectMetadataReferences,objectName+" (Object)",componentFactory,c);
                 ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName);
                 addSummaryRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c);
             }            
