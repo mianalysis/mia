@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
@@ -53,181 +54,232 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.LabelFactory;
 
-
 /**
-* Adds an overlay to the specified input image with each object represented by a text label.  The label can include information such as measurements, associated object counts or ID numbers.
-*/
+ * Adds an overlay to the specified input image with each object represented by
+ * a text label. The label can include information such as measurements,
+ * associated object counts or ID numbers.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddLabels extends AbstractOverlay {
     TextRoi textRoi = null;
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image and object input";
 
-	/**
-	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
-	*/
+    /**
+     * Image onto which overlay will be rendered. Input image will only be updated
+     * if "Apply to input image" is enabled, otherwise the image containing the
+     * overlay will be stored as a new image with name specified by "Output image".
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Objects to represent as overlays.
-	*/
+    /**
+     * Objects to represent as overlays.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Image output";
 
-	/**
-	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
-	*/
+    /**
+     * Determines if the modifications made to the input image (added overlay
+     * elements) will be applied to that image or directed to a new image. When
+     * selected, the input image will be updated.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
-	*/
+    /**
+     * If the modifications (overlay) aren't being applied directly to the input
+     * image, this control will determine if a separate image containing the overlay
+     * should be saved to the workspace.
+     */
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
 
-	/**
-	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
-	*/
+    /**
+     * The name of the new image to be saved to the workspace (if not applying the
+     * changes directly to the input image).
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CONTENT_SEPARATOR = "Overlay content";
 
-	/**
-	* Controls what information each label displays:<br><ul><li>"Child count" The number of children from a specific object collection for each object.  The children to summarise are selected using the "Child objects for label" parameter.</li><li>"ID" The ID number of the object.</li><li>"Measurement value" A measurement associated with the object.  The measurement is selected using the "Measurement for label" parameter.</li><li>"Parent ID" The ID number of a parent of the object.  The parent object is selected using the "Parent object for label" parameter.</li><li>"Parent measurement value" A measurement associated with a parent of the object.  The measurement is selected using the "Measurement for label" parameter and the parent object with the "Parent object for label" parameter.</li><li>"Partner count" The number of partners from a specific object collection for each object.  The partners to summarise are selected using the "Partner objects for label" parameter.</li></ul>
-	*/
+    /**
+     * Controls what information each label displays:<br>
+     * <ul>
+     * <li>"Child count" The number of children from a specific object collection
+     * for each object. The children to summarise are selected using the "Child
+     * objects for label" parameter.</li>
+     * <li>"ID" The ID number of the object.</li>
+     * <li>"Measurement value" A measurement associated with the object. The
+     * measurement is selected using the "Measurement for label" parameter.</li>
+     * <li>"Parent ID" The ID number of a parent of the object. The parent object is
+     * selected using the "Parent object for label" parameter.</li>
+     * <li>"Parent measurement value" A measurement associated with a parent of the
+     * object. The measurement is selected using the "Measurement for label"
+     * parameter and the parent object with the "Parent object for label"
+     * parameter.</li>
+     * <li>"Partner count" The number of partners from a specific object collection
+     * for each object. The partners to summarise are selected using the "Partner
+     * objects for label" parameter.</li>
+     * </ul>
+     */
     public static final String LABEL_MODE = "Label mode";
 
-	/**
-	* Number of decimal places to use when displaying numeric values.
-	*/
+    /**
+     * Number of decimal places to use when displaying numeric values.
+     */
     public static final String DECIMAL_PLACES = "Decimal places";
 
-	/**
-	* When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.
-	*/
+    /**
+     * When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.
+     * Otherwise, the same value would appear as <i>0.00123</i>.
+     */
     public static final String USE_SCIENTIFIC = "Use scientific notation";
 
-	/**
-	* Font size of the text label.
-	*/
+    /**
+     * Font size of the text label.
+     */
     public static final String LABEL_SIZE = "Label size";
 
-	/**
-	* Offset the label by this number of pixels horizontally (along the x-axis).  Increasingly positive numbers move the label right.
-	*/
+    /**
+     * Offset the label by this number of pixels horizontally (along the x-axis).
+     * Increasingly positive numbers move the label right.
+     */
     public static final String X_OFFSET = "X-offset";
 
-	/**
-	* Offset the label by this number of pixels vertically (along the y-axis).  Increasingly positive numbers move the label down.
-	*/
+    /**
+     * Offset the label by this number of pixels vertically (along the y-axis).
+     * Increasingly positive numbers move the label down.
+     */
     public static final String Y_OFFSET = "Y-offset";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CENTRE_TEXT = "Centre text";
 
-	/**
-	* If "Label mode" is set to "Child count", these are the child objects which will be counted and displayed on the label.  These objects will be children of the input objects.
-	*/
+    /**
+     * If "Label mode" is set to "Child count", these are the child objects which
+     * will be counted and displayed on the label. These objects will be children of
+     * the input objects.
+     */
     public static final String CHILD_OBJECTS_FOR_LABEL = "Child objects for label";
 
-	/**
-	* If "Label mode" is set to either "Parent ID" or "Parent measurement value", these are the parent objects which will be used.  These objects will be parents of the input objects.
-	*/
+    /**
+     * If "Label mode" is set to either "Parent ID" or "Parent measurement value",
+     * these are the parent objects which will be used. These objects will be
+     * parents of the input objects.
+     */
     public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
 
-	/**
-	* If "Label mode" is set to "Partner count", these are the partner objects which will be counted and displayed on the label.  These objects will be partners of the input objects.
-	*/
+    /**
+     * If "Label mode" is set to "Partner count", these are the partner objects
+     * which will be counted and displayed on the label. These objects will be
+     * partners of the input objects.
+     */
     public static final String PARTNER_OBJECTS_FOR_LABEL = "Partner objects for label";
 
-	/**
-	* If "Label mode" is set to either "Measurement value" or "Parent measurement value", these are the measurements which will be used.
-	*/
+    /**
+     * If "Label mode" is set to either "Measurement value" or "Parent measurement
+     * value", these are the measurements which will be used.
+     */
     public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
 
-	/**
-	* Text to display at beginning of every label
-	*/
+    public static final String OBJECT_METADATA_FOR_LABEL = "Metadata item for label";
+
+    /**
+     * Text to display at beginning of every label
+     */
     public static final String PREFIX = "Prefix";
 
-	/**
-	* Text to display at end of every label
-	*/
+    /**
+     * Text to display at end of every label
+     */
     public static final String SUFFIX = "Suffix";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LOCATION_SEPARATOR = "Overlay location";
 
-	/**
-	* Determines the method used for placing the label overlay for each object:<br><ul><li>"Centre of object" Labels will be placed at the centroid (average coordinate location) of each object.  This position won't necessarily coincide with a region corresponding to that object.  For example, the centroid of a crescent shape won't lie on the crescent itself.</li><li>"Fixed value" Labels will be placed at the x,y,z location specified by the user.</li><li>"Inside largest part of object" Labels will be placed coincident with the largest region of each object.  This ensures the label is placed directly over the relevant object.</li><li>"Object measurement" Labels will be placed coincident with the specified measurements for each object.</li></ul>
-	*/
+    /**
+     * Determines the method used for placing the label overlay for each object:<br>
+     * <ul>
+     * <li>"Centre of object" Labels will be placed at the centroid (average
+     * coordinate location) of each object. This position won't necessarily coincide
+     * with a region corresponding to that object. For example, the centroid of a
+     * crescent shape won't lie on the crescent itself.</li>
+     * <li>"Fixed value" Labels will be placed at the x,y,z location specified by
+     * the user.</li>
+     * <li>"Inside largest part of object" Labels will be placed coincident with the
+     * largest region of each object. This ensures the label is placed directly over
+     * the relevant object.</li>
+     * <li>"Object measurement" Labels will be placed coincident with the specified
+     * measurements for each object.</li>
+     * </ul>
+     */
     public static final String LABEL_POSITION = "Label position";
 
-	/**
-	* Object measurement specifying the X-position of the label.  Measurement value must be specified in pixel units.
-	*/
+    /**
+     * Object measurement specifying the X-position of the label. Measurement value
+     * must be specified in pixel units.
+     */
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
 
-	/**
-	* Object measurement specifying the Y-position of the label.  Measurement value must be specified in pixel units.
-	*/
+    /**
+     * Object measurement specifying the Y-position of the label. Measurement value
+     * must be specified in pixel units.
+     */
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
 
-	/**
-	* Object measurement specifying the Z-position (slice) of the label.  Measurement value must be specified in slice units.
-	*/
+    /**
+     * Object measurement specifying the Z-position (slice) of the label.
+     * Measurement value must be specified in slice units.
+     */
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
 
-	/**
-	* Fixed value specifying the X-position of the label.  Specified in pixel units.
-	*/
+    /**
+     * Fixed value specifying the X-position of the label. Specified in pixel units.
+     */
     public static final String X_POSITION = "X-position";
 
-	/**
-	* Fixed value specifying the Y-position of the label.  Specified in pixel units.
-	*/
+    /**
+     * Fixed value specifying the Y-position of the label. Specified in pixel units.
+     */
     public static final String Y_POSITION = "Y-position";
 
-	/**
-	* Fixed value specifying the Z-position of the label.  Specified in pixel units.
-	*/
+    /**
+     * Fixed value specifying the Z-position of the label. Specified in pixel units.
+     */
     public static final String Z_POSITION = "Z-position";
 
-	/**
-	* Display overlay elements in all slices corresponding to that object.
-	*/
+    /**
+     * Display overlay elements in all slices corresponding to that object.
+     */
     public static final String RENDER_IN_ALL_OBJECT_SLICES = "Render in all object slices";
 
-	/**
-	* Display overlay elements in all frames, irrespective of whether each object is present in that frame.
-	*/
+    /**
+     * Display overlay elements in all frames, irrespective of whether each object
+     * is present in that frame.
+     */
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple overlay elements simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddLabels(Modules modules) {
@@ -310,7 +362,8 @@ public class AddLabels extends AbstractOverlay {
     }
 
     public static void addOverlay(ImagePlus ipl, Objs inputObjects, String labelPosition,
-            HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, boolean centreText, HashMap<Integer, Color> colours,
+            HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, boolean centreText,
+            HashMap<Integer, Color> colours,
             boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread,
             @Nullable String[] measurementNames, @Nullable int[] positions) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -411,7 +464,7 @@ public class AddLabels extends AbstractOverlay {
 
     public HashMap<Integer, String> getLabels(Objs inputObjects, String labelMode, DecimalFormat df,
             String childObjectsForLabelName, String parentObjectsForLabelName, String partnerObjectsForLabelName,
-            String measurementForLabel) {
+            String measurementForLabel, String objectMetadataForLabel) {
         switch (labelMode) {
             case LabelModes.CHILD_COUNT:
                 return LabelFactory.getChildCountLabels(inputObjects, childObjectsForLabelName, df);
@@ -419,6 +472,8 @@ public class AddLabels extends AbstractOverlay {
                 return LabelFactory.getIDLabels(inputObjects, df);
             case LabelModes.MEASUREMENT_VALUE:
                 return LabelFactory.getMeasurementLabels(inputObjects, measurementForLabel, df);
+            case LabelModes.OBJECT_METADATA_ITEM:
+                return LabelFactory.getObjectMetadataLabels(inputObjects, objectMetadataForLabel, df);
             case LabelModes.PARENT_ID:
                 return LabelFactory.getParentIDLabels(inputObjects, parentObjectsForLabelName, df);
             case LabelModes.PARENT_MEASUREMENT_VALUE:
@@ -486,6 +541,7 @@ public class AddLabels extends AbstractOverlay {
         String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL, workspace);
         String partnerObjectsForLabelName = parameters.getValue(PARTNER_OBJECTS_FOR_LABEL, workspace);
         String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL, workspace);
+        String objectMetadataForLabel = parameters.getValue(OBJECT_METADATA_FOR_LABEL, workspace);
         String prefix = parameters.getValue(PREFIX, workspace);
         String suffix = parameters.getValue(SUFFIX, workspace);
         String labelPosition = parameters.getValue(LABEL_POSITION, workspace);
@@ -514,10 +570,11 @@ public class AddLabels extends AbstractOverlay {
         HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces, useScientific);
         HashMap<Integer, String> labels = getLabels(inputObjects, labelMode, df, childObjectsForLabelName,
-                parentObjectsForLabelName, partnerObjectsForLabelName, measurementForLabel);
+                parentObjectsForLabelName, partnerObjectsForLabelName, measurementForLabel, objectMetadataForLabel);
         appendPrefixSuffix(labels, prefix, suffix);
 
-        addOverlay(ipl, inputObjects, labelPosition, labels, labelSize, xOffset, yOffset, centreText, colours, renderInAllSlices,
+        addOverlay(ipl, inputObjects, labelPosition, labels, labelSize, xOffset, yOffset, centreText, colours,
+                renderInAllSlices,
                 renderInAllFrames, multithread, measurementNames, positions);
 
         Image outputImage = ImageFactory.createImage(outputImageName, ipl);
@@ -558,6 +615,7 @@ public class AddLabels extends AbstractOverlay {
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_LABEL, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL, this));
+        parameters.add(new ObjectMetadataP(OBJECT_METADATA_FOR_LABEL, this));
         parameters.add(new StringP(PREFIX, this));
         parameters.add(new StringP(SUFFIX, this));
 
@@ -616,6 +674,11 @@ public class AddLabels extends AbstractOverlay {
                 ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(inputObjectsName);
                 break;
 
+            case LabelModes.OBJECT_METADATA_ITEM:
+                returnedParameters.add(parameters.getParameter(OBJECT_METADATA_FOR_LABEL));
+                ((ObjectMetadataP) parameters.getParameter(OBJECT_METADATA_FOR_LABEL)).setObjectName(inputObjectsName);
+                break;
+
             case LabelModes.PARENT_ID:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL))
@@ -641,8 +704,11 @@ public class AddLabels extends AbstractOverlay {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
-        returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
+        if (!((String) parameters.getValue(LABEL_MODE, workspace)).equals(LabelModes.OBJECT_METADATA_ITEM)) {
+            returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
+            returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
+        }
+        
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         returnedParameters.add(parameters.getParameter(X_OFFSET));
         returnedParameters.add(parameters.getParameter(Y_OFFSET));
@@ -702,8 +768,8 @@ public class AddLabels extends AbstractOverlay {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -24,6 +25,7 @@ import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -37,38 +39,58 @@ import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
-
 /**
-* Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.  Classification can be based on a range of measurements associated with the input objects.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).<br><br>The probability of each input object belonging to each class is output as a measurement associated with that object.  Each object also has a class index (based on the order the classes are listed in the .model file) indicating the most probable class that object belongs to.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Apply a previously-prepared WEKA object classifier to a specified object
+ * collection from the workspace. Classification can be based on a range of
+ * measurements associated with the input objects. All measurements used to
+ * create this model should be present in the input objects and have the same
+ * names (i.e. measurement names shouldn't be changed during preparation of
+ * training data).<br>
+ * <br>
+ * The probability of each input object belonging to each class is output as a
+ * measurement associated with that object. Each object also has a class index
+ * (based on the order the classes are listed in the .model file) indicating the
+ * most probable class that object belongs to.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ApplyWekaObjectClassification extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Objects input";
 
-	/**
-	* Input objects from workspace which will be classified based on model specified by "Classifier path" parameter.
-	*/
+    /**
+     * Input objects from workspace which will be classified based on model
+     * specified by "Classifier path" parameter.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CLASSIFIER_SEPARATOR = "Classifier controls";
 
-	/**
-	* WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href="https://www.cs.waikato.ac.nz/ml/index.html">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).
-	*/
+    /**
+     * WEKA model (.model extension) that will be used to classify input objects
+     * based on a variety of measurements. This model must be created in the
+     * <a href="https://www.cs.waikato.ac.nz/ml/index.html">WEKA software</a>. All
+     * measurements used to create this model should be present in the input objects
+     * and have the same names (i.e. measurement names shouldn't be changed during
+     * preparation of training data).
+     */
     public static final String CLASSIFIER_PATH = "Classifier path";
 
-	/**
-	* When selected, measurements will be normalised (set to the range 0-1) within their respective classes.
-	*/
+    /**
+     * When selected, measurements will be normalised (set to the range 0-1) within
+     * their respective classes.
+     */
     public static final String APPLY_NORMALISATION = "Apply normalisation";
+
+    public interface ObjMetadataItems {
+        public static final String CLASS = "CLASSIFIER // CLASS";
+
+    }
 
     public ApplyWekaObjectClassification(Modules modules) {
         super("Apply Weka object classification", modules);
@@ -86,9 +108,10 @@ public class ApplyWekaObjectClassification extends Module {
 
     @Override
     public String getDescription() {
-        return "Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.  Classification can be based on a range of measurements associated with the input objects.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).<br><br>" +
-        
-        "The probability of each input object belonging to each class is output as a measurement associated with that object.  Each object also has a class index (based on the order the classes are listed in the .model file) indicating the most probable class that object belongs to.";
+        return "Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.  Classification can be based on a range of measurements associated with the input objects.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).<br><br>"
+                +
+
+                "The probability of each input object belonging to each class is output as a measurement associated with that object.  Each object also has a class index (based on the order the classes are listed in the .model file) indicating the most probable class that object belongs to.";
     }
 
     public static String getProbabilityMeasurementName(String className) {
@@ -104,7 +127,7 @@ public class ApplyWekaObjectClassification extends Module {
         }
 
         sb.append(")");
- 
+
         return sb.toString();
 
     }
@@ -120,12 +143,12 @@ public class ApplyWekaObjectClassification extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting other parameters
-        String classifierPath = parameters.getValue(CLASSIFIER_PATH,workspace);
-        boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION,workspace);
+        String classifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
+        boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION, workspace);
 
         AbstractClassifier abstractClassifier = null;
         Instances instances = null;
@@ -161,7 +184,7 @@ public class ApplyWekaObjectClassification extends Module {
 
                 objAttr[i] = measurement.getValue();
             }
-        
+
             processedObjects.add(inputObject);
             instances.add(new SparseInstance(1, objAttr));
         }
@@ -176,7 +199,7 @@ public class ApplyWekaObjectClassification extends Module {
 
             // Applying classifications
             double[][] classifications = abstractClassifier.distributionsForInstances(instances);
-            
+
             String classMeasName = getClassMeasurementName(instances);
             for (int i = 0; i < processedObjects.size(); i++) {
                 Obj inputObject = processedObjects.get(i);
@@ -185,15 +208,19 @@ public class ApplyWekaObjectClassification extends Module {
 
                 int classIndex = (int) abstractClassifier.classifyInstance(instances.get(i));
                 inputObject.addMeasurement(new Measurement(classMeasName, classIndex));
-                
+
+                inputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
+
             }
         } catch (Exception e) {
             MIA.log.writeError(e);
             return Status.FAIL;
         }
 
-        if (showOutput)
+        if (showOutput) {
             inputObjects.showMeasurements(this, modules);
+            inputObjects.showMetadata(this, modules);
+        }
 
         return Status.PASS;
 
@@ -209,7 +236,7 @@ public class ApplyWekaObjectClassification extends Module {
         parameters.add(new BooleanP(APPLY_NORMALISATION, this, true));
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
@@ -219,20 +246,20 @@ public class ApplyWekaObjectClassification extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         try {
             // Getting class names
-            String classifierPath = parameters.getValue(CLASSIFIER_PATH,workspace);
+            String classifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
             if (!new File(classifierPath).exists())
                 return null;
-                
+
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(classifierPath));
             AbstractClassifier abstractClassifier = (AbstractClassifier) objectInputStream.readObject();
             Instances instances = (Instances) objectInputStream.readObject();
@@ -241,7 +268,7 @@ Workspace workspace = null;
             ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
             for (int i = 0; i < instances.numClasses(); i++) {
-                String className = instances.classAttribute().value(i);                
+                String className = instances.classAttribute().value(i);
                 ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(getProbabilityMeasurementName(className));
                 ref.setObjectsName(inputObjectsName);
                 returnedRefs.add(ref);
@@ -260,23 +287,33 @@ Workspace workspace = null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+
+        ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
+
+        ObjMetadataRef ref = objectMetadataRefs.getOrPut(ObjMetadataItems.CLASS);
+        ref.setObjectsName(inputObjectsName);
+        returnedRefs.add(ref);
+
+        return returnedRefs;
+
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -285,11 +322,15 @@ return null;
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_OBJECTS).setDescription("Input objects from workspace which will be classified based on model specified by \""+CLASSIFIER_PATH+"\" parameter.");
+        parameters.get(INPUT_OBJECTS)
+                .setDescription("Input objects from workspace which will be classified based on model specified by \""
+                        + CLASSIFIER_PATH + "\" parameter.");
 
-        parameters.get(CLASSIFIER_PATH).setDescription("WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href=\"https://www.cs.waikato.ac.nz/ml/index.html\">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).");
+        parameters.get(CLASSIFIER_PATH).setDescription(
+                "WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href=\"https://www.cs.waikato.ac.nz/ml/index.html\">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).");
 
-        parameters.get(APPLY_NORMALISATION).setDescription("When selected, measurements will be normalised (set to the range 0-1) within their respective classes.");
+        parameters.get(APPLY_NORMALISATION).setDescription(
+                "When selected, measurements will be normalised (set to the range 0-1) within their respective classes.");
 
     }
 }
