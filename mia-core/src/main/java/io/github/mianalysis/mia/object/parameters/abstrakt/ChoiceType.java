@@ -54,6 +54,9 @@ public abstract class ChoiceType extends TextSwitchableParameter {
 
     @Override
     public <T> T getValue(Workspace workspace) {
+        if (choice == null)
+        return null;
+
         String converted = GlobalVariables.convertString(choice, module.getModules());
         converted = TextType.insertWorkspaceValues(converted, workspace);
         converted = TextType.applyCalculation(converted);
@@ -64,7 +67,10 @@ public abstract class ChoiceType extends TextSwitchableParameter {
 
     @Override
     public <T> void setValue(T value) {
-        choice = (String) value;
+        if (value == null)
+            choice = "";
+        else 
+            choice = (String) value;
     }
 
     @Override
