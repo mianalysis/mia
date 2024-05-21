@@ -436,7 +436,7 @@ public class ChildObjectsPTest {
         childObjectsP.appendXMLAttributes(element);
 
         NamedNodeMap namedNodeMap = element.getAttributes();
-        assertEquals(4,namedNodeMap.getLength());
+        assertEquals(5,namedNodeMap.getLength());
 
         assertNotNull(namedNodeMap.getNamedItem("NAME"));
         assertNotNull(namedNodeMap.getNamedItem("NICKNAME"));

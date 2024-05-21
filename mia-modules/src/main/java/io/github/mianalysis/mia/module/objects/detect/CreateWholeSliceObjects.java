@@ -8,6 +8,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
+import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -24,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -101,6 +103,7 @@ public class CreateWholeSliceObjects extends Module {
     public static Objs process(Image inputImage, String outputObjectsName, String outputMode) {
         Image blankImage = ImageFactory.createImage("Temp", inputImage.getImagePlus().duplicate());
         ImageMath.process(blankImage, ImageMath.CalculationModes.MULTIPLY, 0);
+        ImageTypeConverter.process(blankImage, 8, ImageTypeConverter.ScalingModes.CLIP);
 
         String detectionMode;
         switch (outputMode) {
@@ -117,9 +120,7 @@ public class CreateWholeSliceObjects extends Module {
         String type = IdentifyObjects.VolumeTypes.QUADTREE;
 
         Objs outputObjects = IdentifyObjects.process(blankImage, outputObjectsName, false, false, detectionMode,
-                connectivity, type,
-                false,
-                60, false);
+                connectivity, type, false, 60, false);
 
         for (Obj outputObject : outputObjects.values()) {
             outputObject.addMeasurement(new Measurement(Measurements.TIMEPOINT, outputObject.getT()));
@@ -207,6 +208,11 @@ public class CreateWholeSliceObjects extends Module {
 
         return returnedRefs;
 
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

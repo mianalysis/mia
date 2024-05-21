@@ -10,26 +10,27 @@ import javax.swing.JComponent;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 
 /**
  * Created by sc13967 on 22/05/2017.
  */
-public class ChoiceArrayParameter extends ParameterControl implements ActionListener {
-    private WiderDropDownCombo control;
-
+public class ChoiceArrayParameter extends TextSwitchableParameterControl implements ActionListener  {
+    private WiderDropDownCombo choiceControl;
+    
     public ChoiceArrayParameter(ChoiceType parameter) {
         super(parameter);
 
-        // Choices may have not been initialised when this first runs, so a blank list is created
+        // Choices may have not been initialised when this first runs, so a blank list
+        // is created
         String[] choices = parameter.getChoices();
-        if (choices == null) choices = new String[]{""};
-        control = new WiderDropDownCombo(choices);
+        if (choices == null)
+            choices = new String[] { "" };
+        choiceControl = new WiderDropDownCombo(choices);
 
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        control.setSelectedItem(parameter.getChoice());
-        control.addActionListener(this);
-        control.setWide(true);
+        choiceControl.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        choiceControl.setSelectedItem(parameter.getChoice());
+        choiceControl.addActionListener(this);
+        choiceControl.setWide(true);
 
     }
 
@@ -37,40 +38,41 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        ((ChoiceType) parameter).setChoice((String) control.getSelectedItem());
+        ((ChoiceType) parameter).setValueFromString((String) choiceControl.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-            GUI.updateModules();
-            GUI.updateParameters();
+        GUI.updateModules();
+        GUI.updateParameters();
 
         updateControl();
 
     }
 
     @Override
-    public JComponent getComponent() {
-        return control;
+    public JComponent getDefaultComponent() {
+        return choiceControl;
     }
 
     @Override
-    public void updateControl() {
-        String[] choices = ((ChoiceType) parameter).getChoices();
-        if (choices == null) choices = new String[]{""};
+    public void updateDefaultControl() {
+            String[] choices = ((ChoiceType) parameter).getChoices();
+            if (choices == null)
+                choices = new String[] { "" };
 
-        // Getting previously-selected item
-        String selected = (String) control.getSelectedItem();
+            // Getting previously-selected item
+            String selected = (String) choiceControl.getSelectedItem();
 
-        // Creating a new model
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel(choices);
-        model.setSelectedItem(selected);
+            // Creating a new model
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel(choices);
+            model.setSelectedItem(selected);
 
-        // Updating the control
-        control.setModel(model);
-        control.repaint();
-        control.revalidate();
+            // Updating the control
+            choiceControl.setModel(model);
+            choiceControl.repaint();
+            choiceControl.revalidate();
 
     }
 }

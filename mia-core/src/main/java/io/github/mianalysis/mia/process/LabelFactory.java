@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 
 public class LabelFactory {
@@ -12,11 +13,12 @@ public class LabelFactory {
         String CHILD_COUNT = "Child count";
         String ID = "ID";
         String MEASUREMENT_VALUE = "Measurement value";
+        String OBJECT_METADATA_ITEM = "Object metadata item";
         String PARENT_ID = "Parent ID";
         String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
         String PARTNER_COUNT = "Partner count";
 
-        String[] ALL = new String[] { CHILD_COUNT, ID, MEASUREMENT_VALUE, PARENT_ID, PARENT_MEASUREMENT_VALUE,
+        String[] ALL = new String[] { CHILD_COUNT, ID, MEASUREMENT_VALUE, OBJECT_METADATA_ITEM, PARENT_ID, PARENT_MEASUREMENT_VALUE,
                 PARTNER_COUNT };
 
     }
@@ -109,6 +111,21 @@ public class LabelFactory {
                 IDs.put(object.getID(), "NA");
             else
                 IDs.put(object.getID(), df.format(object.getMeasurement(measurementName).getValue()));
+        }
+
+        return IDs;
+
+    }
+
+    public static HashMap<Integer, String> getObjectMetadataLabels(Objs objects, String metadataName,
+            DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
+
+        for (Obj object : objects.values()) {
+            ObjMetadata metadataItem = object.getMetadataItem(metadataName);
+            IDs.put(object.getID(), metadataItem.getValue());
         }
 
         return IDs;

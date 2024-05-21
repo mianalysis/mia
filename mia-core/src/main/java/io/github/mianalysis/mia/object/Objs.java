@@ -19,7 +19,9 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
 import ome.units.UNITS;
@@ -194,11 +196,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     public int getLargestID() {
         int largestID = 0;
-        for (Obj obj : values()) {
+        for (Obj obj : values())
             if (obj.getID() > largestID)
                 largestID = obj.getID();
-        }
-
+        
         return largestID;
 
     }
@@ -459,6 +460,96 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
+    /**
+     * Displays metadata values from a specific Module
+     * @param module The module for which metadata will be displayed
+     * @param modules The collection of modules in which this module resides
+     */
+    public void showMetadata(Module module, Modules modules) {
+        // Getting metadata references
+        ObjMetadataRefs metadataRefs = module.updateAndGetObjectMetadataRefs();
+        if (metadataRefs == null)
+            return;
+
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Getting a list of all metadata relating to this object collection
+        LinkedHashSet<String> metadataNames = new LinkedHashSet<>();
+        for (ObjMetadataRef metadataRef : metadataRefs.values()) {
+            if (metadataRef.getObjectsName().equals(name))
+            metadataNames.add(metadataRef.getName());
+        }
+
+        // Iterating over each measurement, adding all the values
+        int row = 0;
+        for (Obj obj : values()) {
+            if (row != 0)
+                rt.incrementCounter();
+
+            // Setting some common values
+            rt.setValue("ID", row, obj.getID());
+            rt.setValue("X_CENTROID (PX)", row, obj.getXMean(true));
+            rt.setValue("Y_CENTROID (PX)", row, obj.getYMean(true));
+            rt.setValue("Z_CENTROID (SLICE)", row, obj.getZMean(true, false));
+            rt.setValue("TIMEPOINT", row, obj.getT());
+
+            // Setting the measurements from the Module
+            for (String measName : metadataNames) {
+                ObjMetadata metadataItem = obj.getMetadataItem(measName);
+                String value = metadataItem == null ? "" : metadataItem.getValue();
+
+                // Setting value
+                rt.setValue(measName, row, value);
+
+            }
+
+            row++;
+
+        }
+
+        // Displaying the results table
+        rt.show("\"" + module.getName() + " \"metadata for \"" + name + "\"");
+
+    }
+
+    public void showAllMetadata() {
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Iterating over each metadata, adding all the values
+        int row = 0;
+        for (Obj obj : values()) {
+            if (row != 0)
+                rt.incrementCounter();
+
+            // Setting some common values
+            rt.setValue("ID", row, obj.getID());
+            rt.setValue("X_CENTROID (PX)", row, obj.getXMean(true));
+            rt.setValue("Y_CENTROID (PX)", row, obj.getYMean(true));
+            rt.setValue("Z_CENTROID (SLICE)", row, obj.getZMean(true, false));
+            rt.setValue("TIMEPOINT", row, obj.getT());
+
+            // Setting the measurements from the Module
+            Set<String> metadataNames = obj.getMetadata().keySet();
+            for (String metadataName : metadataNames) {
+                ObjMetadata metadataItem = obj.getMetadataItem(metadataName);
+                String value = metadataItem == null ? "" : metadataItem.getValue();
+
+                // Setting value
+                rt.setValue(metadataName, row, value);
+
+            }
+
+            row++;
+
+        }
+
+        // Displaying the results table
+        rt.show("All measurements for \"" + name + "\"");
+
+    }
+
     public void removeParents(String parentObjectsName) {
         for (Obj obj : values())
             obj.removeParent(parentObjectsName);
@@ -539,7 +630,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         Objs outputObjects = new Objs(outputObjectsName, this);
 
         // Setting output objects collection to have one frame
-        outputObjects.setNFrmes(1);
+        outputObjects.setNFrames(1);
 
         // Iterating over objects, getting those in this frame
         for (Obj obj:values()) {
@@ -568,7 +659,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         return temporalUnit;
     }
 
-    public void setNFrmes(int nFrames) {
+    public void setNFrames(int nFrames) {
         this.nFrames = nFrames;
     }
 }

@@ -26,7 +26,7 @@ import javax.swing.table.TableModel;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
-import io.github.mianalysis.mia.gui.regions.RenameListMenu;
+import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.system.Colours;
@@ -189,10 +189,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         switch (e.getButton()) {
             case MouseEvent.BUTTON3:
                 Module module = (Module) getValueAt(rowAtPoint(e.getPoint()), 0);
-                RenameListMenu renameListMenu = new RenameListMenu(module);
-                renameListMenu.show(GUI.getFrame(), 0, 0);
-                renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
-                renameListMenu.setVisible(true);
+                ReferenceEditingMenu refEditingMenu = new ReferenceEditingMenu(module);
+                refEditingMenu.show(GUI.getFrame(), 0, 0);
+                refEditingMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
+                refEditingMenu.setVisible(true);
 
                 break;
         }

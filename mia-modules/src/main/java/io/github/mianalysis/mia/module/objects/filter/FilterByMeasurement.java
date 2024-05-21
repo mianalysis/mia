@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
 
@@ -172,6 +173,11 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
 
         return returnedRefs;
 
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

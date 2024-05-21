@@ -7,7 +7,7 @@ import com.drew.lang.annotations.NotNull;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 
-public abstract class FileFolderType extends Parameter {
+public abstract class FileFolderType extends TextSwitchableParameter {
     protected String path = "";
 
     public FileFolderType(String name, Module module) {

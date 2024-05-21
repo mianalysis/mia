@@ -51,11 +51,12 @@ public class ColourFactory {
             if (objects == null)
             return hues;
             
+            Random rand = new Random(randomSeed);
             for (Obj object : objects.values()) {
                 int ID = object.getID();
                 
                 // Default hue value in case none is assigned
-                float H = new Random(randomSeed).nextFloat();
+                float H = rand.nextFloat();
                 
                 hues.put(ID, H);
                 

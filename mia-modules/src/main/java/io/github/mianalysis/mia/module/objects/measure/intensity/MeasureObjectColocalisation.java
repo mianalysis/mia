@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -246,21 +247,19 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
             // Cropping image to object
             double[][] extents = inputObject.getExtents(true, false);
-            int top = (int) Math.round(extents[1][0]);
             int left = (int) Math.round(extents[0][0]);
+            int top = (int) Math.round(extents[1][0]);
+            int zOffs = (int) Math.round(extents[2][0]) + 1;
             int width = (int) Math.round(extents[0][1] - extents[0][0] + 1);
             int height = (int) Math.round(extents[1][1] - extents[1][0] + 1);
+            int nSlices = (int) Math.round(extents[2][1] - extents[2][0] + 1);
             Image crop1 = CropImage.cropImage(image1, "Crop1", left, top, width, height);
             Image crop2 = CropImage.cropImage(image2, "Crop2", left, top, width, height);
 
-            Image timepoint1 = ExtractSubstack.extractSubstack(crop1, "Timepoint1", "1-end", "1-end",
+            Image timepoint1 = ExtractSubstack.extractSubstack(crop1, "Timepoint1", "1-end", String.valueOf(zOffs)+"-"+String.valueOf(nSlices),
                     String.valueOf(inputObject.getT() + 1));
-            Image timepoint2 = ExtractSubstack.extractSubstack(crop2, "Timepoint2", "1-end", "1-end",
+            Image timepoint2 = ExtractSubstack.extractSubstack(crop2, "Timepoint2", "1-end", String.valueOf(zOffs)+"-"+String.valueOf(nSlices),
                     String.valueOf(inputObject.getT() + 1));
-
-            // timepoint1.show();
-            // timepoint2.show();
-            // maskImage.show();
 
             // Creating data container against which all algorithms will be run
             DataContainer<T> data = MeasureImageColocalisation.prepareDataContainer(timepoint1, timepoint2, maskImage);
@@ -508,6 +507,11 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         }
 
         return returnedRefs;
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

@@ -28,7 +28,7 @@ public abstract class TextType extends Parameter {
     public abstract void setValueFromString(String value);
 
     public static boolean containsReference(String string) {
-        if (Pattern.compile("C[ID]?\\{([^}]+)}").matcher(string).find())
+        if (Pattern.compile("C[ID]?\\{([^}]?)}").matcher(string).find())
             return true;
 
         if (Pattern.compile("Me\\{([^}]+)}").matcher(string).find())

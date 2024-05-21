@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.process.system.FileTools.FileTypes;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class FileParameter extends ParameterControl implements ActionListener {
+public class FileParameter extends TextSwitchableParameterControl implements ActionListener {
     private String fileType;
     private JButton control;
 
@@ -42,12 +42,12 @@ public class FileParameter extends ParameterControl implements ActionListener {
     }
 
     @Override
-    public JComponent getComponent() {
+    public JComponent getDefaultComponent() {
         return control;
     }
 
     @Override
-    public void updateControl() {
+    public void updateDefaultControl() {
         control.setText(FilenameUtils.getName(((FileFolderType) parameter).getPath()));
         control.setToolTipText(((FileFolderType) parameter).getPath());
     }

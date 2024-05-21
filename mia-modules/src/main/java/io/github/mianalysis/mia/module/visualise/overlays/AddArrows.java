@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -193,7 +194,7 @@ public class AddArrows extends AbstractOverlay {
         double x2 = arrowLength * Math.cos(oriRads);
         double y2 = arrowLength * Math.sin(oriRads);
 
-        Arrow arrow = new Arrow(xMean, yMean, xMean + x2, yMean + y2);
+        Arrow arrow = new Arrow(xMean, yMean, xMean - x2, yMean - y2);
         arrow.setHeadSize(headSize);
         arrow.setStrokeColor(colour);
         arrow.setStrokeWidth(lineWidth);
@@ -463,7 +464,12 @@ return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
+    }
+
+    @Override
+    public MetadataRefs updateAndGetMetadataReferences() {
 return null;
     }
 

@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -94,6 +95,15 @@ public class Convert3DStack extends Module {
     @Override
     public String getDescription() {
         return "Ensures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
+    }
+
+    public static void process(Image inputImage, String mode) {
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
+
+        process(inputImagePlus, mode);
+
+        inputImage.setImagePlus(inputImagePlus);
+        
     }
 
     public static void process(ImagePlus inputImagePlus, String mode) {
@@ -203,7 +213,12 @@ return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
+    }
+
+    @Override
+    public MetadataRefs updateAndGetMetadataReferences() {
 return null;
     }
 

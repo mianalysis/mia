@@ -29,6 +29,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -146,7 +147,9 @@ public class BleachingCorrection extends Module {
         switch (correctionMode) {
             case CorrectionModes.EXPONENTIAL_FIT:
                 try {
-                    new BleachCorrection_ExpoFit(inputImagePlus, roi).core();
+                    BleachCorrection_ExpoFit bleachCorrectionExpoFit = new BleachCorrection_ExpoFit(inputImagePlus, roi);
+                    bleachCorrectionExpoFit.setHeadlessProcessing(true);
+                    bleachCorrectionExpoFit.core();
                 } catch (NullPointerException e) {
                     MIA.log.writeWarning("Bleach correction failed (possible lack of exponential decay in signal)");
                 }
@@ -233,7 +236,12 @@ return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
+    }
+
+    @Override
+    public MetadataRefs updateAndGetMetadataReferences() {
 return null;
     }
 

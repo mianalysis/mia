@@ -26,9 +26,11 @@ import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.objects.RemovedObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
@@ -260,6 +262,64 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                 continue;
             if (ref.getObjectsName().equals(objectName))
                 measurementRefs.put(ref.getName(), ref);
+
+        }
+    }
+
+    public ObjMetadataRefs getObjectMetadataRefs(String objectName) {
+        return getObjectMetadataRefs(objectName, null);
+
+    }
+
+    public ObjMetadataRefs getObjectMetadataRefs(String objectName, Module cutoffModule) {
+        ObjMetadataRefs metadataRefs = new ObjMetadataRefs();
+        
+        // If this is a distant relative there will be "//" in the name that need to be
+        // removed
+        if (objectName.contains("//"))
+            objectName = objectName.substring(objectName.lastIndexOf("//") + 3);
+
+        addObjectMetadataRefs(inputControl, metadataRefs, objectName);
+        addObjectMetadataRefs(outputControl, metadataRefs, objectName);
+
+        // Iterating over all modules, collecting any measurements for the current
+        // objects
+        for (Module module : this) {
+            if (module == cutoffModule)
+                break;
+            if (!module.isEnabled() | !module.isRunnable())
+                continue;
+                addObjectMetadataRefs(module, metadataRefs, objectName);
+        }
+
+        return metadataRefs;
+
+    }
+
+    public boolean objectsExportMetadata(String objectName) {
+        ObjMetadataRefs refCollection = getObjectMetadataRefs(objectName);
+
+        for (ObjMetadataRef ref : refCollection.values()) {
+            if (ref.isExportIndividual() && ref.isExportGlobal())
+                return true;
+        }
+
+        return false;
+
+    }
+
+    void addObjectMetadataRefs(Module module, ObjMetadataRefs metadataRefs, String objectName) {
+        if (!module.isEnabled())
+            return;
+            ObjMetadataRefs currentMetadataRefs = module.updateAndGetObjectMetadataRefs();
+        if (currentMetadataRefs == null)
+            return;
+
+        for (ObjMetadataRef ref : currentMetadataRefs.values()) {
+            if (ref.getObjectsName() == null)
+                continue;
+            if (ref.getObjectsName().equals(objectName))
+            metadataRefs.put(ref.getName(), ref);
 
         }
     }

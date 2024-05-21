@@ -9,14 +9,16 @@ import javax.swing.JTextField;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class TextParameter extends ParameterControl implements FocusListener {
+public class TextParameter extends ParameterControl implements CaretReporter, FocusListener {
     protected JTextField control;
+    protected int caretPosition = 0;
 
     public TextParameter(TextType parameter) {
         super(parameter);
@@ -29,6 +31,10 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     }
 
+    public int getCaretPosition() {
+        return caretPosition;
+    }
+
     @Override
     public void focusGained(FocusEvent e) {
 
@@ -36,6 +42,7 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
+        caretPosition = control.getCaretPosition();
         GUI.addUndo();
 
         parameter.setValueFromString(control.getText());

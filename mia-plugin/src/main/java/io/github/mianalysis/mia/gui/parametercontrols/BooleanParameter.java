@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class BooleanParameter extends ParameterControl implements ActionListener {
+public class BooleanParameter extends TextSwitchableParameterControl implements ActionListener {
     private JCheckBox control;
 
     public BooleanParameter(BooleanType parameter) {
@@ -46,12 +46,12 @@ public class BooleanParameter extends ParameterControl implements ActionListener
 
     }
     @Override
-    public JComponent getComponent() {
+    public JComponent getDefaultComponent() {
         return control;
     }
 
     @Override
-    public void updateControl() {
+    public void updateDefaultControl() {
         control.setSelected(((BooleanType) parameter).isSelected());
     }
 }

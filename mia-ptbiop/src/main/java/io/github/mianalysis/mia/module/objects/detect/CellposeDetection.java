@@ -7,14 +7,18 @@ import org.scijava.plugin.Plugin;
 
 import ch.epfl.biop.wrappers.cellpose.Cellpose;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
-import ij.ImagePlus;
 import ij.Prefs;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -32,9 +36,11 @@ import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CellposeDetection extends Module {
@@ -218,7 +224,6 @@ public class CellposeDetection extends Module {
         String additionalFlags = parameters.getValue(ADDITIONAL_FLAGS, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
 
         Cellpose.setEnvDirPath(new File(cellposePath));
         Cellpose.setEnvType(environmentType);
@@ -237,7 +242,6 @@ public class CellposeDetection extends Module {
         Cellpose.setUseResample(useResample);
 
         CellposeWrapper cellpose = new CellposeWrapper();
-        cellpose.setImagePlus(ipl);
 
         switch (modelMode) {
             case ModelModes.CUSTOM:
@@ -266,7 +270,7 @@ public class CellposeDetection extends Module {
                     cellpose.setCytoChannel(cytoChannel);
                 else
                     cellpose.setCytoChannel(-1);
-                    
+
                 break;
             case Models.NUCLEI:
                 cellpose.setNucleiChannel(nucleiChannel);
@@ -285,10 +289,44 @@ public class CellposeDetection extends Module {
         cellpose.setUseClustering(useClustering);
         cellpose.setAdditionalFlags(additionalFlags);
 
-        cellpose.run();
+        Objs outputObjects = null;
+        int count = 0;
+        if (dimensionMode.equals(DimensionModes.TWOD) && inputImage.getImagePlus().getNSlices() > 1) {
+            SpatCal spatCal = SpatCal.getFromImage(inputImage.getImagePlus());
+            int nFrames = inputImage.getImagePlus().getNFrames();
+            double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
+            outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval,
+                    TemporalUnit.getOMEUnit());
 
-        Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-        Objs outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+            for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
+                for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
+                    Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end",
+                            String.valueOf(z + 1) + "-" + String.valueOf(z + 1),
+                            String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
+
+                    cellpose.setImagePlus(currImage.getImagePlus());
+                    cellpose.run();
+
+                    Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                    Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+
+                    for (Obj currOutputObject : currOutputObjects.values()) {
+                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                        outputObject.setT(t);
+                        outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
+                        outputObject.translateCoords(0, 0, z);
+                    }
+
+                    writeProgressStatus(++count, inputImage.getImagePlus().getStackSize(), "slices");
+
+                }
+            }
+        } else {
+            cellpose.setImagePlus(inputImage.getImagePlus());
+            cellpose.run();
+            Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+            outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+        }
 
         workspace.addObjects(outputObjects);
 
@@ -503,6 +541,11 @@ public class CellposeDetection extends Module {
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

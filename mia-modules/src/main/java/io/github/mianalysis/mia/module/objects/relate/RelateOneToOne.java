@@ -103,6 +103,7 @@ import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
 import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -123,6 +124,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -286,8 +288,12 @@ public class RelateOneToOne extends Module {
         DefaultCostMatrixCreator<Integer, Integer> creator = new DefaultCostMatrixCreator<>(IDs1, IDs2, costs,
                 alternativeCostFactor, percentile);
 
-        if (!creator.checkInput() || !creator.process())
+        
+
+        if (!creator.checkInput() || !creator.process()) {
+            MIA.log.writeError(creator.getErrorMessage());
             return null;
+        }            
 
         return creator;
 
@@ -576,6 +582,11 @@ public class RelateOneToOne extends Module {
 
         return returnedRefs;
 
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

@@ -18,15 +18,18 @@ import javax.swing.text.PlainDocument;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 
-public class TextAreaParameter extends ParameterControl implements FocusListener {
+public class TextAreaParameter extends ParameterControl implements CaretReporter, FocusListener {
     protected JPanel control;
+    protected int caretPosition = 0;
+
     private  JTextArea textArea;
     private JScrollPane objectsScrollPane;
     private String prevString = "";
-
+    
     public TextAreaParameter(TextAreaP parameter) {
         super(parameter);
         this.prevString = parameter.getRawStringValue();
@@ -77,6 +80,10 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         control.add(objectsScrollPane, c);
     }
 
+    public int getCaretPosition() {
+        return caretPosition;
+    }
+
     @Override
     public JComponent getComponent() {
         return control;
@@ -100,6 +107,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
 
     @Override
     public void focusLost(FocusEvent e) {
+        caretPosition = textArea.getCaretPosition();
         GUI.addUndo();
 
         if (!((TextAreaP) parameter).isEditable()) return;

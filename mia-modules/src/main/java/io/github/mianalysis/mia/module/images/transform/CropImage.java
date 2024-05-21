@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -26,6 +27,7 @@ import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -166,7 +168,10 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         outputImagePlus.setCalibration(calibration);
         ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
-        return ImageFactory.createImage(outputImageName, outputImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
+        SetLookupTable.copyLUTFromImage(outputImage,inputImage);
+        
+        return outputImage;
 
     }
 
@@ -299,6 +304,11 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

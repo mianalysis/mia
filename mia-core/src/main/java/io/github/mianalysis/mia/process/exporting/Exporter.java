@@ -45,6 +45,7 @@ import com.drew.lang.annotations.Nullable;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -56,9 +57,11 @@ import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
@@ -802,7 +805,7 @@ public class Exporter {
         // keeps the correct
         // measurements in the correct columns
         LinkedHashMap<String, LinkedHashMap<Integer, String>> measurementNames = new LinkedHashMap<>();
-
+        LinkedHashMap<String, LinkedHashMap<Integer, String>> objMetadataNames = new LinkedHashMap<>();
         LinkedHashMap<Integer, String> metadataNames = new LinkedHashMap<>();
 
         // Using the first workspace in the Workspaces to initialise column headers
@@ -817,11 +820,11 @@ public class Exporter {
             String objectName = availableObject.getObjectsName();
 
             // Check if this object has any associated measurements; if not, skip it
-            if (!modules.objectsExportMeasurements(objectName))
+            if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportMetadata(objectName))
                 continue;
 
             // Creating relevant sheet prefixed with "OBJ"
-            objectSheets.put(objectName, workbook.createSheet(objectName));
+            objectSheets.put(objectName, workbook.createSheet(objectName.replace("/", "⁄")));
 
             objectRows.put(objectName, 1);
             Row objectHeaderRow = objectSheets.get(objectName).createRow(0);
@@ -854,7 +857,30 @@ public class Exporter {
                 cell = objectHeaderRow.createCell(col++);
                 cell.setCellValue(getMetadataString(ref.getName()));
                 cell.setCellStyle(cellStyle);
-                
+
+            }
+
+            // Running through all the object metadata values, adding them as new columns
+            ObjMetadataRefs objectMetadataRefs = modules.getObjectMetadataRefs(objectName);
+
+            // Sorting by nickname
+            TreeMap<String, ObjMetadataRef> sortedObjMetadataRefs = new TreeMap<>();
+            for (ObjMetadataRef ref : objectMetadataRefs.values())
+                sortedObjMetadataRefs.put(ref.getNickname(), ref);
+
+            for (ObjMetadataRef objectMetadata : sortedObjMetadataRefs.values()) {
+                if (!objectMetadata.isExportIndividual())
+                    continue;
+                if (!objectMetadata.isExportGlobal())
+                    continue;
+
+                objMetadataNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                objMetadataNames.get(objectName).put(col, objectMetadata.getName());
+                cell = objectHeaderRow.createCell(col++);
+                // addComment(cell, objectMeasurement.getDescription());
+                cell.setCellValue(objectMetadata.getNickname());
+                cell.setCellStyle(cellStyle);
+
             }
 
             // Running through all the object measurement values, adding them as new columns
@@ -886,7 +912,7 @@ public class Exporter {
             for (String objectName : workspace.getObjects().keySet()) {
                 Objs objects = workspace.getObjects().get(objectName);
 
-                if (!modules.objectsExportMeasurements(objectName))
+                if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportMetadata(objectName))
                     continue;
 
                 if (objects.values().iterator().hasNext()) {
@@ -907,6 +933,24 @@ public class Exporter {
                             metaValueCell.setCellValue(metadata.getAsString(metadataNames.get(column)));
                         }
 
+                        if (objMetadataNames.get(objectName) != null) {
+                            // Adding measurements to the columns specified in measurementNames
+                            for (int column : objMetadataNames.get(objectName).keySet()) {
+                                Cell metadataValueCell = objectValueRow.createCell(column);
+                                String measurementName = objMetadataNames.get(objectName).get(column);
+                                ObjMetadata metadataItem = object.getMetadataItem(measurementName);
+
+                                // If there isn't a corresponding value for this object, set a blank cell
+                                if (metadataItem == null) {
+                                    metadataValueCell.setCellValue("");
+                                    continue;
+                                }
+
+                                metadataValueCell.setCellValue(metadataItem.getValue());
+
+                            }
+                        }
+
                         if (measurementNames.get(objectName) == null)
                             continue;
 
@@ -915,6 +959,7 @@ public class Exporter {
                             Cell measValueCell = objectValueRow.createCell(column);
                             String measurementName = measurementNames.get(objectName).get(column);
                             Measurement measurement = object.getMeasurement(measurementName);
+
                             // If there isn't a corresponding value for this object, set a blank cell
                             if (measurement == null) {
                                 measValueCell.setCellValue("");

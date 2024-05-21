@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
@@ -40,6 +41,7 @@ public class Obj extends Volume {
     private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
     private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     private HashMap<Integer, Roi> rois = new HashMap<>();
 
     // CONSTRUCTORS
@@ -109,6 +111,32 @@ public class Obj extends Volume {
         name = TemporalUnit.replace(name);
 
         measurements.remove(name);
+
+    }
+
+    public void addMetadataItem(ObjMetadata metadataItem) {
+        if (metadataItem == null)
+            return;
+        metadata.put(metadataItem.getName(), metadataItem);
+
+    }
+
+    public ObjMetadata getMetadataItem(String name) {
+        if (metadata.get(name) == null)
+            return null;
+
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        return metadata.get(name);
+
+    }
+
+    public void removeMetadataItem(String name) {
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        metadata.remove(name);
 
     }
 
@@ -364,11 +392,21 @@ public class Obj extends Volume {
 
     }
 
+    public LinkedHashMap<String, ObjMetadata> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(LinkedHashMap<String, ObjMetadata> metadata) {
+        this.metadata = metadata;
+
+    }
+
     @Override
     public Roi getRoi(int slice) {
         if (rois.containsKey(slice))
             return (Roi) rois.get(slice).clone();
 
+        MIA.log.writeDebug("ID "+ID);
         Roi roi = super.getRoi(slice);
 
         if (roi == null)
