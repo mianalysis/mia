@@ -46,8 +46,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.system.FileTools;
@@ -220,6 +218,9 @@ public class LoadObjectsFromROIs extends Module {
             int tid = Integer.parseInt(matcher.group(2));
             int t = Integer.parseInt(matcher.group(3)) - 1;
             int z = Integer.parseInt(matcher.group(4)) - 1;
+
+            if (t >= outputObjects.getNFrames() || z >= outputObjects.getNSlices())
+                return;
 
             if (!outputObjects.keySet().contains(oid))
                 outputObjects.createAndAddNewObject(VolumeType.QUADTREE, oid);
