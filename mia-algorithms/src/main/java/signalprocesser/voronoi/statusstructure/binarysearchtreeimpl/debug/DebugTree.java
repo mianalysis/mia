@@ -159,18 +159,7 @@ public class DebugTree extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         //System.exit(0);
     }//GEN-LAST:event_formWindowClosed
-    
-    public static void main(String args[]) {
-        DebugTree app = new DebugTree(new javax.swing.JFrame());
-        app.setVisible(true);
-        VInternalNode node = new VInternalNode();
-        VLeafNode leaf1 = new VLeafNode(new VSiteEvent(new VPoint(1,2)));
-        VLeafNode leaf2 = new VLeafNode(new VSiteEvent(new VPoint(1,2)));
-        node.setLeft(leaf1);
-        node.setRight(leaf2);
-        app.setRootNode(node, 10);
-    }
-    
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     

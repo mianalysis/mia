@@ -1,13 +1,9 @@
 package io.github.mianalysis.mia.process.houghtransform.transforms;
 
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import ij.IJ;
-import ij.ImageJ;
-import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.process.houghtransform.accumulators.CircleAccumulator;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
@@ -17,23 +13,6 @@ import io.github.mianalysis.mia.process.voxel.MidpointCircle;
  * Created by sc13967 on 12/01/2018.
  */
 public class CircleTransform extends AbstractTransform {
-    public static void main(String[] args) {
-        new ImageJ();
-        ImagePlus ipl = IJ.openImage("C:/Users/steph/Desktop/TEST_HoughCircle.tif");
-        ImageProcessor ipr = ipl.getProcessor();
-
-        CircleTransform transform = new CircleTransform(ipr, new String[]{"150-300-5","100-200","60-70-5"});
-        transform.setnThreads(4);
-        transform.run();
-
-        ArrayList<double[]> objects = transform.getObjects(10000, 100);
-        transform.addDetectedObjectsOverlay(ipl, objects);
-
-        ipl.show();
-        IJ.runMacro("waitForUser");
-
-    }
-
     public CircleTransform(ImageProcessor ipr, String[] parameterRanges) {
         super(ipr);
 

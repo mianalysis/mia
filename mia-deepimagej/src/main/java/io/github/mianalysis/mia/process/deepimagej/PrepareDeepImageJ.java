@@ -472,10 +472,10 @@ public class PrepareDeepImageJ implements PlugIn {
         int minID = 0;
         while (iter.hasNext()) {
             Object nx = iter.next();
-            // MIA.log.writeDebug("OUTPUT " + nx);
             if (nx != null && nx instanceof ImagePlus && ((ImagePlus) nx).getProcessor() != null) {
                 ImagePlus currIpl = (ImagePlus) nx;
                 currIpl.hide();
+                
                 if (currIpl.getID() < minID) {
                     ipl = currIpl;
                     minID = currIpl.getID();

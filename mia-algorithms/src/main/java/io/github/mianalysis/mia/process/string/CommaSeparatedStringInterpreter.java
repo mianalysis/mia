@@ -7,13 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommaSeparatedStringInterpreter {
-    public static void main(String[] args) {
-        firstValue("7-(end-3)");
-        // for (int i:interpretIntegers("20-(end-3)", true, 12)) {
-        // System.out.println(i);
-        // }
-    }
-
     public static int firstValue(String range) {
         Matcher matcher = Pattern.compile("[0-9]+").matcher(range);
 

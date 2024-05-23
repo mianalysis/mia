@@ -54,11 +54,6 @@
 //        return new SparseCostMatrix( cc, kk, number, m );
 //    }
 //
-//    public static void main(String[] args) {
-//        new RelateOneToOne().testSparseIsNonSparse();
-//
-//    }
-//
 //    public final void testSparseIsNonSparse() {
 //        final int n = 4;
 //        final int m = 6;

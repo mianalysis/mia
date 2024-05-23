@@ -444,20 +444,6 @@ return null;
         parameters.get(SHOW_CONTOURS_REALTIME).setDescription("When selected, the contour evolution will be displayed on the input image in realtime.  This may be useful for optimising weight parameters.");
 
     }
-
-    public static void main(String[] args) {
-        BalloonEnergy balloonEnergy = new BalloonEnergy(1);
-
-        Vertex node1 = new Vertex(50, 20);
-        Vertex node2 = new Vertex(53, 18);
-        Vertex node3 = new Vertex(54, 14);
-
-        node2.setLeftNeighbour(node1);
-        node2.setRightNeighbour(node3);
-
-        balloonEnergy.getEnergy(node2);
-
-    }
 }
 
 class BalloonEnergy extends Energy {

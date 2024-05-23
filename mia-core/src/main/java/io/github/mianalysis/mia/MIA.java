@@ -61,28 +61,6 @@ public abstract class MIA {
      */
     protected static final boolean imagePlusMode = true;
 
-    // public static void main(String[] args) throws Exception {
-    // debug = true;
-
-    // try {
-    // if (args.length == 0) {
-    // System.err.println("No workflow file path specified as command line
-    // argument");
-    // } else if (args.length == 1) {
-    // Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
-    // new AnalysisRunner().run(analysis);
-    // } else if (args.length == 2) {
-    // Analysis analysis = AnalysisReader.loadModules(new File(args[0]));
-    // analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
-    // args[1]);
-    // new AnalysisRunner().run(analysis);
-    // }
-
-    // } catch (Exception e) {
-    // MIA.log.writeError(e);
-    // }
-    // }
-
     private static String extractVersion() {
         // Determining the version number from the pom file
         try {

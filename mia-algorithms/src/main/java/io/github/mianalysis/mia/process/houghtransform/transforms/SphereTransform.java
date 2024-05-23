@@ -14,19 +14,6 @@ import io.github.mianalysis.mia.process.voxel.SphereShell.Connectivity;
  * Created by sc13967 on 12/01/2018.
  */
 public class SphereTransform extends AbstractTransform {
-
-    // public static void main(String[] args) {
-    //     new ImageJ();
-    //     ImagePlus ipl = IJ.openImage("C:/Users/steph/Desktop/TEST_HoughSphere.tif");
-    //     ImageStack ist = ipl.getStack();
-    //     String[] paramRanges = new String[] { "0-end", "0-end", "0-end", "15-25-1" };
-    //     SphereTransform sht = new SphereTransform(ist, paramRanges);
-    //     sht.run();
-    //     sht.getAccumulatorAsImage().show();
-    //     sht.addDetectedObjectsOverlay(ipl, sht.getObjects(10, 100));
-    //     ipl.show();
-    // }
-
     public SphereTransform(ImageStack ist, String[] parameterRanges) {
         super(ist);
 
