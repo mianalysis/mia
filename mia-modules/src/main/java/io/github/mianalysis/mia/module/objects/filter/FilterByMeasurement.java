@@ -22,16 +22,26 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Filter an object collection based on a measurement value associated with this object.  The threshold (reference) value can be either a fixed value (same for all objects), a measurement associated with an image (same for all objects within a single analysis run) or a measurement associated with a parent object (potentially different for all objects).  Objects which satisfy the specified numeric filter (less than, equal to, greater than, etc.) can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.
-*/
+ * Filter an object collection based on a measurement value associated with this
+ * object. The threshold (reference) value can be either a fixed value (same for
+ * all objects), a measurement associated with an image (same for all objects
+ * within a single analysis run) or a measurement associated with a parent
+ * object (potentially different for all objects). Objects which satisfy the
+ * specified numeric filter (less than, equal to, greater than, etc.) can be
+ * removed from the input collection, moved to another collection (and removed
+ * from the input collection) or simply counted (but retained in the input
+ * collection). The number of objects failing the filter can be stored as a
+ * metadata value.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByMeasurement extends AbstractNumericObjectFilter {
 
-	/**
-	* Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".
-	*/
+    /**
+     * Objects will be filtered against their value of this measurement. Objects
+     * missing this measurement are not removed; however, they can be removed by
+     * using the module "With / without measurement".
+     */
     public static final String MEASUREMENT = "Measurement to filter on";
 
     public FilterByMeasurement(Modules modules) {
@@ -80,7 +90,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             // Skipping this object if it doesn't have the measurement
             Measurement measurement = inputObject.getMeasurement(measName);
             if (measurement == null)
-                continue;    
+                continue;
 
             double value = measurement.getValue();
             double refValue = getReferenceValue(workspace, inputObject);
@@ -165,7 +175,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
             returnedRefs.add(new ObjMeasurementRef(measurementName, inputObjectsName));
-            if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
+            if (parameters.getValue(FILTER_METHOD, workspace).equals(FilterModes.MOVE_FILTERED)) {
                 String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
                 returnedRefs.add(new ObjMeasurementRef(measurementName, outputObjectsName));
             }
@@ -176,8 +186,8 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return super.updateAndGetObjectMetadataRefs();
     }
 
     @Override

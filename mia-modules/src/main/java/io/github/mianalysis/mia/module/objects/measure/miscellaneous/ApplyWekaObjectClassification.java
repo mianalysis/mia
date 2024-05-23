@@ -208,7 +208,6 @@ public class ApplyWekaObjectClassification extends Module {
 
                 int classIndex = (int) abstractClassifier.classifyInstance(instances.get(i));
                 inputObject.addMeasurement(new Measurement(classMeasName, classIndex));
-
                 inputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
 
             }

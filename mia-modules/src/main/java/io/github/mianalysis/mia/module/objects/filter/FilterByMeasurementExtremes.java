@@ -323,8 +323,8 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return super.updateAndGetObjectMetadataRefs();
     }
 
     @Override

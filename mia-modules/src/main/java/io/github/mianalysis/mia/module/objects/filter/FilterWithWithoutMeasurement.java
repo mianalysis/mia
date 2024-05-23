@@ -23,31 +23,48 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Filter an object collection based on the presence of a specific measurement for each object.  Objects which do/don't have the relevant measurement can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Filter an object collection based on the presence of a specific measurement
+ * for each object. Objects which do/don't have the relevant measurement can be
+ * removed from the input collection, moved to another collection (and removed
+ * from the input collection) or simply counted (but retained in the input
+ * collection). The number of objects failing the filter can be stored as a
+ * metadata value.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FILTER_SEPARATOR = "Object filtering";
 
-	/**
-	* Controls whether objects are removed when a specific measurement is present or not:<br><br>- "Remove objects without measurement" Objects without the measurement specified by "Measurement to filter on" are removed, counted or moved (depending on the "Filter mode" parameter).<br><br>- "Remove objects with measurement" Objects with the measurement specified by "Measurement to filter on" are removed, counted or moved (depending on the "Filter mode" parameter).<br>
-	*/
+    /**
+     * Controls whether objects are removed when a specific measurement is present
+     * or not:<br>
+     * <br>
+     * - "Remove objects without measurement" Objects without the measurement
+     * specified by "Measurement to filter on" are removed, counted or moved
+     * (depending on the "Filter mode" parameter).<br>
+     * <br>
+     * - "Remove objects with measurement" Objects with the measurement specified by
+     * "Measurement to filter on" are removed, counted or moved (depending on the
+     * "Filter mode" parameter).<br>
+     */
     public static final String FILTER_METHOD = "Method for filtering";
 
-	/**
-	* Measurement to filter by.  The presence or absence of this measurement will determine which of the input objects are counted, removed or moved (depending on the "Filter mode" parameter).
-	*/
+    /**
+     * Measurement to filter by. The presence or absence of this measurement will
+     * determine which of the input objects are counted, removed or moved (depending
+     * on the "Filter mode" parameter).
+     */
     public static final String MEASUREMENT = "Measurement to filter on";
 
-	/**
-	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName] WITHOUT [measurementName] MEASUREMENT").
-	*/
+    /**
+     * When selected, the number of removed (or moved) objects is counted and stored
+     * as a metadata item (name in the format "FILTER // NUM_[inputObjectsName]
+     * WITHOUT [measurementName] MEASUREMENT").
+     */
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterWithWithoutMeasurement(Modules modules) {
@@ -73,7 +90,6 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_FILTER;
@@ -92,15 +108,15 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
-        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
-        String measName = parameters.getValue(MEASUREMENT,workspace);
-        boolean storeResults = parameters.getValue(STORE_RESULTS,workspace);
+        String filterMode = parameters.getValue(FILTER_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
+        String measName = parameters.getValue(MEASUREMENT, workspace);
+        boolean storeResults = parameters.getValue(STORE_RESULTS, workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -154,8 +170,8 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -173,32 +189,31 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return super.updateAndGetObjectMeasurementRefs();
-        
+
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return super.updateAndGetObjectMetadataRefs();
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set
-        if ((boolean) parameters.getValue(STORE_RESULTS,workspace)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-            String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
-            String measName = parameters.getValue(MEASUREMENT,workspace);
+        if ((boolean) parameters.getValue(STORE_RESULTS, workspace)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+            String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
+            String measName = parameters.getValue(MEASUREMENT, workspace);
 
             String metadataName = getMetadataName(inputObjectsName, filterMethod, measName);
 
@@ -213,7 +228,7 @@ Workspace workspace = null;
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         parameters.get(FILTER_METHOD).setDescription(
                 "Controls whether objects are removed when a specific measurement is present or not:<br>"
 

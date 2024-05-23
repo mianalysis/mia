@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
@@ -158,6 +159,30 @@ public abstract class AbstractObjectFilter extends Module {
     }
 
     @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        Workspace workspace = null;
+        ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
+
+        // If the filtered objects are to be moved to a new class, assign them the
+        // metadata values they've lost
+        if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
+
+            // Getting object metadata references associated with this object set
+            ObjMetadataRefs references = modules.getObjectMetadataRefs(inputObjectsName, this);
+
+            for (ObjMetadataRef reference : references.values()) {
+                returnedRefs
+                        .add(objectMetadataRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
+            }
+        }
+
+        return returnedRefs;
+        
+    }
+
+    @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
         Workspace workspace = null;
         // Where necessary, redirect relationships
@@ -191,7 +216,7 @@ public abstract class AbstractObjectFilter extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         switch ((String) parameters.getValue(FILTER_MODE, workspace)) {

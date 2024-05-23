@@ -362,7 +362,7 @@ Workspace workspace = null;
 
         parameters.get(STORE_SUMMARY_RESULTS).setDescription(
                 "When selected, a metadata value is stored in the workspace, which records the number of objects which failed the filter and were removed or moved to another object class (depending on the \""
-                        + FILTER_MODE + "\" parameter).");
+                        + FILTER_METHOD + "\" parameter).");
 
     }
 }

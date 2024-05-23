@@ -2,12 +2,13 @@ package io.github.mianalysis.mia.module.objects.filter;
 
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -89,7 +90,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
             double value = 0;
             if (childObjects != null)
                 value = childObjects.size();
-            
+
             double refValue = getReferenceValue(workspace, inputObject);
             boolean conditionMet = testFilter(value, refValue, filterMethod);
 
@@ -167,7 +168,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
             returnedRefs.add(new ObjMeasurementRef(measurementName, inputObjectsName));
-            if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
+            if (parameters.getValue(FILTER_METHOD, workspace).equals(FilterModes.MOVE_FILTERED)) {
                 String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
                 returnedRefs.add(new ObjMeasurementRef(measurementName, outputObjectsName));
             }
@@ -178,8 +179,8 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return super.updateAndGetObjectMetadataRefs();
     }
 
     @Override
