@@ -31,14 +31,7 @@ import signalprocesser.voronoi.statusstructure.AbstractStatusStructure;
 import signalprocesser.voronoi.statusstructure.VLinkedNode;
 
 public class VoronoiAlgorithm {
-    
-    /* ********************************************************* */
-    // Test Main Function
-    
-    public static void main(String[] args) {
-        VoronoiTest.main(args);
-    }
-    
+        
     private VoronoiAlgorithm() { }
     
     /* ********************************************************* */

@@ -39,12 +39,7 @@ public class CountryData {
     public static final String INDEX_FILE          = PATH_TO_COUNTRYDATA + "/fileindex.dat";
     
     public static final Pattern PATTERN_COORDLINE = Pattern.compile("^[ ]*([0-9E.-]*)[ ]*,[ ]*([0-9E.-]*)[ ]*$");
-    
-    public static void main(String args[]) throws IOException, URISyntaxException {
-        // Call country data generation to generate mapping data
-        //CountryDataGeneration.main(args);
-    }
-    
+        
     public static ArrayList<String> getCountryList() throws IOException {
         // Open the index file
         InputStream stream = CountryData.class.getResourceAsStream(INDEX_FILE);

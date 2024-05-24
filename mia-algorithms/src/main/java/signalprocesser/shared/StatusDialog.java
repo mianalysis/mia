@@ -110,10 +110,6 @@ public class StatusDialog extends javax.swing.JDialog {
     }
     // </editor-fold>//GEN-END:initComponents
     
-    public static void main(String args[]) {
-        StatusDialog dialog = new StatusDialog(new JFrame(), "Title", "Caption");
-        dialog.setVisible(true);
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblCaption;

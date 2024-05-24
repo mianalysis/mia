@@ -1,28 +1,8 @@
 package io.github.mianalysis.mia.process.voxel;
 
-import ij.IJ;
-import ij.ImageJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-
 public class SphereShell extends AbstractSphere {
     public enum Connectivity {
         SIX, TWENTY_SIX;
-    }
-
-    public static void main(String[] args) {
-        SphereShell sphereShell = new SphereShell(46,Connectivity.TWENTY_SIX);
-        int[] x = sphereShell.getX();
-        int[] y = sphereShell.getY();
-        int[] z = sphereShell.getZ();
-
-        new ImageJ();
-        ImagePlus ipl = IJ.createImage("", 100, 100, 100, 8);
-        ImageStack ist = ipl.getStack();
-        for (int i = 0; i < x.length; i++) {
-            ist.setVoxel(x[i] + 50, y[i] + 50, z[i] + 50, 255);
-        }
-        ipl.show();
     }
 
     public SphereShell(int r, Connectivity connectivity) {

@@ -68,18 +68,6 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
     public interface FilterMethods extends AbstractNumericObjectFilter.FilterMethods {
     }
 
-    public static void main(String[] args) {
-        // Creating a new instance of ImageJ
-        new ij.ImageJ();
-
-        // Launching MIA
-        new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
-
-        // Adding the current module to MIA's list of available modules.
-        AvailableModules.addModuleName(LiveFilterByMeasurement.class);
-
-    }
-
     public LiveFilterByMeasurement(Modules modules) {
         // The first argument is the name by which the module will be seen in the GUI.
         super("Live measurement filter", modules);

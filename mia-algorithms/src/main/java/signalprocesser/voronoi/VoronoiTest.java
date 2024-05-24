@@ -106,20 +106,7 @@ public class VoronoiTest extends javax.swing.JFrame {
     private TestRepresentationWrapper representationwrapper = new TestRepresentationWrapper();
     
     private AbstractRepresentation representation;
-    
-    public static void main(String args[]) {
-        // Set look and feel
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            displayError(null, e);
-        }
         
-        // Load the application
-        VoronoiTest frame = new VoronoiTest();
-        frame.setVisible(true);
-    }
-    
     /** Creates new form MainFrame */
     public VoronoiTest() {
         // Inital components

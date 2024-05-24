@@ -4,9 +4,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import ij.IJ;
-import ij.ImageJ;
-import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.process.houghtransform.accumulators.RectangleAccumulator;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
@@ -16,26 +13,6 @@ import io.github.mianalysis.mia.process.voxel.BresenhamRectangle;
  * Created by sc13967 on 12/01/2018.
  */
 public class RectangleTransform extends AbstractTransform {
-    public static void main(String[] args) {
-        new ImageJ();
-        ImagePlus ipl = IJ.openImage("C:/Users/steph/Desktop/TEST_HoughRectangle.tif");
-        ImageProcessor ipr = ipl.getProcessor();
-        String[] parameterRanges = new String[] { "0-end", "0-end", "70", "130-170-5", "0-360-60" };
-
-        RectangleTransform transform = new RectangleTransform(ipr, parameterRanges);
-        transform.setnThreads(4);
-        transform.run();
-
-        transform.getAccumulatorAsImage().show();
-
-        // ArrayList<double[]> objects = transform.getObjects(8000, 500);
-        // transform.addDetectedObjectsOverlay(ipl, objects);
-
-        ipl.show();
-        IJ.runMacro("waitForUser");
-
-    }
-
     public RectangleTransform(ImageProcessor ipr, String[] parameterRanges) {
         super(ipr);
 

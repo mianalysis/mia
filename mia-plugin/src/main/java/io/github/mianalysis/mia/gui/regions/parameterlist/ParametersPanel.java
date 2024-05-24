@@ -113,22 +113,22 @@ public class ParametersPanel extends JScrollPane {
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE,null);
         if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
             MetadataRefs metadataRefs = modules.getMetadataRefs();
-            addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
+            addRefExportControls(metadataRefs,"Workspace metadata",componentFactory,c);
 
             LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null,false);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
                 ImageMeasurementRefs measurementReferences = modules.getImageMeasurementRefs(imageName);
-                addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c);
+                addRefExportControls(measurementReferences,"\""+imageName+"\" image measurements",componentFactory,c);
             }
 
             LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null,false);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
                 ObjMetadataRefs objectMetadataReferences = modules.getObjectMetadataRefs(objectName);
-                addRefExportControls(objectMetadataReferences,objectName+" (Object)",componentFactory,c);
+                addRefExportControls(objectMetadataReferences,"\""+objectName+"\" object metadata",componentFactory,c);
                 ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName);
-                addSummaryRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c);
+                addSummaryRefExportControls(measurementReferences,"\""+objectName+"\" object measurements",componentFactory,c);
             }            
         }
 

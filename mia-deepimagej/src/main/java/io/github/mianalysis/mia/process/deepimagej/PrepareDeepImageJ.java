@@ -49,7 +49,8 @@ public class PrepareDeepImageJ implements PlugIn {
             if (SystemUtils.OS_NAME.equals("Mac OS X"))
                 return "/Users/sc13967/Applications/Fiji.app/models/";
             else
-                return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
+                // return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
+                return "C:\\Users\\sc13967\\Desktop\\Fiji.app\\models\\";
         else
             return IJ.getDirectory("imagej") + File.separator + "models" + File.separator;
     }
@@ -471,10 +472,10 @@ public class PrepareDeepImageJ implements PlugIn {
         int minID = 0;
         while (iter.hasNext()) {
             Object nx = iter.next();
-            // MIA.log.writeDebug("OUTPUT " + nx);
             if (nx != null && nx instanceof ImagePlus && ((ImagePlus) nx).getProcessor() != null) {
                 ImagePlus currIpl = (ImagePlus) nx;
                 currIpl.hide();
+                
                 if (currIpl.getID() < minID) {
                     ipl = currIpl;
                     minID = currIpl.getID();

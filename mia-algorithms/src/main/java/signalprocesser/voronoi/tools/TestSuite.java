@@ -1495,20 +1495,7 @@ public class TestSuite extends javax.swing.JDialog {
         panelGenerationSelection.validate();
         panelGenerationSelection.repaint();
     }//GEN-LAST:event_optLetterGenerationActionPerformed
-    
-    public static void main(String args[]) {
-        // Set look and feel
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            displayError(null, e);
-        }
         
-        // Load test form
-        TestSuite dialog = new TestSuite(true, new javax.swing.JFrame());
-        dialog.setVisible(true);
-    }
-    
     private void runTestSuite(final RunTestSeries testseries) {
         // Update status
         lblStatus.setText("Starting test suite run...");

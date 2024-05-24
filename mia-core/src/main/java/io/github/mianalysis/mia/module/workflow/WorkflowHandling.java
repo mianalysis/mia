@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
+import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -253,14 +254,8 @@ public class WorkflowHandling extends Module {
     public interface NumericFilterModes extends AbstractNumericObjectFilter.FilterMethods {
     }
 
-    public interface TextFilterModes {
-        String CONTAINS = "Contains";
-        String DOES_NOT_CONTAIN = "Does not contain";
-        String EQUAL_TO = "Equal to";
-        String NOT_EQUAL_TO = "Not equal to";
-
-        String[] ALL = new String[] { CONTAINS, DOES_NOT_CONTAIN, EQUAL_TO, NOT_EQUAL_TO };
-
+    public interface TextFilterModes extends AbstractTextObjectFilter.FilterMethods {
+        
     }
 
     public interface ContinuationModes {
@@ -372,19 +367,7 @@ public class WorkflowHandling extends Module {
     }
 
     public static boolean testTextMetadata(String metadataValue, String referenceMode, String referenceValue) {
-        switch (referenceMode) {
-            case TextFilterModes.CONTAINS:
-                return metadataValue.contains(referenceValue);
-            case TextFilterModes.DOES_NOT_CONTAIN:
-                return !metadataValue.contains(referenceValue);
-            case TextFilterModes.EQUAL_TO:
-                return metadataValue.equals(referenceValue);
-            case TextFilterModes.NOT_EQUAL_TO:
-                return !metadataValue.equals(referenceValue);
-        }
-
-        return false;
-
+            return AbstractTextObjectFilter.testFilter(metadataValue, referenceValue, referenceMode);
     }
 
     public static boolean testObjectCount(Objs inputObjects, String referenceMode, double referenceValue) {

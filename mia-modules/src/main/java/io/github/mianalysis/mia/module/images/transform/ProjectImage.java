@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -240,7 +241,11 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         CalibratedAxis axOut = new DefaultLinearAxis(axIn.type(), axIn.unit(), axIn.calibratedValue(1));
         proj.setAxis(axOut, proj.numDimensions() - 1);
 
-        return ImageFactory.createImage(outputImageName, proj);
+        Image projectedImage = ImageFactory.createImage(outputImageName, proj);
+
+        SetLookupTable.copyLUTFromImage(projectedImage,inputImage);
+        
+        return projectedImage;
 
     }
 
