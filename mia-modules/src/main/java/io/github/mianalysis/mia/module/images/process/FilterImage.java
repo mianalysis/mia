@@ -21,6 +21,7 @@ import ij.plugin.filter.RankFilters;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -433,6 +434,10 @@ public class FilterImage extends Module {
                     frames.add(frame);
             }
 
+            boolean emptyFrame = frames.size() == 0;
+            if (emptyFrame)
+                frames.add(1);
+
             // Creating a local substack and switching T and Z, so time (not Z) is averaged
             ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(tempImagePlus, channels, slices, frames);
             currentSubstack = Hyperstack_rearranger.reorderHyperstack(currentSubstack, "CTZ", true, false);
@@ -469,6 +474,10 @@ public class FilterImage extends Module {
             // Switching T and Z back
             iplOut = Hyperstack_rearranger.reorderHyperstack(iplOut, "CTZ", true, false);
 
+            // If this frame was added in just so there's some content, set all pixels to zero
+            if (emptyFrame)
+                ImageMath.process(iplOut,ImageMath.CalculationModes.MULTIPLY,0);
+            
             // Adding the new image into outputImagePlus
             for (int z = 1; z <= iplOut.getNSlices(); z++) {
                 for (int c = 1; c <= iplOut.getNChannels(); c++) {
