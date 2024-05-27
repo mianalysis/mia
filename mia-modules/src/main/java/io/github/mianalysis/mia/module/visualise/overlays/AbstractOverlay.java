@@ -10,12 +10,14 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.process.ColourFactory;
+import java_cup.parse_reduce_row;
 
 public abstract class AbstractOverlay extends Module {
     public static final String COLOUR_SEPARATOR = "Overlay colour";
@@ -24,6 +26,7 @@ public abstract class AbstractOverlay extends Module {
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
+    public static final String METADATA_ITEM_FOR_COLOUR = "Metadata item for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String PARTNER_OBJECTS_FOR_COLOUR = "Partner objects for colour";
     public static final String OPACITY = "Opacity (%)";
@@ -36,19 +39,7 @@ public abstract class AbstractOverlay extends Module {
         super(name, modules);
     }
 
-    public interface ColourModes {
-        String CHILD_COUNT = "Child count";
-        String ID = "ID";
-        String MEASUREMENT_VALUE = "Measurement value";
-        String PARENT_ID = "Parent ID";
-        String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
-        String PARTNER_COUNT = "Partner count";
-        String RANDOM_COLOUR = "Random colour";
-        String SINGLE_COLOUR = "Single colour";
-
-        String[] ALL = new String[] { CHILD_COUNT, ID, MEASUREMENT_VALUE, PARENT_ID, PARENT_MEASUREMENT_VALUE,
-                PARTNER_COUNT, RANDOM_COLOUR, SINGLE_COLOUR };
-
+    public interface ColourModes extends ColourFactory.ColourModes {
     }
 
     public interface SingleColours extends ColourFactory.SingleColours {
@@ -67,18 +58,19 @@ public abstract class AbstractOverlay extends Module {
 
     public HashMap<Integer, Color> getColours(Objs inputObjects, Workspace workspace) {
         // Getting colour settings
-        String colourMode = parameters.getValue(COLOUR_MODE,workspace);
-        String colourMap = parameters.getValue(COLOUR_MAP,workspace);
-        String singleColour = parameters.getValue(SINGLE_COLOUR,workspace);
-        String childObjectsForColourName = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR,workspace);
-        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR,workspace);
-        String partnerObjectsForColourName = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR,workspace);
-        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR,workspace);
-        String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE,workspace);
-        double minValue = parameters.getValue(MINIMUM_VALUE,workspace);
-        String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE,workspace);
-        double maxValue = parameters.getValue(MAXIMUM_VALUE,workspace);
-        double opacity = parameters.getValue(OPACITY,workspace);
+        String colourMode = parameters.getValue(COLOUR_MODE, workspace);
+        String colourMap = parameters.getValue(COLOUR_MAP, workspace);
+        String singleColour = parameters.getValue(SINGLE_COLOUR, workspace);
+        String childObjectsForColourName = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR, workspace);
+        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR, workspace);
+        String partnerObjectsForColourName = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR, workspace);
+        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR, workspace);
+        String metadataItemForColour = parameters.getValue(METADATA_ITEM_FOR_COLOUR, workspace);
+        String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE, workspace);
+        double minValue = parameters.getValue(MINIMUM_VALUE, workspace);
+        String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE, workspace);
+        double maxValue = parameters.getValue(MAXIMUM_VALUE, workspace);
+        double opacity = parameters.getValue(OPACITY, workspace);
 
         double[] range = new double[] { Double.NaN, Double.NaN };
         if (rangeMinMode.equals(RangeModes.MANUAL))
@@ -107,6 +99,9 @@ public abstract class AbstractOverlay extends Module {
             case ColourModes.MEASUREMENT_VALUE:
                 values = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, range);
                 break;
+            case ColourModes.OBJ_METADATA_ITEM:
+                values = ColourFactory.getObjectMetadataHues(inputObjects, metadataItemForColour);
+                break;
             case ColourModes.PARENT_ID:
                 values = ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
                 break;
@@ -131,6 +126,7 @@ public abstract class AbstractOverlay extends Module {
         parameters.add(new ChoiceP(SINGLE_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, this));
+        parameters.add(new ObjectMetadataP(METADATA_ITEM_FOR_COLOUR, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_COLOUR, this));
         parameters.add(new DoubleP(OPACITY, this, 100));
@@ -146,7 +142,7 @@ public abstract class AbstractOverlay extends Module {
 
         returnedParameters.add(parameters.getParameter(COLOUR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
-        switch ((String) parameters.getValue(COLOUR_MODE,null)) {
+        switch ((String) parameters.getValue(COLOUR_MODE, null)) {
             case ColourModes.CHILD_COUNT:
                 returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
                 ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR))
@@ -171,6 +167,15 @@ public abstract class AbstractOverlay extends Module {
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
                 break;
 
+            case ColourModes.OBJ_METADATA_ITEM:
+                returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_COLOUR));
+                if (inputObjectsName != null) {
+                    ObjectMetadataP colourMetadataItem = parameters.getParameter(METADATA_ITEM_FOR_COLOUR);
+                    colourMetadataItem.setObjectName(inputObjectsName);
+                }
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                break;
+
             case ColourModes.PARENT_ID:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
@@ -185,7 +190,7 @@ public abstract class AbstractOverlay extends Module {
 
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
-                colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR,null));
+                colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR, null));
 
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
 
@@ -199,16 +204,16 @@ public abstract class AbstractOverlay extends Module {
                 break;
         }
 
-        switch ((String) parameters.getValue(COLOUR_MODE,null)) {
+        switch ((String) parameters.getValue(COLOUR_MODE, null)) {
             case ColourModes.CHILD_COUNT:
             case ColourModes.MEASUREMENT_VALUE:
             case ColourModes.PARENT_MEASUREMENT_VALUE:
             case ColourModes.PARTNER_COUNT:
                 returnedParameters.add(parameters.getParameter(RANGE_MINIMUM_MODE));
-                if (((String) parameters.getValue(RANGE_MINIMUM_MODE,null)).equals(RangeModes.MANUAL))
+                if (((String) parameters.getValue(RANGE_MINIMUM_MODE, null)).equals(RangeModes.MANUAL))
                     returnedParameters.add(parameters.getParameter(MINIMUM_VALUE));
                 returnedParameters.add(parameters.getParameter(RANGE_MAXIMUM_MODE));
-                if (((String) parameters.getValue(RANGE_MAXIMUM_MODE,null)).equals(RangeModes.MANUAL))
+                if (((String) parameters.getValue(RANGE_MAXIMUM_MODE, null)).equals(RangeModes.MANUAL))
                     returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
                 break;
         }

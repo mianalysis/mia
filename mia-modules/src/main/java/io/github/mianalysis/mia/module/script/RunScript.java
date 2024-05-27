@@ -52,6 +52,7 @@ import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.ParentChildRef;
 import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -144,6 +145,7 @@ public class RunScript extends Module {
     public static final String METADATA_NAME = "Metadata name";
     public static final String ASSOCIATED_OBJECTS = "Associated objects";
     public static final String MEASUREMENT_NAME = "Measurement name";
+    public static final String OBJECT_METADATA_NAME = "Object metadata name";
     public static final String PARENT_NAME = "Parent name";
     public static final String CHILDREN_NAME = "Children name";
     public static final String PARTNERS_NAME_1 = "Partners name 1";
@@ -176,11 +178,12 @@ public class RunScript extends Module {
         String METADATA = "Metadata";
         String OBJECTS = "Objects";
         String OBJECT_MEASUREMENT = "Object measurement";
+        String OBJECT_METADATA_ITEM = "Object metadata item";
         String PARENT_CHILD = "Parent-child relationship";
         String PARTNERS = "Partner relationship";
 
-        String[] ALL = new String[] { IMAGE, IMAGE_MEASUREMENT, METADATA, OBJECTS, OBJECT_MEASUREMENT, PARENT_CHILD,
-                PARTNERS };
+        String[] ALL = new String[] { IMAGE, IMAGE_MEASUREMENT, METADATA, OBJECTS, OBJECT_MEASUREMENT,
+                OBJECT_METADATA_ITEM, PARENT_CHILD, PARTNERS };
 
     }
 
@@ -304,7 +307,8 @@ public class RunScript extends Module {
 
         // Running script
         try {
-            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters).get();
+            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters)
+                    .get();
         } catch (Exception e) {
             MIA.log.writeError(e);
         }
@@ -333,6 +337,10 @@ public class RunScript extends Module {
                         workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
                                 .showMeasurements(this, modules);
                         break;
+                    case OutputTypes.OBJECT_METADATA_ITEM:
+                        workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
+                                .showMetadata(this, modules);
+                        break;
                 }
             }
         }
@@ -360,6 +368,7 @@ public class RunScript extends Module {
         parameterCollection.add(new StringP(METADATA_NAME, this));
         parameterCollection.add(new InputObjectsInclusiveP(ASSOCIATED_OBJECTS, this));
         parameterCollection.add(new StringP(MEASUREMENT_NAME, this));
+        parameterCollection.add(new StringP(OBJECT_METADATA_NAME, this));
         parameterCollection.add(new InputObjectsInclusiveP(PARENT_NAME, this));
         parameterCollection.add(new InputObjectsInclusiveP(CHILDREN_NAME, this));
         parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_1, this));
@@ -439,8 +448,25 @@ public class RunScript extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        Workspace workspace = null;
+        ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+        for (Parameters collection : collections.values()) {
+            if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_METADATA_ITEM)) {
+                String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
+                String metadataName = collection.getValue(OBJECT_METADATA_NAME, workspace);
+                ObjMetadataRef ref = objectMetadataRefs.getOrPut(metadataName);
+                ref.setObjectsName(objectsName);
+                returnedRefs.add(ref);
+            }
+        }
+
+        return returnedRefs;
+
     }
 
     @Override
@@ -453,7 +479,7 @@ public class RunScript extends Module {
 
         for (Parameters collection : collections.values()) {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.METADATA)) {
-                String metadataName = collection.getValue(METADATA_NAME, workspace);
+                String metadataName = collection.getValue(OBJECT_METADATA_NAME, workspace);
                 MetadataRef ref = metadataRefs.getOrPut(metadataName);
                 returnedRefs.add(ref);
             }
@@ -602,6 +628,10 @@ public class RunScript extends Module {
                     case OutputTypes.OBJECT_MEASUREMENT:
                         returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
                         returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
+                        break;
+                    case OutputTypes.OBJECT_METADATA_ITEM:
+                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
+                        returnedParameters.add(params.getParameter(OBJECT_METADATA_NAME));
                         break;
                     case OutputTypes.PARENT_CHILD:
                         returnedParameters.add(params.getParameter(PARENT_NAME));
