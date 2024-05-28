@@ -104,7 +104,8 @@ public class ClearOverlay extends AbstractOverlay {
         if (!applyToInput)
         ipl = new Duplicator().run(ipl);
         
-        ipl.getOverlay().clear();
+        if (ipl.getOverlay() != null)
+            ipl.getOverlay().clear();
         
         Image outputImage = ImageFactory.createImage(outputImageName, ipl);
         
