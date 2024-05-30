@@ -215,7 +215,7 @@
                 <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
@@ -229,10 +229,10 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
-            <!-- To be uncommented when creating release -->
-            <plugin>
+            <!-- To be uncommented when creating release, but commented when uploading to Maven Central -->
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -256,9 +256,9 @@
                         </filter>
                     </filters>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.0.0</version>
@@ -284,7 +284,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 </project>
