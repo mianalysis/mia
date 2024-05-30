@@ -5,32 +5,33 @@ package io.github.mianalysis.mia.module.objects.relate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Set;
 
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.checkerframework.checker.units.qual.s;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleWeightedGraph;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import com.drew.lang.annotations.Nullable;
-
-import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
+import fiji.plugin.trackmate.Model;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.jaqaman.SparseLAPTrackerFactory;
-import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.kalman.KalmanTracker;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -51,7 +52,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.mianalysis.mia.process.math.Indexer;
 
 /**
  * Created by sc13967 on 20/09/2017.
@@ -71,7 +71,7 @@ import io.github.mianalysis.mia.process.math.Indexer;
  * Note: Leading point determination currently only works in 2D
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class TrackObjects extends Module {
+public class TrackObjects2 extends Module {
 
     /**
     * 
@@ -266,8 +266,9 @@ public class TrackObjects extends Module {
      */
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
 
-    public TrackObjects(Modules modules) {
-        super("Track objects", modules);
+    public TrackObjects2(Modules modules) {
+        super("Track objects 2", modules);
+        this.deprecated = true;
     }
 
     public interface LinkingMethods {
@@ -292,347 +293,6 @@ public class TrackObjects extends Module {
 
         String[] ALL = new String[] { NINETY, ONE_EIGHTY };
 
-    }
-
-    public ArrayList<Obj>[] getCandidateObjects(Objs inputObjects, int t1, int t2) {
-        // Creating a pair of ArrayLists to store the current and previous objects
-        ArrayList<Obj>[] objects = new ArrayList[2];
-        objects[0] = new ArrayList<>(); // Previous objects
-        objects[1] = new ArrayList<>(); // Current objects
-
-        // Include objects from the previous and current frames that haven't been linked
-        for (Obj inputObject : inputObjects.values()) {
-            Objs nextPartners = inputObject.getNextPartners(inputObject.getName());
-            Objs previousPartners = inputObject.getPreviousPartners(inputObject.getName());
-
-            if (inputObject.getT() == t1 && (nextPartners == null || nextPartners.size() == 0))
-                objects[0].add(inputObject);
-            else if (inputObject.getT() == t2 && (previousPartners == null || previousPartners.size() == 0))
-                objects[1].add(inputObject);
-
-        }
-
-        return objects;
-
-    }
-
-    public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects,
-            Workspace workspace,
-            @Nullable Objs inputObjects, @Nullable int[][] spatialLimits) {
-        String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
-        boolean useVolume = parameters.getValue(USE_VOLUME, workspace);
-        double frameGapWeighting = parameters.getValue(FRAME_GAP_WEIGHTING, workspace);
-        double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING, workspace);
-        double maxVolumeChange = parameters.getValue(MAXIMUM_VOLUME_CHANGE, workspace);
-        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE, workspace);
-        String orientationRangeMode = parameters.getValue(ORIENTATION_RANGE_MODE, workspace);
-        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION, workspace);
-        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE, workspace);
-        double directionWeighting = parameters.getValue(DIRECTION_WEIGHTING, workspace);
-        boolean favourEstablished = parameters.getValue(FAVOUR_ESTABLISHED_TRACKS, workspace);
-        double durationWeighting = parameters.getValue(TRACK_LENGTH_WEIGHTING, workspace);
-        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT, workspace);
-        String measurementName = parameters.getValue(MEASUREMENT, workspace);
-        double measurementWeighting = parameters.getValue(MEASUREMENT_WEIGHTING, workspace);
-        double maxMeasurementChange = parameters.getValue(MAXIMUM_MEASUREMENT_CHANGE, workspace);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP, workspace);
-        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE, workspace);
-
-        String linkingMethod = parameters.getValue(LINKING_METHOD, workspace);
-
-        // Creating the ArrayList containing linkables
-        ArrayList<Linkable> linkables = new ArrayList<>();
-
-        for (int curr = 0; curr < currObjects.size(); curr++) {
-            for (int prev = 0; prev < prevObjects.size(); prev++) {
-                Obj prevObj = prevObjects.get(prev);
-                Obj currObj = currObjects.get(curr);
-
-                // Calculating main spatial cost
-                double spatialCost = 0;
-                switch (linkingMethod) {
-                    case LinkingMethods.CENTROID:
-                        double separation = prevObj.getCentroidSeparation(currObj, true);
-                        spatialCost = separation > maxDist ? Double.MAX_VALUE : separation;
-                        break;
-                    case LinkingMethods.ABSOLUTE_OVERLAP:
-                        float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
-                        spatialCost = overlap == 0 ? Float.MAX_VALUE : 1 / overlap;
-                        break;
-                }
-
-                // Calculating additional costs
-                double frameGapCost = getFrameGapCost(prevObj, currObj);
-                double durationCost = favourEstablished ? getTrackDurationCost(prevObj, trackObjectsName) : 0;
-                double volumeCost = useVolume ? getVolumeCost(prevObj, currObj) : 0;
-                double measurementCost = useMeasurement ? getMeasurementCost(prevObj, currObj, measurementName) : 0;
-                double directionCost = 0;
-                switch (directionWeightingMode) {
-                    case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                        directionCost = getAbsoluteOrientationCost(prevObj, currObj, orientationRangeMode,
-                                preferredDirection);
-                        break;
-                    case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
-                        directionCost = getPreviousStepDirectionCost(prevObj, currObj, inputObjects);
-                        break;
-                }
-
-                // Testing spatial validity
-                boolean linkValid = true;
-                switch (linkingMethod) {
-                    case LinkingMethods.ABSOLUTE_OVERLAP:
-                        linkValid = testOverlapValidity(prevObj, currObj, minOverlap, spatialLimits);
-                        break;
-                    case LinkingMethods.CENTROID:
-                        linkValid = testSeparationValidity(prevObj, currObj, maxDist);
-                        break;
-                }
-
-                // Testing volume change
-                if (linkValid && useVolume)
-                    linkValid = testVolumeValidity(prevObj, currObj, maxVolumeChange);
-
-                // Testing measurement change
-                if (linkValid && useMeasurement)
-                    linkValid = testMeasurementValidity(prevObj, currObj, measurementName, maxMeasurementChange);
-
-                // Testing orientation
-                if (linkValid) {
-                    switch (directionWeightingMode) {
-                        case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                            linkValid = testDirectionTolerance(directionCost, directionTolerance);
-                            break;
-                        case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
-                            linkValid = testDirectionTolerance(directionCost, directionTolerance);
-                            break;
-                    }
-                }
-
-                // Assigning costs if the link is valid (set to Double.NaN otherwise)
-                if (linkValid) {
-                    double cost = spatialCost
-                            + frameGapCost * frameGapWeighting
-                            + durationCost * durationWeighting
-                            + volumeCost * volumeWeighting
-                            + directionCost * directionWeighting
-                            + measurementCost * measurementWeighting;
-
-                    // Linker occasionally fails on zero-costs, so adding 0.1 to all values
-                    cost = cost + 0.1;
-                    linkables.add(new Linkable(cost, currObj.getID(), prevObj.getID()));
-                }
-            }
-        }
-
-        return linkables;
-
-    }
-
-    public static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
-        // Getting coordinates for each object
-        TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
-        TreeSet<Point<Integer>> currPoints = currObj.getPoints();
-
-        // Indexer gives a single value for coordinates. Will use a HashSet to prevent
-        // index duplicates.
-        Indexer indexer = new Indexer(spatialLimits[0][1] + 1, spatialLimits[1][1] + 1, spatialLimits[2][1] + 1);
-
-        int prevSize = prevPoints.size();
-        int currSize = currPoints.size();
-
-        // Combining the coordinates into a single ArrayList. This will prevent
-        // duplicates
-        HashSet<Integer> indices = new HashSet<>();
-        for (Point<Integer> prevPoint : prevPoints) {
-            int[] point = new int[] { prevPoint.getX(), prevPoint.getY(), prevPoint.getZ() };
-            indices.add(indexer.getIndex(point));
-        }
-
-        for (Point<Integer> currPoint : currPoints) {
-            int[] point = new int[] { currPoint.getX(), currPoint.getY(), currPoint.getZ() };
-            indices.add(indexer.getIndex(point));
-        }
-
-        return prevSize + currSize - indices.size();
-
-    }
-
-    public static double getFrameGapCost(Obj prevObj, Obj currObj) {
-        // Calculating volume weighting
-        double prevT = prevObj.getT();
-        double currT = currObj.getT();
-
-        return Math.abs(prevT - currT);
-
-    }
-
-    public static double getTrackDurationCost(Obj prevObj, String trackObjectsName) {
-        // Scores between 0 (track present since start of time-series) and 1 (no track
-        // assigned)
-        Obj prevTrack = prevObj.getParent(trackObjectsName);
-        if (prevTrack == null)
-            return 1;
-
-        // Getting track length as a proportion of all previous frames
-        double dur = (double) prevTrack.getChildren(prevObj.getName()).size();
-        double maxDur = (double) prevObj.getT() + 1;
-
-        return 1 - (dur / maxDur);
-
-    }
-
-    public static double getVolumeCost(Obj prevObj, Obj currObj) {
-        // Calculating volume weighting
-        double prevVol = prevObj.size();
-        double currVol = currObj.size();
-
-        return Math.abs(prevVol - currVol);
-
-    }
-
-    public static double getMeasurementCost(Obj prevObj, Obj currObj, String measurementName) {
-        Measurement currMeasurement = currObj.getMeasurement(measurementName);
-        Measurement prevMeasurement = prevObj.getMeasurement(measurementName);
-
-        if (currMeasurement == null || prevMeasurement == null)
-            return Double.NaN;
-        double currMeasurementValue = currMeasurement.getValue();
-        double prevMeasurementValue = prevMeasurement.getValue();
-
-        return Math.abs(prevMeasurementValue - currMeasurementValue);
-
-    }
-
-    public static double getAbsoluteOrientationCost(Obj prevObj, Obj currObj, String orientationRangeMode,
-            double preferredDirection) {
-        // Getting centroid coordinates for three points
-        double prevXCent = prevObj.getXMean(true);
-        double prevYCent = prevObj.getYMean(true);
-        double currXCent = currObj.getXMean(true);
-        double currYCent = currObj.getYMean(true);
-        double preferredX = Math.cos(Math.toRadians(preferredDirection));
-        double preferredY = Math.sin(Math.toRadians(preferredDirection));
-
-        Vector2D v1f = new Vector2D(preferredX, preferredY);
-        Vector2D v1b = new Vector2D(-preferredX, -preferredY);
-
-        // Having these in this order gives us positive preferred directions above the
-        // x-axis
-        Vector2D v2 = new Vector2D(currXCent - prevXCent, prevYCent - currYCent);
-
-        // MathArithmeticException thrown if two points are coincident. In these cases,
-        // give a cost of 0.
-        try {
-            switch (orientationRangeMode) {
-                case OrientationRangeModes.NINETY:
-                    return Math.min(Math.abs(Vector2D.angle(v1f, v2)), Math.abs(Vector2D.angle(v1b, v2)));
-                case OrientationRangeModes.ONE_EIGHTY:
-                default:
-                    return Math.abs(Vector2D.angle(v1f, v2));
-            }
-
-        } catch (MathArithmeticException e) {
-            return 0;
-        }
-    }
-
-    public static double getPreviousStepDirectionCost(Obj prevObj, Obj currObj, Objs inputObjects) {
-        // Get direction of previous object
-        Objs prevPrevObjs = prevObj.getPreviousPartners(prevObj.getName());
-
-        // If the previous object doesn't have a previous object (i.e. it was the
-        // first), return a score of 0
-        if (prevPrevObjs == null || prevPrevObjs.size() == 0)
-            return 0;
-
-        // If this object was the result of a track merge, return NaN
-        else if (prevPrevObjs.size() > 1)
-            return Double.NaN;
-
-        // Getting the previous-previous object
-        int prevPrevObjID = prevPrevObjs.getFirst().getID();
-        Obj prevPrevObj = inputObjects.get(prevPrevObjID);
-
-        // Getting centroid coordinates for three points
-        double prevXCent = prevObj.getXMean(true);
-        double prevYCent = prevObj.getYMean(true);
-        double currXCent = currObj.getXMean(true);
-        double currYCent = currObj.getYMean(true);
-        double prevPrevXCent = prevPrevObj.getXMean(true);
-        double prevPrevYCent = prevPrevObj.getYMean(true);
-
-        Vector2D v1 = new Vector2D(prevXCent - prevPrevXCent, prevYCent - prevPrevYCent);
-        Vector2D v2 = new Vector2D(currXCent - prevXCent, currYCent - prevYCent);
-
-        // MathArithmeticException thrown if two points are coincident. In these cases,
-        // give a cost of 0.
-        try {
-            return Math.abs(Vector2D.angle(v1, v2));
-        } catch (MathArithmeticException e) {
-            return 0;
-        }
-    }
-
-    public static boolean testDirectionTolerance(double directionCost, double directionTolerance) {
-        return Math.abs(Math.toDegrees(directionCost)) <= directionTolerance;
-    }
-
-    public static boolean testSeparationValidity(Obj prevObj, Obj currObj, double maxDist) {
-        double dist = prevObj.getCentroidSeparation(currObj, true);
-        return dist <= maxDist;
-    }
-
-    public static boolean testOverlapValidity(Obj prevObj, Obj currObj, double minOverlap, int[][] spatialLimits) {
-        double overlap = getAbsoluteOverlap(prevObj, currObj, spatialLimits);
-        return overlap != 0 && overlap >= minOverlap;
-
-    }
-
-    public static boolean testVolumeValidity(Obj prevObj, Obj currObj, double maxVolumeChange) {
-        double volumeChange = getVolumeCost(prevObj, currObj);
-        return volumeChange <= maxVolumeChange;
-    }
-
-    public static boolean testMeasurementValidity(Obj prevObj, Obj currObj, String measurementName,
-            double maxMeasurementChange) {
-        double measurementChange = getMeasurementCost(prevObj, currObj, measurementName);
-        return measurementChange <= maxMeasurementChange;
-    }
-
-    public static void linkObjects(Obj prevObj, Obj currObj, String trackObjectsName) {
-        // Getting the track object from the previous-frame object
-        Obj track = prevObj.getParent(trackObjectsName);
-
-        // Setting relationship between the current object and track
-        track.addChild(currObj);
-        currObj.addParent(track);
-
-        // Adding partner relationships between adjacent points in the track
-        prevObj.addPartner(currObj);
-        currObj.addPartner(prevObj);
-
-    }
-
-    public static void createNewTrack(Obj currObj, Objs trackObjects, @Nullable Objs trackSegmentObjects) {
-        // Creating a new track object
-        Obj track = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
-
-        // If trackSegmentObjects is null there's no splitting/merging, so objects are
-        // directly linked to tracks.
-        if (trackSegmentObjects == null) {
-            track.addChild(currObj);
-            currObj.addParent(track);
-
-        } else {
-            Obj trackSegment = trackSegmentObjects.createAndAddNewObject(VolumeType.POINTLIST);
-
-            trackSegment.addChild(currObj);
-            currObj.addParent(trackSegment);
-
-            track.addChild(trackSegment);
-            trackSegment.addParent(track);
-
-        }
     }
 
     public static void showObjects(Objs spotObjects, String trackObjectsName) {
@@ -671,6 +331,52 @@ public class TrackObjects extends Module {
                 + "Note: Leading point determination currently only works in 2D";
     }
 
+    public static Spot convertObjToSpot(Obj obj) {
+        double x = obj.getXMean(true);
+        double y = obj.getYMean(true);
+        double z = obj.getZMean(true, false);
+
+        Spot spot = new Spot(x, y, z, 1, 1);
+        spot.putFeature("MIA_ID", (double) obj.getID());
+
+        return spot;
+
+    }
+
+    public static void addSpotRoi(Spot spot, Obj obj) {
+        Roi roi = obj.getProjected().getRoi(0);
+        float[] fx = roi.getFloatPolygon().xpoints;
+        float[] fy = roi.getFloatPolygon().ypoints;
+
+        double[] x = new double[fx.length];
+        double[] y = new double[fy.length];
+
+        for (int i = 0; i < fx.length; i++) {
+            x[i] = fx[i];
+            y[i] = fy[i];
+        }
+
+        spot.setRoi(new SpotRoi(x, y));
+
+    }
+
+    public static SpotCollection createSpotCollection(Objs inputObjects, boolean asROIs) {
+        SpotCollection spotCollection = new SpotCollection();
+
+        for (Obj inputObject : inputObjects.values()) {
+            Spot spot = convertObjToSpot(inputObject);
+
+            if (asROIs)
+                addSpotRoi(spot, inputObject);
+
+            spotCollection.add(spot, inputObject.getT());
+
+        }
+
+        return spotCollection;
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
@@ -678,7 +384,6 @@ public class TrackObjects extends Module {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
         boolean allowSplitMerge = parameters.getValue(ALLOW_SPLITTING_AND_MERGING, workspace);
         String trackSegmentObjectsName = parameters.getValue(TRACK_SEGMENT_OBJECTS, workspace);
-        int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES, workspace);
 
         // Getting objects
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -705,72 +410,86 @@ public class TrackObjects extends Module {
             inputObj.removePartner(inputObjectsName);
         }
 
-        // Finding the spatial and frame frame limits of all objects in the inputObjects
-        // set
-        int[][] spatialLimits = inputObjects.getSpatialLimits();
-        int[] frameLimits = inputObjects.getTemporalLimits();
+        SpotCollection spotCollection = createSpotCollection(inputObjects, true);
 
-        // Creating new track objects for all objects in the first frame
-        for (Obj inputObj : inputObjects.values()) {
-            if (inputObj.getT() == frameLimits[0]) {
-                createNewTrack(inputObj, trackObjects, trackSegmentObjects);
-            }
+        SparseLAPTrackerFactory factory = new SparseLAPTrackerFactory();
+        Map<String, Object> trackerSettings = factory.getDefaultSettings();
+        // trackerSettings.entrySet().forEach(MIA.log::writeDebug);
+        trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
+        trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
+
+        // AdvancedKalmanTrackerFactory factory = new AdvancedKalmanTrackerFactory();
+        // OverlapTrackerFactory factory = new OverlapTrackerFactory();
+        SpotTracker spotTracker = factory.create(spotCollection, trackerSettings);
+
+        Model model = new Model();
+        model.setSpots(spotCollection, false);
+
+        if (!spotTracker.process()) {
+            MIA.log.writeError(spotTracker.getErrorMessage());
+            return Status.FAIL;
         }
 
-        for (int t2 = frameLimits[0] + 1; t2 <= frameLimits[1]; t2++) {
-            writeProgressStatus(t2 + 1, frameLimits[1] + 1, "frames");
+        model.setTracks(spotTracker.getResult(), false);
+        SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = spotTracker.getResult();
 
-            // Testing the previous permitted frames for links
-            for (int t1 = t2 - 1; t1 >= t2 - 1 - maxMissingFrames; t1--) {
-                ArrayList<Obj>[] nPObjects = getCandidateObjects(inputObjects, t1, t2);
+        for (DefaultWeightedEdge edge : result.edgeSet()) {
+            Spot sourceSpot = result.getEdgeSource(edge);
+            Spot targetSpot = result.getEdgeTarget(edge);
 
-                // If no previous or current objects were found no linking takes place
-                if (nPObjects[0].size() == 0 || nPObjects[1].size() == 0) {
-                    if (t1 == t2 - 1 - maxMissingFrames || t1 == 0) {
-                        // Creating new tracks for current objects that have no chance of being linked
-                        // in other frames
-                        for (int curr = 0; curr < nPObjects[1].size(); curr++)
-                            createNewTrack(nPObjects[1].get(curr), trackObjects, trackSegmentObjects);
+            Obj sourceObj = inputObjects.get(sourceSpot.getFeature("MIA_ID").intValue());
+            Obj targetObj = inputObjects.get(targetSpot.getFeature("MIA_ID").intValue());
 
-                        break;
-                    }
-                    continue;
-                }
+            sourceObj.addPartner(targetObj);
+            targetObj.addPartner(sourceObj);
 
-                // Calculating distances between objects and populating the cost matrix
-                ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0], nPObjects[1], workspace, inputObjects,
-                        spatialLimits);
-
-                // Check if there are potential links, if not, skip to the next frame
-                if (linkables.size() > 0) {
-                    DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
-                    JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
-                    if (!linker.checkInput()) {
-                        MIA.log.writeError(linker.getErrorMessage());
-                        return Status.FAIL;
-                    }
-                    if (!linker.process()) {
-                        MIA.log.writeError(linker.getErrorMessage());
-                        return Status.FAIL;
-                    }
-                    Map<Integer, Integer> assignment = linker.getResult();
-
-                    // Applying the calculated assignments as relationships
-                    for (int ID1 : assignment.keySet()) {
-                        int ID2 = assignment.get(ID1);
-                        Obj currObj = inputObjects.get(ID1);
-                        Obj prevObj = inputObjects.get(ID2);
-                        linkObjects(prevObj, currObj, trackObjectsName);
-                    }
-                }
-
-                // Assigning any objects in the current frame without a track as new tracks
-                for (Obj currObj : nPObjects[1]) {
-                    if (currObj.getParent(trackObjectsName) == null)
-                        createNewTrack(currObj, trackObjects, trackSegmentObjects);
-                }
-            }
         }
+
+        TrackModel trackModel = model.getTrackModel();
+        Set<Integer> trackIDs = trackModel.trackIDs(false);
+
+        for (Integer trackID : trackIDs) {
+            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID);
+            // ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
+
+            Set<DefaultWeightedEdge> trackEdges = trackModel.trackEdges(trackID);
+
+            for (DefaultWeightedEdge trackEdge : trackEdges) {
+                Spot sourceSpot = result.getEdgeSource(trackEdge);
+                Spot targetSpot = result.getEdgeTarget(trackEdge);
+
+                Obj sourceObj = inputObjects.get(sourceSpot.getFeature("MIA_ID").intValue());
+                Obj targetObj = inputObjects.get(targetSpot.getFeature("MIA_ID").intValue());
+
+                sourceObj.addPartner(targetObj);
+                targetObj.addPartner(sourceObj);
+
+                sourceObj.addParent(trackObject);
+                trackObject.addChild(sourceObj);
+
+                targetObj.addParent(trackObject);
+                trackObject.addChild(targetObj);
+
+            }
+            // // Sorting spots based on frame number
+            // spots.sort((o1, o2) -> {
+            // double t1 = o1.getFeature(Spot.FRAME);
+            // double t2 = o2.getFeature(Spot.FRAME);
+            // return t1 > t2 ? 1 : t1 == t2 ? 0 : -1;
+            // });
+
+            // for (Spot spot : spots) {
+            //     Obj inputObject = inputObjects.get(spot.getFeature("MIA_ID").intValue());
+
+            //     // Adding the connection between instance and summary objects
+            //     inputObject.addParent(trackObject);
+            //     trackObject.addChild(inputObject);
+
+            // }
+        }
+
+        // Inserting track segments between tracks and input objects
+        
 
         // If selected, showing an overlay of the tracked objects
         if (showOutput)

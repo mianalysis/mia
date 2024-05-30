@@ -15,6 +15,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.gui.Line;
+import ij.gui.Overlay;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
@@ -157,60 +158,56 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
 
     }
 
-    public void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour,
+    public void addOverlay(Obj trackObject, String spotObjectsName, ImagePlus ipl, Color colour,
             double lineWidth, int history, @Nullable HashMap<Integer, Color> instantaneousColours) {
-        Objs pointObjects = object.getChildren(spotObjectsName);
+        Objs pointObjects = trackObject.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
         ij.gui.Overlay ovl = ipl.getOverlay();
 
-        // Putting the current track points into a TreeMap stored by the frame
-        TreeMap<Integer, Obj> points = new TreeMap<>();
-        for (Obj pointObject : pointObjects.values())
-            points.put(pointObject.getT(), pointObject);
-        
-        // Iterating over all points in the track, drawing lines between them
         int nFrames = ipl.getNFrames();
-        Obj p1 = null;
-        for (Obj p2 : points.values()) {
-            if (p1 != null) {
-                double[] position1 = getObjectPosition(p1, parameters, true, false);
-                double[] position2 = getObjectPosition(p2, parameters, true, false);
+        for (int t=0;t<nFrames;t++) {
+            for (Obj pointObject:pointObjects.values()) {
+                if (pointObject.getT() > t || pointObject.getT() < t-history)
+                    continue;
 
-                double x1 = position1[0] + 0.5;
-                double y1 = position1[1] + 0.5;
-                double x2 = position2[0] + 0.5;
-                double y2 = position2[1] + 0.5;
+                // Showing previous object connections
+                Objs previousPartners = pointObject.getPreviousPartners(spotObjectsName);
 
-                // MIA.log.writeDebug(x1+"_"+y1+"_"+x2+"_"+y2);
+                for (Obj previousPartner:previousPartners.values()) {
+                    if (previousPartner.getT() < t-history)
+                        continue;
 
-                int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames, p2.getT() + history);
-                for (int t = p2.getT(); t <= maxFrame - 1; t++) {
-                    Line line = new Line(x1, y1, x2, y2);
+                        double[] position1 = getObjectPosition(pointObject, parameters, true, false);
+                        double[] position2 = getObjectPosition(previousPartner, parameters, true, false);
+                
+                        double x1 = position1[0] + 0.5;
+                        double y1 = position1[1] + 0.5;
+                        double x2 = position2[0] + 0.5;
+                        double y2 = position2[1] + 0.5;
+                
+                        Line line = new Line(x1, y1, x2, y2);
+                
+                        if (ipl.isHyperStack()) {
+                            ipl.setPosition(1, 1, t + 1);
+                            line.setPosition(1, 1, t + 1);
+                        } else {
+                            int pos = Math.max(1, t + 1);
+                            ipl.setPosition(pos);
+                            line.setPosition(pos);
+                        }
+                
+                        line.setStrokeWidth(lineWidth);
+                        if (instantaneousColours != null)
+                            // Special case of instantaneous colour
+                            colour = instantaneousColours.get(previousPartner.getID());
+                
+                        line.setStrokeColor(colour);
+                        ovl.addElement(line);
 
-                    if (ipl.isHyperStack()) {
-                        ipl.setPosition(1, 1, t + 1);
-                        line.setPosition(1, 1, t + 1);
-                    } else {
-                        int pos = Math.max(1, t + 1);
-                        ipl.setPosition(pos);
-                        line.setPosition(pos);
-                    }
-
-                    line.setStrokeWidth(lineWidth);
-                    if (instantaneousColours != null)
-                        // Special case of instantaneous colour
-                        colour = instantaneousColours.get(p2.getID());
-
-                    line.setStrokeColor(colour);
-                    ovl.addElement(line);
-
-                }
+                }               
             }
-
-            p1 = p2;
-
         }
     }
 

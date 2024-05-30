@@ -525,15 +525,17 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
         if ((orientationMode.equals(OrientationModes.RELATIVE_TO_PREV)
                 || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
-                && object.getMeasurement(TrackObjects.Measurements.TRACK_PREV_ID) != null) {
-            Obj prevObj = objects.get((int) object.getMeasurement(TrackObjects.Measurements.TRACK_PREV_ID).getValue());
+                && object.getPreviousPartners(object.getName()) != null
+                && object.getPreviousPartners(object.getName()).size() == 1) {
+            Obj prevObj = object.getPreviousPartners(object.getName()).getFirst();
             prevAngle = prevObj.calculateAngle2D(object);
         }
 
         if ((orientationMode.equals(OrientationModes.RELATIVE_TO_NEXT)
                 || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
-                && object.getMeasurement(TrackObjects.Measurements.TRACK_NEXT_ID) != null) {
-            Obj nextObj = objects.get((int) object.getMeasurement(TrackObjects.Measurements.TRACK_NEXT_ID).getValue());
+                && object.getNextPartners(object.getName()) != null
+                && object.getNextPartners(object.getName()).size() == 1) {
+            Obj nextObj = object.getNextPartners(object.getName()).getFirst();
             nextAngle = object.calculateAngle2D(nextObj);
         }
 
