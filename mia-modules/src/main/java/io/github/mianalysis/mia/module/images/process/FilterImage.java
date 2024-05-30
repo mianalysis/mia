@@ -450,9 +450,11 @@ public class FilterImage extends Module {
                     break;
                 case RollingMethods.MEDIAN:
                     zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                    if (inputImagePlus.getBitDepth() == 16) // ZProjector will convert 16-bit to 32-bit
+                        ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
                     break;
                 case RollingMethods.MINIMUM:
-                    zProjector.setMethod(ZProjector.MIN_METHOD);
+                    zProjector.setMethod(ZProjector.MIN_METHOD); 
                     break;
                 case RollingMethods.MAXIMUM:
                     zProjector.setMethod(ZProjector.MAX_METHOD);
@@ -488,6 +490,9 @@ public class FilterImage extends Module {
 
                 }
             }
+
+            writeProgressStatus(f,inputImagePlus.getNFrames(),"frames","Filter image");
+
         }
 
         inputImagePlus.setPosition(1, 1, 1);
