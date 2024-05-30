@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -11,11 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.parametercontrols.TextAreaParameter;
-import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
-import io.github.mianalysis.mia.gui.parametercontrols.TextSwitchableParameterControl;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -24,7 +22,6 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextSwitchableParameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -165,6 +162,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
         Module module = parameter.getModule();
 
         LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module);
+        
         for (OutputObjectsP availableObject : availableObjects) {
             JMenuItem objectItem = new JMenuItem(availableObject.getObjectsName());
             objectItem.addActionListener(
@@ -245,10 +243,12 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
     private static JMenu createGlobalVariablesMenu(Parameter parameter) {
         JMenu globalVariablesMenu = new JMenu(INSERT_GLOBAL_VARIABLE);
 
-        for (StringP globalVariableName : GlobalVariables.getGlobalVariables().keySet()) {
-            JMenuItem globalVariableItem = new JMenuItem(globalVariableName.getRawStringValue());
+        TreeSet<String> sortedNames = GlobalVariables.getGlobalVariables().keySet().stream()
+                .map((v) -> v.getRawStringValue()).collect(Collectors.toCollection(TreeSet::new));
+        for (String globalVariableName : sortedNames) {
+            JMenuItem globalVariableItem = new JMenuItem(globalVariableName);
             globalVariableItem
-                    .addActionListener(new DynamicVariableActionListener(parameter, "V{" + globalVariableName.getRawStringValue() + "}"));
+                    .addActionListener(new DynamicVariableActionListener(parameter, "V{" + globalVariableName + "}"));
             globalVariablesMenu.add(globalVariableItem);
         }
 
@@ -304,7 +304,7 @@ class DynamicVariableActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String inputString = parameter.getRawStringValue();
         int position = inputString.length();
-        
+
         if (parameter.getControl() instanceof CaretReporter)
             position = ((CaretReporter) parameter.getControl()).getCaretPosition();
 

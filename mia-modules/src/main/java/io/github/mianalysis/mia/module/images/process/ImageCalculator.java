@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -36,60 +37,79 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.
-*/
+ * Apply pixel-wise intensity calculations for two images of matching
+ * dimensions.<br>
+ * <br>
+ * Note: Images to be processed must have matching spatial dimensions and
+ * intensity bit-depths.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageCalculator extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* First image to be processed as part of calculation.
-	*/
+    /**
+     * First image to be processed as part of calculation.
+     */
     public static final String INPUT_IMAGE1 = "Input image 1";
 
-	/**
-	* Second image to be processed as part of calculation.
-	*/
+    /**
+     * Second image to be processed as part of calculation.
+     */
     public static final String INPUT_IMAGE2 = "Input image 2";
 
-	/**
-	* Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul>
-	*/
+    /**
+     * Controls how the resultant image should be output:<br>
+     * <ul>
+     * <li>"Create new image" (default) will create a new image and save it to the
+     * workspace.</li>
+     * <li>"Overwrite image 1" will overwrite the first input image with the output
+     * image. The output image will retain all measurements from the first input
+     * image.</li>
+     * <li>"Overwrite image 2" will overwrite the second input image with the output
+     * image. The output image will retain all measurements from the second input
+     * image.</li>
+     * </ul>
+     */
     public static final String OVERWRITE_MODE = "Overwrite mode";
 
-	/**
-	* Name of the output image created during the image calculation.  This image will be added to the workspace.
-	*/
+    /**
+     * Name of the output image created during the image calculation. This image
+     * will be added to the workspace.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.
-	*/
+    /**
+     * When enabled, the calculation will be performed on 32-bit float values. This
+     * is useful if the calculation is likely to create negative or decimal values.
+     * The output image will also be stored in the workspace as a 32-bit float
+     * image.
+     */
     public static final String OUTPUT_32BIT = "Output 32-bit image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CALCULATION_SEPARATOR = "Image calculation";
 
-	/**
-	* The calculation to apply to the two input images.
-	*/
+    /**
+     * The calculation to apply to the two input images.
+     */
     public static final String CALCULATION_METHOD = "Calculation method";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String IMAGE_2_CONTRIBUTION = "Image 2 relative contribution";
 
-	/**
-	* If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.
-	*/
+    /**
+     * If input images are 32-bit (or are being converted to 32-bit via "Output
+     * 32-bit image" option) the output image can contain NaN (not a number) values
+     * in place of any zeros.
+     */
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
     public ImageCalculator(Modules modules) {
@@ -110,14 +130,21 @@ public class ImageCalculator extends Module {
         String AND = "Image 1 AND image 2 (binary)";
         String DIFFERENCE = "Difference of image 1 and image 2";
         String DIVIDE = "Divide image 1 by image 2";
+        String EQUAL_TO = "Image 1 == image 2";
+        String GREATER_THAN = "Image 1 > image 2";
+        String GREATER_THAN_OR_EQUAL_TO = "Image 1 >= image 2";
+        String LESS_THAN = "Image 1 < image 2";
+        String LESS_THAN_OR_EQUAL_TO = "Image 1 <= image 2";
         String MAX = "Maximum of image 1 and image 2";
         String MEAN = "Mean of image 1 and image 2";
         String MIN = "Minimum of image 1 and image 2";
         String NOT = "Image 1 NOT image 2 (binary)";
+        String NOT_EQUAL_TO = "Image 1 != image 2";
         String MULTIPLY = "Multiply image 1 and image 2";
         String SUBTRACT = "Subtract image 2 from image 1";
 
-        String[] ALL = new String[] { ADD, AND, DIFFERENCE, DIVIDE, MAX, MEAN, MIN, MULTIPLY, NOT, SUBTRACT };
+        String[] ALL = new String[] { ADD, AND, DIFFERENCE, DIVIDE, EQUAL_TO, GREATER_THAN, GREATER_THAN_OR_EQUAL_TO,
+                LESS_THAN, LESS_THAN_OR_EQUAL_TO, MAX, MEAN, MIN, MULTIPLY, NOT, NOT_EQUAL_TO, SUBTRACT };
 
     }
 
@@ -267,6 +294,36 @@ public class ImageCalculator extends Module {
                                     }
                                     break;
 
+                                case CalculationMethods.EQUAL_TO:
+                                    val = imageProcessor1.getPixelValue(x, y) == imageProcessor2.getPixelValue(x, y)
+                                            ? 255
+                                            : 0;
+                                    break;
+
+                                case CalculationMethods.GREATER_THAN:
+                                    val = imageProcessor1.getPixelValue(x, y) > imageProcessor2.getPixelValue(x, y)
+                                            ? 255
+                                            : 0;
+                                    break;
+
+                                case CalculationMethods.GREATER_THAN_OR_EQUAL_TO:
+                                    val = imageProcessor1.getPixelValue(x, y) >= imageProcessor2.getPixelValue(x, y)
+                                            ? 255
+                                            : 0;
+                                    break;
+
+                                case CalculationMethods.LESS_THAN:
+                                    val = imageProcessor1.getPixelValue(x, y) < imageProcessor2.getPixelValue(x, y)
+                                            ? 255
+                                            : 0;
+                                    break;
+
+                                case CalculationMethods.LESS_THAN_OR_EQUAL_TO:
+                                    val = imageProcessor1.getPixelValue(x, y) <= imageProcessor2.getPixelValue(x, y)
+                                            ? 255
+                                            : 0;
+                                    break;
+
                                 case CalculationMethods.MAX:
                                     val = Math.max(imageProcessor1.getPixelValue(x, y),
                                             imageProcessor2.getPixelValue(x, y));
@@ -290,6 +347,12 @@ public class ImageCalculator extends Module {
                                 case CalculationMethods.NOT:
                                     val = imageProcessor2.getPixelValue(x, y) != maxVal
                                             ? imageProcessor1.getPixelValue(x, y)
+                                            : 0;
+                                    break;
+
+                                case CalculationMethods.NOT_EQUAL_TO:
+                                    val = imageProcessor1.getPixelValue(x, y) != imageProcessor2.getPixelValue(x, y)
+                                            ? 255
                                             : 0;
                                     break;
 
@@ -368,8 +431,34 @@ public class ImageCalculator extends Module {
         double im2Contibution = parameters.getValue(IMAGE_2_CONTRIBUTION, workspace);
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO, workspace);
 
+        switch (calculationMethod) {
+            case CalculationMethods.AND:
+            case CalculationMethods.EQUAL_TO:
+            case CalculationMethods.GREATER_THAN:
+            case CalculationMethods.GREATER_THAN_OR_EQUAL_TO:
+            case CalculationMethods.LESS_THAN:
+            case CalculationMethods.LESS_THAN_OR_EQUAL_TO:
+            case CalculationMethods.NOT:
+            case CalculationMethods.NOT_EQUAL_TO:
+                output32Bit = false;
+                break;
+        }
         ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
                 output32Bit, setNaNToZero, im2Contibution);
+
+        switch (calculationMethod) {
+            case CalculationMethods.AND:
+            case CalculationMethods.EQUAL_TO:
+            case CalculationMethods.GREATER_THAN:
+            case CalculationMethods.GREATER_THAN_OR_EQUAL_TO:
+            case CalculationMethods.LESS_THAN:
+            case CalculationMethods.LESS_THAN_OR_EQUAL_TO:
+            case CalculationMethods.NOT:
+            case CalculationMethods.NOT_EQUAL_TO:
+                SetDisplayRange.setDisplayRangeManual(newIpl,new double[]{0,255});
+                ImageTypeConverter.process(newIpl, 8, ImageTypeConverter.ScalingModes.CLIP);
+                break;
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
@@ -438,16 +527,24 @@ public class ImageCalculator extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
 
-        if (parameters.getValue(OVERWRITE_MODE, workspace).equals(OverwriteModes.CREATE_NEW)) {
+        if (parameters.getValue(OVERWRITE_MODE, workspace).equals(OverwriteModes.CREATE_NEW))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
-
-        returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
         if (((String) parameters.getValue(CALCULATION_METHOD, workspace)).equals(CalculationMethods.MEAN))
             returnedParameters.add(parameters.getParameter(IMAGE_2_CONTRIBUTION));
+        switch ((String) parameters.getValue(CALCULATION_METHOD, workspace)) {
+            case CalculationMethods.ADD:
+            case CalculationMethods.DIFFERENCE:
+            case CalculationMethods.DIVIDE:
+            case CalculationMethods.MAX:
+            case CalculationMethods.MEAN:
+            case CalculationMethods.MIN:
+            case CalculationMethods.MULTIPLY:
+            case CalculationMethods.SUBTRACT:
+                returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
+        }
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
 
         return returnedParameters;
@@ -465,8 +562,8 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

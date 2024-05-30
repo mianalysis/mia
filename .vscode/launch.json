@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CommaSeparatedStringInterpreter",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter",
+            "projectName": "mia-algorithms"
+        },
+        {
+            "type": "java",
             "name": "MIA_",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA_",
