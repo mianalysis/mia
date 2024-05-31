@@ -188,7 +188,7 @@
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate</artifactId>
-            <version>7.10.0</version>
+            <version>7.12.2</version>
             <scope>${scp}</scope>
         </dependency>
 

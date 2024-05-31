@@ -17,9 +17,7 @@ import org.scijava.plugin.Plugin;
 import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
-import fiji.plugin.trackmate.tracking.jaqaman.SparseLAPTrackerFactory;
 import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.kalman.KalmanTracker;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -740,7 +738,7 @@ public class TrackObjects extends Module {
                 // Calculating distances between objects and populating the cost matrix
                 ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0], nPObjects[1], workspace, inputObjects,
                         spatialLimits);
-
+                        
                 // Check if there are potential links, if not, skip to the next frame
                 if (linkables.size() > 0) {
                     DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);

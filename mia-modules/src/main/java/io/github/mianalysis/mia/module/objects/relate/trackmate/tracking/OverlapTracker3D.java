@@ -1,0 +1,324 @@
+/*-
+ * #%L
+ * TrackMate: your buddy for everyday tracking.
+ * %%
+ * Copyright (C) 2010 - 2024 TrackMate developers.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+package io.github.mianalysis.mia.module.objects.relate.trackmate.tracking;
+
+import static io.github.mianalysis.mia.module.objects.relate.trackmate.tracking.OverlapTracker3DFactory.BASE_ERROR_MESSAGE;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleWeightedGraph;
+import org.scijava.Cancelable;
+
+import fiji.plugin.trackmate.Logger;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
+import fiji.plugin.trackmate.SpotRoi;
+import fiji.plugin.trackmate.tracking.SpotTracker;
+import fiji.plugin.trackmate.util.Threads;
+import math.geom2d.AffineTransform2D;
+import math.geom2d.Point2D;
+import math.geom2d.conic.Circle2D;
+import math.geom2d.polygon.Polygon2D;
+import math.geom2d.polygon.Polygons2D;
+import math.geom2d.polygon.SimplePolygon2D;
+import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
+
+public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements SpotTracker, Cancelable {
+
+	private SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph;
+
+	private Logger logger = Logger.VOID_LOGGER;
+
+	private final SpotCollection spots;
+
+	private final double enlargeFactor;
+
+	private final double minIoU;
+
+	private boolean isCanceled;
+
+	private String cancelReason;
+
+	/*
+	 * CONSTRUCTOR
+	 */
+
+	public OverlapTracker3D(final SpotCollection spots, final double minIoU,
+			final double enlargeFactor) {
+		this.spots = spots;
+		this.minIoU = minIoU;
+		this.enlargeFactor = enlargeFactor;
+	}
+
+	/*
+	 * METHODS
+	 */
+
+	@Override
+	public SimpleWeightedGraph<Spot, DefaultWeightedEdge> getResult() {
+		return graph;
+	}
+
+	@Override
+	public boolean checkInput() {
+		return true;
+	}
+
+	@Override
+	public boolean process() {
+		isCanceled = false;
+		cancelReason = null;
+
+		/*
+		 * Check input now.
+		 */
+
+		// Check that the objects list itself isn't null
+		if (null == spots) {
+			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is null.";
+			return false;
+		}
+
+		// Check that the objects list contains inner collections.
+		if (spots.keySet().isEmpty()) {
+			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			return false;
+		}
+
+		if (enlargeFactor <= 0) {
+			errorMessage = BASE_ERROR_MESSAGE + "The enlargement factor must be strictly positive, was "
+					+ enlargeFactor;
+			return false;
+		}
+
+		// Check that at least one inner collection contains an object.
+		boolean empty = true;
+		for (final int frame : spots.keySet()) {
+			if (spots.getNSpots(frame, true) > 0) {
+				empty = false;
+				break;
+			}
+		}
+		if (empty) {
+			errorMessage = BASE_ERROR_MESSAGE + "The spot collection is empty.";
+			return false;
+		}
+
+		/*
+		 * Process.
+		 */
+
+		final long start = System.currentTimeMillis();
+
+		// Instantiate graph
+		graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
+
+		// Flag if we are doing ok.
+		final AtomicBoolean ok = new AtomicBoolean(true);
+
+		// Prepare frame pairs in order, not necessarily separated by 1.
+		final Iterator<Integer> frameIterator = spots.keySet().iterator();
+
+		// First frame.
+		final int sourceFrame = frameIterator.next();
+		Map<Spot, Polygon2D> sourceGeometries = createGeometry(spots.iterable(sourceFrame, true), enlargeFactor);
+
+		logger.setStatus("Frame to frame linking...");
+		int progress = 0;
+		while (frameIterator.hasNext()) {
+			if (!ok.get() || isCanceled())
+				break;
+
+			final int targetFrame = frameIterator.next();
+			final Map<Spot, Polygon2D> targetGeometries = createGeometry(spots.iterable(targetFrame, true),
+					enlargeFactor);
+
+			if (sourceGeometries.isEmpty() || targetGeometries.isEmpty())
+				continue;
+
+			final ExecutorService executors = Threads.newFixedThreadPool(numThreads);
+			final List<Future<IoULink>> futures = new ArrayList<>();
+
+			// Submit work.
+			for (final Spot target : targetGeometries.keySet()) {
+				final Polygon2D targetPoly = targetGeometries.get(target);
+				futures.add(executors.submit(new FindBestSourceTask(target, targetPoly, sourceGeometries, minIoU)));
+			}
+
+			// Get results.
+			for (final Future<IoULink> future : futures) {
+				if (!ok.get() || isCanceled())
+					break;
+
+				try {
+					final IoULink link = future.get();
+					if (link.source == null)
+						continue;
+
+					graph.addVertex(link.source);
+					graph.addVertex(link.target);
+					final DefaultWeightedEdge edge = graph.addEdge(link.source, link.target);
+					graph.setEdgeWeight(edge, 1. - link.iou);
+
+				} catch (InterruptedException | ExecutionException e) {
+					errorMessage = e.getMessage();
+					ok.set(false);
+				}
+			}
+			executors.shutdown();
+
+			sourceGeometries = targetGeometries;
+			logger.setProgress((double) progress++ / spots.keySet().size());
+		}
+
+		logger.setProgress(1d);
+		logger.setStatus("");
+
+		final long end = System.currentTimeMillis();
+		processingTime = end - start;
+
+		return ok.get();
+	}
+
+	@Override
+	public void setLogger(final Logger logger) {
+		this.logger = logger;
+	}
+
+	protected boolean checkSettingsValidity(final Map<String, Object> settings, final StringBuilder str) {
+		if (null == settings) {
+			str.append("Settings map is null.\n");
+			return false;
+		}
+
+		final boolean ok = true;
+		return ok;
+	}
+
+	private static Map<Spot, Polygon2D> createGeometry(final Iterable<Spot> spots, final double scale) {
+		final Map<Spot, Polygon2D> geometries = new HashMap<>();
+
+		for (final Spot spot : spots)
+			geometries.put(spot, toPolygon(spot, scale));
+
+		return Collections.unmodifiableMap(geometries);
+	}
+
+	private static SimplePolygon2D toPolygon(final Spot spot, final double scale) {
+		final double xc = spot.getDoublePosition(0);
+		final double yc = spot.getDoublePosition(1);
+		final SpotRoi roi = spot.getRoi();
+		final SimplePolygon2D poly;
+		if (roi == null) {
+			final double radius = spot.getFeature(Spot.RADIUS).doubleValue();
+			poly = new SimplePolygon2D(new Circle2D(xc, yc, radius).asPolyline(32));
+		} else {
+			final double[] xcoords = roi.toPolygonX(1., 0., xc, 1.);
+			final double[] ycoords = roi.toPolygonY(1., 0., yc, 1.);
+			poly = new SimplePolygon2D(xcoords, ycoords);
+		}
+		return poly.transform(AffineTransform2D.createScaling(new Point2D(xc, yc), scale, scale));
+	}
+
+	private static final class FindBestSourceTask implements Callable<IoULink> {
+
+		private final Spot target;
+
+		private final Polygon2D targetPoly;
+
+		private final Map<Spot, Polygon2D> sourceGeometries;
+
+		private final double minIoU;
+
+		public FindBestSourceTask(final Spot target, final Polygon2D targetPoly,
+				final Map<Spot, Polygon2D> sourceGeometries, final double minIoU) {
+			this.target = target;
+			this.targetPoly = targetPoly;
+			this.sourceGeometries = sourceGeometries;
+			this.minIoU = minIoU;
+		}
+
+		@Override
+		public IoULink call() throws Exception {
+			final double targetArea = Math.abs(targetPoly.area());
+			double maxIoU = minIoU;
+			Spot bestSpot = null;
+			for (final Spot spot : sourceGeometries.keySet()) {
+				final Polygon2D sourcePoly = sourceGeometries.get(spot);
+				final double intersection = Math.abs(Polygons2D.intersection(targetPoly, sourcePoly).area());
+				if (intersection == 0.)
+					continue;
+
+				final double union = Math.abs(sourcePoly.area()) + targetArea - intersection;
+				final double iou = intersection / union;
+				if (iou > maxIoU) {
+					maxIoU = iou;
+					bestSpot = spot;
+				}
+			}
+			return new IoULink(bestSpot, target, maxIoU);
+		}
+	}
+
+	private static final class IoULink {
+		public final Spot source;
+
+		public final Spot target;
+
+		public final double iou;
+
+		public IoULink(final Spot source, final Spot target, final double iou) {
+			this.source = source;
+			this.target = target;
+			this.iou = iou;
+		}
+	}
+
+	// --- org.scijava.Cancelable methods ---
+
+	@Override
+	public boolean isCanceled() {
+		return isCanceled;
+	}
+
+	@Override
+	public void cancel(final String reason) {
+		isCanceled = true;
+		cancelReason = reason;
+	}
+
+	@Override
+	public String getCancelReason() {
+		return cancelReason;
+	}
+}

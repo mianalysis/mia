@@ -375,8 +375,6 @@ public class ColourFactory {
             H = metadataHues.get(metadataItem.getValue());
             hues.put(ID, H);
 
-            // MIA.log.writeDebug(metadataItem.getName());
-
         }
 
         return hues;

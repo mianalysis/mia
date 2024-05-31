@@ -208,7 +208,7 @@ public class Obj extends Volume {
         // If the first parent was the only one listed, returning this
         if (elements.length == 1)
             return parent;
-
+             
         // If there are additional parents listed, re-constructing the string and
         // running this method on the parent
         StringBuilder stringBuilder = new StringBuilder();
@@ -235,7 +235,10 @@ public class Obj extends Volume {
 
     public void removeParent(String name) {
         parents.remove(name);
+    }
 
+    public void removeParent(Obj parent) {
+        parents.remove(parent.getName());
     }
 
     public LinkedHashMap<String, Objs> getChildren() {
@@ -456,7 +459,6 @@ public class Obj extends Volume {
         if (rois.containsKey(slice))
             return (Roi) rois.get(slice).clone();
 
-        MIA.log.writeDebug("ID " + ID);
         Roi roi = super.getRoi(slice);
 
         if (roi == null)

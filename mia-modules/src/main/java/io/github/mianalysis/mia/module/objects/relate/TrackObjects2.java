@@ -3,12 +3,10 @@
 
 package io.github.mianalysis.mia.module.objects.relate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.checkerframework.checker.units.qual.s;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.scijava.Priority;
@@ -322,13 +320,7 @@ public class TrackObjects2 extends Module {
 
     @Override
     public String getDescription() {
-        return "Track objects between frames.  Tracks are produced as separate \"parent\" objects to the \"child\" "
-                + "spots.  Track objects only serve to link different timepoint instances of objects together.  As such, "
-                + "track objects store no coordinate information." + "<br><br>"
-                + "Uses the <a href=\"https://imagej.net/plugins/trackmate/\">TrackMate</a> implementation of the Jaqaman linear assignment problem solving algorithm "
-                + "(Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating "
-                + "costs in order to minimise memory overhead." + "<br><br>"
-                + "Note: Leading point determination currently only works in 2D";
+        return "";
     }
 
     public static Spot convertObjToSpot(Obj obj) {
@@ -377,6 +369,77 @@ public class TrackObjects2 extends Module {
 
     }
 
+    public static void addTrackSegmentRelationships(Obj inputObject, Obj trackSegmentObject, String trackObjectsName) {
+        inputObject.addParent(trackSegmentObject);
+        trackSegmentObject.addChild(inputObject);
+
+        // Getting track and reassigning associations
+        Obj trackObject = inputObject.getParent(trackObjectsName);
+        trackObject.removeChild(inputObject);
+        inputObject.removeParent(trackObject);
+        trackObject.addChild(trackSegmentObject);
+        trackSegmentObject.addParent(trackObject);
+
+    }
+
+    public static void addPreviousObjectsToTrackSegment(Obj inputObject, Obj trackSegmentObject,
+            String trackObjectsName) {
+        // Adding to previous partners as long as that partner doesn't already have an
+        // assigned track segment
+        Objs previousObjects = inputObject.getPreviousPartners(inputObject.getName());
+
+        // If the current object was the result of a merge (i.e. multiple previous
+        // partners), don't assign track fragment
+        if (previousObjects.size() != 1)
+            return;
+
+        // Adding relationships
+        Obj previousObject = previousObjects.getFirst();
+
+        // If this object has already been assigned, skip it
+        if (previousObject.getParent(trackSegmentObject.getName()) != null)
+            return;
+
+        // If the previous object splits at the next step, don't assign any further
+        if (previousObject.getNextPartners(inputObject.getName()).size() != 1)
+            return;
+
+        addTrackSegmentRelationships(previousObject, trackSegmentObject, trackObjectsName);
+
+        // Processing previous partners of the previous object
+        addPreviousObjectsToTrackSegment(previousObject, trackSegmentObject, trackObjectsName);
+
+    }
+
+    public static void addNextObjectsToTrackSegment(Obj inputObject, Obj trackSegmentObject,
+            String trackObjectsName) {
+        // Adding to next partners as long as that partner doesn't already have an
+        // assigned track segment
+        Objs nextObjects = inputObject.getNextPartners(inputObject.getName());
+
+        // If the current object splits at the next step, don't assign any further
+        if (nextObjects.size() != 1)
+            return;
+
+        // Adding relationships
+        Obj nextObject = nextObjects.getFirst();
+
+        // If this object has already been assigned, skip it
+        if (nextObject.getParent(trackSegmentObject.getName()) != null)
+            return;
+
+        // If the next object was the result of a merge (i.e. multiple previous
+        // partners), don't assign track fragment
+        if (nextObject.getPreviousPartners(inputObject.getName()).size() != 1)
+            return;
+
+        addTrackSegmentRelationships(nextObject, trackSegmentObject, trackObjectsName);
+
+        // Processing next partners of the next object
+        addNextObjectsToTrackSegment(nextObject, trackSegmentObject, trackObjectsName);
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
@@ -391,10 +454,11 @@ public class TrackObjects2 extends Module {
         workspace.addObjects(trackObjects);
 
         Objs trackSegmentObjects = null;
-        if (allowSplitMerge) {
-            trackSegmentObjects = new Objs(trackSegmentObjectsName, inputObjects);
-            workspace.addObjects(trackSegmentObjects);
-        }
+        // if (allowSplitMerge) {
+        MIA.log.writeWarning("Need to make this optional again");
+        trackSegmentObjects = new Objs(trackSegmentObjectsName, inputObjects);
+        workspace.addObjects(trackSegmentObjects);
+        // }
 
         // If there are no input objects, create a blank track set and skip this module
         if (inputObjects == null)
@@ -412,15 +476,38 @@ public class TrackObjects2 extends Module {
 
         SpotCollection spotCollection = createSpotCollection(inputObjects, true);
 
-        SparseLAPTrackerFactory factory = new SparseLAPTrackerFactory();
-        Map<String, Object> trackerSettings = factory.getDefaultSettings();
-        // trackerSettings.entrySet().forEach(MIA.log::writeDebug);
+        SparseLAPTrackerFactory trackerFactory = new SparseLAPTrackerFactory();
+        Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
         trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
         trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
 
-        // AdvancedKalmanTrackerFactory factory = new AdvancedKalmanTrackerFactory();
-        // OverlapTrackerFactory factory = new OverlapTrackerFactory();
-        SpotTracker spotTracker = factory.create(spotCollection, trackerSettings);
+        // Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
+        // // trackerSettings.entrySet().forEach(MIA.log::writeDebug);
+        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
+        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
+
+        // Map<String, Object> settings = new SparseLAPTrackerFactory().getDefaultSettings();
+        // final Map< String, Object > ftfSettings = new HashMap<>();
+		// ftfSettings.put( TrackerKeys.KEY_LINKING_MAX_DISTANCE, 1000 );
+		// ftfSettings.put( TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR, settings.get( TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR ) );
+		// ftfSettings.put( TrackerKeys.KEY_LINKING_FEATURE_PENALTIES, settings.get( TrackerKeys.KEY_LINKING_FEATURE_PENALTIES ) );
+
+		// final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( spotCollection, ftfSettings );
+        // Model model = new Model();
+        // model.setSpots(spotCollection, false);
+        // frameToFrameLinker.process();
+        // SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = frameToFrameLinker.getResult();
+        // model.setTracks(frameToFrameLinker.getResult(), false);
+        // // AdvancedKalmanTrackerFactory factory = new AdvancedKalmanTrackerFactory();
+        // OverlapTrackerFactory trackerFactory = new OverlapTrackerFactory();
+
+        // Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
+        // // trackerSettings.entrySet().forEach(MIA.log::writeDebug);
+        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
+        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
+        // trackerSettings.put(OverlapTrackerFactory.KEY_MIN_IOU,0.001);
+
+        SpotTracker spotTracker = trackerFactory.create(spotCollection, trackerSettings);
 
         Model model = new Model();
         model.setSpots(spotCollection, false);
@@ -432,6 +519,20 @@ public class TrackObjects2 extends Module {
 
         model.setTracks(spotTracker.getResult(), false);
         SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = spotTracker.getResult();
+
+        // SparseLAPTrackerFactory lapTrackerFactory = new SparseLAPTrackerFactory();
+        // Map<String,Object> lapTrackerSettings = lapTrackerFactory.getDefaultSettings();
+        // lapTrackerSettings.remove(TrackerKeys.KEY_LINKING_FEATURE_PENALTIES);
+        // lapTrackerSettings.remove(TrackerKeys.KEY_LINKING_MAX_DISTANCE);
+        // lapTrackerSettings.remove(TrackerKeys.KEY_BLOCKING_VALUE);
+        // final SegmentTracker segmentLinker = new SegmentTracker(result1, lapTrackerSettings);
+        // if (!segmentLinker.checkInput() || !segmentLinker.process()) {
+        //     MIA.log.writeError(segmentLinker.getErrorMessage());
+        //     return Status.FAIL;
+        // }
+        
+        // model.setTracks(segmentLinker.getResult(), false);
+        // SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = segmentLinker.getResult();
 
         for (DefaultWeightedEdge edge : result.edgeSet()) {
             Spot sourceSpot = result.getEdgeSource(edge);
@@ -449,8 +550,7 @@ public class TrackObjects2 extends Module {
         Set<Integer> trackIDs = trackModel.trackIDs(false);
 
         for (Integer trackID : trackIDs) {
-            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID);
-            // ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
+            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID + 1);
 
             Set<DefaultWeightedEdge> trackEdges = trackModel.trackEdges(trackID);
 
@@ -471,25 +571,27 @@ public class TrackObjects2 extends Module {
                 trackObject.addChild(targetObj);
 
             }
-            // // Sorting spots based on frame number
-            // spots.sort((o1, o2) -> {
-            // double t1 = o1.getFeature(Spot.FRAME);
-            // double t2 = o2.getFeature(Spot.FRAME);
-            // return t1 > t2 ? 1 : t1 == t2 ? 0 : -1;
-            // });
-
-            // for (Spot spot : spots) {
-            //     Obj inputObject = inputObjects.get(spot.getFeature("MIA_ID").intValue());
-
-            //     // Adding the connection between instance and summary objects
-            //     inputObject.addParent(trackObject);
-            //     trackObject.addChild(inputObject);
-
-            // }
         }
 
-        // Inserting track segments between tracks and input objects
-        
+        if (allowSplitMerge) {
+            // Inserting track segments between tracks and input objects
+            // Iterating over each spot, adding its partners to the current segment unless
+            // they are already in one
+            for (Obj inputObject : inputObjects.values()) {
+                // If this object has already been assigned, skip it
+                if (inputObject.getParent(trackSegmentObjectsName) != null)
+                    continue;
+
+                // Creating a new track segment object
+                Obj trackSegmentObject = trackSegmentObjects.createAndAddNewObject(VolumeType.POINTLIST);
+                addTrackSegmentRelationships(inputObject, trackSegmentObject, trackObjectsName);
+
+                // Propagating track segments until a split or merge event is reached
+                addPreviousObjectsToTrackSegment(inputObject, trackSegmentObject, trackObjectsName);
+                addNextObjectsToTrackSegment(inputObject, trackSegmentObject, trackObjectsName);
+
+            }
+        }
 
         // If selected, showing an overlay of the tracked objects
         if (showOutput)
