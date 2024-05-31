@@ -42,15 +42,11 @@ import org.scijava.Cancelable;
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.SpotRoi;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.util.Threads;
-import math.geom2d.AffineTransform2D;
-import math.geom2d.Point2D;
-import math.geom2d.conic.Circle2D;
-import math.geom2d.polygon.Polygon2D;
-import math.geom2d.polygon.Polygons2D;
-import math.geom2d.polygon.SimplePolygon2D;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
 public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements SpotTracker, Cancelable {
@@ -61,7 +57,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 	private final SpotCollection spots;
 
-	private final double enlargeFactor;
+	private final Objs objs;
 
 	private final double minIoU;
 
@@ -73,11 +69,10 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 	 * CONSTRUCTOR
 	 */
 
-	public OverlapTracker3D(final SpotCollection spots, final double minIoU,
-			final double enlargeFactor) {
+	public OverlapTracker3D(final SpotCollection spots, final Objs objs, final double minIoU) {
 		this.spots = spots;
+		this.objs = objs;
 		this.minIoU = minIoU;
-		this.enlargeFactor = enlargeFactor;
 	}
 
 	/*
@@ -115,12 +110,6 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 			return false;
 		}
 
-		if (enlargeFactor <= 0) {
-			errorMessage = BASE_ERROR_MESSAGE + "The enlargement factor must be strictly positive, was "
-					+ enlargeFactor;
-			return false;
-		}
-
 		// Check that at least one inner collection contains an object.
 		boolean empty = true;
 		for (final int frame : spots.keySet()) {
@@ -151,7 +140,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 		// First frame.
 		final int sourceFrame = frameIterator.next();
-		Map<Spot, Polygon2D> sourceGeometries = createGeometry(spots.iterable(sourceFrame, true), enlargeFactor);
+		Map<Spot, Volume> sourceGeometries = createGeometry(spots.iterable(sourceFrame, true), objs);
 
 		logger.setStatus("Frame to frame linking...");
 		int progress = 0;
@@ -160,8 +149,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 				break;
 
 			final int targetFrame = frameIterator.next();
-			final Map<Spot, Polygon2D> targetGeometries = createGeometry(spots.iterable(targetFrame, true),
-					enlargeFactor);
+			final Map<Spot, Volume> targetGeometries = createGeometry(spots.iterable(targetFrame, true), objs);
 
 			if (sourceGeometries.isEmpty() || targetGeometries.isEmpty())
 				continue;
@@ -171,8 +159,8 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 			// Submit work.
 			for (final Spot target : targetGeometries.keySet()) {
-				final Polygon2D targetPoly = targetGeometries.get(target);
-				futures.add(executors.submit(new FindBestSourceTask(target, targetPoly, sourceGeometries, minIoU)));
+				final Volume targetVolume = targetGeometries.get(target);
+				futures.add(executors.submit(new FindBestSourceTask(target, targetVolume, sourceGeometries, minIoU)));
 			}
 
 			// Get results.
@@ -223,70 +211,56 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 		final boolean ok = true;
 		return ok;
+		
 	}
 
-	private static Map<Spot, Polygon2D> createGeometry(final Iterable<Spot> spots, final double scale) {
-		final Map<Spot, Polygon2D> geometries = new HashMap<>();
+	private static Map<Spot, Volume> createGeometry(final Iterable<Spot> spots, final Objs objs) {
+		final Map<Spot, Volume> geometries = new HashMap<>();
 
 		for (final Spot spot : spots)
-			geometries.put(spot, toPolygon(spot, scale));
+			geometries.put(spot, objs.get(spot.getFeature("MIA_ID").intValue()));
 
 		return Collections.unmodifiableMap(geometries);
-	}
 
-	private static SimplePolygon2D toPolygon(final Spot spot, final double scale) {
-		final double xc = spot.getDoublePosition(0);
-		final double yc = spot.getDoublePosition(1);
-		final SpotRoi roi = spot.getRoi();
-		final SimplePolygon2D poly;
-		if (roi == null) {
-			final double radius = spot.getFeature(Spot.RADIUS).doubleValue();
-			poly = new SimplePolygon2D(new Circle2D(xc, yc, radius).asPolyline(32));
-		} else {
-			final double[] xcoords = roi.toPolygonX(1., 0., xc, 1.);
-			final double[] ycoords = roi.toPolygonY(1., 0., yc, 1.);
-			poly = new SimplePolygon2D(xcoords, ycoords);
-		}
-		return poly.transform(AffineTransform2D.createScaling(new Point2D(xc, yc), scale, scale));
 	}
 
 	private static final class FindBestSourceTask implements Callable<IoULink> {
 
 		private final Spot target;
 
-		private final Polygon2D targetPoly;
+		private final Volume targetVolume;
 
-		private final Map<Spot, Polygon2D> sourceGeometries;
+		private final Map<Spot, Volume> sourceGeometries;
 
 		private final double minIoU;
 
-		public FindBestSourceTask(final Spot target, final Polygon2D targetPoly,
-				final Map<Spot, Polygon2D> sourceGeometries, final double minIoU) {
+		public FindBestSourceTask(final Spot target, final Volume targetVolume, final Map<Spot, Volume> sourceGeometries, final double minIoU) {
 			this.target = target;
-			this.targetPoly = targetPoly;
+			this.targetVolume = targetVolume;
 			this.sourceGeometries = sourceGeometries;
 			this.minIoU = minIoU;
 		}
 
 		@Override
 		public IoULink call() throws Exception {
-			final double targetArea = Math.abs(targetPoly.area());
 			double maxIoU = minIoU;
 			Spot bestSpot = null;
 			for (final Spot spot : sourceGeometries.keySet()) {
-				final Polygon2D sourcePoly = sourceGeometries.get(spot);
-				final double intersection = Math.abs(Polygons2D.intersection(targetPoly, sourcePoly).area());
+				final Volume sourceVolume = sourceGeometries.get(spot);
+				final double intersection = targetVolume.getOverlap(sourceVolume);
 				if (intersection == 0.)
 					continue;
 
-				final double union = Math.abs(sourcePoly.area()) + targetArea - intersection;
+				final double union = sourceVolume.size() + targetVolume.size() - intersection;
 				final double iou = intersection / union;
 				if (iou > maxIoU) {
 					maxIoU = iou;
 					bestSpot = spot;
 				}
 			}
+			
 			return new IoULink(bestSpot, target, maxIoU);
+
 		}
 	}
 

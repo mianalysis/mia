@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.objects.relate.trackmate.tracking.OverlapTracker3DFactory;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -476,36 +477,14 @@ public class TrackObjects2 extends Module {
 
         SpotCollection spotCollection = createSpotCollection(inputObjects, true);
 
-        SparseLAPTrackerFactory trackerFactory = new SparseLAPTrackerFactory();
+        // SparseLAPTrackerFactory trackerFactory = new SparseLAPTrackerFactory();
+        // Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
+        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
+        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
+
+        OverlapTracker3DFactory trackerFactory = new OverlapTracker3DFactory();
         Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
-        trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
-        trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
-
-        // Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
-        // // trackerSettings.entrySet().forEach(MIA.log::writeDebug);
-        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
-        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
-
-        // Map<String, Object> settings = new SparseLAPTrackerFactory().getDefaultSettings();
-        // final Map< String, Object > ftfSettings = new HashMap<>();
-		// ftfSettings.put( TrackerKeys.KEY_LINKING_MAX_DISTANCE, 1000 );
-		// ftfSettings.put( TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR, settings.get( TrackerKeys.KEY_ALTERNATIVE_LINKING_COST_FACTOR ) );
-		// ftfSettings.put( TrackerKeys.KEY_LINKING_FEATURE_PENALTIES, settings.get( TrackerKeys.KEY_LINKING_FEATURE_PENALTIES ) );
-
-		// final SparseLAPFrameToFrameTracker frameToFrameLinker = new SparseLAPFrameToFrameTracker( spotCollection, ftfSettings );
-        // Model model = new Model();
-        // model.setSpots(spotCollection, false);
-        // frameToFrameLinker.process();
-        // SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = frameToFrameLinker.getResult();
-        // model.setTracks(frameToFrameLinker.getResult(), false);
-        // // AdvancedKalmanTrackerFactory factory = new AdvancedKalmanTrackerFactory();
-        // OverlapTrackerFactory trackerFactory = new OverlapTrackerFactory();
-
-        // Map<String, Object> trackerSettings = trackerFactory.getDefaultSettings();
-        // // trackerSettings.entrySet().forEach(MIA.log::writeDebug);
-        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, true);
-        // trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, true);
-        // trackerSettings.put(OverlapTrackerFactory.KEY_MIN_IOU,0.001);
+        trackerSettings.put(OverlapTracker3DFactory.KEY_MIA_OBJECTS, inputObjects);
 
         SpotTracker spotTracker = trackerFactory.create(spotCollection, trackerSettings);
 
@@ -519,20 +498,6 @@ public class TrackObjects2 extends Module {
 
         model.setTracks(spotTracker.getResult(), false);
         SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = spotTracker.getResult();
-
-        // SparseLAPTrackerFactory lapTrackerFactory = new SparseLAPTrackerFactory();
-        // Map<String,Object> lapTrackerSettings = lapTrackerFactory.getDefaultSettings();
-        // lapTrackerSettings.remove(TrackerKeys.KEY_LINKING_FEATURE_PENALTIES);
-        // lapTrackerSettings.remove(TrackerKeys.KEY_LINKING_MAX_DISTANCE);
-        // lapTrackerSettings.remove(TrackerKeys.KEY_BLOCKING_VALUE);
-        // final SegmentTracker segmentLinker = new SegmentTracker(result1, lapTrackerSettings);
-        // if (!segmentLinker.checkInput() || !segmentLinker.process()) {
-        //     MIA.log.writeError(segmentLinker.getErrorMessage());
-        //     return Status.FAIL;
-        // }
-        
-        // model.setTracks(segmentLinker.getResult(), false);
-        // SimpleWeightedGraph<Spot, DefaultWeightedEdge> result = segmentLinker.getResult();
 
         for (DefaultWeightedEdge edge : result.edgeSet()) {
             Spot sourceSpot = result.getEdgeSource(edge);
