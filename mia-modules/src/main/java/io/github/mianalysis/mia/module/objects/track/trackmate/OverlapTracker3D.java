@@ -19,9 +19,9 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package io.github.mianalysis.mia.module.objects.relate.trackmate.tracking;
+package io.github.mianalysis.mia.module.objects.track.trackmate;
 
-import static io.github.mianalysis.mia.module.objects.relate.trackmate.tracking.OverlapTracker3DFactory.BASE_ERROR_MESSAGE;
+import static io.github.mianalysis.mia.module.objects.track.trackmate.OverlapTracker3DFactory.BASE_ERROR_MESSAGE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,6 +61,10 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 	private final double minIoU;
 
+	private final boolean allowTrackSplitting;
+
+	private final boolean allowTrackMerging;
+
 	private boolean isCanceled;
 
 	private String cancelReason;
@@ -69,10 +73,12 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 	 * CONSTRUCTOR
 	 */
 
-	public OverlapTracker3D(final SpotCollection spots, final Objs objs, final double minIoU) {
+	public OverlapTracker3D(final SpotCollection spots, final Objs objs, final double minIoU, final boolean allowTrackSplitting, final boolean allowTrackMerging) {
 		this.spots = spots;
 		this.objs = objs;
 		this.minIoU = minIoU;
+		this.allowTrackSplitting = allowTrackSplitting;
+		this.allowTrackMerging = allowTrackMerging;
 	}
 
 	/*
@@ -149,34 +155,46 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 				break;
 
 			final int targetFrame = frameIterator.next();
+
 			final Map<Spot, Volume> targetGeometries = createGeometry(spots.iterable(targetFrame, true), objs);
 
 			if (sourceGeometries.isEmpty() || targetGeometries.isEmpty())
 				continue;
 
 			final ExecutorService executors = Threads.newFixedThreadPool(numThreads);
-			final List<Future<IoULink>> futures = new ArrayList<>();
+			final List<Future<ArrayList<IoULink>>> futures = new ArrayList<>();
 
 			// Submit work.
 			for (final Spot target : targetGeometries.keySet()) {
 				final Volume targetVolume = targetGeometries.get(target);
-				futures.add(executors.submit(new FindBestSourceTask(target, targetVolume, sourceGeometries, minIoU)));
+				futures.add(executors
+						.submit(new FindBestSourcesTask(target, targetVolume, sourceGeometries, minIoU, allowTrackMerging)));
 			}
 
 			// Get results.
-			for (final Future<IoULink> future : futures) {
+			HashMap<Spot, IoULink> bestSourceIoUs = new HashMap<>();
+			for (final Future<ArrayList<IoULink>> future : futures) {
 				if (!ok.get() || isCanceled())
 					break;
 
 				try {
-					final IoULink link = future.get();
-					if (link.source == null)
-						continue;
+					final ArrayList<IoULink> links = future.get();
 
-					graph.addVertex(link.source);
-					graph.addVertex(link.target);
-					final DefaultWeightedEdge edge = graph.addEdge(link.source, link.target);
-					graph.setEdgeWeight(edge, 1. - link.iou);
+					for (IoULink link : links) {
+						if (link.source == null)
+							continue;
+
+						if (!allowTrackSplitting && bestSourceIoUs.containsKey(link.source))
+							if (bestSourceIoUs.get(link.source).iou > link.iou)
+								continue;
+							else
+								removeLink(bestSourceIoUs.get(link.source));
+						
+						addLink(link);
+						bestSourceIoUs.put(link.source, link);
+						link.target.putFeature("IoU", link.iou);
+						
+					}
 
 				} catch (InterruptedException | ExecutionException e) {
 					errorMessage = e.getMessage();
@@ -198,6 +216,17 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 		return ok.get();
 	}
 
+	public void addLink(IoULink link) {
+		graph.addVertex(link.source);
+		graph.addVertex(link.target);
+		final DefaultWeightedEdge edge = graph.addEdge(link.source, link.target);
+		graph.setEdgeWeight(edge, 1. - link.iou);
+	}
+
+	public void removeLink(IoULink link) {
+		graph.removeEdge(link.source, link.target);
+	}
+
 	@Override
 	public void setLogger(final Logger logger) {
 		this.logger = logger;
@@ -211,7 +240,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 		final boolean ok = true;
 		return ok;
-		
+
 	}
 
 	private static Map<Spot, Volume> createGeometry(final Iterable<Spot> spots, final Objs objs) {
@@ -224,7 +253,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 	}
 
-	private static final class FindBestSourceTask implements Callable<IoULink> {
+	private static final class FindBestSourcesTask implements Callable<ArrayList<IoULink>> {
 
 		private final Spot target;
 
@@ -234,32 +263,57 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 		private final double minIoU;
 
-		public FindBestSourceTask(final Spot target, final Volume targetVolume, final Map<Spot, Volume> sourceGeometries, final double minIoU) {
+		private final boolean allowTrackMerging;
+
+		public FindBestSourcesTask(final Spot target, final Volume targetVolume,
+				final Map<Spot, Volume> sourceGeometries, final double minIoU, 
+				final boolean allowTrackMerging) {
 			this.target = target;
 			this.targetVolume = targetVolume;
 			this.sourceGeometries = sourceGeometries;
 			this.minIoU = minIoU;
+			this.allowTrackMerging = allowTrackMerging;
+
 		}
 
 		@Override
-		public IoULink call() throws Exception {
-			double maxIoU = minIoU;
-			Spot bestSpot = null;
-			for (final Spot spot : sourceGeometries.keySet()) {
-				final Volume sourceVolume = sourceGeometries.get(spot);
-				final double intersection = targetVolume.getOverlap(sourceVolume);
-				if (intersection == 0.)
-					continue;
+		public ArrayList<IoULink> call() throws Exception {
+			ArrayList<IoULink> links = new ArrayList<>();
 
-				final double union = sourceVolume.size() + targetVolume.size() - intersection;
-				final double iou = intersection / union;
-				if (iou > maxIoU) {
-					maxIoU = iou;
-					bestSpot = spot;
+			if (allowTrackMerging) {
+				for (final Spot spot : sourceGeometries.keySet()) {
+					final Volume sourceVolume = sourceGeometries.get(spot);
+					final double intersection = targetVolume.getOverlap(sourceVolume);
+					if (intersection == 0.)
+						continue;
+
+					final double union = sourceVolume.size() + targetVolume.size() - intersection;
+					final double iou = intersection / union;
+					if (iou >= minIoU)
+						links.add(new IoULink(spot, target, iou));
 				}
+			} else {
+				double maxIoU = minIoU;
+				Spot bestSpot = null;
+				for (final Spot spot : sourceGeometries.keySet()) {
+					final Volume sourceVolume = sourceGeometries.get(spot);
+					final double intersection = targetVolume.getOverlap(sourceVolume);
+					if (intersection == 0.)
+						continue;
+
+					final double union = sourceVolume.size() + targetVolume.size() - intersection;
+					final double iou = intersection / union;
+					if (iou > maxIoU) {
+						maxIoU = iou;
+						bestSpot = spot;
+					}
+				}
+
+				links.add(new IoULink(bestSpot, target, maxIoU));
+
 			}
-			
-			return new IoULink(bestSpot, target, maxIoU);
+
+			return links;
 
 		}
 	}

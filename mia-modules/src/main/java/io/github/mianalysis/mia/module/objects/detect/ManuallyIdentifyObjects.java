@@ -76,7 +76,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
+import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
@@ -548,7 +548,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             ImagePlus sliceIpl = ExtractSubstack.extractSubstack(binaryIpl,"Substack","1-1", z + "-" + z, "1-" + nFrames);
             // ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
             ImageStack sliceIst = sliceIpl.getStack();
-            MIA.log.writeDebug(sliceIst.size());
             
             if (!checkStackForInterpolation(sliceIst))
                 continue;

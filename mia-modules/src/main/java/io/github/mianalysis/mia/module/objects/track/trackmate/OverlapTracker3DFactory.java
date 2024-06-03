@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package io.github.mianalysis.mia.module.objects.relate.trackmate.tracking;
+package io.github.mianalysis.mia.module.objects.track.trackmate;
 
 import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
@@ -39,6 +39,7 @@ import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
 import fiji.plugin.trackmate.gui.components.tracker.OverlapTrackerSettingsPanel;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Objs;
 
 @Plugin(type = SpotTrackerFactory.class)
@@ -52,9 +53,19 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
      */
     public static final String KEY_MIN_IOU = "MIN_IOU";
 
+    public static final String KEY_ALLOW_TRACK_SPLITTING = "ALLOW_TRACK_SPLITTING";
+
+    public static final String KEY_ALLOW_TRACK_MERGING = "ALLOW_TRACK_MERGING";
+
     public static final String KEY_MIA_OBJECTS = "MIA_OBJECTS";
 
     public static final Double DEFAULT_MIN_IOU = Double.valueOf(0.3);
+
+    public static final boolean DEFAULT_ALLOW_TRACK_SPLITTING = false;
+
+    public static final boolean DEFAULT_ALLOW_TRACK_MERGING = false;
+
+    public static final Objs DEFAULT_MIA_OBJECTS = null;
 
     public static final String TRACKER_KEY = "OVERLAP_TRACKER";
 
@@ -87,13 +98,15 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
     @Override
     public SpotTracker create(final SpotCollection spots, final Map<String, Object> settings) {
         final double minIoU = (Double) settings.get(KEY_MIN_IOU);
+        final boolean allowTrackSplitting = (Boolean) settings.get(KEY_ALLOW_TRACK_SPLITTING);
+        final boolean allowTrackMerging = (Boolean) settings.get(KEY_ALLOW_TRACK_MERGING);
         final Objs objs = (Objs) settings.get(KEY_MIA_OBJECTS);
-        return new OverlapTracker3D(spots, objs, minIoU);
+        return new OverlapTracker3D(spots, objs, minIoU,allowTrackSplitting,allowTrackMerging);
     }
 
     @Override
     public ConfigurationPanel getTrackerConfigurationPanel(final Model model) {
-        return new OverlapTrackerSettingsPanel();
+        return new OverlapTracker3DSettingsPanel();
     }
 
     @Override
@@ -132,7 +145,13 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
     public Map<String, Object> getDefaultSettings() {
         final Map<String, Object> settings = new HashMap<>();
         settings.put(KEY_MIN_IOU, DEFAULT_MIN_IOU);
+        settings.put(KEY_ALLOW_TRACK_SPLITTING, DEFAULT_ALLOW_TRACK_SPLITTING);
+        settings.put(KEY_ALLOW_TRACK_MERGING, DEFAULT_ALLOW_TRACK_MERGING);
+        settings.put(KEY_MIA_OBJECTS, DEFAULT_MIA_OBJECTS);
+        MIA.log.writeDebug("GUI addition of MIA objects still needs implementing");
+
         return settings;
+        
     }
 
     @Override
