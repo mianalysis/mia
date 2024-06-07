@@ -33,7 +33,6 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -43,6 +42,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputTrackObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
+import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -51,6 +51,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.process.math.Indexer;
 
 /**
@@ -58,212 +59,137 @@ import io.github.mianalysis.mia.process.math.Indexer;
  */
 
 /**
- * Track objects between frames. Tracks are produced as separate "parent"
- * objects to the "child" spots. Track objects only serve to link different
- * timepoint instances of objects together. As such, track objects store no
- * coordinate information.<br>
- * <br>
- * Uses the <a href="https://imagej.net/plugins/trackmate/">TrackMate</a>
- * implementation of the Jaqaman linear assignment problem solving algorithm
- * (Jaqaman, et al., Nature Methods, 2008). The implementation utilises sparse
- * matrices for calculating costs in order to minimise memory overhead.<br>
- * <br>
- * Note: Leading point determination currently only works in 2D
- */
+* Track objects between frames.  Tracks are produced as separate "parent" objects to the "child" spots.  Track objects only serve to link different timepoint instances of objects together.  As such, track objects store no coordinate information.<br><br>Uses the <a href="https://imagej.net/plugins/trackmate/">TrackMate</a> implementation of the Jaqaman linear assignment problem solving algorithm (Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating costs in order to minimise memory overhead.<br><br>Note: Leading point determination currently only works in 2D
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackObjects extends Module {
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
 
-    /**
-     * Objects present in individual timepoints which will be tracked across
-     * multiple frames. These objects will become children of their assigned "track"
-     * parent.
-     */
+	/**
+	* Objects present in individual timepoints which will be tracked across multiple frames.  These objects will become children of their assigned "track" parent.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
-    /**
-     * Output track objects to be stored in the workspace. These objects will
-     * contain no spatial information, rather they act as (parent) linking objects
-     * for the individual timepoint instances of the tracked object.
-     */
+	/**
+	* Output track objects to be stored in the workspace.  These objects will contain no spatial information, rather they act as (parent) linking  objects for the individual timepoint instances of the tracked object.
+	*/
     public static final String TRACK_OBJECTS = "Output track objects";
 
-    public static final String ALLOW_SPLITTING_AND_MERGING = "Allow track splitting and merging";
 
-    public static final String TRACK_SEGMENT_OBJECTS = "Track segment objects";
-
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String SPATIAL_SEPARATOR = "Spatial cost";
 
-    /**
-     * The spatial cost for linking objects together:<br>
-     * <ul>
-     * <li>"Absolute overlap" Tracks will be assigned in order to maxmimise the
-     * spatial overlap between objects in adjacent frames. This linking method uses
-     * the full 3D volume of the objects being tracked. Note: There is no
-     * consideration of distance between objects, so non-overlapping objects next to
-     * each other will score equally to non-overlapping objects far away (not taking
-     * additional linking weights and restrictions into account).</li>
-     * <li>"Centroid" Tracks will be assigned in order to minimise the total
-     * distance between object centroids. This linking method doesn't take object
-     * size and shape into account (unless included via volume weighting), but will
-     * work at all object separations.</li>
-     * </ul>
-     */
+	/**
+	* The spatial cost for linking objects together:<br><ul><li>"Absolute overlap" Tracks will be assigned in order to maxmimise the spatial overlap between objects in adjacent frames.  This linking method uses the full 3D volume of the objects being tracked.  Note: There is no consideration of distance between objects, so non-overlapping objects next to each other will score equally to non-overlapping objects far away (not taking additional linking weights and restrictions into account).</li><li>"Centroid" Tracks will be assigned in order to minimise the total distance between object centroids.  This linking method doesn't take object size and shape into account (unless included via volume weighting), but will work at all object separations.</li></ul>
+	*/
     public static final String LINKING_METHOD = "Linking method";
 
-    /**
-     * If "Linking method" is set to "Absolute overlap", this is the minimum
-     * absolute spatial overlap (number of coincident pixels/voxels) two objects
-     * must have for them to be considered as candidates for linking.
-     */
+	/**
+	* If "Linking method" is set to "Absolute overlap", this is the minimum absolute spatial overlap (number of coincident pixels/voxels) two objects must have for them to be considered as candidates for linking.
+	*/
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
 
-    /**
-    * 
-    */
+
+	/**
+	* 
+	*/
     public static final String TEMPORAL_SEPARATOR = "Temporal cost";
 
-    /**
-     * When non-zero, an additional cost will be included that penalises linking
-     * objects with large temporal separations. The frame gap between candidate
-     * objects will be multiplied by this weight. For example, if calculating
-     * spatial costs using centroid spatial separation, a frame gap weight of 1 will
-     * equally weight 1 frame of temporal separation to 1 pixel of spatial
-     * separation. The larger the weight, the more this frame gap will contribute
-     * towards the total linking cost.
-     */
+	/**
+	* When non-zero, an additional cost will be included that penalises linking objects with large temporal separations.  The frame gap between candidate objects will be multiplied by this weight.  For example, if calculating spatial costs using centroid spatial separation, a frame gap weight of 1 will equally weight 1 frame of temporal separation to 1 pixel of spatial separation.  The larger the weight, the more this frame gap will contribute towards the total linking cost.
+	*/
     public static final String FRAME_GAP_WEIGHTING = "Frame gap weighting";
 
-    /**
-     * Maximum number of missing frames for an object to still be tracked. A single
-     * object undetected for longer than this would be identified as two separate
-     * tracks.
-     */
+	/**
+	* Maximum number of missing frames for an object to still be tracked.  A single object undetected for longer than this would be identified as two separate tracks.
+	*/
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
 
-    /**
-     * When selected, points will be preferentially linked to tracks containing more
-     * previous points. For example, in cases where an object was detected twice in
-     * one timepoint this will favour linking to the original track, rather than
-     * establishing the on-going track from the new point.
-     */
+	/**
+	* When selected, points will be preferentially linked to tracks containing more previous points.  For example, in cases where an object was detected twice in one timepoint this will favour linking to the original track, rather than establishing the on-going track from the new point.
+	*/
     public static final String FAVOUR_ESTABLISHED_TRACKS = "Favour established tracks";
 
-    /**
-     * If "Favour established tracks" is selected this is the weight assigned to the
-     * existing track duration. Track duration costs are calculated as 1 minus the
-     * ratio of frames in which the track was detected (up to the previous
-     * time-point).
-     */
+	/**
+	* If "Favour established tracks" is selected this is the weight assigned to the existing track duration.  Track duration costs are calculated as 1 minus the ratio of frames in which the track was detected (up to the previous time-point).
+	*/
     public static final String TRACK_LENGTH_WEIGHTING = "Track length weighting";
 
-    /**
-    * 
-    */
+
+	/**
+	* 
+	*/
     public static final String VOLUME_SEPARATOR = "Volume cost";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
 
-    /**
-     * If "Use volume (minimise volume change)" is enabled, this is the weight
-     * assigned to the difference in volume of the candidate objects for linking.
-     * The difference in volume between candidate objects is multiplied by this
-     * weight. The larger the weight, the more this difference in volume will
-     * contribute towards the total linking cost.
-     */
+	/**
+	* If "Use volume (minimise volume change)" is enabled, this is the weight assigned to the difference in volume of the candidate objects for linking.  The difference in volume between candidate objects is multiplied by this weight.  The larger the weight, the more this difference in volume will contribute towards the total linking cost.
+	*/
     public static final String VOLUME_WEIGHTING = "Volume weighting";
     public static final String MAXIMUM_VOLUME_CHANGE = "Maximum volume change (px^3)";
 
-    /**
-    * 
-    */
+
+	/**
+	* 
+	*/
     public static final String DIRECTION_SEPARATOR = "Direction cost";
 
-    /**
-     * Controls whether cost terms will be included based on the direction a tracked
-     * object is moving in:<br>
-     * <ul>
-     * <li>"None" No direction-based cost terms will be included.</li>
-     * <li>"Absolute orientation 2D" Costs will be calculated based on the absolute
-     * orientation a candidate object would be moving in. For example, if objects
-     * are known to be moving in one particular direction, this can favour links
-     * moving that way rather than the opposite direction.</li>
-     * <li>"Relative to previous step" Costs will be calculated based on the
-     * previous trajectory of a track. This can be used to minimise rapid changes in
-     * direction if tracked objects are expected to move smoothly.</li>
-     * </ul>
-     */
+	/**
+	* Controls whether cost terms will be included based on the direction a tracked object is moving in:<br><ul><li>"None" No direction-based cost terms will be included.</li><li>"Absolute orientation 2D" Costs will be calculated based on the absolute orientation a candidate object would be moving in.  For example, if objects are known to be moving in one particular direction, this can favour links moving that way rather than the opposite direction.</li><li>"Relative to previous step" Costs will be calculated based on the previous trajectory of a track.  This can be used to minimise rapid changes in direction if tracked objects are expected to move smoothly.</li></ul>
+	*/
     public static final String DIRECTION_WEIGHTING_MODE = "Direction weighting mode";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String ORIENTATION_RANGE_MODE = "Orientation range mode";
 
-    /**
-     * If "Direction weighting mode" is set to "Absolute orientation 2D", this is
-     * the preferred direction that a track should be moving in. Orientation is
-     * measured in degree units and is positive above the x-axis and negative below
-     * it.
-     */
+	/**
+	* If "Direction weighting mode" is set to "Absolute orientation 2D", this is the preferred direction that a track should be moving in.  Orientation is measured in degree units and is positive above the x-axis and negative below it.
+	*/
     public static final String PREFERRED_DIRECTION = "Preferred direction";
 
-    /**
-     * If using directional weighting ("Direction weighting mode" not set to
-     * "None"), this is the maximum deviation in direction from the preferred
-     * direction that a candidate object can have. For absolute linking, this is
-     * relative to the preferred direction and for relative linking, this is
-     * relative to the previous frame.
-     */
+	/**
+	* If using directional weighting ("Direction weighting mode" not set to "None"), this is the maximum deviation in direction from the preferred direction that a candidate object can have.  For absolute linking, this is relative to the preferred direction and for relative linking, this is relative to the previous frame.
+	*/
     public static final String DIRECTION_TOLERANCE = "Direction tolerance";
 
-    /**
-     * If using directional weighting ("Direction weighting mode" not set to
-     * "None"), the angular difference (in degrees) between the candidate track
-     * direction and the reference direction will be muliplied by this weight. The
-     * larger the weight, the more this angular difference will contribute towards
-     * the total linking cost.
-     */
+	/**
+	* If using directional weighting ("Direction weighting mode" not set to "None"), the angular difference (in degrees) between the candidate track direction and the reference direction will be muliplied by this weight.  The larger the weight, the more this angular difference will contribute towards the total linking cost.
+	*/
     public static final String DIRECTION_WEIGHTING = "Direction weighting";
 
-    /**
-    * 
-    */
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement cost";
 
     /**
-    * 
-    */
+	* 
+	*/
     public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
 
-    /**
-     * If "Use measurement (minimise change)" is selected, this is the measurement
-     * (associated with the input objects) for which variation within a track will
-     * be minimised.
-     */
+	/**
+	* If "Use measurement (minimise change)" is selected, this is the measurement (associated with the input objects) for which variation within a track will be minimised.
+	*/
     public static final String MEASUREMENT = "Measurement";
 
-    /**
-     * If "Use measurement (minimise change)" is selected, the difference in
-     * measurement associated with a candidate object and the previous instance in a
-     * target track will be multiplied by this value. The larger the weight, the
-     * more this difference in measurement will contribute towards the total linking
-     * cost.
-     */
+	/**
+	* If "Use measurement (minimise change)" is selected, the difference in measurement associated with a candidate object and the previous instance in a target track will be multiplied by this value.  The larger the weight, the more this difference in measurement will contribute towards the total linking cost.
+	*/
     public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
 
-    /**
-     * If "Use measurement (minimise change)" is selected, this is the maximum
-     * amount the measurement can change between consecutive instances in a track.
-     * Variations greater than this will result in the track being split into two.
-     */
+	/**
+	* If "Use measurement (minimise change)" is selected, this is the maximum amount the measurement can change between consecutive instances in a track.  Variations greater than this will result in the track being split into two.
+	*/
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
 
     public TrackObjects(Modules modules) {
@@ -294,6 +220,12 @@ public class TrackObjects extends Module {
 
     }
 
+    public interface Measurements {
+        String TRACK_PREV_ID = "TRACKING // PREVIOUS_OBJECT_IN_TRACK_ID";
+        String TRACK_NEXT_ID = "TRACKING // NEXT_OBJECT_IN_TRACK_ID";
+
+    }
+
     public ArrayList<Obj>[] getCandidateObjects(Objs inputObjects, int t1, int t2) {
         // Creating a pair of ArrayLists to store the current and previous objects
         ArrayList<Obj>[] objects = new ArrayList[2];
@@ -302,14 +234,13 @@ public class TrackObjects extends Module {
 
         // Include objects from the previous and current frames that haven't been linked
         for (Obj inputObject : inputObjects.values()) {
-            Objs nextPartners = inputObject.getNextPartners(inputObject.getName());
-            Objs previousPartners = inputObject.getPreviousPartners(inputObject.getName());
-
-            if (inputObject.getT() == t1 && (nextPartners == null || nextPartners.size() == 0))
+            if (inputObject.getT() == t1 && inputObject.getMeasurement(Measurements.TRACK_NEXT_ID) == null) {
                 objects[0].add(inputObject);
-            else if (inputObject.getT() == t2 && (previousPartners == null || previousPartners.size() == 0))
+
+            } else if (inputObject.getT() == t2 && inputObject.getMeasurement(Measurements.TRACK_PREV_ID) == null) {
                 objects[1].add(inputObject);
 
+            }
         }
 
         return objects;
@@ -538,19 +469,15 @@ public class TrackObjects extends Module {
 
     public static double getPreviousStepDirectionCost(Obj prevObj, Obj currObj, Objs inputObjects) {
         // Get direction of previous object
-        Objs prevPrevObjs = prevObj.getPreviousPartners(prevObj.getName());
+        Measurement prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
 
         // If the previous object doesn't have a previous object (i.e. it was the
         // first), return a score of 0
-        if (prevPrevObjs == null || prevPrevObjs.size() == 0)
+        if (prevPrevObjMeas == null)
             return 0;
 
-        // If this object was the result of a track merge, return NaN
-        else if (prevPrevObjs.size() > 1)
-            return Double.NaN;
-
         // Getting the previous-previous object
-        int prevPrevObjID = prevPrevObjs.getFirst().getID();
+        int prevPrevObjID = (int) prevPrevObjMeas.getValue();
         Obj prevPrevObj = inputObjects.get(prevPrevObjID);
 
         // Getting centroid coordinates for three points
@@ -599,10 +526,14 @@ public class TrackObjects extends Module {
         return measurementChange <= maxMeasurementChange;
     }
 
-    public static void linkObjects(Obj prevObj, Obj currObj, String trackObjectsName) {
+    public static void linkObjects(Obj prevObj, Obj currObj, Objs trackObjects) {
         // Getting the track object from the previous-frame object
-        Obj track = prevObj.getParent(trackObjectsName);
-
+        Obj track = prevObj.getParent(trackObjects.getName());
+        
+        // If the previous object hasn't already got a track, create one
+        if (track == null)
+            track = createNewTrack(prevObj,trackObjects);
+        
         // Setting relationship between the current object and track
         track.addChild(currObj);
         currObj.addParent(track);
@@ -611,28 +542,22 @@ public class TrackObjects extends Module {
         prevObj.addPartner(currObj);
         currObj.addPartner(prevObj);
 
+        // Adding references to each other
+        prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
+        currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
+
     }
 
-    public static void createNewTrack(Obj currObj, Objs trackObjects, @Nullable Objs trackSegmentObjects) {
+    public static Obj createNewTrack(Obj currObj, Objs trackObjects) {        
         // Creating a new track object
         Obj track = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
-        // If trackSegmentObjects is null there's no splitting/merging, so objects are
-        // directly linked to tracks.
-        if (trackSegmentObjects == null) {
-            track.addChild(currObj);
-            currObj.addParent(track);
+        // Setting relationship between the current object and track
+        track.addChild(currObj);
+        currObj.addParent(track);
 
-        } else {
-            Obj trackSegment = trackSegmentObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        return track;
 
-            trackSegment.addChild(currObj);
-            currObj.addParent(trackSegment);
-
-            track.addChild(trackSegment);
-            trackSegment.addParent(track);
-
-        }
     }
 
     public static void showObjects(Objs spotObjects, String trackObjectsName) {
@@ -652,7 +577,7 @@ public class TrackObjects extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.OBJECTS_TRACK;
+        return Categories.OBJECTS_RELATE;
     }
 
     @Override
@@ -676,20 +601,12 @@ public class TrackObjects extends Module {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
-        boolean allowSplitMerge = parameters.getValue(ALLOW_SPLITTING_AND_MERGING, workspace);
-        String trackSegmentObjectsName = parameters.getValue(TRACK_SEGMENT_OBJECTS, workspace);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES, workspace);
 
         // Getting objects
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
         Objs trackObjects = new Objs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
-
-        Objs trackSegmentObjects = null;
-        if (allowSplitMerge) {
-            trackSegmentObjects = new Objs(trackSegmentObjectsName, inputObjects);
-            workspace.addObjects(trackSegmentObjects);
-        }
 
         // If there are no input objects, create a blank track set and skip this module
         if (inputObjects == null)
@@ -700,23 +617,16 @@ public class TrackObjects extends Module {
         // Clearing previous relationships and measurements (in case module has been
         // generateModuleList before)
         for (Obj inputObj : inputObjects.values()) {
+            inputObj.removeMeasurement(Measurements.TRACK_NEXT_ID);
+            inputObj.removeMeasurement(Measurements.TRACK_PREV_ID);
             inputObj.removeParent(trackObjectsName);
-            inputObj.removeParent(trackSegmentObjectsName);
-            inputObj.removePartner(inputObjectsName);
         }
 
         // Finding the spatial and frame frame limits of all objects in the inputObjects
         // set
         int[][] spatialLimits = inputObjects.getSpatialLimits();
-        int[] frameLimits = inputObjects.getTemporalLimits();
-
-        // Creating new track objects for all objects in the first frame
-        for (Obj inputObj : inputObjects.values()) {
-            if (inputObj.getT() == frameLimits[0]) {
-                createNewTrack(inputObj, trackObjects, trackSegmentObjects);
-            }
-        }
-
+        int[] frameLimits = inputObjects.getTemporalLimits();     
+            
         for (int t2 = frameLimits[0] + 1; t2 <= frameLimits[1]; t2++) {
             writeProgressStatus(t2 + 1, frameLimits[1] + 1, "frames");
 
@@ -730,7 +640,7 @@ public class TrackObjects extends Module {
                         // Creating new tracks for current objects that have no chance of being linked
                         // in other frames
                         for (int curr = 0; curr < nPObjects[1].size(); curr++)
-                            createNewTrack(nPObjects[1].get(curr), trackObjects, trackSegmentObjects);
+                            createNewTrack(nPObjects[1].get(curr), trackObjects);         
 
                         break;
                     }
@@ -740,7 +650,6 @@ public class TrackObjects extends Module {
                 // Calculating distances between objects and populating the cost matrix
                 ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0], nPObjects[1], workspace, inputObjects,
                         spatialLimits);
-                        
                 // Check if there are potential links, if not, skip to the next frame
                 if (linkables.size() > 0) {
                     DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
@@ -760,14 +669,8 @@ public class TrackObjects extends Module {
                         int ID2 = assignment.get(ID1);
                         Obj currObj = inputObjects.get(ID1);
                         Obj prevObj = inputObjects.get(ID2);
-                        linkObjects(prevObj, currObj, trackObjectsName);
+                        linkObjects(prevObj, currObj, trackObjects);
                     }
-                }
-
-                // Assigning any objects in the current frame without a track as new tracks
-                for (Obj currObj : nPObjects[1]) {
-                    if (currObj.getParent(trackObjectsName) == null)
-                        createNewTrack(currObj, trackObjects, trackSegmentObjects);
                 }
             }
         }
@@ -788,8 +691,6 @@ public class TrackObjects extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS, this));
-        parameters.add(new BooleanP(ALLOW_SPLITTING_AND_MERGING, this, false));
-        parameters.add(new OutputTrackObjectsP(TRACK_SEGMENT_OBJECTS, this));
 
         parameters.add(new SeparatorP(SPATIAL_SEPARATOR, this));
         parameters.add(new ChoiceP(LINKING_METHOD, this, LinkingMethods.CENTROID, LinkingMethods.ALL));
@@ -834,9 +735,6 @@ public class TrackObjects extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
-        returnedParameters.add(parameters.getParameter(ALLOW_SPLITTING_AND_MERGING));
-        if ((Boolean) parameters.getValue(ALLOW_SPLITTING_AND_MERGING, workspace))
-            returnedParameters.add(parameters.getParameter(TRACK_SEGMENT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(SPATIAL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LINKING_METHOD));
@@ -902,12 +800,26 @@ public class TrackObjects extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+        Workspace workspace = null;
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+
+        ObjMeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
+        ObjMeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
+
+        trackPrevID.setObjectsName(inputObjectsName);
+        trackNextID.setObjectsName(inputObjectsName);
+
+        returnedRefs.add(trackPrevID);
+        returnedRefs.add(trackNextID);
+
+        return returnedRefs;
+
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-        return null;
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override
@@ -923,15 +835,7 @@ public class TrackObjects extends Module {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        boolean allowSplitMerge = parameters.getValue(ALLOW_SPLITTING_AND_MERGING, workspace);
-
-        if (allowSplitMerge) {
-            String trackSegmentObjectsName = parameters.getValue(TRACK_SEGMENT_OBJECTS, workspace);
-            returnedRelationships.add(parentChildRefs.getOrPut(trackObjectsName, trackSegmentObjectsName));
-            returnedRelationships.add(parentChildRefs.getOrPut(trackSegmentObjectsName, inputObjectsName));
-        } else {
-            returnedRelationships.add(parentChildRefs.getOrPut(trackObjectsName, inputObjectsName));
-        }
+        returnedRelationships.add(parentChildRefs.getOrPut(trackObjectsName, inputObjectsName));
 
         return returnedRelationships;
 
