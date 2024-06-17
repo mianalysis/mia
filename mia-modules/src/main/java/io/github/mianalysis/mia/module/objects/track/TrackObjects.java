@@ -1,7 +1,7 @@
 // TODO: Could do with spinning the core element of this into a series of Track classes in the Common library
 // TODO: Get direction costs working in 3D
 
-package io.github.mianalysis.mia.module.objects.relate;
+package io.github.mianalysis.mia.module.objects.track;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +24,8 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.objects.relate.Linkable;
+import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -524,10 +526,14 @@ public class TrackObjects extends Module {
         return measurementChange <= maxMeasurementChange;
     }
 
-    public static void linkObjects(Obj prevObj, Obj currObj, String trackObjectsName) {
+    public static void linkObjects(Obj prevObj, Obj currObj, Objs trackObjects) {
         // Getting the track object from the previous-frame object
-        Obj track = prevObj.getParent(trackObjectsName);
-
+        Obj track = prevObj.getParent(trackObjects.getName());
+        
+        // If the previous object hasn't already got a track, create one
+        if (track == null)
+            track = createNewTrack(prevObj,trackObjects);
+        
         // Setting relationship between the current object and track
         track.addChild(currObj);
         currObj.addParent(track);
@@ -542,13 +548,15 @@ public class TrackObjects extends Module {
 
     }
 
-    public static void createNewTrack(Obj currObj, Objs trackObjects) {
+    public static Obj createNewTrack(Obj currObj, Objs trackObjects) {        
         // Creating a new track object
         Obj track = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
         // Setting relationship between the current object and track
         track.addChild(currObj);
         currObj.addParent(track);
+
+        return track;
 
     }
 
@@ -617,15 +625,8 @@ public class TrackObjects extends Module {
         // Finding the spatial and frame frame limits of all objects in the inputObjects
         // set
         int[][] spatialLimits = inputObjects.getSpatialLimits();
-        int[] frameLimits = inputObjects.getTemporalLimits();
-
-        // Creating new track objects for all objects in the first frame
-        for (Obj inputObj : inputObjects.values()) {
-            if (inputObj.getT() == frameLimits[0]) {
-                createNewTrack(inputObj, trackObjects);
-            }
-        }
-
+        int[] frameLimits = inputObjects.getTemporalLimits();     
+            
         for (int t2 = frameLimits[0] + 1; t2 <= frameLimits[1]; t2++) {
             writeProgressStatus(t2 + 1, frameLimits[1] + 1, "frames");
 
@@ -639,7 +640,7 @@ public class TrackObjects extends Module {
                         // Creating new tracks for current objects that have no chance of being linked
                         // in other frames
                         for (int curr = 0; curr < nPObjects[1].size(); curr++)
-                            createNewTrack(nPObjects[1].get(curr), trackObjects);
+                            createNewTrack(nPObjects[1].get(curr), trackObjects);         
 
                         break;
                     }
@@ -668,14 +669,8 @@ public class TrackObjects extends Module {
                         int ID2 = assignment.get(ID1);
                         Obj currObj = inputObjects.get(ID1);
                         Obj prevObj = inputObjects.get(ID2);
-                        linkObjects(prevObj, currObj, trackObjectsName);
+                        linkObjects(prevObj, currObj, trackObjects);
                     }
-                }
-
-                // Assigning any objects in the current frame without a track as new tracks
-                for (Obj currObj : nPObjects[1]) {
-                    if (currObj.getParent(trackObjectsName) == null)
-                        createNewTrack(currObj, trackObjects);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.visualise.plots;
 
+import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
@@ -199,7 +200,7 @@ public class PlotMeasurementTimeseries extends Module {
         Objs trackObjects = workspace.getObjects(inputTracksName);
         for (Obj trackObject : trackObjects.values()) {
             // Initialising plot
-            Plot plot = new Plot(inputTracksName + "(ID " + trackObject.getID() + ")", "Frame", yLabel);
+            Plot plot = new Plot(inputTracksName + " (ID " + trackObject.getID() + ")", "Frame", yLabel);
 
             // Getting values to plot
             int[] xValues = getXValues(trackObjects, trackObject, inputObjectsName, xRangeMode, xRangeMin, xRangeMax);
@@ -220,8 +221,9 @@ public class PlotMeasurementTimeseries extends Module {
             }
 
             if (addObjectID) {
+                Dimension dimension = plot.getSize();
                 plot.setColor(objectIDColour);
-                plot.addLabel(0.02, 0.08, inputTracksName + " (ID " + trackObject.getID() + ") ");
+                plot.addLabel(((double) 10)/((double) dimension.getWidth()), ((double) 25)/((double) dimension.getHeight()), inputTracksName + " (ID " + trackObject.getID() + ") ");
             }
 
             switch (yRangeMode) {

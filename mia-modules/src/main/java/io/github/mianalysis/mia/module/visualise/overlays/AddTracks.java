@@ -15,8 +15,10 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.gui.Line;
+import ij.gui.Overlay;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -144,7 +146,6 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
      */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-
     public AddTracks(Modules modules) {
         super("Add tracks", modules);
     }
@@ -157,36 +158,35 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
 
     }
 
-    public void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour,
-            double lineWidth, int history, @Nullable HashMap<Integer, Color> instantaneousColours) {
-        Objs pointObjects = object.getChildren(spotObjectsName);
+    public void addOverlay(Obj trackObject, String spotObjectsName, ImagePlus ipl, HashMap<Integer, Color> colours,
+            double lineWidth, int history, boolean instantaneousColour) {
+        Objs pointObjects = trackObject.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
         ij.gui.Overlay ovl = ipl.getOverlay();
 
-        // Putting the current track points into a TreeMap stored by the frame
-        TreeMap<Integer, Obj> points = new TreeMap<>();
-        for (Obj pointObject : pointObjects.values())
-            points.put(pointObject.getT(), pointObject);
-        
-        // Iterating over all points in the track, drawing lines between them
         int nFrames = ipl.getNFrames();
-        Obj p1 = null;
-        for (Obj p2 : points.values()) {
-            if (p1 != null) {
-                double[] position1 = getObjectPosition(p1, parameters, true, false);
-                double[] position2 = getObjectPosition(p2, parameters, true, false);
+        for (int t = 0; t < nFrames; t++) {
+            for (Obj pointObject : pointObjects.values()) {
+                if (pointObject.getT() > t || pointObject.getT() < t - history)
+                    continue;
 
-                double x1 = position1[0] + 0.5;
-                double y1 = position1[1] + 0.5;
-                double x2 = position2[0] + 0.5;
-                double y2 = position2[1] + 0.5;
+                // Showing previous object connections
+                Objs previousPartners = pointObject.getPreviousPartners(pointObject.getName());
 
-                // MIA.log.writeDebug(x1+"_"+y1+"_"+x2+"_"+y2);
+                for (Obj previousPartner : previousPartners.values()) {
+                    if (previousPartner.getT() < t - history)
+                        continue;
 
-                int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames, p2.getT() + history);
-                for (int t = p2.getT(); t <= maxFrame - 1; t++) {
+                    double[] position1 = getObjectPosition(pointObject, parameters, true, false);
+                    double[] position2 = getObjectPosition(previousPartner, parameters, true, false);
+
+                    double x1 = position1[0] + 0.5;
+                    double y1 = position1[1] + 0.5;
+                    double x2 = position2[0] + 0.5;
+                    double y2 = position2[1] + 0.5;
+
                     Line line = new Line(x1, y1, x2, y2);
 
                     if (ipl.isHyperStack()) {
@@ -199,18 +199,34 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
                     }
 
                     line.setStrokeWidth(lineWidth);
-                    if (instantaneousColours != null)
-                        // Special case of instantaneous colour
-                        colour = instantaneousColours.get(p2.getID());
 
+                    Color colour = null;
+                    if (instantaneousColour)
+                        colour = colours.get(previousPartner.getID());
+                    else if (pointObject.getPreviousPartners(pointObject.getName()).size() == 1)
+                        colour = colours.get(trackObject.getID());
+                    else {
+                        String parentName = trackObject.getName();
+                        
+                        if (spotObjectsName.contains("//")) {
+                            String[] elements = spotObjectsName.split(" // ");
+                            StringBuilder stringBuilder = new StringBuilder();
+                            for (int i = elements.length-2; i >= 0; i--)
+                                stringBuilder.append(elements[i]).append(" // ");
+                            stringBuilder.append(trackObject.getName());
+                            parentName = stringBuilder.toString();
+                        }                        
+                        
+                        colour = colours.get(previousPartner.getParent(parentName).getID());
+                    }
+                        
+                    
                     line.setStrokeColor(colour);
+
                     ovl.addElement(line);
 
                 }
             }
-
-            p1 = p2;
-
         }
     }
 
@@ -259,6 +275,8 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         double opacity = parameters.getValue(OPACITY, workspace);
         double lineWidth = parameters.getValue(LINE_WIDTH, workspace);
 
+        boolean instantaneousColour = colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE);
+
         // Only add output to workspace if not applying to input
         if (applyToInput)
             addOutputToWorkspace = false;
@@ -270,8 +288,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
-        HashMap<Integer, Color> instantaneousColours = null;
-        if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
+        if (instantaneousColour) {
             String[] elements = spotObjectsName.split(" // ");
             Objs spotObjects = workspace.getObjects(elements[elements.length - 1]);
             double[] range = new double[] { Double.NaN, Double.NaN };
@@ -279,7 +296,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
                 range[0] = minValue;
             if (rangeMaxMode.equals(RangeModes.MANUAL))
                 range[1] = maxValue;
-            instantaneousColours = ColourFactory
+            colours = ColourFactory
                     .getColours(ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true, range),
                             colourMap, opacity);
         }
@@ -290,22 +307,14 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
-        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1))
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
         for (Obj object : inputObjects.values()) {
-            // If using an instantaneous measurement, values will be null
-            Color colour = null;
-            if (colours != null)
-                colour = colours.get(object.getID());
-
-            addOverlay(object, spotObjectsName, ipl, colour, lineWidth, history, instantaneousColours);
-
+            addOverlay(object, spotObjectsName, ipl, colours, lineWidth, history, instantaneousColour);
             writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
-
         }
 
         Image outputImage = ImageFactory.createImage(outputImageName, ipl);
@@ -424,8 +433,8 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

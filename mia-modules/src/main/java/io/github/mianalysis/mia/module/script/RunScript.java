@@ -476,10 +476,10 @@ public class RunScript extends Module {
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
-
+        
         for (Parameters collection : collections.values()) {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.METADATA)) {
-                String metadataName = collection.getValue(OBJECT_METADATA_NAME, workspace);
+                String metadataName = collection.getValue(METADATA_NAME, workspace);
                 MetadataRef ref = metadataRefs.getOrPut(metadataName);
                 returnedRefs.add(ref);
             }

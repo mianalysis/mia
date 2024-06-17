@@ -737,8 +737,6 @@ public class Volume {
         
         Roi roi = new ThresholdToSelection().convert(ipr);
         double[][] extents = sliceVol.getExtents(true, false);
-        MIA.log.writeDebug("ROI "+roi);
-        MIA.log.writeDebug("Ex "+extents);
         roi.translate(extents[0][0], extents[1][0]);
 
         return roi;

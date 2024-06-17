@@ -29,7 +29,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
-import io.github.mianalysis.mia.module.objects.relate.TrackObjects.Measurements;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -288,8 +287,6 @@ public class TrackEditor extends Module {
                 Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID + 1);
                 obj.addParent(trackObject);
                 trackObject.addChild(obj);
-                obj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, Double.NaN));
             }
         }
 
@@ -354,17 +351,14 @@ public class TrackEditor extends Module {
                 trackObject.addChild(currSpotObj);
 
                 // Adding references to each other
-                if (prevSpotObj == null) {
-                    currSpotObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, Double.NaN));
-                } else {
-                    prevSpotObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currSpotObj.getID()));
-                    currSpotObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevSpotObj.getID()));
+                if (prevSpotObj != null) {
+                    prevSpotObj.addPartner(currSpotObj);
+                    currSpotObj.addPartner(prevSpotObj);
                 }
 
                 prevSpotObj = currSpotObj;
 
             }
-            prevSpotObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, Double.NaN));
         }
 
         addSingleTimepointTracks(trackIDs, spotObjects, trackObjects, inputTrackObjectsName);

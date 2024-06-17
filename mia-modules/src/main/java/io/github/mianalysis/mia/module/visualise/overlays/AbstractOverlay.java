@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.process.ColourFactory;
-import java_cup.parse_reduce_row;
 
 public abstract class AbstractOverlay extends Module {
     public static final String COLOUR_SEPARATOR = "Overlay colour";

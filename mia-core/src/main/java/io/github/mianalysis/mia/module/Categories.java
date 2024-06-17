@@ -68,6 +68,9 @@ public class Categories {
         public final static Category OBJECTS_RELATE_MERGE = new Category("Merge",
                         "Modules used for combining either different objects into one or combining objects from different collections into a single collection.",
                         OBJECTS_RELATE);
+        public final static Category OBJECTS_TRACK = new Category("Track",
+                        "Modules tracking objects between frames.  Establishes parent-child relationships, with parent track objects acting as links for all instances of that track.",
+                        OBJECTS);
         public final static Category OBJECTS_TRANSFORM = new Category("Transform",
                         "Modules capable of updating coordinates of existing objects.  These operations can include hole filling and masking.",
                         OBJECTS);

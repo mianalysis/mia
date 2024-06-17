@@ -6,7 +6,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
-import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
+import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 
 @Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
 public class TrackObjectsLostFound extends LostAndFoundItem {

@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
@@ -208,7 +207,7 @@ public class Obj extends Volume {
         // If the first parent was the only one listed, returning this
         if (elements.length == 1)
             return parent;
-
+             
         // If there are additional parents listed, re-constructing the string and
         // running this method on the parent
         StringBuilder stringBuilder = new StringBuilder();
@@ -235,7 +234,10 @@ public class Obj extends Volume {
 
     public void removeParent(String name) {
         parents.remove(name);
+    }
 
+    public void removeParent(Obj parent) {
+        parents.remove(parent.getName());
     }
 
     public LinkedHashMap<String, Objs> getChildren() {
@@ -249,8 +251,7 @@ public class Obj extends Volume {
         // Getting the first set of children
         Objs allChildren = children.get(elements[0]);
         if (allChildren == null)
-            return new Objs(elements[0], spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(),
-                    objCollection.getTemporalUnit());
+            return new Objs(elements[0], objCollection);
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -267,8 +268,7 @@ public class Obj extends Volume {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        Objs outputChildren = new Objs(name, allChildren.getSpatialCalibration(),
-                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
+        Objs outputChildren = new Objs(name, allChildren);
         for (Obj child : allChildren.values()) {
             Objs currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild : currentChildren.values())
@@ -294,8 +294,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new Objs(childName, child.getSpatialCalibration(),
-                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
+        children.computeIfAbsent(childName, k -> new Objs(childName, child.getObjectCollection()));
         children.get(childName).add(child);
 
     }
@@ -329,8 +328,7 @@ public class Obj extends Volume {
     public void addPartner(Obj partner) {
         String partnerName = partner.getName();
 
-        partners.computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getSpatialCalibration(),
-                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
+        partners.computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getObjectCollection()));
         partners.get(partnerName).add(partner);
     }
 
@@ -342,6 +340,60 @@ public class Obj extends Volume {
 
     public void removePartner(String name) {
         partners.remove(name);
+    }
+
+    /**
+     * Returns any partners that happened in previous frames
+     */
+    public Objs getPreviousPartners(String name) {
+        Objs allPartners = getPartners(name);
+
+        if (allPartners == null)
+            return new Objs(name, objCollection);
+
+        Objs previousPartners = new Objs(name, allPartners);
+        for (Obj partner : allPartners.values())
+            if (partner.getT() < T)
+                previousPartners.add(partner);
+
+        return previousPartners;
+
+    }
+
+    /**
+     * Returns any partners that happen in following frames
+     */
+    public Objs getSimultaneousPartners(String name) {
+        Objs allPartners = getPartners(name);
+
+        if (allPartners == null)
+            return new Objs(name, objCollection);
+
+        Objs simultaneousPartners = new Objs(name, allPartners);
+        for (Obj partner : allPartners.values())
+            if (partner.getT() == T)
+                simultaneousPartners.add(partner);
+
+        return simultaneousPartners;
+
+    }
+
+    /**
+     * Returns any partners that happen in following frames
+     */
+    public Objs getNextPartners(String name) {
+        Objs allPartners = getPartners(name);
+
+        if (allPartners == null)
+            return new Objs(name, objCollection);
+
+        Objs nextPartners = new Objs(name, allPartners);
+        for (Obj partner : allPartners.values())
+            if (partner.getT() > T)
+                nextPartners.add(partner);
+
+        return nextPartners;
+
     }
 
     /**
@@ -406,7 +458,6 @@ public class Obj extends Volume {
         if (rois.containsKey(slice))
             return (Roi) rois.get(slice).clone();
 
-        MIA.log.writeDebug("ID "+ID);
         Roi roi = super.getRoi(slice);
 
         if (roi == null)
