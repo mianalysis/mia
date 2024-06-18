@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -40,6 +41,7 @@ import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.ParentChildRef;
+import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -206,6 +208,29 @@ public class LoadObjectsFromROIs extends Module {
             e.printStackTrace();
             return;
         }
+
+        // If dealing with tracks, reapply partnerships between adjacent timepoints
+        if (trackObjects != null) {
+            for (Obj track:trackObjects.values()) {
+                // Sorting children by timepoint
+                TreeMap<Integer,Obj> children = new TreeMap<>();
+                for (Obj child:track.getChildren(outputObjects.getName()).values())
+                    children.put(child.getT(),child);
+
+                // Iterating over map, adding partnerships
+                Obj previousChild = null;
+                for (Obj child:children.values()) {
+                    if (previousChild != null) {
+                        previousChild.addPartner(child);
+                        child.addPartner(previousChild);
+                    }
+
+                    previousChild = child;
+                    
+                }
+            }
+        }
+
     }
 
     static void addRoi(Objs outputObjects, Objs trackObjects, Roi roi, String name) {
@@ -388,7 +413,15 @@ public class LoadObjectsFromROIs extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+        Workspace workspace = null;
+        PartnerRefs returnedRefs = new PartnerRefs();
+
+        if ((boolean) parameters.getValue(ASSIGN_TRACKS, workspace)) {
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+            returnedRefs.add(new PartnerRef(outputObjectsName, outputObjectsName));
+        }
+
+        return returnedRefs;
     }
 
     @Override
