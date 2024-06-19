@@ -211,7 +211,7 @@ public class GUI {
     private static void initialiseStatusTextField() {
         textField.setPreferredSize(new Dimension(Integer.MAX_VALUE, statusHeight));
         textField.setBorder(null);
-        textField.setText("MIA (version " + MIA.getVersion() + ")");
+        textField.setText("<html><b>MIA (version " + MIA.getVersion() + ")</b></html>");
         textField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);

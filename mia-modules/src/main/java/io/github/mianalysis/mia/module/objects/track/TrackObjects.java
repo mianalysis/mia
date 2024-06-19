@@ -577,7 +577,7 @@ public class TrackObjects extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.OBJECTS_RELATE;
+        return Categories.OBJECTS_TRACK;
     }
 
     @Override
@@ -674,6 +674,11 @@ public class TrackObjects extends Module {
                 }
             }
         }
+
+        // Create a new track for any objects that still don't have one (mostly those that appear only for one frame)
+        for (Obj inputObject:inputObjects.values())
+            if (inputObject.getParent(trackObjectsName) == null)
+                createNewTrack(inputObject, trackObjects);        
 
         // If selected, showing an overlay of the tracked objects
         if (showOutput)
