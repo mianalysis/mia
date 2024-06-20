@@ -1,4 +1,6 @@
-package io.github.mianalysis.mia.module.objects.detect;
+package io.github.mianalysis.mia.process.selectors;
+
+import com.drew.lang.annotations.Nullable;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,7 +9,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -48,22 +49,15 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
-import ij.gui.Line;
-import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
-import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
-import ij.gui.Toolbar;
 import ij.io.RoiDecoder;
 import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
@@ -71,50 +65,25 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
-import io.github.mianalysis.mia.object.parameters.BooleanP;
-import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.InputImageP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
-import io.github.mianalysis.mia.object.parameters.objects.OutputTrackObjectsP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
-import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
-import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
-import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
-import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
-import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
-/**
- * Created by sc13967 on 27/02/2018.
- */
+public class ObjectSelector implements ActionListener, KeyListener {
+    private Objs outputObjects = null;
+    private Objs outputTrackObjects = null;
 
-/**
-* Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process.<br><br>This module will display a control panel and an image onto which selections are made.  <br><br>Following selection of a region to be included in the object, the user can either add this region to a new object ("Add new" button), or add it to an existing object ("Add to existing" button).  The target object for adding to an existing object is specified using the "Existing object number" control (a list of existing object IDs is shown directly below this control).<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections.<br><br>Once all selections have been made, objects are added to the workspace with the "Finish" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the "Add to existing" control.
-*/
-@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ManuallyIdentifyObjects extends Module implements ActionListener, KeyListener {
+    private boolean overflow = false;
+    private String saveObjectsPath = null;
+
     private JFrame frame;
     private JMenuBar menuBar;
     private JTextField objectNumberField;
@@ -129,12 +98,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     private Overlay origOverlay;
     private HashMap<Integer, ArrayList<ObjRoi>> rois;
     private int maxID;
-
-    private Objs outputObjects;
-    private Objs outputTrackObjects;
-
-    private boolean overflow = false;
-    private String saveObjectsPath = null;
+    private String pointMode;
+    private String volumeTypeString;
+    private ClassSelector classSelector;
 
     // Menu bar options
     private static final String FILE = "File";
@@ -148,114 +114,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
-    // Parameters
-
-	/**
-	* 
-	*/
-    public static final String INPUT_SEPARATOR = "Image input";
-
-	/**
-	* Image onto which selections will be drawn.  This will be displayed automatically when the module runs.
-	*/
-    public static final String INPUT_IMAGE = "Input image";
-
-	/**
-	* 
-	*/
-    public static final String OUTPUT_SEPARATOR = "Object output";
-
-	/**
-	* Objects created by this module.
-	*/
-    public static final String OUTPUT_OBJECTS = "Output objects";
-
-	/**
-	* The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul><li>"Pointlist" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li><li>"Octree" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li><li>"Quadtree" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>
-	*/
-    public static final String VOLUME_TYPE = "Volume type";
-
-	/**
-	* When selected, the same object can be identified across multiple timepoints.  The same ID should be used for all objects in this "track" - this will become the ID of the track object itself, while each timepoint instance will be assigned its own unique ID.  This feature also enables the use of temporal intepolation of objects.
-	*/
-    public static final String OUTPUT_TRACKS = "Output tracks";
-
-	/**
-	* Name of track objects to be added to the workspace.  These will be parents of the individual timepoint instances and provide a way of grouping all the individual timepoint instances of a particular object.  Track objects themselves do not contain any coordinate information.
-	*/
-    public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
-
-	/**
-	* Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results).
-	*/
-    public static final String SPATIAL_INTERPOLATION = "Spatial interpolation";
-
-	/**
-	* Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).
-	*/
-    public static final String TEMPORAL_INTERPOLATION = "Temporal interpolation";
-
-	/**
-	* 
-	*/
-    public static final String SELECTION_SEPARATOR = "Object selection controls";
-
-	/**
-	* Text that will be displayed to the user on the object selection control panel.  This can inform them of the steps they need to take to select the objects.
-	*/
-    public static final String INSTRUCTION_TEXT = "Instruction text";
-
-	/**
-	* Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: Freehand line, Freehand region, Line, Oval, Points, Polygon, Rectangle, Segmented line, Wand (tracing) tool.
-	*/
-    public static final String SELECTOR_TYPE = "Default selector type";
-    public static final String POINT_MODE = "Point mode (point-type ROIs only)";
-
-	/**
-	* Message to display in title of image.
-	*/
-    public static final String MESSAGE_ON_IMAGE = "Message on image";
-
-    public ManuallyIdentifyObjects(Modules modules) {
-        super("Manually identify objects", modules);
-    }
-
-    public interface SelectorTypes {
-        String FREEHAND_LINE = "Freehand line";
-        String FREEHAND_REGION = "Freehand region";
-        String LINE = "Line";
-        String OVAL = "Oval";
-        String POINTS = "Points";
-        String POLYGON = "Polygon";
-        String RECTANGLE = "Rectangle";
-        String SEGMENTED_LINE = "Segmented line";
-        String WAND = "Wand (tracing) tool";
-
-        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POINTS, POLYGON, RECTANGLE,
-                SEGMENTED_LINE, WAND };
-
-    }
-
-    public interface SpatialInterpolationModes {
-        String NONE = "None";
-        String SPATIAL = "Spatial";
-
-        String[] ALL = new String[] { NONE, SPATIAL };
-
-    }
-
-    public interface SpatioTemporalInterpolationModes extends SpatialInterpolationModes {
-        String NONE = "None";
-        String TEMPORAL = "Temporal";
-        String SPATIAL_AND_TEMPORAL = "Spatial and temporal";
-
-        String[] ALL = new String[] { NONE, SPATIAL, TEMPORAL, SPATIAL_AND_TEMPORAL };
-
-    }
-
-    public interface VolumeTypes extends VolumeTypesInterface {
-    }
-
     public interface PointModes {
         String INDIVIDUAL_OBJECTS = "Individual objects";
         String SINGLE_OBJECT = "Single object";
@@ -264,37 +122,54 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     }
 
-    void setSelector(String selectorType) {
-        switch (selectorType) {
-            case SelectorTypes.FREEHAND_LINE:
-                IJ.setTool(Toolbar.FREELINE);
-                return;
-            default:
-            case SelectorTypes.FREEHAND_REGION:
-                IJ.setTool(Toolbar.FREEROI);
-                return;
-            case SelectorTypes.LINE:
-                IJ.setTool(Toolbar.LINE);
-                return;
-            case SelectorTypes.OVAL:
-                IJ.setTool(Toolbar.OVAL);
-                return;
-            case SelectorTypes.POINTS:
-                IJ.setTool(Toolbar.POINT);
-                return;
-            case SelectorTypes.RECTANGLE:
-                IJ.setTool(Toolbar.RECTANGLE);
-                return;
-            case SelectorTypes.SEGMENTED_LINE:
-                IJ.setTool(Toolbar.POLYLINE);
-                return;
-            case SelectorTypes.POLYGON:
-                IJ.setTool(Toolbar.POLYGON);
-                return;
-            case SelectorTypes.WAND:
-                IJ.setTool(Toolbar.WAND);
-                return;
-        }
+    public interface ObjMetadataItems {
+        String CLASS = "CLASS";
+    }
+
+    public ObjectSelector(ImagePlus inputImagePlus, String outputObjectsName, String messageOnImage,
+            String instructionText, String volumeTypeString, String pointMode,
+            @Nullable String outputTrackObjectsName, @Nullable ClassSelector classSelector) {
+        this.pointMode = pointMode;
+        this.volumeTypeString = volumeTypeString;
+        this.classSelector = classSelector;
+
+        displayImagePlus = new Duplicator().run(inputImagePlus);
+        displayImagePlus.setCalibration(null);
+        displayImagePlus.setTitle(messageOnImage);
+        displayImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
+
+        // Clearing any ROIs stored from previous runs
+        rois = new HashMap<>();
+        listModel.clear();
+
+        origOverlay = displayImagePlus.getOverlay();
+        overlay = new Overlay();
+        displayImagePlus.setOverlay(overlay);
+        displayImagePlus.setHideOverlay(false);
+        updateOverlay();
+
+        // Initialising output objects
+        outputObjects = new Objs(outputObjectsName, inputImagePlus);
+        if (outputTrackObjectsName != null)
+            outputTrackObjects = new Objs(outputTrackObjectsName, inputImagePlus);
+
+        // Displaying the image and showing the control
+        displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
+        displayImagePlus.show();
+        showOptionsPanel(instructionText);
+
+    }
+
+    public boolean isActive() {
+        return frame != null;
+    }
+
+    public Objs getObjects() {
+        return outputObjects;
+    }
+
+    public Objs getTrackObjects() {
+        return outputTrackObjects;
     }
 
     private void showOptionsPanel(String instructionText) {
@@ -545,17 +420,19 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         // of the stack separately
         for (int z = 1; z <= nSlices; z++) {
             // Extracting the slice and interpolating
-            ImagePlus sliceIpl = ExtractSubstack.extractSubstack(binaryIpl,"Substack","1-1", z + "-" + z, "1-" + nFrames);
-            // ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
+            ImagePlus sliceIpl = ExtractSubstack.extractSubstack(binaryIpl, "Substack", "1-1", z + "-" + z,
+                    "1-" + nFrames);
+            // ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z
+            // + "-" + z, "1-" + nFrames);
             ImageStack sliceIst = sliceIpl.getStack();
-            
+
             if (!checkStackForInterpolation(sliceIst))
                 continue;
 
             binaryInterpolator.run(sliceIst);
-            
+
             // Replacing interpolated slices in binaryImage
-            for (int t=1;t<=sliceIst.size();t++) {
+            for (int t = 1; t <= sliceIst.size(); t++) {
                 int idx = binaryIpl.getStackIndex(1, z, t);
                 binaryIpl.getStack().setProcessor(sliceIst.getProcessor(t), idx);
             }
@@ -577,255 +454,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     }
 
     @Override
-    public Category getCategory() {
-        return Categories.OBJECTS_DETECT;
-    }
-
-    @Override
-    public String getVersionNumber() {
-        return "1.0.2";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process."
-                + "<br><br>This module will display a control panel and an image onto which selections are made.  "
-                + "<br><br>Following selection of a region to be included in the object, the user can either add this region to a new object (\""
-                + ADD_NEW + "\" button), or add it to an existing object (\"" + ADD_EXISTING + "\" button).  "
-                + "The target object for adding to an existing object is specified using the \"Existing object number\" control (a list of existing object IDs is shown directly below this control)."
-                + "<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections."
-                + "<br><br>Once all selections have been made, objects are added to the workspace with the \"" + FINISH
-                + "\" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the \""
-                + ADD_EXISTING + "\" control.";
-    }
-
-    @Override
-    public Status process(Workspace workspace) {// Local access to this is required for the action listeners
-        // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
-        String type = parameters.getValue(VOLUME_TYPE, workspace);
-        boolean outputTracks = parameters.getValue(OUTPUT_TRACKS, workspace);
-        String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS, workspace);
-        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION, workspace);
-        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION, workspace);
-        String instructionText = parameters.getValue(INSTRUCTION_TEXT, workspace);
-        String selectorType = parameters.getValue(SELECTOR_TYPE, workspace);
-        String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE, workspace);
-
-        // Getting input image
-        Image inputImage = workspace.getImage(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-        SpatCal calibration = SpatCal.getFromImage(inputImagePlus);
-        int nFrames = inputImagePlus.getNFrames();
-        double frameInterval = inputImagePlus.getCalibration().frameInterval;
-
-        setSelector(selectorType);
-
-        displayImagePlus = new Duplicator().run(inputImagePlus);
-        displayImagePlus.setCalibration(null);
-        displayImagePlus.setTitle(messageOnImage);
-        displayImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
-
-        // Clearing any ROIs stored from previous runs
-        rois = new HashMap<>();
-        listModel.clear();
-
-        origOverlay = displayImagePlus.getOverlay();
-        overlay = new Overlay();
-        displayImagePlus.setOverlay(overlay);
-        displayImagePlus.setHideOverlay(false);
-        updateOverlay();
-
-        // Initialising output objects
-        outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
-        if (outputTracks)
-            outputTrackObjects = new Objs(outputTrackObjectsName, calibration, nFrames, frameInterval,
-                    TemporalUnit.getOMEUnit());
-
-        // Displaying the image and showing the control
-        displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
-        displayImagePlus.show();
-        showOptionsPanel(instructionText);
-
-        // All the while the control is open, do nothing
-        while (frame != null)
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                // Do nothing as the user has selected this
-            }
-
-        // If more pixels than Integer.MAX_VALUE were assigned, return false
-        // (IntegerOverflowException).
-        if (overflow)
-            return Status.FAIL;
-
-        // If necessary, apply interpolation
-        try {
-            if (spatialInterpolation)
-                applySpatialInterpolation(outputObjects, type);
-            if (outputTracks && temporalInterpolation)
-                applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
-        } catch (IntegerOverflowException e) {
-            return Status.FAIL;
-        }
-
-        workspace.addObjects(outputObjects);
-
-        // Showing the selected objects
-        if (showOutput)
-            if (outputTracks)
-                TrackObjects.showObjects(outputObjects, outputTrackObjectsName);
-            else
-                outputObjects.convertToImageIDColours().show();
-
-        return Status.PASS;
-
-    }
-
-    @Override
-    protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-
-        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
-        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
-        parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
-        parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));
-        parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false));
-
-        parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
-        parameters.add(new TextAreaP(INSTRUCTION_TEXT, this,
-                "Draw round an object, then select one of the following"
-                        + "\n(or click \"Finish adding objects\" at any time)."
-                        + "\nDifferent timepoints must be added as new objects.",
-                true, 100));
-        parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL));
-        parameters.add(new ChoiceP(POINT_MODE, this, PointModes.INDIVIDUAL_OBJECTS, PointModes.ALL));
-        parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image"));
-
-        addParameterDescriptions();
-
-    }
-
-    @Override
-    public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
-        Parameters returnedParameters = new Parameters();
-
-        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.get(INPUT_IMAGE));
-
-        returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
-        returnedParameters.add(parameters.get(VOLUME_TYPE));
-        returnedParameters.add(parameters.get(POINT_MODE)); // Must always be visible, as user can change ROI type
-        returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
-        returnedParameters.add(parameters.get(OUTPUT_TRACKS));
-
-        if ((boolean) parameters.getValue(OUTPUT_TRACKS, workspace)) {
-            returnedParameters.add(parameters.get(OUTPUT_TRACK_OBJECTS));
-            returnedParameters.add(parameters.get(TEMPORAL_INTERPOLATION));
-        }
-
-        returnedParameters.add(parameters.get(SELECTION_SEPARATOR));
-        returnedParameters.add(parameters.get(INSTRUCTION_TEXT));
-        returnedParameters.add(parameters.get(SELECTOR_TYPE));
-        returnedParameters.add(parameters.get(MESSAGE_ON_IMAGE));
-
-        return returnedParameters;
-
-    }
-
-    @Override
-    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
-    }
-
-    @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
-    }
-
-    @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
-    }
-
-    @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
-    }
-
-    @Override
-    public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
-        ParentChildRefs returnedRelationships = new ParentChildRefs();
-
-        if ((boolean) parameters.getValue(OUTPUT_TRACKS, workspace))
-            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS, workspace),
-                    parameters.getValue(OUTPUT_OBJECTS, workspace)));
-
-        return returnedRelationships;
-
-    }
-
-    @Override
-    public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
-    }
-
-    @Override
-    public boolean verify() {
-        return true;
-    }
-
-    void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription(
-                "Image onto which selections will be drawn.  This will be displayed automatically when the module runs.");
-
-        parameters.get(OUTPUT_OBJECTS).setDescription("Objects created by this module.");
-
-        parameters.get(VOLUME_TYPE).setDescription(
-                "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-                        + "<li>\"" + VolumeTypes.POINTLIST
-                        + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-                        + "<li>\"" + VolumeTypes.OCTREE
-                        + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-                        + "<li>\"" + VolumeTypes.QUADTREE
-                        + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
-
-        parameters.get(OUTPUT_TRACKS).setDescription(
-                "When selected, the same object can be identified across multiple timepoints.  The same ID should be used for all objects in this \"track\" - this will become the ID of the track object itself, while each timepoint instance will be assigned its own unique ID.  This feature also enables the use of temporal intepolation of objects.");
-
-        parameters.get(OUTPUT_TRACK_OBJECTS).setDescription(
-                "Name of track objects to be added to the workspace.  These will be parents of the individual timepoint instances and provide a way of grouping all the individual timepoint instances of a particular object.  Track objects themselves do not contain any coordinate information.");
-
-        parameters.get(SPATIAL_INTERPOLATION).setDescription(
-                "Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
-
-        parameters.get(TEMPORAL_INTERPOLATION).setDescription(
-                "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
-
-        parameters.get(INSTRUCTION_TEXT).setDescription(
-                "Text that will be displayed to the user on the object selection control panel.  This can inform them of the steps they need to take to select the objects.");
-
-        parameters.get(SELECTOR_TYPE).setDescription(
-                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: "
-                        + String.join(", ", SelectorTypes.ALL) + ".");
-
-        parameters.get(MESSAGE_ON_IMAGE).setDescription("Message to display in title of image.");
-
-    }
-
-    @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case (ADD_NEW):
-                addNewObject();
+                new Thread(() -> {
+                    addNewObject();
+                }).start();
                 break;
 
             case (ADD_EXISTING):
@@ -869,7 +503,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         }
 
         if (roi.getType() == Roi.POINT)
-            switch ((String) parameters.getValue(POINT_MODE, null)) {
+            switch (pointMode) {
                 case PointModes.INDIVIDUAL_OBJECTS:
                     Point[] points = ((PointRoi) roi).getContainedPoints();
                     for (Point point : points)
@@ -895,11 +529,24 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     }
 
     public void addSingleRoi(Roi roi) {
+        classSelector.setVisible(true);
+
         int ID = ++maxID;
 
         ArrayList<ObjRoi> currentRois = new ArrayList<>();
 
-        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1);
+        // If a ClassSelector has been provided, show it and wait for response
+        String assignedClass = null;
+        if (classSelector != null) {
+            while (classSelector.isActive())
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            assignedClass = classSelector.getLastSelectedClass();
+        }
+
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1, assignedClass);
         currentRois.add(objRoi);
         rois.put(ID, currentRois);
 
@@ -984,8 +631,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                 continue;
 
             // Creating the new object
-            String type = parameters.getValue(VOLUME_TYPE, null);
-            VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
+            VolumeType volumeType = VolumeTypesInterface.getVolumeType(volumeTypeString);
             Obj outputObject = outputObjects.createAndAddNewObject(volumeType, ID);
 
             for (ObjRoi objRoi : currentRois) {
@@ -1006,6 +652,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                         }
                     }
                 }
+
+                if (objRoi.getAssignedClass() != null)
+                    outputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, objRoi.getAssignedClass()));
+
             }
         }
     }
@@ -1022,8 +672,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             Obj outputTrack = outputTrackObjects.createAndAddNewObject(VolumeType.POINTLIST, ID);
 
             // Creating the new object
-            String type = parameters.getValue(VOLUME_TYPE, null);
-            VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
+            VolumeType volumeType = VolumeTypesInterface.getVolumeType(volumeTypeString);
 
             HashMap<Integer, Obj> objectsByT = new HashMap<>();
             for (ObjRoi objRoi : currentRois) {
@@ -1162,7 +811,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                     String label = currentRoi.getShortString() + ".roi";
 
                     Roi roi = currentRoi.getRoi();
-                    roi.setPosition(1, currentRoi.z - 1, currentRoi.t - 1);
+                    roi.setPosition(1, currentRoi.getZ() - 1, currentRoi.getT() - 1);
 
                     zos.putNextEntry(new ZipEntry(label));
                     re.write(roi);
@@ -1262,140 +911,23 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     }
 
-    static class ObjRoi {
-        private final int ID;
-        private final Roi roi;
-        private final int t;
-        private final int z;
-
-        ObjRoi(int ID, Roi roi, int t, int z) {
-            this.ID = ID;
-            this.roi = duplicateRoi(roi);
-            this.t = t;
-            this.z = z;
-
-        }
-
-        public static Roi duplicateRoi(Roi roi) {
-            Roi newRoi;
-
-            // Need to processAutomatic Roi depending on its type
-            switch (roi.getType()) {
-                case Roi.RECTANGLE:
-                    newRoi = new Roi(roi.getBounds());
-                    break;
-
-                case Roi.OVAL:
-                    Rectangle bounds = roi.getBounds();
-                    newRoi = new OvalRoi(bounds.x, bounds.y, bounds.width, bounds.height);
-                    break;
-
-                case Roi.FREEROI:
-                case Roi.POLYGON:
-                case Roi.TRACED_ROI:
-                    PolygonRoi polyRoi = (PolygonRoi) roi;
-                    int[] x = polyRoi.getXCoordinates();
-                    int[] xx = new int[x.length];
-                    for (int i = 0; i < x.length; i++)
-                        xx[i] = x[i] + (int) polyRoi.getXBase();
-
-                    int[] y = polyRoi.getYCoordinates();
-                    int[] yy = new int[x.length];
-                    for (int i = 0; i < y.length; i++)
-                        yy[i] = y[i] + (int) polyRoi.getYBase();
-
-                    newRoi = new PolygonRoi(xx, yy, polyRoi.getNCoordinates(), roi.getType());
-                    break;
-
-                case Roi.FREELINE:
-                case Roi.POLYLINE:
-                    polyRoi = (PolygonRoi) roi;
-
-                    x = polyRoi.getXCoordinates();
-                    xx = new int[x.length];
-                    for (int i = 0; i < x.length; i++)
-                        xx[i] = x[i] + (int) polyRoi.getXBase();
-
-                    y = polyRoi.getYCoordinates();
-                    yy = new int[x.length];
-                    for (int i = 0; i < y.length; i++)
-                        yy[i] = y[i] + (int) polyRoi.getYBase();
-
-                    newRoi = new PolygonRoi(xx, yy, polyRoi.getNCoordinates(), roi.getType());
-                    break;
-
-                case Roi.LINE:
-                    Line line = (Line) roi;
-
-                    newRoi = new Line(line.x1, line.y1, line.x2, line.y2);
-                    break;
-
-                case Roi.POINT:
-                    PointRoi pointRoi = (PointRoi) roi;
-
-                    Point[] points = pointRoi.getContainedPoints();
-                    int[] xxx = new int[points.length];
-                    int[] yyy = new int[points.length];
-                    for (int i = 0; i < points.length; i++) {
-                        xxx[i] = points[i].x;
-                        yyy[i] = points[i].y;
-                    }
-
-                    newRoi = new PointRoi(xxx, yyy, points.length);
-                    break;
-
-                default:
-                    MIA.log.writeWarning("ROI type unsupported.  Using bounding box for selection.");
-                    newRoi = new Roi(roi.getBounds());
-                    break;
-            }
-
-            return newRoi;
-
-        }
-
-        public int getID() {
-            return ID;
-        }
-
-        public Roi getRoi() {
-            return roi;
-        }
-
-        public int getT() {
-            return t;
-        }
-
-        public int getZ() {
-            return z;
-        }
-
-        @Override
-        public String toString() {
-            return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + (z + 1);
-        }
-
-        public String getShortString() {
-            return "ID" + String.valueOf(ID) + "_TR-1_T" + (t + 1) + "_Z" + (z + 1);
-        }
+    public boolean hadOverflow() {
+        return overflow;
     }
 
     @Override
     public void keyPressed(KeyEvent arg0) {
         if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
-            addNewObject();
-
+            new Thread(() -> {
+                addNewObject();
+            }).start();
     }
 
     @Override
     public void keyReleased(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 }
