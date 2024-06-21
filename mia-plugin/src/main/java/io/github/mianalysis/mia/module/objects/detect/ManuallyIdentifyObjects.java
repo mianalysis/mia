@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.TreeSet;
 
@@ -46,6 +47,7 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
 import util.opencsv.CSVReader;
+import util.opencsv.CSVWriter;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -333,7 +335,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 break;
             case ClassesSources.FIXED_LIST:
                 String[] classesList = classList.split(",");
-                for (String item:classesList)
+                for (String item : classesList)
                     classes.add(item);
 
                 break;
@@ -341,6 +343,26 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         return classes;
 
+    }
+
+    void writeClassesFile(String classFile, TreeSet<String> allClasses) {
+        try {
+            CSVWriter writer;
+            try {
+                writer = new CSVWriter(new FileWriter(classFile));
+            } catch (FileNotFoundException e) {
+                writer = new CSVWriter(new FileWriter(
+                        appendDateTime(classFile, AbstractSaver.AppendDateTimeModes.ALWAYS)));
+            }
+
+            for (String clazz : allClasses)
+                writer.writeNext(new String[] { clazz });
+
+            writer.close();
+
+        } catch (IOException e) {
+            MIA.log.writeError(e);
+        }
     }
 
     @Override
@@ -362,6 +384,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String classesSource = parameters.getValue(CLASSES_SOURCE, workspace);
         String classFile = parameters.getValue(CLASS_FILE, workspace);
         boolean allowAdditions = parameters.getValue(ALLOW_ADDITIONS, workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
         String classList = parameters.getValue(CLASS_LIST, workspace);
 
         // Getting input image
@@ -376,7 +401,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         ClassSelector classSelector = null;
         if (assignClasses) {
             TreeSet<String> classes = getClasses(classesSource, classFile, classList);
-            classSelector = new ClassSelector(classes);
+            classSelector = new ClassSelector(classes, allowAdditions);
         }
 
         ObjectSelector objectSelector = new ObjectSelector(inputImagePlus, outputObjectsName, messageOnImage,
@@ -393,6 +418,31 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         // (IntegerOverflowException).
         if (objectSelector.hadOverflow())
             return Status.FAIL;
+
+        // Writing classes to file
+        if (assignClasses && classSelector != null) {
+            switch (classesSource) {
+                case ClassesSources.EXISTING_CLASS_FILE:
+                    TreeSet<String> allClasses = classSelector.getAllClasses();
+                    writeClassesFile(classFile, allClasses);
+                    break;
+                case ClassesSources.NEW_CLASS_FILE:
+                    allClasses = classSelector.getAllClasses();
+                    String outputPath = getOutputPath(modules, workspace);
+                    String outputName = getOutputName(modules, workspace);
+
+                    // Adding last bits to name
+                    outputPath = outputPath + outputName;
+                    outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+                    outputPath = appendDateTime(outputPath, appendDateTimeMode);
+                    outputPath = outputPath + suffix + ".csv";
+
+                    writeClassesFile(outputPath, allClasses);
+
+                    break;
+            }
+
+        }
 
         // Getting objects
         Objs outputObjects = objectSelector.getObjects();
