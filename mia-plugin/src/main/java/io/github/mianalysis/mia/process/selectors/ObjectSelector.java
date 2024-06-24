@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -317,9 +318,6 @@ public class ObjectSelector implements ActionListener, KeyListener {
         displayImagePlus.setHideOverlay(!overlayCheck.isSelected());
 
         frame.pack();
-        // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        // frame.setLocation((screenSize.width - frame.getWidth()) / 2,
-        // (screenSize.height - frame.getHeight()) / 2);
         frame.setLocation(100, 100);
         frame.setVisible(true);
         frame.setResizable(false);
@@ -852,7 +850,9 @@ public class ObjectSelector implements ActionListener, KeyListener {
     void loadObjects() {
         String inPath = getLoadPath();
 
-        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-0-9]+)_T([0-9]+)_Z([0-9]+)");
+        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-[0-9]]+)_T([0-9]+)_Z([0-9]+)_?(.*)");
+
+        TreeSet<String> existingClasses = classSelector != null ? new TreeSet<>() : null;
 
         try {
             ZipInputStream in = new ZipInputStream(new FileInputStream(inPath));
@@ -879,11 +879,15 @@ public class ObjectSelector implements ActionListener, KeyListener {
                             // No need to load track (group 2)
                             int t = Integer.parseInt(matcher.group(3)) - 1;
                             int z = Integer.parseInt(matcher.group(4)) - 1;
+                            String assignedClass = matcher.group(5);
+                            MIA.log.writeDebug(assignedClass+"_"+existingClasses);
+                            if (existingClasses != null)
+                                existingClasses.add(assignedClass);
 
                             rois.putIfAbsent(ID, new ArrayList<ObjRoi>());
 
                             ArrayList<ObjRoi> currentRois = rois.get(ID);
-                            ObjRoi objRoi = new ObjRoi(ID, roi, t, z);
+                            ObjRoi objRoi = new ObjRoi(ID, roi, t, z, assignedClass);
                             currentRois.add(objRoi);
                             rois.put(ID, currentRois);
 
@@ -905,6 +909,9 @@ public class ObjectSelector implements ActionListener, KeyListener {
             e.printStackTrace();
             return;
         }
+
+        if (classSelector != null)
+            classSelector.addExistingClasses(existingClasses);
 
         // Displaying the ROI on the overlay
         updateOverlay();

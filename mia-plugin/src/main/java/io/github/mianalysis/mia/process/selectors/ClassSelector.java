@@ -84,21 +84,15 @@ public class ClassSelector implements ActionListener, KeyListener {
         });
 
         frame.setLayout(new GridBagLayout());
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(5, 5, 5, 5);
-
-        String instructionText = "Select class, then click \"Apply\"";
-        JLabel headerLabel = new JLabel("<html>" + instructionText + "</html>");
-        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        frame.add(headerLabel, c);
-
-        tabbedPane = new JTabbedPane();
-        c.gridx = 0;
-        c.gridy++;
         c.gridwidth = 4;
         c.fill = GridBagConstraints.BOTH;
+
+        tabbedPane = new JTabbedPane();
         frame.add(tabbedPane, c);
 
         fullList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -167,11 +161,11 @@ public class ClassSelector implements ActionListener, KeyListener {
         JTextField searchField = new JTextField();
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             void updateSearchList() {
-                String searchString = searchField.getText();
+                String searchString = searchField.getText().toLowerCase();
 
                 TreeSet<String> searchItems = new TreeSet<>();
                 for (String item : fullListModel.items())
-                    if (item.contains(searchString))
+                    if (item.toLowerCase().contains(searchString))
                         searchItems.add(item);
                 searchListModel.setItems(searchItems);
             }
@@ -235,6 +229,12 @@ public class ClassSelector implements ActionListener, KeyListener {
         return fullListModel.items();
     }
 
+    public void addExistingClasses(TreeSet<String> existingClasses) {
+        fullListModel.addAll(existingClasses);
+        recentListModel.addAll(existingClasses);
+        currentListModel.addAll(existingClasses);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -266,7 +266,10 @@ public class ClassSelector implements ActionListener, KeyListener {
                 break;
 
             case (CREATE_CLASS):
-                String newClass = JOptionPane.showInputDialog("Enter new class name");
+                JFrame jf=new JFrame();
+                jf.setAlwaysOnTop(true);
+                String newClass = JOptionPane.showInputDialog(jf,"Enter new class name");
+                
                 fullListModel.add(newClass);
                 int idx = fullListModel.getIndex(newClass);
                 fullList.setSelectedIndex(idx);
@@ -311,6 +314,7 @@ public class ClassSelector implements ActionListener, KeyListener {
 
         public void addAll(Set<E> newItems) {
             items.addAll(newItems);
+            fireContentsChanged(this, 0, getSize());
         }
 
         public int getSize() {
@@ -367,6 +371,7 @@ public class ClassSelector implements ActionListener, KeyListener {
 
         public void addAll(Set<E> newItems) {
             items.addAll(newItems);
+            fireContentsChanged(this, 0, getSize());
         }
 
         public int getSize() {
