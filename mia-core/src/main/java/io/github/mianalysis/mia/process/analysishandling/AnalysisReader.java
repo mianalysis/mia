@@ -140,6 +140,11 @@ public class AnalysisReader {
             }
         }
 
+        if (sb.toString().length() == 0) {
+            MIA.log.writeWarning("MIA workflow not found in Excel file \"" + file.getAbsolutePath() + "\"");
+            return null;
+        }
+
         return loadModules(sb.toString());
 
     }
