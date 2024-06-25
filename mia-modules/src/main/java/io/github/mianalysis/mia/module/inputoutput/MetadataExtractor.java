@@ -48,104 +48,171 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Metadata values can be extracted from a variety of sources and assigned to the current workspace.  These metadata values can subsequently be accessed in the form M{[NAME]}, where [NAME] is the metadata name.  Some common file and foldername formats are included as pre-defined metadata extraction methods, while other forms can be constructed using regular expressions.
-*/
+ * Metadata values can be extracted from a variety of sources and assigned to
+ * the current workspace. These metadata values can subsequently be accessed in
+ * the form M{[NAME]}, where [NAME] is the metadata name. Some common file and
+ * foldername formats are included as pre-defined metadata extraction methods,
+ * while other forms can be constructed using regular expressions.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MetadataExtractor extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXTRACTOR_SEPARATOR = "Metadata extractor selection";
 
-	/**
-	* Data source for metadata extraction:<br><ul><li>"Filename" Metadata taken from filename (not including folder path)</li><li>"Foldername" Metadata taken from parent foldername (incuding full system path to that folder)</li><li>"Metadata file" Metadata taken from a separate file, specified by the "Metadata file" parameter</li><li>"Series name" Metadata taken from seriesname (if not from a multi-series file, this is just the filename)</li></ul>
-	*/
+    /**
+     * Data source for metadata extraction:<br>
+     * <ul>
+     * <li>"Filename" Metadata taken from filename (not including folder path)</li>
+     * <li>"Foldername" Metadata taken from parent foldername (incuding full system
+     * path to that folder)</li>
+     * <li>"Metadata file" Metadata taken from a separate file, specified by the
+     * "Metadata file" parameter</li>
+     * <li>"Series name" Metadata taken from seriesname (if not from a multi-series
+     * file, this is just the filename)</li>
+     * </ul>
+     */
     public static final String EXTRACTOR_MODE = "Extractor mode";
 
-	/**
-	* The format of the filename to be converted to metadata values:<br><ul><li>"Generic" Name format is compiled using regular expressions defined in the "Pattern" parameter.  Each group (pattern enclosed in parenthesis) specified in the pattern is assigned to a metadata value.  Metadata value names are defined by the comma-separated list defined in "Groups (comma separated)".</li><li>"CV1000 filename" The Yokogawa CellVoyager CV1000 format (e.g. W1F001T0001Z00C1.tif)</li><li>"CV7000 filename" The Yokogawa CellVoyager CV7000 format (e.g. AssayPlate_Greiner_#655090_C02_T0001F001L01A01Z01C01.tif)</li><li>"IncuCyte long filename" The Incucyte long format, where each timepoint is stored as a separate image file and accordingly the filename records the time of acquisition (e.g. MySample1_A1_1_2021y08m06d_11h39m.tif)</li><li>"IncuCyte short filename" The Incucyte short format, where all timepoints are stored in a single file and the filename only records the well and field (e.g. MySample1_A1_1.tif)</li><li>"Opera filename" The Perkin Elmer Opera LX name format, which specifies row, column and field (e.g. 001001001.flex)</li></ul>
-	*/
+    /**
+     * The format of the filename to be converted to metadata values:<br>
+     * <ul>
+     * <li>"Generic" Name format is compiled using regular expressions defined in
+     * the "Pattern" parameter. Each group (pattern enclosed in parenthesis)
+     * specified in the pattern is assigned to a metadata value. Metadata value
+     * names are defined by the comma-separated list defined in "Groups (comma
+     * separated)".</li>
+     * <li>"CV1000 filename" The Yokogawa CellVoyager CV1000 format (e.g.
+     * W1F001T0001Z00C1.tif)</li>
+     * <li>"CV7000 filename" The Yokogawa CellVoyager CV7000 format (e.g.
+     * AssayPlate_Greiner_#655090_C02_T0001F001L01A01Z01C01.tif)</li>
+     * <li>"IncuCyte long filename" The Incucyte long format, where each timepoint
+     * is stored as a separate image file and accordingly the filename records the
+     * time of acquisition (e.g. MySample1_A1_1_2021y08m06d_11h39m.tif)</li>
+     * <li>"IncuCyte short filename" The Incucyte short format, where all timepoints
+     * are stored in a single file and the filename only records the well and field
+     * (e.g. MySample1_A1_1.tif)</li>
+     * <li>"Opera filename" The Perkin Elmer Opera LX name format, which specifies
+     * row, column and field (e.g. 001001001.flex)</li>
+     * </ul>
+     */
     public static final String FILENAME_EXTRACTOR = "Filename extractor";
 
-	/**
-	* The format of the foldername to be converted to metadata values:<br><ul><li>"<li>"Generic" Name format is compiled using regular expressions defined in the "Pattern" parameter.  Each group (pattern enclosed in parenthesis) specified in the pattern is assigned to a metadata value.  Metadata value names are defined by the comma-separated list defined in "Groups (comma separated)".</li><li>"CV1000 foldername" The Yokogawa CV1000 format (e.g. 20210806T113905_10x_K01_MySample1)</li><li>"Opera measurement foldername" The Perkin Elmer Opera LX foldername format (e.g. Meas_01(2021-08-06_11-39-05))</li></ul>
-	*/
+    /**
+     * The format of the foldername to be converted to metadata values:<br>
+     * <ul>
+     * <li>"
+     * <li>"Generic" Name format is compiled using regular expressions defined in
+     * the "Pattern" parameter. Each group (pattern enclosed in parenthesis)
+     * specified in the pattern is assigned to a metadata value. Metadata value
+     * names are defined by the comma-separated list defined in "Groups (comma
+     * separated)".</li>
+     * <li>"CV1000 foldername" The Yokogawa CV1000 format (e.g.
+     * 20210806T113905_10x_K01_MySample1)</li>
+     * <li>"Opera measurement foldername" The Perkin Elmer Opera LX foldername
+     * format (e.g. Meas_01(2021-08-06_11-39-05))</li>
+     * </ul>
+     */
     public static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SOURCE_SEPARATOR = "Metadata source";
 
-	/**
-	* The format of the metadata file to be converted to metadata values:<br><ul><li>"CSV file" Metadata values stored in a two-column CSV file, where the first column defines an identifier to the current file being processed (e.g. filename, or series name) and the second column defines a value that will be assigned as metadata.  Optionally, this value can be split into multiple metadata values using a regular expression.</li><li>"Opera file (.flex)" Specifically extracts the "Area name" property from the current .flex file.</li></ul>
-	*/
+    /**
+     * The format of the metadata file to be converted to metadata values:<br>
+     * <ul>
+     * <li>"CSV file" Metadata values stored in a two-column CSV file, where the
+     * first column defines an identifier to the current file being processed (e.g.
+     * filename, or series name) and the second column defines a value that will be
+     * assigned as metadata. Optionally, this value can be split into multiple
+     * metadata values using a regular expression.</li>
+     * <li>"Opera file (.flex)" Specifically extracts the "Area name" property from
+     * the current .flex file.</li>
+     * </ul>
+     */
     public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
 
-	/**
-	* If extracting metadata from a CSV file, this controls whether a single, static CSV file is used or whether there is one provided (with a fixed name) in the current folder (i.e where the current image file is loaded from).
-	*/
+    /**
+     * If extracting metadata from a CSV file, this controls whether a single,
+     * static CSV file is used or whether there is one provided (with a fixed name)
+     * in the current folder (i.e where the current image file is loaded from).
+     */
     public static final String INPUT_SOURCE = "Input source";
 
-	/**
-	* If extracting metadata from a static CSV file (i.e. the same file for all processed images), this is the path to that metadata CSV file.
-	*/
+    /**
+     * If extracting metadata from a static CSV file (i.e. the same file for all
+     * processed images), this is the path to that metadata CSV file.
+     */
     public static final String METADATA_FILE = "Metadata file";
 
-	/**
-	* If extracting metadata from a dynamic CSV file (i.e. the file is in the current image folder), this is the name of that metadata CSV file (it must be the same name in all folders).
-	*/
+    /**
+     * If extracting metadata from a dynamic CSV file (i.e. the file is in the
+     * current image folder), this is the name of that metadata CSV file (it must be
+     * the same name in all folders).
+     */
     public static final String METADATA_FILE_NAME = "Metadata file name";
 
-	/**
-	* For CSV-based metadata extraction, the first column of the CSV file identifies which row to read.  This parameter defines the source (e.g. filename, series name, etc.).  Choices are: File in input folder,Static file
-	*/
+    /**
+     * For CSV-based metadata extraction, the first column of the CSV file
+     * identifies which row to read. This parameter defines the source (e.g.
+     * filename, series name, etc.). Choices are: File in input folder,Static file
+     */
     public static final String METADATA_ITEM_TO_MATCH = "Metadata item to match";
 
-	/**
-	* When selected, the metadata value taken from a CSV file will itself be broken down into multiple metadata values using a regular expressions
-	*/
+    /**
+     * When selected, the metadata value taken from a CSV file will itself be broken
+     * down into multiple metadata values using a regular expressions
+     */
     public static final String REGEX_SPLITTING = "Split using regular expressions";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REGEX_SEPARATOR = "Regular expression controls";
 
-	/**
-	* Regular expression pattern to use when interpreting generic metadata formats.  This pattern must contain at least one group (specified using standard regex parenthesis notation).
-	*/
+    /**
+     * Regular expression pattern to use when interpreting generic metadata formats.
+     * This pattern must contain at least one group (specified using standard regex
+     * parenthesis notation).
+     */
     public static final String PATTERN = "Pattern";
     public static final String GROUPS = "Groups (comma separated)";
 
-	/**
-	* When selected regular expression matches will be found irrespective of case.
-	*/
+    /**
+     * When selected regular expression matches will be found irrespective of case.
+     */
     public static final String CASE_INSENSITIVE = "Case insensitive";
 
-	/**
-	* When selected (and constructing a regular expression extractor), an example string can be provided and the identified groups displayed.  This allows for regular expression forms to be tested during workflow assembly.
-	*/
+    /**
+     * When selected (and constructing a regular expression extractor), an example
+     * string can be provided and the identified groups displayed. This allows for
+     * regular expression forms to be tested during workflow assembly.
+     */
     public static final String SHOW_TEST = "Show pattern matching test";
 
-	/**
-	* If testing a regular expression form ("Show pattern matching test" selected), this is the example string which will be processed and broken down into its individual metadata values.
-	*/
+    /**
+     * If testing a regular expression form ("Show pattern matching test" selected),
+     * this is the example string which will be processed and broken down into its
+     * individual metadata values.
+     */
     public static final String EXAMPLE_STRING = "Example string";
 
-	/**
-	* If testing a regular expression form ("Show pattern matching test" selected), the extracted metadata values will be displayed here.
-	*/
+    /**
+     * If testing a regular expression form ("Show pattern matching test" selected),
+     * the extracted metadata values will be displayed here.
+     */
     public static final String IDENTIFIED_GROUPS = "Identified groups";
 
-	/**
-	* If a metadata value loaded from CSV is not to be sub-divided into multiple metadata values, the entire value loaded will be stored as a metadata item with this name.
-	*/
+    /**
+     * If a metadata value loaded from CSV is not to be sub-divided into multiple
+     * metadata values, the entire value loaded will be stored as a metadata item
+     * with this name.
+     */
     public static final String METADATA_VALUE_NAME = "Metadata value name";
-
 
     public MetadataExtractor(Modules modules) {
         super("Extract metadata", modules);
@@ -202,28 +269,28 @@ public class MetadataExtractor extends Module {
         NameExtractor filenameExtractor = null;
 
         switch (filenameExtractorName) {
-        case FilenameExtractors.CV1000_FILENAME_EXTRACTOR:
-            filenameExtractor = new CV1000FilenameExtractor();
-            break;
+            case FilenameExtractors.CV1000_FILENAME_EXTRACTOR:
+                filenameExtractor = new CV1000FilenameExtractor();
+                break;
 
-        case FilenameExtractors.CV7000_FILENAME_EXTRACTOR:
-            filenameExtractor = new CV7000FilenameExtractor();
-            break;
+            case FilenameExtractors.CV7000_FILENAME_EXTRACTOR:
+                filenameExtractor = new CV7000FilenameExtractor();
+                break;
 
-        case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
-            filenameExtractor = new IncuCyteLongFilenameExtractor();
-            break;
+            case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
+                filenameExtractor = new IncuCyteLongFilenameExtractor();
+                break;
 
-        case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
-            filenameExtractor = new IncuCyteShortFilenameExtractor();
-            break;
+            case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
+                filenameExtractor = new IncuCyteShortFilenameExtractor();
+                break;
 
-        case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
-            filenameExtractor = new OperaFilenameExtractor();
-            break;
+            case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
+                filenameExtractor = new OperaFilenameExtractor();
+                break;
 
-        default:
-            return;
+            default:
+                return;
 
         }
 
@@ -251,13 +318,13 @@ public class MetadataExtractor extends Module {
         // Getting folder name extractor
         NameExtractor foldernameExtractor = null;
         switch (foldernameExtractorName) {
-        case FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR:
-            foldernameExtractor = new CV1000FoldernameExtractor();
-            break;
+            case FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR:
+                foldernameExtractor = new CV1000FoldernameExtractor();
+                break;
 
-        case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
-            foldernameExtractor = new OperaFoldernameExtractor();
-            break;
+            case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
+                foldernameExtractor = new OperaFoldernameExtractor();
+                break;
         }
 
         if (foldernameExtractor != null) {
@@ -272,9 +339,9 @@ public class MetadataExtractor extends Module {
         FileExtractor metadataFileExtractor = null;
 
         switch (metadataFileExtractorName) {
-        case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
-            metadataFileExtractor = new OperaFileExtractor();
-            break;
+            case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
+                metadataFileExtractor = new OperaFileExtractor();
+                break;
         }
 
         if (metadataFileExtractor == null)
@@ -298,8 +365,8 @@ public class MetadataExtractor extends Module {
                 String[] split = line.split(",");
                 if (split.length == 2) {
                     referenceValues.put(split[0], split[1]);
+                }
             }
-        }
             bufferedReader.close();
 
             if (metadata.containsKey(metadataItemToMatch)) {
@@ -367,75 +434,76 @@ public class MetadataExtractor extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String extractorMode = parameters.getValue(EXTRACTOR_MODE,workspace);
-        String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR,workspace);
-        String foldernameExtractorName = parameters.getValue(FOLDERNAME_EXTRACTOR,workspace);
-        String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR,workspace);
-        String inputSource = parameters.getValue(INPUT_SOURCE,workspace);
-        String metadataFilePath = parameters.getValue(METADATA_FILE,workspace);
-        String metadataFileName = parameters.getValue(METADATA_FILE_NAME,workspace);
-        String metadataItemToMatch = parameters.getValue(METADATA_ITEM_TO_MATCH,workspace);
-        String pattern = parameters.getValue(PATTERN,workspace);
-        String groups = parameters.getValue(GROUPS,workspace);
-        boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE,workspace);
-        boolean regexSplitting = parameters.getValue(REGEX_SPLITTING,workspace);
-        String metadataValueName = parameters.getValue(METADATA_VALUE_NAME,workspace);
+        String extractorMode = parameters.getValue(EXTRACTOR_MODE, workspace);
+        String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR, workspace);
+        String foldernameExtractorName = parameters.getValue(FOLDERNAME_EXTRACTOR, workspace);
+        String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR, workspace);
+        String inputSource = parameters.getValue(INPUT_SOURCE, workspace);
+        String metadataFilePath = parameters.getValue(METADATA_FILE, workspace);
+        String metadataFileName = parameters.getValue(METADATA_FILE_NAME, workspace);
+        String metadataItemToMatch = parameters.getValue(METADATA_ITEM_TO_MATCH, workspace);
+        String pattern = parameters.getValue(PATTERN, workspace);
+        String groups = parameters.getValue(GROUPS, workspace);
+        boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE, workspace);
+        boolean regexSplitting = parameters.getValue(REGEX_SPLITTING, workspace);
+        String metadataValueName = parameters.getValue(METADATA_VALUE_NAME, workspace);
 
         // Getting current result
         Metadata metadata = workspace.getMetadata();
 
         switch (extractorMode) {
-        case ExtractorModes.FILENAME_MODE:
-            // Getting filename extractor
-            if (filenameExtractorName.equals(FilenameExtractors.GENERIC)) {
-                extractGeneric(metadata, metadata.getFile().getName(), pattern, groups, caseInsensitive);
-            } else {
-                extractFilename(metadata, filenameExtractorName);
-            }
-            break;
-
-        case ExtractorModes.FOLDERNAME_MODE:
-            if (foldernameExtractorName.equals(FoldernameExtractors.GENERIC)) {
-                extractGeneric(metadata, metadata.getFile().getParent(), pattern, groups, caseInsensitive);
-            } else {
-                extractFoldername(metadata, foldernameExtractorName);
-            }
-            break;
-
-        case ExtractorModes.METADATA_FILE_MODE:
-            switch (metadataFileExtractorName) {
-            case MetadataFileExtractors.CSV_FILE:
-                String metadataSourcePath = null;
-                switch (inputSource) {
-                case InputSources.FILE_IN_INPUT_FOLDER:
-                    metadataSourcePath = workspace.getMetadata().getFile().getParentFile().getPath();
-                    metadataSourcePath = metadataSourcePath + File.separator + metadataFileName;
-                    break;
-                case InputSources.STATIC_FILE:
-                    metadataSourcePath = metadataFilePath;
-                    break;
-
-                default:
-                    return Status.PASS;
-                }
-                String metadataString = getExternalMetadataRegex(metadata, metadataSourcePath, metadataItemToMatch);
-                if (metadataString != null) {
-                    if (regexSplitting)
-                        extractGeneric(metadata, metadataString, pattern, groups, caseInsensitive);
-                    else
-                        extractGeneric(metadata, metadataString, "([^s]+)", metadataValueName, caseInsensitive);
+            case ExtractorModes.FILENAME_MODE:
+                // Getting filename extractor
+                if (filenameExtractorName.equals(FilenameExtractors.GENERIC)) {
+                    extractGeneric(metadata, metadata.getFile().getName(), pattern, groups, caseInsensitive);
+                } else {
+                    extractFilename(metadata, filenameExtractorName);
                 }
                 break;
 
-            case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
-                extractMetadataFile(metadata, metadataFileExtractorName);
+            case ExtractorModes.FOLDERNAME_MODE:
+                if (foldernameExtractorName.equals(FoldernameExtractors.GENERIC)) {
+                    extractGeneric(metadata, metadata.getFile().getParent(), pattern, groups, caseInsensitive);
+                } else {
+                    extractFoldername(metadata, foldernameExtractorName);
+                }
                 break;
-            }
-            break;
 
-        case ExtractorModes.SERIES_NAME:
-            extractGeneric(metadata, metadata.getSeriesName(), pattern, groups, caseInsensitive);
-            break;
+            case ExtractorModes.METADATA_FILE_MODE:
+                switch (metadataFileExtractorName) {
+                    case MetadataFileExtractors.CSV_FILE:
+                        String metadataSourcePath = null;
+                        switch (inputSource) {
+                            case InputSources.FILE_IN_INPUT_FOLDER:
+                                metadataSourcePath = workspace.getMetadata().getFile().getParentFile().getPath();
+                                metadataSourcePath = metadataSourcePath + File.separator + metadataFileName;
+                                break;
+                            case InputSources.STATIC_FILE:
+                                metadataSourcePath = metadataFilePath;
+                                break;
+
+                            default:
+                                return Status.PASS;
+                        }
+                        String metadataString = getExternalMetadataRegex(metadata, metadataSourcePath,
+                                metadataItemToMatch);
+                        if (metadataString != null) {
+                            if (regexSplitting)
+                                extractGeneric(metadata, metadataString, pattern, groups, caseInsensitive);
+                            else
+                                extractGeneric(metadata, metadataString, "([^s]+)", metadataValueName, caseInsensitive);
+                        }
+                        break;
+
+                    case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
+                        extractMetadataFile(metadata, metadataFileExtractorName);
+                        break;
+                }
+                break;
+
+            case ExtractorModes.SERIES_NAME:
+                extractGeneric(metadata, metadata.getSeriesName(), pattern, groups, caseInsensitive);
+                break;
         }
 
         if (showOutput)
@@ -476,61 +544,61 @@ public class MetadataExtractor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(EXTRACTOR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXTRACTOR_MODE));
-        switch ((String) parameters.getValue(EXTRACTOR_MODE,workspace)) {
-        case ExtractorModes.FILENAME_MODE:
-            returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
-            switch ((String) parameters.getValue(FILENAME_EXTRACTOR,workspace)) {
-            case FilenameExtractors.GENERIC:
-                returnedParameters.addAll(getGenericExtractorParameters());
-                break;
-            }
-            break;
-
-        case ExtractorModes.FOLDERNAME_MODE:
-            returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
-            switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR,workspace)) {
-            case FoldernameExtractors.GENERIC:
-                returnedParameters.addAll(getGenericExtractorParameters());
-                break;
-            }
-            break;
-
-        case ExtractorModes.METADATA_FILE_MODE:
-            returnedParameters.add(parameters.getParameter(METADATA_FILE_EXTRACTOR));
-            switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR,workspace)) {
-            case MetadataFileExtractors.CSV_FILE:
-                returnedParameters.add(parameters.getParameter(SOURCE_SEPARATOR));
-                returnedParameters.add(parameters.getParameter(INPUT_SOURCE));
-                switch ((String) parameters.getValue(INPUT_SOURCE,workspace)) {
-                case InputSources.FILE_IN_INPUT_FOLDER:
-                    returnedParameters.add(parameters.getParameter(METADATA_FILE_NAME));
-                    break;
-
-                case InputSources.STATIC_FILE:
-                    returnedParameters.add(parameters.getParameter(METADATA_FILE));
-                    break;
-                }
-
-                returnedParameters.add(parameters.getParameter(METADATA_ITEM_TO_MATCH));
-
-                returnedParameters.add(parameters.getParameter(REGEX_SPLITTING));
-                if ((boolean) parameters.getValue(REGEX_SPLITTING,workspace)) {
-                    returnedParameters.addAll(getGenericExtractorParameters());
-                } else {
-                    returnedParameters.add(parameters.getParameter(METADATA_VALUE_NAME));
+        switch ((String) parameters.getValue(EXTRACTOR_MODE, workspace)) {
+            case ExtractorModes.FILENAME_MODE:
+                returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
+                switch ((String) parameters.getValue(FILENAME_EXTRACTOR, workspace)) {
+                    case FilenameExtractors.GENERIC:
+                        returnedParameters.addAll(getGenericExtractorParameters());
+                        break;
                 }
                 break;
-            }
-            break;
 
-        case ExtractorModes.SERIES_NAME:
-            returnedParameters.addAll(getGenericExtractorParameters());
-            break;
+            case ExtractorModes.FOLDERNAME_MODE:
+                returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
+                switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR, workspace)) {
+                    case FoldernameExtractors.GENERIC:
+                        returnedParameters.addAll(getGenericExtractorParameters());
+                        break;
+                }
+                break;
+
+            case ExtractorModes.METADATA_FILE_MODE:
+                returnedParameters.add(parameters.getParameter(METADATA_FILE_EXTRACTOR));
+                switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR, workspace)) {
+                    case MetadataFileExtractors.CSV_FILE:
+                        returnedParameters.add(parameters.getParameter(SOURCE_SEPARATOR));
+                        returnedParameters.add(parameters.getParameter(INPUT_SOURCE));
+                        switch ((String) parameters.getValue(INPUT_SOURCE, workspace)) {
+                            case InputSources.FILE_IN_INPUT_FOLDER:
+                                returnedParameters.add(parameters.getParameter(METADATA_FILE_NAME));
+                                break;
+
+                            case InputSources.STATIC_FILE:
+                                returnedParameters.add(parameters.getParameter(METADATA_FILE));
+                                break;
+                        }
+
+                        returnedParameters.add(parameters.getParameter(METADATA_ITEM_TO_MATCH));
+
+                        returnedParameters.add(parameters.getParameter(REGEX_SPLITTING));
+                        if ((boolean) parameters.getValue(REGEX_SPLITTING, workspace)) {
+                            returnedParameters.addAll(getGenericExtractorParameters());
+                        } else {
+                            returnedParameters.add(parameters.getParameter(METADATA_VALUE_NAME));
+                        }
+                        break;
+                }
+                break;
+
+            case ExtractorModes.SERIES_NAME:
+                returnedParameters.addAll(getGenericExtractorParameters());
+                break;
 
         }
 
@@ -547,14 +615,14 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(CASE_INSENSITIVE));
 
         returnedParameters.add(parameters.getParameter(SHOW_TEST));
-        if ((boolean) parameters.getValue(SHOW_TEST,null)) {
+        if ((boolean) parameters.getValue(SHOW_TEST, null)) {
             returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
             returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
 
-            String pattern = parameters.getValue(PATTERN,null);
-            String groups = parameters.getValue(GROUPS,null);
-            boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE,null);
-            String exampleString = parameters.getValue(EXAMPLE_STRING,null);
+            String pattern = parameters.getValue(PATTERN, null);
+            String groups = parameters.getValue(GROUPS, null);
+            boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE, null);
+            String exampleString = parameters.getValue(EXAMPLE_STRING, null);
             String groupsString = getTestString(pattern, groups, exampleString, caseInsensitive);
             TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
             identifiedGroups.setValue(groupsString);
@@ -567,143 +635,144 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        switch ((String) parameters.getValue(EXTRACTOR_MODE,workspace)) {
-        case ExtractorModes.FILENAME_MODE:
-            switch ((String) parameters.getValue(FILENAME_EXTRACTOR,workspace)) {
-            case FilenameExtractors.GENERIC:
-                String groupString = parameters.getValue(GROUPS,workspace);
-                String[] groups = getGroups(groupString);
-                for (String group : groups)
-                    returnedRefs.add(metadataRefs.getOrPut((group)));
+        switch ((String) parameters.getValue(EXTRACTOR_MODE, workspace)) {
+            case ExtractorModes.FILENAME_MODE:
+                switch ((String) parameters.getValue(FILENAME_EXTRACTOR, workspace)) {
+                    case FilenameExtractors.GENERIC:
+                        String groupString = parameters.getValue(GROUPS, workspace);
+                        String[] groups = getGroups(groupString);
+                        for (String group : groups)
+                            returnedRefs.add(metadataRefs.getOrPut((group)));
+                        break;
+
+                    case FilenameExtractors.CV1000_FILENAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMEPOINT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ZPOSITION)));
+                        break;
+
+                    case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
+                        break;
+
+                    case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        break;
+
+                    case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ROW)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        break;
+
+                    case FilenameExtractors.CV7000_FILENAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_NAME)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MANUFACTURER)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MODEL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMEPOINT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMELINE_NUMBER)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ACTION_NUMBER)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ZPOSITION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
+                        break;
+                }
+
                 break;
 
-            case FilenameExtractors.CV1000_FILENAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMEPOINT)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.ZPOSITION)));
-                break;
+            case ExtractorModes.FOLDERNAME_MODE:
+                switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR, workspace)) {
+                    case FoldernameExtractors.GENERIC:
+                        String groupString = parameters.getValue(GROUPS, workspace);
+                        String[] groups = getGroups(groupString);
+                        for (String group : groups)
+                            returnedRefs.add(metadataRefs.getOrPut((group)));
+                        break;
 
-            case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
-                break;
+                    case FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MAGNIFICATION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.CELLTYPE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
+                        break;
 
-            case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
-                break;
-
-            case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.ROW)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.COL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
-                break;
-
-            case FilenameExtractors.CV7000_FILENAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_NAME)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MANUFACTURER)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MODEL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMEPOINT)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMELINE_NUMBER)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.ACTION_NUMBER)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.ZPOSITION)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
-                break;
-            }
-
-            break;
-
-        case ExtractorModes.FOLDERNAME_MODE:
-            switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR,workspace)) {
-            case FoldernameExtractors.GENERIC:
-                String groupString = parameters.getValue(GROUPS,workspace);
-                String[] groups = getGroups(groupString);
-                for (String group : groups)
-                    returnedRefs.add(metadataRefs.getOrPut((group)));
-                break;
-
-            case FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MAGNIFICATION)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.CELLTYPE)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
-                break;
-
-            case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
-                break;
-            }
-            break;
-
-        case ExtractorModes.METADATA_FILE_MODE:
-            switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR,workspace)) {
-            case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.AREA_NAME)));
-                break;
-
-            case MetadataFileExtractors.CSV_FILE:
-                if ((boolean) parameters.getValue(REGEX_SPLITTING,workspace)) {
-                    String groupString = parameters.getValue(GROUPS,workspace);
-                    String[] groups = getGroups(groupString);
-                    for (String group : groups)
-                        returnedRefs.add(metadataRefs.getOrPut((group)));
-                } else {
-                    returnedRefs.add(metadataRefs.getOrPut((parameters.getValue(METADATA_VALUE_NAME,workspace))));
+                    case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
+                        break;
                 }
                 break;
-            }
-            break;
 
-        case ExtractorModes.SERIES_NAME:
-            String groupString = parameters.getValue(GROUPS,workspace);
-            String[] groups = getGroups(groupString);
-            for (String group : groups)
-                returnedRefs.add(metadataRefs.getOrPut((group)));
-            break;
+            case ExtractorModes.METADATA_FILE_MODE:
+                switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR, workspace)) {
+                    case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.AREA_NAME)));
+                        break;
+
+                    case MetadataFileExtractors.CSV_FILE:
+                        if ((boolean) parameters.getValue(REGEX_SPLITTING, workspace)) {
+                            String groupString = parameters.getValue(GROUPS, workspace);
+                            String[] groups = getGroups(groupString);
+                            for (String group : groups)
+                                returnedRefs.add(metadataRefs.getOrPut((group)));
+                        } else {
+                            returnedRefs
+                                    .add(metadataRefs.getOrPut((parameters.getValue(METADATA_VALUE_NAME, workspace))));
+                        }
+                        break;
+                }
+                break;
+
+            case ExtractorModes.SERIES_NAME:
+                String groupString = parameters.getValue(GROUPS, workspace);
+                String[] groups = getGroups(groupString);
+                for (String group : groups)
+                    returnedRefs.add(metadataRefs.getOrPut((group)));
+                break;
 
         }
 
@@ -718,7 +787,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

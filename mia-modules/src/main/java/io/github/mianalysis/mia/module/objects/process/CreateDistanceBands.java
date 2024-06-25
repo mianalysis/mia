@@ -2,6 +2,8 @@
 
 package io.github.mianalysis.mia.module.objects.process;
 
+import com.drew.lang.annotations.Nullable;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -15,6 +17,9 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -39,7 +44,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
-import net.imglib2.Point;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -197,6 +201,43 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         return "";
     }
 
+    public static Volume getReferenceVolume(Obj inputObject, String relativeMode, @Nullable String parentObjectsName) {
+        try {
+            switch (relativeMode) {
+                default:
+                case RelativeModes.OBJECT_CENTROID:
+                    Point<Double> centroidPoint = inputObject.getMeanCentroid();
+
+                    Volume centroidVolume = new Volume(inputObject.getVolumeType(),
+                            inputObject.getSpatialCalibration());
+
+                    centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
+                            (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
+
+                    return centroidVolume;
+
+                case RelativeModes.OBJECT_SURFACE:
+                    return inputObject.getSurface();
+
+                case RelativeModes.PARENT_CENTROID:
+                    Obj parentObject = inputObject.getParent(parentObjectsName);
+                    if (parentObject == null)
+                        return null;
+
+                    centroidPoint = parentObject.getMeanCentroid();
+                    centroidVolume = new Volume(parentObject.getVolumeType(), parentObject.getSpatialCalibration());
+                    centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
+                            (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
+
+                    return centroidVolume;
+            }
+
+        } catch (PointOutOfRangeException e) {
+            return null;
+
+        }
+    }
+
     public static <T extends RealType<T> & NativeType<T>> Objs getAllBands(Image<T> inputImage, Image<T> maskImage,
             String outputObjectsName, String weightMode, boolean matchZToXY, double bandWidthPx, double minDistPx,
             double maxDistPx, String type) {
@@ -228,7 +269,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 : ImageCalculator.CalculationMethods.NOT;
         ImageCalculator.process(distPx, maskImage, calculation,
                 ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, true, false);
-    
+
         ImgPlus<T> distPxImg = distPx.getImgPlus();
         LoopBuilder.setImages(distPxImg).forEachPixel((s) -> s.setReal(Math.ceil(s.getRealDouble())));
         distPx.setImgPlus(distPxImg);
@@ -272,7 +313,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         // Applying measurements
         for (Obj obj : bands.values()) {
             // Measure distance value of first pixel
-            Point pt = obj.getImgPlusCoordinateIterator(distPxImg, 0).next();
+            net.imglib2.Point pt = obj.getImgPlusCoordinateIterator(distPxImg, 0).next();
             double val = distPxImg.getAt(pt).getRealDouble();
 
             // Converting value to distance
@@ -326,31 +367,25 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         if (!applyMaxDist)
             maxDist = Double.MAX_VALUE;
 
+        // Calculating border widths for image cropping
+        int maxDistXY = (int) Math.ceil(maxDist);
+        int maxDistZ = (int) Math.ceil(maxDist * inputObjects.getDppXY() / inputObjects.getDppZ());
+        int[][] borderWidths = new int[][] { { maxDistXY, maxDistXY }, { maxDistXY, maxDistXY },
+                { maxDistZ, maxDistZ } };
+
         // Creating output bands objects
         Objs bandObjects = new Objs(outputObjectsName, inputObjects);
 
         // Iterating over each object, creating distance bands
+        int count = 0;
         for (Obj inputObject : inputObjects.values()) {
-            // Creating binary image
-            Image inputImage;
-            switch (relativeMode) {
-                default:
-                case RelativeModes.OBJECT_CENTROID:
-                    inputImage = inputObject.getCentroidAsImage("Binary", true);
-                    break;
-                case RelativeModes.OBJECT_SURFACE:
-                    inputImage = inputObject.getSurface().getAsImage("Binary", 0, 1);
-                    // inputImage = inputObject.getAsImage("Binary", true);
-                    break;
-                case RelativeModes.PARENT_CENTROID:
-                    Obj parentObject = inputObject.getParent(parentObjectsName);
-                    if (parentObject == null)
-                        continue;
-                    inputImage = parentObject.getCentroidAsImage("Binary", true);                    
-                    break;
-            }
-            InvertIntensity.process(inputImage);
+            // Creating reference object
+            Volume referenceObject = getReferenceVolume(inputObject, relativeMode, parentObjectsName);
+            double[][] extents = referenceObject.getExtents(true, false);
 
+            // Creating binary image for distance transform
+            Image inputImage = referenceObject.getAsTightImage("Binary", borderWidths);
+            InvertIntensity.process(inputImage);
             Image<T> maskImage = inputObject.getAsImage("Mask", true);
 
             Objs tempBandObjects;
@@ -372,6 +407,15 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
             // Transferring new band objects to main collection
             for (Obj tempBandObject : tempBandObjects.values()) {
+                // Update spatial calibration, so translated coordinates aren't out of range
+                tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
+
+                // Shifting back to original coordinates
+                int xShift = (int) Math.round(extents[0][0] - borderWidths[0][0]);
+                int yShift = (int) Math.round(extents[1][0] - borderWidths[1][0]);
+                int zShift = (int) Math.round(extents[2][0] - borderWidths[2][0]);
+                tempBandObject.translateCoords(xShift, yShift, zShift);
+
                 tempBandObject.setID(bandObjects.getAndIncrementID());
                 for (Measurement measurement : tempBandObject.getMeasurements().values())
                     tempBandObject.addMeasurement(new Measurement(measurement.getName(), measurement.getValue()));
@@ -383,6 +427,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
                 bandObjects.add(tempBandObject);
             }
+
+            writeProgressStatus(++count, inputObjects.size(), "objects");
         }
 
         // Adding objects to workspace
@@ -501,8 +547,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

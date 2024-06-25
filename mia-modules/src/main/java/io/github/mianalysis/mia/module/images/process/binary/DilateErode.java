@@ -19,7 +19,6 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -35,7 +34,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import net.imglib2.img.imageplus.ImagePlusImg;
 
 
 /**
@@ -136,7 +134,7 @@ public class DilateErode extends Module {
             case OperationModes.DILATE_3D:
             case OperationModes.ERODE_3D:
                 ballStrel = Strel3D.Shape.BALL.fromRadiusList(numIterations, numIterations,
-                        (int) (numIterations * ratio));
+                        (int) Math.round(numIterations * ratio));
                 break;
         }
 

@@ -46,8 +46,6 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
-import util.opencsv.CSVReader;
-import util.opencsv.CSVWriter;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -310,28 +308,23 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         switch (classesSource) {
             case ClassesSources.EXISTING_CLASS_FILE:
-                BufferedReader reader;
                 try {
-                    reader = new BufferedReader(new FileReader(new File(classFile)));
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(classFile)));
+                    String row = "";
+                    while ((row = bufferedReader.readLine()) != null) {
+                        row = row.toString().replace("\uFEFF", "");
+                        for (String item : row.split(","))
+                            classes.add(item);
+                    }
+                    bufferedReader.close();
                 } catch (FileNotFoundException e) {
                     MIA.log.writeWarning("File not found: \"" + classFile + "\"");
                     return null;
-                }
-
-                CSVReader csvReader = new CSVReader(reader);
-                try {
-                    String[] row = csvReader.readNext();
-                    while (row != null) {
-                        for (String item : row)
-                            classes.add(item);
-
-                        row = csvReader.readNext();
-
-                    }
                 } catch (IOException e) {
                     MIA.log.writeError(e);
                     return null;
                 }
+
                 break;
             case ClassesSources.FIXED_LIST:
                 String[] classesList = classList.split(",");
@@ -347,16 +340,15 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     void writeClassesFile(String classFile, TreeSet<String> allClasses) {
         try {
-            CSVWriter writer;
+            FileWriter writer;
             try {
-                writer = new CSVWriter(new FileWriter(classFile));
+                writer = new FileWriter(classFile);
             } catch (FileNotFoundException e) {
-                writer = new CSVWriter(new FileWriter(
-                        appendDateTime(classFile, AbstractSaver.AppendDateTimeModes.ALWAYS)));
+                writer = new FileWriter(appendDateTime(classFile, AbstractSaver.AppendDateTimeModes.ALWAYS));
             }
 
             for (String clazz : allClasses)
-                writer.writeNext(new String[] { clazz });
+                writer.write(clazz+"\n");
 
             writer.close();
 
