@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
@@ -15,6 +16,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.scijava.util.VersionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -48,13 +53,19 @@ public class AnalysisReader {
     public static Modules loadModules()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
+
+        FileNameExtensionFilter excelFilter = new FileNameExtensionFilter("Excel file (.xlsx)", "xlsx");
+        FileNameExtensionFilter miaFilter = new FileNameExtensionFilter("MIA workflow (.mia)", "mia");
+
         // We always want to open at the last place a workflow was opened from (not just
         // any file, as images are often in sub-directories).
         String previousPath = Prefs.get("MIA.PreviousWorkflowPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
+        fileChooser.addChoosableFileFilter(excelFilter);
+        fileChooser.addChoosableFileFilter(miaFilter);
+        fileChooser.setFileFilter(miaFilter);
         fileChooser.showDialog(null, "Load workflow");
 
         File file = fileChooser.getSelectedFile();
@@ -66,7 +77,22 @@ public class AnalysisReader {
         Prefs.set("MIA.PreviousWorkflowPath", file.getAbsolutePath());
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
 
-        Modules analysis = loadModules(file);
+        // If an Excel file, read the String contents, then transfer to the normal
+        // loadModules method
+        Modules analysis;
+        switch (FilenameUtils.getExtension(file.getAbsolutePath()).toLowerCase()) {
+            case "mia":
+            default:
+                analysis = loadModules(file);
+                break;
+            case "xlsx":
+                analysis = loadModulesFromXLSX(file);
+                break;
+        }
+
+        if (analysis == null)
+            return null;
+
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
@@ -81,6 +107,40 @@ public class AnalysisReader {
         String xml = FileUtils.readFileToString(file, "UTF-8");
 
         return loadModules(xml);
+
+    }
+
+    public static Modules loadModulesFromXLSX(File file)
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
+            IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        FileInputStream fileStream = new FileInputStream(file);
+        XSSFWorkbook workbook = new XSSFWorkbook(fileStream);
+        XSSFSheet sheet = workbook.getSheet("CONFIGURATION");
+
+        if (sheet == null) {
+            MIA.log.writeWarning("MIA workflow not found in Excel file \"" + file.getAbsolutePath() + "\"");
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        boolean record = false;
+        for (Row row : sheet) {
+            for (Cell cell : row) {
+                if (cell.toString().contains("WORKFLOW CONFIGURATION (XML)")) {
+                    record = true;
+                    continue;
+                } else if (cell.toString().length() == 0) {
+                    record = false;
+                    continue;
+                }
+
+                if (record)
+                    sb.append(cell.toString());
+            }
+        }
+
+        return loadModules(sb.toString());
 
     }
 
