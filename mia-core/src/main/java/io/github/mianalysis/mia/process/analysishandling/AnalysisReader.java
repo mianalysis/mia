@@ -54,6 +54,7 @@ public class AnalysisReader {
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
 
+        FileNameExtensionFilter allFilter = new FileNameExtensionFilter("All workflow files (.mia, .xlsx)", "mia", "xlsx");
         FileNameExtensionFilter excelFilter = new FileNameExtensionFilter("Excel file (.xlsx)", "xlsx");
         FileNameExtensionFilter miaFilter = new FileNameExtensionFilter("MIA workflow (.mia)", "mia");
 
@@ -63,9 +64,10 @@ public class AnalysisReader {
         JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.addChoosableFileFilter(allFilter);
         fileChooser.addChoosableFileFilter(excelFilter);
         fileChooser.addChoosableFileFilter(miaFilter);
-        fileChooser.setFileFilter(miaFilter);
+        fileChooser.setFileFilter(allFilter);
         fileChooser.showDialog(null, "Load workflow");
 
         File file = fileChooser.getSelectedFile();
@@ -118,8 +120,12 @@ public class AnalysisReader {
         XSSFSheet sheet = workbook.getSheet("CONFIGURATION");
 
         if (sheet == null) {
-            MIA.log.writeWarning("MIA workflow not found in Excel file \"" + file.getAbsolutePath() + "\"");
-            return null;
+            sheet = workbook.getSheet("Configuration");
+
+            if (sheet == null) {
+                MIA.log.writeWarning("MIA workflow not found in Excel file \"" + file.getAbsolutePath() + "\"");
+                return null;
+            }
         }
 
         StringBuilder sb = new StringBuilder();
