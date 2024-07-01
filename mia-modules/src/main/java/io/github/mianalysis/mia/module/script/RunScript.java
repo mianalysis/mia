@@ -330,16 +330,19 @@ public class RunScript extends Module {
                         workspace.showMetadata(this);
                         break;
                     case OutputTypes.OBJECTS:
-                        workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
-                                .convertToImageIDColours().show();
+                        if (workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace)) != null)
+                            workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
+                                    .convertToImageIDColours().show();
                         break;
                     case OutputTypes.OBJECT_MEASUREMENT:
-                        workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
-                                .showMeasurements(this, modules);
+                        if (workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace)) != null)
+                            workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
+                                    .showMeasurements(this, modules);
                         break;
                     case OutputTypes.OBJECT_METADATA_ITEM:
-                        workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
-                                .showMetadata(this, modules);
+                        if (workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace)) != null)
+                            workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
+                                    .showMetadata(this, modules);
                         break;
                 }
             }
@@ -476,7 +479,7 @@ public class RunScript extends Module {
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
-        
+
         for (Parameters collection : collections.values()) {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.METADATA)) {
                 String metadataName = collection.getValue(METADATA_NAME, workspace);

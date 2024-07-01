@@ -130,17 +130,17 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
             Obj parentObject = inputObject.getParent(parentObjectName);
             // LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
             switch (filterMethod) {
-                case FilterMethods.WITH_PARENT:
-                    if (parentObject != null) {
-                        // if (parents.get(parentObjectName) != null) {
+                case FilterMethods.WITHOUT_PARENT:
+                    if (parentObject == null) {
+                        // if (parents.get(parentObjectName) == null) {
                         count++;
                         if (remove)
                             processRemoval(inputObject, outputObjects, iterator);
                     }
                     break;
-                case FilterMethods.WITHOUT_PARENT:
-                    if (parentObject == null) {
-                        // if (parents.get(parentObjectName) == null) {
+                case FilterMethods.WITH_PARENT:
+                    if (parentObject != null) {
+                        // if (parents.get(parentObjectName) != null) {
                         count++;
                         if (remove)
                             processRemoval(inputObject, outputObjects, iterator);

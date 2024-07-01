@@ -54,7 +54,8 @@ public class AnalysisReader {
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
 
-        FileNameExtensionFilter allFilter = new FileNameExtensionFilter("All workflow files (.mia, .xlsx)", "mia", "xlsx");
+        FileNameExtensionFilter allFilter = new FileNameExtensionFilter("All workflow files (.mia, .xlsx)", "mia",
+                "xlsx");
         FileNameExtensionFilter excelFilter = new FileNameExtensionFilter("Excel file (.xlsx)", "xlsx");
         FileNameExtensionFilter miaFilter = new FileNameExtensionFilter("MIA workflow (.mia)", "mia");
 
@@ -78,28 +79,29 @@ public class AnalysisReader {
         // loading should look in this folder.
         Prefs.set("MIA.PreviousWorkflowPath", file.getAbsolutePath());
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+        Prefs.savePreferences();
 
         // If an Excel file, read the String contents, then transfer to the normal
         // loadModules method
-        Modules analysis;
+        Modules modules;
         switch (FilenameUtils.getExtension(file.getAbsolutePath()).toLowerCase()) {
             case "mia":
             default:
-                analysis = loadModules(file);
+                modules = loadModules(file);
                 break;
             case "xlsx":
-                analysis = loadModulesFromXLSX(file);
+                modules = loadModulesFromXLSX(file);
                 break;
         }
 
-        if (analysis == null)
+        if (modules == null)
             return null;
 
-        analysis.setAnalysisFilename(file.getAbsolutePath());
+        modules.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
 
-        return analysis;
+        return modules;
 
     }
 

@@ -8,13 +8,13 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.system.Status;
  * metadata value.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
+public class FilterWithWithoutMetadata extends AbstractObjectFilter {
 
     /**
     * 
@@ -58,7 +58,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
      * determine which of the input objects are counted, removed or moved (depending
      * on the "Filter mode" parameter).
      */
-    public static final String MEASUREMENT = "Measurement to filter on";
+    public static final String METADATA_ITEM = "Metadata item to filter on";
 
     /**
      * When selected, the number of removed (or moved) objects is counted and stored
@@ -67,24 +67,24 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
      */
     public static final String STORE_RESULTS = "Store filter results";
 
-    public FilterWithWithoutMeasurement(Modules modules) {
-        super("With / without measurement", modules);
+    public FilterWithWithoutMetadata(Modules modules) {
+        super("With / without metadata", modules);
     }
 
     public interface FilterMethods {
-        String WITH_MEASUREMENT = "Remove objects with measurement";
-        String WITHOUT_MEASUREMENT = "Remove objects without measurement";
+        String WITH_METADATA = "Remove objects with metadata";
+        String WITHOUT_METADATA = "Remove objects without metadata";
 
-        String[] ALL = new String[] { WITH_MEASUREMENT, WITHOUT_MEASUREMENT };
+        String[] ALL = new String[] { WITH_METADATA, WITHOUT_METADATA };
 
     }
 
     public String getMetadataName(String inputObjectsName, String filterMethod, String measName) {
         switch (filterMethod) {
-            case FilterMethods.WITH_MEASUREMENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITH " + measName + " MEASUREMENT";
-            case FilterMethods.WITHOUT_MEASUREMENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + measName + " MEASUREMENT";
+            case FilterMethods.WITH_METADATA:
+                return "FILTER // NUM_" + inputObjectsName + " WITH " + measName + " METADATA";
+            case FilterMethods.WITHOUT_METADATA:
+                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + measName + " METADATA";
             default:
                 return "";
         }
@@ -102,7 +102,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
     @Override
     public String getDescription() {
-        return "Filter an object collection based on the presence of a specific measurement for each object.  Objects which do/don't have the relevant measurement can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.";
+        return "Filter an object collection based on the presence of a specific metadata item for each object.  Objects which do/don't have the relevant metadata item can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.";
     }
 
     @Override
@@ -115,7 +115,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
         String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
-        String measName = parameters.getValue(MEASUREMENT, workspace);
+        String metaName = parameters.getValue(METADATA_ITEM, workspace);
         boolean storeResults = parameters.getValue(STORE_RESULTS, workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
@@ -129,25 +129,23 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
             Obj inputObject = iterator.next();
 
             // Removing the object if it has no children
-            Measurement measurement = inputObject.getMeasurement(measName);
+            ObjMetadata metadataItem = inputObject.getMetadataItem(metaName);
             switch (filterMethod) {
-                case FilterMethods.WITHOUT_MEASUREMENT:
-                    if (measurement == null || Double.isNaN(measurement.getValue())) {
+                case FilterMethods.WITHOUT_METADATA:
+                    if (metadataItem == null) {
                         count++;
                         if (remove)
                             processRemoval(inputObject, outputObjects, iterator);
                     }
                     break;
-
-                case FilterMethods.WITH_MEASUREMENT:
-                    if (measurement != null && !Double.isNaN(measurement.getValue())) {
+                case FilterMethods.WITH_METADATA:
+                    if (metadataItem != null) {
                         count++;
                         if (remove)
                             processRemoval(inputObject, outputObjects, iterator);
                     }
                     break;
             }
-
         }
 
         // If moving objects, addRef them to the workspace
@@ -156,7 +154,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
         // If storing the result, create a new metadata item for it
         if (storeResults) {
-            String metadataName = getMetadataName(inputObjectsName, filterMethod, measName);
+            String metadataName = getMetadataName(inputObjectsName, filterMethod, metaName);
             workspace.getMetadata().put(metadataName, count);
         }
 
@@ -173,8 +171,8 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
-        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITHOUT_MEASUREMENT, FilterMethods.ALL));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITHOUT_METADATA, FilterMethods.ALL));
+        parameters.add(new ObjectMetadataP(METADATA_ITEM, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
         addParameterDescriptions();
@@ -191,8 +189,8 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
-        returnedParameters.add(parameters.getParameter(MEASUREMENT));
-        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
+        returnedParameters.add(parameters.getParameter(METADATA_ITEM));
+        ((ObjectMetadataP) parameters.getParameter(METADATA_ITEM)).setObjectName(inputObjectsName);
 
         returnedParameters.add(parameters.getParameter(STORE_RESULTS));
 
@@ -226,9 +224,9 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
         if ((boolean) parameters.getValue(STORE_RESULTS, workspace)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
             String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
-            String measName = parameters.getValue(MEASUREMENT, workspace);
+            String metaName = parameters.getValue(METADATA_ITEM, workspace);
 
-            String metadataName = getMetadataName(inputObjectsName, filterMethod, measName);
+            String metadataName = getMetadataName(inputObjectsName, filterMethod, metaName);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
@@ -243,24 +241,24 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
         super.addParameterDescriptions();
 
         parameters.get(FILTER_METHOD).setDescription(
-                "Controls whether objects are removed when a specific measurement is present or not:<br>"
+                "Controls whether objects are removed when a specific metadata item is present or not:<br>"
 
-                        + "<br>- \"" + FilterMethods.WITHOUT_MEASUREMENT
-                        + "\" Objects without the measurement specified by \"" + MEASUREMENT
+                        + "<br>- \"" + FilterMethods.WITHOUT_METADATA
+                        + "\" Objects without the metadata item specified by \"" + METADATA_ITEM
                         + "\" are removed, counted or moved (depending on the \"" + FILTER_MODE + "\" parameter).<br>"
 
-                        + "<br>- \"" + FilterMethods.WITH_MEASUREMENT
-                        + "\" Objects with the measurement specified by \"" + MEASUREMENT
+                        + "<br>- \"" + FilterMethods.WITH_METADATA
+                        + "\" Objects with the metadata item specified by \"" + METADATA_ITEM
                         + "\" are removed, counted or moved (depending on the \"" + FILTER_MODE + "\" parameter).<br>"
 
         );
 
-        parameters.get(MEASUREMENT).setDescription(
-                "Measurement to filter by.  The presence or absence of this measurement will determine which of the input objects are counted, removed or moved (depending on the \""
+        parameters.get(METADATA_ITEM).setDescription(
+                "Metadata item to filter by.  The presence or absence of this metadata item will determine which of the input objects are counted, removed or moved (depending on the \""
                         + FILTER_MODE + "\" parameter).");
 
-        String metadataName = getMetadataName("[inputObjectsName]", FilterMethods.WITHOUT_MEASUREMENT,
-                "[measurementName]");
+        String metadataName = getMetadataName("[inputObjectsName]", FilterMethods.WITHOUT_METADATA,
+                "[metadata item name]");
         parameters.get(STORE_RESULTS).setDescription(
                 "When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format \""
                         + metadataName + "\").");

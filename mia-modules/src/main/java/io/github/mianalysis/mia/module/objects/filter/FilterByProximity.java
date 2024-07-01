@@ -193,6 +193,9 @@ public class FilterByProximity extends AbstractObjectFilter {
         if (calibratedUnits)
             minSeparation = minSeparation / inputObjects.getDppXY();
 
+        if (inputObjects == null)
+            return Status.PASS;
+
         Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
 
         // Ordering objects based on their measurement

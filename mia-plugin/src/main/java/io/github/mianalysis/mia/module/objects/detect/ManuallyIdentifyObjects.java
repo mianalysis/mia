@@ -11,6 +11,8 @@ import java.util.TreeSet;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.NotNull;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Toolbar;
@@ -29,8 +31,11 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputTrackObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -80,13 +85,38 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     /**
     * 
     */
-    public static final String INPUT_SEPARATOR = "Image input";
+    public static final String INPUT_SEPARATOR = "Image/object input";
 
     /**
      * Image onto which selections will be drawn. This will be displayed
      * automatically when the module runs.
      */
     public static final String INPUT_IMAGE = "Input image";
+
+    /**
+     * 
+     */
+    public static final String ADD_EXISTING_OBJECTS = "Add existing objects";
+
+    /**
+     * 
+     */
+    public static final String INPUT_OBJECTS = "Input objects";
+
+    /**
+     * 
+     */
+    public static final String ALLOW_MISSING_OBJECTS = "Allow missing objects";
+
+    /**
+     * 
+     */
+    public static final String APPLY_EXISTING_CLASS = "Apply existing class";
+
+    /**
+     * 
+     */
+    public static final String METADATA_FOR_CLASS = "Metadata item for class";
 
     /**
     * 
@@ -288,7 +318,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.2";
+        return "1.1.0";
     }
 
     @Override
@@ -348,7 +378,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             }
 
             for (String clazz : allClasses)
-                writer.write(clazz+"\n");
+                writer.write(clazz + "\n");
 
             writer.close();
 
@@ -362,6 +392,10 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        boolean addExistingObjects = parameters.getValue(ADD_EXISTING_OBJECTS, workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        boolean applyExistingClass = parameters.getValue(APPLY_EXISTING_CLASS, workspace);
+        String metadataForClass = parameters.getValue(METADATA_FOR_CLASS, workspace);
         String type = parameters.getValue(VOLUME_TYPE, workspace);
         boolean outputTracks = parameters.getValue(OUTPUT_TRACKS, workspace);
         String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS, workspace);
@@ -398,6 +432,16 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         ObjectSelector objectSelector = new ObjectSelector(inputImagePlus, outputObjectsName, messageOnImage,
                 instructionText, volumeTypeString, pointMode, outputTrackObjectsName, classSelector);
+
+        // Loading existing objects
+        if (addExistingObjects) {
+            Objs inputObjects = workspace.getObjects(inputObjectsName);
+            if (!applyExistingClass)
+                metadataForClass = null;
+
+            if (inputObjects != null)
+                objectSelector.addObjects(inputObjects, metadataForClass);
+        }
 
         // All the while the control is open, do nothing
         while (objectSelector.isActive())
@@ -469,6 +513,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(ADD_EXISTING_OBJECTS, this, false));
+        parameters.add(new CustomInputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(ALLOW_MISSING_OBJECTS, this, false));
+        parameters.add(new BooleanP(APPLY_EXISTING_CLASS, this, false));
+        parameters.add(new CustomObjectMetadataP(METADATA_FOR_CLASS, this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
@@ -506,6 +555,23 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_IMAGE));
+        returnedParameters.add(parameters.get(ADD_EXISTING_OBJECTS));
+        if ((boolean) parameters.getValue(ADD_EXISTING_OBJECTS, workspace)) {
+            returnedParameters.add(parameters.get(INPUT_OBJECTS));
+            returnedParameters.add(parameters.get(ALLOW_MISSING_OBJECTS));
+            boolean allowMissingObjects = parameters.getValue(ALLOW_MISSING_OBJECTS, workspace);
+            ((CustomInputObjectsP) parameters.get(INPUT_OBJECTS)).setAllowMissingObjects(allowMissingObjects);
+            ((CustomObjectMetadataP) parameters.get(METADATA_FOR_CLASS)).setAllowMissingObjects(allowMissingObjects);
+
+            if ((boolean) parameters.getValue(ASSIGN_CLASSES, workspace)) {
+                returnedParameters.add(parameters.get(APPLY_EXISTING_CLASS));
+                if ((boolean) parameters.getValue(APPLY_EXISTING_CLASS, workspace)) {
+                    returnedParameters.add(parameters.get(METADATA_FOR_CLASS));
+                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+                    ((CustomObjectMetadataP) parameters.get(METADATA_FOR_CLASS)).setObjectName(inputObjectsName);
+                }
+            }
+        }
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
@@ -601,6 +667,128 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    class CustomInputObjectsP extends InputObjectsP {
+        private boolean allowMissingObjects = false;
+
+        public CustomInputObjectsP(String name, Module module) {
+            super(name, module);
+        }
+
+        public CustomInputObjectsP(String name, Module module, @NotNull String choice) {
+            super(name, module);
+            this.choice = choice;
+
+        }
+
+        public CustomInputObjectsP(String name, Module module, @NotNull String choice, String description) {
+            super(name, module, description);
+            this.choice = choice;
+
+        }
+
+        @Override
+        public boolean verify() {
+            if (allowMissingObjects)
+                return true;
+            else
+                return super.verify();
+        }
+
+        @Override
+        public boolean isValid() {
+            if (allowMissingObjects)
+                return true;
+            else
+                return super.isValid();
+        }
+
+        @Override
+        public <T extends Parameter> T duplicate(Module newModule) {
+            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getChoice(), getDescription());
+
+            newParameter.setNickname(getNickname());
+            newParameter.setVisible(isVisible());
+            newParameter.setExported(isExported());
+            newParameter.setAllowMissingObjects(allowMissingObjects);
+
+            return (T) newParameter;
+
+        }
+
+        public boolean isAllowMissingObjects() {
+            return allowMissingObjects;
+        }
+
+        public void setAllowMissingObjects(boolean allowMissingObjects) {
+            this.allowMissingObjects = allowMissingObjects;
+        }
+    }
+
+    public class CustomObjectMetadataP extends ObjectMetadataP {
+        private boolean allowMissingObjects = false;
+
+        public CustomObjectMetadataP(String name, Module module) {
+            super(name, module);
+        }
+
+        public CustomObjectMetadataP(String name, Module module, String description) {
+            super(name, module, description);
+        }
+
+        public CustomObjectMetadataP(String name, Module module, @NotNull String choice, @NotNull String objectName) {
+            super(name, module);
+            this.objectName = objectName;
+            this.choice = choice;
+
+        }
+
+        public CustomObjectMetadataP(String name, Module module, @NotNull String choice, @NotNull String objectName,
+                String description) {
+            super(name, module, description);
+            this.objectName = objectName;
+            this.choice = choice;
+
+        }
+
+        @Override
+        public boolean verify() {
+            if (allowMissingObjects)
+                return true;
+            else
+                return super.verify();
+        }
+
+        @Override
+        public boolean isValid() {
+            if (allowMissingObjects)
+                return true;
+            else
+                return super.isValid();
+        }
+
+        @Override
+        public <T extends Parameter> T duplicate(Module newModule) {
+            CustomObjectMetadataP newParameter = new CustomObjectMetadataP(name, newModule, choice, objectName,
+                    getDescription());
+
+            newParameter.setNickname(getNickname());
+            newParameter.setVisible(isVisible());
+            newParameter.setExported(isExported());
+            newParameter.setAllowMissingObjects(allowMissingObjects);
+
+            return (T) newParameter;
+
+        }
+
+        public boolean isAllowMissingObjects() {
+            return allowMissingObjects;
+        }
+
+        public void setAllowMissingObjects(boolean allowMissingObjects) {
+            this.allowMissingObjects = allowMissingObjects;
+        }
     }
 
     protected void addParameterDescriptions() {

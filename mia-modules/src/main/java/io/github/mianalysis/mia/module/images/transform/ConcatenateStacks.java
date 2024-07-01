@@ -469,8 +469,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     }
 
     // Creating a custom class for this module, which always returns true. This way
-    // channels can go missing and
-    // this will still work.
+    // channels can go missing and this will still work.
     class CustomInputImageP extends InputImageP {
         private boolean allowMissingImages = false;
 

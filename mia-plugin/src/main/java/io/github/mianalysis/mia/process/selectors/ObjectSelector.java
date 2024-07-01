@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.process.selectors;
 
 import com.drew.lang.annotations.Nullable;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,8 +64,6 @@ import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
-import ij.process.LUT;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -88,7 +86,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private JFrame frame;
     private JMenuBar menuBar;
     private JTextField objectNumberField;
-    private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
+    private CustomListModel<ObjRoi> listModel = new CustomListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
     private JCheckBox overlayCheck;
@@ -102,6 +100,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private String pointMode;
     private String volumeTypeString;
     private ClassSelector classSelector;
+    private int gridWidth = 4;
 
     // Menu bar options
     private static final String FILE = "File";
@@ -112,6 +111,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
     // GUI buttons
     private static final String ADD_NEW = "Add new";
     private static final String ADD_EXISTING = "Add to existing";
+    private static final String CHANGE_CLASS = "Change class";
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
@@ -134,6 +134,9 @@ public class ObjectSelector implements ActionListener, KeyListener {
         this.volumeTypeString = volumeTypeString;
         this.classSelector = classSelector;
 
+        if (classSelector != null)
+            gridWidth = 5;
+
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle(messageOnImage);
@@ -155,7 +158,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
             outputTrackObjects = new Objs(outputTrackObjectsName, inputImagePlus);
 
         // Displaying the image and showing the control
-        displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
+        // displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
         showOptionsPanel(instructionText);
 
@@ -216,7 +219,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 4;
+        c.gridwidth = gridWidth;
         c.gridheight = 1;
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
@@ -249,6 +252,14 @@ public class ObjectSelector implements ActionListener, KeyListener {
         c.gridx++;
         frame.add(existingObjectButton, c);
 
+        if (classSelector != null) {
+            JButton changeObjectClassButton = new JButton("Change object class");
+            changeObjectClassButton.addActionListener(this);
+            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
+            c.gridx++;
+            frame.add(changeObjectClassButton, c);
+        }
+
         JButton removeObjectButton = new JButton("Remove object (s)");
         removeObjectButton.addActionListener(this);
         removeObjectButton.setActionCommand(REMOVE);
@@ -265,12 +276,12 @@ public class ObjectSelector implements ActionListener, KeyListener {
         JLabel objectNumberLabel = new JLabel("Existing object number");
         c.gridx = 0;
         c.gridy++;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         frame.add(objectNumberLabel, c);
 
         objectNumberField = new JTextField();
         c.gridx++;
-        c.gridwidth = 3;
+        c.gridwidth = gridWidth - 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField, c);
 
@@ -282,7 +293,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         c.gridx = 0;
         c.gridy++;
-        c.gridwidth = 4;
+        c.gridwidth = gridWidth;
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
         frame.add(objectsScrollPane, c);
@@ -464,6 +475,12 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 addToExistingObject();
                 break;
 
+            case (CHANGE_CLASS):
+                new Thread(() -> {
+                    changeObjectClass();
+                }).start();
+                break;
+
             case (REMOVE):
                 removeObjects();
                 break;
@@ -579,6 +596,31 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         // Adding to the list of objects
         addObjectToList(objRoi, ID);
+
+    }
+
+    public void changeObjectClass() {
+        classSelector.setVisible(true);
+
+        // If a ClassSelector has been provided, show it and wait for response
+        String assignedClass = null;
+        if (classSelector != null) {
+            while (classSelector.isActive())
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            assignedClass = classSelector.getLastSelectedClass();
+        }
+
+        // Get selected ROIs
+        List<ObjRoi> selected = list.getSelectedValuesList();
+
+        for (ObjRoi objRoi : selected) {
+            objRoi.setAssignedClass(assignedClass);
+        }
+
+        listModel.redraw();
 
     }
 
@@ -847,6 +889,47 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     }
 
+    public void addObjects(Objs inputObjects, @Nullable String metadataForClass) {
+        TreeSet<String> existingClasses = classSelector != null ? new TreeSet<>() : null;
+
+        for (Obj inputObject : inputObjects.values()) {
+            String assignedClass = null;
+            if (metadataForClass != null) {
+                ObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
+                if (metadataItem == null)
+                    assignedClass = "None";
+                else
+                    assignedClass = metadataItem.getValue();
+            }
+
+            if (existingClasses != null)
+                existingClasses.add(assignedClass);
+
+            int ID = inputObject.getID();
+            rois.putIfAbsent(ID, new ArrayList<ObjRoi>());
+
+            ArrayList<ObjRoi> currentRois = rois.get(ID);
+            for (Entry<Integer, Roi> entry : inputObject.getRois().entrySet()) {
+                ObjRoi objRoi = new ObjRoi(ID, entry.getValue(), inputObject.getT(), entry.getKey(), assignedClass);
+                currentRois.add(objRoi);
+
+                // Adding to the list of objects
+                addObjectToList(objRoi, ID);
+
+            }
+
+            // Updating maxID if necessary
+            maxID = Math.max(maxID, ID);
+
+        }
+
+        if (classSelector != null)
+            classSelector.addExistingClasses(existingClasses);
+
+        updateOverlay();
+
+    }
+
     void loadObjects() {
         String inPath = getLoadPath();
 
@@ -880,7 +963,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                             int t = Integer.parseInt(matcher.group(3)) - 1;
                             int z = Integer.parseInt(matcher.group(4)) - 1;
                             String assignedClass = matcher.group(5);
-                            MIA.log.writeDebug(assignedClass+"_"+existingClasses);
+
                             if (existingClasses != null)
                                 existingClasses.add(assignedClass);
 
@@ -889,7 +972,6 @@ public class ObjectSelector implements ActionListener, KeyListener {
                             ArrayList<ObjRoi> currentRois = rois.get(ID);
                             ObjRoi objRoi = new ObjRoi(ID, roi, t, z, assignedClass);
                             currentRois.add(objRoi);
-                            rois.put(ID, currentRois);
 
                             // Adding to the list of objects
                             addObjectToList(objRoi, ID);
@@ -936,5 +1018,11 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent arg0) {
+    }
+
+    public class CustomListModel<E> extends DefaultListModel<E> {
+        public void redraw() {
+            fireContentsChanged(this, 0, getSize());
+        }
     }
 }

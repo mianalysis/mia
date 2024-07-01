@@ -529,6 +529,8 @@ public class CellposeDetection extends Module {
         Prefs.set(keyPrefix + "useGpu", parameters.getValue(USE_GPU, workspace).toString());
         Prefs.set(keyPrefix + "useFastMode", parameters.getValue(USE_FASTMODE, workspace).toString());
 
+        Prefs.savePreferences();
+        
         return returnedParameters;
 
     }

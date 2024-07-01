@@ -15,7 +15,7 @@ public class ObjRoi {
     private final Roi roi;
     private final int t;
     private final int z;
-    private final String assignedClass;
+    private String assignedClass;
 
     ObjRoi(int ID, Roi roi, int t, int z) {
         this.ID = ID;
@@ -126,18 +126,22 @@ public class ObjRoi {
     public int getZ() {
         return z;
     }
-    
+
     public String getAssignedClass() {
         return assignedClass;
+    }
+
+    public void setAssignedClass(String assignedClass) {
+        this.assignedClass = assignedClass;
     }
 
     @Override
     public String toString() {
         String str = "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + (z + 1);
-        
+
         if (assignedClass != null)
-        str = str + ", class = "+assignedClass;
-        
+            str = str + ", class = " + assignedClass;
+
         return str;
 
     }
@@ -146,9 +150,9 @@ public class ObjRoi {
         String str = "ID" + String.valueOf(ID) + "_TR-1_T" + (t + 1) + "_Z" + (z + 1);
 
         if (assignedClass != null)
-            str = str + "_"+assignedClass;
+            str = str + "_" + assignedClass;
 
         return str;
-        
+
     }
 }

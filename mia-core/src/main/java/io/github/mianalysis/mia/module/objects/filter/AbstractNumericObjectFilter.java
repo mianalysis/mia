@@ -106,18 +106,18 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     public static boolean testFilter(double testValue, double referenceValue, String filterMethod) {
         switch (filterMethod) {
-        case FilterMethods.LESS_THAN:
-            return testValue < referenceValue;
-        case FilterMethods.LESS_THAN_OR_EQUAL_TO:
-            return testValue <= referenceValue;
-        case FilterMethods.EQUAL_TO:
-            return testValue == referenceValue;
-        case FilterMethods.GREATER_THAN_OR_EQUAL_TO:
-            return testValue >= referenceValue;
-        case FilterMethods.GREATER_THAN:
-            return testValue > referenceValue;
-        case FilterMethods.NOT_EQUAL_TO:
-            return testValue != referenceValue;
+            case FilterMethods.LESS_THAN:
+                return testValue < referenceValue;
+            case FilterMethods.LESS_THAN_OR_EQUAL_TO:
+                return testValue <= referenceValue;
+            case FilterMethods.EQUAL_TO:
+                return testValue == referenceValue;
+            case FilterMethods.GREATER_THAN_OR_EQUAL_TO:
+                return testValue >= referenceValue;
+            case FilterMethods.GREATER_THAN:
+                return testValue > referenceValue;
+            case FilterMethods.NOT_EQUAL_TO:
+                return testValue != referenceValue;
         }
 
         return false;
@@ -126,18 +126,18 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     public static String getFilterMethodSymbol(String filterMethod) {
         switch (filterMethod) {
-        case FilterMethods.LESS_THAN:
-            return "<";
-        case FilterMethods.LESS_THAN_OR_EQUAL_TO:
-            return "<=";
-        case FilterMethods.EQUAL_TO:
-            return "==";
-        case FilterMethods.GREATER_THAN_OR_EQUAL_TO:
-            return ">=";
-        case FilterMethods.GREATER_THAN:
-            return ">";
-        case FilterMethods.NOT_EQUAL_TO:
-            return "!=";
+            case FilterMethods.LESS_THAN:
+                return "<";
+            case FilterMethods.LESS_THAN_OR_EQUAL_TO:
+                return "<=";
+            case FilterMethods.EQUAL_TO:
+                return "==";
+            case FilterMethods.GREATER_THAN_OR_EQUAL_TO:
+                return ">=";
+            case FilterMethods.GREATER_THAN:
+                return ">";
+            case FilterMethods.NOT_EQUAL_TO:
+                return "!=";
         }
 
         return "";
@@ -145,82 +145,83 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     public String getIndividualMeasurementName(String targetName, Workspace workspace) {
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
-        double fixedValue = parameters.getValue(REFERENCE_VALUE,workspace);
-        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
-        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
-        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
-        String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE, workspace);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT, workspace);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT, workspace);
+        String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT, workspace);
 
         switch (referenceMode) {
-        case ReferenceModes.FIXED_VALUE:
-            return getIndividualFixedValueFullName(filterMethod, targetName, String.valueOf(fixedValue));
-        case ReferenceModes.IMAGE_MEASUREMENT:
-            return getIndividualImageMeasFullName(filterMethod, targetName, refImage, refImageMeas);
-        case ReferenceModes.MEASUREMENT:
-            return getIndividualMeasFullName(filterMethod, targetName, refParentMeas);
-        case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-            return getIndividualParentMeasFullName(filterMethod, targetName, refParent, refParentMeas);
-        default:
-            return "";
+            case ReferenceModes.FIXED_VALUE:
+                return getIndividualFixedValueFullName(filterMethod, targetName, String.valueOf(fixedValue));
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                return getIndividualImageMeasFullName(filterMethod, targetName, refImage, refImageMeas);
+            case ReferenceModes.MEASUREMENT:
+                return getIndividualMeasFullName(filterMethod, targetName, refParentMeas);
+            case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                return getIndividualParentMeasFullName(filterMethod, targetName, refParent, refParentMeas);
+            default:
+                return "";
         }
     }
 
     public String getSummaryMeasurementName(String targetName, Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
-        double fixedValue = parameters.getValue(REFERENCE_VALUE,workspace);
-        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
-        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
-        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
-        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE, workspace);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT, workspace);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT, workspace);
+        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT, workspace);
 
         switch (referenceMode) {
-        case ReferenceModes.FIXED_VALUE:
-            return getSummaryFixedValueFullName(inputObjectsName, filterMethod, targetName, String.valueOf(fixedValue));
-        case ReferenceModes.IMAGE_MEASUREMENT:
-            return getSummaryImageMeasFullName(inputObjectsName, filterMethod, targetName, refImage, refImageMeas);
-        case ReferenceModes.MEASUREMENT:
-            return getSummaryMeasFullName(inputObjectsName, filterMethod, targetName, refMeas);
-        case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-            return getSummaryParentMeasFullName(inputObjectsName, filterMethod, targetName, refParent, refMeas);
-        default:
-            return "";
+            case ReferenceModes.FIXED_VALUE:
+                return getSummaryFixedValueFullName(inputObjectsName, filterMethod, targetName,
+                        String.valueOf(fixedValue));
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                return getSummaryImageMeasFullName(inputObjectsName, filterMethod, targetName, refImage, refImageMeas);
+            case ReferenceModes.MEASUREMENT:
+                return getSummaryMeasFullName(inputObjectsName, filterMethod, targetName, refMeas);
+            case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                return getSummaryParentMeasFullName(inputObjectsName, filterMethod, targetName, refParent, refMeas);
+            default:
+                return "";
         }
     }
 
     public double getReferenceValue(Workspace workspace, Obj inputObject) {
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        double fixedValue = parameters.getValue(REFERENCE_VALUE,workspace);
-        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
-        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
-        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
-        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
-        double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE, workspace);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT, workspace);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT, workspace);
+        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT, workspace);
+        double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER, workspace);
 
         // Getting the values to filter on
         double refValue;
         switch (referenceMode) {
-        case ReferenceModes.FIXED_VALUE:
-            refValue = fixedValue;
-            refMultiplier = 1;
-            break;
-        case ReferenceModes.IMAGE_MEASUREMENT:
-            refValue = workspace.getImage(refImage).getMeasurement(refImageMeas).getValue();
-            break;
-        case ReferenceModes.MEASUREMENT:
-            refValue = inputObject.getMeasurement(refMeas).getValue();
-            break;
-        case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-            Obj parentObject = inputObject.getParent(refParent);
-            if (parentObject == null)
+            case ReferenceModes.FIXED_VALUE:
+                refValue = fixedValue;
+                refMultiplier = 1;
+                break;
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                refValue = workspace.getImage(refImage).getMeasurement(refImageMeas).getValue();
+                break;
+            case ReferenceModes.MEASUREMENT:
+                refValue = inputObject.getMeasurement(refMeas).getValue();
+                break;
+            case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                Obj parentObject = inputObject.getParent(refParent);
+                if (parentObject == null)
+                    return Double.NaN;
+                refValue = parentObject.getMeasurement(refMeas).getValue();
+                break;
+            default:
                 return Double.NaN;
-            refValue = parentObject.getMeasurement(refMeas).getValue();
-            break;
-        default:
-            return Double.NaN;
         }
 
         return refValue * refMultiplier;
@@ -249,8 +250,8 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -258,37 +259,37 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
-        case ReferenceModes.FIXED_VALUE:
-            returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
-            break;
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
+            case ReferenceModes.FIXED_VALUE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                break;
 
-        case ReferenceModes.IMAGE_MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
-            returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
-            returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-            String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
-            ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT))
-                    .setImageName(referenceValueImageName);
-            break;
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
+                String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE, workspace);
+                ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT))
+                        .setImageName(referenceValueImageName);
+                break;
 
-        case ReferenceModes.MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
-            returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-            ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))
-                    .setObjectName(inputObjectsName);
-            break;
+            case ReferenceModes.MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
+                ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))
+                        .setObjectName(inputObjectsName);
+                break;
 
-        case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT));
-            returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
-            returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-            String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
-            ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT))
-                    .setChildObjectsName(inputObjectsName);
-            ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))
-                    .setObjectName(referenceValueParentObjectsName);
-            break;
+            case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
+                String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT, workspace);
+                ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT))
+                        .setChildObjectsName(inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))
+                        .setObjectName(referenceValueParentObjectsName);
+                break;
         }
 
         return returnedParameters;

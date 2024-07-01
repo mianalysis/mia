@@ -316,6 +316,7 @@ public class ProcessingPanel extends AbstractPanel {
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
         Prefs.set("MIA.showProcessingHelp",showHelp);
+        Prefs.savePreferences();
 
         helpNotesPanel.setVisible(showHelp);
         GUI.updatePanel();
@@ -333,6 +334,7 @@ public class ProcessingPanel extends AbstractPanel {
     public void setShowNotes(boolean showNotes) {
         this.showNotes = showNotes;
         Prefs.set("MIA.showProcessingNotes",showNotes);
+        Prefs.savePreferences();
 
         helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
@@ -350,6 +352,7 @@ public class ProcessingPanel extends AbstractPanel {
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
         Prefs.set("MIA.showProcessingFileList", showFileList);
+        Prefs.savePreferences();
 
         fileListPanel.setVisible(showFileList);
         GUI.updatePanel();

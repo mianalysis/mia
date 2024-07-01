@@ -48,6 +48,8 @@ public class MenuLogCheckbox extends JCheckBoxMenuItem implements ActionListener
             Prefs.set("MIA.Log.Warning", isSelected());
             break;
         }
+        
+        Prefs.savePreferences();
 
         MIA.getMainRenderer().setWriteEnabled(level, isSelected());
     }

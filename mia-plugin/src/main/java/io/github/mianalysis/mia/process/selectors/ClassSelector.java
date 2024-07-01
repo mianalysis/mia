@@ -1,12 +1,5 @@
 package io.github.mianalysis.mia.process.selectors;
 
-import com.drew.lang.annotations.Nullable;
-
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
-
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,26 +9,31 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import io.github.mianalysis.mia.MIA;
+import com.drew.lang.annotations.Nullable;
+
+import ij.Prefs;
 
 public class ClassSelector implements ActionListener, KeyListener {
     private boolean allowAdditions;
@@ -59,12 +57,18 @@ public class ClassSelector implements ActionListener, KeyListener {
     // GUI buttons
     private static final String CREATE_CLASS = "+";
     private static final String APPLY_CLASS = "Apply class";
-    
 
     public ClassSelector(@Nullable TreeSet<String> classes, boolean allowAdditions) {
         this.allowAdditions = allowAdditions;
         fullListModel.addAll(classes);
+
+        String recentsList = Prefs.get("MIA.classSelector.recentList", "");
+        for (String item : Arrays.asList(recentsList.split(",")))
+            if (fullListModel.contains(item))
+                recentListModel.add(item);
+
         showOptionsPanel();
+
     }
 
     public boolean isActive() {
@@ -229,10 +233,22 @@ public class ClassSelector implements ActionListener, KeyListener {
         return fullListModel.items();
     }
 
+    public void addExistingClass(String existingClass) {
+        fullListModel.add(existingClass);
+        recentListModel.add(existingClass);
+        currentListModel.add(existingClass);
+    }
+
     public void addExistingClasses(TreeSet<String> existingClasses) {
         fullListModel.addAll(existingClasses);
         recentListModel.addAll(existingClasses);
         currentListModel.addAll(existingClasses);
+    }
+
+    void saveRecentClassesToPrefs() {
+        String recentList = String.join(",", recentListModel.items());
+        Prefs.set("MIA.classSelector.recentList", recentList);
+        Prefs.savePreferences();
     }
 
     @Override
@@ -261,15 +277,17 @@ public class ClassSelector implements ActionListener, KeyListener {
                         break;
                 }
 
+                saveRecentClassesToPrefs();
+
                 setVisible(false);
 
                 break;
 
             case (CREATE_CLASS):
-                JFrame jf=new JFrame();
+                JFrame jf = new JFrame();
                 jf.setAlwaysOnTop(true);
-                String newClass = JOptionPane.showInputDialog(jf,"Enter new class name");
-                
+                String newClass = JOptionPane.showInputDialog(jf, "Enter new class name");
+
                 fullListModel.add(newClass);
                 int idx = fullListModel.getIndex(newClass);
                 fullList.setSelectedIndex(idx);
@@ -291,47 +309,51 @@ public class ClassSelector implements ActionListener, KeyListener {
     public void keyTyped(KeyEvent arg0) {
     }
 
-    class SortedListModel<E> extends AbstractListModel<E> {
-        private TreeSet<E> items = new TreeSet<>();
+    class SortedListModel<E> extends AbstractListModel<String> {
+        private TreeSet<String> items = new TreeSet<>();
 
         public SortedListModel() {
 
         }
 
-        public SortedListModel(TreeSet<E> items) {
+        public SortedListModel(TreeSet<String> items) {
             this.items = items;
         }
 
-        public void setItems(TreeSet<E> items) {
+        public void setItems(TreeSet<String> items) {
             this.items = items;
             fireContentsChanged(this, 0, getSize());
         }
 
-        public void add(E newItem) {
+        public void add(String newItem) {
             items.add(newItem);
             fireContentsChanged(this, 0, getSize());
         }
 
-        public void addAll(Set<E> newItems) {
+        public void addAll(Set<String> newItems) {
             items.addAll(newItems);
             fireContentsChanged(this, 0, getSize());
+        }
+
+        public boolean contains(String item) {
+            return items.contains(item);
         }
 
         public int getSize() {
             return items.size();
         }
 
-        public E getElementAt(int index) {
-            return (E) items.toArray()[index];
+        public String getElementAt(int index) {
+            return (String) items.toArray()[index];
         }
 
-        public TreeSet<E> items() {
+        public TreeSet<String> items() {
             return items;
         }
 
-        public int getIndex(E item) {
+        public int getIndex(String item) {
             int idx = 0;
-            for (E listItem : items)
+            for (String listItem : items)
                 if (listItem == item)
                     return idx;
                 else
@@ -343,19 +365,20 @@ public class ClassSelector implements ActionListener, KeyListener {
         }
     }
 
-    class RecentListModel<E> extends AbstractListModel<E> {
+    class RecentListModel<E> extends AbstractListModel<String> {
         private int capacity = 100;
-        private LinkedList<E> items = new LinkedList<>();
+        private LinkedList<String> items = new LinkedList<>();
 
         public RecentListModel() {
 
         }
 
-        public RecentListModel(LinkedList<E> items) {
+        public RecentListModel(LinkedList<String> items) {
             this.items = items;
+
         }
 
-        public void add(E newItem) {
+        public void addNoUpdate(String newItem) {
             // If adding again (to move to top of the list), remove first
             if (items.contains(newItem))
                 items.remove(newItem);
@@ -365,21 +388,35 @@ public class ClassSelector implements ActionListener, KeyListener {
             if (items.size() > capacity)
                 items.removeLast();
 
+        }
+
+        public void add(String newItem) {
+            addNoUpdate(newItem);
             fireContentsChanged(this, 0, getSize());
 
         }
 
-        public void addAll(Set<E> newItems) {
-            items.addAll(newItems);
+        public void addAll(Set<String> newItems) {
+            for (String newItem:newItems)
+                addNoUpdate(newItem);
+
             fireContentsChanged(this, 0, getSize());
+        }
+
+        public boolean contains(String item) {
+            return items.contains(item);
         }
 
         public int getSize() {
             return items.size();
         }
 
-        public E getElementAt(int index) {
-            return (E) items.toArray()[index];
+        public String getElementAt(int index) {
+            return (String) items.toArray()[index];
+        }
+
+        public LinkedList<String> items() {
+            return items;
         }
     }
 }
