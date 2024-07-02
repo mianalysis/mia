@@ -16,17 +16,20 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -48,29 +51,39 @@ import io.github.mianalysis.mia.object.system.Status;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SaveObjectsAsROIs extends AbstractSaver {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LOADER_SEPARATOR = "Object output";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String ADD_TRACK_ID = "Add track ID";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String TRACK_OBJECTS = "Track objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
+    public static final String ADD_OBJECT_CLASS = "Add object class";
+
+    /**
+    * 
+    */
+    public static final String METADATA_ITEM = "Metadata item";
+
+    /**
+    * 
+    */
     public static final String FILE_MODE = "File mode";
 
     public interface FileModes {
@@ -102,7 +115,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
     }
 
     public static void saveObjects(String outPath, String fileMode, Objs inputObjects,
-            @Nullable String trackObjectsName) {
+            @Nullable String trackObjectsName, @Nullable String metadataItem) {
         String moduleName = new SaveObjectsAsROIs(null).getName();
         try {
             ZipOutputStream zos = null;
@@ -125,9 +138,16 @@ public class SaveObjectsAsROIs extends AbstractSaver {
                         tid = parentObject.getID();
                 }
 
+                String classStr = "";
+                if (metadataItem != null) {
+                    ObjMetadata metadata = inputObject.getMetadataItem(metadataItem);
+                    if (metadata != null)
+                        classStr = "_" + metadata.getValue();
+                }
+
                 if (fileMode.equals(FileModes.PER_OBJECT)) {
                     zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(
-                            outPath + "_ID" + String.valueOf(oid) + "_TR" + String.valueOf(tid) + ".zip")));
+                            outPath + "_ID" + String.valueOf(oid) + "_TR" + String.valueOf(tid) + classStr + ".zip")));
                     out = new DataOutputStream(new BufferedOutputStream(zos));
                     re = new RoiEncoder(out);
                 }
@@ -137,7 +157,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
                     Roi roi = rois.get(z);
 
                     String label = "ID" + String.valueOf(oid) + "_TR" + String.valueOf(tid) + "_T"
-                            + (inputObject.getT() + 1) + "_Z" + (z + 1) + ".roi";
+                            + (inputObject.getT() + 1) + "_Z" + (z + 1) + classStr + ".roi";
 
                     if (inputObjects.getNFrames() > 1 && inputObjects.getNSlices() > 1)
                         roi.setPosition(1, z + 1, inputObject.getT() + 1);
@@ -149,7 +169,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
                     if (fileMode.equals(FileModes.PER_OBJECT_PER_SLICE)) {
                         zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(
                                 outPath + "_ID" + String.valueOf(oid) + "_TR" + String.valueOf(tid) + "_T"
-                                        + (inputObject.getT() + 1) + "_Z" + (z + 1) + ".zip")));
+                                        + (inputObject.getT() + 1) + "_Z" + (z + 1) + classStr + ".zip")));
                         out = new DataOutputStream(new BufferedOutputStream(zos));
                         re = new RoiEncoder(out);
                     }
@@ -184,6 +204,8 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         boolean addTrackID = parameters.getValue(ADD_TRACK_ID, workspace);
+        boolean addClass = parameters.getValue(ADD_OBJECT_CLASS, workspace);
+        String metadataItem = parameters.getValue(METADATA_ITEM, workspace);
         String fileMode = parameters.getValue(FILE_MODE, workspace);
         String parentObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
@@ -193,6 +215,9 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         if (!addTrackID)
             parentObjectsName = null;
 
+        if (!addClass)
+            metadataItem = null;
+
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         String outputPath = getOutputPath(modules, workspace);
@@ -200,14 +225,14 @@ public class SaveObjectsAsROIs extends AbstractSaver {
 
         // Ensuring folders have been created
         new File(outputPath).mkdirs();
-        
+
         // Adding last bits to name
         outputPath = outputPath + outputName;
         outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
         outputPath = appendDateTime(outputPath, appendDateTimeMode);
         outputPath = outputPath + suffix;
 
-        saveObjects(outputPath, fileMode, inputObjects, parentObjectsName);
+        saveObjects(outputPath, fileMode, inputObjects, parentObjectsName, metadataItem);
 
         return Status.PASS;
 
@@ -221,6 +246,8 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(ADD_TRACK_ID, this, false));
         parameters.add(new ParentObjectsP(TRACK_OBJECTS, this));
+        parameters.add(new BooleanP(ADD_OBJECT_CLASS, this, false));
+        parameters.add(new ObjectMetadataP(METADATA_ITEM, this));
         parameters.add(new ChoiceP(FILE_MODE, this, FileModes.SINGLE_FILE, FileModes.ALL));
 
         addParameterDescriptions();
@@ -239,6 +266,12 @@ public class SaveObjectsAsROIs extends AbstractSaver {
             returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
             ((ParentObjectsP) parameters.get(TRACK_OBJECTS))
                     .setChildObjectsName((String) parameters.getValue(INPUT_OBJECTS, workspace));
+        }
+        returnedParameters.add(parameters.getParameter(ADD_OBJECT_CLASS));
+        if ((boolean) parameters.getValue(ADD_OBJECT_CLASS, workspace)) {
+            returnedParameters.add(parameters.getParameter(METADATA_ITEM));
+            ((ObjectMetadataP) parameters.get(METADATA_ITEM))
+                    .setObjectName((String) parameters.getValue(INPUT_OBJECTS, workspace));
         }
         returnedParameters.add(parameters.getParameter(FILE_MODE));
 
@@ -259,8 +292,8 @@ public class SaveObjectsAsROIs extends AbstractSaver {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

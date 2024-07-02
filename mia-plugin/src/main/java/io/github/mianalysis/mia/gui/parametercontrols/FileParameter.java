@@ -87,6 +87,7 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
 
         ((FileFolderType) parameter).setPath(fileChooser.getSelectedFile().getAbsolutePath());
         Prefs.set("MIA.PreviousPath", fileChooser.getSelectedFile().getAbsolutePath());
+        Prefs.savePreferences();
 
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);

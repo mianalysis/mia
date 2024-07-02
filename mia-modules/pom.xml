@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -127,7 +127,7 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.2</version>
         </dependency>
 
         <dependency>
@@ -218,6 +218,12 @@
             <artifactId>mpicbg</artifactId>
             <version>1.5.0</version>
             <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
         </dependency>
     </dependencies>
 

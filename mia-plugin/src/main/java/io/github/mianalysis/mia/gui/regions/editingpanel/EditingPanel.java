@@ -312,6 +312,7 @@ public class EditingPanel extends AbstractPanel {
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
         Prefs.set("MIA.showEditingHelp", showHelp);
+        Prefs.savePreferences();
 
         helpNotesPanel.showHelp(showHelp);
         GUI.updatePanel();
@@ -329,6 +330,7 @@ public class EditingPanel extends AbstractPanel {
     public void setShowNotes(boolean showNotes) {
         this.showNotes = showNotes;
         Prefs.set("MIA.showEditingNotes", showNotes);
+        Prefs.savePreferences();
 
         helpNotesPanel.showNotes(showNotes);
         GUI.updatePanel();
@@ -346,6 +348,7 @@ public class EditingPanel extends AbstractPanel {
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
         Prefs.set("MIA.showEditingFileList", showFileList);
+        Prefs.savePreferences();
 
         fileListPanel.setVisible(showFileList);
         GUI.updatePanel();
@@ -363,6 +366,7 @@ public class EditingPanel extends AbstractPanel {
     public void setShowSearch(boolean showSearch) {
         this.showSearch = showSearch;
         Prefs.set("MIA.showEditingSearch", showSearch);
+        Prefs.savePreferences();
 
         searchPanel.setVisible(showSearch);
         GUI.updatePanel();

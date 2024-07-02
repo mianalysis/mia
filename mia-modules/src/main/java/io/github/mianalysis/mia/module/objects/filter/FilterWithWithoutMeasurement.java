@@ -130,11 +130,24 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
             // Removing the object if it has no children
             Measurement measurement = inputObject.getMeasurement(measName);
-            if (measurement == null || Double.isNaN(measurement.getValue())) {
-                count++;
-                if (remove)
-                    processRemoval(inputObject, outputObjects, iterator);
+            switch (filterMethod) {
+                case FilterMethods.WITHOUT_MEASUREMENT:
+                    if (measurement == null || Double.isNaN(measurement.getValue())) {
+                        count++;
+                        if (remove)
+                            processRemoval(inputObject, outputObjects, iterator);
+                    }
+                    break;
+
+                case FilterMethods.WITH_MEASUREMENT:
+                    if (measurement != null && !Double.isNaN(measurement.getValue())) {
+                        count++;
+                        if (remove)
+                            processRemoval(inputObject, outputObjects, iterator);
+                    }
+                    break;
             }
+
         }
 
         // If moving objects, addRef them to the workspace

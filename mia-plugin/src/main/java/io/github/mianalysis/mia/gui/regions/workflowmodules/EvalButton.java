@@ -3,7 +3,6 @@ package io.github.mianalysis.mia.gui.regions.workflowmodules;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
@@ -14,7 +13,6 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;

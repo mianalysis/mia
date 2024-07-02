@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.process.interactable;
+package io.github.mianalysis.mia.process.selectors;
 
 import java.awt.Color;
 import java.awt.Dimension;

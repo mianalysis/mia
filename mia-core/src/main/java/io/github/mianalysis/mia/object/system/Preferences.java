@@ -70,11 +70,13 @@ public class Preferences extends Module {
     public void setImageDisplayMode(String imageDisplayMode) {
         Prefs.set("MIA.Workflow.imageDisplayMode", imageDisplayMode);
         parameters.getParameter(IMAGE_DISPLAY_MODE).setValue(imageDisplayMode);
+        Prefs.savePreferences();
     }
 
     public void setImageDisplayMode() {
         String imageDisplayMode = parameters.getValue(IMAGE_DISPLAY_MODE, null);
         Prefs.set("MIA.Workflow.imageDisplayMode", imageDisplayMode);
+        Prefs.savePreferences();
     }
 
     public boolean useMemoizer() {
@@ -84,11 +86,13 @@ public class Preferences extends Module {
     public void setUseMemoizer(boolean useMemoizer) {
         Prefs.set("MIA.data.useMemoizer", useMemoizer);
         parameters.getParameter(USE_MEMOIZER).setValue(useMemoizer);
+        Prefs.savePreferences();
     }
 
     public void setUseMemoizer() {
         boolean useMemoizer = parameters.getValue(USE_MEMOIZER, null);
         Prefs.set("MIA.data.useMemoizer", useMemoizer);
+        Prefs.savePreferences();
     }
 
     public int getMemoizerThreshold() {
@@ -98,6 +102,7 @@ public class Preferences extends Module {
     public void setMemoizerThreshold(int threshold) {
         Prefs.set("MIA.data.memoizerThreshold", threshold);
         parameters.getParameter(MEMOIZER_THRESHOLD_S).setValue(threshold);
+        Prefs.savePreferences();
     }
 
     public IFormatReader getReader(IFormatReader reader) {

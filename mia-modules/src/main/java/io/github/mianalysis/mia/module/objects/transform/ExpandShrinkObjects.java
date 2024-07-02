@@ -256,7 +256,7 @@ public class ExpandShrinkObjects extends Module {
         }
 
         // Iterating over all objects
-        int count = 1;
+        int count = 0;
         int total = inputObjects.size();
 
         Iterator<Obj> iterator = inputObjects.values().iterator();
@@ -264,13 +264,14 @@ public class ExpandShrinkObjects extends Module {
             Obj inputObject = iterator.next();
             Obj newObject = null;
 
+            double appliedRadiusChange = radiusChange;
             if (radiusChangeSource.equals(RadiusChangeSources.OBJECT_MEASUREMENT))
-                radiusChange = inputObject.getMeasurement(measurementName).getValue();
+                appliedRadiusChange = inputObject.getMeasurement(measurementName).getValue();
 
             if (calibratedUnits)
-                radiusChange = radiusChange / firstObj.getDppXY();
+                appliedRadiusChange = appliedRadiusChange / firstObj.getDppXY();
 
-            int radiusChangePx = (int) Math.round(radiusChange);
+            int radiusChangePx = (int) Math.round(appliedRadiusChange);
 
             try {
                 newObject = processObject(inputObject, method, radiusChangePx);
@@ -305,7 +306,7 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.addChild(outputObject);
             }
 
-            writeProgressStatus(count++, total, "objects");
+            writeProgressStatus(++count, total, "objects");
 
         }
 

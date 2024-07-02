@@ -67,6 +67,15 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
+    public Objs(String name, ImagePlus imageForCalibration) {
+        this.name = name;
+        this.spatCal = SpatCal.getFromImage(imageForCalibration);
+        this.nFrames = imageForCalibration.getNFrames();
+        this.frameInterval = imageForCalibration.getCalibration().frameInterval;
+        this.temporalUnit = TemporalUnit.getOMEUnit();
+
+    }
+
     public Obj createAndAddNewObject(VolumeType volumeType) {
         Obj newObject = new Obj(this, volumeType, getAndIncrementID());
         add(newObject);
