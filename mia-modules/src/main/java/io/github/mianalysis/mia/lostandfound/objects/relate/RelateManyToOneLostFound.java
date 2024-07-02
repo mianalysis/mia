@@ -18,22 +18,32 @@ public class RelateManyToOneLostFound extends LostAndFoundItem {
 
     @Override
     public String[] getPreviousModuleNames() {
-        return new String[]{""};
+        return new String[] { "" };
     }
 
     @Override
     public HashMap<String, String> getPreviousParameterNames() {
-        HashMap<String,String> parameterNames = new HashMap<String,String>();
+        HashMap<String, String> parameterNames = new HashMap<>();
         parameterNames.put("Reference point", RelateManyToOne.REFERENCE_MODE);
         parameterNames.put("Minimum percentage overlap", RelateManyToOne.MINIMUM_OVERLAP);
-        
+        parameterNames.put("Limit linking by distance", RelateManyToOne.LINKING_DISTANCE_LIMIT);
+
         return parameterNames;
 
     }
 
     @Override
     public HashMap<String, HashMap<String, String>> getPreviousParameterValues() {
-        return new HashMap<String, HashMap<String, String>>();
+        HashMap<String, HashMap<String, String>> parameterValues = new HashMap<>();
+
+        HashMap<String, String> parameterValue = new HashMap<>();
+        parameterValue.put("false", RelateManyToOne.LinkingDistanceLimits.NO_LIMIT);
+        parameterValue.put("true", RelateManyToOne.LinkingDistanceLimits.LIMIT_BOTH);
+
+        parameterValues.put(RelateManyToOne.LINKING_DISTANCE_LIMIT, parameterValue);
+
+        return parameterValues;
+
     }
-    
+
 }

@@ -68,6 +68,8 @@ public class CreateBoundingBoxes extends Module {
             }
         }
 
+        outputObject.setT(inputObject.getT());
+
         if (assignRelationships) {
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);
