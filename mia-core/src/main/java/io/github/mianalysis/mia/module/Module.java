@@ -576,7 +576,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     public static void writeStatus(String message, String moduleName) {
         if (verbose)
-            MIA.log.writeStatus("[" + moduleName + "] " + message);
+            MIA.log.writeStatus(moduleName + ": " + message);
     }
 
     public void writeProgressStatus(int count, int total, String featureBeingProcessed) {
