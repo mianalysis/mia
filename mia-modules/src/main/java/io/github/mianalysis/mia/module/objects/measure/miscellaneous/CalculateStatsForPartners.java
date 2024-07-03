@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
+import java.util.LinkedHashMap;
+
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -15,6 +17,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -28,67 +31,92 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.math.CumStat;
 
-
 /**
-* Calculates statistics for a measurement associated with all partner objects of an input object.  The calculated statistics are stored as new measurements, associated with the relevant input object.  For example, calculating the summed volume of all partner objects (from a specified collection) of each input object.
-*/
+ * Calculates statistics for a measurement associated with all partner objects
+ * of an input object. The calculated statistics are stored as new measurements,
+ * associated with the relevant input object. For example, calculating the
+ * summed volume of all partner objects (from a specified collection) of each
+ * input object.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateStatsForPartners extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Objects input";
 
-	/**
-	* Input object collection from the workspace for which statistics of partner object measurements will be calculated.  This object collection is a partner to those selected by the "Partner objects" parameter.  Statistics for one measurement associated with all partners of each input object will be calculated and added to this object as a new measurement.
-	*/
+    /**
+     * Input object collection from the workspace for which statistics of partner
+     * object measurements will be calculated. This object collection is a partner
+     * to those selected by the "Partner objects" parameter. Statistics for one
+     * measurement associated with all partners of each input object will be
+     * calculated and added to this object as a new measurement.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Input object collection from the workspace, where these objects are partners of the collection selected by the "Input objects" parameter.)
-	*/
+    /**
+     * Input object collection from the workspace, where these objects are partners
+     * of the collection selected by the "Input objects" parameter.)
+     */
     public static final String PARTNER_OBJECTS = "Partner objects";
 
+    /**
+     * 
+     */
+    public static final String MEASUREMENT_SEPARATOR = "Measurements";
 
-	/**
-	* 
-	*/
-    public static final String STATISTIC_SEPARATOR = "Statistics";
+    /**
+    * 
+    */
+    public static final String ADD_MEASUREMENT = "Add measurement";
 
-	/**
-	* Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.
-	*/
+    /**
+     * Measurement associated with the partner objects for which statistics will be
+     * calculated. Statistics will be calculated for all partners of an input
+     * object.
+     */
     public static final String MEASUREMENT = "Measurement";
 
-	/**
-	* When selected, the mean value of the measurements will be calculated and added to the relevant input object.
-	*/
+    /**
+    * 
+    */
+    public static final String STATISTIC_SEPARATOR = "Statistics";
+
+    /**
+     * When selected, the mean value of the measurements will be calculated and
+     * added to the relevant input object.
+     */
     public static final String CALCULATE_MEAN = "Calculate mean";
 
-	/**
-	* When selected, the median value of the measurements will be calculated and added to the relevant input object.
-	*/
+    /**
+     * When selected, the median value of the measurements will be calculated and
+     * added to the relevant input object.
+     */
     public static final String CALCULATE_MEDIAN = "Calculate median";
 
-	/**
-	* When selected, the standard deviation of the measurements will be calculated and added to the relevant input object.
-	*/
+    /**
+     * When selected, the standard deviation of the measurements will be calculated
+     * and added to the relevant input object.
+     */
     public static final String CALCULATE_STD = "Calculate standard deviation";
 
-	/**
-	* When selected, the minimum value of the measurements will be calculated and added to the relevant input object.
-	*/
+    /**
+     * When selected, the minimum value of the measurements will be calculated and
+     * added to the relevant input object.
+     */
     public static final String CALCULATE_MIN = "Calculate minimum";
 
-	/**
-	* When selected, the maximum value of the measurements will be calculated and added to the relevant input object.
-	*/
+    /**
+     * When selected, the maximum value of the measurements will be calculated and
+     * added to the relevant input object.
+     */
     public static final String CALCULATE_MAX = "Calculate maximum";
 
-	/**
-	* When selected, the sum of the measurements will be calculated and added to the relevant input object.
-	*/
+    /**
+     * When selected, the sum of the measurements will be calculated and added to
+     * the relevant input object.
+     */
     public static final String CALCULATE_SUM = "Calculate sum";
 
     public CalculateStatsForPartners(Modules modules) {
@@ -106,7 +134,7 @@ public class CalculateStatsForPartners extends Module {
     }
 
     public static String getFullName(String partnerObjectName, String measurement, String measurementType) {
-        return "PARTNER_STATS // " + measurementType + "_" + partnerObjectName + "_\"" + measurement + "\"";
+        return "PARTNER_STATS // " + partnerObjectName +" // "+ measurementType + " // \"" + measurement + "\"";
     }
 
     public static void processObject(Obj inputObject, String partnerObjectsName, String measurement,
@@ -179,7 +207,7 @@ public class CalculateStatsForPartners extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -189,13 +217,10 @@ public class CalculateStatsForPartners extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input objects
+        // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting other parameters
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
-        String measurement = parameters.getValue(MEASUREMENT, workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_MEASUREMENT, workspace);
         boolean[] statsToCalculate = new boolean[6];
         statsToCalculate[0] = parameters.getValue(CALCULATE_MEAN, workspace);
         statsToCalculate[1] = parameters.getValue(CALCULATE_STD, workspace);
@@ -204,8 +229,13 @@ public class CalculateStatsForPartners extends Module {
         statsToCalculate[4] = parameters.getValue(CALCULATE_SUM, workspace);
         statsToCalculate[5] = parameters.getValue(CALCULATE_MEDIAN, workspace);
 
-        for (Obj inputObject : inputObjects.values()) {
-            processObject(inputObject, partnerObjectsName, measurement, statsToCalculate);
+        // Getting objects
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        for (Parameters collection : collections.values()) {
+            String measurement = collection.getValue(MEASUREMENT, workspace);
+            for (Obj inputObject : inputObjects.values())
+                processObject(inputObject, partnerObjectsName, measurement, statsToCalculate);
         }
 
         if (showOutput)
@@ -221,8 +251,12 @@ public class CalculateStatsForPartners extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));
 
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
+        Parameters collection = new Parameters();
+        collection.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection));
+
         parameters.add(new SeparatorP(STATISTIC_SEPARATOR, this));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new BooleanP(CALCULATE_MEAN, this, true));
         parameters.add(new BooleanP(CALCULATE_MEDIAN, this, false));
         parameters.add(new BooleanP(CALCULATE_STD, this, true));
@@ -237,11 +271,31 @@ public class CalculateStatsForPartners extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         Workspace workspace = null;
+
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS));
+
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS)).setPartnerObjectsName(objectName);
 
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_MEASUREMENT));
+
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
-        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(partnerObjectsName);
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values())
+            ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(partnerObjectsName);
+
+        returnedParameters.add(parameters.getParameter(STATISTIC_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MAX));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MEAN));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MEDIAN));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MIN));
+        returnedParameters.add(parameters.getParameter(CALCULATE_STD));
+        returnedParameters.add(parameters.getParameter(CALCULATE_SUM));
 
         return parameters;
 
@@ -259,65 +313,70 @@ public class CalculateStatsForPartners extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
-        String measurementName = parameters.getValue(MEASUREMENT, workspace);
 
-        if ((boolean) parameters.getValue(CALCULATE_MEAN, workspace)) {
-            String name = getFullName(partnerObjectsName, measurementName, Measurements.MEAN);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Mean value of measurement, \"" + measurementName + "\", for partner objects, \"" +
-                    partnerObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values()) {
+            String measurementName = collection.getValue(MEASUREMENT, workspace);
 
-        if ((boolean) parameters.getValue(CALCULATE_MEDIAN, workspace)) {
-            String name = getFullName(partnerObjectsName, measurementName, Measurements.MEDIAN);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription(
-                    "Median value of measurement, \"" + measurementName + "\", for partner objects, \"" +
-                            partnerObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_MEAN, workspace)) {
+                String name = getFullName(partnerObjectsName, measurementName, Measurements.MEAN);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(inputObjectsName);
+                reference.setDescription(
+                        "Mean value of measurement, \"" + measurementName + "\", for partner objects, \"" +
+                                partnerObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_STD, workspace)) {
-            String name = getFullName(partnerObjectsName, measurementName, Measurements.STD);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription(
-                    "Standard deviation of measurement, \"" + measurementName + "\", for partner objects, \"" +
-                            partnerObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_MEDIAN, workspace)) {
+                String name = getFullName(partnerObjectsName, measurementName, Measurements.MEDIAN);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(inputObjectsName);
+                reference.setDescription(
+                        "Median value of measurement, \"" + measurementName + "\", for partner objects, \"" +
+                                partnerObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_MIN, workspace)) {
-            String name = getFullName(partnerObjectsName, measurementName, Measurements.MIN);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription(
-                    "Minimum value of measurement, \"" + measurementName + "\", for partner objects, \"" +
-                            partnerObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_STD, workspace)) {
+                String name = getFullName(partnerObjectsName, measurementName, Measurements.STD);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(inputObjectsName);
+                reference.setDescription(
+                        "Standard deviation of measurement, \"" + measurementName + "\", for partner objects, \"" +
+                                partnerObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_MAX, workspace)) {
-            String name = getFullName(partnerObjectsName, measurementName, Measurements.MAX);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription(
-                    "Maximum value of measurement, \"" + measurementName + "\", for partner objects, \"" +
-                            partnerObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_MIN, workspace)) {
+                String name = getFullName(partnerObjectsName, measurementName, Measurements.MIN);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(inputObjectsName);
+                reference.setDescription(
+                        "Minimum value of measurement, \"" + measurementName + "\", for partner objects, \"" +
+                                partnerObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_SUM, workspace)) {
-            String name = getFullName(partnerObjectsName, measurementName, Measurements.SUM);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription(
-                    "Summed value of measurement, \"" + measurementName + "\", for partner objects, \"" +
-                            partnerObjectsName + "\".");
-            returnedRefs.add(reference);
+            if ((boolean) parameters.getValue(CALCULATE_MAX, workspace)) {
+                String name = getFullName(partnerObjectsName, measurementName, Measurements.MAX);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(inputObjectsName);
+                reference.setDescription(
+                        "Maximum value of measurement, \"" + measurementName + "\", for partner objects, \"" +
+                                partnerObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
+
+            if ((boolean) parameters.getValue(CALCULATE_SUM, workspace)) {
+                String name = getFullName(partnerObjectsName, measurementName, Measurements.SUM);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(inputObjectsName);
+                reference.setDescription(
+                        "Summed value of measurement, \"" + measurementName + "\", for partner objects, \"" +
+                                partnerObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
         }
 
         return returnedRefs;
@@ -325,8 +384,8 @@ public class CalculateStatsForPartners extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
@@ -359,8 +418,10 @@ public class CalculateStatsForPartners extends Module {
                 "Input object collection from the workspace, where these objects are partners of the collection selected by the \""
                         + INPUT_OBJECTS + "\" parameter.)");
 
-        parameters.get(MEASUREMENT).setDescription(
-                "Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.");
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values())
+            collection.get(MEASUREMENT).setDescription(
+                    "Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.");
 
         parameters.get(CALCULATE_MEAN).setDescription(
                 "When selected, the mean value of the measurements will be calculated and added to the relevant input object.");
