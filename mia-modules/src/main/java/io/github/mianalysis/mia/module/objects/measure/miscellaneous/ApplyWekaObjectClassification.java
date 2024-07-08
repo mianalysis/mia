@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -87,6 +88,10 @@ public class ApplyWekaObjectClassification extends Module {
      */
     public static final String APPLY_NORMALISATION = "Apply normalisation";
 
+    private String currClassifierPath = "";
+    private Instances currInstances = null;
+    private AbstractClassifier currClassifier = null;
+
     public interface ObjMetadataItems {
         public static final String CLASS = "CLASSIFIER // CLASS";
 
@@ -132,6 +137,42 @@ public class ApplyWekaObjectClassification extends Module {
 
     }
 
+    Instances getInstances(String classifierPath) throws FileNotFoundException, IOException, ClassNotFoundException {
+        if (currClassifierPath.equals(classifierPath) && currInstances != null)
+            return currInstances;
+
+        currClassifierPath = classifierPath;
+
+        if (!new File(classifierPath).exists())
+            return null;
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(classifierPath));
+        currClassifier = (AbstractClassifier) objectInputStream.readObject();
+        currInstances = (Instances) objectInputStream.readObject();
+        objectInputStream.close();
+
+        return currInstances;
+
+    }
+
+    AbstractClassifier getClassifier(String classifierPath) throws FileNotFoundException, IOException, ClassNotFoundException {
+        if (currClassifierPath.equals(classifierPath) && currInstances != null)
+            return currClassifier;
+
+        currClassifierPath = classifierPath;
+
+        if (!new File(classifierPath).exists())
+            return null;
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(classifierPath));
+        currClassifier = (AbstractClassifier) objectInputStream.readObject();
+        currInstances = (Instances) objectInputStream.readObject();
+        objectInputStream.close();
+
+        return currClassifier;
+
+    }
+
     public static void addProbabilityMeasurements(Obj inputObject, Instances instances, double[] classification) {
         for (int i = 0; i < instances.numClasses(); i++) {
             String measName = getProbabilityMeasurementName(instances.classAttribute().value(i));
@@ -150,14 +191,12 @@ public class ApplyWekaObjectClassification extends Module {
         String classifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
         boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION, workspace);
 
-        AbstractClassifier abstractClassifier = null;
         Instances instances = null;
+        AbstractClassifier classifier = null;
 
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(classifierPath));
-            abstractClassifier = (AbstractClassifier) objectInputStream.readObject();
-            instances = (Instances) objectInputStream.readObject();
-            objectInputStream.close();
+            instances = getInstances(classifierPath);
+            classifier = getClassifier(classifierPath);
         } catch (IOException | ClassNotFoundException e) {
             MIA.log.writeError(e);
             return Status.FAIL;
@@ -198,7 +237,7 @@ public class ApplyWekaObjectClassification extends Module {
             }
 
             // Applying classifications
-            double[][] classifications = abstractClassifier.distributionsForInstances(instances);
+            double[][] classifications = classifier.distributionsForInstances(instances);
 
             String classMeasName = getClassMeasurementName(instances);
             for (int i = 0; i < processedObjects.size(); i++) {
@@ -206,9 +245,10 @@ public class ApplyWekaObjectClassification extends Module {
                 double[] classification = classifications[i];
                 addProbabilityMeasurements(inputObject, instances, classification);
 
-                int classIndex = (int) abstractClassifier.classifyInstance(instances.get(i));
+                int classIndex = (int) classifier.classifyInstance(instances.get(i));
                 inputObject.addMeasurement(new Measurement(classMeasName, classIndex));
-                inputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
+                inputObject.addMetadataItem(
+                        new ObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
 
             }
         } catch (Exception e) {
@@ -255,14 +295,9 @@ public class ApplyWekaObjectClassification extends Module {
 
         try {
             // Getting class names
-            String classifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
-            if (!new File(classifierPath).exists())
-                return null;
+            String currClassifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
 
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(classifierPath));
-            AbstractClassifier abstractClassifier = (AbstractClassifier) objectInputStream.readObject();
-            Instances instances = (Instances) objectInputStream.readObject();
-            objectInputStream.close();
+            Instances instances = getInstances(currClassifierPath);
 
             ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 

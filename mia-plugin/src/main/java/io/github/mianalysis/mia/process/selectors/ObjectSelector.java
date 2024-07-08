@@ -544,7 +544,8 @@ public class ObjectSelector implements ActionListener, KeyListener {
     }
 
     public void addSingleRoi(Roi roi) {
-        classSelector.setVisible(true);
+        if (classSelector != null)
+            classSelector.setVisible(true);
 
         int ID = ++maxID;
 
