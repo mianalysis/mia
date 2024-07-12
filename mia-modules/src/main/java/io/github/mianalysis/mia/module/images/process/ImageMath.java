@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.images.process;
 
+import java.util.TreeMap;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -11,6 +13,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -181,6 +184,9 @@ public class ImageMath extends Module {
 
     @Override
     public Status process(Workspace workspace) {
+
+        TreeMap<Obj, Double> measByObj = new TreeMap<Obj,Double>();
+        
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);

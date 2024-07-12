@@ -247,7 +247,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
 
         // Updating threshold value parameter and updating GUI
         parameters.getParameter(REFERENCE_VALUE).setValue(refValue);
-        GUI.updateParameters();
+        GUI.updateParameters(false, null);
 
         Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
 

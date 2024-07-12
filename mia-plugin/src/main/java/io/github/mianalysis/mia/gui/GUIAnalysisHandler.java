@@ -41,8 +41,8 @@ public class GUIAnalysisHandler {
         modules.add(new ImageLoader<>(modules));
 
         GUI.setModules(modules);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false, null);
+        GUI.updateParameters(false, null);
         GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
         GUI.getUndoRedoStore().reset();
@@ -66,8 +66,8 @@ public class GUIAnalysisHandler {
         GUI.setLastModuleEval(-1);
         // new Thread(() -> {
         // GUI.updateTestFile(true);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, null);
+        GUI.updateParameters(false, null);
         GUI.getUndoRedoStore().reset();
         // }).start();
     }
@@ -108,39 +108,39 @@ public class GUIAnalysisHandler {
         MIA.log.writeStatus("Shutting system down");
         AnalysisRunner.stopAnalysis();
         GUI.setModuleBeingEval(-1);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false, null);
+        GUI.updateParameters(false, null);
     }
 
     public static void enableAllModules() {
         GUI.addUndo();
         for (Module module : GUI.getModules())
             module.setEnabled(true);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, null);
+        GUI.updateParameters(false, null);
     }
 
     public static void disableAllModules() {
         for (Module module : GUI.getModules())
             module.setEnabled(false);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, null);
+        GUI.updateParameters(false, null);
     }
 
     public static void enableAllModulesOutput() {
         GUI.addUndo();
         for (Module module : GUI.getModules())
             module.setShowOutput(true);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false, null);
+        GUI.updateParameters(false, null);
     }
 
     public static void disableAllModulesOutput() {
         GUI.addUndo();
         for (Module module : GUI.getModules())
             module.setShowOutput(false);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false, null);
+        GUI.updateParameters(false, null);
     }
 
     public static void removeModules() {
@@ -159,13 +159,12 @@ public class GUIAnalysisHandler {
             GUI.setLastModuleEval(lowestIdx - 1);
 
         // Removing modules
-        for (Module activeModule : activeModules) {
+        for (Module activeModule : activeModules)
             modules.remove(activeModule);
-        }
-
+        
         GUI.setSelectedModules(null);
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true,null);
+        GUI.updateParameters(false, null);
         GUI.updateHelpNotes();
 
     }
@@ -189,8 +188,9 @@ public class GUIAnalysisHandler {
         if (toIndex <= lastModuleEval)
             GUI.setLastModuleEval(toIndex - 1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        int startIdx = Math.min(fromIndices[0],toIndex);
+        GUI.updateModules(true,modules.get(startIdx));
+        GUI.updateParameters(false,null);
 
     }
 
@@ -213,8 +213,9 @@ public class GUIAnalysisHandler {
         if (fromIndices[0] <= lastModuleEval)
             GUI.setLastModuleEval(fromIndices[0] - 1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        int startIdx = Math.min(fromIndices[0],toIndex);
+        GUI.updateModules(true,modules.get(startIdx));
+        GUI.updateParameters(false,null);
 
     }
 
@@ -275,8 +276,8 @@ public class GUIAnalysisHandler {
             // Updating the evaluation indicator
             int lastModuleEval = GUI.getLastModuleEval();
             GUI.setLastModuleEval(Math.min(toIdx, lastModuleEval));
-            GUI.updateModules();
-            GUI.updateParameters();
+            GUI.updateModules(true,toModule);
+            GUI.updateParameters(false,null);
 
         } catch (IOException | UnsupportedFlavorException | IllegalAccessException | InstantiationException
                 | InvocationTargetException | ClassNotFoundException | ParserConfigurationException | SAXException
@@ -295,8 +296,8 @@ public class GUIAnalysisHandler {
         for (Module selectedModule : selectedModules)
             selectedModule.setShowOutput(!selectedModule.canShowOutput());
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false,null);
+        GUI.updateParameters(false,null);
 
     }
 
@@ -315,8 +316,8 @@ public class GUIAnalysisHandler {
         if (firstIdx <= lastModuleEval)
             GUI.setLastModuleEval(firstIdx - 1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false,null);
+        GUI.updateParameters(false,null);
 
     }
 }

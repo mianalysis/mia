@@ -39,8 +39,8 @@ public class BooleanParameter extends TextSwitchableParameterControl implements 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
 
         updateControl();
 

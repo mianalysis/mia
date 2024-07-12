@@ -44,8 +44,8 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
 
         updateControl();
 

@@ -297,9 +297,11 @@ public class ApplyWekaObjectClassification extends Module {
             // Getting class names
             String currClassifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
 
-            Instances instances = getInstances(currClassifierPath);
-
             ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
+
+            Instances instances = getInstances(currClassifierPath);
+            if (instances == null)
+                return returnedRefs;            
 
             for (int i = 0; i < instances.numClasses(); i++) {
                 String className = instances.classAttribute().value(i);

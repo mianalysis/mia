@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import io.github.mianalysis.mia.module.Modules;
 
 public class UndoRedoStore {
-    private int limit = 100;
+    private int limit = 10;
     private LinkedList<Modules> undoStore = new LinkedList<>();
     private LinkedList<Modules> redoStore = new LinkedList<>();
 

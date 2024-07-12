@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
+import com.drew.lang.annotations.Nullable;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
@@ -112,7 +114,7 @@ public class GUI {
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));
         frame.setIconImage(new ImageIcon(this.getClass().getResource("/icons/Logo_wide_32.png"), "").getImage());
 
-        mainPanel.updatePanel();
+        mainPanel.updatePanel(false, null);
         menuBar.setUndoRedoStatus(undoRedoStore);
         splash.setVisible(false);
 
@@ -233,19 +235,21 @@ public class GUI {
         mainPanel.updateFileList();
     }
 
-    public static void updateModules() {
-        mainPanel.updateModules();
+    public static void updateModules(boolean testAnalysis, @Nullable Module startModule) {
+        mainPanel.updateModules(testAnalysis, startModule);
         mainPanel.updateHelpNotes();
 
     }
 
-    public static void updateModuleStates() {
-        AnalysisTester.testModules(getModules(), testWorkspace);
+    public static void updateModuleStates(boolean testAnalysis, @Nullable Module startModule) {
+        if (testAnalysis)
+            AnalysisTester.testModules(getModules(), testWorkspace, startModule);
+
         mainPanel.updateModuleStates();
     }
 
-    public static void updateParameters() {
-        mainPanel.updateParameters();
+    public static void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
+        mainPanel.updateParameters(testAnalysis, startModule);
     }
 
     public static ComponentFactory getComponentFactory() {
@@ -433,7 +437,7 @@ public class GUI {
         mainPanel = editingPanel;
         frame.add(mainPanel);
 
-        mainPanel.updatePanel();
+        mainPanel.updatePanel(false, null);
         updatePanel();
 
     }
@@ -445,7 +449,7 @@ public class GUI {
         mainPanel = processingPanel;
         frame.add(mainPanel);
 
-        mainPanel.updatePanel();
+        mainPanel.updatePanel(false, null);
         updatePanel();
 
     }
@@ -521,8 +525,8 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModules();
-        updateParameters();
+        updateModules(false, null);
+        updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 
@@ -540,8 +544,8 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModules();
-        updateParameters();
+        updateModules(false, null);
+        updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 

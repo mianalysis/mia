@@ -61,8 +61,8 @@ public class MenuItem extends JMenuItem implements ActionListener {
             case NEW_WORKFLOW:
                 GUIAnalysisHandler.newAnalysis();
                 GUI.setSelectedModules(null);
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.updateModules(false, null);
+                GUI.updateParameters(false, null);
                 break;
 
             case LOAD_WORKFLOW:
@@ -79,32 +79,32 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
             case UNDO:
                 GUI.undo();
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.updateModules(false, null);
+                GUI.updateParameters(false, null);
                 break;
 
             case REDO:
                 GUI.redo();
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.updateModules(false, null);
+                GUI.updateParameters(false, null);
                 break;
 
             case COPY:
                 GUIAnalysisHandler.copyModules();
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.updateModules(false, null);
+                GUI.updateParameters(false, null);
                 break;
 
             case PASTE:
                 GUIAnalysisHandler.pasteModules();
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.updateModules(true, null);
+                GUI.updateParameters(false, null);
                 break;
 
             case PREFERENCES:
                 GUI.setSelectedModules(new Module[] { MIA.getPreferences() });
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.updateModules(false, null);
+                GUI.updateParameters(false, null);
                 break;
 
             case RUN_ANALYSIS:

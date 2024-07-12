@@ -101,8 +101,8 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
         //     MIA.log.writeStatus("File initialisation complete");
         // }
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
 
     }
 }

@@ -285,8 +285,8 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
                 break;
         }
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false,null);
+        GUI.updateParameters(false,null);
 
     }
 }
@@ -311,6 +311,7 @@ class DynamicVariableActionListener implements ActionListener {
         parameter
                 .setValueFromString(inputString.substring(0, position) + stringToAdd + inputString.substring(position));
 
-        GUI.updateParameters();
+        GUI.updateParameters(true,parameter.getModule());
+
     }
 }

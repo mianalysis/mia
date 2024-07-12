@@ -52,7 +52,7 @@ public class AnalysisRunner {
         MIA.clearLogHistory();
         counter = 0;
 
-        AnalysisTester.testModules(modules, null);
+        AnalysisTester.testModules(modules, null, null);
 
         HashSet<Job> jobs = getJobs(modules);
         if (jobs.size() == 0) {
