@@ -52,7 +52,7 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_CHOICE = "Variable choice";
     public static final String STORE_AS_METADATA_ITEM = "Store as metadata item";
 
-    private static final HashMap<StringP, String> globalVariables = new HashMap<>();
+    protected static final HashMap<StringP, String> globalVariables = new HashMap<>();
 
     public interface VariableTypes {
         String BOOLEAN = "Boolean";
@@ -63,6 +63,10 @@ public class GlobalVariables extends Module {
 
         String[] ALL = new String[] { BOOLEAN, CHOICE, FILE, FOLDER, TEXT };
 
+    }
+
+    protected GlobalVariables(String name, Modules modules) {
+        super(name, modules);
     }
 
     public GlobalVariables(Modules modules) {

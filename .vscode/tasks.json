@@ -1,6 +1,15 @@
 {
     "tasks": [
         {
+            "label": "maven: install-quick",
+            "type": "shell",
+            "command": "mvn clean install -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
             "label": "maven: package-quick",
             "type": "shell",
             "command": "mvn clean package -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip",
