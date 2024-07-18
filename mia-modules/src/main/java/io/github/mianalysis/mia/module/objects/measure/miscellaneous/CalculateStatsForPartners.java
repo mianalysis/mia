@@ -134,7 +134,7 @@ public class CalculateStatsForPartners extends Module {
     }
 
     public static String getFullName(String partnerObjectName, String measurement, String measurementType) {
-        return "PARTNER_STATS // " + partnerObjectName + " // " + measurementType + " // \"" + measurement + "\"";
+        return "PARTNER_STATS // " + partnerObjectName + " // " + measurementType + " // [" + measurement + "]";
     }
 
     public static void processObject(Obj inputObject, String partnerObjectsName, String measurement,

@@ -62,7 +62,7 @@ public class AdoptParentMeasurement extends Module {
     public static final String MEASUREMENT = "Measurement";
 
     public static String getFullName(String parentObjectName, String measurement) {
-        return "PARENT_STATS // " + parentObjectName + " // \"" + measurement + "\"";
+        return "PARENT_STATS // " + parentObjectName + " // [" + measurement + "]";
     }
 
     public AdoptParentMeasurement(Modules modules) {
@@ -117,7 +117,7 @@ public class AdoptParentMeasurement extends Module {
             }
 
             writeProgressStatus(count, total, "objects");
-            
+
         }
 
         if (showOutput)

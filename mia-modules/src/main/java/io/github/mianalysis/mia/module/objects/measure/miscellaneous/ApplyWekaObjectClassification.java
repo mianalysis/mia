@@ -222,6 +222,7 @@ public class ApplyWekaObjectClassification extends Module {
                     continue;
 
                 objAttr[i] = measurement.getValue();
+                
             }
 
             processedObjects.add(inputObject);

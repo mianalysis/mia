@@ -134,7 +134,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     public static String getFullName(String childObjectName, String measurement, String measurementType) {
-        return "CHILD_STATS // " + childObjectName + " // " + measurementType + " // \"" + measurement + "\"";
+        return "CHILD_STATS // " + childObjectName + " // " + measurementType + " // [" + measurement + "]";
     }
 
     public static void processObject(Obj parentObject, String childObjectsName, String measurement,
