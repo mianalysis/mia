@@ -96,7 +96,11 @@ public class AdoptParentMeasurement extends Module {
         if (objects == null)
             return Status.PASS;
 
+        int count = 0;
+        int total = objects.size();
         for (Obj obj : objects.values()) {
+            count++;
+
             Obj parentObj = obj.getParent(parentObjectsName);
             if (parentObj == null)
                 continue;
@@ -107,9 +111,13 @@ public class AdoptParentMeasurement extends Module {
                 if (parentMeasurement == null)
                     continue;
 
-                obj.addMeasurement(new Measurement(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
+                obj.addMeasurement(
+                        new Measurement(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
 
             }
+
+            writeProgressStatus(count, total, "objects");
+            
         }
 
         if (showOutput)

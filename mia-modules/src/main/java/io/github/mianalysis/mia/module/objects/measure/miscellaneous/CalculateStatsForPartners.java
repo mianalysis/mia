@@ -134,7 +134,7 @@ public class CalculateStatsForPartners extends Module {
     }
 
     public static String getFullName(String partnerObjectName, String measurement, String measurementType) {
-        return "PARTNER_STATS // " + partnerObjectName +" // "+ measurementType + " // \"" + measurement + "\"";
+        return "PARTNER_STATS // " + partnerObjectName + " // " + measurementType + " // \"" + measurement + "\"";
     }
 
     public static void processObject(Obj inputObject, String partnerObjectsName, String measurement,
@@ -232,10 +232,16 @@ public class CalculateStatsForPartners extends Module {
         // Getting objects
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
-        for (Parameters collection : collections.values()) {
-            String measurement = collection.getValue(MEASUREMENT, workspace);
-            for (Obj inputObject : inputObjects.values())
+        int count = 0;
+        int total = inputObjects.size();
+        for (Obj inputObject : inputObjects.values()) {
+            for (Parameters collection : collections.values()) {
+                String measurement = collection.getValue(MEASUREMENT, workspace);
                 processObject(inputObject, partnerObjectsName, measurement, statsToCalculate);
+            }
+
+            writeProgressStatus(++count, total, "objects");
+
         }
 
         if (showOutput)

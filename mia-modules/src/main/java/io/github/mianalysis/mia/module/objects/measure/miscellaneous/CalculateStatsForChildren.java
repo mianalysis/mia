@@ -134,7 +134,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     public static String getFullName(String childObjectName, String measurement, String measurementType) {
-        return "CHILD_STATS // " + childObjectName +" // "+ measurementType + " // \"" + measurement + "\"";
+        return "CHILD_STATS // " + childObjectName + " // " + measurementType + " // \"" + measurement + "\"";
     }
 
     public static void processObject(Obj parentObject, String childObjectsName, String measurement,
@@ -232,10 +232,16 @@ public class CalculateStatsForChildren extends Module {
         // Getting objects
         Objs parentObjects = workspace.getObjects().get(parentObjectsName);
 
-        for (Parameters collection : collections.values()) {
-            String measurement = collection.getValue(MEASUREMENT, workspace);
-            for (Obj parentObject : parentObjects.values())
+        int count = 0;
+        int total = parentObjects.size();
+        for (Obj parentObject : parentObjects.values()) {
+            for (Parameters collection : collections.values()) {
+                String measurement = collection.getValue(MEASUREMENT, workspace);
                 processObject(parentObject, childObjectsName, measurement, statsToCalculate);
+            }
+
+            writeProgressStatus(++count, total, "objects");
+
         }
 
         if (showOutput)
