@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
@@ -174,7 +175,9 @@ public class ConvertObjectsToImage extends Module {
    * Measurement used to determine the colour when "Colour mode" is set to either
    * "Measurement value" or "Parent measurement value".
    */
-  public static final String MEASUREMENT = "Measurement";
+  public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
+
+  public static final String METADATA_ITEM_FOR_COLOUR = "Metadata item for colour";
 
   public ConvertObjectsToImage(Modules modules) {
     super("Convert objects to image", modules);
@@ -224,7 +227,8 @@ public class ConvertObjectsToImage extends Module {
     String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
     String colourMode = parameters.getValue(COLOUR_MODE, workspace);
     String singleColourMode = parameters.getValue(SINGLE_COLOUR_MODE, workspace);
-    String measurementForColour = parameters.getValue(MEASUREMENT, workspace);
+    String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR, workspace);
+    String metadataItemForColour = parameters.getValue(METADATA_ITEM_FOR_COLOUR, workspace);
     String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR, workspace);
     String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR, workspace);
     String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR, workspace);
@@ -252,6 +256,10 @@ public class ConvertObjectsToImage extends Module {
         nanBackground = true;
         hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, false,
             new double[] { Double.NaN, Double.NaN });
+        bitDepth = 32;
+        break;
+      case ColourModes.OBJ_METADATA_ITEM:
+        hues = ColourFactory.getObjectMetadataHues(inputObjects, metadataItemForColour);
         bitDepth = 32;
         break;
       case ColourModes.PARENT_ID:
@@ -303,6 +311,7 @@ public class ConvertObjectsToImage extends Module {
         case ColourModes.ID:
         case ColourModes.PARENT_ID:
         case ColourModes.RANDOM_COLOUR:
+        case ColourModes.OBJ_METADATA_ITEM:
           dispIpl.setLut(LUTs.Random(true));
           break;
 
@@ -337,7 +346,8 @@ public class ConvertObjectsToImage extends Module {
     parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
     parameters.add(new ChoiceP(SINGLE_COLOUR_MODE, this, SingleColourModes.W_ON_B, SingleColourModes.ALL));
     parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
-    parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+    parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, this));
+    parameters.add(new ObjectMetadataP(METADATA_ITEM_FOR_COLOUR, this));
     parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
     parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_COLOUR, this));
 
@@ -364,15 +374,20 @@ public class ConvertObjectsToImage extends Module {
     switch ((String) parameters.getValue(COLOUR_MODE, workspace)) {
       case ColourModes.CHILD_COUNT:
         returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
-        if (parameters.getValue(INPUT_OBJECTS, workspace) != null) {
+        if (parameters.getValue(INPUT_OBJECTS, workspace) != null)
           ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
-        }
         break;
+
       case ColourModes.MEASUREMENT_VALUE:
-        returnedParameters.add(parameters.getParameter(MEASUREMENT));
-        if (parameters.getValue(INPUT_OBJECTS, workspace) != null) {
-          ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
-        }
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+        if (parameters.getValue(INPUT_OBJECTS, workspace) != null)
+          ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(inputObjectsName);
+        break;
+
+      case ColourModes.OBJ_METADATA_ITEM:
+        returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_COLOUR));
+        if (parameters.getValue(INPUT_OBJECTS, workspace) != null)
+          ((ObjectMetadataP) parameters.getParameter(METADATA_ITEM_FOR_COLOUR)).setObjectName(inputObjectsName);
         break;
 
       case ColourModes.PARENT_ID:
@@ -384,19 +399,18 @@ public class ConvertObjectsToImage extends Module {
         returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
         ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
 
-        returnedParameters.add(parameters.getParameter(MEASUREMENT));
-        if (parentObjectsName != null) {
-          ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
-        }
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+        if (parentObjectsName != null)
+          ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(parentObjectsName);
 
         break;
 
       case ColourModes.PARTNER_COUNT:
         returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
-        if (parameters.getValue(INPUT_OBJECTS, workspace) != null) {
+        if (parameters.getValue(INPUT_OBJECTS, workspace) != null)
           ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
               .setPartnerObjectsName(inputObjectsName);
-        }
+
         break;
 
       case ColourModes.SINGLE_COLOUR:
@@ -470,7 +484,7 @@ public class ConvertObjectsToImage extends Module {
     parameters.get(CHILD_OBJECTS_FOR_COLOUR).setDescription(description);
 
     description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.MEASUREMENT_FOR_COLOUR).getDescription();
-    parameters.get(MEASUREMENT).setDescription(description);
+    parameters.get(MEASUREMENT_FOR_COLOUR).setDescription(description);
 
     description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.PARENT_OBJECT_FOR_COLOUR).getDescription();
     parameters.get(PARENT_OBJECT_FOR_COLOUR).setDescription(description);
