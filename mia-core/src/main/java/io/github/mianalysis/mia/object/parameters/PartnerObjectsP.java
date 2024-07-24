@@ -34,7 +34,7 @@ public class PartnerObjectsP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        PartnerObjectsP newParameter = new PartnerObjectsP(name,newModule,getChoice(),partnerObjectsName,getDescription());
+        PartnerObjectsP newParameter = new PartnerObjectsP(name,newModule,getRawStringValue(),partnerObjectsName,getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());

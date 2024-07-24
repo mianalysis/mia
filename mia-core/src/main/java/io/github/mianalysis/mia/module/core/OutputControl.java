@@ -621,7 +621,7 @@ public class OutputControl extends AbstractMacroRunner {
         returnedParameters.add(parameters.getParameter(EXPORT_SEPARATOR));
         ChoiceP exportMode = (ChoiceP) parameters.getParameter(EXPORT_MODE);
         returnedParameters.add(exportMode);
-        switch (exportMode.getChoice()) {
+        switch ((String) exportMode.getValue(workspace)) {
             case ExportModes.GROUP_BY_METADATA:
                 returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_GROUPING));
                 break;
@@ -629,7 +629,7 @@ public class OutputControl extends AbstractMacroRunner {
                 return returnedParameters;
         }
 
-        switch (exportMode.getChoice()) {
+        switch ((String) exportMode.getValue(workspace)) {
             case ExportModes.INDIVIDUAL_FILES:
                 returnedParameters.add(parameters.getParameter(INDIVIDUAL_SAVE_LOCATION));
                 switch ((String) parameters.getValue(INDIVIDUAL_SAVE_LOCATION, null)) {

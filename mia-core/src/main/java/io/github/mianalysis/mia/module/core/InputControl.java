@@ -504,7 +504,7 @@ public class InputControl extends Module {
 
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
         returnedParameters.add(seriesMode);
-        switch (seriesMode.getChoice()) {
+        switch ((String) seriesMode.getValue(workspace)) {
             case SeriesModes.SERIES_LIST:
                 returnedParameters.add(parameters.getParameter(SERIES_LIST));
                 break;
@@ -516,9 +516,9 @@ public class InputControl extends Module {
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
-        SpatialUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.SPATIAL_UNIT)).getChoice());
+        SpatialUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.SPATIAL_UNIT)).getValue(workspace));
         returnedParameters.add(parameters.getParameter(TEMPORAL_UNIT));
-        TemporalUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.TEMPORAL_UNIT)).getChoice());
+        TemporalUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.TEMPORAL_UNIT)).getValue(workspace));
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(IGNORE_CASE));

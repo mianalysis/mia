@@ -97,7 +97,7 @@ public class ImageMeasurementPTest {
         imageMeasurementP.setImageName("My im");
         imageMeasurementP.setValueFromString("Image measurement choice");
 
-        assertEquals("Image measurement choice",imageMeasurementP.getChoice());
+        assertEquals("Image measurement choice",imageMeasurementP.getValue(null));
 
     }
 
@@ -110,7 +110,7 @@ public class ImageMeasurementPTest {
         imageMeasurementP.setImageName("My im");
         imageMeasurementP.setValueFromString("");
 
-        assertEquals("",imageMeasurementP.getChoice());
+        assertEquals("",imageMeasurementP.getValue(null));
 
     }
 
@@ -123,7 +123,7 @@ public class ImageMeasurementPTest {
         imageMeasurementP.setImageName("My im");
         imageMeasurementP.setValueFromString(null);
 
-        assertEquals("",imageMeasurementP.getChoice());
+        assertEquals("",imageMeasurementP.getValue(null));
 
     }
 

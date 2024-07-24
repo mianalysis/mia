@@ -10,7 +10,6 @@ import javax.swing.JComponent;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.BooleanType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 
 /**
  * Created by Stephen on 20/05/2017.
