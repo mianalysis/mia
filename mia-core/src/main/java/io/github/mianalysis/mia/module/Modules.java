@@ -91,7 +91,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         break;
                     case REDIRECT:
                         // Getting index of module before one to move to
-                        Module redirectModule = module.getRedirectModule(workspace);
+                        Module redirectModule = getModuleByID(module.getRedirectModuleID(workspace));
                         if (redirectModule == null)
                             break;
                         i = indexOf(redirectModule) - 1;
@@ -706,6 +706,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         removeAll(this);
         addAll(newModules);
+
     }
 
     public Modules duplicate(boolean copyIDs) {
@@ -716,7 +717,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         for (Module module : values())
             copyModules.add(module.duplicate(copyModules, copyIDs));
-
+        
         return copyModules;
 
     }

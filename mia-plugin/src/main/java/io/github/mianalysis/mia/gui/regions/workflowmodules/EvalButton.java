@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.macro.MacroHandler;
@@ -301,10 +302,11 @@ public class EvalButton extends JButton implements ActionListener {
                 break;
             case REDIRECT:
                 // Getting index of module before one to move to
-                Module redirectModule = module.getRedirectModule(testWorkspace);
+                Module redirectModule = modules.getModuleByID(module.getRedirectModuleID(testWorkspace));
+                
                 if (redirectModule == null)
                     status = true;
-
+                
                 GUI.setLastModuleEval(modules.indexOf(redirectModule) - 1);
                 status = true;
                 break;
@@ -312,6 +314,7 @@ public class EvalButton extends JButton implements ActionListener {
             case TERMINATE:
             case TERMINATE_SILENT:
                 status = false;
+                MIA.log.writeDebug("FAIL");
                 break;
         }
 

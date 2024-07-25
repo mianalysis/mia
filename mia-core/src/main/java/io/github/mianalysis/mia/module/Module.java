@@ -59,7 +59,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     private boolean runnable = true;
     private boolean reachable = true;
     protected boolean showOutput = false;
-    protected Module redirectModule = null; // After this module, can redirect to another module
+    protected String redirectModuleID = null; // After this module, can redirect to another module
     private boolean showProcessingViewTitle = true;
     protected boolean deprecated = false; // When set to true, this module is marked for future removal
     protected IL2Support il2Support = IL2Support.NONE;
@@ -474,12 +474,12 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         return il2Support;
     }
 
-    public Module getRedirectModule(Workspace workspace) {
-        return this.redirectModule;
+    public String getRedirectModuleID(Workspace workspace) {
+        return this.redirectModuleID;
     }
 
-    public void setRedirectModule(Module module) {
-        this.redirectModule = module;
+    public void setRedirectModuleID(String redirectModuleID) {
+        this.redirectModuleID = redirectModuleID;
     }
 
     public boolean hasVisibleParameters() {
@@ -510,6 +510,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         newModule.setNotes(notes);
         newModule.setCanBeDisabled(canBeDisabled);
         newModule.setShowProcessingViewTitle(showProcessingViewTitle);
+        newModule.setRedirectModuleID(redirectModuleID);
 
         Parameters newParameters = newModule.getAllParameters();
         for (Parameter parameter : parameters.values()) {

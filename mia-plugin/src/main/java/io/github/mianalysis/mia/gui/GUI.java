@@ -530,6 +530,8 @@ public class GUI {
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 
+        
+
     }
 
     public static void redo() {

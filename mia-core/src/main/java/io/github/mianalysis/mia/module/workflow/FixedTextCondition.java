@@ -11,12 +11,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.parameters.ModuleP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -105,14 +103,13 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     }
 
-    @Override
-    public Module getRedirectModule(Workspace workspace) {
+    public String getRedirectModuleID(Workspace workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
-            redirectModule = null;
+            redirectModuleID = null;
         else
-            redirectModule = modules.get(idx);
+            redirectModuleID = modules.get(idx).getModuleID();
 
         String testValue = parameters.getValue(TEST_VALUE, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION, workspace);
@@ -121,16 +118,16 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
             if (collection.getValue(REFERENCE_VALUE, workspace).equals(testValue)) {
                 switch ((String) collection.getValue(CONTINUATION_MODE, workspace)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
-                        redirectModule = collection.getValue(REDIRECT_MODULE, workspace);
+                        redirectModuleID = collection.getValue(REDIRECT_MODULE, workspace);
                         break;
                     case ContinuationModes.TERMINATE:
-                        redirectModule = null;
+                        redirectModuleID = null;
                         break;
                 }
             }
         }
 
-        return redirectModule;
+        return redirectModuleID;
 
     }
 
@@ -245,11 +242,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
                 switch ((String) params.getValue(CONTINUATION_MODE, null)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
                         returnedParameters.add(params.getParameter(REDIRECT_MODULE));
-                        redirectModule = params.getValue(REDIRECT_MODULE, null);
-                        if (redirectModule != null) {
-                            System.out.println("RED "+redirectModule.getModuleID());
-                        }
-
+                        redirectModuleID = params.getValue(REDIRECT_MODULE, null);                        
                         returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
                         if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE, null)) {
                             returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
@@ -260,7 +253,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
                         returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
                         returnedParameters.add(params.getParameter(REMOVE_IMAGES));
                         returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
-                        redirectModule = null;
+                        redirectModuleID = null;
                         break;
                 }
 

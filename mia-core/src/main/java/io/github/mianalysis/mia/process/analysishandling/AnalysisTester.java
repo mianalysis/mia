@@ -42,7 +42,7 @@ public class AnalysisTester {
                     if (!((ModuleIsEnabled) module).testDoRedirect(workspace))
                         continue;
 
-                Module redirectModule = module.getRedirectModule(workspace);
+                Module redirectModule = modules.getModuleByID(module.getRedirectModuleID(workspace));
 
                 // If null, the analysis was terminated
                 if (redirectModule == null)

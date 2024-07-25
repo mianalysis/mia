@@ -51,7 +51,7 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     public void updateState() {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
-        setText(module.getNickname()+"_"+module.getModuleID());
+        setText(module.getNickname());
 
         if (module.getClass() == GUISeparator.class)
             setForeground(Colours.getDarkBlue(isDark));

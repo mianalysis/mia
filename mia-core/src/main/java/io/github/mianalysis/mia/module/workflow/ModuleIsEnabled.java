@@ -143,7 +143,7 @@ Workspace workspace = null;
         switch ((String) parameters.getValue(CONTINUATION_MODE,workspace)) {
             case ContinuationModes.REDIRECT_TO_MODULE:
                 returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
-                redirectModule = parameters.getValue(REDIRECT_MODULE,workspace);
+                redirectModuleID = parameters.getValue(REDIRECT_MODULE,workspace);
                 returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
                 if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace)) {
                     returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
@@ -154,7 +154,7 @@ Workspace workspace = null;
                 returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
                 returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
                 returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
-                redirectModule = null;
+                redirectModuleID = null;
                 break;
         }
 

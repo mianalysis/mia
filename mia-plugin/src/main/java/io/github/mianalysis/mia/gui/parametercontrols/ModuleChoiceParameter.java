@@ -37,7 +37,7 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         control = new WiderDropDownCombo(choices);
 
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        control.setSelectedItem(parameter.getSelectedModule());
+        control.setSelectedItem(parameter.getSelectedModuleID());
         control.addActionListener(this);
         control.setWide(true);
 
@@ -49,7 +49,7 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        ((ModuleP) parameter).setSelectedModule((Module) control.getSelectedItem());
+        ((ModuleP) parameter).setSelectedModuleID((String) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
