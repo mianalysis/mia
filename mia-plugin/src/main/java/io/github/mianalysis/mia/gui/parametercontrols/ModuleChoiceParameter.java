@@ -49,7 +49,8 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        ((ModuleP) parameter).setSelectedModuleID((String) control.getSelectedItem());
+        String selectedModuleID = ((Module) control.getSelectedItem()).getModuleID();
+        ((ModuleP) parameter).setSelectedModuleID(selectedModuleID);
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))

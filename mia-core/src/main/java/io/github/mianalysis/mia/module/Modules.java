@@ -714,6 +714,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules, copyIDs));
         copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules, copyIDs));
+        copyModules.setAnalysisFilename(analysisFilename);
 
         for (Module module : values())
             copyModules.add(module.duplicate(copyModules, copyIDs));
