@@ -74,8 +74,8 @@ public abstract class TextSwitchableParameterControl extends ParameterControl im
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateParameters();
-        GUI.updateModuleStates();
+        GUI.updateParameters(true, parameter.getModule());
+        GUI.updateModuleStates(true, parameter.getModule());
 
         updateControl();
 

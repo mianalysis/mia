@@ -19,14 +19,7 @@ public class StatusPanelRenderer extends LogRenderer {
 
     @Override
     public void write(String message, Level level) {
-        if (levelStatus.get(level)) {
-            if (message.contains("[") && message.contains("]")) {
-                int idx = message.indexOf("]");
-                message = "<html><b>" + message.substring(1, idx) + " </b><font color=\"#424242\">" + message.substring(idx + 1) + "</font></html>";
-            } else {
-                message = "<html><b>" + message + "</b></html>";
-            }
-            textField.setText(message);
-        }
+        if (levelStatus.get(level))
+            textField.setText(message);        
     }
 }

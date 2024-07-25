@@ -141,6 +141,8 @@ public class MeasureObjectShape extends Module {
         String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${SCAL}²)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
         String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${SCAL})";
+        String PROJ_MIN_FERET_PX = "SHAPE // PROJ_MIN_FERET_(PX)";
+        String PROJ_MIN_FERET_CAL = "SHAPE // PROJ_MIN_FERET_(${SCAL})";
         String PROJ_PERIM_PX = "SHAPE // PROJ_PERIM_(PX)";
         String PROJ_PERIM_CAL = "SHAPE // PROJ_PERIM_(${SCAL})";
         String PROJ_CIRCULARITY = "SHAPE // PROJ_CIRCULARITY";
@@ -328,10 +330,15 @@ public class MeasureObjectShape extends Module {
                 // Adding the projected-object diameter measurements
                 if (measureProjectedDiameter) {
                     double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
-                    double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)
-                            * inputObject.getDppXY();
+                    double maxDistanceCal = maxDistancePx * inputObject.getDppXY();
                     inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx));
                     inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
+
+                    double minFeretPx = projectedObject.getRoi(0).getFeretValues()[2];
+                    double minFeretCal = minFeretPx * inputObject.getDppXY();
+                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
+                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
+
                 }
 
                 // Adding the projected-object perimeter measurements
@@ -509,6 +516,19 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
+                    + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") "
+                    + "units.");
+
+                    reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_MIN_FERET_PX);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Minimum caliper distance of the 2D Z-projection of the object, \""
+                    + inputObjectsName + "\".  Measured in pixel units.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_MIN_FERET_CAL);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Minimum caliper distance of the 2D Z-projection of the object, \""
                     + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") "
                     + "units.");
         }

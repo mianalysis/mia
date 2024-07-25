@@ -31,8 +31,8 @@ public class DraggableTableModel extends DefaultTableModel {
 
         modules.reorder(toMove,moduleToFollow);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, moduleToFollow);
+        GUI.updateParameters(false, null);
 
     }
 }

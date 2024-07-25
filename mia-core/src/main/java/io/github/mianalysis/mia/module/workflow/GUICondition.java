@@ -70,14 +70,13 @@ public class GUICondition extends AbstractWorkspaceHandler {
         deprecated = true;
     }
 
-    @Override
-    public Module getRedirectModule(Workspace workspace) {
+    public String getRedirectModuleID(Workspace workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
-            redirectModule = null;
+            redirectModuleID = null;
         else
-            redirectModule = modules.get(idx);
+        redirectModuleID = modules.get(idx).getModuleID();
 
         String choice = parameters.getValue(CHOICE, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE, workspace);
@@ -85,17 +84,17 @@ public class GUICondition extends AbstractWorkspaceHandler {
             if (collection.getValue(CHOICE_NAME, workspace).equals(choice)) {
                 switch ((String) collection.getValue(CONTINUATION_MODE, workspace)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
-                        redirectModule = collection.getValue(REDIRECT_MODULE, workspace);
+                        redirectModuleID = collection.getValue(REDIRECT_MODULE, workspace);
                         break;
                     case ContinuationModes.TERMINATE:
                     default:
-                        redirectModule = null;
+                        redirectModuleID = null;
                         break;
                 }
             }
         }
 
-        return redirectModule;
+        return redirectModuleID;
 
     }
 
@@ -272,7 +271,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
                 switch ((String) params.getValue(CONTINUATION_MODE, null)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
                         returnedParameters.add(params.getParameter(REDIRECT_MODULE));
-                        redirectModule = params.getValue(REDIRECT_MODULE, null);
+                        redirectModuleID = params.getValue(REDIRECT_MODULE, null);
                         returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
                         if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE, null)) {
                             returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
@@ -284,7 +283,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
                         returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
                         returnedParameters.add(params.getParameter(REMOVE_IMAGES));
                         returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
-                        redirectModule = null;
+                        redirectModuleID = null;
                         break;
                 }
 

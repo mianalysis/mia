@@ -20,10 +20,10 @@ public abstract class ChoiceType extends TextSwitchableParameter {
         super(name, module, description);
     }
 
-    public String getChoice() {
-        return choice;
+    // public String getChoice() {
+    //     return choice;
 
-    }
+    // }
 
     public void setChoice(String choice) {
         if (choice == null)
@@ -99,9 +99,12 @@ public abstract class ChoiceType extends TextSwitchableParameter {
             // options only.
             String[] choices = getChoices();
 
-            for (String currChoice : choices)
-                if (choice.equals(currChoice))
+            String converted = GlobalVariables.convertString(choice, module.getModules());
+
+            for (String currChoice : choices) {    
+                if (converted.equals(currChoice))
                     return true;
+            }
 
             return false;
 

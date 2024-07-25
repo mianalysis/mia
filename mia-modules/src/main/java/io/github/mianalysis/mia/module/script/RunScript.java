@@ -702,7 +702,7 @@ public class RunScript extends Module {
             InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
                     newModule);
 
-            newParameter.setChoice(getChoice());
+            newParameter.setChoice(getRawStringValue());
             newParameter.setDescription(getDescription());
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());

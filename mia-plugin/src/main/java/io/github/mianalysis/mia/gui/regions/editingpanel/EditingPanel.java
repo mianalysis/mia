@@ -9,6 +9,8 @@ import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
@@ -136,7 +138,7 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updatePanel() {
+    public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -148,8 +150,8 @@ public class EditingPanel extends AbstractPanel {
 
         statusPanel.add(GUI.getTextField(), c);
 
-        updateModules();
-        updateParameters();
+        updateModules(testAnalysis, startModule);
+        updateParameters(testAnalysis, startModule);
 
         updateHelpNotes();
         updateFileList();
@@ -267,9 +269,12 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateModules() {
-        AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace());
+    public void updateModules(boolean testAnalysis, @Nullable Module startModule) {
+        if (testAnalysis)
+            AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace(),startModule);
+
         modulesPanel.updatePanel();
+
     }
 
     @Override
@@ -279,7 +284,7 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateParameters() {
+    public void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
         parametersPanel.updatePanel(GUI.getFirstSelectedModule());
     }
 

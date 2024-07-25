@@ -44,7 +44,7 @@ public class ImageMeasurementP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        ImageMeasurementP newParameter = new ImageMeasurementP(name,newModule,getChoice(),imageName,getDescription());
+        ImageMeasurementP newParameter = new ImageMeasurementP(name,newModule,getRawStringValue(),imageName,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

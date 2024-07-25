@@ -17,8 +17,8 @@ public class SeriesSelector extends TextParameter {
 
         new Thread(() -> {
             // GUI.updateTestFile(true);
-            GUI.updateModules();
-            GUI.updateParameters();
+            GUI.updateModules(true, parameter.getModule());
+            GUI.updateParameters(true, parameter.getModule());
         }).start();
     }
 }

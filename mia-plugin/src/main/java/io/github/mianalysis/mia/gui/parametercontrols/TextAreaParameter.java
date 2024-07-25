@@ -118,7 +118,7 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
 
         updateControl();
 
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(true, parameter.getModule());
         updateControl();
 
     }

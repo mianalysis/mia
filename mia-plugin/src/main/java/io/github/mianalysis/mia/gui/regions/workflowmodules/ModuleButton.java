@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
@@ -50,7 +49,7 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     // PUBLIC METHODS
 
     public void updateState() {
-boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         setText(module.getNickname());
 
@@ -76,8 +75,8 @@ boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
     @Override
     public void actionPerformed(ActionEvent e) {
         GUI.setSelectedModules(new Module[] { module });
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false, null);
+        GUI.updateParameters(false, null);
     }
 
     @Override

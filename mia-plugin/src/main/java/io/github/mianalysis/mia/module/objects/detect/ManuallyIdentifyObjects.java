@@ -706,7 +706,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         @Override
         public <T extends Parameter> T duplicate(Module newModule) {
-            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getChoice(), getDescription());
+            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(), getDescription());
 
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());

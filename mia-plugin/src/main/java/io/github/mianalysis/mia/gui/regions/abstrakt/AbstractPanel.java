@@ -4,17 +4,19 @@ import io.github.mianalysis.mia.module.Module;
 
 import javax.swing.*;
 
+import com.drew.lang.annotations.Nullable;
+
 public abstract class AbstractPanel extends JPanel {
     /**
      *
      */
     private static final long serialVersionUID = 7906763411967111269L;
 
-    public abstract void updatePanel();
+    public abstract void updatePanel(boolean testAnalysis, @Nullable Module startModule);
     public abstract void updateAvailableModules();
-    public abstract void updateModules();
+    public abstract void updateModules(boolean testAnalysis, @Nullable Module startModule);
     public abstract void updateModuleStates();
-    public abstract void updateParameters();
+    public abstract void updateParameters(boolean testAnalysis, @Nullable Module startModule);
     public abstract void updateHelpNotes();
     public abstract void updateFileList();
     public abstract void updateSearch();

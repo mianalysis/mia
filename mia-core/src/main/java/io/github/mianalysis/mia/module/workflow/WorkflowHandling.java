@@ -283,7 +283,7 @@ public class WorkflowHandling extends Module {
         // If terminate, remove necessary images and objects
         switch (continuationMode) {
             case ContinuationModes.REDIRECT_TO_MODULE:
-                redirectModule = parameters.getValue(REDIRECT_MODULE, workspace);
+                redirectModuleID = parameters.getValue(REDIRECT_MODULE, workspace);
                 if (showRedirectMessage) {
                     Level level = getLevel(messageLevel);
                     MIA.log.write(workspace.getMetadata().insertMetadataValues(redirectMessage), level);
@@ -542,7 +542,7 @@ public class WorkflowHandling extends Module {
         switch ((String) parameters.getValue(CONTINUATION_MODE, workspace)) {
             case ContinuationModes.REDIRECT_TO_MODULE:
                 returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
-                redirectModule = parameters.getValue(REDIRECT_MODULE, workspace);
+                redirectModuleID = parameters.getValue(REDIRECT_MODULE, workspace);
                 returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
                 if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE, workspace)) {
                     returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
@@ -554,7 +554,7 @@ public class WorkflowHandling extends Module {
                 returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
                 returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
                 returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
-                redirectModule = null;
+                redirectModuleID = null;
                 break;
         }
 

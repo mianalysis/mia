@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
+import java.util.LinkedHashMap;
+
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -16,6 +18,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -28,67 +31,92 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.math.CumStat;
 
-
 /**
-* Calculates statistics for a measurement associated with all child objects of parent object.  The calculated statistics are stored as new measurements, associated with the relevant parent object.  For example, calculating the summed volume of all child objects (from a specified collection) of each parent object.
-*/
+ * Calculates statistics for a measurement associated with all child objects of
+ * parent object. The calculated statistics are stored as new measurements,
+ * associated with the relevant parent object. For example, calculating the
+ * summed volume of all child objects (from a specified collection) of each
+ * parent object.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateStatsForChildren extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Objects input";
 
-	/**
-	* Input object collection from the workspace for which statistics of child object measurements will be calculated.  This object collection is a parent to those selected by the "Child objects" parameter.  Statistics for one measurement associated with all children of each input parent object will be calculated and added to this object as a new measurement.
-	*/
+    /**
+     * Input object collection from the workspace for which statistics of child
+     * object measurements will be calculated. This object collection is a parent to
+     * those selected by the "Child objects" parameter. Statistics for one
+     * measurement associated with all children of each input parent object will be
+     * calculated and added to this object as a new measurement.
+     */
     public static final String PARENT_OBJECTS = "Parent objects";
 
-	/**
-	* Input object collection from the workspace, where these objects are children of the collection selected by the "Parent objects" parameter.)
-	*/
+    /**
+     * Input object collection from the workspace, where these objects are children
+     * of the collection selected by the "Parent objects" parameter.)
+     */
     public static final String CHILD_OBJECTS = "Child objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String STATISTIC_SEPARATOR = "Statistics";
 
-	/**
-	* Measurement associated with the child objects for which statistics will be calculated.  Statistics will be calculated for all children of a parent object.
-	*/
+    /**
+     * 
+     */
+    public static final String MEASUREMENT_SEPARATOR = "Measurements";
+
+    /**
+    * 
+    */
+    public static final String ADD_MEASUREMENT = "Add measurement";
+
+    /**
+     * Measurement associated with the child objects for which statistics will be
+     * calculated. Statistics will be calculated for all children of a parent
+     * object.
+     */
     public static final String MEASUREMENT = "Measurement";
 
-	/**
-	* When selected, the mean value of the measurements will be calculated and added to the relevant parent object.
-	*/
+    /**
+     * When selected, the mean value of the measurements will be calculated and
+     * added to the relevant parent object.
+     */
     public static final String CALCULATE_MEAN = "Calculate mean";
 
-	/**
-	* When selected, the median value of the measurements will be calculated and added to the relevant parent object.
-	*/
+    /**
+     * When selected, the median value of the measurements will be calculated and
+     * added to the relevant parent object.
+     */
     public static final String CALCULATE_MEDIAN = "Calculate median";
 
-	/**
-	* When selected, the standard deviation of the measurements will be calculated and added to the relevant parent object.
-	*/
+    /**
+     * When selected, the standard deviation of the measurements will be calculated
+     * and added to the relevant parent object.
+     */
     public static final String CALCULATE_STD = "Calculate standard deviation";
 
-	/**
-	* When selected, the minimum value of the measurements will be calculated and added to the relevant parent object.
-	*/
+    /**
+     * When selected, the minimum value of the measurements will be calculated and
+     * added to the relevant parent object.
+     */
     public static final String CALCULATE_MIN = "Calculate minimum";
 
-	/**
-	* When selected, the maximum value of the measurements will be calculated and added to the relevant parent object.
-	*/
+    /**
+     * When selected, the maximum value of the measurements will be calculated and
+     * added to the relevant parent object.
+     */
     public static final String CALCULATE_MAX = "Calculate maximum";
 
-	/**
-	* When selected, the sum of the measurements will be calculated and added to the relevant parent object.
-	*/
+    /**
+     * When selected, the sum of the measurements will be calculated and added to
+     * the relevant parent object.
+     */
     public static final String CALCULATE_SUM = "Calculate sum";
 
     public CalculateStatsForChildren(Modules modules) {
@@ -106,7 +134,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     public static String getFullName(String childObjectName, String measurement, String measurementType) {
-        return "CHILD_STATS // " + measurementType + "_" + childObjectName + "_\"" + measurement + "\"";
+        return "CHILD_STATS // " + childObjectName + " // " + measurementType + " // [" + measurement + "]";
     }
 
     public static void processObject(Obj parentObject, String childObjectsName, String measurement,
@@ -166,9 +194,9 @@ public class CalculateStatsForChildren extends Module {
     public static double calculateMedian(Obj parentObject, String childObjectsName, String measurement) {
         double[] values = new double[parentObject.getChildren(childObjectsName).size()];
         int i = 0;
-        for (Obj childObj:parentObject.getChildren(childObjectsName).values())
+        for (Obj childObj : parentObject.getChildren(childObjectsName).values())
             values[i++] = childObj.getMeasurement(measurement).getValue();
-        
+
         return new Median().evaluate(values);
     }
 
@@ -179,7 +207,7 @@ public class CalculateStatsForChildren extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -189,13 +217,10 @@ public class CalculateStatsForChildren extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input objects
+        // Getting parameters
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
-        Objs parentObjects = workspace.getObjects().get(parentObjectsName);
-
-        // Getting other parameters
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
-        String measurement = parameters.getValue(MEASUREMENT, workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_MEASUREMENT, workspace);
         boolean[] statsToCalculate = new boolean[6];
         statsToCalculate[0] = parameters.getValue(CALCULATE_MEAN, workspace);
         statsToCalculate[1] = parameters.getValue(CALCULATE_STD, workspace);
@@ -204,8 +229,19 @@ public class CalculateStatsForChildren extends Module {
         statsToCalculate[4] = parameters.getValue(CALCULATE_SUM, workspace);
         statsToCalculate[5] = parameters.getValue(CALCULATE_MEDIAN, workspace);
 
+        // Getting objects
+        Objs parentObjects = workspace.getObjects().get(parentObjectsName);
+
+        int count = 0;
+        int total = parentObjects.size();
         for (Obj parentObject : parentObjects.values()) {
-            processObject(parentObject, childObjectsName, measurement, statsToCalculate);
+            for (Parameters collection : collections.values()) {
+                String measurement = collection.getValue(MEASUREMENT, workspace);
+                processObject(parentObject, childObjectsName, measurement, statsToCalculate);
+            }
+
+            writeProgressStatus(++count, total, "objects");
+
         }
 
         if (showOutput)
@@ -221,8 +257,12 @@ public class CalculateStatsForChildren extends Module {
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
 
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
+        Parameters collection = new Parameters();
+        collection.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection));
+
         parameters.add(new SeparatorP(STATISTIC_SEPARATOR, this));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new BooleanP(CALCULATE_MEAN, this, true));
         parameters.add(new BooleanP(CALCULATE_MEDIAN, this, false));
         parameters.add(new BooleanP(CALCULATE_STD, this, true));
@@ -237,13 +277,33 @@ public class CalculateStatsForChildren extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         Workspace workspace = null;
+
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+
         String objectName = parameters.getValue(PARENT_OBJECTS, workspace);
         ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(objectName);
 
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
-        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(childObjectsName);
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_MEASUREMENT));
 
-        return parameters;
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values())
+            ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(childObjectsName);
+
+        returnedParameters.add(parameters.getParameter(STATISTIC_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MAX));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MEAN));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MEDIAN));
+        returnedParameters.add(parameters.getParameter(CALCULATE_MIN));
+        returnedParameters.add(parameters.getParameter(CALCULATE_STD));
+        returnedParameters.add(parameters.getParameter(CALCULATE_SUM));
+
+        return returnedParameters;
 
     }
 
@@ -259,63 +319,72 @@ public class CalculateStatsForChildren extends Module {
 
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
-        String measurementName = parameters.getValue(MEASUREMENT, workspace);
 
-        if ((boolean) parameters.getValue(CALCULATE_MEAN, workspace)) {
-            String name = getFullName(childObjectsName, measurementName, Measurements.MEAN);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(parentObjectsName);
-            reference.setDescription("Mean value of measurement, \"" + measurementName + "\", for child objects, \"" +
-                    childObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values()) {
+            String measurementName = collection.getValue(MEASUREMENT, workspace);
 
-        if ((boolean) parameters.getValue(CALCULATE_MEDIAN, workspace)) {
-            String name = getFullName(childObjectsName, measurementName, Measurements.MEDIAN);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(parentObjectsName);
-            reference.setDescription("Median value of measurement, \"" + measurementName + "\", for child objects, \"" +
-                    childObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_MEAN, workspace)) {
+                String name = getFullName(childObjectsName, measurementName, Measurements.MEAN);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(parentObjectsName);
+                reference.setDescription(
+                        "Mean value of measurement, \"" + measurementName + "\", for child objects, \"" +
+                                childObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_STD, workspace)) {
-            String name = getFullName(childObjectsName, measurementName, Measurements.STD);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(parentObjectsName);
-            reference.setDescription(
-                    "Standard deviation of measurement, \"" + measurementName + "\", for child objects, \"" +
-                            childObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_MEDIAN, workspace)) {
+                String name = getFullName(childObjectsName, measurementName, Measurements.MEDIAN);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(parentObjectsName);
+                reference.setDescription(
+                        "Median value of measurement, \"" + measurementName + "\", for child objects, \"" +
+                                childObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_MIN, workspace)) {
-            String name = getFullName(childObjectsName, measurementName, Measurements.MIN);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(parentObjectsName);
-            reference
-                    .setDescription("Minimum value of measurement, \"" + measurementName + "\", for child objects, \"" +
-                            childObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_STD, workspace)) {
+                String name = getFullName(childObjectsName, measurementName, Measurements.STD);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(parentObjectsName);
+                reference.setDescription(
+                        "Standard deviation of measurement, \"" + measurementName + "\", for child objects, \"" +
+                                childObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_MAX, workspace)) {
-            String name = getFullName(childObjectsName, measurementName, Measurements.MAX);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(parentObjectsName);
-            reference
-                    .setDescription("Maximum value of measurement, \"" + measurementName + "\", for child objects, \"" +
-                            childObjectsName + "\".");
-            returnedRefs.add(reference);
-        }
+            if ((boolean) parameters.getValue(CALCULATE_MIN, workspace)) {
+                String name = getFullName(childObjectsName, measurementName, Measurements.MIN);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(parentObjectsName);
+                reference
+                        .setDescription(
+                                "Minimum value of measurement, \"" + measurementName + "\", for child objects, \"" +
+                                        childObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
 
-        if ((boolean) parameters.getValue(CALCULATE_SUM, workspace)) {
-            String name = getFullName(childObjectsName, measurementName, Measurements.SUM);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(parentObjectsName);
-            reference.setDescription("Summed value of measurement, \"" + measurementName + "\", for child objects, \"" +
-                    childObjectsName + "\".");
-            returnedRefs.add(reference);
+            if ((boolean) parameters.getValue(CALCULATE_MAX, workspace)) {
+                String name = getFullName(childObjectsName, measurementName, Measurements.MAX);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(parentObjectsName);
+                reference
+                        .setDescription(
+                                "Maximum value of measurement, \"" + measurementName + "\", for child objects, \"" +
+                                        childObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
+
+            if ((boolean) parameters.getValue(CALCULATE_SUM, workspace)) {
+                String name = getFullName(childObjectsName, measurementName, Measurements.SUM);
+                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                reference.setObjectsName(parentObjectsName);
+                reference.setDescription(
+                        "Summed value of measurement, \"" + measurementName + "\", for child objects, \"" +
+                                childObjectsName + "\".");
+                returnedRefs.add(reference);
+            }
         }
 
         return returnedRefs;
@@ -323,8 +392,8 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
@@ -357,8 +426,10 @@ public class CalculateStatsForChildren extends Module {
                 "Input object collection from the workspace, where these objects are children of the collection selected by the \""
                         + PARENT_OBJECTS + "\" parameter.)");
 
-        parameters.get(MEASUREMENT).setDescription(
-                "Measurement associated with the child objects for which statistics will be calculated.  Statistics will be calculated for all children of a parent object.");
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values())
+            collection.get(MEASUREMENT).setDescription(
+                    "Measurement associated with the child objects for which statistics will be calculated.  Statistics will be calculated for all children of a parent object.");
 
         parameters.get(CALCULATE_MEAN).setDescription(
                 "When selected, the mean value of the measurements will be calculated and added to the relevant parent object.");

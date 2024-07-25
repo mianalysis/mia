@@ -28,7 +28,7 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
         choiceControl = new WiderDropDownCombo(choices);
 
         choiceControl.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        choiceControl.setSelectedItem(parameter.getChoice());
+        choiceControl.setSelectedItem(parameter.getValue(null));
         choiceControl.addActionListener(this);
         choiceControl.setWide(true);
 
@@ -44,8 +44,8 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
 
         updateControl();
 
@@ -63,7 +63,7 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
                 choices = new String[] { "" };
 
             // Getting previously-selected item
-            String selected = (String) choiceControl.getSelectedItem();
+            String selected = parameter.getValue(null);            
 
             // Creating a new model
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel(choices);

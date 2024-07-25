@@ -344,8 +344,8 @@ public class ComponentFactory {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     BooleanP expandedProcessing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_PROCESSING);
                     expandedProcessing.flipBoolean();
-                    GUI.updateModules();
-                    GUI.updateParameters();
+                    GUI.updateModules(false, null);
+                    GUI.updateParameters(false, null);
                 }
             }
 

@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.2</version>
+        <version>1.6.3</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-core</artifactId>
-    <version>1.6.2</version>
+    <version>1.6.3</version>
     <packaging>jar</packaging>
     <name>mia-core</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -168,27 +168,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    
 </project>

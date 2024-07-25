@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
+import java.util.LinkedHashMap;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -12,8 +14,8 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
-import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -47,7 +49,21 @@ public class AdoptParentMeasurement extends Module {
     /**
     * 
     */
+    public static final String MEASUREMENT_SEPARATOR = "Measurements";
+
+    /**
+    * 
+    */
+    public static final String ADD_MEASUREMENT = "Add measurement";
+
+    /**
+    * 
+    */
     public static final String MEASUREMENT = "Measurement";
+
+    public static String getFullName(String parentObjectName, String measurement) {
+        return "PARENT_STATS // " + parentObjectName + " // [" + measurement + "]";
+    }
 
     public AdoptParentMeasurement(Modules modules) {
         super("Adopt parent measurement", modules);
@@ -73,24 +89,35 @@ public class AdoptParentMeasurement extends Module {
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
-        String measurementName = parameters.getValue(MEASUREMENT, workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_MEASUREMENT, workspace);
 
         Objs objects = workspace.getObjects().get(objectName);
 
         if (objects == null)
             return Status.PASS;
 
+        int count = 0;
+        int total = objects.size();
         for (Obj obj : objects.values()) {
+            count++;
+
             Obj parentObj = obj.getParent(parentObjectsName);
             if (parentObj == null)
                 continue;
 
-            Measurement parentMeasurement = parentObj.getMeasurement(measurementName);
-            if (parentMeasurement == null)
-                continue;
+            for (Parameters collection : collections.values()) {
+                String measurementName = collection.getValue(MEASUREMENT, workspace);
+                Measurement parentMeasurement = parentObj.getMeasurement(measurementName);
+                if (parentMeasurement == null)
+                    continue;
 
-            obj.addMeasurement(new Measurement(measurementName, parentMeasurement.getValue()));
-            
+                obj.addMeasurement(
+                        new Measurement(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
+
+            }
+
+            writeProgressStatus(count, total, "objects");
+
         }
 
         if (showOutput)
@@ -105,7 +132,11 @@ public class AdoptParentMeasurement extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
+        Parameters collection = new Parameters();
+        collection.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection));
 
         addParameterDescriptions();
 
@@ -114,11 +145,22 @@ public class AdoptParentMeasurement extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         Workspace workspace = null;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ParentObjectsP) parameters.get(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
 
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_MEASUREMENT));
+
         String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
-        ((ObjectMeasurementP) parameters.get(MEASUREMENT)).setObjectName(parentObjectsName);
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values())
+            ((ObjectMeasurementP) collection.get(MEASUREMENT)).setObjectName(parentObjectsName);
 
         return parameters;
 
@@ -135,19 +177,25 @@ public class AdoptParentMeasurement extends Module {
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        String measurementName = parameters.getValue(MEASUREMENT, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
 
-        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
+        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
+        for (Parameters collection : parameterGroup.getCollections(true).values()) {
+            String measurementName = collection.getValue(MEASUREMENT, workspace);
+
+            ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(getFullName(parentObjectsName, measurementName));
+            ref.setObjectsName(inputObjectsName);
+            returnedRefs.add(ref);
+
+        }
 
         return returnedRefs;
 
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

@@ -1,5 +1,21 @@
 package io.github.mianalysis.mia.gui.regions.processingpanel;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextPane;
+import javax.swing.border.EtchedBorder;
+
+import com.drew.lang.annotations.Nullable;
+
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
@@ -10,10 +26,6 @@ import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
-
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
 
 public class ProcessingControlPanel extends JScrollPane {
     /**
@@ -53,13 +65,15 @@ public class ProcessingControlPanel extends JScrollPane {
 
     }
 
-    public void updatePanel() {
+    public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
         InputControl inputControl = GUI.getModules().getInputControl();
         OutputControl outputControl = GUI.getModules().getOutputControl();
 
-        AnalysisTester.testModule(inputControl, GUI.getModules());
-        AnalysisTester.testModule(outputControl, GUI.getModules());
-        AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace());
+        if (testAnalysis) {
+            AnalysisTester.testModule(inputControl, GUI.getModules());
+            AnalysisTester.testModule(outputControl, GUI.getModules());
+            AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace(),startModule);
+        }
 
         Modules modules = GUI.getModules();
         ComponentFactory componentFactory = GUI.getComponentFactory();
