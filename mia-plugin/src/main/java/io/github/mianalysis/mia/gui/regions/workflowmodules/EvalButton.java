@@ -314,7 +314,6 @@ public class EvalButton extends JButton implements ActionListener {
             case TERMINATE:
             case TERMINATE_SILENT:
                 status = false;
-                MIA.log.writeDebug("FAIL");
                 break;
         }
 
