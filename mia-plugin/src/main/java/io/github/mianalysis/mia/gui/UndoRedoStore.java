@@ -5,12 +5,12 @@ import java.util.LinkedList;
 import io.github.mianalysis.mia.module.Modules;
 
 public class UndoRedoStore {
-    private int limit = 10;
+    private int limit = 100;
     private LinkedList<Modules> undoStore = new LinkedList<>();
     private LinkedList<Modules> redoStore = new LinkedList<>();
 
     public void addUndo(Modules modules) {
-        undoStore.addFirst(modules.duplicate());
+        undoStore.addFirst(modules.duplicate(true));
         checkLimit();
 
         // Clear the redo store
@@ -22,7 +22,7 @@ public class UndoRedoStore {
         if (undoStore.size() == 0) return null;
 
         if (modules != null) redoStore.addFirst(modules);
-        return undoStore.pop().duplicate();
+        return undoStore.pop().duplicate(true);
 
     }
 
@@ -30,7 +30,7 @@ public class UndoRedoStore {
         if (redoStore.size() == 0) return null;
 
         if (modules != null) undoStore.addFirst(modules);
-        return redoStore.pop().duplicate();
+        return redoStore.pop().duplicate(true);
 
     }
 

@@ -48,7 +48,7 @@ public class AnalysisTester {
                 if (redirectModule == null)
                     break;
 
-                    // Setting the index of the next module to be evaluated
+                // Setting the index of the next module to be evaluated
                 for (Module testModule : modules)
                     if (testModule.getModuleID().equals(redirectModule.getModuleID()))
                         i = modules.indexOf(testModule) - 1;

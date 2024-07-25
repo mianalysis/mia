@@ -525,7 +525,7 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModules(false, null);
+        updateModules(true, null);
         updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
@@ -544,7 +544,7 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModules(false, null);
+        updateModules(true, null);
         updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);

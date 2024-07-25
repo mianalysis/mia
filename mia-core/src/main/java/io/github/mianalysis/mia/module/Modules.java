@@ -114,7 +114,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             if (MIA.isHeadless())
                 LogRenderer.setProgress(workspace.getWorkspaces());
             else
-                ProgressBar.update(workspace.getWorkspaces().getOverallProgress()); 
+                ProgressBar.update(workspace.getWorkspaces().getOverallProgress());
 
         }
 
@@ -215,7 +215,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, Module cutoffModule) {
         ObjMeasurementRefs measurementRefs = new ObjMeasurementRefs();
-        
+
         // If this is a distant relative there will be "//" in the name that need to be
         // removed
         if (objectName.contains("//"))
@@ -273,7 +273,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     public ObjMetadataRefs getObjectMetadataRefs(String objectName, Module cutoffModule) {
         ObjMetadataRefs metadataRefs = new ObjMetadataRefs();
-        
+
         // If this is a distant relative there will be "//" in the name that need to be
         // removed
         if (objectName.contains("//"))
@@ -289,7 +289,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                 break;
             if (!module.isEnabled() | !module.isRunnable())
                 continue;
-                addObjectMetadataRefs(module, metadataRefs, objectName);
+            addObjectMetadataRefs(module, metadataRefs, objectName);
         }
 
         return metadataRefs;
@@ -311,7 +311,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     void addObjectMetadataRefs(Module module, ObjMetadataRefs metadataRefs, String objectName) {
         if (!module.isEnabled())
             return;
-            ObjMetadataRefs currentMetadataRefs = module.updateAndGetObjectMetadataRefs();
+        ObjMetadataRefs currentMetadataRefs = module.updateAndGetObjectMetadataRefs();
         if (currentMetadataRefs == null)
             return;
 
@@ -319,7 +319,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             if (ref.getObjectsName() == null)
                 continue;
             if (ref.getObjectsName().equals(objectName))
-            metadataRefs.put(ref.getName(), ref);
+                metadataRefs.put(ref.getName(), ref);
 
         }
     }
@@ -478,12 +478,12 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             LinkedHashSet<OutputObjectsP> addedObjects = module.getParametersMatchingType(OutputObjectsP.class);
             if (addedObjects == null)
                 continue;
-                
+
             // Find most recent instance of this object being created
             for (OutputObjectsP addedObject : addedObjects)
                 if (addedObject.getValue(null).equals(objectName))
                     sourceParameter = addedObject;
-            
+
         }
 
         return sourceParameter;
@@ -547,7 +547,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             for (OutputImageP addedImage : addedImages)
                 if (addedImage.getValue(null).equals(imageName))
                     sourceParameter = addedImage;
-            
+
         }
 
         return sourceParameter;
@@ -568,7 +568,8 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             // Get the added and removed images
             LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
             LinkedHashSet<RemovedImageP> removedImages = module.getParametersMatchingType(RemovedImageP.class);
-            LinkedHashSet<RemovableInputImageP> removableImages = module.getParametersMatchingType(RemovableInputImageP.class);
+            LinkedHashSet<RemovableInputImageP> removableImages = module
+                    .getParametersMatchingType(RemovableInputImageP.class);
 
             // Adding new images
             if (addedImages != null)
@@ -707,14 +708,14 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
         addAll(newModules);
     }
 
-    public Modules duplicate() {
+    public Modules duplicate(boolean copyIDs) {
         Modules copyModules = new Modules();
 
-        copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules));
-        copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules));
+        copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules, copyIDs));
+        copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules, copyIDs));
 
         for (Module module : values())
-            copyModules.add(module.duplicate(copyModules));
+            copyModules.add(module.duplicate(copyModules, copyIDs));
 
         return copyModules;
 

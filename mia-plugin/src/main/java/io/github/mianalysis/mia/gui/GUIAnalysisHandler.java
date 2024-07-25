@@ -267,7 +267,7 @@ public class GUIAnalysisHandler {
             // have a unique ID
             for (Module module : pasteModules.values()) {
                 module.setModules(modules);
-                module.setModuleID(String.valueOf(System.currentTimeMillis()));
+                module.setModuleID(String.valueOf(module.hashCode()));
             }
 
             // Adding the new modules

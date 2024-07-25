@@ -64,7 +64,6 @@ public class ModuleName extends JLabel {
         this.isSelected = isSelected;
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
-
         if (isSelected)
             setBackground(Colours.getLightBlue(isDark));
         else
@@ -85,34 +84,34 @@ public class ModuleName extends JLabel {
         if (module.isDeprecated())
             deprecationMessage = " (deprecated)";
 
+        String status = "";
         if (module instanceof GUISeparator) {
             setForeground(Colours.getDarkBlue(isDark));
             setToolTipText("Module separator");
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
             setForeground(defaultColour);
-            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: OK" + deprecationMessage + "</html>");
+            status = "OK";
         } else if (module.isEnabled() & !module.isReachable()) {
             setForeground(Colours.getOrange(isDark));
             if (isDark)
                 setIcon(skipIconDM);
             else
                 setIcon(skipIcon);
-            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Skipped" + deprecationMessage + "</html>");
+                status = "Skipped";
         } else if (module.isEnabled() & !module.isRunnable()) {
             setForeground(Colours.getRed(isDark));
             if (isDark)
                 setIcon(warningIconDM);
             else
                 setIcon(warningIcon);
-            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Error" + deprecationMessage + "</html>");
+                status = "Error";
         } else {
             setForeground(Color.GRAY);
-            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Disabled" + deprecationMessage + "</html>");
+            status = "Disabled";
         }
+
+        setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
+                + "<br>ID: " + module.getModuleID() + "<br>Status: " + status + deprecationMessage + "</html>");
 
         if (module.isDeprecated()) {
             Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);

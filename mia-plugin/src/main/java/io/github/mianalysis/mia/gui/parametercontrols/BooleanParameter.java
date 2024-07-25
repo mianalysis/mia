@@ -44,6 +44,7 @@ public class BooleanParameter extends TextSwitchableParameterControl implements 
         updateControl();
 
     }
+    
     @Override
     public JComponent getDefaultComponent() {
         return control;
