@@ -39,7 +39,7 @@
         {
             "label": "maven: package-complete",
             "type": "shell",
-            "command": "mvn clean package -Dscp=provided site",
+            "command": "mvn clean package -Dscp=provided site -e",
             "group": {
                 "kind": "build",
                 "isDefault": true

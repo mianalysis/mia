@@ -35,9 +35,11 @@ public abstract class FileFolderType extends TextSwitchableParameter {
     }
 
     public boolean isDirectory() {
-        String fileFolderPath = getPath();
-        if (fileFolderPath == null)
+        if (path == null)
             return false;
+            
+        String fileFolderPath = getPath();
+        
         return new File(fileFolderPath).isDirectory();
     }
 
