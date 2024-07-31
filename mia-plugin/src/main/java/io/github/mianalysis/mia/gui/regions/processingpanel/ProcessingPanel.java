@@ -18,8 +18,8 @@ import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
-import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
-import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpNotesPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.helpandnotes.HelpNotesPanel;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
@@ -62,10 +62,6 @@ public class ProcessingPanel extends AbstractPanel {
         c.gridheight = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         add(initialiseProcessingControlPanel(), c);
-
-        // Initialising the parameters panel
-        updateFileList();
-        updateHelpNotes();
 
         splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,fileListPanel,helpNotesPanel);
         splitPane1.setPreferredSize(new Dimension(1,1));
@@ -180,9 +176,6 @@ public class ProcessingPanel extends AbstractPanel {
 
         updateModules(testAnalysis, startModule);
 
-        if (showHelp || showNotes) updateHelpNotes();
-        if (showFileList) updateFileList();
-
         revalidate();
         repaint();
 
@@ -239,25 +232,6 @@ public class ProcessingPanel extends AbstractPanel {
     @Override
     public void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
         controlPanel.updatePanel(testAnalysis, startModule);
-    }
-
-    @Override
-    public void updateHelpNotes() {
-        helpNotesPanel.showHelp(showHelp);
-        helpNotesPanel.showNotes(showNotes);
-        helpNotesPanel.setVisible(showHelp || showNotes);
-        helpNotesPanel.updatePanel(GUI.getFirstSelectedModule(),lastHelpNotesModule);
-    }
-
-    @Override
-    public void updateFileList() {
-        fileListPanel.setVisible(showFileList);
-        fileListPanel.updatePanel();
-    }
-
-    @Override
-    public void updateSearch() {
-        
     }
 
     @Override

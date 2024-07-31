@@ -8,7 +8,6 @@ import org.scijava.convert.ConvertService;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.NotNull;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
@@ -26,12 +25,10 @@ import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.RemovableInputImageP;
-import io.github.mianalysis.mia.object.parameters.RemovedImageP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -43,11 +40,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
-import net.imglib2.img.ImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
@@ -161,7 +157,8 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
         // Creating the new Img
         DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>((T) inputImgRef.firstElement());
-        ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOut));
+        DiskCachedCellImg dcImage = factory.create(dimsOut);
+        ImgPlus<T> imgOut = new ImgPlus<T>(dcImage);
         imgOut.setAxis(new DefaultLinearAxis(Axes.X, 1), 0);
         imgOut.setAxis(new DefaultLinearAxis(Axes.Y, 1), 1);
         imgOut.setAxis(new DefaultLinearAxis(Axes.CHANNEL, 1), 2);
@@ -190,6 +187,8 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyDimensions(imgOut, outputImagePlus);
 
+        dcImage.shutdown();
+        
         return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
@@ -324,15 +323,15 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
             if (removeInputImages) {
                 ArrayList<RandomAccessibleInterval<T>> inputImgs = new ArrayList<>();
                 for (Image<T> inputImage : inputImages)
-                    inputImgs.add(ImgPlusTools.forceImgPlusToXYCZT(inputImage.getImgPlus()));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                    inputImgs.add(ImgPlusTools.forceImgPlusToXYCZT(inputImage.getImgPlus()));
 
                 ConvertService convertService = MIA.getIJService().getContext().getService(ConvertService.class);
                 RandomAccessibleInterval<T> outputRAI = Views.concatenate(axisIdx, inputImgs);
                 ImgPlus<T> outputImgPlus = convertService.convert(outputRAI, ImgPlus.class);
                 ImgPlusTools.initialiseXYCZTAxes(outputImgPlus);
-                ImgPlusTools.applyAxes(inputImages.get(0).getImgPlus(),outputImgPlus);
+                ImgPlusTools.applyAxes(inputImages.get(0).getImgPlus(), outputImgPlus);
                 outputImage = ImageFactory.createImage(outputImageName, outputImgPlus, ImageType.IMGLIB2);
-                
+
             } else {
                 outputImage = process(inputImages, axisMode, outputImageName);
             }
@@ -399,8 +398,8 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

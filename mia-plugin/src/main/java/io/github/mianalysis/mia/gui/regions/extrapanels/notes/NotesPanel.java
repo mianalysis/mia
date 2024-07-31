@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.helpandnotes;
+package io.github.mianalysis.mia.gui.regions.extrapanels.notes;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -43,30 +43,6 @@ public class NotesPanel extends JPanel {
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Adding title to help window
-        JLabel notesLabel = new JLabel();
-        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        if (activeModule != null)
-        notesLabel.setText("Notes for \""+activeModule.getNickname()+"\"");
-        add(notesLabel, c);
-
-        // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
-        c.anchor = GridBagConstraints.EAST;
-        c.weightx = 0;
-        c.gridx++;
-        add(closeButton, c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy++;
-        add(separator,c);
 
         NotesArea notesArea = new NotesArea(activeModule);
         

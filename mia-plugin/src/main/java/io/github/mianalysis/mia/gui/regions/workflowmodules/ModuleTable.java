@@ -61,7 +61,6 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
 
                 GUI.setSelectedModules(selectedModules);
                 GUI.updateParameters(true, selectedModules[0]);
-                GUI.updateHelpNotes();
 
             }
         });

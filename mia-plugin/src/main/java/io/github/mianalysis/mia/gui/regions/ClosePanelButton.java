@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
-import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpPanel;
-import io.github.mianalysis.mia.gui.regions.helpandnotes.NotesPanel;
-import io.github.mianalysis.mia.gui.regions.search.SearchPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.help.HelpPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.notes.NotesPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.search.SearchPanel;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ClosePanelButton extends JButton implements ActionListener {

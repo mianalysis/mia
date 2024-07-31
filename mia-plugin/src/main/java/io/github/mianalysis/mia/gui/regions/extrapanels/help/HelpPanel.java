@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.helpandnotes;
+package io.github.mianalysis.mia.gui.regions.extrapanels.help;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -42,30 +42,6 @@ public class HelpPanel extends JPanel {
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Adding title to help window
-        JLabel helpLabel = new JLabel();
-        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        if (activeModule != null)
-            helpLabel.setText("About \"" + activeModule.getName() + "\"");
-        add(helpLabel, c);
-
-        // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
-        c.anchor = GridBagConstraints.EAST;
-        c.weightx = 0;
-        c.gridx++;
-        add(closeButton, c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy++;
-        add(separator, c);
 
         // If no Module is selected, also skip
         HelpArea helpArea = new HelpArea(activeModule, modules);

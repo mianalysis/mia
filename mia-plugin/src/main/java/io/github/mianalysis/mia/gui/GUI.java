@@ -197,11 +197,6 @@ public class GUI {
         int minimumHeight = mainPanel.getMinimumHeight();
         frame.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
 
-        menuBar.setHelpSelected(showHelp());
-        menuBar.setNotesSelected(showNotes());
-        menuBar.setFileListSelected(showFileList());
-        menuBar.setSearchSelected(showSearch());
-
         menuBar.update();
 
         frame.pack();
@@ -227,17 +222,8 @@ public class GUI {
         mainPanel.updateAvailableModules();
     }
 
-    public static void updateHelpNotes() {
-        mainPanel.updateHelpNotes();
-    }
-
-    public static void updateFileList() {
-        mainPanel.updateFileList();
-    }
-
     public static void updateModules(boolean testAnalysis, @Nullable Module startModule) {
         mainPanel.updateModules(testAnalysis, startModule);
-        mainPanel.updateHelpNotes();
 
     }
 

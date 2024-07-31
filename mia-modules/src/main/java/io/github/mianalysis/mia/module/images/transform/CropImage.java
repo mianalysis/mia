@@ -35,6 +35,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -150,9 +151,10 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Creating the output image and copying over the pixel coordinates
         DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>(inputImg.firstElement());
-        ImgPlus<T> outputImg = new ImgPlus<>(factory.create(dimsOut));
+        DiskCachedCellImg<T, ?> dcImage = factory.create(dimsOut);
+        ImgPlus<T> outputImg = new ImgPlus<>(dcImage);
         ImgPlusTools.copyAxes(inputImg, outputImg);
-
+        
         RandomAccess<T> randomAccessIn = Views.offsetInterval(inputImg, offsetIn, dimsIn).randomAccess();
         Cursor<T> cursorOut = outputImg.localizingCursor();
 
@@ -170,6 +172,8 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
         Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
         SetLookupTable.copyLUTFromImage(outputImage,inputImage);
+        
+        dcImage.shutdown();
         
         return outputImage;
 

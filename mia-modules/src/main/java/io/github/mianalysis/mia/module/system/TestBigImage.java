@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.system;
 
+import java.util.Random;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -24,6 +26,9 @@ import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
+import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -61,10 +66,11 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
 
         int w = 2000;
         int h = 2000;
-        int d = 3000;
+        int d = 20;
 
-        ImgPlus<FloatType> img = new ImgPlus<>(
-                new DiskCachedCellImgFactory<>(new FloatType()).create(new int[] { 2000, 2000, 2, 20, 40 }));
+        DiskCachedCellImg dcImage = new DiskCachedCellImgFactory<>(new FloatType())
+                .create(new int[] { 2000, 2000, 1, 400, 30 });
+        ImgPlus<FloatType> img = new ImgPlus<>(dcImage);
         // ImgPlus<FloatType> img = (ImgPlus<FloatType>)
         // ImgPlusTools.createNewImgPlus(w, h, 0, d, 0, 0.2, 0.1, "um",
         // new FloatType());
@@ -77,16 +83,32 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
 
         // Creating a ramp intensity gradient along the x-axis, so operations can be
         // tested
-        // RandomAccess ra = img.randomAccess();
+        RandomAccess ra = img.randomAccess();
         // Random random = new Random();
-        // for (int i = 0; i < 1000000; i++) {
+        // for (int i = 0; i < 10000; i++) {
         // int x = (int) Math.floor(random.nextDouble() * w);
         // int y = (int) Math.floor(random.nextDouble() * h);
         // int z = (int) Math.floor(random.nextDouble() * d);
-        // ra.setPosition(new int[] { x, y, z });
+        // ra.setPosition(new int[] { x, y, z, 0, 0 });
         // ((FloatType) ra.get()).set(1000);
         // }
-        // Cursor<T> c = img.cursor();
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 20; y++) {
+                ra.setPosition(new int[] { x, y, 0, 0, 0 });
+                ((FloatType) ra.get()).set(1000);
+            }
+        }
+
+        dcImage.shutdown();
+        
+        for (int x = 100; x < 120; x++) {
+            for (int y = 100; y < 110; y++) {
+                ra.setPosition(new int[] { x, y, 0, 0, 0 });
+                ((FloatType) ra.get()).set(1000);
+            }
+        }
+
+        // Cursor<FloatType> c = img.cursor();
         // while (c.hasNext()) {
         // c.fwd();
         // ((FloatType) c.get()).set(c.getFloatPosition(0));
@@ -129,8 +151,8 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

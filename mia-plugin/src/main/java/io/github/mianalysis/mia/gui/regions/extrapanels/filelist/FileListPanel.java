@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.filelist;
+package io.github.mianalysis.mia.gui.regions.extrapanels.filelist;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -80,29 +80,6 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Adding title to help window
-        JLabel fileListLabel = new JLabel();
-        fileListLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        fileListLabel.setText("File list");
-        add(fileListLabel, c);
-
-        // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);
-        c.anchor = GridBagConstraints.EAST;
-        c.weightx = 0;
-        c.gridx++;
-        add(closeButton, c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy++;
-        add(separator, c);
 
         model.setColumnCount(5);
         model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });

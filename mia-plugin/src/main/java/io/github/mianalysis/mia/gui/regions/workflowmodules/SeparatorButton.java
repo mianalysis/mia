@@ -85,7 +85,6 @@ public class SeparatorButton extends JButton implements ActionListener {
 
         GUI.updateModules(false,null);
         GUI.updateParameters(false,null);
-        GUI.updateHelpNotes();
         GUI.addUndo();
 
     }

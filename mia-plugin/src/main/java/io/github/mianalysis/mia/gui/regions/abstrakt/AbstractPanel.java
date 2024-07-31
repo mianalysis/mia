@@ -17,9 +17,6 @@ public abstract class AbstractPanel extends JPanel {
     public abstract void updateModules(boolean testAnalysis, @Nullable Module startModule);
     public abstract void updateModuleStates();
     public abstract void updateParameters(boolean testAnalysis, @Nullable Module startModule);
-    public abstract void updateHelpNotes();
-    public abstract void updateFileList();
-    public abstract void updateSearch();
 
     public abstract int getPreferredWidth();
     public abstract int getMinimumWidth();

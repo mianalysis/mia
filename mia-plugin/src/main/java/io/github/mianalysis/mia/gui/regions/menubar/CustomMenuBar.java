@@ -48,10 +48,6 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
     private static MenuItem undo = new MenuItem(MenuItem.UNDO);
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
-    private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);
-    private static MenuCheckbox notesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_NOTES);
-    private static MenuCheckbox fileListCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_FILE_LIST);
-    private static MenuCheckbox searchCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_SEARCH);
 
     public CustomMenuBar() {
         // Creating the file menu
@@ -96,15 +92,6 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
             viewMenu.add(new MenuItem(MenuItem.PROCESSING_VIEW));
         else
             viewMenu.add(new MenuItem(MenuItem.EDITING_VIEW));
-
-        helpCheckbox.setSelected(GUI.showHelp());
-        viewMenu.add(helpCheckbox);
-        notesCheckbox.setSelected(GUI.showNotes());
-        viewMenu.add(notesCheckbox);
-        fileListCheckbox.setSelected(GUI.showFileList());
-        viewMenu.add(fileListCheckbox);
-        searchCheckbox.setSelected(GUI.showSearch());
-        viewMenu.add(searchCheckbox);
 
         // Creating the help menu
         add(helpMenu);
@@ -174,26 +161,6 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         disableAllModules.setVisible(!GUI.isProcessingGUI());
         outputAllModules.setVisible(!GUI.isProcessingGUI());
         silenceAllModules.setVisible(!GUI.isProcessingGUI());
-
-        searchCheckbox.setVisible(!GUI.isProcessingGUI());
-    }
-
-    public void setHelpSelected(Boolean showHelp) {
-        helpCheckbox.setSelected(showHelp);
-
-    }
-
-    public void setFileListSelected(boolean showFileList) {
-        fileListCheckbox.setSelected(showFileList);
-    }
-
-    public void setNotesSelected(Boolean showNotes) {
-        notesCheckbox.setSelected(showNotes);
-
-    }
-
-    public void setSearchSelected(Boolean showSearch) {
-        searchCheckbox.setSelected(showSearch);
 
     }
 
