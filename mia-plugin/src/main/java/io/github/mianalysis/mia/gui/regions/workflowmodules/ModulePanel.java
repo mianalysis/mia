@@ -5,9 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Modules;
@@ -28,9 +26,9 @@ public class ModulePanel extends JPanel {
 
     public ModulePanel() {
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setMinimumSize(new Dimension(minimumWidth, 300));
-        
+
         GridBagConstraints c = new GridBagConstraints();
 
         // Initialising the input control panel

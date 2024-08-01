@@ -68,7 +68,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         // Initialising the scroll panel
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setMinimumSize(new Dimension(minimumWidth, 1));
         setPreferredSize(new Dimension(preferredWidth, 1));
 

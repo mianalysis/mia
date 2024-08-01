@@ -36,7 +36,7 @@ public class SearchPanel extends JPanel {
 
     public SearchPanel() {
         // Initialising the panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
 
         updatePanel();

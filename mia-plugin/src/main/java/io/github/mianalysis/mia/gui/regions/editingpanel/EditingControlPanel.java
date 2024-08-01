@@ -56,7 +56,7 @@ public class EditingControlPanel extends JPanel {
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
         setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight - 350));
 
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));        
         setLayout(new GridBagLayout());
 
         // Add module button

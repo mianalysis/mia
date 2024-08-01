@@ -23,7 +23,7 @@ public class HelpPanel extends JPanel {
 
     public HelpPanel() {
         // Initialising the panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
 
     }

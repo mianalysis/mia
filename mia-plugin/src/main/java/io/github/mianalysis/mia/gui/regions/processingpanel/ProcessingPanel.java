@@ -7,7 +7,9 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -86,6 +88,15 @@ public class ProcessingPanel extends AbstractPanel {
         c.insets = new Insets(0, 5, 5, 5);
         add(splitPane2,c);
 
+        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+        c.gridy++;
+        c.weighty = 0;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 5;
+        c.insets = new Insets(0, 5, 5, 5);
+        add(separator,c);
+        
         // Initialising the status panel
         c.gridy++;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -115,7 +126,7 @@ public class ProcessingPanel extends AbstractPanel {
         JPanel processingControlPanel = new JPanel();
 
         processingControlPanel.setMinimumSize(new Dimension(frameWidth-30, bigButtonSize + 15));
-        processingControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // processingControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         processingControlPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();

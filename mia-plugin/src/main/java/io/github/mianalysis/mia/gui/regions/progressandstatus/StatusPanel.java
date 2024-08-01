@@ -18,7 +18,7 @@ public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
 
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setMinimumSize(new Dimension(1,statusHeight+15));
         setMaximumSize(new Dimension(1,statusHeight+15));
         setPreferredSize(new Dimension(1,statusHeight+15));

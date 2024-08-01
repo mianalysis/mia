@@ -25,7 +25,7 @@ public class NotesPanel extends JPanel {
 
     public NotesPanel() {
         // Initialising the panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
 
     }

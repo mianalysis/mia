@@ -47,7 +47,8 @@ public class ProcessingControlPanel extends JScrollPane {
         // Initialising the scroll panel
         setMinimumSize(new Dimension(minimumWidth, 1));
         setPreferredSize(new Dimension(preferredWidth, 1));
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setBorder(BorderFactory.createEmptyBorder());
         setViewportBorder(BorderFactory.createEmptyBorder());
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

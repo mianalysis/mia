@@ -1,11 +1,14 @@
 package io.github.mianalysis.mia.gui.regions.editingpanel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -58,12 +61,17 @@ public class EditingPanel extends AbstractPanel {
         c.fill = GridBagConstraints.VERTICAL;
         add(editingControlPanel, c);
 
-        // Initialising the status panel
+        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         c.gridy++;
         c.weighty = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 4;
+        c.gridwidth = 5;
+        c.insets = new Insets(0, 5, 5, 5);
+        add(separator,c);
+
+        // Initialising the status panel
+        c.gridy++;
         c.insets = new Insets(0, 5, 5, 5);
         add(statusPanel, c);
 
@@ -72,23 +80,33 @@ public class EditingPanel extends AbstractPanel {
         c.insets = new Insets(0, 5, 5, 5);
         add(progressBarPanel, c);
 
+        // separator = new JSeparator(SwingConstants.VERTICAL);
         c.gridx++;
         c.gridy = 0;
-        c.weightx = 0;
         c.gridwidth = 1;
-        c.insets = new Insets(5, 5, 5, 0);
+        c.weightx = 0;  
+        // c.insets = new Insets(5, 0, 5, 0);
         c.fill = GridBagConstraints.VERTICAL;
+        // add(separator,c);
+
+        // c.gridx++;              
+        c.insets = new Insets(5, 0, 5, 0);        
         add(modulesPanel, c);
+
+        // separator = new JSeparator(SwingConstants.VERTICAL);
+        // c.gridx++;
+        // c.insets = new Insets(5, 0, 5, 0);
+        // add(separator,c);
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, parametersPanel, extraPanel);
         splitPane.setPreferredSize(new Dimension(1, 1));
-        splitPane.setBorder(null);
+        // splitPane.setBorder(null);
         splitPane.setDividerSize(5);
         splitPane.setDividerLocation(0.5);
         splitPane.setOneTouchExpandable(true);
         splitPane.putClientProperty( "JSplitPane.expandableSide", "left" );
-        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane.getUI();
-        splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
+        // BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane.getUI();
+        // splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
 
         c.gridx++;
         c.gridy = 0;
