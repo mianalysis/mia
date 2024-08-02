@@ -70,4 +70,8 @@ public class ExtraPanel extends JPanel {
     public HelpPanel getHelpPanel() {
         return helpPanel;
     }
+
+    public NotesPanel getNotesPanel() {
+        return notesPanel;
+    }
 }

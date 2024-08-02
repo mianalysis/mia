@@ -66,6 +66,7 @@ public class MIA_ extends MIA implements Command {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
             UIManager.put("TitlePane.showIconBesideTitle", true);
+            System.setProperty( "apple.awt.application.appearance", "system" );
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {

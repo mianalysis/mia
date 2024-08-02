@@ -6,11 +6,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JSeparator;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
 
 import com.drew.lang.annotations.Nullable;
+import com.formdev.flatlaf.ui.FlatDropShadowBorder;
+import com.formdev.flatlaf.util.SystemInfo;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
@@ -47,17 +48,37 @@ public class EditingPanel extends AbstractPanel {
 
     public EditingPanel() {
         setLayout(new GridBagLayout());
-        setBackground(Colours.getLightBlue(false));
+        setBackground(Color.LIGHT_GRAY);
 
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 0);
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0;
+        c.weighty = 0;
+        c.gridwidth = 5;
+
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            JPanel titleBar = new JPanel();
+            titleBar.setOpaque(false);
+            titleBar.setPreferredSize(new Dimension(100, 33));
+            titleBar.setBorder(new FlatDropShadowBorder(Color.GRAY, new Insets(0, 0, 5, 0), 1));
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.NORTH;
+            add(titleBar, c);
+
+            JPanel titleBarColour = new JPanel();
+            titleBarColour.setBackground(Colours.getBlue(false));
+            titleBarColour.setPreferredSize(new Dimension(100, 28));
+            add(titleBarColour, c);
+            c.gridy++;
+        }
+
         c.weighty = 1;
+        c.gridwidth = 1;
+        c.insets = new Insets(5, 5, 5, 0);
         c.fill = GridBagConstraints.VERTICAL;
-        add(new ShadowPanel(editingControlPanel),c);      
-        
+        add(new ShadowPanel(editingControlPanel), c);
+
         // Initialising the status panel
         c.weightx = 1;
         c.weighty = 0;
@@ -68,24 +89,25 @@ public class EditingPanel extends AbstractPanel {
         add(new ShadowPanel(statusPanel), c);
 
         c.gridx++;
-        c.gridy = 0;
+        c.gridy = 1;
         c.gridwidth = 1;
-        c.weightx = 0;  
-        c.fill = GridBagConstraints.VERTICAL;      
-        c.insets = new Insets(5, 5, 5, 0);   
-        modulesPanel.setOpaque(false);     
+        c.weightx = 0;
+        c.fill = GridBagConstraints.VERTICAL;
+        c.insets = new Insets(5, 5, 5, 0);
+        modulesPanel.setOpaque(false);
         add(new ShadowPanel(modulesPanel), c);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new ShadowPanel(parametersPanel), new ShadowPanel(extraPanel));
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new ShadowPanel(parametersPanel),
+                new ShadowPanel(extraPanel));
         splitPane.setPreferredSize(new Dimension(1, 1));
         splitPane.setDividerSize(5);
         splitPane.setDividerLocation(0.5);
-        splitPane.setOneTouchExpandable(true);
         splitPane.setOpaque(false);
-        splitPane.putClientProperty( "JSplitPane.expandableSide", "left" );
+        splitPane.setOneTouchExpandable(true);
+        splitPane.putClientProperty("JSplitPane.expandableSide", "left");
 
         c.gridx++;
-        c.gridy = 0;
+        c.gridy = 1;
         c.gridwidth = 1;
         c.weightx = 1;
         c.weighty = 1;
@@ -103,7 +125,7 @@ public class EditingPanel extends AbstractPanel {
     public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         c.weightx = 1;
         c.weighty = 1;
         c.insets = new Insets(0, 10, 0, 0);

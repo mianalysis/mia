@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
@@ -10,12 +11,16 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.TreeMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 
 import com.drew.lang.annotations.Nullable;
+import com.formdev.flatlaf.util.SystemInfo;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
@@ -34,6 +39,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 import io.github.mianalysis.mia.process.logging.ProgressBar;
@@ -109,6 +115,16 @@ public class GUI {
 
         initialiseStatusTextField();
         frame.setTitle("MIA");
+        if( SystemInfo.isMacFullWindowContentSupported ) {
+            frame.getRootPane().putClientProperty( "apple.awt.fullWindowContent", true );
+            frame.getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+            JPanel titleBar = new JPanel();
+            titleBar.setBackground(Colours.getBlue(false));
+            titleBar.setPreferredSize(new Dimension(100, 50));
+            frame.add(titleBar);
+        }
+        UIManager.put("TitlePane.background", Colours.getBlue(false));
+        frame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));
