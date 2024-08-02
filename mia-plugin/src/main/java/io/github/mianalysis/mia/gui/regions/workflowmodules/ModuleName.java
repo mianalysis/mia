@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
@@ -39,6 +41,7 @@ public class ModuleName extends JLabel {
 
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
+        putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         setBorder(new EmptyBorder(2, 5, 0, 0));
         setPreferredSize(new Dimension(200,30));
         setOpaque(false);

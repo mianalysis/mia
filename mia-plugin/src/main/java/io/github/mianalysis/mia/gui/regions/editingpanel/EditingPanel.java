@@ -117,7 +117,7 @@ public class EditingPanel extends AbstractPanel {
         add(splitPane, c);
 
         MIA.log.writeDebug("EditingPanel.java - set extra panel visibility");
-        shadowExtraPanel.setVisible(false);
+        shadowExtraPanel.setVisible(true);
         updateSeparators();
 
     }

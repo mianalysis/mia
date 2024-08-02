@@ -7,6 +7,8 @@ import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
@@ -24,7 +26,8 @@ public class TextParameter extends ParameterControl implements CaretReporter, Fo
         super(parameter);
 
         control = new JTextField();
-
+        control.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
+        control.setOpaque(false);
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         control.setText(parameter.getRawStringValue());
         control.addFocusListener(this);

@@ -157,46 +157,46 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             if (isSelected) {
                 boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
                 moduleName.setOpaque(true);
-                moduleName.setBackground(Colours.getLightGrey(isDark));
+                moduleName.setBackground(Colours.getLightBlue(isDark));
                 
-                RowItems rowItem = rowItems.get(module);
-                if (rowItem.getEvalButton() != null) {
-                    rowItem.getEvalButton().setOpaque(true);
-                    rowItem.getEvalButton().setBackground(Colours.getLightGrey(isDark));
-                }
-                if (rowItem.getSeparatorButton() != null) {
-                    rowItem.getSeparatorButton().setOpaque(true);
-                    rowItem.getSeparatorButton().setBackground(Colours.getLightGrey(isDark));
-                }
-                if (rowItem.getModuleEnabledButton() != null) {
-                    rowItem.getModuleEnabledButton().setOpaque(true);
-                    rowItem.getModuleEnabledButton().setBackground(Colours.getLightGrey(isDark));
-                }
-                if (rowItem.getShowOutputButton() != null) {
-                    rowItem.getShowOutputButton().setOpaque(true);
-                    rowItem.getShowOutputButton().setBackground(Colours.getLightGrey(isDark));
-                }
+                // RowItems rowItem = rowItems.get(module);
+                // if (rowItem.getEvalButton() != null) {
+                //     rowItem.getEvalButton().setOpaque(true);
+                //     rowItem.getEvalButton().setBackground(Colours.getLightGrey(isDark));
+                // }
+                // if (rowItem.getSeparatorButton() != null) {
+                //     rowItem.getSeparatorButton().setOpaque(true);
+                //     rowItem.getSeparatorButton().setBackground(Colours.getLightGrey(isDark));
+                // }
+                // if (rowItem.getModuleEnabledButton() != null) {
+                //     rowItem.getModuleEnabledButton().setOpaque(true);
+                //     rowItem.getModuleEnabledButton().setBackground(Colours.getLightGrey(isDark));
+                // }
+                // if (rowItem.getShowOutputButton() != null) {
+                //     rowItem.getShowOutputButton().setOpaque(true);
+                //     rowItem.getShowOutputButton().setBackground(Colours.getLightGrey(isDark));
+                // }
             } else {
                 moduleName.setOpaque(false);
                 moduleName.setBackground(table.getBackground());
 
-                RowItems rowItem = rowItems.get(module);
-                if (rowItem.getEvalButton() != null) {
-                    rowItem.getEvalButton().setOpaque(false);
-                    rowItem.getEvalButton().setBackground(table.getBackground());
-                }
-                if (rowItem.getSeparatorButton() != null) {
-                    rowItem.getSeparatorButton().setOpaque(false);
-                    rowItem.getSeparatorButton().setBackground(table.getBackground());
-                }
-                if (rowItem.getModuleEnabledButton() != null) {
-                    rowItem.getModuleEnabledButton().setOpaque(false);
-                    rowItem.getModuleEnabledButton().setBackground(table.getBackground());
-                }
-                if (rowItem.getShowOutputButton() != null) {
-                    rowItem.getShowOutputButton().setOpaque(false);
-                    rowItem.getShowOutputButton().setBackground(table.getBackground());
-                }
+                // RowItems rowItem = rowItems.get(module);
+                // if (rowItem.getEvalButton() != null) {
+                //     rowItem.getEvalButton().setOpaque(false);
+                //     rowItem.getEvalButton().setBackground(table.getBackground());
+                // }
+                // if (rowItem.getSeparatorButton() != null) {
+                //     rowItem.getSeparatorButton().setOpaque(false);
+                //     rowItem.getSeparatorButton().setBackground(table.getBackground());
+                // }
+                // if (rowItem.getModuleEnabledButton() != null) {
+                //     rowItem.getModuleEnabledButton().setOpaque(false);
+                //     rowItem.getModuleEnabledButton().setBackground(table.getBackground());
+                // }
+                // if (rowItem.getShowOutputButton() != null) {
+                //     rowItem.getShowOutputButton().setOpaque(false);
+                //     rowItem.getShowOutputButton().setBackground(table.getBackground());
+                // }
             }
 
             return moduleName;

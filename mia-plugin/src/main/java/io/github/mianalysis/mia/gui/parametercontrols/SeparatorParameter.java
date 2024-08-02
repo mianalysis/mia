@@ -24,6 +24,8 @@ public class SeparatorParameter extends ParameterControl {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         control = new JPanel(new GridBagLayout());
+        control.setOpaque(false);
+        
         GridBagConstraints c = new GridBagConstraints();
 
         c.gridx = 0;

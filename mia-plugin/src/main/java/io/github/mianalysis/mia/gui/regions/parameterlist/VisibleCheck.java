@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -34,6 +36,7 @@ public class VisibleCheck extends JButton implements ActionListener {
     public VisibleCheck(Parameter parameter) {
         this.parameter = parameter;
 
+        putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         addActionListener(this);
         setFocusPainted(false);
         setSelected(parameter.isVisible());
