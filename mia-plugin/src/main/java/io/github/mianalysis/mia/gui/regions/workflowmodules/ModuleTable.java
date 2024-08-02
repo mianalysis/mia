@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
@@ -13,11 +12,9 @@ import java.util.HashMap;
 
 import javax.swing.DropMode;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
@@ -43,11 +40,13 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     private static final long serialVersionUID = 3722736203899254351L;
     private Modules modules;
     private HashMap<Module, ModuleName> moduleNames = new HashMap<>();
+    private HashMap<Module, RowItems> rowItems;
 
-    public ModuleTable(TableModel tableModel, Modules modules, HashMap<Module, Boolean> expandedStatus) {
+    public ModuleTable(TableModel tableModel, Modules modules, HashMap<Module, Boolean> expandedStatus, HashMap<Module, RowItems> rowItems) {
         super(tableModel);
 
         this.modules = modules;
+        this.rowItems = rowItems;
 
         ListSelectionModel listSelectionModel = getSelectionModel();
         listSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -73,7 +72,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         setDropMode(DropMode.INSERT_ROWS);
         setTransferHandler(new DraggableTransferHandler(this));
         getColumn("Title").setPreferredWidth(200);
-        setRowHeight(26);
+        setRowHeight(28);
         setFillsViewportHeight(true);
         setShowGrid(false);
         setOpaque(false);
@@ -155,26 +154,52 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             ModuleName moduleName = moduleNames.get(module);
             moduleName.setSelected(isSelected);
 
+            if (isSelected) {
+                boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+                moduleName.setOpaque(true);
+                moduleName.setBackground(Colours.getLightGrey(isDark));
+                
+                RowItems rowItem = rowItems.get(module);
+                if (rowItem.getEvalButton() != null) {
+                    rowItem.getEvalButton().setOpaque(true);
+                    rowItem.getEvalButton().setBackground(Colours.getLightGrey(isDark));
+                }
+                if (rowItem.getSeparatorButton() != null) {
+                    rowItem.getSeparatorButton().setOpaque(true);
+                    rowItem.getSeparatorButton().setBackground(Colours.getLightGrey(isDark));
+                }
+                if (rowItem.getModuleEnabledButton() != null) {
+                    rowItem.getModuleEnabledButton().setOpaque(true);
+                    rowItem.getModuleEnabledButton().setBackground(Colours.getLightGrey(isDark));
+                }
+                if (rowItem.getShowOutputButton() != null) {
+                    rowItem.getShowOutputButton().setOpaque(true);
+                    rowItem.getShowOutputButton().setBackground(Colours.getLightGrey(isDark));
+                }
+            } else {
+                moduleName.setOpaque(false);
+                moduleName.setBackground(table.getBackground());
+
+                RowItems rowItem = rowItems.get(module);
+                if (rowItem.getEvalButton() != null) {
+                    rowItem.getEvalButton().setOpaque(false);
+                    rowItem.getEvalButton().setBackground(table.getBackground());
+                }
+                if (rowItem.getSeparatorButton() != null) {
+                    rowItem.getSeparatorButton().setOpaque(false);
+                    rowItem.getSeparatorButton().setBackground(table.getBackground());
+                }
+                if (rowItem.getModuleEnabledButton() != null) {
+                    rowItem.getModuleEnabledButton().setOpaque(false);
+                    rowItem.getModuleEnabledButton().setBackground(table.getBackground());
+                }
+                if (rowItem.getShowOutputButton() != null) {
+                    rowItem.getShowOutputButton().setOpaque(false);
+                    rowItem.getShowOutputButton().setBackground(table.getBackground());
+                }
+            }
+
             return moduleName;
-
-        } else if (value instanceof String) {
-            JLabel label = new JLabel();
-
-            label.setBorder(new EmptyBorder(2, 5, 0, 0));
-            label.setOpaque(true);
-
-            boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
-
-            if (isSelected)
-                label.setBackground(Colours.getLightBlue(isDark));
-            else
-                label.setBackground(table.getBackground());
-
-            GUI.getModules().get(row).setNickname(((String) value).trim());
-            GUI.updateModules(false, null);
-            GUI.updateParameters(false, null);
-
-            return label;
 
         }
 

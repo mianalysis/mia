@@ -12,7 +12,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
@@ -24,6 +23,7 @@ public class ModuleListPanel extends JScrollPane {
     private static final long serialVersionUID = -8916783536735299254L;
 
     private JPanel moduleListPanel;
+    private HashMap<Module,RowItems> rowItems = new HashMap<>();
 
     public ModuleListPanel() {
         moduleListPanel = new JPanel();
@@ -33,7 +33,7 @@ public class ModuleListPanel extends JScrollPane {
         // Initialising the scroll panel
         setViewportBorder(BorderFactory.createEmptyBorder());
         setBorder(new EmptyBorder(0, 0, 0, 0));
-        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
         setOpaque(false);
@@ -73,7 +73,7 @@ public class ModuleListPanel extends JScrollPane {
                 data[count++][0] = modules.get(i);
         }
         DraggableTableModel tableModel = new DraggableTableModel(data, columnNames, modules);
-        JTable moduleNameTable = new ModuleTable(tableModel, modules, expandedStatus);
+        ModuleTable moduleNameTable = new ModuleTable(tableModel, modules, expandedStatus, rowItems);
         moduleNameTable.setBorder(BorderFactory.createEmptyBorder());
 
         JScrollPane scrollPane = new JScrollPane(moduleNameTable);
@@ -100,9 +100,13 @@ public class ModuleListPanel extends JScrollPane {
             c.gridx++;
             c.insets = new Insets(top, 0, 0, 0);
 
+            SeparatorButton separatorButton = null;
+            ShowOutputButton showOutputButton = null;
+            EvalButton evalButton = null;
+
             // If GUISeparator, add controls
             if (module instanceof GUISeparator) {
-                SeparatorButton separatorButton = new SeparatorButton(module, true);
+                separatorButton = new SeparatorButton(module, true);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
                 moduleListPanel.add(separatorButton, c);
                 c.gridx++;
@@ -113,17 +117,19 @@ public class ModuleListPanel extends JScrollPane {
                 moduleListPanel.add(separatorButton, c);
 
             } else {
-                ShowOutputButton showOutputButton = new ShowOutputButton(module);
+                showOutputButton = new ShowOutputButton(module);
                 showOutputButton.setPreferredSize(new Dimension(26, 26));
                 moduleListPanel.add(showOutputButton, c);
                 c.gridx++;
                 c.gridx++;
 
-                EvalButton evalButton = new EvalButton(module);
+                evalButton = new EvalButton(module);
                 evalButton.setPreferredSize(new Dimension(26, 26));
                 moduleListPanel.add(evalButton, c);
 
             }
+
+            rowItems.put(module, new RowItems(enabledButton, showOutputButton, evalButton, separatorButton));
 
             c.gridy++;
 

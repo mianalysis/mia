@@ -11,9 +11,9 @@ import com.formdev.flatlaf.ui.FlatDropShadowBorder;
 
 public class ShadowPanel extends JPanel {
     public ShadowPanel(JComponent component) {
-        component.setBackground(new Color(255,255,255,200));
+        component.setBackground(new Color(255,255,255,220));
         component.setOpaque(true);
-        component.putClientProperty( FlatClientProperties.STYLE, "arc: 8" );
+        component.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
 
         setBorder(new FlatDropShadowBorder(Color.GRAY,5,1));
         setOpaque(false);

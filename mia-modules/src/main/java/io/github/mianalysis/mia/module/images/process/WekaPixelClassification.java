@@ -316,6 +316,8 @@ public class WekaPixelClassification extends Module {
             RGBStackConverter.convertToRGB(inputImagePlus);
         }
 
+        inputImagePlus.duplicate().show();
+
         // Converting the bit depth to an integer
         int bitDepth = Integer.parseInt(outputBitDepth);
 

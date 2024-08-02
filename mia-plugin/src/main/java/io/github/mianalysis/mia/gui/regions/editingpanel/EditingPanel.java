@@ -48,7 +48,7 @@ public class EditingPanel extends AbstractPanel {
 
     public EditingPanel() {
         setLayout(new GridBagLayout());
-        setBackground(Color.LIGHT_GRAY);
+        setBackground(Colours.getLightGrey(false));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -67,7 +67,7 @@ public class EditingPanel extends AbstractPanel {
             add(titleBar, c);
 
             JPanel titleBarColour = new JPanel();
-            titleBarColour.setBackground(Colours.getBlue(false));
+            titleBarColour.setBackground(Colours.getLightBlue(false));
             titleBarColour.setPreferredSize(new Dimension(100, 28));
             add(titleBarColour, c);
             c.gridy++;
@@ -97,8 +97,9 @@ public class EditingPanel extends AbstractPanel {
         modulesPanel.setOpaque(false);
         add(new ShadowPanel(modulesPanel), c);
 
+        ShadowPanel shadowExtraPanel = new ShadowPanel(extraPanel);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new ShadowPanel(parametersPanel),
-                new ShadowPanel(extraPanel));
+                shadowExtraPanel);
         splitPane.setPreferredSize(new Dimension(1, 1));
         splitPane.setDividerSize(5);
         splitPane.setDividerLocation(0.5);
@@ -116,7 +117,7 @@ public class EditingPanel extends AbstractPanel {
         add(splitPane, c);
 
         MIA.log.writeDebug("EditingPanel.java - set extra panel visibility");
-        extraPanel.setVisible(true);
+        shadowExtraPanel.setVisible(false);
         updateSeparators();
 
     }
