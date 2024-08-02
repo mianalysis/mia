@@ -31,7 +31,6 @@ import javax.swing.table.TableRowSorter;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -69,6 +68,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         // Initialising the scroll panel
         setLayout(new GridBagLayout());
         // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setOpaque(false);
         setMinimumSize(new Dimension(minimumWidth, 1));
         setPreferredSize(new Dimension(preferredWidth, 1));
 
@@ -91,7 +91,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setDragEnabled(false);
         table.setBorder(BorderFactory.createEmptyBorder());
         table.setAutoCreateRowSorter(true);
-        table.setBackground(null);
+        table.setOpaque(false);
         table.setDefaultEditor(Object.class, null);
 
         TableColumnModel columnModel = table.getColumnModel();
@@ -113,6 +113,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         showColumn(COL_SERIESNUMBER, false);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setOpaque(false);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);

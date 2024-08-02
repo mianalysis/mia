@@ -77,7 +77,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         setFillsViewportHeight(true);
         setShowGrid(false);
         setOpaque(false);
-        setBackground(new Color(0, 0, 0, 0));
+        // setBackground(new Color(0, 0, 0, 0));
 
         KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0);
         registerKeyboardAction(this, BACKSPACE, backspace, JComponent.WHEN_FOCUSED);

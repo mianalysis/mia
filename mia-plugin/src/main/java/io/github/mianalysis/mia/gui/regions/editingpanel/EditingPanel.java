@@ -9,23 +9,22 @@ import java.awt.Insets;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import com.drew.lang.annotations.Nullable;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.ShadowPanel;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.ExtraPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.helpandnotes.HelpNotesPanel;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
-import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModulePanel;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 public class EditingPanel extends AbstractPanel {
@@ -34,7 +33,6 @@ public class EditingPanel extends AbstractPanel {
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
     private final EditingControlPanel editingControlPanel = new EditingControlPanel();
-    private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final ModulePanel modulesPanel = new ModulePanel();
     private final ParametersPanel parametersPanel = new ParametersPanel();
     private final ExtraPanel extraPanel = new ExtraPanel();
@@ -49,64 +47,42 @@ public class EditingPanel extends AbstractPanel {
 
     public EditingPanel() {
         setLayout(new GridBagLayout());
+        setBackground(Colours.getLightBlue(false));
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 0);
         c.gridx = 0;
         c.gridy = 0;
-
-        // Creating buttons to add and remove modules
         c.weightx = 0;
         c.weighty = 1;
         c.fill = GridBagConstraints.VERTICAL;
-        add(editingControlPanel, c);
-
-        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
-        c.gridy++;
-        c.weighty = 0;
+        add(new ShadowPanel(editingControlPanel),c);      
+        
+        // Initialising the status panel
         c.weightx = 1;
+        c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridwidth = 5;
-        c.insets = new Insets(0, 5, 5, 5);
-        add(separator,c);
-
-        // Initialising the status panel
         c.gridy++;
         c.insets = new Insets(0, 5, 5, 5);
-        add(statusPanel, c);
+        add(new ShadowPanel(statusPanel), c);
 
-        // Initialising the progress bar
-        c.gridy++;
-        c.insets = new Insets(0, 5, 5, 5);
-        add(progressBarPanel, c);
-
-        // separator = new JSeparator(SwingConstants.VERTICAL);
         c.gridx++;
         c.gridy = 0;
         c.gridwidth = 1;
         c.weightx = 0;  
-        // c.insets = new Insets(5, 0, 5, 0);
-        c.fill = GridBagConstraints.VERTICAL;
-        // add(separator,c);
+        c.fill = GridBagConstraints.VERTICAL;      
+        c.insets = new Insets(5, 5, 5, 0);   
+        modulesPanel.setOpaque(false);     
+        add(new ShadowPanel(modulesPanel), c);
 
-        // c.gridx++;              
-        c.insets = new Insets(5, 0, 5, 0);        
-        add(modulesPanel, c);
-
-        // separator = new JSeparator(SwingConstants.VERTICAL);
-        // c.gridx++;
-        // c.insets = new Insets(5, 0, 5, 0);
-        // add(separator,c);
-
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, parametersPanel, extraPanel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new ShadowPanel(parametersPanel), new ShadowPanel(extraPanel));
         splitPane.setPreferredSize(new Dimension(1, 1));
-        // splitPane.setBorder(null);
         splitPane.setDividerSize(5);
         splitPane.setDividerLocation(0.5);
         splitPane.setOneTouchExpandable(true);
+        splitPane.setOpaque(false);
         splitPane.putClientProperty( "JSplitPane.expandableSide", "left" );
-        // BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane.getUI();
-        // splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
 
         c.gridx++;
         c.gridy = 0;
@@ -130,7 +106,7 @@ public class EditingPanel extends AbstractPanel {
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 1;
-        c.insets = new Insets(0, 5, 0, 0);
+        c.insets = new Insets(0, 10, 0, 0);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.BOTH;
 
@@ -202,13 +178,13 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public int getProgress() {
-        return progressBarPanel.getValue();
+    public double getProgress() {
+        return statusPanel.getValue();
     }
 
     @Override
-    public void setProgress(int progress) {
-        progressBarPanel.setValue(progress);
+    public void setProgress(double progress) {
+        statusPanel.setValue(progress);
         extraPanel.getFileListPanel().updatePanel();
     }
 

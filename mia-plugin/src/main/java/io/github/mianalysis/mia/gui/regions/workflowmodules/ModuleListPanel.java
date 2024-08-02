@@ -27,19 +27,22 @@ public class ModuleListPanel extends JScrollPane {
 
     public ModuleListPanel() {
         moduleListPanel = new JPanel();
-        
+
         setViewportView(moduleListPanel);
-        
+
         // Initialising the scroll panel
         setViewportBorder(BorderFactory.createEmptyBorder());
         setBorder(new EmptyBorder(0, 0, 0, 0));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
+        setOpaque(false);
+        getViewport().setOpaque(false);
 
         // Initialising the panel for module buttons
         moduleListPanel.setBorder(BorderFactory.createEmptyBorder());
-                moduleListPanel.setLayout(new GridBagLayout());
+        moduleListPanel.setLayout(new GridBagLayout());
+        moduleListPanel.setOpaque(false);
         moduleListPanel.validate();
         moduleListPanel.repaint();
 
@@ -56,22 +59,23 @@ public class ModuleListPanel extends JScrollPane {
         c.fill = GridBagConstraints.BOTH;
 
         Modules modules = GUI.getModules();
-        HashMap<Module,Boolean> expandedStatus = getExpandedModules(modules);
+        HashMap<Module, Boolean> expandedStatus = getExpandedModules(modules);
         // Get number of visible modules
         int expandedCount = (int) expandedStatus.values().stream().filter(p -> p).count();
 
         // Adding content
-        String[] columnNames = {"Title"};
+        String[] columnNames = { "Title" };
         Object[][] data = new Object[expandedCount][1];
 
         int count = 0;
-        for (int i=0;i<modules.size();i++) {
-            if (expandedStatus.get(modules.get(i))) data[count++][0] = modules.get(i);
+        for (int i = 0; i < modules.size(); i++) {
+            if (expandedStatus.get(modules.get(i)))
+                data[count++][0] = modules.get(i);
         }
-        DraggableTableModel tableModel = new DraggableTableModel(data, columnNames,modules);
+        DraggableTableModel tableModel = new DraggableTableModel(data, columnNames, modules);
         JTable moduleNameTable = new ModuleTable(tableModel, modules, expandedStatus);
         moduleNameTable.setBorder(BorderFactory.createEmptyBorder());
-        
+
         JScrollPane scrollPane = new JScrollPane(moduleNameTable);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
@@ -82,28 +86,29 @@ public class ModuleListPanel extends JScrollPane {
         moduleListPanel.removeAll();
 
         // Creating control buttons for modules
-        for (Module module:modules) {
-            if (!expandedStatus.get(module)) continue;
+        for (Module module : modules) {
+            if (!expandedStatus.get(module))
+                continue;
 
             int top = c.gridy == 0 ? 5 : 0;
             c.gridx = 0;
             c.insets = new Insets(top, 5, 0, 0);
 
             ModuleEnabledButton enabledButton = new ModuleEnabledButton(module);
-            enabledButton.setPreferredSize(new Dimension(26,26));
-            moduleListPanel.add(enabledButton,c);
+            enabledButton.setPreferredSize(new Dimension(26, 26));
+            moduleListPanel.add(enabledButton, c);
             c.gridx++;
             c.insets = new Insets(top, 0, 0, 0);
 
             // If GUISeparator, add controls
             if (module instanceof GUISeparator) {
-                SeparatorButton separatorButton = new SeparatorButton(module,true);
+                SeparatorButton separatorButton = new SeparatorButton(module, true);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
                 moduleListPanel.add(separatorButton, c);
                 c.gridx++;
                 c.gridx++;
 
-                separatorButton = new SeparatorButton(module,false);
+                separatorButton = new SeparatorButton(module, false);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
                 moduleListPanel.add(separatorButton, c);
 
@@ -128,8 +133,8 @@ public class ModuleListPanel extends JScrollPane {
         c.gridx = 2;
         c.gridy = 0;
         c.gridheight = modules.size();
-        c.insets = new Insets(6,1,0,0);
-        moduleListPanel.add(moduleNameTable,c);
+        c.insets = new Insets(6, 1, 0, 0);
+        moduleListPanel.add(moduleNameTable, c);
 
         c.gridwidth = 4;
         c.gridy = modules.size();
@@ -137,7 +142,7 @@ public class ModuleListPanel extends JScrollPane {
         c.weightx = 1;
         c.fill = GridBagConstraints.VERTICAL;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(-1,1));
+        separator.setPreferredSize(new Dimension(-1, 1));
         moduleListPanel.add(separator, c);
 
         moduleListPanel.revalidate();
@@ -149,20 +154,22 @@ public class ModuleListPanel extends JScrollPane {
     }
 
     /**
-     * Provides a map detailing which modules are expanded (true) and those that are collapsed (false)
+     * Provides a map detailing which modules are expanded (true) and those that are
+     * collapsed (false)
+     * 
      * @return
      */
-    private HashMap<Module,Boolean> getExpandedModules(Modules modules) {
-        HashMap<Module,Boolean> expandedStatus = new HashMap<>();
+    private HashMap<Module, Boolean> getExpandedModules(Modules modules) {
+        HashMap<Module, Boolean> expandedStatus = new HashMap<>();
         boolean expanded = true;
 
-        for (Module module:modules) {
+        for (Module module : modules) {
             // If module is a GUI separator, update expanded status
             if (module instanceof GUISeparator) {
-                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING,null);
-                expandedStatus.put(module,true); // GUISeparator is always expanded
+                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING, null);
+                expandedStatus.put(module, true); // GUISeparator is always expanded
             } else {
-                expandedStatus.put(module,expanded);
+                expandedStatus.put(module, expanded);
             }
         }
 

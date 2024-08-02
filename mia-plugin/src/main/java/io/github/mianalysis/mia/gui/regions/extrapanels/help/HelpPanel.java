@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
@@ -23,7 +22,7 @@ public class HelpPanel extends JPanel {
 
     public HelpPanel() {
         // Initialising the panel
-        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setOpaque(false);
         setLayout(new GridBagLayout());
 
     }
@@ -81,7 +80,7 @@ public class HelpPanel extends JPanel {
         add(notesLabel, c);
 
         // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
+        ClosePanelButton closeButton = new ClosePanelButton(this);
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 0;
         c.gridx++;
@@ -95,7 +94,7 @@ public class HelpPanel extends JPanel {
         c.gridx = 0;
         c.gridwidth = 2;
         c.gridy++;
-        add(separator,c);
+        add(separator, c);
 
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
@@ -103,7 +102,8 @@ public class HelpPanel extends JPanel {
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         usageMessage.setText(
                 "<html><center><font face=\"sans-serif\" size=\"3\">" + "Click a module title to<br>see help about it"
-                        + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");
+                        + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel"
+                        + "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
         usageMessage.setOpaque(false);

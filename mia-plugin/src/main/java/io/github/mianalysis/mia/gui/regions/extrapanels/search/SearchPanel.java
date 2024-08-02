@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
@@ -36,8 +35,8 @@ public class SearchPanel extends JPanel {
 
     public SearchPanel() {
         // Initialising the panel
-        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
+        setOpaque(false);
 
         updatePanel();
 

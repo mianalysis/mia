@@ -23,7 +23,6 @@ import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.helpandnotes.HelpNotesPanel;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
-import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.module.Module;
 
@@ -37,7 +36,6 @@ public class ProcessingPanel extends AbstractPanel {
 
     private static final StatusPanel statusPanel = new StatusPanel();
     private static final ProcessingControlPanel controlPanel = new ProcessingControlPanel();
-    private static final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final HelpNotesPanel helpNotesPanel = new HelpNotesPanel();
     private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
     private final JSplitPane splitPane1;
@@ -104,12 +102,6 @@ public class ProcessingPanel extends AbstractPanel {
         c.weighty = 0;
         c.insets = new Insets(0, 5, 5, 5);
         add(statusPanel,c);
-
-        // Initialising the progress bar
-        c.gridy++;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(progressBarPanel,c);
 
         revalidate();
         repaint();
@@ -278,13 +270,13 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public int getProgress() {
-        return progressBarPanel.getValue();
+    public double getProgress() {
+        return statusPanel.getValue();
     }
 
     @Override
-    public void setProgress(int progress) {
-        progressBarPanel.setValue(progress);
+    public void setProgress(double progress) {
+        statusPanel.setValue(progress);
         fileListPanel.updatePanel();
     }
 

@@ -1,12 +1,15 @@
 package io.github.mianalysis.mia.gui.regions.extrapanels;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.help.HelpPanel;
@@ -27,11 +30,12 @@ public class ExtraPanel extends JPanel {
     public ExtraPanel() {
         setLayout(new GridBagLayout());
 
+        tabbedPane.setOpaque(false);
         tabbedPane.add("Files", fileListPanel);
         tabbedPane.add("Help", helpPanel);
         tabbedPane.add("Notes", notesPanel);
         tabbedPane.add("Search", searchPanel);
-
+        
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.weighty = 1;

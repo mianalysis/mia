@@ -60,7 +60,7 @@ public class GUI {
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;
-    private static int statusHeight = 10;
+    private static int statusHeight = 16;
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();

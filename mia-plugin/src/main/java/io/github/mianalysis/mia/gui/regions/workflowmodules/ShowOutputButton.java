@@ -57,6 +57,7 @@ public class ShowOutputButton extends JButton implements ActionListener {
 
         state = module.canShowOutput();
 
+        setBorderPainted(false);
         addActionListener(this);
         setFocusPainted(false);
         setSelected(false);

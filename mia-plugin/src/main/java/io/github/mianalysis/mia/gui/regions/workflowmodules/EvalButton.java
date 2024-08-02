@@ -65,6 +65,7 @@ public class EvalButton extends JButton implements ActionListener {
     public EvalButton(Module module) {
         this.module = module;
 
+        setBorderPainted(false);
         setMargin(new Insets(0, 0, 0, 0));
         setFocusPainted(false);
         setSelected(false);

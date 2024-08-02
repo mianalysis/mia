@@ -23,8 +23,8 @@ public abstract class AbstractPanel extends JPanel {
     public abstract int getPreferredHeight();
     public abstract int getMinimumHeight();
 
-    public abstract int getProgress();
-    public abstract void setProgress(int progress);
+    public abstract double getProgress();
+    public abstract void setProgress(double progress);
     public abstract void resetJobNumbers();
 
     public abstract boolean showHelp();

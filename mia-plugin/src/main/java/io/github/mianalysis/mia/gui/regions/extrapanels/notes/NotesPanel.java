@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
@@ -25,7 +24,7 @@ public class NotesPanel extends JPanel {
 
     public NotesPanel() {
         // Initialising the panel
-        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setOpaque(false);
         setLayout(new GridBagLayout());
 
     }

@@ -47,6 +47,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     public ModuleEnabledButton(Module module) {
         this.module = module;
 
+        setBorderPainted(false);
         setFocusPainted(false);
         setSelected(false);
         setMargin(new Insets(0, 0, 0, 0));
