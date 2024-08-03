@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
@@ -178,7 +179,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
                 // }
             } else {
                 moduleName.setOpaque(false);
-                moduleName.setBackground(table.getBackground());
+                moduleName.setBackground(new Color(0,0,0,0));
 
                 // RowItems rowItem = rowItems.get(module);
                 // if (rowItem.getEvalButton() != null) {

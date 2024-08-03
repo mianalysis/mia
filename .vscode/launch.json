@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MenDemo",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.gui.regions.workflowmodules.MenDemo",
+            "projectName": "mia-plugin"
+        },
+        {
+            "type": "java",
             "name": "Test",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.gui.regions.editingpanel.Test",

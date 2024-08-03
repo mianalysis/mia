@@ -41,7 +41,9 @@ public class ModuleName extends JLabel {
 
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
+        try {
         putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
+        } catch (Exception e) {}
         setBorder(new EmptyBorder(2, 5, 0, 0));
         setPreferredSize(new Dimension(200,30));
         setOpaque(false);

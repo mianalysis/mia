@@ -75,7 +75,7 @@ public class EditingPanel extends AbstractPanel {
 
         c.weighty = 1;
         c.gridwidth = 1;
-        c.insets = new Insets(5, 5, 5, 0);
+        c.insets = new Insets(5, 10, 5, 0);
         c.fill = GridBagConstraints.VERTICAL;
         add(new ShadowPanel(editingControlPanel), c);
 
@@ -85,7 +85,7 @@ public class EditingPanel extends AbstractPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridwidth = 5;
         c.gridy++;
-        c.insets = new Insets(0, 5, 5, 5);
+        c.insets = new Insets(0, 10, 5, 5);
         add(new ShadowPanel(statusPanel), c);
 
         c.gridx++;

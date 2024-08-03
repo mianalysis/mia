@@ -85,7 +85,7 @@ public class FlatDropShadowBorderMod
         this.shadowColor = shadowColor;
         this.shadowInsets = shadowInsets;
         this.shadowOpacity = shadowOpacity;
-        this.arc = arc;
+        this.arc = arc/2;
 
         shadowSize = maxInset(shadowInsets);
 
@@ -136,6 +136,7 @@ public class FlatDropShadowBorderMod
     private void paintImpl(Graphics2D g, int x, int y, int width, int height, double scaleFactor) {
         Color shadowColor = (this.shadowColor != null) ? this.shadowColor : g.getColor();
         int shadowSize = scale(this.shadowSize, scaleFactor);
+        int arc = scale(this.arc, scaleFactor);
 
         // create and cache shadow image
         float userScaleFactor = UIScale.getUserScaleFactor();
@@ -195,10 +196,10 @@ public class FlatDropShadowBorderMod
         if (left > 0 && top > 0) {
             g.drawImage(arcShadowImage, x1o, y1o, x1i+arc, y1i+arc,
                     0, 0, arcCenter, arcCenter, null);
-        } else if (left > 0 || top == 0) {
+        } else if (left > 0 && top == 0) {
             g.drawImage(pointShadowImage, x1o, y1o+arc, x1i, y1i+arc,
                     0, 0, pointCenter, pointCenter, null);
-        } else if (left == 0 || top > 0) {
+        } else if (left == 0 && top > 0) {
             g.drawImage(pointShadowImage, x1o+arc, y1o, x1i+arc, y1i,
                     0, 0, pointCenter, pointCenter, null);
         }
@@ -300,7 +301,7 @@ public class FlatDropShadowBorderMod
 
             p = new RadialGradientPaint(center, center,
                     shadowSize - (0.75f * scaleFactor),
-                    new float[] { 0, arcEdge, arcEdge + 0.0000001f, gradientMid, 1 },
+                    new float[] { 0, arcEdge-0.0000001f, arcEdge, gradientMid, 1 },
                     new Color[] { endColor, endColor, startColor, midColor, endColor });
         }
 

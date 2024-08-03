@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
@@ -11,7 +10,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.TreeMap;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -95,7 +93,7 @@ public class GUI {
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
-        frameHeight = Math.max(frameHeight,minimumFrameHeight);
+        frameHeight = Math.max(frameHeight, minimumFrameHeight);
 
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
@@ -115,16 +113,22 @@ public class GUI {
 
         initialiseStatusTextField();
         frame.setTitle("MIA");
-        if( SystemInfo.isMacFullWindowContentSupported ) {
-            frame.getRootPane().putClientProperty( "apple.awt.fullWindowContent", true );
-            frame.getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+            frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
             JPanel titleBar = new JPanel();
             titleBar.setBackground(Colours.getBlue(false));
             titleBar.setPreferredSize(new Dimension(100, 50));
             frame.add(titleBar);
         }
         UIManager.put("TitlePane.background", Colours.getBlue(false));
-        frame.getRootPane().putClientProperty( "apple.awt.windowTitleVisible", false );
+        UIManager.put("PopupMenu.borderCornerRadius", 8);
+        UIManager.put("Popup.borderCornerRadius", 8);
+        UIManager.put("ComboBox.borderCornerRadius", 8);
+        UIManager.put("ToolTip.borderCornerRadius", 8);
+        UIManager.put("Button.arc", 8);
+
+        frame.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));
@@ -531,8 +535,6 @@ public class GUI {
         updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
-
-        
 
     }
 

@@ -9,6 +9,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
@@ -30,7 +32,9 @@ public class ExtraPanel extends JPanel {
     public ExtraPanel() {
         setLayout(new GridBagLayout());
 
-        tabbedPane.setOpaque(false);
+        tabbedPane.putClientProperty( FlatClientProperties.STYLE, "background: #00000000; tabArc: 16; hoverColor: #86d0e6" );
+
+        // tabbedPane.setOpaque(false);
         tabbedPane.add("Files", fileListPanel);
         tabbedPane.add("Help", helpPanel);
         tabbedPane.add("Notes", notesPanel);
