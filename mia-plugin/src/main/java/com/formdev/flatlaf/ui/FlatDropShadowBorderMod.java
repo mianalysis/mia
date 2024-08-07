@@ -54,8 +54,7 @@ public class FlatDropShadowBorderMod
     protected float shadowOpacity;
 
     private int shadowSize;
-    private Image pointShadowImage;
-    private Image arcShadowImage;
+    private Image shadowImage;
     private Color lastShadowColor;
     private float lastShadowOpacity;
     private int lastShadowSize;
@@ -85,7 +84,7 @@ public class FlatDropShadowBorderMod
         this.shadowColor = shadowColor;
         this.shadowInsets = shadowInsets;
         this.shadowOpacity = shadowOpacity;
-        this.arc = arc/2;
+        this.arc = arc / 2;
 
         shadowSize = maxInset(shadowInsets);
 
@@ -138,17 +137,19 @@ public class FlatDropShadowBorderMod
         int shadowSize = scale(this.shadowSize, scaleFactor);
         int arc = scale(this.arc, scaleFactor);
 
+        
+
         // create and cache shadow image
         float userScaleFactor = UIScale.getUserScaleFactor();
-        if (pointShadowImage == null ||
+        if (shadowImage == null ||
                 !shadowColor.equals(lastShadowColor) ||
                 lastShadowOpacity != shadowOpacity ||
                 lastShadowSize != shadowSize ||
                 lastSystemScaleFactor != scaleFactor ||
                 lastUserScaleFactor != userScaleFactor) {
-            pointShadowImage = createShadowImage(shadowColor, shadowSize, shadowOpacity,
-                    (float) (scaleFactor * userScaleFactor), 0);
-            arcShadowImage = createShadowImage(shadowColor, shadowSize, shadowOpacity,
+            // pointShadowImage = createShadowImage(shadowColor, shadowSize, shadowOpacity,
+            // (float) (scaleFactor * userScaleFactor), 0);
+            shadowImage = createShadowImage(shadowColor, shadowSize, shadowOpacity,
                     (float) (scaleFactor * userScaleFactor), arc);
             lastShadowColor = shadowColor;
             lastShadowOpacity = shadowOpacity;
@@ -170,10 +171,10 @@ public class FlatDropShadowBorderMod
          * debug
          */
 
-        int left = Math.max(0,scale(shadowInsets.left, scaleFactor));
-        int right = Math.max(0,scale(shadowInsets.right, scaleFactor));
-        int top = Math.max(0,scale(shadowInsets.top, scaleFactor));
-        int bottom = Math.max(0,scale(shadowInsets.bottom, scaleFactor));
+        int left = Math.max(0, scale(shadowInsets.left, scaleFactor));
+        int right = Math.max(0, scale(shadowInsets.right, scaleFactor));
+        int top = Math.max(0, scale(shadowInsets.top, scaleFactor));
+        int bottom = Math.max(0, scale(shadowInsets.bottom, scaleFactor));
 
         // shadow outer coordinates
         int x1o = x - Math.min(left, 0);
@@ -187,81 +188,79 @@ public class FlatDropShadowBorderMod
         int x2i = x2o - shadowSize;
         int y2i = y2o - shadowSize;
 
-        int pointWh = (shadowSize * 2) - 1;
-        int pointCenter = shadowSize - 1;
-        int arcWh = ((shadowSize + arc) * 2) - 1;
-        int arcCenter = shadowSize + arc - 1;
+        int wh = ((shadowSize + arc) * 2) - 1;
+        int center = shadowSize + arc - 1;
 
         // left-top edge
         if (left > 0 && top > 0) {
-            g.drawImage(arcShadowImage, x1o, y1o, x1i+arc, y1i+arc,
-                    0, 0, arcCenter, arcCenter, null);
+            g.drawImage(shadowImage, x1o, y1o, x1i + arc, y1i + arc,
+                    0, 0, center, center, null);
         } else if (left > 0 && top == 0) {
-            g.drawImage(pointShadowImage, x1o, y1o+arc, x1i, y1i+arc,
-                    0, 0, pointCenter, pointCenter, null);
+            g.drawImage(shadowImage, x1o, y1o, x1i, y1i + arc,
+                    0, 0, center-arc, center, null);
         } else if (left == 0 && top > 0) {
-            g.drawImage(pointShadowImage, x1o+arc, y1o, x1i+arc, y1i,
-                    0, 0, pointCenter, pointCenter, null);
+            g.drawImage(shadowImage, x1o, y1o, x1i + arc, y1i,
+                    0, 0, center, center-arc, null);
         }
 
         // top shadow
         if (top > 0) {
-            g.drawImage(pointShadowImage, x1i + arc, y1o, x2i - arc, y1i,
-                    pointCenter, 0, pointCenter + 1, pointCenter, null);
+            g.drawImage(shadowImage, x1i + arc, y1o, x2i - arc, y1i,
+                    center, 0, center + 1, center-arc, null);
         }
 
         // right-top edge
         if (right > 0 && top > 0) {
-            g.drawImage(arcShadowImage, x2i-arc, y1o, x2o, y1i+arc,
-                    arcCenter, 0, arcWh, arcCenter, null);
+            g.drawImage(shadowImage, x2i - arc, y1o, x2o, y1i + arc,
+                    center, 0, wh, center, null);
         } else if (right > 0 && top == 0) {
-            g.drawImage(pointShadowImage, x2i, y1o+arc, x2o, y1i+arc,
-                    pointCenter, 0, pointWh, pointCenter, null);
+            g.drawImage(shadowImage, x2i, y1o, x2o, y1i + arc,
+                    center+arc, 0, wh, center, null);
         } else if (right == 0 && top > 0) {
-            g.drawImage(pointShadowImage, x2i-arc, y1o, x2o-arc, y1i,
-                    pointCenter, 0, pointWh, pointCenter, null);
+            g.drawImage(shadowImage, x2i - arc, y1o, x2o, y1i,
+                    center, 0, wh, center-arc, null);
         }
 
         // left shadow
         if (left > 0) {
-            g.drawImage(pointShadowImage, x1o, y1i + arc, x1i, y2i - arc,
-                    0, pointCenter, pointCenter, pointCenter + 1, null);
+            g.drawImage(shadowImage, x1o, y1i + arc, x1i, y2i - arc,
+                    0, center, center-arc, center + 1, null);
         }
 
         // right shadow
         if (right > 0) {
-            g.drawImage(pointShadowImage, x2i, y1i + arc, x2o, y2i - arc,
-                    pointCenter, pointCenter, pointWh, pointCenter + 1, null);
+            g.drawImage(shadowImage, x2i, y1i + arc, x2o, y2i - arc,
+                    center + arc, center, wh, center + 1, null);
         }
 
         // left-bottom edge
         if (left > 0 && bottom > 0) {
-            g.drawImage(arcShadowImage, x1o, y2i - arc, x1i + arc, y2o,
-                    0, arcCenter, arcCenter, arcWh, null);
+            g.drawImage(shadowImage, x1o, y2i - arc, x1i + arc, y2o,
+                    0, center, center, wh, null);
         } else if (left > 0 && bottom == 0) {
-            g.drawImage(pointShadowImage, x1o, y2i-arc, x1i, y2o-arc,
-                    0, pointCenter, pointCenter, pointWh, null);
+            g.drawImage(shadowImage, x1o, y2i - arc, x1i, y2o,
+                    0, center, center-arc, wh, null);
         } else if (left == 0 && bottom > 0) {
-            g.drawImage(pointShadowImage, x1o+arc, y2i, x1i+arc, y2o,
-                    0, pointCenter, pointCenter, pointWh, null);
+            g.drawImage(shadowImage, x1o, y2i, x1i + arc, y2o,
+                    0, center+arc, center, wh, null);
         }
 
         // bottom shadow
         if (bottom > 0) {
-            g.drawImage(pointShadowImage, x1i + arc, y2i, x2i - arc, y2o,
-                    pointCenter, pointCenter, pointCenter + 1, pointWh, null);
+            g.drawImage(shadowImage, x1i + arc, y2i, x2i - arc, y2o,
+                    center, center+arc, center + 1, wh, null);
         }
 
         // right-bottom edge
         if (right > 0 && bottom > 0) {
-            g.drawImage(arcShadowImage, x2i - arc, y2i - arc, x2o, y2o,
-                    arcCenter, arcCenter, arcWh, arcWh, null);
+            g.drawImage(shadowImage, x2i - arc, y2i - arc, x2o, y2o,
+                    center, center, wh, wh, null);
         } else if (right > 0 && bottom == 0) {
-            g.drawImage(pointShadowImage, x2i, y2i-arc, x2o, y2o-arc,
-                    pointCenter, pointCenter, pointWh, pointWh, null);
+            g.drawImage(shadowImage, x2i, y2i - arc, x2o, y2o,
+                    center+arc, center, wh, wh, null);
         } else if (right == 0 && bottom > 0) {
-            g.drawImage(pointShadowImage, x2i-arc, y2i, x2o-arc, y2o,
-                    pointCenter, pointCenter, pointWh, pointWh, null);
+            g.drawImage(shadowImage, x2i - arc, y2i, x2o, y2o,
+                    center, center+arc, wh, wh, null);
         }
     }
 
@@ -301,7 +300,7 @@ public class FlatDropShadowBorderMod
 
             p = new RadialGradientPaint(center, center,
                     shadowSize - (0.75f * scaleFactor),
-                    new float[] { 0, arcEdge-0.0000001f, arcEdge, gradientMid, 1 },
+                    new float[] { 0, arcEdge - 0.0000001f, arcEdge, gradientMid, 1 },
                     new Color[] { endColor, endColor, startColor, midColor, endColor });
         }
 

@@ -26,6 +26,8 @@ import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModulePanel;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 public class EditingPanel extends AbstractPanel {
@@ -47,8 +49,9 @@ public class EditingPanel extends AbstractPanel {
     private Module lastHelpNotesModule = null;
 
     public EditingPanel() {
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        setBackground(Colours.getLightGrey(isDark));
         setLayout(new GridBagLayout());
-        setBackground(Colours.getLightGrey(false));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -61,7 +64,12 @@ public class EditingPanel extends AbstractPanel {
             JPanel titleBar = new JPanel();
             titleBar.setOpaque(false);
             titleBar.setPreferredSize(new Dimension(100, 33));
-            titleBar.setBorder(new FlatDropShadowBorder(Color.GRAY, new Insets(0, 0, 5, 0), 1));
+
+            if (isDark)
+                titleBar.setBorder(new FlatDropShadowBorder(new Color(42, 42, 42), new Insets(0, 0, 5, 0), 1));
+            else
+                titleBar.setBorder(new FlatDropShadowBorder(Color.GRAY, new Insets(0, 0, 5, 0), 1));
+
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTH;
             add(titleBar, c);
