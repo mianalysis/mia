@@ -19,7 +19,8 @@ public class InputOutputPanel extends JPanel {
     public InputOutputPanel() {
         // Initialising the panel
         setLayout(new GridBagLayout());
-
+        setOpaque(false);
+        
         validate();
         repaint();
 

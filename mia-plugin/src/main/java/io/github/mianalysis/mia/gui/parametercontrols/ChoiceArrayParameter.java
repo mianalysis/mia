@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
@@ -27,6 +29,7 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
             choices = new String[] { "" };
         choiceControl = new WiderDropDownCombo(choices);
 
+        choiceControl.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         choiceControl.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         choiceControl.setSelectedItem(parameter.getValue(null));
         choiceControl.addActionListener(this);

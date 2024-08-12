@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.search;
+package io.github.mianalysis.mia.gui.regions.extrapanels.search;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
@@ -36,8 +35,8 @@ public class SearchPanel extends JPanel {
 
     public SearchPanel() {
         // Initialising the panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
+        setOpaque(false);
 
         updatePanel();
 
@@ -54,29 +53,6 @@ public class SearchPanel extends JPanel {
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Adding title to help window
-        JLabel helpLabel = new JLabel();
-        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        helpLabel.setText("Module search");
-        add(helpLabel, c);
-
-        // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);
-        c.anchor = GridBagConstraints.EAST;
-        c.weightx = 0;
-        c.gridx++;
-        add(closeButton, c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy++;
-        add(separator, c);
 
         GridBagConstraints c2 = new GridBagConstraints();
         JPanel sPanel = new JPanel(new GridBagLayout());

@@ -1,27 +1,48 @@
 package io.github.mianalysis.mia.gui.regions.progressandstatus;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagLayout;
+
+import javax.swing.JPanel;
+
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.object.system.Colours;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
+public class StatusPanel extends JPanel {
 
-public class StatusPanel extends JLayeredPane {
-//    ImageIcon logo = new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_fade_35.png"),"");
+    private static final long serialVersionUID = -5685268881319325735L;
+    private double value = 0;
 
-    /**
- *
- */
-private static final long serialVersionUID = -5685268881319325735L;
-
-public StatusPanel() {
+    public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
 
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setMinimumSize(new Dimension(1,statusHeight+15));
-        setMaximumSize(new Dimension(1,statusHeight+15));
-        setPreferredSize(new Dimension(1,statusHeight+15));
+        setMinimumSize(new Dimension(1, statusHeight + 15));
+        setMaximumSize(new Dimension(1, statusHeight + 15));
+        setPreferredSize(new Dimension(1, statusHeight + 15));
+
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (value == 100)
+            g.setColor(Colours.getGreen(false));
+        else
+            g.setColor(Colours.getBlue(false));
+        g.fillRect(0, 0, (int) Math.round(getWidth() * value / 100), getHeight());
+
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+
+        repaint();
 
     }
 }

@@ -1,10 +1,14 @@
 package io.github.mianalysis.mia.module.images.transform;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
+import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -12,8 +16,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -36,6 +42,7 @@ import net.imagej.ops.OpService;
 import net.imagej.ops.Ops;
 import net.imagej.ops.special.computer.UnaryComputerOp;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.loops.LoopBuilder;
@@ -89,6 +96,30 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     public ProjectImage(Modules modules) {
         super("Project image", modules);
     }
+
+    // public static void main(String[] args) throws UnsupportedEncodingException {
+    //     String inputPath = "/Users/sc13967/Documents/Programming/Java/mia/mia-modules/src/test/resources/images/noisygradient/NoisyGradient3D_8bit.zip";
+
+    //     // Doing the main part of the test
+    //     // Creating a new workspace
+    //     Workspaces workspaces = new Workspaces();
+    //     Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+    //     // Loading the test image and adding to workspace
+    //     // String inputPath = URLDecoder.decode(ProjectImage.class.getResource(inputName).getPath(), "UTF-8");
+    //     ImagePlus ipl = IJ.openImage(inputPath);
+    //     Image image = ImageFactory.createImage("Test_image", ipl, ImageType.IMAGEPLUS);
+    //     workspace.addImage(image);
+
+    //     Modules modules = new Modules();
+    //     ProjectImage projectImage = new ProjectImage<>(modules);
+    //     projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE, "Test_image");
+    //     modules.add(projectImage);
+
+    //     for (int i =0;i<1000;i++) {
+    //         projectImage.execute(workspace);
+    //     }
+    // }
 
     public interface AxisModes {
         // String X = "X";
@@ -221,7 +252,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         }
 
         DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();
-        ImgPlus<T> proj = new ImgPlus<>(new DiskCachedCellImgFactory(type, options).create(projected_dimensions));
+        DiskCachedCellImg dcImage = new DiskCachedCellImgFactory(type, options).create(projected_dimensions);
+        ImgPlus<T> proj = new ImgPlus<>(dcImage);
 
         // Apply transformation
         UnaryComputerOp mean_op = (UnaryComputerOp) ops.op(getProjection(projectionMode), img);
@@ -244,6 +276,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         Image projectedImage = ImageFactory.createImage(outputImageName, proj);
 
         SetLookupTable.copyLUTFromImage(projectedImage,inputImage);
+        
+        dcImage.shutdown();
         
         return projectedImage;
 
@@ -283,7 +317,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         }
 
         DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>(type);
-        ImgPlus<T> outImg = new ImgPlus<>(factory.create(projected_dimensions));
+        DiskCachedCellImg dcImage = factory.create(projected_dimensions);
+        ImgPlus<T> outImg = new ImgPlus<>(dcImage);
 
         if (projectionMode.equals(ProjectionModes.STDEV))
             LoopBuilder.setImages(outImg).forEachPixel(pixel -> pixel.setReal(0));
@@ -295,6 +330,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
             outImg.setAxis(axes.get(cD), cD);
         // ImagePlus outputImagePlus = ImageJFunctions.wrap(outImg,outputImageName);
         // ImgPlusTools.applyAxes(outImg,outputImagePlus);
+
+        dcImage.shutdown();
 
         return ImageFactory.createImage(outputImageName, outImg);
 

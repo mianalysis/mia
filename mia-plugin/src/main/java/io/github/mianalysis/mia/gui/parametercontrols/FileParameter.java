@@ -11,12 +11,13 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 import io.github.mianalysis.mia.process.system.FileTools.FileTypes;
 
@@ -33,6 +34,7 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
 
         control = new JButton();
 
+        control.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         control.setToolTipText(parameter.getPath());
         control.setText(FilenameUtils.getName(parameter.getPath()));

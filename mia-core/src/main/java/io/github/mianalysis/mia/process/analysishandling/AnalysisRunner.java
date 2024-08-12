@@ -106,7 +106,7 @@ public class AnalysisRunner {
 
         }
 
-        for (Workspace workspace : workspaces)            
+        for (Workspace workspace : workspaces)       
             pool.submit(createRunnable(modules, workspace, exporter, clearMemoryAtEnd));
         
         // Telling the pool not to accept any more jobs and to wait until all queued
@@ -351,6 +351,15 @@ public class AnalysisRunner {
                 workspace.clearAllObjects(true);
 
             }
+
+            // Thread currThread = Thread.currentThread();
+            // System.out.println("Parent "+currThread.getName());
+            // Thread[] group = new Thread[currThread.activeCount()];
+            // currThread.enumerate(group);
+            // for (Thread item:group) {
+            //     item.stop(null);
+            //     System.out.println("    Child "+item.getName());
+            // }
         };
     }
 

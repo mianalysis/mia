@@ -25,6 +25,8 @@ import net.imagej.axis.CalibratedAxis;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.cache.img.DiskCachedCellImg;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -316,6 +318,12 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     public void setImgPlus(ImgPlus img) {
         this.img = img;
+    }
+
+    @Override
+    public void clear() {
+        System.out.println(img.factory());
+        img = null;
     }
 
     @Override

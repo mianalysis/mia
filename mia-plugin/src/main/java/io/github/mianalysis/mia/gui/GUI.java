@@ -12,11 +12,15 @@ import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 
 import com.drew.lang.annotations.Nullable;
+import com.formdev.flatlaf.util.SystemInfo;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
@@ -34,6 +38,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 import io.github.mianalysis.mia.process.logging.ProgressBar;
@@ -60,7 +65,9 @@ public class GUI {
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;
-    private static int statusHeight = 20;
+    private static int statusHeight = 16;
+
+    private static boolean showSidebar = Prefs.get("MIA.showSidebar", true);
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();
@@ -72,6 +79,7 @@ public class GUI {
     private static Modules availableModules = new Modules();
 
     public GUI() throws Exception {
+        MIA.log.writeDebug("From start "+showSidebar+"_"+showSidebar());
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);
@@ -89,7 +97,7 @@ public class GUI {
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
-        frameHeight = Math.max(frameHeight,minimumFrameHeight);
+        frameHeight = Math.max(frameHeight, minimumFrameHeight);
 
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
@@ -109,6 +117,22 @@ public class GUI {
 
         initialiseStatusTextField();
         frame.setTitle("MIA");
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+            frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+            JPanel titleBar = new JPanel();
+            titleBar.setBackground(Colours.getBlue(false));
+            titleBar.setPreferredSize(new Dimension(100, 50));
+            frame.add(titleBar);
+        }
+        UIManager.put("TitlePane.background", Colours.getBlue(false));
+        UIManager.put("PopupMenu.borderCornerRadius", 8);
+        UIManager.put("Popup.borderCornerRadius", 8);
+        UIManager.put("ComboBox.borderCornerRadius", 8);
+        UIManager.put("ToolTip.borderCornerRadius", 8);
+        UIManager.put("Button.arc", 8);
+
+        frame.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));
@@ -189,18 +213,15 @@ public class GUI {
     }
 
     public static void updatePanel() {
-        int preferredWidth = mainPanel.getPreferredWidth();
-        int preferredHeight = mainPanel.getPreferredHeight();
-        frame.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+        if (mainPanel != null) {
+            int preferredWidth = mainPanel.getPreferredWidth();
+            int preferredHeight = mainPanel.getPreferredHeight();
+            frame.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 
-        int minimumWidth = mainPanel.getMinimumWidth();
-        int minimumHeight = mainPanel.getMinimumHeight();
-        frame.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
-
-        menuBar.setHelpSelected(showHelp());
-        menuBar.setNotesSelected(showNotes());
-        menuBar.setFileListSelected(showFileList());
-        menuBar.setSearchSelected(showSearch());
+            int minimumWidth = mainPanel.getMinimumWidth();
+            int minimumHeight = mainPanel.getMinimumHeight();
+            frame.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
+        }
 
         menuBar.update();
 
@@ -227,17 +248,8 @@ public class GUI {
         mainPanel.updateAvailableModules();
     }
 
-    public static void updateHelpNotes() {
-        mainPanel.updateHelpNotes();
-    }
-
-    public static void updateFileList() {
-        mainPanel.updateFileList();
-    }
-
     public static void updateModules(boolean testAnalysis, @Nullable Module startModule) {
         mainPanel.updateModules(testAnalysis, startModule);
-        mainPanel.updateHelpNotes();
 
     }
 
@@ -454,46 +466,19 @@ public class GUI {
 
     }
 
-    public static void setShowHelp(boolean showHelp) {
-        mainPanel.setShowHelp(showHelp);
-
+    public static boolean showSidebar() {
+        return showSidebar;
     }
 
-    public static boolean showHelp() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showHelp();
-    }
+    public static void setShowSidebar(boolean showSidebar) {
+        GUI.showSidebar = showSidebar;
 
-    public static void setShowNotes(boolean showNotes) {
-        mainPanel.setShowNotes(showNotes);
+        menuBar.setShowSidebar(showSidebar);
+        mainPanel.setShowSidebar(showSidebar);
 
-    }
+        Prefs.set("MIA.showSidebar", showSidebar);
+        Prefs.savePreferences();
 
-    public static boolean showNotes() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showNotes();
-    }
-
-    public static void setShowFileList(boolean showFileList) {
-        mainPanel.setShowFileList(showFileList);
-    }
-
-    public static boolean showFileList() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showFileList();
-    }
-
-    public static void setShowSearch(boolean showSearch) {
-        mainPanel.setShowSearch(showSearch);
-    }
-
-    public static boolean showSearch() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showSearch();
     }
 
     public static void resetJobNumbers() {
@@ -529,8 +514,6 @@ public class GUI {
         updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
-
-        
 
     }
 
