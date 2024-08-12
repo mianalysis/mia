@@ -27,14 +27,7 @@ public abstract class AbstractPanel extends JPanel {
     public abstract void setProgress(double progress);
     public abstract void resetJobNumbers();
 
-    public abstract boolean showHelp();
-    public abstract void setShowHelp(boolean showHelp);
-    public abstract boolean showNotes();
-    public abstract void setShowNotes(boolean showNotes);
-    public abstract boolean showFileList();
-    public abstract void setShowFileList(boolean showFileList);
-    public abstract boolean showSearch();
-    public abstract void setShowSearch(boolean showSearch);
+    public abstract void setShowSidebar(boolean showSidebar);
     
     public abstract Module getLastHelpNotesModule();
     public abstract void setLastHelpNotesModule(Module module);

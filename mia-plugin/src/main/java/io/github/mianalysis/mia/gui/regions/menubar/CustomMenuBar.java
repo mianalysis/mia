@@ -46,6 +46,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuItem outputAllModules = new MenuItem(MenuItem.OUTPUT_ALL);
     private static MenuItem silenceAllModules = new MenuItem(MenuItem.SILENCE_ALL);
 
+    private static SidebarMenuCheckbox sidebarMenuCheckbox = new SidebarMenuCheckbox();
+
     private static MenuItem undo = new MenuItem(MenuItem.UNDO);
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
 
@@ -92,6 +94,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
             viewMenu.add(new MenuItem(MenuItem.PROCESSING_VIEW));
         else
             viewMenu.add(new MenuItem(MenuItem.EDITING_VIEW));
+        viewMenu.add(sidebarMenuCheckbox);
 
         // Creating the help menu
         add(helpMenu);
@@ -167,6 +170,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     public void setUndoRedoStatus(UndoRedoStore undoRedoStatus) {
         undo.setEnabled(undoRedoStatus.getUndoSize() != 0);
         redo.setEnabled(undoRedoStatus.getRedoSize() != 0);
+    }
+
+    public void setShowSidebar(boolean showSidebar) {
+        sidebarMenuCheckbox.setSelected(showSidebar);
     }
 
     @Override

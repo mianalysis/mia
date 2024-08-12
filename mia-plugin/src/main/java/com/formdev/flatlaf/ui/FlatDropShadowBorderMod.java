@@ -147,8 +147,6 @@ public class FlatDropShadowBorderMod
                 lastShadowSize != shadowSize ||
                 lastSystemScaleFactor != scaleFactor ||
                 lastUserScaleFactor != userScaleFactor) {
-            // pointShadowImage = createShadowImage(shadowColor, shadowSize, shadowOpacity,
-            // (float) (scaleFactor * userScaleFactor), 0);
             shadowImage = createShadowImage(shadowColor, shadowSize, shadowOpacity,
                     (float) (scaleFactor * userScaleFactor), arc);
             lastShadowColor = shadowColor;

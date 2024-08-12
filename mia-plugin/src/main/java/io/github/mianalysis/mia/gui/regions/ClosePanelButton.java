@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.extrapanels.ExtraPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.help.HelpPanel;
 import io.github.mianalysis.mia.gui.regions.extrapanels.notes.NotesPanel;
@@ -41,13 +42,7 @@ public class ClosePanelButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (panel instanceof HelpPanel)
-            GUI.setShowHelp(false);
-        else if (panel instanceof NotesPanel)
-            GUI.setShowNotes(false);
-        else if (panel instanceof FileListPanel)
-            GUI.setShowFileList(false);
-        else if (panel instanceof SearchPanel)
-            GUI.setShowSearch(false);
+        if (panel instanceof ExtraPanel)
+            GUI.setShowSidebar(false);
     }
 }

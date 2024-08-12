@@ -20,6 +20,7 @@ import javax.swing.UIManager;
 import com.drew.lang.annotations.Nullable;
 import com.formdev.flatlaf.util.SystemInfo;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
@@ -66,6 +67,8 @@ public class GUI {
     private static int moduleButtonWidth = 295;
     private static int statusHeight = 16;
 
+    private static boolean showSidebar = Prefs.get("MIA.showSidebar", true);
+
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();
     private static CustomMenuBar menuBar = new CustomMenuBar();
@@ -76,6 +79,7 @@ public class GUI {
     private static Modules availableModules = new Modules();
 
     public GUI() throws Exception {
+        MIA.log.writeDebug("From start "+showSidebar+"_"+showSidebar());
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);
@@ -209,13 +213,15 @@ public class GUI {
     }
 
     public static void updatePanel() {
-        int preferredWidth = mainPanel.getPreferredWidth();
-        int preferredHeight = mainPanel.getPreferredHeight();
-        frame.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+        if (mainPanel != null) {
+            int preferredWidth = mainPanel.getPreferredWidth();
+            int preferredHeight = mainPanel.getPreferredHeight();
+            frame.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 
-        int minimumWidth = mainPanel.getMinimumWidth();
-        int minimumHeight = mainPanel.getMinimumHeight();
-        frame.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
+            int minimumWidth = mainPanel.getMinimumWidth();
+            int minimumHeight = mainPanel.getMinimumHeight();
+            frame.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
+        }
 
         menuBar.update();
 
@@ -460,46 +466,19 @@ public class GUI {
 
     }
 
-    public static void setShowHelp(boolean showHelp) {
-        mainPanel.setShowHelp(showHelp);
-
+    public static boolean showSidebar() {
+        return showSidebar;
     }
 
-    public static boolean showHelp() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showHelp();
-    }
+    public static void setShowSidebar(boolean showSidebar) {
+        GUI.showSidebar = showSidebar;
 
-    public static void setShowNotes(boolean showNotes) {
-        mainPanel.setShowNotes(showNotes);
+        menuBar.setShowSidebar(showSidebar);
+        mainPanel.setShowSidebar(showSidebar);
 
-    }
+        Prefs.set("MIA.showSidebar", showSidebar);
+        Prefs.savePreferences();
 
-    public static boolean showNotes() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showNotes();
-    }
-
-    public static void setShowFileList(boolean showFileList) {
-        mainPanel.setShowFileList(showFileList);
-    }
-
-    public static boolean showFileList() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showFileList();
-    }
-
-    public static void setShowSearch(boolean showSearch) {
-        mainPanel.setShowSearch(showSearch);
-    }
-
-    public static boolean showSearch() {
-        if (mainPanel == null)
-            return false;
-        return mainPanel.showSearch();
     }
 
     public static void resetJobNumbers() {

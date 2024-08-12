@@ -20,7 +20,7 @@ public class ShadowPanel extends JPanel {
         if (isDark)
             component.setBackground(new Color(255, 255, 255, 32));
         else
-            component.setBackground(new Color(255, 255, 255, 128));
+            component.setBackground(new Color(255, 255, 255, 220));
 
         component.setOpaque(false);
         component.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
