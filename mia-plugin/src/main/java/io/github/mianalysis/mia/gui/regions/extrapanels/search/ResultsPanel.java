@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.process.ModuleSearcher.SearchMatch;
 public class ResultsPanel extends JPanel {
     public ResultsPanel() {
         setLayout(new GridBagLayout());
+        setOpaque(false);
 
     }
 

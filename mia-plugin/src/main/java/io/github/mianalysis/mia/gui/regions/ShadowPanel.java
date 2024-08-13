@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.gui.regions;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Insets;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -26,9 +25,9 @@ public class ShadowPanel extends JPanel {
         component.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
 
         if (isDark)
-            setBorder(new FlatDropShadowBorderMod(new Color(48, 48, 48), 8, 1, 16));
+            setBorder(new FlatDropShadowBorderMod(new Color(48, 48, 48), 6, 1, 16));
         else
-            setBorder(new FlatDropShadowBorderMod(Color.GRAY, 8, 1, 16));
+            setBorder(new FlatDropShadowBorderMod(Color.GRAY, 6, 1, 16));
         setOpaque(false);
 
         setLayout(new BorderLayout());

@@ -113,11 +113,13 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setOpaque(false);
+        scrollPane.setBackground(new Color(0,0,0,0));
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setOpaque(false);
 
         c.gridy++;
         c.weightx = 1;

@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.extrapanels.search;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -18,13 +17,16 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.process.ModuleSearcher;
 import io.github.mianalysis.mia.process.ModuleSearcher.SearchMatch;
 
 public class SearchPanel extends JPanel {
-    private final static int minimumWidth = 300;
+    private final static int minimumWidth = 200;
+    private final static int preferredWidth = 300;
 
     private final ModuleSearcher searcher = new ModuleSearcher(GUI.getAvailableModules());
 
@@ -36,6 +38,8 @@ public class SearchPanel extends JPanel {
     public SearchPanel() {
         // Initialising the panel
         setLayout(new GridBagLayout());
+        setMinimumSize(new Dimension(minimumWidth, 1));
+        setPreferredSize(new Dimension(preferredWidth, 1));
         setOpaque(false);
 
         updatePanel();
@@ -52,10 +56,11 @@ public class SearchPanel extends JPanel {
         c.weightx = 1;
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
 
         GridBagConstraints c2 = new GridBagConstraints();
         JPanel sPanel = new JPanel(new GridBagLayout());
+        sPanel.setOpaque(false);
 
         queryEntry = new JTextField();
         queryEntry.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -63,6 +68,7 @@ public class SearchPanel extends JPanel {
         queryEntry.setMinimumSize(new Dimension(0, 26));
         queryEntry.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
         queryEntry.addKeyListener(new EnterKeyListener());
+        queryEntry.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         c2.gridx = 0;
         c2.gridy = 0;
         c2.weightx = 1;
@@ -92,8 +98,8 @@ public class SearchPanel extends JPanel {
         sPanel.add(parameterDescriptionCheckBox, c2);
 
         JSeparator separator2 = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.gridy++;
+        c2.anchor = GridBagConstraints.WEST;
+        c2.gridy++;
         sPanel.add(separator2, c2);
 
         resultsPanel = new ResultsPanel();
@@ -103,12 +109,13 @@ public class SearchPanel extends JPanel {
         sPanel.add(resultsPanel, c2);
 
         JScrollPane scrollPane = new JScrollPane(sPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        scrollPane.setBackground(Color.CYAN);
         scrollPane.setBorder(null);
         scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setOpaque(false);
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
@@ -169,7 +176,6 @@ public class SearchPanel extends JPanel {
                 + "Click a module title to<br>see help about it" + "<br><br>"
                 + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");
         usageMessage.setEditable(false);
-        usageMessage.setBackground(null);
         usageMessage.setOpaque(false);
         c.weighty = 1;
         c.gridy++;
