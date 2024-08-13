@@ -11,8 +11,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JToggleButton;
 
-import com.formdev.flatlaf.FlatClientProperties;
-
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
@@ -35,8 +33,6 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     // CONSTRUCTOR
 
     public ModuleButton(Module module) {
-        putClientProperty( FlatClientProperties.STYLE, "arc: 12" );
-
         this.module = module;
         defaultColour = getForeground();
         setFocusPainted(false);

@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.processingpanel;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
+import javax.swing.border.EtchedBorder;
 
 import com.drew.lang.annotations.Nullable;
 
@@ -27,51 +27,42 @@ import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
-public class ProcessingControlPanel extends JPanel {
+public class ProcessingControlPanel extends JScrollPane {
     /**
      *
      */
     private static final long serialVersionUID = 7620575044877199413L;
     private static GUISeparator loadSeparator;
-    private JScrollPane scrollPane;
     private JPanel panel;
 
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 400;
 
     public ProcessingControlPanel() {
-        setLayout(new BorderLayout(0,0));
-        
         panel = new JPanel();
-        panel.setOpaque(false);
-
-        scrollPane = new JScrollPane(panel);
-        scrollPane.setViewportView(panel);   
+        setViewportView(panel);
 
         loadSeparator = new GUISeparator(GUI.getModules());
 
         // Initialising the scroll panel
-        scrollPane.setOpaque(false);
-        scrollPane.setMinimumSize(new Dimension(minimumWidth, 1));
-        scrollPane.setPreferredSize(new Dimension(preferredWidth, 1));
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        setMinimumSize(new Dimension(minimumWidth, 1));
+        setPreferredSize(new Dimension(preferredWidth, 1));
+        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setViewportBorder(BorderFactory.createEmptyBorder());
+        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        getVerticalScrollBar().setUnitIncrement(10);
 
         // Initialising the panel for module buttons
         panel.setLayout(new GridBagLayout());
         panel.validate();
         panel.repaint();
 
-        scrollPane.validate();
-        scrollPane.repaint();
+        validate();
+        repaint();
 
         loadSeparator.setNickname("File selection");
 
-        add(panel,BorderLayout.CENTER);
-        
     }
 
     public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
@@ -179,8 +170,8 @@ public class ProcessingControlPanel extends JPanel {
         panel.revalidate();
         panel.repaint();
 
-        scrollPane.revalidate();
-        scrollPane.repaint();
+        revalidate();
+        repaint();
 
     }
 

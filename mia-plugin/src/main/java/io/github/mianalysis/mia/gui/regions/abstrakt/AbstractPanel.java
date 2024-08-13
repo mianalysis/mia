@@ -17,17 +17,27 @@ public abstract class AbstractPanel extends JPanel {
     public abstract void updateModules(boolean testAnalysis, @Nullable Module startModule);
     public abstract void updateModuleStates();
     public abstract void updateParameters(boolean testAnalysis, @Nullable Module startModule);
+    public abstract void updateHelpNotes();
+    public abstract void updateFileList();
+    public abstract void updateSearch();
 
     public abstract int getPreferredWidth();
     public abstract int getMinimumWidth();
     public abstract int getPreferredHeight();
     public abstract int getMinimumHeight();
 
-    public abstract double getProgress();
-    public abstract void setProgress(double progress);
+    public abstract int getProgress();
+    public abstract void setProgress(int progress);
     public abstract void resetJobNumbers();
 
-    public abstract void setShowSidebar(boolean showSidebar);
+    public abstract boolean showHelp();
+    public abstract void setShowHelp(boolean showHelp);
+    public abstract boolean showNotes();
+    public abstract void setShowNotes(boolean showNotes);
+    public abstract boolean showFileList();
+    public abstract void setShowFileList(boolean showFileList);
+    public abstract boolean showSearch();
+    public abstract void setShowSearch(boolean showSearch);
     
     public abstract Module getLastHelpNotesModule();
     public abstract void setLastHelpNotesModule(Module module);

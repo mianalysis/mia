@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,8 +11,6 @@ import java.util.LinkedHashMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-
-import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -39,7 +36,7 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
 
         control = new JPanel();
         control.setLayout(new GridBagLayout());
-        
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -52,15 +49,11 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
         removeButton = new JButton(REMOVE);
         removeButton.addActionListener(this);
         removeButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        removeButton.setPreferredSize(new Dimension(0, 26));
-        removeButton.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         control.add(removeButton, c);
 
         moveUpButton = new JButton(MOVE_UP);
         moveUpButton.addActionListener(this);
         moveUpButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        moveUpButton.setPreferredSize(new Dimension(0, 26));
-        moveUpButton.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         c.gridx++;
         c.insets = new Insets(0, 5, 0, 0);
         control.add(moveUpButton, c);
@@ -68,8 +61,6 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
         moveDownButton = new JButton(MOVE_DOWN);
         moveDownButton.addActionListener(this);
         moveDownButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        moveDownButton.setPreferredSize(new Dimension(0, 26));
-        moveDownButton.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         c.gridx++;
         c.insets = new Insets(0, 5, 0, 0);
         control.add(moveDownButton, c);

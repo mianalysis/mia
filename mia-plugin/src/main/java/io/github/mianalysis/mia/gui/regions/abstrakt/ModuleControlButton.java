@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPopupMenu;
 
-import com.formdev.flatlaf.FlatClientProperties;
-
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 
@@ -32,7 +30,6 @@ public class ModuleControlButton extends JButton implements ActionListener {
     public ModuleControlButton(String command, int buttonSize, JPopupMenu moduleListMenu) {
         this.moduleListMenu = moduleListMenu;
 
-        putClientProperty( FlatClientProperties.STYLE, "arc: 12" );
         setText(command);
         addActionListener(this);
         setMargin(new Insets(0,0,0,0));

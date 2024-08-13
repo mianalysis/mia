@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.extrapanels.notes;
+package io.github.mianalysis.mia.gui.regions.helpandnotes;
 
 import java.awt.Font;
 import java.awt.event.FocusEvent;

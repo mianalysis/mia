@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
-import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,8 +8,7 @@ import java.util.LinkedHashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import com.formdev.flatlaf.FlatClientProperties;
-
+import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.macro.MacroHandler;
@@ -67,10 +65,6 @@ public class EvalButton extends JButton implements ActionListener {
     public EvalButton(Module module) {
         this.module = module;
 
-        putClientProperty( FlatClientProperties.STYLE, "arc: 0" );
-        setBorderPainted(false);
-        setOpaque(false);
-        setBackground(new Color(0,0,0,0));
         setMargin(new Insets(0, 0, 0, 0));
         setFocusPainted(false);
         setSelected(false);

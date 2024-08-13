@@ -29,7 +29,6 @@ public class MessageArea extends ParameterControl {
         control.setLayout(new GridBagLayout());
         control.setBorder(BorderFactory.createEmptyBorder());
         control.setBackground(null);
-        control.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
@@ -44,7 +43,6 @@ public class MessageArea extends ParameterControl {
         textArea.setForeground(SwingParameterControlFactory.getColor(parameter.getState(),isDark));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setOpaque(false);
         textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
         textArea.setBorder(BorderFactory.createEmptyBorder());
 
@@ -56,8 +54,6 @@ public class MessageArea extends ParameterControl {
         objectsScrollPane.getVerticalScrollBar().setValue(0);
         objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         objectsScrollPane.setBorder(BorderFactory.createEmptyBorder());
-        objectsScrollPane.setOpaque(false);
-        objectsScrollPane.getViewport().setOpaque(false);
         control.add(objectsScrollPane,c);
 
 

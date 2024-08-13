@@ -3,9 +3,6 @@ package io.github.mianalysis.mia.gui.regions.abstrakt;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 
 import javax.swing.*;
-
-import com.formdev.flatlaf.FlatClientProperties;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +22,6 @@ public class AnalysisControlButton extends JButton implements ActionListener {
 
 
     public AnalysisControlButton(String command, int buttonSize) {
-        putClientProperty( FlatClientProperties.STYLE, "arc: 12" );
         addActionListener(this);
         setFocusPainted(false);
         setMargin(new Insets(0,0,0,0));

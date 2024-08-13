@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
-import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,9 +44,6 @@ public class SeparatorButton extends JButton implements ActionListener {
         addActionListener(this);
         setFocusPainted(false);
         setSelected(false);
-        setBorderPainted(false);
-        setOpaque(false);
-        setBackground(new Color(0, 0, 0, 0));
         setMargin(new Insets(0, 0, 0, 0));
         setName("Show output");
         setToolTipText("Show output from module");
@@ -87,8 +83,9 @@ public class SeparatorButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).flipBoolean();
 
-        GUI.updateModules(false, null);
-        GUI.updateParameters(false, null);
+        GUI.updateModules(false,null);
+        GUI.updateParameters(false,null);
+        GUI.updateHelpNotes();
         GUI.addUndo();
 
     }
