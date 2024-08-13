@@ -41,6 +41,8 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     public abstract ImageRenderer getRenderer();
 
+    public abstract void clear();
+
     public abstract void setRenderer(ImageRenderer imageRenderer);
 
     public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite);

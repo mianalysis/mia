@@ -110,13 +110,18 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
             int minZ = (int) Math.round(extents[2][0]);
             int maxZ = (int) Math.round(extents[2][1]);
             Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1",
-                    (minZ + 1) + "-" + (maxZ + 1), "1");
+                    (minZ + 1) + "-" + (maxZ + 1), String.valueOf(t+1));
 
             // Getting mask image
             Image maskImage = object.getAsTightImage("Mask");
 
             double giniCoeff = MeasureGiniCoefficient.calculateGiniCoefficient(subsImage, maskImage);
             object.addMeasurement(new Measurement(measurementName,giniCoeff));
+
+            // Clearing unused images
+            cropImage.clear();
+            subsImage.clear();
+            maskImage.clear();
 
             writeProgressStatus(++count, total, "objects");
 
