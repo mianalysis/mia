@@ -8,10 +8,8 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
@@ -56,7 +54,7 @@ public class EditingControlPanel extends JPanel {
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
         setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight - 350));
 
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));        
         setLayout(new GridBagLayout());
 
         // Add module button

@@ -1,27 +1,30 @@
 package io.github.mianalysis.mia.gui.regions.editingpanel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import com.drew.lang.annotations.Nullable;
+import com.formdev.flatlaf.ui.FlatDropShadowBorder;
+import com.formdev.flatlaf.util.SystemInfo;
 
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.ShadowPanel;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
-import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
-import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpNotesPanel;
+import io.github.mianalysis.mia.gui.regions.extrapanels.ExtraPanel;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
-import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
-import io.github.mianalysis.mia.gui.regions.search.SearchPanel;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModulePanel;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 public class EditingPanel extends AbstractPanel {
@@ -30,110 +33,91 @@ public class EditingPanel extends AbstractPanel {
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
     private final EditingControlPanel editingControlPanel = new EditingControlPanel();
-    private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final ModulePanel modulesPanel = new ModulePanel();
     private final ParametersPanel parametersPanel = new ParametersPanel();
-    private final HelpNotesPanel helpNotesPanel = new HelpNotesPanel();
+    private final ExtraPanel extraPanel = new ExtraPanel();
+    private final ShadowPanel shadowExtraPanel = new ShadowPanel(extraPanel);
     private final StatusPanel statusPanel = new StatusPanel();
-    private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
-    private final SearchPanel searchPanel = new SearchPanel();
-    private final JSplitPane splitPane1;
-    private final JSplitPane splitPane2;
-    private final JSplitPane splitPane3;
+    private final JSplitPane splitPane;
 
-    private boolean showHelp = Prefs.get("MIA.showEditingHelp", false);
-    private boolean showNotes = Prefs.get("MIA.showEditingNotes", false);
-    private boolean showFileList = Prefs.get("MIA.showEditingFileList", false);
-    private boolean showSearch = Prefs.get("MIA.showEditingSearch", false);
     private Module lastHelpNotesModule = null;
 
     public EditingPanel() {
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        setBackground(Colours.getLightGrey(isDark));
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 0);
         c.gridx = 0;
         c.gridy = 0;
-
-        // Creating buttons to add and remove modules
         c.weightx = 0;
+        c.weighty = 0;
+        c.gridwidth = 5;
+
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            JPanel titleBar = new JPanel();
+            titleBar.setOpaque(false);
+            titleBar.setPreferredSize(new Dimension(100, 33));
+
+            if (isDark)
+                titleBar.setBorder(new FlatDropShadowBorder(new Color(42, 42, 42), new Insets(0, 0, 5, 0), 1));
+            else
+                titleBar.setBorder(new FlatDropShadowBorder(Color.GRAY, new Insets(0, 0, 5, 0), 1));
+
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.NORTH;
+            add(titleBar, c);
+
+            JPanel titleBarColour = new JPanel();
+            titleBarColour.setBackground(Colours.getLightBlue(false));
+            titleBarColour.setPreferredSize(new Dimension(100, 28));
+            add(titleBarColour, c);
+            c.gridy++;
+
+        }
+
         c.weighty = 1;
+        c.gridwidth = 1;
+        c.insets = new Insets(5, 10, 5, 0);
         c.fill = GridBagConstraints.VERTICAL;
-        add(editingControlPanel, c);
+        add(new ShadowPanel(editingControlPanel), c);
 
         // Initialising the status panel
-        c.gridy++;
-        c.weighty = 0;
         c.weightx = 1;
+        c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 4;
-        c.insets = new Insets(0, 5, 5, 5);
-        add(statusPanel, c);
-
-        // Initialising the progress bar
+        c.gridwidth = 5;
         c.gridy++;
-        c.insets = new Insets(0, 5, 5, 5);
-        add(progressBarPanel, c);
-
-        splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, modulesPanel, searchPanel);
-        splitPane3.setPreferredSize(new Dimension(ModulePanel.getMinimumWidth(), Integer.MAX_VALUE));
-        splitPane3.setBorder(null);
-        splitPane3.setDividerSize(5);
-        splitPane3.setDividerLocation(0.5);
-        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane3.getUI();
-        splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
+        c.insets = new Insets(0, 10, 5, 5);
+        add(new ShadowPanel(statusPanel), c);
 
         c.gridx++;
-        c.gridy = 0;
-        c.weightx = 0;
+        c.gridy = 1;
         c.gridwidth = 1;
+        c.weightx = 0;
+        c.fill = GridBagConstraints.VERTICAL;
         c.insets = new Insets(5, 5, 5, 0);
-        add(splitPane3, c);
+        modulesPanel.setOpaque(false);
+        add(new ShadowPanel(modulesPanel), c);
 
-        // // Initialising the modules panel
-        // c.gridx++;
-        // c.gridy = 0;
-        // c.weightx = 0;
-        // c.gridwidth = 1;
-        // c.insets = new Insets(5, 5, 5, 0);
-        // add(searchPanel, c);
-
-        // // Initialising the modules panel
-        // c.gridx++;
-        // add(modulesPanel, c);
-
-        // Initialising the parameters panel
-        updateFileList();
-        updateHelpNotes();
-        updateSearch();
-
-        splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileListPanel, helpNotesPanel);
-        splitPane1.setPreferredSize(new Dimension(1, 1));
-        splitPane1.setBorder(null);
-        splitPane1.setDividerSize(5);
-        splitPane1.setDividerLocation(0.5);
-        splitPaneUI = (BasicSplitPaneUI) splitPane1.getUI();
-        splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
-
-        splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, parametersPanel, splitPane1);
-        splitPane2.setPreferredSize(new Dimension(1, 1));
-        splitPane2.setBorder(null);
-        splitPane2.setDividerSize(5);
-        splitPane2.setDividerLocation(0.5);
-        splitPaneUI = (BasicSplitPaneUI) splitPane2.getUI();
-        splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new ShadowPanel(parametersPanel),
+                shadowExtraPanel);
+        splitPane.setPreferredSize(new Dimension(1, 1));
+        splitPane.setDividerSize(5);
+        splitPane.setDividerLocation(0.5);
+        splitPane.setOpaque(false);
+        splitPane.putClientProperty("JSplitPane.expandableSide", "left");
 
         c.gridx++;
-        c.gridy = 0;
+        c.gridy = 1;
         c.gridwidth = 1;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 5, 5, 5);
-        add(splitPane2, c);
+        add(splitPane, c);
 
-        updateSeparators();
-        helpNotesPanel.updateSeparator();
+        setShowSidebar(GUI.showSidebar());
 
     }
 
@@ -141,68 +125,23 @@ public class EditingPanel extends AbstractPanel {
     public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         c.weightx = 1;
         c.weighty = 1;
-        c.insets = new Insets(0, 5, 0, 0);
+        c.insets = new Insets(0, 10, 0, 0);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.BOTH;
 
         statusPanel.add(GUI.getTextField(), c);
 
+        extraPanel.setShowSearch(true);
+        setShowSidebar(GUI.showSidebar());
         updateModules(testAnalysis, startModule);
         updateParameters(testAnalysis, startModule);
-
-        updateHelpNotes();
-        updateFileList();
-        updateSearch();
 
         revalidate();
         repaint();
 
-    }
-
-    void updateSeparators() {
-        if (showSearch) {
-            splitPane3.setDividerSize(5);
-            splitPane3.getTopComponent().setVisible(true);
-            splitPane3.getBottomComponent().setVisible(true);
-            splitPane3.setDividerLocation(0.5);
-        } else {
-            splitPane3.setDividerSize(0);
-            splitPane3.getBottomComponent().setVisible(false);
-        }
-
-        splitPane1.getLeftComponent().setVisible(showFileList);
-        splitPane1.getRightComponent().setVisible(showHelp || showNotes);
-
-        // If both helpnotes and filelist are visible, show the separator for splitPane1
-        int pane1MinWidth = 0;
-        if ((showHelp || showNotes) && showFileList) {
-            splitPane1.setDividerSize(5);
-            splitPane1.setDividerLocation(0.5);
-            pane1MinWidth = HelpNotesPanel.getMinimumWidth() + FileListPanel.getMinimumWidth();
-        } else {
-            splitPane1.setDividerSize(0);
-            if (showHelp || showNotes)
-                pane1MinWidth = HelpNotesPanel.getMinimumWidth();
-            else
-                pane1MinWidth = FileListPanel.getMinimumWidth();
-        }
-        splitPane1.setMinimumSize(new Dimension(pane1MinWidth, 1));
-
-        // If either the helpnotes or filelist is visible, show the separator for
-        // splitPane2
-        if (showHelp || showNotes || showFileList) {
-            splitPane2.setDividerSize(5);
-            splitPane2.getRightComponent().setVisible(true);
-            splitPane2.setDividerLocation(0.5);
-            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth() + pane1MinWidth, 1));
-        } else {
-            splitPane2.setDividerSize(0);
-            splitPane2.getRightComponent().setVisible(false);
-            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth(), 1));
-        }
     }
 
     @Override
@@ -210,12 +149,8 @@ public class EditingPanel extends AbstractPanel {
         int currentWidth = EditingControlPanel.getMinimumWidth() + ModulePanel.getMinimumWidth()
                 + ParametersPanel.getPreferredWidth();
 
-        // if (showSearch)
-        //     currentWidth = currentWidth + SearchPanel.getMinimumWidth(); // Fixed width
-        if (showHelp || showNotes)
-            currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
-        if (showFileList)
-            currentWidth = currentWidth + FileListPanel.getPreferredWidth();
+        if (GUI.showSidebar())
+            currentWidth = currentWidth + ExtraPanel.getPreferredWidth();
 
         return currentWidth;
 
@@ -226,12 +161,8 @@ public class EditingPanel extends AbstractPanel {
         int currentWidth = EditingControlPanel.getMinimumWidth() + ModulePanel.getMinimumWidth()
                 + ParametersPanel.getMinimumWidth();
 
-        // if (showSearch)
-        //     currentWidth = currentWidth + SearchPanel.getMinimumWidth();
-        if (showHelp || showNotes)
-            currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth();
-        if (showFileList)
-            currentWidth = currentWidth + FileListPanel.getMinimumWidth();
+        if (GUI.showSidebar())
+            currentWidth = currentWidth + ExtraPanel.getMinimumWidth();
 
         return currentWidth;
 
@@ -248,19 +179,19 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public int getProgress() {
-        return progressBarPanel.getValue();
+    public double getProgress() {
+        return statusPanel.getValue();
     }
 
     @Override
-    public void setProgress(int progress) {
-        progressBarPanel.setValue(progress);
-        fileListPanel.updatePanel();
+    public void setProgress(double progress) {
+        statusPanel.setValue(progress);
+        extraPanel.getFileListPanel().updatePanel();
     }
 
     @Override
     public void resetJobNumbers() {
-        fileListPanel.resetJobNumbers();
+        extraPanel.getFileListPanel().resetJobNumbers();
     }
 
     @Override
@@ -271,7 +202,7 @@ public class EditingPanel extends AbstractPanel {
     @Override
     public void updateModules(boolean testAnalysis, @Nullable Module startModule) {
         if (testAnalysis)
-            AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace(),startModule);
+            AnalysisTester.testModules(GUI.getModules(), GUI.getTestWorkspace(), startModule);
 
         modulesPanel.updatePanel();
 
@@ -289,94 +220,14 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateHelpNotes() {
-        helpNotesPanel.showHelp(showHelp);
-        helpNotesPanel.showNotes(showNotes);
-        helpNotesPanel.setVisible(showHelp || showNotes);
-        helpNotesPanel.updatePanel(GUI.getFirstSelectedModule(), lastHelpNotesModule);
-    }
+    public void setShowSidebar(boolean showSidebar) {
+        shadowExtraPanel.setVisible(showSidebar);
+        if (showSidebar)
+            splitPane.setDividerSize(5);
+        else
+            splitPane.setDividerSize(0);
 
-    @Override
-    public void updateFileList() {
-        fileListPanel.setVisible(showFileList);
-        fileListPanel.updatePanel();
-    }
-
-    @Override
-    public void updateSearch() {
-        searchPanel.setVisible(showSearch);
-        searchPanel.updatePanel();
-    }
-
-    @Override
-    public boolean showHelp() {
-        return showHelp;
-    }
-
-    @Override
-    public void setShowHelp(boolean showHelp) {
-        this.showHelp = showHelp;
-        Prefs.set("MIA.showEditingHelp", showHelp);
-        Prefs.savePreferences();
-
-        helpNotesPanel.showHelp(showHelp);
         GUI.updatePanel();
-
-        updateSeparators();
-
-    }
-
-    @Override
-    public boolean showNotes() {
-        return showNotes;
-    }
-
-    @Override
-    public void setShowNotes(boolean showNotes) {
-        this.showNotes = showNotes;
-        Prefs.set("MIA.showEditingNotes", showNotes);
-        Prefs.savePreferences();
-
-        helpNotesPanel.showNotes(showNotes);
-        GUI.updatePanel();
-
-        updateSeparators();
-
-    }
-
-    @Override
-    public boolean showFileList() {
-        return showFileList;
-    }
-
-    @Override
-    public void setShowFileList(boolean showFileList) {
-        this.showFileList = showFileList;
-        Prefs.set("MIA.showEditingFileList", showFileList);
-        Prefs.savePreferences();
-
-        fileListPanel.setVisible(showFileList);
-        GUI.updatePanel();
-
-        updateSeparators();
-
-    }
-
-    @Override
-    public boolean showSearch() {
-        return showSearch;
-    }
-
-    @Override
-    public void setShowSearch(boolean showSearch) {
-        this.showSearch = showSearch;
-        Prefs.set("MIA.showEditingSearch", showSearch);
-        Prefs.savePreferences();
-
-        searchPanel.setVisible(showSearch);
-        GUI.updatePanel();
-
-        updateSeparators();
 
     }
 

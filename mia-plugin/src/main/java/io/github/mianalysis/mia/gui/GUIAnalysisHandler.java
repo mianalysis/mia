@@ -43,7 +43,6 @@ public class GUIAnalysisHandler {
         GUI.setModules(modules);
         GUI.updateModules(false, null);
         GUI.updateParameters(false, null);
-        GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
         GUI.getUndoRedoStore().reset();
 
@@ -62,14 +61,11 @@ public class GUIAnalysisHandler {
             return;
 
         GUI.setModules(newModules);
-        GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
-        // new Thread(() -> {
-        // GUI.updateTestFile(true);
         GUI.updateModules(true, null);
         GUI.updateParameters(false, null);
         GUI.getUndoRedoStore().reset();
-        // }).start();
+
     }
 
     public static void saveModules() {
@@ -165,7 +161,6 @@ public class GUIAnalysisHandler {
         GUI.setSelectedModules(null);
         GUI.updateModules(true,null);
         GUI.updateParameters(false, null);
-        GUI.updateHelpNotes();
 
     }
 

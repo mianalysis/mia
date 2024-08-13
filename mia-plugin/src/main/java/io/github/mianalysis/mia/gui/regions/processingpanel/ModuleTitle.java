@@ -34,7 +34,6 @@ public class ModuleTitle extends JLabel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         GUI.setSelectedModules(new Module[] { module });
-        GUI.updateHelpNotes();
 
     }
 

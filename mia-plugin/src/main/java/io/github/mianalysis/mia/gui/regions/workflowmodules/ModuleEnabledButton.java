@@ -7,12 +7,15 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
+import java.awt.Color;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -47,8 +50,12 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     public ModuleEnabledButton(Module module) {
         this.module = module;
 
+        putClientProperty( FlatClientProperties.STYLE, "arc: 0" );
+        setBorderPainted(false);
         setFocusPainted(false);
         setSelected(false);
+        setOpaque(false);
+        setBackground(new Color(0,0,0,0));
         setMargin(new Insets(0, 0, 0, 0));
         setName("ModuleEnabled");
         setToolTipText("Enable/disable module");

@@ -1,8 +1,8 @@
-package io.github.mianalysis.mia.gui.regions.filelist;
+package io.github.mianalysis.mia.gui.regions.extrapanels.filelist;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -19,9 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -31,7 +29,6 @@ import javax.swing.table.TableRowSorter;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -68,7 +65,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         // Initialising the scroll panel
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setBackground(new Color(0,0,0,0));
+        setOpaque(false);
         setMinimumSize(new Dimension(minimumWidth, 1));
         setPreferredSize(new Dimension(preferredWidth, 1));
 
@@ -81,29 +79,6 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Adding title to help window
-        JLabel fileListLabel = new JLabel();
-        fileListLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        fileListLabel.setText("File list");
-        add(fileListLabel, c);
-
-        // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);
-        c.anchor = GridBagConstraints.EAST;
-        c.weightx = 0;
-        c.gridx++;
-        add(closeButton, c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy++;
-        add(separator, c);
-
         model.setColumnCount(5);
         model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });
 
@@ -114,7 +89,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setDragEnabled(false);
         table.setBorder(BorderFactory.createEmptyBorder());
         table.setAutoCreateRowSorter(true);
-        table.setBackground(null);
+        table.setOpaque(false);
+        table.setBackground(new Color(0,0,0,0));
         table.setDefaultEditor(Object.class, null);
 
         TableColumnModel columnModel = table.getColumnModel();
@@ -136,6 +112,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         showColumn(COL_SERIESNUMBER, false);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setOpaque(false);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);

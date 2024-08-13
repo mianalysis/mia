@@ -26,7 +26,7 @@ public class SearchForModuleItem extends JMenuItem implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        GUI.setShowSearch(true);
+        GUI.setShowSidebar(true);
         GUI.updatePanel();
 
     }

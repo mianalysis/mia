@@ -46,12 +46,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuItem outputAllModules = new MenuItem(MenuItem.OUTPUT_ALL);
     private static MenuItem silenceAllModules = new MenuItem(MenuItem.SILENCE_ALL);
 
+    private static SidebarMenuCheckbox sidebarMenuCheckbox = new SidebarMenuCheckbox();
+
     private static MenuItem undo = new MenuItem(MenuItem.UNDO);
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
-    private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);
-    private static MenuCheckbox notesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_NOTES);
-    private static MenuCheckbox fileListCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_FILE_LIST);
-    private static MenuCheckbox searchCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_SEARCH);
 
     public CustomMenuBar() {
         // Creating the file menu
@@ -96,15 +94,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
             viewMenu.add(new MenuItem(MenuItem.PROCESSING_VIEW));
         else
             viewMenu.add(new MenuItem(MenuItem.EDITING_VIEW));
-
-        helpCheckbox.setSelected(GUI.showHelp());
-        viewMenu.add(helpCheckbox);
-        notesCheckbox.setSelected(GUI.showNotes());
-        viewMenu.add(notesCheckbox);
-        fileListCheckbox.setSelected(GUI.showFileList());
-        viewMenu.add(fileListCheckbox);
-        searchCheckbox.setSelected(GUI.showSearch());
-        viewMenu.add(searchCheckbox);
+        viewMenu.add(sidebarMenuCheckbox);
 
         // Creating the help menu
         add(helpMenu);
@@ -175,31 +165,15 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         outputAllModules.setVisible(!GUI.isProcessingGUI());
         silenceAllModules.setVisible(!GUI.isProcessingGUI());
 
-        searchCheckbox.setVisible(!GUI.isProcessingGUI());
-    }
-
-    public void setHelpSelected(Boolean showHelp) {
-        helpCheckbox.setSelected(showHelp);
-
-    }
-
-    public void setFileListSelected(boolean showFileList) {
-        fileListCheckbox.setSelected(showFileList);
-    }
-
-    public void setNotesSelected(Boolean showNotes) {
-        notesCheckbox.setSelected(showNotes);
-
-    }
-
-    public void setSearchSelected(Boolean showSearch) {
-        searchCheckbox.setSelected(showSearch);
-
     }
 
     public void setUndoRedoStatus(UndoRedoStore undoRedoStatus) {
         undo.setEnabled(undoRedoStatus.getUndoSize() != 0);
         redo.setEnabled(undoRedoStatus.getRedoSize() != 0);
+    }
+
+    public void setShowSidebar(boolean showSidebar) {
+        sidebarMenuCheckbox.setSelected(showSidebar);
     }
 
     @Override
