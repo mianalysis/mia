@@ -55,8 +55,6 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.batik.ext.swing.GridBagConstants;
-
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
@@ -66,7 +64,6 @@ import ij.ImageStack;
 import ij.Prefs;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
-import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.gui.TextRoi;
@@ -365,8 +362,8 @@ public class ObjectSelector implements ActionListener, KeyListener {
         c.insets = new Insets(0, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 1;
-        c.anchor = GridBagConstants.WEST;
-        c.fill = GridBagConstants.HORIZONTAL;
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridwidth = 1;
 
         overlayMode = new JComboBox<>(OverlayModes.ALL);
