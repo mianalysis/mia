@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.object;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -9,6 +10,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -251,7 +253,8 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         int count = 0;
         for (Obj object : values()) {
             object.addToImage(image, hues.get(object.getID()));
-            Module.writeProgressStatus(++count, size(), "objects", "Object collection");
+            if (verbose)
+                Module.writeProgressStatus(++count, size(), "objects", "Object collection");
         }            
 
         // Assigning the spatial cal from the cal
@@ -272,6 +275,24 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(LUTs.Random(true));
+        dispIpl.setPosition(1, 1, 1);
+        dispIpl.updateChannelAndDraw();
+
+        return dispImage;
+
+    }
+
+    public Image convertToImageBinary() {
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(this,ColourFactory.SingleColours.WHITE);
+        Image dispImage = convertToImage(name, hues, 8, false);
+
+        if (dispImage == null)
+            return null;
+        if (dispImage.getImagePlus() == null)
+            return null;
+
+        ImagePlus dispIpl = dispImage.getImagePlus();
+        dispIpl.setLut(LUT.createLutFromColor(Color.WHITE));
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
 
