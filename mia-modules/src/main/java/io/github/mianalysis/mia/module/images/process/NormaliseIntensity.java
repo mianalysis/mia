@@ -328,11 +328,11 @@ public class NormaliseIntensity extends Module {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.showImage(outputImageName, LUT.createLutFromColor(Color.WHITE), false, true);
+                outputImage.show(outputImageName, LUT.createLutFromColor(Color.WHITE), false, true);
 
         } else {
             if (showOutput)
-                inputImage.showImage(inputImageName, LUT.createLutFromColor(Color.WHITE), false, true);
+                inputImage.show(inputImageName, LUT.createLutFromColor(Color.WHITE), false, true);
 
         }
 

@@ -79,7 +79,6 @@ public class GUI {
     private static Modules availableModules = new Modules();
 
     public GUI() throws Exception {
-        MIA.log.writeDebug("From start "+showSidebar+"_"+showSidebar());
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);
