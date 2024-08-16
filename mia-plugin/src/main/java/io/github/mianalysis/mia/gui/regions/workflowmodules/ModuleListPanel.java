@@ -91,14 +91,12 @@ public class ModuleListPanel extends JScrollPane {
                 continue;
 
             int top = c.gridy == 0 ? 5 : 0;
-            c.gridx = 0;
-            c.insets = new Insets(top, 5, 0, 0);
 
             ModuleEnabledButton enabledButton = new ModuleEnabledButton(module);
             enabledButton.setPreferredSize(new Dimension(26, 26));
+            c.gridx = 0;
+            c.insets = new Insets(top, 10, 0, 0);                        
             moduleListPanel.add(enabledButton, c);
-            c.gridx++;
-            c.insets = new Insets(top, 0, 0, 0);
 
             SeparatorButton separatorButton = null;
             ShowOutputButton showOutputButton = null;
@@ -108,23 +106,29 @@ public class ModuleListPanel extends JScrollPane {
             if (module instanceof GUISeparator) {
                 separatorButton = new SeparatorButton(module, true);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
+                c.gridx++;
+                c.insets = new Insets(top, 0, 0, 0);
                 moduleListPanel.add(separatorButton, c);
-                c.gridx++;
-                c.gridx++;
-
+                
                 separatorButton = new SeparatorButton(module, false);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
+                c.gridx++;
+                c.gridx++;
+                c.insets = new Insets(top, 0, 0, 10);
                 moduleListPanel.add(separatorButton, c);
 
             } else {
                 showOutputButton = new ShowOutputButton(module);
                 showOutputButton.setPreferredSize(new Dimension(26, 26));
+                c.gridx++;
+                c.insets = new Insets(top, 0, 0, 0);                
                 moduleListPanel.add(showOutputButton, c);
-                c.gridx++;
-                c.gridx++;
 
                 evalButton = new EvalButton(module);
                 evalButton.setPreferredSize(new Dimension(26, 26));
+                c.gridx++;
+                c.gridx++;
+                c.insets = new Insets(top, 0, 0, 10);
                 moduleListPanel.add(evalButton, c);
 
             }

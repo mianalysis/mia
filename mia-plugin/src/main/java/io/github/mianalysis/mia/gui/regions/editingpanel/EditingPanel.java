@@ -13,7 +13,6 @@ import com.drew.lang.annotations.Nullable;
 import com.formdev.flatlaf.ui.FlatDropShadowBorder;
 import com.formdev.flatlaf.util.SystemInfo;
 
-import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ShadowPanel;

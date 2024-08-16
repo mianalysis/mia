@@ -42,10 +42,12 @@ public class ModuleName extends JLabel {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         try {
-        putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
-        } catch (Exception e) {}
+            putClientProperty(FlatClientProperties.STYLE, "arc: 16");
+        } catch (Exception e) {
+        }
         setBorder(new EmptyBorder(2, 5, 0, 0));
-        setPreferredSize(new Dimension(200,30));
+        setPreferredSize(new Dimension(200, 30));
+        setBackground(new Color(0, 0, 0, 0));
         setOpaque(false);
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
         if (module.isDeprecated()) {
@@ -60,10 +62,10 @@ public class ModuleName extends JLabel {
         setText(module.getNickname());
         updateState();
 
-        if (isSelected)
-            setBackground(Colours.getLightBlue(isDark));
-        else
-            setBackground(table.getBackground());
+        // if (isSelected)
+        //     setBackground(Colours.getLightBlue(isDark));
+        // else
+        //     setBackground(table.getBackground());
 
     }
 
@@ -100,14 +102,14 @@ public class ModuleName extends JLabel {
                 setIcon(skipIconDM);
             else
                 setIcon(skipIcon);
-                status = "Skipped";
+            status = "Skipped";
         } else if (module.isEnabled() & !module.isRunnable()) {
             setForeground(Colours.getRed(isDark));
             if (isDark)
                 setIcon(warningIconDM);
             else
                 setIcon(warningIcon);
-                status = "Error";
+            status = "Error";
         } else {
             setForeground(Color.GRAY);
             status = "Disabled";

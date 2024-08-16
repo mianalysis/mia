@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
@@ -89,7 +88,7 @@ public class ParametersPanel extends JPanel {
         c.weightx = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 20, 0);
+        c.insets = new Insets(10, 10, 20, 0);
         c.anchor = GridBagConstraints.WEST;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
@@ -109,7 +108,7 @@ public class ParametersPanel extends JPanel {
         // If the active module hasn't got parameters enabled, skip it
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridwidth = 1;
-        c.insets = new Insets(2, 5, 0, 0);
+        c.insets = new Insets(2, 10, 0, 0);
         if (module.updateAndGetParameters() != null) {
             for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
@@ -204,7 +203,7 @@ public class ParametersPanel extends JPanel {
         ComponentFactory componentFactory = GUI.getComponentFactory();
         Module activeModule = GUI.getFirstSelectedModule();
 
-        c.insets = new Insets(2, 5, 0, 0);
+        c.insets = new Insets(2, 10, 0, 10);
         c.gridx = 0;
         c.gridy++;
         c.weightx = 1;

@@ -48,7 +48,7 @@ public class EditingControlPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(10, 10, 0, 10);
         c.anchor = GridBagConstraints.PAGE_START;
 
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
@@ -107,7 +107,7 @@ public class EditingControlPanel extends JPanel {
         AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,
                 bigButtonSize);
         c.gridy++;
-        c.insets = new Insets(5, 5, 5, 5);
+        c.insets = new Insets(5, 10, 10, 10);
         add(stopAnalysisButton, c);
 
         validate();
