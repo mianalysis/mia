@@ -70,6 +70,7 @@ public class EditingPanel extends AbstractPanel {
             JPanel titleBarColour = new JPanel();
             titleBarColour.setBackground(Colours.getLightBlue(false));
             titleBarColour.setPreferredSize(new Dimension(100, 28));
+            titleBarColour.setMinimumSize(new Dimension(100, 28));
             add(titleBarColour, c);
             c.gridy++;
 

@@ -33,7 +33,7 @@ public class ModuleListPanel extends JScrollPane {
         // Initialising the scroll panel
         setViewportBorder(BorderFactory.createEmptyBorder());
         setBorder(new EmptyBorder(0, 0, 0, 0));
-        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
         setOpaque(false);

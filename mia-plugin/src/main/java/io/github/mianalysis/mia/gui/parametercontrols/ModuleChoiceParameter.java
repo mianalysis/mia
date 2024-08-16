@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -26,7 +27,7 @@ import io.github.mianalysis.mia.object.system.SwingPreferences;
  * Created by sc13967 on 22/05/2017.
  */
 public class ModuleChoiceParameter extends ParameterControl implements ActionListener {
-    private WiderDropDownCombo control;
+    private JComboBox control;
 
     public ModuleChoiceParameter(ModuleP parameter) {
         super(parameter);
@@ -34,13 +35,12 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         // Choices may have not been initialised when this first runs, so a blank list
         // is created
         Module[] choices = parameter.getModules();
-        control = new WiderDropDownCombo(choices);
+        control = new JComboBox(choices);
 
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         control.setSelectedItem(parameter.getSelectedModuleID());
         control.addActionListener(this);
-        control.setWide(true);
-
+        
         control.setRenderer(new ModuleListRenderer(control.getRenderer()));
 
     }
