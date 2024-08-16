@@ -431,7 +431,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
 
         ObjectSelector objectSelector = new ObjectSelector(inputImagePlus, outputObjectsName, messageOnImage,
-                instructionText, volumeTypeString, pointMode, outputTrackObjectsName, classSelector,false);
+                instructionText, volumeTypeString, pointMode, outputTrackObjectsName, classSelector);
 
         // Loading existing objects
         if (addExistingObjects) {
@@ -439,14 +439,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             if (!applyExistingClass)
                 metadataForClass = null;
 
-            if (inputObjects != null) {
+            if (inputObjects != null)
                 objectSelector.addObjects(inputObjects, metadataForClass);
-                objectSelector.updateOverlay();
-            }
         }
-
-        objectSelector.setVisible(true);
-        
 
         // All the while the control is open, do nothing
         while (objectSelector.isActive())

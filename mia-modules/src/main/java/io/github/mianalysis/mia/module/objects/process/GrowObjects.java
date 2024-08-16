@@ -5,8 +5,6 @@ import java.util.HashMap;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import com.drew.lang.annotations.Nullable;
-
 import ij.ImagePlus;
 import inra.ijpb.watershed.Watershed;
 import io.github.mianalysis.mia.module.Categories;
@@ -42,84 +40,73 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
 /**
 * 
 */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GrowObjects extends Module {
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
-    /**
-     * 
-     */
-    public static final String OBJECT_OUTPUT_MODE = "Output object mode";
-
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    /**
-    * 
-    */
+
+	/**
+	* 
+	*/
     public static final String GROWTH_SEPARATOR = "Growth controls";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String STARTING_OBJECT_MODE = "Starting object mode";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String GROWTH_MODE = "Growth mode";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String INTENSITY_IMAGE = "Intensity image";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String MASK_OUTPUT_OBJECTS = "Mask output objects";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String MASK_IMAGE = "Mask image";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String CONNECTIVITY = "Connectivity";
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String EXCLUDE_INPUT_REGIONS = "Exclude input regions";
-
-    public interface OutputModes {
-        String CREATE_NEW_OBJECT = "Create new objects";
-        String UPDATE_INPUT = "Update input objects";
-
-        String[] ALL = new String[] { CREATE_NEW_OBJECT, UPDATE_INPUT };
-
-    }
 
     public interface StartingObjectModes {
         String CENTROIDS = "Centroids";
@@ -151,75 +138,10 @@ public class GrowObjects extends Module {
     public String getVersionNumber() {
         return "1.0.0";
     }
-
+    
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_PROCESS;
-    }
-
-    public static Objs process(Objs inputObjects, @Nullable String outputObjectsName, String startingObjectsMode,
-            String growthMode, @Nullable String intensityImageName, @Nullable String maskImageName,
-            boolean blackBackground, int connectivity, boolean excludeInputRegions, Workspace workspace) {
-        Objs outputObjects = outputObjectsName == null ? null : new Objs(outputObjectsName, inputObjects);
-
-        // Loop over timepoints
-        int nFrames = inputObjects.getNFrames();
-        for (int frame = 0; frame < nFrames; frame++) {
-            // Get objects in this frame
-            Objs currObjs = inputObjects.getObjectsInFrame("This frame", frame);
-
-            // Get marker, intensity and mask images
-            Image markerImage = getMarkerImage(currObjs, startingObjectsMode);
-            Image intensityImage = getIntensityImage(inputObjects, frame, growthMode, intensityImageName, workspace);
-            Image maskImage = getMaskImage(inputObjects, frame, maskImageName, blackBackground,
-                    workspace);
-
-            // Apply watershed transform
-            ImagePlus segmentedIpl;
-            if (maskImage == null)
-                segmentedIpl = Watershed.computeWatershed(intensityImage.getImagePlus(),
-                        markerImage.getImagePlus(), connectivity, true, false);
-            else
-                segmentedIpl = Watershed.computeWatershed(intensityImage.getImagePlus(),
-                        markerImage.getImagePlus(), maskImage.getImagePlus(), connectivity, true, false);
-
-            Image segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
-
-            // Get objects and create new object collection
-            Objs segmentedObjects = segmentedImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
-
-            // Update timepoint, set relationships, (optionally) apply mask and add objects
-            // to output collection
-            for (Obj segmentedObject : segmentedObjects.values()) {
-                segmentedObject.setT(frame);
-
-                Point<Integer> coord = segmentedObject.getCoordinateIterator().next();
-                int ID = (int) Math.round(segmentedIpl.getStack().getProcessor(coord.z + 1).getf(coord.x, coord.y));
-                Obj inputObject = inputObjects.get(ID);
-
-                if (excludeInputRegions)
-                    for (Point<Integer> point : inputObject.getCoordinateSet())
-                        segmentedObject.getCoordinateSet().remove(point);
-
-                if (outputObjects == null) {
-                    inputObject.getCoordinateSet().clear();
-                    inputObject.setCoordinateSet(segmentedObject.getCoordinateSet());
-                    inputObject.clearSurface();
-                    inputObject.clearCentroid();
-                    inputObject.clearProjected();
-                    inputObject.clearROIs();
-                } else {
-                    segmentedObject.setID(ID);
-                    outputObjects.add(segmentedObject);
-                    segmentedObject.setObjectCollection(outputObjects);
-                    inputObject.addChild(segmentedObject);
-                    segmentedObject.addParent(inputObject);
-                }
-            }
-        }
-
-        return outputObjects;
-
     }
 
     public static Image getMarkerImage(Objs objects, String startingObjectsMode) {
@@ -234,14 +156,13 @@ public class GrowObjects extends Module {
         }
     }
 
-    public static Image getIntensityImage(Objs objects, int frame, String growthMode,
-            @Nullable String intensityImageName,
-            Workspace workspace) {
+    public static Image getIntensityImage(String growthMode, String intensityImageName, Workspace workspace, int frame,
+            Objs objects) {
         switch (growthMode) {
             case GrowthModes.EQUIDISTANT_FROM_OBJECTS:
             default:
                 // No intensity image, so creating blank (black) image
-                Image intensityImage = objects.convertToImageBinary();
+                Image intensityImage = objects.convertToImageRandomColours();
                 ImageMath.process(intensityImage, ImageMath.CalculationModes.MULTIPLY, 0);
                 return intensityImage;
             case GrowthModes.FROM_IMAGE:
@@ -251,27 +172,32 @@ public class GrowObjects extends Module {
         }
     }
 
-    public static Image getMaskImage(Objs objects, int frame, @Nullable String maskImageName, boolean blackBackground,
-            Workspace workspace) {
-        if (maskImageName != null) {
+    public static Image getMaskImage(boolean maskOutputObjects, String maskImageName, Workspace workspace,
+            boolean blackBackground, int frame, Objs objects) {
+        Image maskImage;
+
+        if (maskOutputObjects) {
             Image fullMaskImage = workspace.getImage(maskImageName);
-            Image maskImage = ExtractSubstack.extractSubstack(fullMaskImage, maskImageName, "1", "1-end",
+            maskImage = ExtractSubstack.extractSubstack(fullMaskImage, maskImageName, "1", "1-end",
                     String.valueOf(frame + 1));
 
             if (!blackBackground)
                 InvertIntensity.process(maskImage);
 
-            return maskImage;
-
         } else {
-            return null;
+            // No mask image, so creating blank (white) image
+            maskImage = objects.convertToImageIDColours();
+            ImageTypeConverter.process(maskImage, 8, ImageTypeConverter.ScalingModes.CLIP);
+            ImageMath.process(maskImage, ImageMath.CalculationModes.ADD, 255);
         }
+
+        return maskImage;
+
     }
 
     @Override
     public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        String outputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         String startingObjectMode = parameters.getValue(STARTING_OBJECT_MODE, workspace);
         String growthMode = parameters.getValue(GROWTH_MODE, workspace);
@@ -284,24 +210,55 @@ public class GrowObjects extends Module {
         boolean excludeInputRegions = parameters.getValue(EXCLUDE_INPUT_REGIONS, workspace);
 
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
-        if (outputMode.equals(OutputModes.UPDATE_INPUT))
-            outputObjectsName = null;
+        workspace.addObjects(outputObjects);
 
-        if (!maskOutputObjects)
-            maskImageName = null;
+        // Loop over timepoints
+        int nFrames = inputObjects.getNFrames();
+        for (int frame = 0; frame < nFrames; frame++) {
+            // Get objects in this frame
+            Objs currObjs = inputObjects.getObjectsInFrame("This frame", frame);
 
-        Objs outputObjects = process(inputObjects, outputObjectsName, startingObjectMode, growthMode,
-                intensityImageName, maskImageName, blackBackground, connectivity, excludeInputRegions, workspace);
+            // Get marker, intensity and mask images
+            Image markerImage = getMarkerImage(currObjs, startingObjectMode);
+            Image intensityImage = getIntensityImage(growthMode, intensityImageName, workspace, frame, currObjs);
+            Image maskImage = getMaskImage(maskOutputObjects, maskImageName, workspace, blackBackground, frame,
+                    currObjs);
 
-        if (outputObjects == null) {
-            if (showOutput)
-                inputObjects.convertToImageIDColours().show();
-        } else {
-            workspace.addObjects(outputObjects);
-            if (showOutput)
-                outputObjects.convertToImageIDColours().show();
+            // Apply watershed transform
+            ImagePlus segmentedIpl = Watershed.computeWatershed(intensityImage.getImagePlus(),
+                    markerImage.getImagePlus(), maskImage.getImagePlus(), connectivity, true, false);
+            Image segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
+
+            // Get objects and create new object collection
+            Objs segmentedObjects = segmentedImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+
+            // Update timepoint, set relationships, (optionally) apply mask and add objects to output collection
+            for (Obj segmentedObject:segmentedObjects.values()) {
+                segmentedObject.setT(frame);
+                
+                // Updating ID number to match parent
+                Point<Integer> coord = segmentedObject.getCoordinateIterator().next();
+                int ID = (int) Math.round(segmentedIpl.getStack().getProcessor(coord.z+1).getf(coord.x, coord.y));
+                segmentedObject.setID(ID);
+                
+                Obj inputObject = inputObjects.get(ID);
+                segmentedObject.addParent(inputObject);
+                inputObject.addChild(segmentedObject);
+
+                if (excludeInputRegions)
+                    for (Point<Integer> point:inputObject.getCoordinateSet())
+                        segmentedObject.getCoordinateSet().remove(point);
+
+                outputObjects.add(segmentedObject);
+
+            }
         }
+
+        // Showing objects
+        if (showOutput)
+            outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 
@@ -311,7 +268,6 @@ public class GrowObjects extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(GROWTH_SEPARATOR, this));
@@ -334,12 +290,7 @@ public class GrowObjects extends Module {
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, null)) {
-            case OutputModes.CREATE_NEW_OBJECT:
-                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-                break;
-        }
+        returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.get(GROWTH_SEPARATOR));
         returnedParameters.add(parameters.get(STARTING_OBJECT_MODE));
@@ -375,8 +326,8 @@ public class GrowObjects extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-        return null;
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override
@@ -389,14 +340,8 @@ public class GrowObjects extends Module {
         Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)) {
-            case OutputModes.CREATE_NEW_OBJECT:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
-                returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
-
-                break;
-        }
+        returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS, workspace),
+                parameters.getValue(OUTPUT_OBJECTS, workspace)));
 
         return returnedRelationships;
 

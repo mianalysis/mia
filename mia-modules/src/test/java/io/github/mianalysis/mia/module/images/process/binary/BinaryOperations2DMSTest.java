@@ -191,6 +191,10 @@ public class BinaryOperations2DMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
+            // new ImageJ();
+            // expectedImage.showImage();
+            // outputImage.showImage();
+            // IJ.runMacro("waitForUser");
             assertEquals(expectedImage, outputImage);
 
         }

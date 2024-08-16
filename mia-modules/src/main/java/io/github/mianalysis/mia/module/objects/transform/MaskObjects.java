@@ -6,8 +6,6 @@ import java.util.Iterator;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import com.drew.lang.annotations.Nullable;
-
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -42,81 +40,57 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 
+
 /**
- * Applies the mask image to the specified object collection. Any object
- * coordinates coincident with black pixels (intensity 0) will be removed.
- */
+* Applies the mask image to the specified object collection.  Any object coordinates coincident with black pixels (intensity 0) will be removed.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
-    /**
-    * 
-    */
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
 
-    /**
-     * Objects to be masked.
-     */
+	/**
+	* Objects to be masked.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
-    /**
-     * Controls how the masked objects will be stored:<br>
-     * <ul>
-     * <li>"Create new objects" (Default) Will add the masked objects to a new
-     * object set and store this set in the workspace.</li>
-     * <li>"Update input objects" Will replace the coordinates of the input object
-     * with the masked coordinates. All measurements associated with input objects
-     * will be transferred to the masked objects.</li>
-     * </ul>
-     */
+	/**
+	* Controls how the masked objects will be stored:<br><ul><li>"Create new objects" (Default) Will add the masked objects to a new object set and store this set in the workspace.</li><li>"Update input objects" Will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li></ul>
+	*/
     public static final String OBJECT_OUTPUT_MODE = "Output object mode";
 
-    /**
-     * Name for the output masked objects to be stored in workspace.
-     */
+	/**
+	* Name for the output masked objects to be stored in workspace.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    /**
-    * 
-    */
+
+	/**
+	* 
+	*/
     public static final String MASK_SEPARATOR = "Mask options";
 
-    /**
-     * Controls whether the input objects will be masked by an image or an object
-     * collection:<br>
-     * <ul>
-     * <li>"Mask from image" (Default) Input objects will be masked based on the
-     * image specified by "Mask image". Any object regions coincident with black
-     * pixels (0 pixel intensity) will be removed.</li>
-     * <li>"Mask from objects (remove overlap)" Input objects will be masked based
-     * on all objects of the collection specified by "Mask objects". Any object
-     * regions coincident with any objects in the masking collection will be
-     * removed. The masking objects will be unaffected by this process.</li>
-     * <li>"Mask from objects (retain overlap)" Input objects will be masked based
-     * on all objects of the collection specified by "Mask objects". Any object
-     * regions not coincident with any objects in the masking collection will be
-     * removed. The masking objects will be unaffected by this process.</li>
-     * </ul>
-     */
+	/**
+	* Controls whether the input objects will be masked by an image or an object collection:<br><ul><li>"Mask from image" (Default) Input objects will be masked based on the image specified by "Mask image".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.</li><li>"Mask from objects (remove overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.</li><li>"Mask from objects (retain overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.</li></ul>
+	*/
     public static final String MASK_MODE = "Mask mode";
 
-    /**
-     * Object collection to use as mask on input objects. Depending on which
-     * object-masking mode is selected, the input objects will either have
-     * coordinates coincident with these objects removed or retained.
-     */
+	/**
+	* Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.
+	*/
     public static final String MASK_OBJECTS = "Mask objects";
 
-    /**
-     * Image to use as mask on input objects. Object coordinates coincident with
-     * black pixels (pixel intensity = 0) are removed.
-     */
+	/**
+	* Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.
+	*/
     public static final String MASK_IMAGE = "Mask image";
 
-    /**
-     * When selected, any objects which have no volume following masking will be
-     * removed.
-     */
+	/**
+	* When selected, any objects which have no volume following masking will be removed.
+	*/
     public static final String REMOVE_EMPTY_OBJECTS = "Remove empty objects";
 
     public interface MaskModes {
@@ -137,55 +111,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static Objs maskObjects(Objs inputObjects, Image maskImage, @Nullable String outputObjectsName,
-            boolean removeEmptyObjects, boolean verbose) {
-        String moduleName = new MaskObjects<>(null).getName();
-        String outputMode = outputObjectsName == null ? OutputModes.UPDATE_INPUT : OutputModes.CREATE_NEW_OBJECT;
-        Objs outputObjects = outputObjectsName == null ? null : new Objs(outputObjectsName, inputObjects);
-
-        // Iterating over all objects
-        int count = 1;
-        int total = inputObjects.size();
-
-        for (Obj inputObject : inputObjects.values()) {
-            Obj outputObject = maskObject(inputObject, maskImage, outputObjectsName);
-
-            switch (outputMode) {
-                case OutputModes.CREATE_NEW_OBJECT:
-                    outputObjects.add(outputObject);
-                    outputObject.setObjectCollection(outputObjects);
-                    inputObject.addChild(outputObject);
-                    outputObject.addParent(inputObject);
-                    break;
-                case OutputModes.UPDATE_INPUT:
-                    inputObject.getCoordinateSet().clear();
-                    inputObject.setCoordinateSet(outputObject.getCoordinateSet());
-                    inputObject.clearSurface();
-                    inputObject.clearCentroid();
-                    inputObject.clearProjected();
-                    inputObject.clearROIs();
-                    break;
-            }
-
-            if (verbose)
-                writeProgressStatus(count++, total, "objects", moduleName);
-
-        }
-
-        // Removing any objects which now have no volume
-        if (removeEmptyObjects) {
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext())
-                if (iterator.next().getCoordinateSet().size() == 0)
-                    iterator.remove();
-        }
-
-        return outputObjects;
-
-    }
-
-    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage,
-            String maskObjectsName) {
+    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage, String maskObjectsName) {
         Objs tempObjects = new Objs(maskObjectsName, inputObject.getObjectCollection());
 
         // Creating the mask object
@@ -252,20 +178,16 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        // Getting parameters
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);        
+        // Getting input objects
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
+
+        // Getting mask image/objects
         String maskMode = parameters.getValue(MASK_MODE, workspace);
         String maskObjectsName = parameters.getValue(MASK_OBJECTS, workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
         boolean removeEmptyObjects = parameters.getValue(REMOVE_EMPTY_OBJECTS, workspace);
-        String outputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-
-        if (outputMode.equals(OutputModes.UPDATE_INPUT))
-            outputObjectsName = null;
-            
         // If masking by objects, converting mask objects to an image
         Image<T> maskImage;
         switch (maskMode) {
@@ -288,20 +210,63 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
-        Objs outputObjects = maskObjects(inputObjects, maskImage, outputObjectsName, removeEmptyObjects,
-                removeEmptyObjects);
+        // Getting other parameters
+        String outputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
+        // If necessary, creating an output object collection
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
                 workspace.addObjects(outputObjects);
-                if (showOutput)
-                    outputObjects.convertToImageIDColours().show();
                 break;
+        }
 
-            case OutputModes.UPDATE_INPUT:
-                if (showOutput)
+        // Iterating over all objects
+        int count = 1;
+        int total = inputObjects.size();
+
+        for (Obj inputObject : inputObjects.values()) {
+            Obj maskedObject = maskObject(inputObject, maskImage, maskObjectsName);
+
+            switch (outputMode) {
+                case OutputModes.CREATE_NEW_OBJECT:
+                    outputObjects.add(maskedObject);
+                    maskedObject.setObjectCollection(outputObjects);
+                    inputObject.addChild(maskedObject);
+                    maskedObject.addParent(inputObject);
+                    break;
+                case OutputModes.UPDATE_INPUT:
+                    inputObject.getCoordinateSet().clear();
+                    inputObject.setCoordinateSet(maskedObject.getCoordinateSet());
+                    inputObject.clearSurface();
+                    inputObject.clearCentroid();
+                    inputObject.clearProjected();
+                    inputObject.clearROIs();
+                    break;
+            }
+
+            writeProgressStatus(count++, total, "objects");
+
+        }
+
+        // Removing any objects which now have no volume
+        if (removeEmptyObjects) {
+            Iterator<Obj> iterator = inputObjects.values().iterator();
+            while (iterator.hasNext())
+                if (iterator.next().getCoordinateSet().size() == 0)
+                    iterator.remove();
+        }
+
+        if (showOutput) {
+            switch (outputMode) {
+                case OutputModes.CREATE_NEW_OBJECT:
+                    outputObjects.convertToImageIDColours().show();
+                    break;
+                case OutputModes.UPDATE_INPUT:
                     inputObjects.convertToImageIDColours().show();
-                break;
+                    break;
+            }
         }
 
         return Status.PASS;
@@ -332,6 +297,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -366,8 +332,8 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-        return null;
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
+	return null; 
     }
 
     @Override

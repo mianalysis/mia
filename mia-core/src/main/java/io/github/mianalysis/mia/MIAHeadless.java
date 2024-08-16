@@ -2,7 +2,6 @@ package io.github.mianalysis.mia;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import org.scijava.ItemVisibility;
@@ -109,18 +108,10 @@ public class MIAHeadless extends MIA implements Command {
                 applyGlobalVariables(modules, variables);
 
             // Running analysis
-            Thread t = new Thread(() -> {
-                try {
-                    new AnalysisRunner().run(modules);
+            new AnalysisRunner().run(modules);
 
-                    if (GraphicsEnvironment.isHeadless())
-                        java.lang.System.exit(0);
-
-                } catch (InterruptedException | IOException e) {
-                    MIA.log.writeError(e);
-                }
-            });
-            t.start();
+            if (GraphicsEnvironment.isHeadless())
+                java.lang.System.exit(0);
 
         } catch (Exception e) {
             e.printStackTrace();

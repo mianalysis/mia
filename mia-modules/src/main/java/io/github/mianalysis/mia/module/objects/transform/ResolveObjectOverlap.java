@@ -5,12 +5,14 @@ import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
+import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.process.ImageMath;
-import io.github.mianalysis.mia.module.objects.process.GrowObjects;
+import io.github.mianalysis.mia.module.images.process.InvertIntensity;
+import io.github.mianalysis.mia.module.images.process.threshold.ManualThreshold;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -20,6 +22,7 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -44,52 +47,46 @@ public class ResolveObjectOverlap extends Module {
     */
     public static final String INPUT_OBJECTS = "Input objects";
 
+    /**
+    * 
+    */
+    public static final String OUTPUT_OBJECTS = "Output objects";
 
     public ResolveObjectOverlap(Modules modules) {
         super("Resolve object overlap", modules);
     }
 
-    public static void process(Objs inputObjects, Workspace workspace) {
-        if (inputObjects == null || inputObjects.size() == 0)
-            return;
-
-        Image finalMask = inputObjects.convertToImageBinary();
-
+    public static Objs process(Objs inputObjects) {
         // Creating overlap image
         ImagePlus overlap = IJ.createHyperStack("Overlap", inputObjects.getWidth(), inputObjects.getHeight(), 1,
                 inputObjects.getNSlices(), inputObjects.getNFrames(), 8);
-        ImageMath.process(overlap, ImageMath.CalculationModes.ADD, 255);
 
+        ImageStack ist = overlap.getStack();
         for (Obj inputObject : inputObjects.values()) {
-            for (Obj testObject : inputObjects.values()) {
-                if (inputObject == testObject)
-                    continue;
-
-                if (inputObject.getT() != testObject.getT())
-                    continue;
-
-                for (Point<Integer> pt : inputObject.getCoordinateSet())
-                    if (testObject.getCoordinateSet().contains(pt)) {
-                        overlap.setPosition(1, pt.z+1, inputObject.getT()+1);
-                        overlap.getProcessor().putPixel(pt.x, pt.y, 0);
-                    }
+            for (Point<Integer> pt : inputObject.getCoordinateSet()) {
+                ImageProcessor ipr = ist.getProcessor(overlap.getStackIndex(1, pt.getZ() + 1, inputObject.getT() + 1));
+                ipr.putPixel(pt.x, pt.y, ipr.get(pt.x, pt.y) + 1);
             }
         }
 
+        ManualThreshold.applyThreshold(overlap, 1);
+        InvertIntensity.process(overlap);
+
         // Masking input objects
-        Image maskImage = ImageFactory.createImage("Mask", overlap);
-        MaskObjects.maskObjects(inputObjects, maskImage, null, true, false);
-  
-        // Growing input objects into overlap regions
-        String startingObjectMode = GrowObjects.StartingObjectModes.SURFACES;
-        String growthMode = GrowObjects.GrowthModes.EQUIDISTANT_FROM_OBJECTS;
-        int connectivity = Integer.parseInt(GrowObjects.Connectivity.TWENTYSIX);
-        GrowObjects.process(inputObjects, null, startingObjectMode, growthMode, null, null, true, connectivity, false,
-                workspace);
-  
-                // Masking to original objects
-        MaskObjects.maskObjects(inputObjects, finalMask, null, true, false);
-      
+        for (Obj inputObject : inputObjects.values()) {
+            Obj maskedObject = MaskObjects.maskObject(inputObject, (Image<?>) ImageFactory.createImage("Mask", overlap),
+                    "Masked");
+            inputObject.getCoordinateSet().clear();
+            inputObject.setCoordinateSet(maskedObject.getCoordinateSet());
+            inputObject.clearSurface();
+            inputObject.clearCentroid();
+            inputObject.clearProjected();
+            inputObject.clearROIs();
+
+        }
+
+        return null;
+
     }
 
     @Override
@@ -105,13 +102,16 @@ public class ResolveObjectOverlap extends Module {
     @Override
     public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
-        process(inputObjects, workspace);
+        Objs outputObjects = process(inputObjects);
+
+        // workspace.addObjects(outputObjects);
 
         // // Showing objects
-        if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+        // if (showOutput)
+        //     outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 
@@ -121,6 +121,7 @@ public class ResolveObjectOverlap extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         addParameterDescriptions();
 
@@ -153,7 +154,14 @@ public class ResolveObjectOverlap extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+        Workspace workspace = null;
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
+
+        returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS, workspace),
+                parameters.getValue(OUTPUT_OBJECTS, workspace)));
+
+        return returnedRelationships;
+
     }
 
     @Override

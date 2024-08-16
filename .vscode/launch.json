@@ -2,6 +2,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MenDemo",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.gui.regions.workflowmodules.MenDemo",
+            "projectName": "mia-plugin"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.gui.regions.editingpanel.Test",
+            "projectName": "mia-plugin"
+        },
+        {
+            "type": "java",
+            "name": "EditingPanel",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel",
+            "projectName": "mia-plugin"
+        },
+        {
+            "type": "java",
+            "name": "ProjectImage",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.images.transform.ProjectImage",
+            "projectName": "mia-modules"
+        },
+        {
+            "type": "java",
             "name": "CommaSeparatedStringInterpreter",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter",

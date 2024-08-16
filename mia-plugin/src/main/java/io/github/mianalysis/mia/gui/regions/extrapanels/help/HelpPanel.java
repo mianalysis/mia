@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.helpandnotes;
+package io.github.mianalysis.mia.gui.regions.extrapanels.help;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
@@ -23,7 +22,7 @@ public class HelpPanel extends JPanel {
 
     public HelpPanel() {
         // Initialising the panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setOpaque(false);
         setLayout(new GridBagLayout());
 
     }
@@ -42,30 +41,6 @@ public class HelpPanel extends JPanel {
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Adding title to help window
-        JLabel helpLabel = new JLabel();
-        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        if (activeModule != null)
-            helpLabel.setText("About \"" + activeModule.getName() + "\"");
-        add(helpLabel, c);
-
-        // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
-        c.anchor = GridBagConstraints.EAST;
-        c.weightx = 0;
-        c.gridx++;
-        add(closeButton, c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy++;
-        add(separator, c);
 
         // If no Module is selected, also skip
         HelpArea helpArea = new HelpArea(activeModule, modules);
@@ -105,7 +80,7 @@ public class HelpPanel extends JPanel {
         add(notesLabel, c);
 
         // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
+        ClosePanelButton closeButton = new ClosePanelButton(this);
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 0;
         c.gridx++;
@@ -119,7 +94,7 @@ public class HelpPanel extends JPanel {
         c.gridx = 0;
         c.gridwidth = 2;
         c.gridy++;
-        add(separator,c);
+        add(separator, c);
 
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
@@ -127,7 +102,8 @@ public class HelpPanel extends JPanel {
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         usageMessage.setText(
                 "<html><center><font face=\"sans-serif\" size=\"3\">" + "Click a module title to<br>see help about it"
-                        + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");
+                        + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel"
+                        + "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
         usageMessage.setOpaque(false);

@@ -8,12 +8,11 @@ import ij.gui.OvalRoi;
 import ij.gui.PointRoi;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
-import ij.gui.ShapeRoi;
 import io.github.mianalysis.mia.MIA;
 
 public class ObjRoi {
     private final int ID;
-    private Roi roi;
+    private final Roi roi;
     private final int t;
     private final int z;
     private String assignedClass;
@@ -103,13 +102,8 @@ public class ObjRoi {
                 break;
 
             default:
-            if (roi instanceof ShapeRoi) {
-                ShapeRoi shapeRoi = (ShapeRoi) roi;
-                newRoi = new ShapeRoi(shapeRoi);                
-            } else {
                 MIA.log.writeWarning("ROI type unsupported.  Using bounding box for selection.");
                 newRoi = new Roi(roi.getBounds());
-            }
                 break;
         }
 
@@ -123,10 +117,6 @@ public class ObjRoi {
 
     public Roi getRoi() {
         return roi;
-    }
-
-    public void setRoi(Roi roi) {
-        this.roi = roi;
     }
 
     public int getT() {

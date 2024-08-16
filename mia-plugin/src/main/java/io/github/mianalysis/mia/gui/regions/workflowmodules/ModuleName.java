@@ -1,6 +1,7 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.util.Map;
@@ -9,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+
+import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
@@ -38,8 +41,12 @@ public class ModuleName extends JLabel {
 
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
+        try {
+        putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
+        } catch (Exception e) {}
         setBorder(new EmptyBorder(2, 5, 0, 0));
-        setOpaque(true);
+        setPreferredSize(new Dimension(200,30));
+        setOpaque(false);
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
         if (module.isDeprecated()) {
             Map attributes = font.getAttributes();
@@ -75,11 +82,6 @@ public class ModuleName extends JLabel {
 
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
-        if (isSelected)
-            setBackground(Colours.getLightBlue(isDark));
-        else
-            setBackground(table.getBackground());
-
         String deprecationMessage = "";
         if (module.isDeprecated())
             deprecationMessage = " (deprecated)";
@@ -88,6 +90,7 @@ public class ModuleName extends JLabel {
         if (module instanceof GUISeparator) {
             setForeground(Colours.getDarkBlue(isDark));
             setToolTipText("Module separator");
+            setHorizontalAlignment(CENTER);
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
             setForeground(defaultColour);
             status = "OK";

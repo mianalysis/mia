@@ -1,11 +1,14 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
+import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+
+import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
@@ -57,8 +60,12 @@ public class ShowOutputButton extends JButton implements ActionListener {
 
         state = module.canShowOutput();
 
+        putClientProperty( FlatClientProperties.STYLE, "arc: 0" );
+        setBorderPainted(false);
         addActionListener(this);
         setFocusPainted(false);
+        setOpaque(false);
+        setBackground(new Color(0,0,0,0));
         setSelected(false);
         setMargin(new Insets(0, 0, 0, 0));
         setName("Show output");

@@ -24,8 +24,11 @@ public class Colours {
     private static final Color RED = new Color(217, 66, 66); // #d94242
     private static final Color RED_DM = new Color(225,106,106); // #e16a6a
 
+    private static final Color LIGHT_GREY = new Color(210, 210, 210); // #d2d2d2
+    private static final Color LIGHT_GREY_DM = new Color(66, 66, 66); // #424242
+
     private static final Color DARK_GREY = new Color(66, 66, 66); // #424242
-    private static final Color DARK_GREY_DM = new Color(66, 66, 66); // #424242
+    private static final Color DARK_GREY_DM = new Color(190, 190, 190); // #bebebe
 
     public static Color getLightBlue(boolean darkMode) {
         if (darkMode)
@@ -67,6 +70,13 @@ public class Colours {
             return RED_DM;
         else
             return RED;
+    }
+
+    public static Color getLightGrey(boolean darkMode) {
+        if (darkMode)
+            return LIGHT_GREY_DM;
+        else
+            return LIGHT_GREY;
     }
 
     public static Color getDarkGrey(boolean darkMode) {

@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -351,7 +352,8 @@ public class IdentifyObjects extends Module {
 
     public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
             boolean singleObject, String detectionMode, int connectivity, String type, boolean multithread,
-            int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
+            int minStripWidth,
+            boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
@@ -440,6 +442,7 @@ public class IdentifyObjects extends Module {
 
             }
         }
+
 
         return outputObjects;
 
