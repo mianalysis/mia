@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.extrapanels.search;
+package io.github.mianalysis.mia.gui.regions.search;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -58,6 +58,7 @@ public class AddModuleFromSearchButton extends JButton implements ActionListener
         GUI.setSelectedModules(new Module[] { newModule });
         GUI.updateModules(true, activeModule);
         GUI.updateParameters(false, null);
+        GUI.updateHelpNotes();
 
     }
 }

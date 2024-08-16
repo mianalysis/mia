@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.extrapanels.help;
+package io.github.mianalysis.mia.gui.regions.helpandnotes;
 
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;

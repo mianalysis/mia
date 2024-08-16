@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -142,22 +144,22 @@ public class Watershed extends Module {
     public interface Connectivity extends ConnectivityInterface {
     }
 
-    public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, boolean blackBackground,
+    public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, @Nullable ImagePlus maskIpl, boolean blackBackground,
             int dynamic, int connectivity, boolean multithread) throws InterruptedException {
         String name = new Watershed(null).getName();
 
         // Expected inputs for binary images (marker and mask) are black objects on a
         // white background. These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
-        if (!blackBackground)
+        if (maskIpl != null && !blackBackground)
             IJ.run(maskIpl, "Invert", "stack");
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        int nChannels = maskIpl.getNChannels();
-        int nFrames = maskIpl.getNFrames();
+        int nChannels = markerIpl.getNChannels();
+        int nFrames = markerIpl.getNFrames();
         int nTotal = nChannels * nFrames;
         AtomicInteger count = new AtomicInteger();
 
@@ -168,13 +170,15 @@ public class Watershed extends Module {
 
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
-                    ImageStack timepointMask = ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
+                    ImageStack timepointMask = maskIpl == null ? null : ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
                     ImageStack timepointIntensity = ImagePlusImage.getSetStack(intensityIpl, finalT, finalC, null);
                     ImageStack timepointMarker = ImagePlusImage.getSetStack(markerIpl, finalT, finalC, null);
                     timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
-
-                    timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker,
-                            timepointMask, connectivity, true, false);
+                                    
+                    if (maskIpl == null)
+                    timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker, connectivity, true, false);
+                    else
+                    timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker, timepointMask, connectivity, true, false);
 
                     // The image produced by MorphoLibJ's watershed function is labelled. Converting
                     // to binary and back to 8-bit.

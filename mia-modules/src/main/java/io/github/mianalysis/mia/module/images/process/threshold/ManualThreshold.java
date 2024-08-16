@@ -103,6 +103,10 @@ public class ManualThreshold extends Module {
         super("Manual threshold", modules);
     }
 
+    public static void applyThreshold(Image inputImage, double threshold) {
+        applyThreshold(inputImage.getImagePlus(), threshold);
+    }
+
     public static void applyThreshold(ImagePlus inputImagePlus, double threshold) {
         // Creating an integer threshold in case image is 8 or 16 bit
         int intThreshold = (int) Math.round(threshold);

@@ -18,8 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import com.formdev.flatlaf.FlatClientProperties;
-
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableRefsButton;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableableCheck;
@@ -83,7 +81,6 @@ public class ComponentFactory {
 
     public JPanel createParameterControl(Parameter parameter, Modules modules, Module module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
-        paramPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -165,8 +162,6 @@ public class ComponentFactory {
 
     public JPanel createParametersTopRow(Module activeModule) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
-        paramPanel.setOpaque(false);
-
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -260,7 +255,6 @@ public class ComponentFactory {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -440,7 +434,6 @@ public class ComponentFactory {
 
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setPreferredSize(new Dimension(200, 25));
-        labelPanel.setOpaque(false);
 
         // If we're not exporting anything, skip this
         if (exportMode.equals(OutputControl.ExportModes.NONE))
@@ -457,7 +450,6 @@ public class ComponentFactory {
         exportLabel.setPreferredSize(new Dimension(40, 25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportLabel.setEnabled(exportIndividual.isSelected());
-        exportLabel.setOpaque(false);
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
@@ -509,7 +501,6 @@ public class ComponentFactory {
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200, 25));
-        controlPanel.setOpaque(false);
 
         // If we're not exporting anything, skip this
         if (exportMode.equals(OutputControl.ExportModes.NONE))
@@ -540,7 +531,6 @@ public class ComponentFactory {
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200, 25));
-        controlPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -632,7 +622,6 @@ public class ComponentFactory {
 
     public JPanel createRefExportHeader(String name, Refs refs, boolean includeSummary) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
-        headerPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -659,7 +648,6 @@ public class ComponentFactory {
         JLabel headerName = new JLabel(name);
         headerName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         headerName.setPreferredSize(new Dimension(-1, elementHeight));
-        headerName.setOpaque(false);        
         headerName.setBorder(null);
         c.gridx++;
         c.weightx = 1;
@@ -683,7 +671,6 @@ public class ComponentFactory {
 
     public JPanel createSingleRefControl(ExportableRef ref) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
-        measurementPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;

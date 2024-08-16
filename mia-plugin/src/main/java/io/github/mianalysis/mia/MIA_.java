@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia;
 
-import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.UIManager;
@@ -67,8 +66,6 @@ public class MIA_ extends MIA implements Command {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
             UIManager.put("TitlePane.showIconBesideTitle", true);
-            UIManager.put( "TabbedPane.selectedBackground", new Color(0,0,0,0) );
-            System.setProperty( "apple.awt.application.appearance", "system" );
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {

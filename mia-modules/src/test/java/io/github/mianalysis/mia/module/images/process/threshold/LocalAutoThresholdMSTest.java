@@ -245,12 +245,6 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
-
-            // new ij.ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         }

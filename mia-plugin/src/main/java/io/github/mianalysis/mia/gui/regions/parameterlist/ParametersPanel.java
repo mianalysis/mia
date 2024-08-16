@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.parameterlist;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -14,18 +13,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
+import javax.swing.border.EtchedBorder;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.object.parameters.AdjustParameters;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.AdjustParameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
@@ -36,42 +35,32 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
 
-public class ParametersPanel extends JPanel {
+public class ParametersPanel extends JScrollPane {
     private static final long serialVersionUID = 1455273666893303846L;
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 600;
 
-    private JScrollPane scrollPane;
     private JPanel panel;
 
     public ParametersPanel() {
-        setLayout(new BorderLayout(0,0));
-
         panel = new JPanel();
-        panel.setOpaque(false);
-
-        scrollPane = new JScrollPane(panel);
-        scrollPane.setViewportView(panel);        
-
+        setViewportView(panel);        
+        
         // Initialising the scroll panel
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        scrollPane.setMinimumSize(new Dimension(minimumWidth,1));
-        scrollPane.setPreferredSize(new Dimension(preferredWidth,1));
+        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setViewportBorder(BorderFactory.createEmptyBorder());
+        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        getVerticalScrollBar().setUnitIncrement(10);
+        setMinimumSize(new Dimension(minimumWidth,1));
+        setPreferredSize(new Dimension(preferredWidth,1));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();
         panel.repaint();
 
-        scrollPane.validate();
-        scrollPane.repaint();
-
-        add(scrollPane,BorderLayout.CENTER);
+        validate();
+        repaint();
 
     }
 
@@ -155,8 +144,8 @@ public class ParametersPanel extends JPanel {
         panel.revalidate();
         panel.repaint();
 
-        scrollPane.revalidate();
-        scrollPane.repaint();
+        revalidate();
+        repaint();
 
     }
 

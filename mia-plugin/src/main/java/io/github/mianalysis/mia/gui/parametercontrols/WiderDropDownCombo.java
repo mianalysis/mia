@@ -3,9 +3,6 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
 import javax.swing.*;
-
-import com.formdev.flatlaf.FlatClientProperties;
-
 import java.awt.*;
 
 public class WiderDropDownCombo extends JComboBox {
@@ -24,8 +21,6 @@ public class WiderDropDownCombo extends JComboBox {
 
     public WiderDropDownCombo(Object[] objs) {
         super(objs);
-
-        putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setMaximumRowCount(20);
     }

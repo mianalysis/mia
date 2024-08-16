@@ -48,9 +48,8 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
     
     void createControl(int height) {
         control = new JPanel();
-        control.setOpaque(false);
-        control.setLayout(new GridBagLayout());
 
+        control.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.weighty = 1;
@@ -68,7 +67,6 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
         textArea.setText(parameter.getRawStringValue());
         textArea.addFocusListener(this);
         textArea.setCaretPosition(0);
-        textArea.setOpaque(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
 
@@ -79,8 +77,6 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         objectsScrollPane.getVerticalScrollBar().setValue(0);
         objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        objectsScrollPane.setOpaque(false);
-        objectsScrollPane.getViewport().setOpaque(false);
         control.add(objectsScrollPane, c);
     }
 
