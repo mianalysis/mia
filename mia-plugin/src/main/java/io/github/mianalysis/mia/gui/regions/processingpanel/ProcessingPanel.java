@@ -43,7 +43,7 @@ public class ProcessingPanel extends AbstractPanel {
 
     public ProcessingPanel() {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
-        setBackground(Colours.getLightGrey(isDark));
+        // setBackground(Colours.getLightGrey(isDark));
         setLayout(new GridBagLayout());
         
         GridBagConstraints c = new GridBagConstraints();
