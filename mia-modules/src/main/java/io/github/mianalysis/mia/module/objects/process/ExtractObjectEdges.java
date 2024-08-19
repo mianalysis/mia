@@ -10,12 +10,12 @@ import ij.ImagePlus;
 import ij.plugin.Resizer;
 import ij.process.LUT;
 import ij.process.StackStatistics;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.distmap.DistanceTransform3DShort;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -41,7 +42,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 
 /**
 * Created by sc13967 on 01/08/2017.
@@ -196,11 +196,14 @@ public class ExtractObjectEdges extends Module {
         if (!inputObject.is2D())
         distIpl = InterpolateZAxis.matchZToXY(distIpl,InterpolateZAxis.InterpolationModes.NONE);
         
-        // Creating distance map using MorphoLibJ
-        short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights, true);
+
+        distIpl = DistanceMap.process(distIpl, "Distances", false, DistanceMap.WeightModes.W13_18_22_29_31,false, false);
+        distIpl.duplicate().show();
+        // // Creating distance map using MorphoLibJ
+        // short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
+        // DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights, true);
         
-        distIpl.setStack(distTransform.distanceMap(distIpl.getStack()));
+        // distIpl.setStack(distTransform.distanceMap(distIpl.getStack()));
         
         if (!inputObject.is2D()) {
             Resizer resizer = new Resizer();
@@ -272,7 +275,7 @@ public class ExtractObjectEdges extends Module {
             edgeObjects = new Objs(edgeObjectName,inputObjects);
             workspace.addObjects(edgeObjects);
         }
-        
+        MIA.log.writeDebug("here");
         // Initialising output interior objects
         String interiorObjectName = null;
         Objs interiorObjects = null;
