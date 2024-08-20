@@ -221,15 +221,15 @@ public abstract class AbstractObjectFilter extends Module {
 
         switch ((String) parameters.getValue(FILTER_MODE, workspace)) {
             case FilterModes.MOVE_FILTERED:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
 
                 // Getting references up to this location
                 PartnerRefs currentRefs = modules.getPartnerRefs(this);
 
                 // Adding relationships
-                String[] partnerNames = currentRefs.getPartnerNamesArray(inputObjectsName);
+                String[] partnerNames = currentRefs.getPartnerNamesArray(outputObjectsName);
                 for (String partnerName : partnerNames)
-                    returnedRefs.add(partnerRefs.getOrPut(inputObjectsName, partnerName));
+                    returnedRefs.add(partnerRefs.getOrPut(outputObjectsName, partnerName));
 
                 break;
         }

@@ -137,7 +137,7 @@ public class EvalButton extends JButton implements ActionListener {
         }
 
         setEnabled(module.isEnabled() && module.isRunnable());
-
+                
     }
 
     // GETTERS
