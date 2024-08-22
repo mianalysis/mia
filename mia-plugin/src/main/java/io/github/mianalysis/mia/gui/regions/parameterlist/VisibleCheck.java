@@ -1,66 +1,46 @@
 package io.github.mianalysis.mia.gui.regions.parameterlist;
 
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
-import com.formdev.flatlaf.FlatClientProperties;
-
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.svg.SVGButton;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
-public class VisibleCheck extends JButton implements ActionListener {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 3462766918524878171L;
+public class VisibleCheck extends SVGButton implements ActionListener {
+    private static final int size = 18;
     private Parameter parameter;
 
-    private static final ImageIcon closedIcon = new ImageIcon(
-            VisibleCheck.class.getResource("/icons/eyeclosed_black_12px.png"), "");
-    private static final ImageIcon closedIconDM = new ImageIcon(
-            VisibleCheck.class.getResource("/icons/eyeclosed_blackDM_12px.png"), "");
-    private static final ImageIcon openIcon = new ImageIcon(
-            VisibleCheck.class.getResource("/icons/eyeopen_black_12px.png"), "");
-    private static final ImageIcon openIconDM = new ImageIcon(
-            VisibleCheck.class.getResource("/icons/eyeopen_blackDM_12px.png"), "");
-
     public VisibleCheck(Parameter parameter) {
+        super(new String[] { "/icons/eyeopen.svg", "/icons/eyeclosed.svg" }, size, parameter.isVisible() ? 0 : 1);
+        
         this.parameter = parameter;
-
-        putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
+        
         addActionListener(this);
-        setFocusPainted(false);
-        setSelected(parameter.isVisible());
-        setMargin(new Insets(0, 0, 0, 0));
         setName("Show parameter");
         setToolTipText("Show parameter in processing view");
-        updateIcon();
+
+        updateState();
 
     }
 
-    public void updateIcon() {
+    @Override
+    public void updateState() {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
-        if (parameter.isVisible()) {
-            if (isDark)
-                setIcon(openIconDM);
-            else
-                setIcon(openIcon);
-        } else {
-            if (isDark)
-                setIcon(closedIconDM);
-            else
-                setIcon(closedIcon);
-        }
+        if (parameter.isVisible())
+            selectIconByIndex(0);
+        else
+            selectIconByIndex(1);
+
+        dynamicForegroundColor.setColor(Colours.getDarkGrey(isDark));
+
     }
 
     public Parameter getParameter() {
@@ -72,7 +52,7 @@ public class VisibleCheck extends JButton implements ActionListener {
         GUI.addUndo();
 
         parameter.setVisible(!parameter.isVisible());
-        updateIcon();
+        updateState();
 
     }
 }
