@@ -7,7 +7,7 @@ import java.awt.*;
  */
 public class Colours {
     private static final Color LIGHT_BLUE = new Color(134, 208, 230); // #86d0e6
-    private static final Color LIGHT_BLUE_DM = new Color(22,87,107); // #16576b
+    private static final Color LIGHT_BLUE_DM = new Color(22, 87, 107); // #16576b
 
     private static final Color BLUE = new Color(66, 183, 217); // #42b7d9
     private static final Color BLUE_DM = new Color(66, 183, 217); // #42b7d9
@@ -19,10 +19,10 @@ public class Colours {
     private static final Color GREEN_DM = new Color(124, 224, 107); // #7ce06b
 
     private static final Color ORANGE = new Color(233, 142, 50); // #e98e32
-    private static final Color ORANGE_DM = new Color(237,166,94); // #eda65e
+    private static final Color ORANGE_DM = new Color(237, 166, 94); // #eda65e
 
     private static final Color RED = new Color(217, 66, 66); // #d94242
-    private static final Color RED_DM = new Color(225,106,106); // #e16a6a
+    private static final Color RED_DM = new Color(225, 106, 106); // #e16a6a
 
     private static final Color DARK_GREY = new Color(66, 66, 66); // #424242
     private static final Color DARK_GREY_DM = new Color(66, 66, 66); // #424242
@@ -74,5 +74,12 @@ public class Colours {
             return DARK_GREY_DM;
         else
             return DARK_GREY;
+    }
+
+    public static Color getBlack(boolean darkMode) {
+        if (darkMode)
+            return Color.WHITE;
+        else
+            return Color.BLACK;
     }
 }

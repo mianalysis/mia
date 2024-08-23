@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.object.system.SwingPreferences;
  */
 public class ShowOutputButton extends SVGButton implements ActionListener {
     private static final int size = 18;
+    
     private Module module;
     private boolean showOutput = true;
 
@@ -43,7 +44,7 @@ public class ShowOutputButton extends SVGButton implements ActionListener {
             selectIconByIndex(1);
 
         if ((module.isEnabled()) && module.isReachable() && module.isRunnable())
-            dynamicForegroundColor.setColor(Colours.getDarkGrey(isDark));
+            dynamicForegroundColor.setColor(Colours.getBlack(isDark));
         else if ((module.isEnabled()) & !module.isReachable())
             dynamicForegroundColor.setColor(Colours.getOrange(isDark));
         else if ((module.isEnabled()) & !module.isRunnable())

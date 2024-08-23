@@ -39,7 +39,7 @@ public class VisibleCheck extends SVGButton implements ActionListener {
         else
             selectIconByIndex(1);
 
-        dynamicForegroundColor.setColor(Colours.getDarkGrey(isDark));
+        dynamicForegroundColor.setColor(Colours.getBlack(isDark));
 
     }
 

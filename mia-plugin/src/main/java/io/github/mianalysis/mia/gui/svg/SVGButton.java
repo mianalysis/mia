@@ -71,7 +71,7 @@ public abstract class SVGButton extends JButton implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        dynamicGlowColor.setColor(Colours.getDarkBlue(false));
+        dynamicGlowColor.setColor(Colours.getDarkGrey(false));
         repaint();
 
     }
