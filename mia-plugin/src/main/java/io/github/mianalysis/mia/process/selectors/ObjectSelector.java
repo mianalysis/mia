@@ -72,6 +72,7 @@ import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
@@ -98,10 +99,12 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
     private JComboBox<String> overlayMode;
+    private JPanel colourPanel;
+    private JComboBox<String> colourMode;
     private JCheckBox labelCheck;
-    private JTextField labelFontSize;
     private JPanel fontPanel;
-
+    private JTextField labelFontSize;
+    
     private ImagePlus displayImagePlus;
     private Overlay overlay;
     private Overlay origOverlay;
@@ -134,6 +137,28 @@ public class ObjectSelector implements ActionListener, KeyListener {
         String OUTLINES = "Outlines";
 
         String[] ALL = new String[] { NONE, FILL, OUTLINES };
+
+    }
+
+    private interface ColourModesNoClass {
+        String BY_ID = "By ID";
+        String BLACK = "Black";
+        String BLUE = "Blue";
+        String CYAN = "Cyan";
+        String GREEN = "Green";
+        String MAGENTA = "Magenta";
+        String RED = "Red";
+        String WHITE = "White";
+        String YELLOW = "Yellow";
+
+        String ALL[] = new String[] { BY_ID, BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW };
+
+    }
+
+    private interface ColourModesWithClass extends ColourModesNoClass {
+        String BY_CLASS = "By class";
+
+        String ALL[] = new String[] { BY_CLASS, BY_ID, BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW };
 
     }
 
@@ -374,6 +399,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 boolean showOverlay = !overlayMode.getSelectedItem().equals(OverlayModes.NONE);
 
                 displayImagePlus.setHideOverlay(!showOverlay);
+                Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
                 labelCheck.setEnabled(showOverlay);
                 if (labelCheck.isSelected())
                     Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
@@ -388,6 +414,27 @@ public class ObjectSelector implements ActionListener, KeyListener {
         overlayPanel.add(new JLabel("Overlay"), c);
         c.gridx++;
         overlayPanel.add(overlayMode, c);
+
+        colourPanel = new JPanel();
+        colourPanel.add(new JLabel("Colour mode"));
+        if (classSelector == null) {
+            colourMode = new JComboBox<>(ColourModesNoClass.ALL);
+            colourMode.setSelectedItem(ColourModesNoClass.BY_ID);
+        } else {
+            colourMode = new JComboBox<>(ColourModesWithClass.ALL);
+            colourMode.setSelectedItem(ColourModesWithClass.BY_CLASS);
+        }
+        colourMode.setEnabled(true);
+        colourMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateOverlay();
+            }
+        });
+        colourPanel.add(colourMode);
+
+        c.gridx++;
+        overlayPanel.add(colourPanel, c);
 
         labelCheck = new JCheckBox("Show labels");
         labelCheck.setSelected(true);
@@ -901,15 +948,50 @@ public class ObjectSelector implements ActionListener, KeyListener {
             overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
 
         // Setting colour
-        float hue = objRoi.getAssignedClass() == null ? 0.167f
-                : new Random(objRoi.getAssignedClass().hashCode() * 31).nextFloat();
-        Color color = Color.getHSBColor(hue, 1, 1);
+        Color colour = null;
+        switch ((String) colourMode.getSelectedItem()) {
+            case ColourModesWithClass.BY_CLASS:
+                float hue = objRoi.getAssignedClass() == null ? 0.167f
+                        : new Random(objRoi.getAssignedClass().hashCode() * 1000 * 31).nextFloat();
+                colour = Color.getHSBColor(hue, 1, 1);
+                break;
+            case ColourModesWithClass.BY_ID:
+            default:
+                hue = new Random(objRoi.getID()*1000*31).nextFloat();
+                colour = Color.getHSBColor(hue, 1, 1);
+                break;
+            case ColourModesWithClass.BLACK:
+                colour = Color.BLACK;
+                break;
+            case ColourModesWithClass.BLUE:
+                colour = Color.BLUE;
+                break;
+            case ColourModesWithClass.CYAN:
+                colour = Color.CYAN;
+                break;
+            case ColourModesWithClass.GREEN:
+                colour = Color.GREEN;
+                break;
+            case ColourModesWithClass.MAGENTA:
+                colour = Color.MAGENTA;
+                break;
+            case ColourModesWithClass.RED:
+                colour = Color.RED;
+                break;
+            case ColourModesWithClass.WHITE:
+                colour = Color.WHITE;
+                break;
+            case ColourModesWithClass.YELLOW:
+                colour = Color.YELLOW;
+                break;
+        }
+
         switch ((String) overlayMode.getSelectedItem()) {
             case OverlayModes.FILL:
-                overlayRoi.setFillColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 64));
+                overlayRoi.setFillColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
                 break;
             case OverlayModes.OUTLINES:
-                overlayRoi.setStrokeColor(color);
+                overlayRoi.setStrokeColor(colour);
                 break;
         }
 
