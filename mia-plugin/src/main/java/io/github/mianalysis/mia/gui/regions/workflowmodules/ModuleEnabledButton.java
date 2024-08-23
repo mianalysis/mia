@@ -68,12 +68,14 @@ public class ModuleEnabledButton extends SVGButton implements ActionListener {
 
         if (module instanceof GUISeparator)
             dynamicForegroundColor.setColor(Colours.getDarkBlue(isDark));
-        else if (module.isReachable() && module.isRunnable())
+        else if (module.isEnabled() && module.isReachable() && module.isRunnable())
             dynamicForegroundColor.setColor(Colours.getGreen(isDark));
-        else if (!module.isReachable())
+        else if (module.isEnabled() && !module.isReachable())
             dynamicForegroundColor.setColor(Colours.getOrange(isDark));
-        else if (!module.isRunnable())
+        else if (module.isEnabled() && !module.isRunnable())
             dynamicForegroundColor.setColor(Colours.getRed(isDark));
+        else
+            dynamicForegroundColor.setColor(Color.GRAY);
 
     }
 
@@ -108,6 +110,8 @@ public class ModuleEnabledButton extends SVGButton implements ActionListener {
 
         GUI.updateModules(true, module);
         GUI.updateParameters(false, null);
+
+        updateState();
 
     }
 }

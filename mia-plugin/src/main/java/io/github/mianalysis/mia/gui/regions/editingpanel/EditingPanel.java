@@ -43,7 +43,8 @@ public class EditingPanel extends AbstractPanel {
 
     public EditingPanel() {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
-        // setBackground(Colours.getLightGrey(isDark));
+        setBackground(Colours.getLightGrey(isDark));
+
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
