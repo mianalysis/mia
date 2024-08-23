@@ -354,26 +354,23 @@ public class ColourFactory {
     }
 
     public static HashMap<Integer, Float> getObjectMetadataHues(Objs objects, String metadataName) {
-        Random rand = new Random(randomSeed);
-
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
-        // Getting HashMap of metadata values, each with a randomly-assigned hue
-        HashMap<String, Float> metadataHues = new HashMap<>();
-
         for (Obj object : objects.values()) {
-            int ID = object.getID();
-
-            // Default hue value in case none is assigned
-            float H = 0f;
+            if (object == null || metadataName == null) {
+                hues.put(object.getID(), 0f);
+                continue;
+            }
 
             ObjMetadata metadataItem = object.getMetadataItem(metadataName);
-            metadataHues.putIfAbsent(metadataItem.getValue(), rand.nextFloat());
+            if (metadataItem == null) {
+                hues.put(object.getID(), 0f);
+                continue;
+            }
 
-            H = metadataHues.get(metadataItem.getValue());
-            hues.put(ID, H);
+            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode()*31).nextFloat());
 
         }
 

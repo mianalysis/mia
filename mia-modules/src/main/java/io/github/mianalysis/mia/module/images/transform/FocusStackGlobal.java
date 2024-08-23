@@ -70,6 +70,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -520,9 +521,12 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
         // Creating the output image and copying over the pixel coordinates
         DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg.firstElement());
-        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
+        DiskCachedCellImg dcImage = factory.create(dims);
+        ImgPlus<T> outputImg = new ImgPlus<T>(dcImage);
         ImgPlusTools.copyAxes(inputImg, outputImg);
 
+        dcImage.shutdown();
+        
         return outputImg;
 
     }

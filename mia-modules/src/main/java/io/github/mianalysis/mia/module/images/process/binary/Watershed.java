@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -40,88 +42,157 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Peforms a watershed transform on a specified input image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  This can use specific markers and be run in either distance or intensity-based modes.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
-*/
+ * Peforms a watershed transform on a specified input image. This process is
+ * able to split separate regions of a single connected foreground region as
+ * long as the sub-regions are connected by narrow necks (e.g. snowman shape).
+ * Background lines are drawn between each sub-region such that they are no
+ * longer connected. This can use specific markers and be run in either distance
+ * or intensity-based modes. Uses the plugin
+ * "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class Watershed extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image from workspace to apply watershed transform to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
-	*/
+    /**
+     * Image from workspace to apply watershed transform to. This image will be
+     * 8-bit with binary logic determined by the "Binary logic" parameter.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
-	*/
+    /**
+     * When selected, the post-operation image will overwrite the input image in the
+     * workspace. Otherwise, the image will be saved to the workspace with the name
+     * specified by the "Output image" parameter.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
-	*/
+    /**
+     * If "Apply to input image" is not selected, the post-operation image will be
+     * saved to the workspace with this name.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String WATERSHED_SEPARATOR = "Watershed controls";
 
-	/**
-	* When selected, this option allows the use of markers to define the starting point of each region.  The marker image to use is specified using the "Input marker image" parameter.  If not selected, a distance map will be generated for the input binary image and extended minima created according to the dynamic specified by "Dynamic".
-	*/
+    /**
+     * When selected, this option allows the use of markers to define the starting
+     * point of each region. The marker image to use is specified using the "Input
+     * marker image" parameter. If not selected, a distance map will be generated
+     * for the input binary image and extended minima created according to the
+     * dynamic specified by "Dynamic".
+     */
     public static final String USE_MARKERS = "Use markers";
 
-	/**
-	* Marker image to be used if "Use markers" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
-	*/
+    /**
+     * Marker image to be used if "Use markers" is selected. This image must be of
+     * equal dimensions to the input image (to which the transform will be applied).
+     * This image will be 8-bit with binary logic determined by the "Binary logic"
+     * parameter.
+     */
     public static final String MARKER_IMAGE = "Input marker image";
 
-	/**
-	* Controls the source for the intensity image against which the watershed transform will be computed.  Irrespective of mode, the image (raw image or object distance map) will act as a surface that the starting points will evolve up until adjacent regions come into contact (at which point creating a dividing line between the two):<br><ul><li>"Distance" A distance map will be created from the input binary image and used as the surface against which the watershed regions will evolve.</li><li>"Input image intensity" The watershed regions will evolve against an image from the workspace.  This image will be unaffected by this process.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions. </li></ul>
-	*/
+    /**
+     * Controls the source for the intensity image against which the watershed
+     * transform will be computed. Irrespective of mode, the image (raw image or
+     * object distance map) will act as a surface that the starting points will
+     * evolve up until adjacent regions come into contact (at which point creating a
+     * dividing line between the two):<br>
+     * <ul>
+     * <li>"Distance" A distance map will be created from the input binary image and
+     * used as the surface against which the watershed regions will evolve.</li>
+     * <li>"Input image intensity" The watershed regions will evolve against an
+     * image from the workspace. This image will be unaffected by this process. The
+     * image should have lower intensity coincident with the markers, rising to
+     * higher intensity along the boundaries between regions.</li>
+     * </ul>
+     */
     public static final String INTENSITY_MODE = "Intensity mode";
 
-	/**
-	* If "Intensity mode" is set to "Input image intensity", this is the image from the workspace against which the watershed regions will evolve.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions.
-	*/
+    /**
+     * If "Intensity mode" is set to "Input image intensity", this is the image from
+     * the workspace against which the watershed regions will evolve. The image
+     * should have lower intensity coincident with the markers, rising to higher
+     * intensity along the boundaries between regions.
+     */
     public static final String INTENSITY_IMAGE = "Intensity image";
 
-	/**
-	* If "Use markers" is not selected, the initial region markers will be created by generating a distance map for the input binary image and calculating the extended minima.  This parameter specifies the maximum permitted pixel intensity difference for a single marker.  Local intensity differences greater than this will result in creation of more markers.  The smaller the dynamic value is, the more the watershed transform will split the image.
-	*/
+    /**
+     * If "Use markers" is not selected, the initial region markers will be created
+     * by generating a distance map for the input binary image and calculating the
+     * extended minima. This parameter specifies the maximum permitted pixel
+     * intensity difference for a single marker. Local intensity differences greater
+     * than this will result in creation of more markers. The smaller the dynamic
+     * value is, the more the watershed transform will split the image.
+     */
     public static final String DYNAMIC = "Dynamic";
 
-	/**
-	* Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li></ul>
-	*/
+    /**
+     * Controls which adjacent pixels are considered:<br>
+     * <ul>
+     * <li>"6" Only pixels immediately next to the active pixel are considered.
+     * These are the pixels on the four "cardinal" directions plus the pixels
+     * immediately above and below the current pixel. If working in 2D, 4-way
+     * connectivity is used.</li>
+     * <li>"26" In addition to the core 6-pixels, all immediately diagonal pixels
+     * are used. If working in 2D, 8-way connectivity is used.</li>
+     * </ul>
+     */
     public static final String CONNECTIVITY = "Connectivity";
 
-	/**
-	* When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.
-	*/
+    /**
+     * The pre-defined set of weights that are used to compute the 3D distance
+     * transform using chamfer approximations of the euclidean metric (descriptions
+     * taken from <a href=
+     * "https://ijpb.github.io/MorphoLibJ/javadoc/">https://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br>
+     * <ul>
+     * <li>"Borgefors (3,4,5)" Use weight values of 3 for orthogonal neighbors, 4
+     * for diagonal neighbors and 5 for cube-diagonals (best approximation for
+     * 3-by-3-by-3 masks).</li>
+     * <li>"Chessboard (1,1,1)" Use weight values of 1 for all neighbours.</li>
+     * <li>"City-Block (1,2,3)" Use weight values of 1 for orthogonal neighbors, 2
+     * for diagonal neighbors and 3 for cube-diagonals.</li>
+     * <li>"Svensson (3,4,5,7)" Use weight values of 3 for orthogonal neighbors, 4
+     * for diagonal neighbors, 5 for cube-diagonals and 7 for (2,1,1) shifts. Good
+     * approximation using only four weights, and keeping low value of orthogonal
+     * weight.</li>
+     * </ul>
+     */
+    public static final String WEIGHT_MODE = "Weight mode";
+
+    /**
+     * When selected, an image is interpolated in Z (so that all pixels are
+     * isotropic) prior to calculation of a distance map. This prevents warping of
+     * the distance map along the Z-axis if XY and Z sampling aren't equal.
+     */
     public static final String MATCH_Z_TO_X = "Match Z to XY";
 
-	/**
-	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
-	*/
+    /**
+     * Controls whether objects are considered to be white (255 intensity) on a
+     * black (0 intensity) background, or black on a white background.
+     */
     public static final String BINARY_LOGIC = "Binary logic";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple 3D stacks simultaneously.  Since the watershed transform is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple 3D stacks simultaneously. Since the watershed transform is
+     * applied on a single 3D stack at a time, multithreading only works for images
+     * with multiple channels or timepoints (other stacks will still work, but won't
+     * see a speed improvement). This can provide a speed improvement when working
+     * on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface BinaryLogic extends BinaryLogicInterface {
@@ -142,22 +213,26 @@ public class Watershed extends Module {
     public interface Connectivity extends ConnectivityInterface {
     }
 
-    public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, boolean blackBackground,
+    public interface WeightModes extends DistanceMap.WeightModes {
+    }
+
+    public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, @Nullable ImagePlus maskIpl,
+            boolean blackBackground,
             int dynamic, int connectivity, boolean multithread) throws InterruptedException {
         String name = new Watershed(null).getName();
 
         // Expected inputs for binary images (marker and mask) are black objects on a
         // white background. These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
-        if (!blackBackground)
+        if (maskIpl != null && !blackBackground)
             IJ.run(maskIpl, "Invert", "stack");
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        int nChannels = maskIpl.getNChannels();
-        int nFrames = maskIpl.getNFrames();
+        int nChannels = markerIpl.getNChannels();
+        int nFrames = markerIpl.getNFrames();
         int nTotal = nChannels * nFrames;
         AtomicInteger count = new AtomicInteger();
 
@@ -168,13 +243,18 @@ public class Watershed extends Module {
 
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
-                    ImageStack timepointMask = ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
+                    ImageStack timepointMask = maskIpl == null ? null
+                            : ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
                     ImageStack timepointIntensity = ImagePlusImage.getSetStack(intensityIpl, finalT, finalC, null);
                     ImageStack timepointMarker = ImagePlusImage.getSetStack(markerIpl, finalT, finalC, null);
                     timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
 
-                    timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker,
-                            timepointMask, connectivity, true, false);
+                    if (maskIpl == null)
+                        timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
+                                timepointMarker, connectivity, true, false);
+                    else
+                        timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
+                                timepointMarker, timepointMask, connectivity, true, false);
 
                     // The image produced by MorphoLibJ's watershed function is labelled. Converting
                     // to binary and back to 8-bit.
@@ -235,6 +315,7 @@ public class Watershed extends Module {
         String intensityImageName = parameters.getValue(INTENSITY_IMAGE, workspace);
         int dynamic = parameters.getValue(DYNAMIC, workspace);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
+        String weightMode = parameters.getValue(WEIGHT_MODE, workspace);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
         String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
@@ -247,8 +328,7 @@ public class Watershed extends Module {
         ImagePlus intensityIpl = null;
         switch (intensityMode) {
             case IntensityModes.DISTANCE:
-                intensityIpl = DistanceMap.process(maskIpl, "Distance", blackBackground,
-                        DistanceMap.WeightModes.WEIGHTS_3_4_5_7, matchZToXY, false);
+                intensityIpl = DistanceMap.process(maskIpl, "Distance", blackBackground, weightMode, matchZToXY, false);
                 InvertIntensity.process(intensityIpl);
                 break;
 
@@ -307,6 +387,7 @@ public class Watershed extends Module {
         parameters.add(new InputImageP(INTENSITY_IMAGE, this));
         parameters.add(new IntegerP(DYNAMIC, this, 1));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7, WeightModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
@@ -339,6 +420,7 @@ public class Watershed extends Module {
         returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
         switch ((String) parameters.getValue(INTENSITY_MODE, workspace)) {
             case IntensityModes.DISTANCE:
+                returnedParameters.add(parameters.getParameter(WEIGHT_MODE));
                 returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
                 break;
 
@@ -367,8 +449,8 @@ public class Watershed extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
@@ -436,6 +518,19 @@ public class Watershed extends Module {
 
                 + "<li>\"" + Connectivity.TWENTYSIX
                 + "\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+
+        parameters.get(WEIGHT_MODE).setDescription(
+                "The pre-defined set of weights that are used to compute the 3D distance transform using chamfer approximations of the euclidean metric (descriptions taken from <a href=\"https://ijpb.github.io/MorphoLibJ/javadoc/\">https://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br><ul>"
+                        + "<li>\"" + WeightModes.BORGEFORS
+                        + "\" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors and 5 for cube-diagonals (best approximation for 3-by-3-by-3 masks).</li>"
+
+                        + "<li>\"" + WeightModes.CHESSBOARD + "\" Use weight values of 1 for all neighbours.</li>"
+
+                        + "<li>\"" + WeightModes.CITY_BLOCK
+                        + "\" Use weight values of 1 for orthogonal neighbors, 2 for diagonal neighbors and 3 for cube-diagonals.</li>"
+
+                        + "<li>\"" + WeightModes.WEIGHTS_3_4_5_7
+                        + "\" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors, 5 for cube-diagonals and 7 for (2,1,1) shifts. Good approximation using only four weights, and keeping low value of orthogonal weight.</li></ul>");
 
         parameters.get(MATCH_Z_TO_X).setDescription(
                 "When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");

@@ -65,7 +65,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     public boolean testDoRedirect(Workspace workspace) {
         String testMode = parameters.getValue(TEST_MODE,workspace);
-        Module testModule = parameters.getValue(TEST_MODULE,workspace);
+        Module testModule = modules.getModuleByID(parameters.getValue(TEST_MODULE,workspace));
 
         if (testModule == null)
             return false;

@@ -207,7 +207,7 @@ public class Obj extends Volume {
         // If the first parent was the only one listed, returning this
         if (elements.length == 1)
             return parent;
-             
+
         // If there are additional parents listed, re-constructing the string and
         // running this method on the parent
         StringBuilder stringBuilder = new StringBuilder();
@@ -620,6 +620,47 @@ public class Obj extends Volume {
     public void clearAllCoordinates() {
         super.clearAllCoordinates();
         rois = new HashMap<>();
+    }
+
+    public Obj duplicate(Objs newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
+            boolean duplicateMetadata) {
+        Obj newObj = new Obj(newCollection, getID(), this);
+
+        // Duplicating coordinates
+        newObj.setCoordinateSet(getCoordinateSet().duplicate());
+
+        // Duplicating relationships
+        if (duplicateRelationships) {
+            for (Obj parent : parents.values()) {
+                newObj.addParent(parent);
+                parent.addChild(this);
+            }
+
+            for (Objs currChildren : children.values())
+                for (Obj child : currChildren.values()) {
+                    newObj.addChild(child);
+                    child.addParent(newObj);
+                }
+
+            for (Objs currPartners : partners.values())
+                for (Obj partner : currPartners.values()) {
+                    newObj.addPartner(partner);
+                    partner.addPartner(newObj);
+                }
+        }
+
+        // Duplicating measurements
+        if (duplicateMeasurement)
+            for (Measurement measurement : measurements.values())
+                newObj.addMeasurement(measurement.duplicate());
+
+        // Duplicating metadata
+        if (duplicateMetadata)
+            for (ObjMetadata metadataItem : metadata.values())
+                newObj.addMetadataItem(metadataItem.duplicate());
+
+        return newObj;
+
     }
 
     @Override

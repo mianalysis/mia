@@ -134,7 +134,7 @@ public class ShowImage extends Module {
                 break;
         }
 
-        if (showOutput) image.showImage(title,null,normalisation,composite);
+        if (showOutput) image.show(title,null,normalisation,composite);
 
         return Status.PASS;
 
