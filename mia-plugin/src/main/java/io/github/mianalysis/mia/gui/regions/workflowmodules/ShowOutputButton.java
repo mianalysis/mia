@@ -50,7 +50,7 @@ public class ShowOutputButton extends SVGButton implements ActionListener {
         else if ((module.isEnabled()) & !module.isRunnable())
             dynamicForegroundColor.setColor(Colours.getRed(isDark));
         else if (!module.isEnabled())
-            dynamicForegroundColor.setColor(Color.GRAY);
+            dynamicForegroundColor.setColor(Colours.getGrey(isDark));
 
     }
 

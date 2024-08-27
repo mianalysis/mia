@@ -1,18 +1,14 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
-import java.awt.Color;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
-import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.svg.SVGButton;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
@@ -22,61 +18,55 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
  * Created by Stephen on 08/06/2017.
  */
-public class EvalButton extends JButton implements ActionListener {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5495286052011521092L;
+public class EvalButton extends SVGButton implements ActionListener {
+    private static final int size = 18;
 
     private static Parameters previousParameters = null;
 
     private static Thread t;
 
     private Module module;
-    private static final ImageIcon blackIcon = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
-    private static final ImageIcon blackIconDM = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowopen_blackDM_12px.png"), "");
+    // private static final ImageIcon blackIcon = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
+    // private static final ImageIcon blackIconDM = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowopen_blackDM_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/Dual Ring-1s-12px.gif"), "");
     private static final ImageIcon amberIconDM = new ImageIcon(
             EvalButton.class.getResource("/icons/Dual Ring-1s_DM-12px.gif"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowclosed_green_12px.png"), "");
-    private static final ImageIcon greenIconDM = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowclosed_greenDM_12px.png"), "");
-    private static final ImageIcon redOpenIcon = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowopen_red_12px.png"), "");
-    private static final ImageIcon redOpenIconDM = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowopen_redDM_12px.png"), "");
-    private static final ImageIcon redClosedIcon = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowclosed_red_12px.png"), "");
-    private static final ImageIcon redClosedIconDM = new ImageIcon(
-            EvalButton.class.getResource("/icons/arrowclosed_redDM_12px.png"), "");
-    private static final ImageIcon redStopIcon = new ImageIcon(EvalButton.class.getResource("/icons/x-mark-3-12.png"),
-            "");
+    // private static final ImageIcon greenIcon = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowclosed_green_12px.png"), "");
+    // private static final ImageIcon greenIconDM = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowclosed_greenDM_12px.png"), "");
+    // private static final ImageIcon redOpenIcon = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowopen_red_12px.png"), "");
+    // private static final ImageIcon redOpenIconDM = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowopen_redDM_12px.png"), "");
+    // private static final ImageIcon redClosedIcon = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowclosed_red_12px.png"), "");
+    // private static final ImageIcon redClosedIconDM = new ImageIcon(
+    //         EvalButton.class.getResource("/icons/arrowclosed_redDM_12px.png"), "");
+    // private static final ImageIcon redStopIcon = new ImageIcon(EvalButton.class.getResource("/icons/x-mark-3-12.png"),
+    //         "");
 
     // CONSTRUCTOR
 
     public EvalButton(Module module) {
+        super(new String[] { "/icons/arrowdownopen.svg", "/icons/arrowdownclosed.svg", "/icons/stop.svg"}, size, 0);
+
         this.module = module;
 
-        putClientProperty( FlatClientProperties.STYLE, "arc: 0" );
-        setBorderPainted(false);
-        setOpaque(false);
-        setBackground(new Color(0,0,0,0));
-        setMargin(new Insets(0, 0, 0, 0));
-        setFocusPainted(false);
-        setSelected(false);
-        setName("EvalButton");
-        setToolTipText("Evaluate module");
         addActionListener(this);
+        setName("EvalButton");
+        setToolTipText("Evaluate module");        
+
         updateState();
 
     }
@@ -88,56 +78,68 @@ public class EvalButton extends JButton implements ActionListener {
 
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
+            // selectIconByIndex(0);
+            // dynamicForegroundColor.setColor(Colours.getOrange(isDark));
             if (isDark)
                 setIcon(amberIconDM);
             else
                 setIcon(amberIcon);
 
-            setRolloverIcon(redStopIcon);
+            selectRolloverIconByIndex(2);
 
             return;
         }
 
         if (idx <= GUI.getLastModuleEval()) {
             if (module.isRunnable()) {
-                if (isDark) {
-                    setIcon(greenIconDM);
-                    setRolloverIcon(greenIconDM);
-                } else {
-                    setIcon(greenIcon);
-                    setRolloverIcon(greenIcon);
-                }
+                selectIconByIndex(1);
+                dynamicForegroundColor.setColor(Colours.getGreen(isDark));
+                // if (isDark) {
+                //     setIcon(greenIconDM);
+                //     setRolloverIcon(greenIconDM);
+                // } else {
+                //     setIcon(greenIcon);
+                //     setRolloverIcon(greenIcon);
+                // }
             } else {
-                if (isDark) {
-                    setIcon(redClosedIconDM);
-                    setRolloverIcon(redClosedIconDM);
-                } else {
-                    setIcon(redClosedIcon);
-                    setRolloverIcon(redClosedIcon);
-                }
+                selectIconByIndex(1);
+                dynamicForegroundColor.setColor(Colours.getRed(isDark));
+                // if (isDark) {
+                //     setIcon(redClosedIconDM);
+                //     setRolloverIcon(redClosedIconDM);
+                // } else {
+                //     setIcon(redClosedIcon);
+                //     setRolloverIcon(redClosedIcon);
+                // }
             }
         } else {
             if (module.isRunnable()) {
-                if (isDark) {
-                    setIcon(blackIconDM);
-                    setRolloverIcon(blackIconDM);
-                } else {
-                    setIcon(blackIcon);
-                    setRolloverIcon(blackIcon);
-                }
+                selectIconByIndex(0);
+                dynamicForegroundColor.setColor(Colours.getBlack(isDark));
+                // if (isDark) {
+                //     setIcon(blackIconDM);
+                //     setRolloverIcon(blackIconDM);
+                // } else {
+                //     setIcon(blackIcon);
+                //     setRolloverIcon(blackIcon);
+                // }
             } else {
-                if (isDark) {
-                    setIcon(redOpenIconDM);
-                    setRolloverIcon(redOpenIconDM);
-                } else {
-                    setIcon(redOpenIcon);
-                    setRolloverIcon(redOpenIcon);
-                }
+                selectIconByIndex(0);
+                dynamicForegroundColor.setColor(Colours.getRed(isDark));
+                // if (isDark) {
+                //     setIcon(redOpenIconDM);
+                //     setRolloverIcon(redOpenIconDM);
+                // } else {
+                //     setIcon(redOpenIcon);
+                //     setRolloverIcon(redOpenIcon);
+                // }
             }
         }
 
         setEnabled(module.isEnabled() && module.isRunnable());
-                
+        if (!isEnabled())
+            dynamicForegroundColor.setColor(Colours.getGrey(isDark));            
+    
     }
 
     // GETTERS

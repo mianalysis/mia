@@ -55,6 +55,10 @@ public abstract class SVGButton extends JButton implements MouseListener {
         setIcon(icons[index]);
     }
 
+    public void selectRolloverIconByIndex(int index) {
+        setRolloverIcon(icons[index]);
+    }
+
     public abstract void updateState();
 
     @Override
@@ -71,13 +75,15 @@ public abstract class SVGButton extends JButton implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        dynamicGlowColor.setColor(Colours.getDarkGrey(false));
+        if (isEnabled())
+        dynamicGlowColor.setColor(Colours.getGrey(false));
         repaint();
 
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        if (isEnabled())
         dynamicGlowColor.setColor(new Color(0, 0, 0, 0));
         repaint();
     }
