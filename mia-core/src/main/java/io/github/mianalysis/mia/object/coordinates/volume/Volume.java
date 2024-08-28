@@ -5,12 +5,15 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -758,18 +761,24 @@ public class Volume {
 
     }
 
-    public Image getAsTightImage(String imageName, int[][] borderWidths) {
-        double[][] extents = getExtents(true, false);
-        int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
-        int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
-        int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
+    public Image getAsTightImage(String imageName, @Nullable int[][] borderWidths) {
+        if (borderWidths == null)
+            return getAsImage(imageName, 0, 1);
 
-        int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
-                + borderWidths[0][1] + 1;
-        int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
-                + borderWidths[1][1] + 1;
-        int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
-                + borderWidths[2][1] + 1;
+        double[][] extents = getExtents(true, false);
+        int xOffs = Math.max(0, (int) Math.round(extents[0][0]) - borderWidths[0][0]);
+        int yOffs = Math.max(0, (int) Math.round(extents[1][0]) - borderWidths[1][0]);
+        int zOffs = Math.max(0, (int) Math.round(extents[2][0]) - borderWidths[2][0]);
+
+        int width = Math.min(spatCal.getWidth(),
+                (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
+                        + borderWidths[0][1] + 1);
+        int height = Math.min(spatCal.getHeight(),
+                (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
+                        + borderWidths[1][1] + 1);
+        int nSlices = Math.min(spatCal.getNSlices(),
+                (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
+                        + borderWidths[2][1] + 1);
 
         ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
         spatCal.setImageCalibration(ipl);
@@ -778,7 +787,6 @@ public class Volume {
         for (Point<Integer> point : getCoordinateSet()) {
             ipl.setPosition(point.z - zOffs + 1);
             ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
-
         }
 
         return ImageFactory.createImage("Tight", ipl);
