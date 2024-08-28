@@ -170,8 +170,8 @@ public class GrowObjects extends Module {
 
             // Get marker, intensity and mask images
             Image markerImage = getMarkerImage(currObjs, startingObjectsMode);
-            Image intensityImage = getIntensityImage(inputObjects, frame, growthMode, intensityImageName, workspace);
-            Image maskImage = getMaskImage(inputObjects, frame, maskImageName, blackBackground,
+            Image intensityImage = getIntensityImage(currObjs, frame, growthMode, intensityImageName, workspace);
+            Image maskImage = getMaskImage(currObjs, frame, maskImageName, blackBackground,
                     workspace);
 
             // Apply watershed transform

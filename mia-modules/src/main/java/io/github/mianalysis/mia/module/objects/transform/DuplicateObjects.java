@@ -25,10 +25,6 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
- * Created by sc13967 on 29/06/2017.
- */
-
-/**
  * Creates an exact copy of objects. Can optionally also duplicate
  * relationships, measurements and metadata. Duplicated objects are entirely
  * separate from their original copies (i.e. don't share coordinate sets), so
@@ -77,7 +73,7 @@ public class DuplicateObjects extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override

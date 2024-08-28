@@ -3,10 +3,8 @@ package io.github.mianalysis.mia;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Properties;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.Context;
 import org.scijava.log.LogLevel;
 import org.scijava.log.LogListener;
@@ -62,22 +60,19 @@ public abstract class MIA {
     protected static final boolean imagePlusMode = true;
 
     private static String extractVersion() {
-        // Determining the version number from the pom file
-        try {
-            if (new File("pom.xml").exists()) {
-                FileReader reader = new FileReader("pom.xml");
-                Model model = new MavenXpp3Reader().read(reader);
-                reader.close();
-                return model.getVersion();
-            } else {
-                return MIA.class.getPackage().getImplementationVersion();
-            }
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
+        String versionNumber = MIA.class.getPackage().getImplementationVersion();
+        if (versionNumber == null) {
+            Properties properties = new Properties();
+            try {
+                properties.load(MIA.class.getClassLoader().getResourceAsStream("project.properties"));
+                return properties.getProperty("version");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "";
+            }            
+        } else {
+            return versionNumber;
         }
-
-        return "";
-
     }
 
     public static boolean isImagePlusMode() {
