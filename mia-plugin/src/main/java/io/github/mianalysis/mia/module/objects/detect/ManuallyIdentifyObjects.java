@@ -48,6 +48,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
@@ -492,7 +493,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         // If necessary, apply interpolation
         try {
             if (spatialInterpolation)
-                ObjectSelector.applySpatialInterpolation(outputObjects, type);
+                ZInterpolator.applySpatialInterpolation(outputObjects, type);
             if (outputTracks && temporalInterpolation)
                 ObjectSelector.applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
         } catch (IntegerOverflowException e) {

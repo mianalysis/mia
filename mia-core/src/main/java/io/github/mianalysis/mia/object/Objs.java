@@ -63,7 +63,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     public Objs(String name, Objs exampleCollection) {
         this.name = name;
-        this.spatCal = exampleCollection.getSpatialCalibration();
+        this.spatCal = exampleCollection.getSpatialCalibration().duplicate();
         this.nFrames = exampleCollection.getNFrames();
         this.frameInterval = exampleCollection.getFrameInterval();
         this.temporalUnit = exampleCollection.getTemporalUnit();

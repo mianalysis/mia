@@ -8,13 +8,13 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 public class SpatCal {
-    final public double dppXY; // Calibration in xy
-    final public double dppZ; // Calibration in z
-    final public String units;
+    public double dppXY; // Calibration in xy
+    public double dppZ; // Calibration in z
+    public String units;
 
-    final public int width;
-    final public int height;
-    final public int nSlices;
+    public int width;
+    public int height;
+    public int nSlices;
 
     public SpatCal(double dppXY, double dppZ, String units, int width, int height, int nSlices) {
         this.dppXY = dppXY;
