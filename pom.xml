@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>37.0.0</version>
+        <version>38.0.1</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.6.5-SNAPSHOT</version>
+    <version>1.6.5</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -189,13 +189,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>3.8.4</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
             <version>2.18.0</version>
@@ -272,7 +265,7 @@
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-        </dependency>        
+        </dependency>
     </dependencies>
 
     <distributionManagement>

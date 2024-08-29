@@ -629,6 +629,9 @@ public class Obj extends Volume {
         // Duplicating coordinates
         newObj.setCoordinateSet(getCoordinateSet().duplicate());
 
+        // Setting timepoint
+        newObj.setT(getT());
+
         // Duplicating relationships
         if (duplicateRelationships) {
             for (Obj parent : parents.values()) {

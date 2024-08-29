@@ -3,23 +3,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.github.mianalysis</groupId>
-		<artifactId>pom-mia</artifactId>
-		<version>1.6.5-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>io.github.mianalysis</groupId>
+        <artifactId>pom-mia</artifactId>
+        <version>1.6.5</version>
+    </parent>
 
-	<groupId>io.github.mianalysis</groupId>
-	<artifactId>mia-plugin</artifactId>
-	<version>1.6.5-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>mia-plugin</name>
-	<url>https://github.com/mianalysis/mia</url>
-	<inceptionYear>2017</inceptionYear>
-	<description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
-	<organization>
-		<name>University of Bristol</name>
-	</organization>
+    <groupId>io.github.mianalysis</groupId>
+    <artifactId>mia-plugin</artifactId>
+    <version>1.6.5</version>
+    <packaging>jar</packaging>
+    <name>mia-plugin</name>
+    <url>https://github.com/mianalysis/mia</url>
+    <inceptionYear>2017</inceptionYear>
+    <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
+    <organization>
+        <name>University of Bristol</name>
+    </organization>
 
 	<licenses>
 		<license>
@@ -243,32 +243,33 @@
 				</configuration>
 			</plugin>
 
-			<!-- To be uncommented when creating release, but commented when uploading to Maven Central -->
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<filters>
-						<filter>
-							<artifact>*:*</artifact>
-							<excludes>
-								<exclude>META-INF/*.SF</exclude>
-								<exclude>META-INF/*.DSA</exclude>
-								<exclude>META-INF/*.RSA</exclude>
-							</excludes>
-						</filter>
-					</filters>
-				</configuration>
-			</plugin> -->
+            <!-- To be uncommented when creating release, but commented when uploading to Maven
+            Central -->
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin> -->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -289,14 +290,21 @@
 								commons-codec,commons-collections4,commons-compress,commons-io,commons-math3,slf4j-api,xml-apis
 							</excludeArtifactIds>
 
-							<outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                            <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 </project>

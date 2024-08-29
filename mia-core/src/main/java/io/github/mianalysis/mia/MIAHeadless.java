@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
+import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
@@ -24,7 +25,7 @@ import io.github.mianalysis.mia.process.logging.ImageJGUIRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJService;
 
-@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>MIA (headless)", visible = true)
+@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>MIA (headless)", visible = true, headless = true)
 public class MIAHeadless extends MIA implements Command {
     @Parameter
     protected static ImageJService ijService;
@@ -32,7 +33,7 @@ public class MIAHeadless extends MIA implements Command {
     @Parameter(required = false, visibility = ItemVisibility.MESSAGE)
     private String workFlowSelectionMessage = "<html><b>Workflow selection</b></html>";
 
-    @Parameter(label = "Workflow file path", required = true)
+    @Parameter(label = "Workflow file path", type = ItemIO.INPUT, required = true)
     public File workflowPath = null;
 
     @Parameter(required = false, visibility = ItemVisibility.MESSAGE)
@@ -40,31 +41,31 @@ public class MIAHeadless extends MIA implements Command {
 
     // The following currently has to be a String as there's seemingly no way to
     // select either a file or folder
-    @Parameter(label = "Input path", required = false, persist = false)
+    @Parameter(label = "Input path", type = ItemIO.INPUT, required = false, persist = false)
     public String inputPath = null;
 
-    @Parameter(label = "Variables", required = false, persist = false)
+    @Parameter(label = "Variables", type = ItemIO.INPUT, required = false, persist = false)
     public String variables = null;
 
     @Parameter(required = false, visibility = ItemVisibility.MESSAGE)
     private String loggingMessage = "<html><b>Logging configuration</b></html>";
 
-    @Parameter(label = "Show debug", required = false, persist = false)
+    @Parameter(label = "Show debug", type = ItemIO.INPUT, required = false, persist = false)
     public boolean showDebug = false;
 
-    @Parameter(label = "Show memory", required = false, persist = false)
+    @Parameter(label = "Show memory", type = ItemIO.INPUT, required = false, persist = false)
     public boolean showMemory = false;
 
-    @Parameter(label = "Show message", required = false, persist = false)
+    @Parameter(label = "Show message", type = ItemIO.INPUT, required = false, persist = false)
     public boolean showMessage = true;
 
-    @Parameter(label = "Show status", required = false, persist = false)
+    @Parameter(label = "Show status", type = ItemIO.INPUT, required = false, persist = false)
     public boolean showStatus = true;
 
-    @Parameter(label = "Show warning", required = false, persist = false)
+    @Parameter(label = "Show warning", type = ItemIO.INPUT, required = false, persist = false)
     public boolean showWarning = true;
 
-    @Parameter(label = "Verbose messages", required = false, persist = false)
+    @Parameter(label = "Verbose messages", type = ItemIO.INPUT, required = false, persist = false)
     public boolean verbose = false;
 
     @Override
@@ -105,7 +106,8 @@ public class MIAHeadless extends MIA implements Command {
             }
 
             // Inserting variables
-            if (variables != null)
+            System.out.println(variables);
+            if (variables != null && variables.length() == 0)
                 applyGlobalVariables(modules, variables);
 
             // Running analysis

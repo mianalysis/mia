@@ -2,11 +2,12 @@
 
 package io.github.mianalysis.mia.module.objects.process;
 
-import com.drew.lang.annotations.Nullable;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -17,14 +18,14 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
-import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -368,10 +369,17 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             maxDist = Double.MAX_VALUE;
 
         // Calculating border widths for image cropping
-        int maxDistXY = (int) Math.ceil(maxDist);
-        int maxDistZ = (int) Math.ceil(maxDist * inputObjects.getDppXY() / inputObjects.getDppZ());
-        int[][] borderWidths = new int[][] { { maxDistXY, maxDistXY }, { maxDistXY, maxDistXY },
-                { maxDistZ, maxDistZ } };
+        int[][] borderWidths = null;
+        if (applyMaxDist) {
+            int maxDistXY = (int) Math.ceil(maxDist);
+            int maxDistZ = (int) Math.ceil(maxDist * inputObjects.getDppXY() / inputObjects.getDppZ());
+            borderWidths = new int[][] { { maxDistXY, maxDistXY }, { maxDistXY, maxDistXY },
+                    { maxDistZ, maxDistZ } };
+            if (inputObjects.getNSlices() == 1) {
+                borderWidths[2][0] = 0;
+                borderWidths[2][1] = 0;
+            }
+        }
 
         // Creating output bands objects
         Objs bandObjects = new Objs(outputObjectsName, inputObjects);
@@ -384,9 +392,9 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             double[][] extents = referenceObject.getExtents(true, false);
 
             // Creating binary image for distance transform
-            Image inputImage = referenceObject.getAsTightImage("Binary", borderWidths);
+            Image<T> inputImage = referenceObject.getAsTightImage("Binary", borderWidths);
             InvertIntensity.process(inputImage);
-            Image<T> maskImage = inputObject.getAsImage("Mask", true);
+            Image<T> maskImage = inputObject.getAsTightImage("Mask", borderWidths);
 
             Objs tempBandObjects;
             switch (bandMode) {
@@ -411,10 +419,12 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
 
                 // Shifting back to original coordinates
-                int xShift = (int) Math.round(extents[0][0] - borderWidths[0][0]);
-                int yShift = (int) Math.round(extents[1][0] - borderWidths[1][0]);
-                int zShift = (int) Math.round(extents[2][0] - borderWidths[2][0]);
-                tempBandObject.translateCoords(xShift, yShift, zShift);
+                if (applyMaxDist) {
+                    int xShift = (int) Math.round(extents[0][0] - borderWidths[0][0]);
+                    int yShift = (int) Math.round(extents[1][0] - borderWidths[1][0]);
+                    int zShift = (int) Math.round(extents[2][0] - borderWidths[2][0]);
+                    tempBandObject.translateCoords(xShift, yShift, zShift);
+                }
 
                 tempBandObject.setID(bandObjects.getAndIncrementID());
                 for (Measurement measurement : tempBandObject.getMeasurements().values())
