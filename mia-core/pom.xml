@@ -149,6 +149,7 @@
             <version>5.2.3</version>
         </dependency>
 
+        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or later -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -165,6 +166,7 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
+            <scope>${scp}</scope>
         </dependency>
     </dependencies>
 

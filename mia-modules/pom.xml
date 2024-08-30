@@ -224,6 +224,7 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
+            <scope>${scp}</scope>
         </dependency>
     </dependencies>
 
