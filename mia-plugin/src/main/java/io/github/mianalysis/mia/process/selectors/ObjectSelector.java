@@ -474,47 +474,6 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     }
 
-    public static void applySpatialInterpolation(Objs inputObjects, String type) throws IntegerOverflowException {
-        for (Obj inputObj : inputObjects.values()) {
-            Image binaryImage = inputObj.getAsTightImage("BinaryTight");
-
-            // We need at least 3 slices to make interpolation worthwhile
-            if (binaryImage.getImagePlus().getNSlices() < 3)
-                continue;
-
-            applySpatialInterpolation(binaryImage);
-
-            // Converting binary image back to objects
-            Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(), true).getFirst();
-            interpObj.setSpatialCalibration(inputObj.getSpatialCalibration());
-            double[][] extents = inputObj.getExtents(true, false);
-
-            interpObj.translateCoords((int) Math.round(extents[0][0]), (int) Math.round(extents[1][0]),
-                    (int) Math.round(extents[2][0]));
-            inputObj.setCoordinateSet(interpObj.getCoordinateSet());
-
-        }
-    }
-
-    static void applySpatialInterpolation(Image binaryImage) {
-        ImagePlus binaryIpl = binaryImage.getImagePlus();
-        int nSlices = binaryIpl.getNSlices();
-        int nFrames = binaryIpl.getNFrames();
-
-        BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
-
-        // We only want to interpolate in z, so need to processAutomatic each timepoint
-        // separately
-        for (int t = 1; t <= nFrames; t++) {
-            // Extracting the slice and interpolating
-            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
-            if (!checkStackForInterpolation(sliceIpl.getStack()))
-                continue;
-            binaryInterpolator.run(sliceIpl.getStack());
-            ImagePlusImage.getSetStack(binaryIpl, t, 1, sliceIpl.getStack());
-        }
-    }
-
     public static void applyTemporalInterpolation(Objs inputObjects, Objs trackObjects, String type)
             throws IntegerOverflowException {
         for (Obj trackObj : trackObjects.values()) {
