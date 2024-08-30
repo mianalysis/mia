@@ -14,7 +14,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
-import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;

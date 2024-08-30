@@ -1,9 +1,6 @@
 package io.github.mianalysis.mia.process.imagej;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
-
-import org.checkerframework.checker.units.qual.Volume;
 
 import ij.ImagePlus;
 import ij.process.ImageStatistics;

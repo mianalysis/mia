@@ -1,9 +1,8 @@
 package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
-import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.module.objects.measure.miscellaneous.CalculateStatsForChildren;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.mianalysis.mia.module.ModuleTest;
 
 
 public class CalculateStatsForChildrenTest extends ModuleTest {

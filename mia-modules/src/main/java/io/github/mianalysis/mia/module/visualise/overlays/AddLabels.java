@@ -23,7 +23,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.process.FilterImage;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.object.Obj;

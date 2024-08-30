@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.Tracks3D;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;

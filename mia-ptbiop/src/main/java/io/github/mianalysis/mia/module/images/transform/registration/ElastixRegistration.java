@@ -9,7 +9,6 @@ import ch.epfl.biop.wrappers.elastix.RegisterHelper;
 import ch.epfl.biop.wrappers.elastix.ij2commands.Mod_Elastix_Register;
 import ch.epfl.biop.wrappers.transformix.DefaultTransformixTask;
 import ch.epfl.biop.wrappers.transformix.Mod_TransformHelper;
-import ch.epfl.biop.wrappers.transformix.TransformHelper;
 import ch.epfl.biop.wrappers.transformix.Transformix;
 import ij.ImagePlus;
 import ij.Prefs;

@@ -23,7 +23,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
@@ -57,7 +56,6 @@ import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
-import mdbtools.libmdb.file;
 
 /**
 * 

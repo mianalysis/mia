@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.module.objects.track.abstrakt;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -13,7 +12,6 @@ import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.SpotRoi;
 import fiji.plugin.trackmate.TrackModel;
 import fiji.plugin.trackmate.tracking.SpotTracker;
-import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.MIA;
@@ -21,7 +19,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objects.track.trackmate.OverlapTracker3DFactory;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
