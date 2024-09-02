@@ -11,6 +11,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
+import ij.plugin.frame.Recorder;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
@@ -48,7 +49,7 @@ public class MIAHeadless extends MIA implements Command {
     @Parameter(label = "Input path", type = ItemIO.INPUT, required = false, persist = true)
     public String inputPath = null;
 
-    @Parameter(label = "Variables", type = ItemIO.INPUT, required = false, persist = true, visibility = ItemVisibility.NORMAL)
+    @Parameter(label = "Variables", type = ItemIO.INPUT, required = false, persist = true)
     public String variables = null;
 
     @Parameter(required = false, persist = false, visibility = ItemVisibility.MESSAGE)
@@ -72,35 +73,8 @@ public class MIAHeadless extends MIA implements Command {
     @Parameter(label = "Verbose messages", type = ItemIO.INPUT, required = false, persist = true)
     public boolean verbose = false;
 
-    @Parameter(required = false, persist = false, visibility = ItemVisibility.MESSAGE)
-    private String recorderMessage = "<html><b>Macro recorder configuration</b></html>";
-
-    @Parameter(label = "Display macro command", type = ItemIO.INPUT, required = false, persist = true)
-    public boolean displayMacroCommand = false;
-
     @Override
     public void run() {
-        // The macro recorder doesn't appear to pick up the parameters from this plugin,
-        // so manually show the command
-        if (displayMacroCommand) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Macro command: run(\"MIA (headless)\", \"");
-            sb.append("workflowpath=[" + workflowPath + "]");
-            sb.append(" inputpath=[" + inputPath + "]");
-            sb.append(" variables=[" + variables + "]");
-            sb.append(" showdebug=" + showDebug);
-            sb.append(" showmemory=" + showMemory);
-            sb.append(" showmessage=" + showMessage);
-            sb.append(" showstatus=" + showStatus);
-            sb.append(" showwarning=" + showWarning);
-            sb.append(" verbose=" + verbose);
-            sb.append(" displaymacrocommand=false"); // Although it was true, we don't want this to keep showing up
-            sb.append("\");");
-
-            MIA.log.writeMessage(sb.toString());
-
-        }
-
         headless = true;
 
         try {
@@ -113,7 +87,6 @@ public class MIAHeadless extends MIA implements Command {
             } else {
                 UIService uiService = ijService.context().getService(UIService.class);
                 newRenderer = new ImageJGUIRenderer(uiService);
-
             }
 
             newRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, showDebug);
@@ -127,6 +100,14 @@ public class MIAHeadless extends MIA implements Command {
             mainRenderer = newRenderer;
 
             Module.setVerbose(verbose);
+
+            // The macro recorder doesn't appear to pick up the parameters from this plugin,
+            // so manually show the command
+            Recorder.recordString("run(\"MIA (headless)\", \"workflowpath=[" + workflowPath + "] inputpath=["
+                    + inputPath
+                    + "] variables=[" + variables + "] showdebug=" + showDebug + " showmemory=" + showMemory
+                    + " showmessage=" + showMessage + " showstatus=" + showStatus + " showwarning=" + showWarning
+                    + " verbose=" + verbose + "\");");
 
             Modules modules;
             if (inputPath == null) {
@@ -155,6 +136,9 @@ public class MIAHeadless extends MIA implements Command {
         String[] variablesArray = variables.split(";");
         for (String variable : variablesArray) {
             String[] splitVariables = variable.split(":");
+            if (splitVariables.length != 2)
+                continue;
+
             String newVariableName = splitVariables[0].trim();
             String newVariableValue = splitVariables[1].trim();
 
