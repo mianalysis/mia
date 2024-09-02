@@ -3,23 +3,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>io.github.mianalysis</groupId>
-        <artifactId>pom-mia</artifactId>
-        <version>1.6.6</version>
-    </parent>
+	<parent>
+		<groupId>io.github.mianalysis</groupId>
+		<artifactId>pom-mia</artifactId>
+		<version>1.6.6</version>
+	</parent>
 
-    <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-plugin</artifactId>
-    <version>1.6.6</version>
-    <packaging>jar</packaging>
-    <name>mia-plugin</name>
-    <url>https://github.com/mianalysis/mia</url>
-    <inceptionYear>2017</inceptionYear>
-    <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
-    <organization>
-        <name>University of Bristol</name>
-    </organization>
+	<groupId>io.github.mianalysis</groupId>
+	<artifactId>mia-plugin</artifactId>
+	<version>1.6.6</version>
+	<packaging>jar</packaging>
+	<name>mia-plugin</name>
+	<url>https://github.com/mianalysis/mia</url>
+	<inceptionYear>2017</inceptionYear>
+	<description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
+	<organization>
+		<name>University of Bristol</name>
+	</organization>
 
 	<licenses>
 		<license>
@@ -173,12 +173,12 @@
 			<scope>${scp}</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij1-patcher</artifactId>
-            <version>1.2.6</version>
-            <scope>${scp}</scope>
-        </dependency>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij1-patcher</artifactId>
+			<version>1.2.6</version>
+			<scope>${scp}</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>sc.fiji</groupId>
@@ -193,39 +193,45 @@
 			<scope>${scp}</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>5.9</version>
-            <scope>${scp}</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.9</version>
+			<scope>${scp}</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.3</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.2.3</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-lite</artifactId>
-            <version>5.2.3</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-lite</artifactId>
+			<version>5.2.3</version>
+		</dependency>
 
-        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or
+		<!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or
         later -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.weisj</groupId>
+			<artifactId>jsvg</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -265,9 +271,9 @@
 				</configuration>
 			</plugin>
 
-            <!-- To be uncommented when creating release, but commented when uploading to Maven
+			<!-- To be uncommented when creating release, but commented when uploading to Maven
             Central -->
-            <!-- <plugin>
+			<!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -308,25 +314,25 @@
 							<excludeScope>provided</excludeScope>
 							<includeScope>runtime</includeScope>
 
-                            <excludeArtifactIds>
-                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,slf4j-api,xml-apis
-                            </excludeArtifactIds>
+							<excludeArtifactIds>
+								commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,slf4j-api,xml-apis
+							</excludeArtifactIds>
 
-                            <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+							<outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>
