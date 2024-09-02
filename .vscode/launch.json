@@ -1,5 +1,6 @@
 {
     "configurations": [
+
         {
             "type": "java",
             "name": "CommaSeparatedStringInterpreter",
@@ -12,6 +13,13 @@
             "name": "MIA_",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA_",
+            "projectName": "mia-plugin"
+        },
+        {
+            "type": "java",
+            "name": "MIAHeadless",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIAHeadless",
             "projectName": "mia-plugin"
         }
     ]

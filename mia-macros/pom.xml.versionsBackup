@@ -6,14 +6,14 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.6</version>
+        <version>1.6.5</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-coordinates</artifactId>
-    <version>1.6.6</version>
+    <artifactId>mia-macros</artifactId>
+    <version>1.6.5</version>
     <packaging>jar</packaging>
-    <name>mia-coordinates</name>
+    <name>mia-macros</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -110,7 +110,7 @@
         <system>GitHub Actions</system>
         <url>https://github.com/mianalysis/mia</url>
     </ciManagement>
-
+    
     <repositories>
         <repository>
             <id>scijava.public</id>
@@ -122,6 +122,20 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-core</artifactId>
+            <version>1.6.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-modules</artifactId>
+            <version>1.6.5</version>
+        </dependency>
+    </dependencies>
 
     
 </project>
