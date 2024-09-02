@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.6.5</version>
     </parent>
-    
+
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.6.5</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -110,7 +110,7 @@
         <system>GitHub Actions</system>
         <url>https://github.com/mianalysis/mia</url>
     </ciManagement>
-    
+
     <repositories>
         <repository>
             <id>scijava.public</id>
@@ -127,19 +127,103 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.6.5</version>
         </dependency>
 
         <dependency>
-            <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-algorithms</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <groupId>sc.fiji</groupId>
+            <artifactId>AnalyzeSkeleton_</artifactId>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
-            <groupId>ch.epfl.biop</groupId>
-            <artifactId>ijl-utilities-wrappers</artifactId>
-            <version>0.9.4</version>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Auto_Local_Threshold</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>bUnwarpJ_</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Colocalisation_Analysis</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Colour_Deconvolution</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>CorrectBleach_</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Directionality_</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Fiji_Plugins</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Skeletonize3D_</artifactId>
+            <version>2.1.1</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>TrackMate</artifactId>
+            <version>7.12.2</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Trainable_Segmentation</artifactId>
+            <version>3.3.2</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.biomedical-imaging.imagej</groupId>
+            <artifactId>ij_ridge_detect</artifactId>
+            <version>1.4.1</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inra.ijpb</groupId>
+            <artifactId>MorphoLibJ_</artifactId>
+            <version>1.6.2</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mpicbg</groupId>
+            <artifactId>mpicbg</artifactId>
+            <version>1.5.0</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
             <scope>${scp}</scope>
         </dependency>
     </dependencies>

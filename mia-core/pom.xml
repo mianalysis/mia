@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.5</version>
+        <version>1.6.6</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-core</artifactId>
-    <version>1.6.5</version>
+    <version>1.6.6</version>
     <packaging>jar</packaging>
     <name>mia-core</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -138,6 +138,20 @@
         </dependency>
 
         <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij1-patcher</artifactId>
+            <version>1.2.6</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+            <version>1.54j</version>
+            <scope>${scp}</scope>
+          </dependency>
+
+        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>5.2.3</version>
@@ -149,6 +163,7 @@
             <version>5.2.3</version>
         </dependency>
 
+        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or later -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -165,6 +180,7 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
+            <scope>${scp}</scope>
         </dependency>
     </dependencies>
 

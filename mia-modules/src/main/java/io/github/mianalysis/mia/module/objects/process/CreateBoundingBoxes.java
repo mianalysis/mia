@@ -114,7 +114,7 @@ public class CreateBoundingBoxes extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

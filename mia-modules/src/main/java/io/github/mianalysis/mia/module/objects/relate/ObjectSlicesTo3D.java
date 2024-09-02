@@ -6,7 +6,6 @@ import java.util.Map;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import de.biomedical_imaging.ij.steger.LinesUtil.contour_class;
 import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
 import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
 import io.github.mianalysis.mia.MIA;
@@ -216,7 +215,7 @@ public class ObjectSlicesTo3D extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

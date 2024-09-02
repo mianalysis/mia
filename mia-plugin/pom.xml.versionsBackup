@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.4</version>
+        <version>1.6.5</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-plugin</artifactId>
-    <version>1.6.4</version>
+    <version>1.6.5</version>
     <packaging>jar</packaging>
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -177,6 +177,7 @@
             <groupId>net.imagej</groupId>
             <artifactId>ij1-patcher</artifactId>
             <version>1.2.6</version>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -196,6 +197,32 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-lite</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or later -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -281,7 +308,7 @@
                             <includeScope>runtime</includeScope>
 
                             <excludeArtifactIds>
-                                commons-codec,commons-collections4,commons-compress,commons-io,commons-math3,slf4j-api,xml-apis
+                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,slf4j-api,xml-apis
                             </excludeArtifactIds>
 
                             <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>

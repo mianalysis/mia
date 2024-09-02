@@ -120,7 +120,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

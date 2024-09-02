@@ -685,14 +685,14 @@ public class CreateSkeleton extends Module {
             switch (inputMode) {
                 case InputModes.IMAGE:
                     edgeObjects.showMeasurements(this, modules);
-                    skeletonObjects.convertToImageIDColours().show();
+                    skeletonObjects.convertToImageIDColours().show(false);
                     break;
 
                 case InputModes.OBJECTS:
                     inputObjects.showMeasurements(this, modules);
                     if (addToWorkspace) {
                         edgeObjects.showMeasurements(this, modules);
-                        skeletonObjects.convertToImageIDColours().show();
+                        skeletonObjects.convertToImageIDColours().show(false);
                     }
                     break;
             }

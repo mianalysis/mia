@@ -14,7 +14,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
-import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
@@ -296,11 +295,11 @@ public class GrowObjects extends Module {
 
         if (outputObjects == null) {
             if (showOutput)
-                inputObjects.convertToImageIDColours().show();
+                inputObjects.convertToImageIDColours().show(false);
         } else {
             workspace.addObjects(outputObjects);
             if (showOutput)
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
         }
 
         return Status.PASS;

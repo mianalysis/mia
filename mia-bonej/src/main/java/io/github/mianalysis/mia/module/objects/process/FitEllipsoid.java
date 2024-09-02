@@ -354,7 +354,7 @@ public class FitEllipsoid extends Module {
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE)) {
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
             }
         }
 

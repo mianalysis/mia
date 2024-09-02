@@ -127,7 +127,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 
