@@ -218,9 +218,9 @@ public class FillHolesInObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageIDColours().show();
+                inputObjects.convertToImageIDColours().show(false);
             else
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
         }
 
         return Status.PASS;

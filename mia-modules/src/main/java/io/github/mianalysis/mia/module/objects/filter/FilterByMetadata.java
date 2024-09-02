@@ -120,9 +120,9 @@ public class FilterByMetadata extends AbstractTextObjectFilter {
 
         // Showing objects
         if (showOutput) {
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
             if (moveObjects && outputObjects != null)
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
 
         }
 

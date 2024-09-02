@@ -340,7 +340,7 @@ public class LoadObjectsFromROIs extends Module {
             if (assignTracks)
                 TrackObjects.showObjects(outputObjects, trackObjectsName);
             else
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

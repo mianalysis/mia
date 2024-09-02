@@ -314,6 +314,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(LUTs.Random(true, false));
+        dispIpl.setDisplayRange(0, 255);
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
 

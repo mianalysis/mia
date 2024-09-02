@@ -10,6 +10,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
 import ij.Prefs;
+import ij.plugin.frame.Recorder;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
 import io.github.mianalysis.mia.object.system.Preferences;
@@ -49,7 +50,7 @@ public class MIA_ extends MIA implements Command {
     }
 
     @Override
-    public void run() {
+    public void run() {        
         headless = false;
 
         // Adding LogService to LogHistory

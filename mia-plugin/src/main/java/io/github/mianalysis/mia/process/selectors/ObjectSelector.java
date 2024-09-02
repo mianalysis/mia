@@ -735,6 +735,8 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         listModel.redraw();
 
+        updateOverlay();
+
     }
 
     public void removeObjects() {

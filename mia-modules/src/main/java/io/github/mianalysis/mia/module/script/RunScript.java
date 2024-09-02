@@ -332,7 +332,7 @@ public class RunScript extends Module {
                     case OutputTypes.OBJECTS:
                         if (workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace)) != null)
                             workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
-                                    .convertToImageIDColours().show();
+                                    .convertToImageIDColours().show(false);
                         break;
                     case OutputTypes.OBJECT_MEASUREMENT:
                         if (workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace)) != null)

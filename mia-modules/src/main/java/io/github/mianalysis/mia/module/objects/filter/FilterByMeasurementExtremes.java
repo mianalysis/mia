@@ -264,7 +264,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

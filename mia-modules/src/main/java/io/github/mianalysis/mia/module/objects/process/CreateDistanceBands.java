@@ -1,5 +1,3 @@
-// TODO: Distance limits
-
 package io.github.mianalysis.mia.module.objects.process;
 
 import org.scijava.Priority;
@@ -7,6 +5,7 @@ import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -368,16 +367,20 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             maxDist = Double.MAX_VALUE;
 
         // Calculating border widths for image cropping
-        int[][] borderWidths = null;
+        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
         if (applyMaxDist) {
             int maxDistXY = (int) Math.ceil(maxDist);
             int maxDistZ = (int) Math.ceil(maxDist * inputObjects.getDppXY() / inputObjects.getDppZ());
-            borderWidths = new int[][] { { maxDistXY, maxDistXY }, { maxDistXY, maxDistXY },
-                    { maxDistZ, maxDistZ } };
-            if (inputObjects.getNSlices() == 1) {
+
+            // Only add borders if using bands outside the object
+            if (!bandMode.equals(BandModes.INSIDE_OBJECTS))
+                borderWidths = new int[][] { { maxDistXY, maxDistXY }, { maxDistXY, maxDistXY },
+                        { maxDistZ, maxDistZ } };
+
+            if (inputObjects.getNSlices() == 1)
                 borderWidths[2][0] = 0;
-                borderWidths[2][1] = 0;
-            }
+            borderWidths[2][1] = 0;
+
         }
 
         // Creating output bands objects
@@ -445,7 +448,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
         // Showing objects
         if (showOutput)
-            bandObjects.convertToImageIDColours().show();
+            bandObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

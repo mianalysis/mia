@@ -295,11 +295,11 @@ public class GrowObjects extends Module {
 
         if (outputObjects == null) {
             if (showOutput)
-                inputObjects.convertToImageIDColours().show();
+                inputObjects.convertToImageIDColours().show(false);
         } else {
             workspace.addObjects(outputObjects);
             if (showOutput)
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
         }
 
         return Status.PASS;
