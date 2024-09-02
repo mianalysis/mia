@@ -329,7 +329,7 @@ public class CellposeDetection extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

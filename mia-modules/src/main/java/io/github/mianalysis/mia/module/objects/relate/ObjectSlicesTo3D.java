@@ -215,7 +215,7 @@ public class ObjectSlicesTo3D extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

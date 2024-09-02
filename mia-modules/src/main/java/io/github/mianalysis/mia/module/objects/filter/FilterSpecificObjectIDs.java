@@ -228,7 +228,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

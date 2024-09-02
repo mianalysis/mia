@@ -160,7 +160,7 @@ public class CreateWholeSliceObjects extends Module {
         }
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

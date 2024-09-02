@@ -295,12 +295,12 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
             case OutputModes.CREATE_NEW_OBJECT:
                 workspace.addObjects(outputObjects);
                 if (showOutput)
-                    outputObjects.convertToImageIDColours().show();
+                    outputObjects.convertToImageIDColours().show(false);
                 break;
 
             case OutputModes.UPDATE_INPUT:
                 if (showOutput)
-                    inputObjects.convertToImageIDColours().show();
+                    inputObjects.convertToImageIDColours().show(false);
                 break;
         }
 

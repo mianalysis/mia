@@ -233,7 +233,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 
