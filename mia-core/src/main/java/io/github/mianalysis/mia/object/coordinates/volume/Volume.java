@@ -104,6 +104,32 @@ public class Volume {
     }
 
     synchronized public Volume getSurface() {
+        return getSurface(false, false);
+    }
+
+    synchronized public Volume getSurface(boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+        // If ignoring edges, we want to create a new surface as it's not the "proper"
+        // surface. We also don't want to retain this surface, so we return it directly.
+        if (ignoreEdgesXY || ignoreEdgesZ) {
+            Volume tempSurface = new Volume(VolumeType.POINTLIST, getSpatialCalibration());
+            CoordinateSet tempSurfaceCoords = new PointCoordinates();
+            for (Point<Integer> pt : coordinateSet.calculateSurface(is2D())) {
+                if (ignoreEdgesXY && isOnEdgeXY(pt))
+                    continue;
+
+                if (ignoreEdgesZ && isOnEdgeZ(pt))
+                    continue;
+
+                tempSurfaceCoords.add(pt);
+
+            }
+
+            tempSurface.setCoordinateSet(tempSurfaceCoords);
+
+            return tempSurface;
+
+        }
+
         if (surface == null) {
             surface = new Volume(VolumeType.POINTLIST, getSpatialCalibration());
             surface.setCoordinateSet(coordinateSet.calculateSurface(is2D()));
@@ -210,6 +236,22 @@ public class Volume {
 
     public Point<Double> getMeanCentroid() {
         return getMeanCentroid(true, false);
+
+    }
+
+    /**
+     * Returns true if the current point is on the XY image edge
+     */
+    public boolean isOnEdgeXY(Point<Integer> p) {
+        return (p.x == 0 || p.y == 0 || p.x == getWidth() - 1 || p.y == getHeight() - 1);
+
+    }
+
+    /**
+     * Returns true if the current point is on the Z image edge
+     */
+    public boolean isOnEdgeZ(Point<Integer> p) {
+        return (p.z == 0 || p.z == getNSlices() - 1);
 
     }
 
@@ -375,26 +417,53 @@ public class Volume {
         }
     }
 
-    public double getSurfaceSeparation(Volume volume2, boolean pixelDistances) {
-        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, false);
+    // public double getSurfaceSeparation(Volume volume2, boolean pixelDistances) {
+    // return getSurfaceSeparation(volume2, pixelDistances, false, false);
+    // }
+
+    public double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ) {
+        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, false, ignoreEdgesXY,
+                ignoreEdgesZ);
         return calculator.getMinDist(pixelDistances);
     }
 
-    public double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean force2D) {
-        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, force2D);
+    // public double getSurfaceSeparation(Volume volume2, boolean pixelDistances,
+    // boolean force2D) {
+    // return getSurfaceSeparation(volume2, pixelDistances, force2D, false, false);
+    // }
+
+    public double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean force2D, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ) {
+        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, force2D, ignoreEdgesXY,
+                ignoreEdgesZ);
         return calculator.getMinDist(pixelDistances);
     }
 
-    public double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances) {
-        return getPointSurfaceSeparation(point, pixelDistances, false);
+    // public double getPointSurfaceSeparation(Point<Double> point, boolean
+    // pixelDistances) {
+    // return getPointSurfaceSeparation(point, pixelDistances, false, false, false);
+    // }
+
+    public double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ) {
+        return getPointSurfaceSeparation(point, pixelDistances, false, ignoreEdgesXY, ignoreEdgesZ);
     }
 
-    public double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances, boolean force2D) {
+    // public double getPointSurfaceSeparation(Point<Double> point, boolean
+    // pixelDistances, boolean force2D) {
+    // return getPointSurfaceSeparation(point, pixelDistances, force2D, false,
+    // false);
+    // }
+
+    public double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances, boolean force2D,
+            boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         // If this object is only 2D, ensure the Z-position of the point is also zero
         if (is2D() || force2D)
             point = new Point<>(point.x, point.y, 0d);
 
-        PointSurfaceSeparatorCalculator calculator = new PointSurfaceSeparatorCalculator(this, point);
+        PointSurfaceSeparatorCalculator calculator = new PointSurfaceSeparatorCalculator(this, point, ignoreEdgesXY,
+                ignoreEdgesZ);
         return calculator.getMinDist(pixelDistances);
     }
 
@@ -770,11 +839,11 @@ public class Volume {
         int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
 
         int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
-                        + borderWidths[0][1] + 1;
+                + borderWidths[0][1] + 1;
         int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
-                        + borderWidths[1][1] + 1;
+                + borderWidths[1][1] + 1;
         int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
-                        + borderWidths[2][1] + 1;
+                + borderWidths[2][1] + 1;
 
         ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
         spatCal.setImageCalibration(ipl);
@@ -784,7 +853,7 @@ public class Volume {
             ipl.setPosition(point.z - zOffs + 1);
             ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
         }
-        
+
         return ImageFactory.createImage("Tight", ipl);
 
     }

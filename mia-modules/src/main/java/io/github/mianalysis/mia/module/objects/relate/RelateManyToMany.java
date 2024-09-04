@@ -242,6 +242,16 @@ public class RelateManyToMany extends Module {
     /**
     * 
     */
+    public static final String IGNORE_EDGES_XY = "Ignore XY edges";
+
+    /**
+     * 
+     */
+    public static final String IGNORE_EDGES_Z = "Ignore Z edges";
+
+    /**
+    * 
+    */
     public static final String ADDITIONAL_MEASUREMENTS_SEPARATOR = "Additional measurement settings";
 
     /**
@@ -343,13 +353,13 @@ public class RelateManyToMany extends Module {
         }
     }
 
-    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside) {
+    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
             return false;
 
         // Calculating the separation between the two objects
-        double overlap = object1.getSurfaceSeparation(object2, true);
+        double overlap = object1.getSurfaceSeparation(object2, true, ignoreEdgesXY, ignoreEdgesZ);
 
         // If accepting all inside, any negative distances are automatically accepted
         if (acceptAllInside & overlap < 0)
@@ -533,6 +543,8 @@ public class RelateManyToMany extends Module {
         double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2, workspace);
         double higherThresh = parameters.getValue(HIGHER_OVERLAP_PC, workspace);
         double lowerThresh = parameters.getValue(LOWER_OVERLAP_PC, workspace);
+        boolean ignoreEdgesXY = parameters.getValue(IGNORE_EDGES_XY, workspace);
+        boolean ignoreEdgesZ = parameters.getValue(IGNORE_EDGES_Z, workspace);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
         LinkedHashMap<Integer, Parameters> parameterCollections = parameterGroup.getCollections(false);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
@@ -576,7 +588,7 @@ public class RelateManyToMany extends Module {
                             linkable = false;
                         break;
                     case SpatialSeparationModes.SURFACE_SEPARATION:
-                        if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside))
+                        if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside, ignoreEdgesXY, ignoreEdgesZ))
                             linkable = false;
                         break;
                 }
@@ -671,6 +683,8 @@ public class RelateManyToMany extends Module {
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
         parameters.add(new DoubleP(HIGHER_OVERLAP_PC, this, 50.0));
         parameters.add(new DoubleP(LOWER_OVERLAP_PC, this, 0.0));
+        parameters.add(new BooleanP(IGNORE_EDGES_XY, this, false));
+        parameters.add(new BooleanP(IGNORE_EDGES_Z, this, false));
 
         parameters.add(new SeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
 
@@ -713,10 +727,16 @@ public class RelateManyToMany extends Module {
         returnedParameters.add(parameters.getParameter(SPATIAL_SEPARATION_MODE));
         switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE, workspace)) {
             case SpatialSeparationModes.CENTROID_SEPARATION:
+                returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
+                returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+                returnedParameters.add(parameters.getParameter(ACCEPT_ALL_INSIDE));
+                break;
             case SpatialSeparationModes.SURFACE_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
                 returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
                 returnedParameters.add(parameters.getParameter(ACCEPT_ALL_INSIDE));
+                returnedParameters.add(parameters.getParameter(IGNORE_EDGES_XY));
+                returnedParameters.add(parameters.getParameter(IGNORE_EDGES_Z));
                 break;
             case SpatialSeparationModes.SPATIAL_OVERLAP:
                 returnedParameters.add(parameters.getParameter(THRESHOLD_MODE));
@@ -774,8 +794,8 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

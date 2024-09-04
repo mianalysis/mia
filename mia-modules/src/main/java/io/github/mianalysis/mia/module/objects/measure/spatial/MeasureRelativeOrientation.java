@@ -340,7 +340,8 @@ public class MeasureRelativeOrientation extends Module {
                 } catch (PointOutOfRangeException e) {
                 }
 
-                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidVol, referenceObject);
+                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidVol, referenceObject,
+                        false, false);
                 Point<Integer> p2 = calculator.getP2();
                 Point<Double> referencePoint = new Point<>((double) p2.getX(), (double) p2.getY(), (double) p2.getZ());
 
@@ -636,8 +637,8 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
