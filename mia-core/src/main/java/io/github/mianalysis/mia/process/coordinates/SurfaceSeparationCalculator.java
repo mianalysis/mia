@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.process.coordinates;
 
 import java.util.Iterator;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 
@@ -11,15 +12,24 @@ public class SurfaceSeparationCalculator {
     private Point<Integer> p1;
     private Point<Integer> p2;
 
-    public SurfaceSeparationCalculator(Volume v1, Volume v2) {
-        calculate(v1, v2, false);
+    // public SurfaceSeparationCalculator(Volume v1, Volume v2) {
+    //     calculate(v1, v2, false, false, false);
+    // }
+
+    // public SurfaceSeparationCalculator(Volume v1, Volume v2, boolean force2D) {
+    //     calculate(v1, v2, force2D, false, false);
+    // }
+
+    public SurfaceSeparationCalculator(Volume v1, Volume v2, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+        calculate(v1, v2, false, ignoreEdgesXY, ignoreEdgesZ);
     }
 
-    public SurfaceSeparationCalculator(Volume v1, Volume v2, boolean force2D) {
-        calculate(v1, v2, force2D);
+    public SurfaceSeparationCalculator(Volume v1, Volume v2, boolean force2D, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ) {
+        calculate(v1, v2, force2D, ignoreEdgesXY, ignoreEdgesZ);
     }
 
-    protected void calculate(Volume v1, Volume v2, boolean force2D) {
+    protected void calculate(Volume v1, Volume v2, boolean force2D, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         this.dppXY = v1.getDppXY();
         double minDist = Double.MAX_VALUE;
         Point<Integer> p1 = null;
@@ -32,11 +42,24 @@ public class SurfaceSeparationCalculator {
 
         while (iterator2.hasNext()) {
             Point<Integer> pp2 = iterator2.next();
+
+            if (ignoreEdgesXY && v2.isOnEdgeXY(pp2))
+                continue;
+
+            if (ignoreEdgesZ && v2.isOnEdgeZ(pp2))
+                continue;
+
             boolean isInside = false;
 
             Iterator<Point<Integer>> iterator1 = v1.getSurface().getCoordinateIterator();
             while (iterator1.hasNext()) {
                 Point<Integer> pp1 = iterator1.next();
+
+                if (ignoreEdgesXY && v1.isOnEdgeXY(pp1))
+                    continue;
+
+                if (ignoreEdgesZ && v1.isOnEdgeZ(pp1))
+                    continue;
 
                 double xDist = pp2.x - pp1.x;
                 double yDist = pp2.y - pp1.y;
