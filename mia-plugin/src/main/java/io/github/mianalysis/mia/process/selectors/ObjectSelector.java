@@ -64,6 +64,7 @@ import ij.ImageStack;
 import ij.Prefs;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
+import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.gui.TextRoi;
@@ -71,6 +72,7 @@ import ij.io.RoiDecoder;
 import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.process.BinaryInterpolator;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
@@ -101,7 +103,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private JCheckBox labelCheck;
     private JPanel fontPanel;
     private JTextField labelFontSize;
-    
+
     private ImagePlus displayImagePlus;
     private Overlay overlay;
     private Overlay origOverlay;
@@ -119,7 +121,8 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private static final String SAVE_OBJECTS = "Save objects";
     private static final String SAVE_OBJECTS_AS = "Save objects as...";
     private static final String TOOLS = "Tools";
-    private static final String SELECT_EMPTY_SPACE = "Select empty space";
+    private static final String SELECT_EMPTY_SPACE_AT_CLICK = "Select unlabelled space at click";
+    private static final String SELECT_EMPTY_SPACE_IN_REGION = "Select unlabelled space in region";
 
     // GUI buttons
     private static final String ADD_NEW = "Add new";
@@ -252,9 +255,13 @@ public class ObjectSelector implements ActionListener, KeyListener {
         fileMenu.add(saveAsMenuItem);
 
         JMenu toolsMenu = new JMenu(TOOLS);
-        JMenuItem emptySelectorItem = new JMenuItem(SELECT_EMPTY_SPACE);
-        emptySelectorItem.addActionListener(this);
-        toolsMenu.add(emptySelectorItem);
+        JMenuItem toolMenuItem = new JMenuItem(SELECT_EMPTY_SPACE_AT_CLICK);
+        toolMenuItem.addActionListener(this);
+        toolsMenu.add(toolMenuItem);
+
+        toolMenuItem = new JMenuItem(SELECT_EMPTY_SPACE_IN_REGION);
+        toolMenuItem.addActionListener(this);
+        toolsMenu.add(toolMenuItem);
 
         menuBar = new JMenuBar();
         menuBar.add(fileMenu);
@@ -449,7 +456,9 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         fontPanel = new JPanel();
         fontPanel.add(new JLabel("Font size"));
-        labelFontSize = new JTextField("12");
+        int defaultSize = (int) Math
+                .round(Math.max(12, Math.max(displayImagePlus.getWidth(), displayImagePlus.getHeight()) / 50));
+        labelFontSize = new JTextField(String.valueOf(defaultSize));
         labelFontSize.setEnabled(true);
         labelFontSize.addFocusListener(new FocusListener() {
 
@@ -599,9 +608,21 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 saveObjects(saveObjectsPath);
                 break;
 
-            case (SELECT_EMPTY_SPACE):
+            case (SELECT_EMPTY_SPACE_AT_CLICK):
                 new NonOverlaySelector(displayImagePlus);
                 break;
+
+            case (SELECT_EMPTY_SPACE_IN_REGION):
+                Roi currRoi = displayImagePlus.getRoi();
+                if (currRoi == null)
+                    MIA.log.writeMessage("Please select a region of interest first");
+
+                ImagePlus binaryIpl = NonOverlaySelector.convertOverlayToBinary(displayImagePlus);
+                Roi selectedRoi = NonOverlaySelector.getRegionInsideRoi(binaryIpl, currRoi);
+
+                if (selectedRoi != null)
+                    displayImagePlus.setRoi(selectedRoi);
+
         }
     }
 
@@ -915,7 +936,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 break;
             case ColourModesWithClass.BY_ID:
             default:
-                hue = new Random(objRoi.getID()*1000*31).nextFloat();
+                hue = new Random(objRoi.getID() * 1000 * 31).nextFloat();
                 colour = Color.getHSBColor(hue, 1, 1);
                 break;
             case ColourModesWithClass.BLACK:

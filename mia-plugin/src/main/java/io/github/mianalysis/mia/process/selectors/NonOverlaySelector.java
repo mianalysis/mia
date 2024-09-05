@@ -11,7 +11,9 @@ import ij.gui.ImageCanvas;
 import ij.gui.Overlay;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.gui.TextRoi;
 import ij.gui.Wand;
+import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 
 public class NonOverlaySelector implements MouseListener {
@@ -23,11 +25,11 @@ public class NonOverlaySelector implements MouseListener {
 
         binaryIpl = convertOverlayToBinary(ipl);
 
-        ipl.getWindow().getCanvas().addMouseListener(this);   
+        ipl.getWindow().getCanvas().addMouseListener(this);
 
     }
 
-    protected static ImagePlus convertOverlayToBinary(ImagePlus ipl) {
+    public static ImagePlus convertOverlayToBinary(ImagePlus ipl) {
         ImagePlus binaryIpl = IJ.createImage("Binary", ipl.getWidth(), ipl.getHeight(), 1, 8);
 
         Overlay overlay = ipl.getOverlay();
@@ -39,11 +41,38 @@ public class NonOverlaySelector implements MouseListener {
 
         ImageProcessor binaryIpr = binaryIpl.getProcessor();
         Iterator<Roi> iterator = overlay.iterator();
-        while (iterator.hasNext())
-            for (Point point : iterator.next().getContainedPoints())
+        while (iterator.hasNext()) {
+            Roi currRoi = iterator.next();
+            if (!(currRoi instanceof TextRoi))
+                for (Point point : currRoi.getContainedPoints())
                     binaryIpr.putPixel((int) point.getX(), (int) point.getY(), 255);
-                
+        }
+
         return binaryIpl;
+
+    }
+
+    public static PolygonRoi getRegionAtClick(ImagePlus binaryIpl, int x, int y) {
+        // Identify contiguous region centered on selected point
+        Wand wand = new Wand(binaryIpl.getProcessor());
+        wand.autoOutline(x, y);
+        if (wand.npoints > 0)
+            return new PolygonRoi(wand.xpoints, wand.ypoints, wand.npoints, PolygonRoi.FREEROI);
+        else
+            return null;
+
+    }
+
+    public static Roi getRegionInsideRoi(ImagePlus binaryIpl, Roi inputRoi) {
+        ImagePlus tempBinaryIpl = binaryIpl.duplicate();
+        ImageProcessor binaryIpr = tempBinaryIpl.getProcessor();
+
+        binaryIpr.setBackgroundValue(0);
+        binaryIpr.setColor(255);
+        binaryIpr.fillOutside(inputRoi);
+        binaryIpr.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
+
+        return ThresholdToSelection.run(tempBinaryIpl);
 
     }
 
@@ -56,12 +85,10 @@ public class NonOverlaySelector implements MouseListener {
         // No longer listen for more clicks
         ipl.getWindow().getCanvas().removeMouseListener(this);
 
-        // Identify contiguous region centered on selected point
-        Wand wand = new Wand(binaryIpl.getProcessor());
-        wand.autoOutline(x, y);
-        if (wand.npoints > 0)
-            ipl.setRoi(new PolygonRoi(wand.xpoints, wand.ypoints, wand.npoints, PolygonRoi.FREEROI));
-                        
+        PolygonRoi selectedRoi = getRegionAtClick(binaryIpl, x, y);
+        if (selectedRoi != null)
+            ipl.setRoi(selectedRoi);
+
     }
 
     @Override
