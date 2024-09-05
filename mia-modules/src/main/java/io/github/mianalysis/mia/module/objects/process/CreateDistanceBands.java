@@ -95,6 +95,16 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     /**
     * 
     */
+    public static final String IGNORE_EDGES_XY = "Ignore XY edges";
+
+    /**
+     * 
+     */
+    public static final String IGNORE_EDGES_Z = "Ignore Z edges";
+
+    /**
+    * 
+    */
     public static final String BAND_MODE = "Band mode";
 
     /**
@@ -200,7 +210,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         return "";
     }
 
-    public static Volume getReferenceVolume(Obj inputObject, String relativeMode, @Nullable String parentObjectsName) {
+    public static Volume getReferenceVolume(Obj inputObject, String relativeMode, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ, @Nullable String parentObjectsName) {
         try {
             switch (relativeMode) {
                 default:
@@ -216,7 +227,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                     return centroidVolume;
 
                 case RelativeModes.OBJECT_SURFACE:
-                    return inputObject.getSurface();
+                    return inputObject.getSurface(ignoreEdgesXY, ignoreEdgesZ);
 
                 case RelativeModes.PARENT_CENTROID:
                     Obj parentObject = inputObject.getParent(parentObjectsName);
@@ -303,6 +314,44 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
+    public static int[][] getBorderWidths(Volume inputObject, String bandMode, boolean applyMaxDist, double maxDist) {
+        // Calculating border widths for image cropping
+        double[][] extents = inputObject.getExtents(true, false);
+
+        int xMin = (int) extents[0][0];
+        int xMax = inputObject.getWidth() - (int) extents[0][1] - 1;
+        int yMin = (int) extents[1][0];
+        int yMax = inputObject.getHeight() - (int) extents[1][1] - 1;
+        int zMin = (int) extents[2][0];
+        int zMax = inputObject.getNSlices() - (int) extents[2][1] - 1;
+
+        if (applyMaxDist) {
+            int maxDistXY = (int) Math.ceil(maxDist);
+            int maxDistZ = (int) Math.ceil(maxDist * inputObject.getDppXY() /
+                    inputObject.getDppZ());
+
+            // Only add borders if using bands outside the object
+            if (!bandMode.equals(BandModes.INSIDE_OBJECTS)) {
+                xMin = Math.min(xMin, maxDistXY);
+                yMin = Math.min(yMin, maxDistXY);
+                zMin = Math.min(zMin, maxDistZ);
+                xMax = Math.min(xMax, maxDistXY);
+                yMax = Math.min(yMax, maxDistXY);
+                zMax = Math.min(zMax, maxDistZ);
+            }
+        }
+
+        int[][] borderWidths = new int[][] { { xMin, xMax }, { yMin, yMax }, { zMin, zMax } };
+
+        if (inputObject.getNSlices() == 1) {
+            borderWidths[2][0] = 0;
+            borderWidths[2][1] = 0;
+        }
+
+        return borderWidths;
+
+    }
+
     static <T extends RealType<T> & NativeType<T>> void addMeasurements(Objs bands, Image<T> distPx, double bandWidthPx,
             boolean internalObjects) {
         double dppXY = bands.getDppXY();
@@ -339,6 +388,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
         String relativeMode = parameters.getValue(RELATIVE_MODE, workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
+        boolean ignoreEdgesXY = parameters.getValue(IGNORE_EDGES_XY, workspace);
+        boolean ignoreEdgesZ = parameters.getValue(IGNORE_EDGES_Z, workspace);
         String bandMode = parameters.getValue(BAND_MODE, workspace);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
         String weightMode = parameters.getValue(WEIGHT_MODE, workspace);
@@ -366,37 +417,24 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         if (!applyMaxDist)
             maxDist = Double.MAX_VALUE;
 
-        // Calculating border widths for image cropping
-        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
-        if (applyMaxDist) {
-            int maxDistXY = (int) Math.ceil(maxDist);
-            int maxDistZ = (int) Math.ceil(maxDist * inputObjects.getDppXY() / inputObjects.getDppZ());
-
-            // Only add borders if using bands outside the object
-            if (!bandMode.equals(BandModes.INSIDE_OBJECTS))
-                borderWidths = new int[][] { { maxDistXY, maxDistXY }, { maxDistXY, maxDistXY },
-                        { maxDistZ, maxDistZ } };
-
-            if (inputObjects.getNSlices() == 1)
-                borderWidths[2][0] = 0;
-            borderWidths[2][1] = 0;
-
-        }
-
         // Creating output bands objects
         Objs bandObjects = new Objs(outputObjectsName, inputObjects);
 
         // Iterating over each object, creating distance bands
         int count = 0;
         for (Obj inputObject : inputObjects.values()) {
+            int[][] inputBorderWidths = getBorderWidths(inputObject, bandMode, applyMaxDist, maxDist);
+
             // Creating reference object
-            Volume referenceObject = getReferenceVolume(inputObject, relativeMode, parentObjectsName);
+            Volume referenceObject = getReferenceVolume(inputObject, relativeMode, ignoreEdgesXY, ignoreEdgesZ,
+                    parentObjectsName);
             double[][] extents = referenceObject.getExtents(true, false);
+            int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);
 
             // Creating binary image for distance transform
-            Image<T> inputImage = referenceObject.getAsTightImage("Binary", borderWidths);
+            Image<T> inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
             InvertIntensity.process(inputImage);
-            Image<T> maskImage = inputObject.getAsTightImage("Mask", borderWidths);
+            Image<T> maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
 
             Objs tempBandObjects;
             switch (bandMode) {
@@ -421,12 +459,10 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
 
                 // Shifting back to original coordinates
-                if (applyMaxDist) {
-                    int xShift = (int) Math.round(extents[0][0] - borderWidths[0][0]);
-                    int yShift = (int) Math.round(extents[1][0] - borderWidths[1][0]);
-                    int zShift = (int) Math.round(extents[2][0] - borderWidths[2][0]);
-                    tempBandObject.translateCoords(xShift, yShift, zShift);
-                }
+                int xShift = (int) Math.round(extents[0][0] - referenceBorderWidths[0][0]);
+                int yShift = (int) Math.round(extents[1][0] - referenceBorderWidths[1][0]);
+                int zShift = (int) Math.round(extents[2][0] - referenceBorderWidths[2][0]);
+                tempBandObject.translateCoords(xShift, yShift, zShift);
 
                 tempBandObject.setID(bandObjects.getAndIncrementID());
                 for (Measurement measurement : tempBandObject.getMeasurements().values())
@@ -464,6 +500,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         parameters.add(new SeparatorP(BAND_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.OBJECT_CENTROID, RelativeModes.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
+        parameters.add(new BooleanP(IGNORE_EDGES_XY, this, false));
+        parameters.add(new BooleanP(IGNORE_EDGES_Z, this, false));
         parameters.add(new ChoiceP(BAND_MODE, this, BandModes.INSIDE_AND_OUTSIDE, BandModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.W13_18_22_29_31, WeightModes.ALL));
@@ -495,6 +533,11 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 returnedParameters.add(parameters.get(PARENT_OBJECTS));
                 ParentObjectsP param = parameters.getParameter(PARENT_OBJECTS);
                 param.setChildObjectsName(parameters.getValue(INPUT_OBJECTS, null));
+                break;
+
+            case RelativeModes.OBJECT_SURFACE:
+                returnedParameters.add(parameters.getParameter(IGNORE_EDGES_XY));
+                returnedParameters.add(parameters.getParameter(IGNORE_EDGES_Z));
                 break;
         }
         returnedParameters.add(parameters.get(BAND_MODE));

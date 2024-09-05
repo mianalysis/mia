@@ -155,6 +155,16 @@ public class RelateManyToOne extends Module {
     /**
     * 
     */
+    public static final String IGNORE_EDGES_XY = "Ignore XY edges";
+
+    /**
+     * 
+     */
+    public static final String IGNORE_EDGES_Z = "Ignore Z edges";
+
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
     /**
@@ -256,7 +266,7 @@ public class RelateManyToOne extends Module {
 
     public static void linkByCentroidProximity(Objs parentObjects, Objs childObjects,
             boolean linkInSameFrame, String linkingDistanceLimit, double linkingDistance, int nThreads) {
-        String moduleName = RelateObjects.class.getSimpleName();
+        String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
 
@@ -315,10 +325,10 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkBySurfaceProximity(Objs parentObjects, Objs childObjects,
-            boolean linkInSameFrame, String linkingDistanceLimit, double linkingDistance, String insideOutsideMode,
-            int nThreads) {
-        String moduleName = RelateObjects.class.getSimpleName();
+    public static void linkBySurfaceProximity(Objs parentObjects, Objs childObjects, boolean linkInSameFrame,
+            String linkingDistanceLimit, double linkingDistance, String insideOutsideMode, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ, int nThreads) {
+        String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
 
@@ -344,7 +354,7 @@ public class RelateManyToOne extends Module {
                         continue;
 
                     // Calculating the object spacing
-                    double dist = childObject.getSurfaceSeparation(parentObject, true);
+                    double dist = childObject.getSurfaceSeparation(parentObject, true, ignoreEdgesXY, ignoreEdgesZ);
 
                     if (Math.abs(dist) < Math.abs(minDist)
                             && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
@@ -381,9 +391,9 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidToSurfaceProximity(Objs parentObjects, Objs childObjects,
-            boolean linkInSameFrame, String linkingDistanceLimit, double linkingDistance, String insideOutsideMode,
-            boolean calcFrac, int nThreads) {
+    public static void linkByCentroidToSurfaceProximity(Objs parentObjects, Objs childObjects, boolean linkInSameFrame,
+            String linkingDistanceLimit, double linkingDistance, String insideOutsideMode, boolean calcFrac,
+            boolean ignoreEdgesXY, boolean ignoreEdgesZ, int nThreads) {
         String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
@@ -429,7 +439,8 @@ public class RelateManyToOne extends Module {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
-                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true);
+                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true, ignoreEdgesXY,
+                            ignoreEdgesZ);
 
                     if (Math.abs(dist) < Math.abs(minDist)
                             && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
@@ -673,6 +684,8 @@ public class RelateManyToOne extends Module {
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP, workspace);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP, workspace);
         boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE, workspace);
+        boolean ignoreEdgesXY = parameters.getValue(IGNORE_EDGES_XY, workspace);
+        boolean ignoreEdgesZ = parameters.getValue(IGNORE_EDGES_Z, workspace);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS, workspace);
@@ -693,20 +706,18 @@ public class RelateManyToOne extends Module {
                 switch (referenceMode) {
                     case ReferenceModes.CENTROID:
                         linkByCentroidProximity(parentObjects, childObjects, linkInSameFrame, linkingDistanceLimit,
-                                linkingDistance,
-                                nThreads);
+                                linkingDistance, nThreads);
                         break;
 
                     case ReferenceModes.SURFACE:
                         linkBySurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistanceLimit,
-                                linkingDistance,
-                                insideOutsideMode, nThreads);
+                                linkingDistance, insideOutsideMode, ignoreEdgesXY, ignoreEdgesZ, nThreads);
                         break;
 
                     case ReferenceModes.CENTROID_TO_SURFACE:
                         linkByCentroidToSurfaceProximity(parentObjects, childObjects, linkInSameFrame,
-                                linkingDistanceLimit, linkingDistance,
-                                insideOutsideMode, calcFrac, nThreads);
+                                linkingDistanceLimit, linkingDistance, insideOutsideMode, calcFrac, ignoreEdgesXY,
+                                ignoreEdgesZ, nThreads);
                         break;
 
                 }
@@ -765,6 +776,8 @@ public class RelateManyToOne extends Module {
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP, this, true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
         parameters.add(new BooleanP(CALCULATE_FRACTIONAL_DISTANCE, this, true));
+        parameters.add(new BooleanP(IGNORE_EDGES_XY, this, false));
+        parameters.add(new BooleanP(IGNORE_EDGES_Z, this, false));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -801,6 +814,11 @@ public class RelateManyToOne extends Module {
                 if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
+                }
+
+                if (!referenceMode.equals(ReferenceModes.CENTROID)) {
+                    returnedParameters.add(parameters.getParameter(IGNORE_EDGES_XY));
+                    returnedParameters.add(parameters.getParameter(IGNORE_EDGES_Z));
                 }
 
                 break;

@@ -6,11 +6,19 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 
 public class PointSurfaceSeparatorCalculator {
-    private final double dppXY;
-    private final double minDist;
-    private final Point<Integer> p1;
+    private double dppXY;
+    private double minDist;
+    private Point<Integer> p1;
 
-    public PointSurfaceSeparatorCalculator(Volume v1, Point<Double> p2) {
+    // public PointSurfaceSeparatorCalculator(Volume v1, Point<Double> p2) {
+    //     calculate(v1, p2, false, false);
+    // }
+
+    public PointSurfaceSeparatorCalculator(Volume v1, Point<Double> p2, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+        calculate(v1, p2, ignoreEdgesXY, ignoreEdgesZ);
+    }
+
+    protected void calculate(Volume v1, Point<Double> p2, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         this.dppXY = v1.getDppXY();
 
         double minDist = Double.MAX_VALUE;
@@ -23,6 +31,12 @@ public class PointSurfaceSeparatorCalculator {
         Iterator<Point<Integer>> iterator1 = v1.getSurface().getCoordinateIterator();
         while (iterator1.hasNext()) {
             Point<Integer> pp1 = iterator1.next();
+
+            if (ignoreEdgesXY && v1.isOnEdgeXY(pp1))
+                continue;
+
+            if (ignoreEdgesZ && v1.isOnEdgeZ(pp1))
+                continue;
 
             double dx = pp1.x - p2.x;
             double dy = pp1.y - p2.y;
