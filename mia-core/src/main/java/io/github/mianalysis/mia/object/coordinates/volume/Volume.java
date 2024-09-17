@@ -275,23 +275,6 @@ public class Volume {
     }
 
     @Deprecated
-    public ArrayList<Integer> getXCoords() {
-        return getPoints().stream().map(Point::getX).collect(Collectors.toCollection(ArrayList::new));
-
-    }
-
-    @Deprecated
-    public ArrayList<Integer> getYCoords() {
-        return getPoints().stream().map(Point::getY).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Deprecated
-    public ArrayList<Integer> getZCoords() {
-        return getPoints().stream().map(Point::getZ).collect(Collectors.toCollection(ArrayList::new));
-
-    }
-
-    @Deprecated
     public double[] getX(boolean pixelDistances) {
         if (pixelDistances)
             return getPoints().stream().map(Point::getX).mapToDouble(Integer::doubleValue).toArray();
