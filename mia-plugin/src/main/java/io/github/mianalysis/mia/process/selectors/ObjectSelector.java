@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
@@ -64,7 +65,6 @@ import ij.ImageStack;
 import ij.Prefs;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
-import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.gui.TextRoi;
@@ -485,7 +485,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
         for (Obj trackObj : trackObjects.values()) {
             // Keeping a record of frames which have an object (these will be unchanged, so
             // don't need a new object)
-            ArrayList<Integer> timepoints = new ArrayList<>();
+            ArrayList<Integer> timepoints = new ArrayList<>(); 
 
             // Creating a blank image for this track
             Image binaryImage = trackObj.getAsImage("Track", false);
@@ -495,6 +495,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 childObj.addToImage(binaryImage, Float.MAX_VALUE);
                 timepoints.add(childObj.getT());
             }
+
             applyTemporalInterpolation(binaryImage);
 
             // Converting binary image back to objects
@@ -716,7 +717,9 @@ public class ObjectSelector implements ActionListener, KeyListener {
         // If there's already a ROI in this image with the same ID, combine them
         int t = displayImagePlus.getT() - 1;
         int z = displayImagePlus.getZ() - 1;
-        for (ObjRoi currentRoi : currentRois) {
+        ListIterator<ObjRoi> iterator = currentRois.listIterator();
+        while (iterator.hasNext()) {
+            ObjRoi currentRoi = iterator.next();
             if (currentRoi.getT() == t && currentRoi.getZ() == z) {
                 currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
                 updateOverlay();
@@ -724,7 +727,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
             } else {
                 ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1,
                         assignedClass);
-                currentRois.add(objRoi);
+                iterator.add(objRoi);
                 rois.put(ID, currentRois);
 
                 addObjectToList(objRoi, ID);
@@ -782,6 +785,8 @@ public class ObjectSelector implements ActionListener, KeyListener {
         // objects
         if (frame != null)
             frame.setVisible(false);
+        
+        displayImagePlus.changes = false;
         displayImagePlus.close();
 
         try {

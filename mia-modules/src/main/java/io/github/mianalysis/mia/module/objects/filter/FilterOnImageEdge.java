@@ -3,20 +3,22 @@ package io.github.mianalysis.mia.module.objects.filter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.drew.lang.annotations.Nullable;
-
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
+import com.drew.lang.annotations.Nullable;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -158,18 +160,14 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
             maxY = Integer.MAX_VALUE;
         if (!removalEdges[3])
             maxX = Integer.MAX_VALUE;
-
-        ArrayList<Integer> x = obj.getXCoords();
-        ArrayList<Integer> y = obj.getYCoords();
-        ArrayList<Integer> z = obj.getZCoords();
-
+            
         int count = 0;
-        for (int i = 0; i < x.size(); i++) {
-            if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY)
+        for (Point<Integer> pt:obj.getCoordinateSet()) {
+            if (pt.x == minX || pt.x == maxX || pt.y == minY || pt.y == maxY)
                 count++;
 
             // Only consider Z if the user requested this
-            if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ))
+            if (includeZ && (pt.z == minZ | pt.z == maxZ))
                 count++;
 
             // Check if the maximum number of contacts with the edge has been made
