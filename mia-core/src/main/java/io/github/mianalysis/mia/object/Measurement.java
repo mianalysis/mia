@@ -26,6 +26,10 @@ public class Measurement {
         this.value = value;
     }
 
+    public Measurement duplicate() {
+        return new Measurement(getName(), getValue());
+    }
+
 
     // GETTERS AND SETTERS
 

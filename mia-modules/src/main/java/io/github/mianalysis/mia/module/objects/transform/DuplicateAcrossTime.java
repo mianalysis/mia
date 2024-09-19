@@ -251,7 +251,7 @@ public class DuplicateAcrossTime extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

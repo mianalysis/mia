@@ -55,6 +55,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             return null;
 
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+        Prefs.savePreferences();
 
         Modules analysis = loadModules(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());

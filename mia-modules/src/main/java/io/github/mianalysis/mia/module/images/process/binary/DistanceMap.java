@@ -146,8 +146,7 @@ public class DistanceMap extends Module {
     public static ImagePlus process(ImagePlus inputIpl, String outputImageName, boolean blackBackground,
             String weightMode, boolean matchZToXY, boolean verbose) {
         return process(ImageFactory.createImage(inputIpl.getTitle(), inputIpl), outputImageName, blackBackground,
-                weightMode,
-                matchZToXY, verbose).getImagePlus();
+                weightMode, matchZToXY, verbose).getImagePlus();
     }
 
     public static Image process(Image inputImage, String outputImageName, boolean blackBackground, String weightMode,

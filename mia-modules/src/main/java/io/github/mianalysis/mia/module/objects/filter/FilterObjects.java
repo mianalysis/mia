@@ -32,6 +32,7 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -291,19 +292,16 @@ public class FilterObjects extends Module implements ActionListener {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            ArrayList<Integer> x = inputObject.getXCoords();
-            ArrayList<Integer> y = inputObject.getYCoords();
-            ArrayList<Integer> z = inputObject.getZCoords();
-
-            for (int i = 0; i < x.size(); i++) {
-                if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
+            for (Point<Integer> pt:inputObject.getCoordinateSet()) {
+            // for (int i = 0; i < x.size(); i++) {
+                if (pt.x == minX || pt.x == maxX || pt.y == minY || pt.y == maxY) {
                     if (remove)
                         processRemoval(inputObject, outputObjects, iterator);
                     break;
                 }
 
                 // Only consider Z if the user requested this
-                if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ)) {
+                if (includeZ && (pt.z == minZ || pt.z == maxZ)) {
                     if (remove)
                         processRemoval(inputObject, outputObjects, iterator);
                     break;
@@ -629,7 +627,7 @@ public class FilterObjects extends Module implements ActionListener {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show();
+            inputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

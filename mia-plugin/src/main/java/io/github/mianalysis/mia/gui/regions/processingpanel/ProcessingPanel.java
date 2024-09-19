@@ -12,6 +12,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
@@ -163,7 +165,7 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updatePanel() {
+    public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -176,8 +178,7 @@ public class ProcessingPanel extends AbstractPanel {
         statusPanel.add(GUI.getTextField(),c);
         helpNotesPanel.setVisible(showHelp || showNotes);
 
-        updateModules();
-        updateParameters();
+        updateModules(testAnalysis, startModule);
 
         if (showHelp || showNotes) updateHelpNotes();
         if (showFileList) updateFileList();
@@ -225,8 +226,8 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateModules() {
-        controlPanel.updatePanel();
+    public void updateModules(boolean testAnalysis, @Nullable Module startModule) {
+        controlPanel.updatePanel(testAnalysis, startModule);
     }
 
     @Override
@@ -236,8 +237,8 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateParameters() {
-        controlPanel.updatePanel();
+    public void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
+        controlPanel.updatePanel(testAnalysis, startModule);
     }
 
     @Override
@@ -316,6 +317,7 @@ public class ProcessingPanel extends AbstractPanel {
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
         Prefs.set("MIA.showProcessingHelp",showHelp);
+        Prefs.savePreferences();
 
         helpNotesPanel.setVisible(showHelp);
         GUI.updatePanel();
@@ -333,6 +335,7 @@ public class ProcessingPanel extends AbstractPanel {
     public void setShowNotes(boolean showNotes) {
         this.showNotes = showNotes;
         Prefs.set("MIA.showProcessingNotes",showNotes);
+        Prefs.savePreferences();
 
         helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
@@ -350,6 +353,7 @@ public class ProcessingPanel extends AbstractPanel {
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
         Prefs.set("MIA.showProcessingFileList", showFileList);
+        Prefs.savePreferences();
 
         fileListPanel.setVisible(showFileList);
         GUI.updatePanel();

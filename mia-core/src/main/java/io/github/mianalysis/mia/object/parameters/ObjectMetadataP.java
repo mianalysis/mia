@@ -7,7 +7,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import com.drew.lang.annotations.NotNull;
 
 public class ObjectMetadataP extends ChoiceType {
-    private String objectName = "";
+    protected String objectName = "";
 
     public ObjectMetadataP(String name, Module module) {
         super(name, module);

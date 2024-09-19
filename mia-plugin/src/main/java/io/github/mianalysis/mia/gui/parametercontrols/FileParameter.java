@@ -87,6 +87,7 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
 
         ((FileFolderType) parameter).setPath(fileChooser.getSelectedFile().getAbsolutePath());
         Prefs.set("MIA.PreviousPath", fileChooser.getSelectedFile().getAbsolutePath());
+        Prefs.savePreferences();
 
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
@@ -100,8 +101,8 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
         //     MIA.log.writeStatus("File initialisation complete");
         // }
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
 
     }
 }

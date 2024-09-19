@@ -26,6 +26,7 @@ public class SwingPreferences extends Preferences {
         String theme = parameters.getValue(THEME, null);
 
         Prefs.set("MIA.GUI.theme", theme);
+        Prefs.savePreferences();
         IJ.showMessage("Theme will be applied after restarting Fiji");
 
     }
@@ -40,6 +41,7 @@ public class SwingPreferences extends Preferences {
 
     public void setShowDeprecated(boolean showDeprecated) {
         Prefs.set("MIA.GUI.showDeprecated", showDeprecated);
+        Prefs.savePreferences();
         parameters.get(SHOW_DEPRECATED).setValue(showDeprecated);
         GUI.updateAvailableModules();
     }
@@ -47,6 +49,7 @@ public class SwingPreferences extends Preferences {
     public void setShowDeprecated() {
         boolean showDeprecated = parameters.getValue(SHOW_DEPRECATED, null);
         Prefs.set("MIA.GUI.showDeprecated", showDeprecated);
+        Prefs.savePreferences();
         GUI.updateAvailableModules();
     }
 

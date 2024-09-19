@@ -35,12 +35,12 @@ public class ChoiceP extends ChoiceType {
 
     @Override
     public String getRawStringValue() {
-        return getChoice();
+        return choice;
     }
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        ChoiceP newParameter = new ChoiceP(name,newModule,getChoice(),getChoices(),getDescription());
+        ChoiceP newParameter = new ChoiceP(name,newModule,choice,getChoices(),getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());

@@ -99,7 +99,7 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                 break;
         }
 
-        GUI.updateParameters();
+        GUI.updateParameters(false, null);
 
     }
 }

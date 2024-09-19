@@ -60,7 +60,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
                 }
 
                 GUI.setSelectedModules(selectedModules);
-                GUI.updateParameters();
+                GUI.updateParameters(true, selectedModules[0]);
                 GUI.updateHelpNotes();
 
             }
@@ -141,8 +141,8 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
                 break;
         }
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(false, null);
+        GUI.updateParameters(false, null);
 
     }
 
@@ -172,8 +172,8 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
                 label.setBackground(table.getBackground());
 
             GUI.getModules().get(row).setNickname(((String) value).trim());
-            GUI.updateModules();
-            GUI.updateParameters();
+            GUI.updateModules(false, null);
+            GUI.updateParameters(false, null);
 
             return label;
 

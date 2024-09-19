@@ -351,8 +351,7 @@ public class IdentifyObjects extends Module {
 
     public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
             boolean singleObject, String detectionMode, int connectivity, String type, boolean multithread,
-            int minStripWidth,
-            boolean verbose) throws IntegerOverflowException, RuntimeException {
+            int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
@@ -503,7 +502,7 @@ public class IdentifyObjects extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

@@ -5,6 +5,7 @@ import java.io.File;
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -56,12 +57,15 @@ public class FilePathP extends FileFolderType {
         if (!super.verify())
             return false;
 
+        // Checking the file exists
+        String converted = GlobalVariables.convertString(path, module.getModules());
+
         // Check file exists
-        if (!new File(path).exists())
+        if (!new File(converted).exists())
             return false;
 
         // Finally, check file is a file (not a folder)
-        return new File(path).isFile();
+        return new File(converted).isFile();
 
     }
 }

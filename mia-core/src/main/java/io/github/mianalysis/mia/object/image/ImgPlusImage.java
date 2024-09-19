@@ -319,6 +319,12 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
+    public void clear() {
+        System.out.println(img.factory());
+        img = null;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 1;
 

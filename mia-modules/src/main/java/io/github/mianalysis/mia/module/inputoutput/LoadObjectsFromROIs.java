@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -24,6 +25,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -39,7 +41,9 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.ParentChildRef;
+import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -53,62 +57,65 @@ import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 
-
 /**
 * 
 */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class LoadObjectsFromROIs extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LOADER_SEPARATOR = "Object loading";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String ASSIGN_TRACKS = "Assign tracks";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String TRACK_OBJECTS = "Output track objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
+    public static final String ASSIGN_OBJECT_CLASS = "Assign object class";
+
+    /**
+    * 
+    */
     public static final String REFERENCE_IMAGE = "Reference image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String PATH_SEPARATOR = "File path controls";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FILE_PATH_MODE = "File path mode";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SPECIFIC_FILE_PATH = "Specific file path";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String GENERIC_FILE_PATH = "Generic file path";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
     public interface FilePathModes {
@@ -117,6 +124,10 @@ public class LoadObjectsFromROIs extends Module {
 
         String[] ALL = new String[] { GENERIC_PATH, SPECIFIC_FILE };
 
+    }
+
+    public interface ObjMetadataItems {
+        String CLASS = "CLASS";
     }
 
     public LoadObjectsFromROIs(Modules modules) {
@@ -138,7 +149,7 @@ public class LoadObjectsFromROIs extends Module {
         return "";
     }
 
-    public static void loadObjects(String filePath, Objs outputObjects, @Nullable Objs trackObjects) {
+    public static void loadObjects(String filePath, Objs outputObjects, @Nullable Objs trackObjects, boolean assignClass) {
         byte[] buf = new byte[1024];
         int len;
 
@@ -161,9 +172,9 @@ public class LoadObjectsFromROIs extends Module {
                 if (roi == null) {
                     in.close();
                     return;
-                }                    
+                }
 
-                addRoi(outputObjects, trackObjects, roi, name);
+                addRoi(outputObjects, trackObjects, roi, name, assignClass);
 
                 in.close();
 
@@ -194,7 +205,7 @@ public class LoadObjectsFromROIs extends Module {
                         continue;
                     }
 
-                    addRoi(outputObjects, trackObjects, roi, name);
+                    addRoi(outputObjects, trackObjects, roi, name, assignClass);
 
                     entry = in.getNextEntry();
 
@@ -206,10 +217,33 @@ public class LoadObjectsFromROIs extends Module {
             e.printStackTrace();
             return;
         }
+
+        // If dealing with tracks, reapply partnerships between adjacent timepoints
+        if (trackObjects != null) {
+            for (Obj track : trackObjects.values()) {
+                // Sorting children by timepoint
+                TreeMap<Integer, Obj> children = new TreeMap<>();
+                for (Obj child : track.getChildren(outputObjects.getName()).values())
+                    children.put(child.getT(), child);
+
+                // Iterating over map, adding partnerships
+                Obj previousChild = null;
+                for (Obj child : children.values()) {
+                    if (previousChild != null) {
+                        previousChild.addPartner(child);
+                        child.addPartner(previousChild);
+                    }
+
+                    previousChild = child;
+
+                }
+            }
+        }
+
     }
 
-    static void addRoi(Objs outputObjects, Objs trackObjects, Roi roi, String name) {
-        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-0-9]+)_T([0-9]+)_Z([0-9]+)");
+    static void addRoi(Objs outputObjects, Objs trackObjects, Roi roi, String name, boolean assignClass) {
+        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-[0-9]]+)_T([0-9]+)_Z([0-9]+)_?(.*)");
 
         name = name.substring(0, name.length() - 4);
         Matcher matcher = pattern.matcher(name);
@@ -234,6 +268,9 @@ public class LoadObjectsFromROIs extends Module {
                 outputObject.addParent(trackObject);
             }
 
+            if (assignClass && matcher.groupCount() >= 5)
+                outputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, matcher.group(5)));
+
             outputObject.addPointsFromRoi(roi, z);
             outputObject.setT(t);
 
@@ -253,6 +290,7 @@ public class LoadObjectsFromROIs extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         boolean assignTracks = parameters.getValue(ASSIGN_TRACKS, workspace);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
+        boolean assignClass = parameters.getValue(ASSIGN_OBJECT_CLASS, workspace);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
 
         String filePathMode = parameters.getValue(FILE_PATH_MODE, workspace);
@@ -291,13 +329,18 @@ public class LoadObjectsFromROIs extends Module {
             workspace.addObjects(trackObjects);
         }
 
-        loadObjects(filePath, outputObjects, trackObjects);
+        if (!new File(filePath).exists()) {
+            MIA.log.writeWarning("ROI file \""+filePath+"\" not found.  No ROIs loaded.");
+            return Status.PASS;
+        }
+
+        loadObjects(filePath, outputObjects, trackObjects, assignClass);
 
         if (showOutput)
             if (assignTracks)
                 TrackObjects.showObjects(outputObjects, trackObjectsName);
             else
-                outputObjects.convertToImageIDColours().show();
+                outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 
@@ -309,6 +352,7 @@ public class LoadObjectsFromROIs extends Module {
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new BooleanP(ASSIGN_TRACKS, this, false));
         parameters.add(new OutputObjectsP(TRACK_OBJECTS, this));
+        parameters.add(new BooleanP(ASSIGN_OBJECT_CLASS, this, false));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
 
         parameters.add(new SeparatorP(PATH_SEPARATOR, this));
@@ -331,6 +375,7 @@ public class LoadObjectsFromROIs extends Module {
         returnedParameters.add(parameters.getParameter(ASSIGN_TRACKS));
         if ((boolean) parameters.getValue(ASSIGN_TRACKS, workspace))
             returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
+        returnedParameters.add(parameters.getParameter(ASSIGN_OBJECT_CLASS));
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
 
         returnedParameters.add(parameters.getParameter(PATH_SEPARATOR));
@@ -362,8 +407,20 @@ public class LoadObjectsFromROIs extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        if (!(boolean) parameters.getValue(ASSIGN_OBJECT_CLASS, null))
+            return null;
+
+        ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
+
+        String objectsName = parameters.getValue(OUTPUT_OBJECTS, null);
+
+        ObjMetadataRef ref = objectMetadataRefs.getOrPut(ObjMetadataItems.CLASS);
+        ref.setObjectsName(objectsName);
+        returnedRefs.add(ref);
+
+        return returnedRefs;
+
     }
 
     @Override
@@ -388,7 +445,15 @@ public class LoadObjectsFromROIs extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+        Workspace workspace = null;
+        PartnerRefs returnedRefs = new PartnerRefs();
+
+        if ((boolean) parameters.getValue(ASSIGN_TRACKS, workspace)) {
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+            returnedRefs.add(new PartnerRef(outputObjectsName, outputObjectsName));
+        }
+
+        return returnedRefs;
     }
 
     @Override

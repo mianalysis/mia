@@ -51,7 +51,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     protected ParentChildRefs parentChildRefs = new ParentChildRefs();
     protected PartnerRefs partnerRefs = new PartnerRefs();
 
-    private String moduleID = String.valueOf(System.currentTimeMillis()); // Using the system time to create a unique ID
+    private String moduleID = String.valueOf(hashCode());
     private static boolean verbose = false;
     private String notes = "";
     private boolean enabled = true;
@@ -59,7 +59,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     private boolean runnable = true;
     private boolean reachable = true;
     protected boolean showOutput = false;
-    protected Module redirectModule = null; // After this module, can redirect to another module
+    protected String redirectModuleID = null; // After this module, can redirect to another module
     private boolean showProcessingViewTitle = true;
     protected boolean deprecated = false; // When set to true, this module is marked for future removal
     protected IL2Support il2Support = IL2Support.NONE;
@@ -73,7 +73,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
      * @param modules The module constructor, when called from within MIA, provides
      *                all the modules currently in the workflow as an argument.
      */
-    public Module(String name, Modules modules) {
+    public Module(String name, Modules modules) {        
         super(name);
         this.modules = modules;
         initialiseParameters();
@@ -474,12 +474,12 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         return il2Support;
     }
 
-    public Module getRedirectModule(Workspace workspace) {
-        return this.redirectModule;
+    public String getRedirectModuleID(Workspace workspace) {
+        return this.redirectModuleID;
     }
 
-    public void setRedirectModule(Module module) {
-        this.redirectModule = module;
+    public void setRedirectModuleID(String redirectModuleID) {
+        this.redirectModuleID = redirectModuleID;
     }
 
     public boolean hasVisibleParameters() {
@@ -487,7 +487,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     }
 
-    public Module duplicate(Modules newModules) {
+    public Module duplicate(Modules newModules, boolean copyID) {
         Constructor constructor;
         Module newModule;
         try {
@@ -499,13 +499,18 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
             return null;
         }
 
-        newModule.setModuleID(getModuleID());
+        if (copyID)
+            newModule.setModuleID(getModuleID());
+        else
+            newModule.setModuleID(String.valueOf(hashCode()));
+
         newModule.setNickname(getNickname());
         newModule.setEnabled(enabled);
         newModule.setShowOutput(showOutput);
         newModule.setNotes(notes);
         newModule.setCanBeDisabled(canBeDisabled);
         newModule.setShowProcessingViewTitle(showProcessingViewTitle);
+        newModule.setRedirectModuleID(redirectModuleID);
 
         Parameters newParameters = newModule.getAllParameters();
         for (Parameter parameter : parameters.values()) {
@@ -576,7 +581,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     public static void writeStatus(String message, String moduleName) {
         if (verbose)
-            MIA.log.writeStatus("[" + moduleName + "] " + message);
+            MIA.log.writeStatus(moduleName + ": " + message);
     }
 
     public void writeProgressStatus(int count, int total, String featureBeingProcessed) {
@@ -585,7 +590,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     public static void writeProgressStatus(int count, int total, String featureBeingProcessed, String moduleName) {
         if (verbose)
-            writeStatus("Processed " + count + " of " + total + " " + featureBeingProcessed + " ("
+            writeStatus(count + "/" + total + " " + featureBeingProcessed + " ("
                     + Math.floorDiv(100 * count, total) + "%)", moduleName);
     }
 
@@ -619,11 +624,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         NamedNodeMap map = node.getAttributes();
 
         if (map.getNamedItem("ID") == null) {
-            this.moduleID = String.valueOf(System.currentTimeMillis());
-            try {
-                Thread.sleep(5); // This prevents the next module ID clashing with this one
-            } catch (InterruptedException e) {
-            }
+            this.moduleID = String.valueOf(hashCode());
         } else {
             this.moduleID = map.getNamedItem("ID").getNodeValue();
         }

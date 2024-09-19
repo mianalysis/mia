@@ -1,9 +1,8 @@
 package io.github.mianalysis.mia.module.objects.process;
 
-import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.module.objects.process.ExtractObjectEdges;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.mianalysis.mia.module.ModuleTest;
 
 
 public class ExtractObjectEdgesTest extends ModuleTest {

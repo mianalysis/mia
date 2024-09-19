@@ -28,12 +28,12 @@ public class ModuleP extends Parameter {
         this.showNonRunnable = showNonRunnable;
     }
 
-    public Module getSelectedModule() {
-        return module.getModules().getModuleByID(selectedModuleID);
+    public String getSelectedModuleID() {
+        return selectedModuleID;
     }
 
-    public void setSelectedModule(Module selectedModule) {
-        this.selectedModuleID = selectedModule.getModuleID();
+    public void setSelectedModuleID(String selectedModuleID) {
+        this.selectedModuleID = selectedModuleID;
     }
 
     public Module[] getModules() {
@@ -63,7 +63,7 @@ public class ModuleP extends Parameter {
 
     @Override
     public String getAlternativeString() {
-        Module selectedModule = getSelectedModule();
+        Module selectedModule = module.getModules().getModuleByID(getSelectedModuleID());
         if (selectedModule == null)
             return "";
 
@@ -91,7 +91,7 @@ public class ModuleP extends Parameter {
 
     @Override
     public <T> T getValue(Workspace workspace) {
-        return (T) getSelectedModule();
+        return (T) getSelectedModuleID();
     }
 
     @Override

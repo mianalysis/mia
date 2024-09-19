@@ -114,7 +114,8 @@ public class RelateManyToOne extends Module {
      * calculated by the "Reference mode" metric) is less than or equal to the
      * distance defined by "Maximum linking distance (px)".
      */
-    public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
+    public static final String LINKING_DISTANCE_LIMIT = "Linking distance limit";
+
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
 
     /**
@@ -127,6 +128,7 @@ public class RelateManyToOne extends Module {
      * Outside only (distances greater than 0).
      */
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
+
     public static final String MINIMUM_OVERLAP = "Minimum overlap (%)";
 
     /**
@@ -149,6 +151,16 @@ public class RelateManyToOne extends Module {
      * computationally intensive when dealing with many objects.
      */
     public static final String CALCULATE_FRACTIONAL_DISTANCE = "Calculate fractional distance";
+
+    /**
+    * 
+    */
+    public static final String IGNORE_EDGES_XY = "Ignore XY edges";
+
+    /**
+     * 
+     */
+    public static final String IGNORE_EDGES_Z = "Ignore Z edges";
 
     /**
     * 
@@ -191,6 +203,16 @@ public class RelateManyToOne extends Module {
         String CENTROID_TO_SURFACE = "Child centroid to parent surface";
 
         String[] ALL = new String[] { CENTROID, SURFACE, CENTROID_TO_SURFACE };
+
+    }
+
+    public interface LinkingDistanceLimits {
+        String LIMIT_BOTH = "Limit inside and outside";
+        String LIMIT_INSIDE_ONLY = "Limit inside only";
+        String LIMIT_OUTSIDE_ONLY = "Limit outside only";
+        String NO_LIMIT = "No limit";
+
+        String[] ALL = new String[] { LIMIT_BOTH, LIMIT_INSIDE_ONLY, LIMIT_OUTSIDE_ONLY, NO_LIMIT };
 
     }
 
@@ -243,8 +265,8 @@ public class RelateManyToOne extends Module {
     }
 
     public static void linkByCentroidProximity(Objs parentObjects, Objs childObjects,
-            boolean linkInSameFrame, double linkingDistance, int nThreads) {
-        String moduleName = RelateObjects.class.getSimpleName();
+            boolean linkInSameFrame, String linkingDistanceLimit, double linkingDistance, int nThreads) {
+        String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
 
@@ -270,7 +292,7 @@ public class RelateManyToOne extends Module {
 
                     double dist = childObject.getCentroidSeparation(parentObject, true);
 
-                    if (dist < minDist && dist <= linkingDistance) {
+                    if (dist < minDist && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
                         minDist = dist;
                         minLink = parentObject;
                     }
@@ -303,9 +325,10 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkBySurfaceProximity(Objs parentObjects, Objs childObjects,
-            boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, int nThreads) {
-        String moduleName = RelateObjects.class.getSimpleName();
+    public static void linkBySurfaceProximity(Objs parentObjects, Objs childObjects, boolean linkInSameFrame,
+            String linkingDistanceLimit, double linkingDistance, String insideOutsideMode, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ, int nThreads) {
+        String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
 
@@ -331,9 +354,10 @@ public class RelateManyToOne extends Module {
                         continue;
 
                     // Calculating the object spacing
-                    double dist = childObject.getSurfaceSeparation(parentObject, true);
+                    double dist = childObject.getSurfaceSeparation(parentObject, true, ignoreEdgesXY, ignoreEdgesZ);
 
-                    if (Math.abs(dist) < Math.abs(minDist) && Math.abs(dist) <= linkingDistance) {
+                    if (Math.abs(dist) < Math.abs(minDist)
+                            && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
                         minDist = dist;
                         minLink = parentObject;
                     }
@@ -367,8 +391,9 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidToSurfaceProximity(Objs parentObjects, Objs childObjects,
-            boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, boolean calcFrac, int nThreads) {
+    public static void linkByCentroidToSurfaceProximity(Objs parentObjects, Objs childObjects, boolean linkInSameFrame,
+            String linkingDistanceLimit, double linkingDistance, String insideOutsideMode, boolean calcFrac,
+            boolean ignoreEdgesXY, boolean ignoreEdgesZ, int nThreads) {
         String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
@@ -414,9 +439,11 @@ public class RelateManyToOne extends Module {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
-                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true);
+                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true, ignoreEdgesXY,
+                            ignoreEdgesZ);
 
-                    if (Math.abs(dist) < Math.abs(minDist) && Math.abs(dist) <= linkingDistance) {
+                    if (Math.abs(dist) < Math.abs(minDist)
+                            && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
                         minDist = dist;
                         minLink = parentObject;
                     }
@@ -553,6 +580,21 @@ public class RelateManyToOne extends Module {
         }
     }
 
+    public static boolean testLinkingDistance(String linkingDistanceLimit, double linkingDistance,
+            double testDistance) {
+        switch (linkingDistanceLimit) {
+            case LinkingDistanceLimits.LIMIT_BOTH:
+            default:
+                return Math.abs(testDistance) <= linkingDistance;
+            case LinkingDistanceLimits.LIMIT_INSIDE_ONLY:
+                return testDistance >= linkingDistance;
+            case LinkingDistanceLimits.LIMIT_OUTSIDE_ONLY:
+                return testDistance <= linkingDistance;
+            case LinkingDistanceLimits.NO_LIMIT:
+                return true;
+        }
+    }
+
     public static boolean applyInsideOutsidePolicy(double minDist, String insideOutsideMode) {
         switch (insideOutsideMode) {
             case InsideOutsideModes.INSIDE_ONLY:
@@ -614,7 +656,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.1";
+        return "1.1.0";
     }
 
     @Override
@@ -636,19 +678,18 @@ public class RelateManyToOne extends Module {
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE, workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE, workspace);
+        String linkingDistanceLimit = parameters.getValue(LINKING_DISTANCE_LIMIT, workspace);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE, workspace);
         String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE, workspace);
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP, workspace);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP, workspace);
         boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE, workspace);
+        boolean ignoreEdgesXY = parameters.getValue(IGNORE_EDGES_XY, workspace);
+        boolean ignoreEdgesZ = parameters.getValue(IGNORE_EDGES_Z, workspace);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS, workspace);
         boolean showMeasurements = parameters.getValue(SHOW_MEASUREMENTS, workspace);
-
-        if (!limitLinking)
-            linkingDistance = Double.MAX_VALUE;
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
 
@@ -664,18 +705,19 @@ public class RelateManyToOne extends Module {
             case RelateModes.PROXIMITY:
                 switch (referenceMode) {
                     case ReferenceModes.CENTROID:
-                        linkByCentroidProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
-                                nThreads);
+                        linkByCentroidProximity(parentObjects, childObjects, linkInSameFrame, linkingDistanceLimit,
+                                linkingDistance, nThreads);
                         break;
 
                     case ReferenceModes.SURFACE:
-                        linkBySurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
-                                insideOutsideMode, nThreads);
+                        linkBySurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistanceLimit,
+                                linkingDistance, insideOutsideMode, ignoreEdgesXY, ignoreEdgesZ, nThreads);
                         break;
 
                     case ReferenceModes.CENTROID_TO_SURFACE:
-                        linkByCentroidToSurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
-                                insideOutsideMode, calcFrac, nThreads);
+                        linkByCentroidToSurfaceProximity(parentObjects, childObjects, linkInSameFrame,
+                                linkingDistanceLimit, linkingDistance, insideOutsideMode, calcFrac, ignoreEdgesXY,
+                                ignoreEdgesZ, nThreads);
                         break;
 
                 }
@@ -692,18 +734,18 @@ public class RelateManyToOne extends Module {
         if (showOutput) {
             if (showObjects) {
                 int maxID = 0;
-                for (int ID:parentObjects.keySet())
+                for (int ID : parentObjects.keySet())
                     maxID = Math.max(ID, maxID);
 
                 Image parentImage = parentObjects.convertToImageIDColours();
-                SetDisplayRange.setDisplayRangeManual(parentImage, new double[]{0, maxID});
+                SetDisplayRange.setDisplayRangeManual(parentImage, new double[] { 0, maxID });
                 parentImage.show(false);
 
                 HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
                 Image childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
-                SetDisplayRange.setDisplayRangeManual(childImage, new double[]{0,maxID});
-                childImage.show(childObjectName,LUTs.Random(true, false),false,false);
-                
+                SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
+                childImage.show(childObjectName, LUTs.Random(true, false), false, false);
+
             }
 
             if (showMeasurements) {
@@ -725,7 +767,8 @@ public class RelateManyToOne extends Module {
         parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATE_MODE, this, RelateModes.MATCHING_IDS, RelateModes.ALL));
         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID, ReferenceModes.ALL));
-        parameters.add(new BooleanP(LIMIT_LINKING_BY_DISTANCE, this, false));
+        parameters.add(
+                new ChoiceP(LINKING_DISTANCE_LIMIT, this, LinkingDistanceLimits.NO_LIMIT, LinkingDistanceLimits.ALL));
         parameters.add(new DoubleP(LINKING_DISTANCE, this, 1.0));
         parameters.add(
                 new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE, InsideOutsideModes.ALL));
@@ -733,6 +776,8 @@ public class RelateManyToOne extends Module {
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP, this, true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
         parameters.add(new BooleanP(CALCULATE_FRACTIONAL_DISTANCE, this, true));
+        parameters.add(new BooleanP(IGNORE_EDGES_XY, this, false));
+        parameters.add(new BooleanP(IGNORE_EDGES_Z, this, false));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -761,13 +806,19 @@ public class RelateManyToOne extends Module {
         switch ((String) parameters.getValue(RELATE_MODE, workspace)) {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-                returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE, workspace))
+                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE_LIMIT));
+                if (!((String) parameters.getValue(LINKING_DISTANCE_LIMIT, workspace))
+                        .equals(LinkingDistanceLimits.NO_LIMIT))
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
 
                 if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
+                }
+
+                if (!referenceMode.equals(ReferenceModes.CENTROID)) {
+                    returnedParameters.add(parameters.getParameter(IGNORE_EDGES_XY));
+                    returnedParameters.add(parameters.getParameter(IGNORE_EDGES_Z));
                 }
 
                 break;
@@ -919,8 +970,8 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
@@ -957,7 +1008,7 @@ public class RelateManyToOne extends Module {
 
         parameters.get(CHILD_OBJECTS).setDescription(
                 "Objects to relate to the parents.  Each child will be assigned at most one parent.  There's no guarantee a child will be assigned any parent, especially when using options such as \""
-                        + LIMIT_LINKING_BY_DISTANCE + "\".");
+                        + LINKING_DISTANCE_LIMIT + "\".");
 
         parameters.get(RELATE_MODE)
                 .setDescription("The metric by which parent and child objects will be related:<br><ul>"
@@ -984,13 +1035,14 @@ public class RelateManyToOne extends Module {
                         + "<li>\"" + ReferenceModes.SURFACE
                         + "\" Distances are between the closest points on the child and parent surfaces.  These distances increase in magnitude the greater the minimum parent-child surface distance is; however, they are assigned a positive value if the closest child surface point is outside the parent and a negative value if the closest child surface point is inside the parent.  For example, a closest child surface point 5px outside the object will be simply \"5px\", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as \"-5px\".  Note: Any instances where the child and parent surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
 
-        parameters.get(LIMIT_LINKING_BY_DISTANCE).setDescription(
-                "When selected, objects will only be related if the distance between them (as calculated by the \""
+        parameters.get(LINKING_DISTANCE_LIMIT).setDescription(
+                "Depending on the options selected, objects will only be related if the distance between them (as calculated by the \""
                         + REFERENCE_MODE + "\" metric) is less than or equal to the distance defined by \""
                         + LINKING_DISTANCE + "\".");
 
-        parameters.get(LINKING_DISTANCE).setDescription("If \"" + LIMIT_LINKING_BY_DISTANCE
-                + "\" is selected, this is the maximum permitted distance between objects for them to be assigned a relationship.");
+        parameters.get(LINKING_DISTANCE).setDescription("If \"" + LINKING_DISTANCE_LIMIT
+                + "\" is set to a value other than \"" + LinkingDistanceLimits.NO_LIMIT
+                + "\", this is the maximum permitted distance between objects for them to be assigned a relationship.");
 
         parameters.get(INSIDE_OUTSIDE_MODE).setDescription(
                 "When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: "

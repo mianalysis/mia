@@ -193,10 +193,6 @@ public class AddObjectOutline extends AbstractOverlay {
         }
     }
 
-    static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth) {
-
-            }
-
     static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth, int t,
             int z) {
         if (ipl.getOverlay() == null)

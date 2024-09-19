@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.process.analysishandling;
 
+import com.drew.lang.annotations.Nullable;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
@@ -10,18 +13,21 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AnalysisTester {
-    public static int testModules(Modules modules, Workspace workspace) {
+    public static int testModules(Modules modules, Workspace workspace, @Nullable Module startModule) {
         GlobalVariables.updateVariables(modules);
         
+        // Iterating over all modules, checking if they are runnable
+        int startIdx = startModule == null ? 0 : Math.max(0,modules.indexOf(startModule));
+        
         // Setting all module runnable states to false
-        for (Module module : modules) {
+        for (int i = startIdx; i < modules.size(); i++) {
+            Module module = modules.get(i);
             module.setRunnable(false);
             module.setReachable(false);
         }
 
-        // Iterating over all modules, checking if they are runnable
         int nRunnable = 0;
-        for (int i = 0; i < modules.size(); i++) {
+        for (int i = startIdx; i < modules.size(); i++) {
             Module module = modules.get(i);
             module.setReachable(true);
             module.setRunnable(testModule(module, modules));
@@ -36,13 +42,13 @@ public class AnalysisTester {
                     if (!((ModuleIsEnabled) module).testDoRedirect(workspace))
                         continue;
 
-                Module redirectModule = module.getRedirectModule(workspace);
+                Module redirectModule = modules.getModuleByID(module.getRedirectModuleID(workspace));
 
                 // If null, the analysis was terminated
                 if (redirectModule == null)
                     break;
 
-                    // Setting the index of the next module to be evaluated
+                // Setting the index of the next module to be evaluated
                 for (Module testModule : modules)
                     if (testModule.getModuleID().equals(redirectModule.getModuleID()))
                         i = modules.indexOf(testModule) - 1;

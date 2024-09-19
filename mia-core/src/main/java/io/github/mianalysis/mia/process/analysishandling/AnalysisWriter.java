@@ -69,6 +69,7 @@ public class AnalysisWriter {
             return;
 
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+        Prefs.savePreferences();
 
         // Updating the analysis filename
         String outputFileName = file.getAbsolutePath();

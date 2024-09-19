@@ -263,6 +263,11 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     @Override
+    public void clear() {
+        imagePlus = null;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 1;
 

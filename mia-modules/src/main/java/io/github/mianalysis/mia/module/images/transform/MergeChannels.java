@@ -35,6 +35,7 @@ import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imagej.axis.IdentityAxis;
 import net.imglib2.Cursor;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -140,7 +141,8 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         // Creating the composite image
         T type = img1.firstElement();
         DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>(type);
-        ImgPlus<T> mergedImg = new ImgPlus<>(factory.create(dimsOut));
+        DiskCachedCellImg dcImage = factory.create(dimsOut);
+        ImgPlus<T> mergedImg = new ImgPlus<>(dcImage);
 
         // Assigning the relevant dimensions
         CalibratedAxis xAxis = xDim1 == -1 ? new IdentityAxis(Axes.X) : img1.axis(xDim1);
@@ -178,6 +180,8 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         ipl.setPosition(1, 1, 1);
         ipl.updateChannelAndDraw();
 
+        dcImage.shutdown();
+        
         return ImageFactory.createImage(outputImageName, ipl);
 
     }

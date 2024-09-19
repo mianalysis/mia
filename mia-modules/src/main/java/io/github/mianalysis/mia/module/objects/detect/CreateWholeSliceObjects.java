@@ -155,9 +155,12 @@ public class CreateWholeSliceObjects extends Module {
         // Adding objects to workspace
         workspace.addObjects(outputObjects);
 
+        for (Obj o:outputObjects.values()) {
+            
+        }
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().show();
+            outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 

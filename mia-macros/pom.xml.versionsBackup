@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.6.5</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-macros</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.6.5</version>
     <packaging>jar</packaging>
     <name>mia-macros</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -127,37 +127,15 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.6.5</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-modules</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.6.5</version>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    
 </project>

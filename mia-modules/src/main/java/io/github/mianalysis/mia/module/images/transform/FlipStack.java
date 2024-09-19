@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.loops.LoopBuilder;
@@ -109,11 +110,13 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public Image applyFlip(Image inputImage, String axis, String outputImageName) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
-        // Creating the new Img
-        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg .firstElement());
         long[] dims = new long[inputImg.numDimensions()];
         for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
-        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
+
+        // Creating the new Img
+        DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<T>((T) inputImg .firstElement());
+        DiskCachedCellImg dcImage = factory.create(dims);
+        ImgPlus<T> outputImg = new ImgPlus<T>(dcImage);
         ImgPlusTools.copyAxes(inputImg,outputImg);
  
         // Determining the axis index
@@ -143,6 +146,8 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
         ImgPlusTools.applyDimensions(outputImg,outputImagePlus);
 
+        dcImage.shutdown();
+        
         return ImageFactory.createImage(outputImageName,outputImagePlus);
 
     }

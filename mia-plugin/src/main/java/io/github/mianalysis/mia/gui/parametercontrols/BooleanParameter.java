@@ -10,7 +10,6 @@ import javax.swing.JComponent;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.BooleanType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -39,12 +38,13 @@ public class BooleanParameter extends TextSwitchableParameterControl implements 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
-        GUI.updateModules();
-        GUI.updateParameters();
+        GUI.updateModules(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
 
         updateControl();
 
     }
+    
     @Override
     public JComponent getDefaultComponent() {
         return control;

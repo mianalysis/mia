@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.Priority;
-import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.NotNull;
@@ -61,17 +60,12 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.system.Colours;
-import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 import io.github.mianalysis.mia.process.system.FileTools;
-import io.scif.Plane;
-import io.scif.Reader;
-import io.scif.SCIFIO;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;

@@ -26,6 +26,10 @@ public class ObjMetadata {
         this.value = value;
     }
 
+    public ObjMetadata duplicate() {
+        return new ObjMetadata(getName(), getValue());
+    }
+
 
     // GETTERS AND SETTERS
 

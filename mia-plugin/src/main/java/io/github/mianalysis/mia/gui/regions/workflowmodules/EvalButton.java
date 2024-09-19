@@ -3,18 +3,17 @@ package io.github.mianalysis.mia.gui.regions.workflowmodules;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;
@@ -206,7 +205,7 @@ public class EvalButton extends JButton implements ActionListener {
             GUI.setLastModuleEval(-1);
             if (modules.size() > 2)
                 GUI.setModuleBeingEval(0);
-            GUI.updateModuleStates();
+            GUI.updateModuleStates(false, null);
             GUI.updateTestFile(true);
         }
 
@@ -230,7 +229,7 @@ public class EvalButton extends JButton implements ActionListener {
         if (idx == GUI.getModuleBeingEval() & !reload) {
             MIA.log.writeStatus("Stopping");
             GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates();
+            GUI.updateModuleStates(false, null);
             t.stop();
             return;
         }
@@ -265,12 +264,12 @@ public class EvalButton extends JButton implements ActionListener {
                     if (module.isEnabled() && module.isRunnable()) {
                         try {
                             if (!evaluateModule(module)) {
-                                GUI.updateModuleStates();
+                                GUI.updateModuleStates(false, null);
                                 break;
                             }
                         } catch (Exception e1) {
                             GUI.setModuleBeingEval(-1);
-                            GUI.updateModuleStates();
+                            GUI.updateModuleStates(false, null);
                             e1.printStackTrace();
                             break;
                         }
@@ -291,7 +290,7 @@ public class EvalButton extends JButton implements ActionListener {
         // currently-evaluated module go red
         GUI.setLastModuleEval(modules.indexOf(module) - 1);
         GUI.setModuleBeingEval(modules.indexOf(module));
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(false, null);
 
         Module.setVerbose(true);
         boolean status = true;
@@ -303,10 +302,11 @@ public class EvalButton extends JButton implements ActionListener {
                 break;
             case REDIRECT:
                 // Getting index of module before one to move to
-                Module redirectModule = module.getRedirectModule(testWorkspace);
+                Module redirectModule = modules.getModuleByID(module.getRedirectModuleID(testWorkspace));
+                
                 if (redirectModule == null)
                     status = true;
-
+                
                 GUI.setLastModuleEval(modules.indexOf(redirectModule) - 1);
                 status = true;
                 break;
@@ -318,7 +318,7 @@ public class EvalButton extends JButton implements ActionListener {
         }
 
         GUI.setModuleBeingEval(-1);
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(false, null);
 
         return status;
 

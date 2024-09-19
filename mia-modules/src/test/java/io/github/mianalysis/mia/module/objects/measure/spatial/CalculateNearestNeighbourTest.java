@@ -220,32 +220,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(3, obj1.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(50.99, obj1.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(4, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(1, obj3.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(50.99, obj3.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -317,32 +317,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(3, obj1.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(50.99, obj1.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(4, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(1, obj3.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(50.99, obj3.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -414,32 +414,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(4, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -511,32 +511,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(4, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -605,32 +605,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj1.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(150.67, obj1.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(4, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -699,32 +699,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(4, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(2, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                inputObjectsName);
+                inputObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(31.62, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -784,32 +784,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5, obj1.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5.39, obj1.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(6, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5, obj3.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(50.88, obj3.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(6, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(33.54, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -870,32 +870,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5, obj1.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5.39, obj1.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(6, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj3.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(6, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(33.54, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -981,32 +981,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(7, obj1.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(103.08, obj1.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(7, obj2.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(53.15, obj2.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(5, obj3.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(50.88, obj3.getMeasurement(name).getValue(), tolerance);
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(6, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(33.54, obj4.getMeasurement(name).getValue(), tolerance);
 
     }
@@ -1092,32 +1092,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
-        assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
-
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
-        assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
-
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
 
-        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName);
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
+        assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
+
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
+        assertTrue(Double.isNaN(obj1.getMeasurement(name).getValue()));
+
+        name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID, secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(6, obj4.getMeasurement(name).getValue(), tolerance);
 
         name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_DISTANCE_PX,
-                secondObjectsName);
+                secondObjectsName, CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
         assertEquals(33.54, obj4.getMeasurement(name).getValue(), tolerance);
 
     }

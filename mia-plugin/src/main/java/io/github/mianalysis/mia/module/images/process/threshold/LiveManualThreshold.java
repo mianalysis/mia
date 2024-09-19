@@ -208,7 +208,7 @@ public class LiveManualThreshold extends Module {
 
         // Updating threshold value parameter and updating GUI
         parameters.getParameter(THRESHOLD_VALUE).setValue(thresholdValue);
-        GUI.updateParameters();
+        GUI.updateParameters(false,null);
 
         // Calculating the threshold based on the selected algorithm
         ManualThreshold.applyThreshold(inputImagePlus, thresholdValue);

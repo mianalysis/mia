@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>37.0.0</version>
+        <version>38.0.1</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.9</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -189,13 +189,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>3.8.4</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
             <version>2.18.0</version>
@@ -272,7 +265,7 @@
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-        </dependency>        
+        </dependency>
     </dependencies>
 
     <distributionManagement>
@@ -310,6 +303,8 @@
             <!-- Use the following to deploy -->
             <!-- Manually delete "target" folder -->
             <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -->
+            <!-- or for PowerShell -->
+            <!-- mvn clean deploy -Dscp=provided [MINUS][MINUS]% -Dmaven.test.skip -->
             <!-- CHECK GENERATED MIA JAR RUNS IN FIJI (sometimes it generates a larger jar which
             fails to run - maybe when "target" isn't deleted first)-->
             <!-- Release to Maven Central using following -->

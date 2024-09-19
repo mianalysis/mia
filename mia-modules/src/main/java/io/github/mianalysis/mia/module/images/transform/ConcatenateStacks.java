@@ -42,6 +42,7 @@ import net.imagej.axis.AxisType;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
+import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -261,7 +262,8 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
         // Creating the new Img
         DiskCachedCellImgFactory<T> factory = new DiskCachedCellImgFactory<>((T) imgPlus.firstElement());
-        ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOutCombined));
+        DiskCachedCellImg dcImage = factory.create(dimsOutCombined);
+        ImgPlus<T> imgOut = new ImgPlus<T>(dcImage);
         imgOut.setAxis(new DefaultLinearAxis(Axes.X, 1), 0);
         imgOut.setAxis(new DefaultLinearAxis(Axes.Y, 1), 1);
         imgOut.setAxis(new DefaultLinearAxis(Axes.CHANNEL, 1), 2);
@@ -271,6 +273,8 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         copyPixels(imgPlus, imgOut, offsetOut1, dimsOut1);
         copyPixels(imgPlus2, imgOut, offsetOut2, dimsOut2);
 
+        dcImage.shutdown();
+        
         return imgOut;
 
     }
@@ -469,8 +473,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     }
 
     // Creating a custom class for this module, which always returns true. This way
-    // channels can go missing and
-    // this will still work.
+    // channels can go missing and this will still work.
     class CustomInputImageP extends InputImageP {
         private boolean allowMissingImages = false;
 

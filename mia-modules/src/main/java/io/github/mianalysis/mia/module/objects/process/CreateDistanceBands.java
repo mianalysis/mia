@@ -1,10 +1,11 @@
-// TODO: Distance limits
-
 package io.github.mianalysis.mia.module.objects.process;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -20,6 +21,9 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -39,7 +43,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
-import net.imglib2.Point;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -88,6 +91,16 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
      * 
      */
     public static final String PARENT_OBJECTS = "Parent objects";
+
+    /**
+    * 
+    */
+    public static final String IGNORE_EDGES_XY = "Ignore XY edges";
+
+    /**
+     * 
+     */
+    public static final String IGNORE_EDGES_Z = "Ignore Z edges";
 
     /**
     * 
@@ -197,6 +210,44 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         return "";
     }
 
+    public static Volume getReferenceVolume(Obj inputObject, String relativeMode, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ, @Nullable String parentObjectsName) {
+        try {
+            switch (relativeMode) {
+                default:
+                case RelativeModes.OBJECT_CENTROID:
+                    Point<Double> centroidPoint = inputObject.getMeanCentroid();
+
+                    Volume centroidVolume = new Volume(inputObject.getVolumeType(),
+                            inputObject.getSpatialCalibration());
+
+                    centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
+                            (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
+
+                    return centroidVolume;
+
+                case RelativeModes.OBJECT_SURFACE:
+                    return inputObject.getSurface(ignoreEdgesXY, ignoreEdgesZ);
+
+                case RelativeModes.PARENT_CENTROID:
+                    Obj parentObject = inputObject.getParent(parentObjectsName);
+                    if (parentObject == null)
+                        return null;
+
+                    centroidPoint = parentObject.getMeanCentroid();
+                    centroidVolume = new Volume(parentObject.getVolumeType(), parentObject.getSpatialCalibration());
+                    centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
+                            (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
+
+                    return centroidVolume;
+            }
+
+        } catch (PointOutOfRangeException e) {
+            return null;
+
+        }
+    }
+
     public static <T extends RealType<T> & NativeType<T>> Objs getAllBands(Image<T> inputImage, Image<T> maskImage,
             String outputObjectsName, String weightMode, boolean matchZToXY, double bandWidthPx, double minDistPx,
             double maxDistPx, String type) {
@@ -228,7 +279,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 : ImageCalculator.CalculationMethods.NOT;
         ImageCalculator.process(distPx, maskImage, calculation,
                 ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, true, false);
-    
+
         ImgPlus<T> distPxImg = distPx.getImgPlus();
         LoopBuilder.setImages(distPxImg).forEachPixel((s) -> s.setReal(Math.ceil(s.getRealDouble())));
         distPx.setImgPlus(distPxImg);
@@ -263,6 +314,44 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
+    public static int[][] getBorderWidths(Volume inputObject, String bandMode, boolean applyMaxDist, double maxDist) {
+        // Calculating border widths for image cropping
+        double[][] extents = inputObject.getExtents(true, false);
+
+        int xMin = (int) extents[0][0];
+        int xMax = inputObject.getWidth() - (int) extents[0][1] - 1;
+        int yMin = (int) extents[1][0];
+        int yMax = inputObject.getHeight() - (int) extents[1][1] - 1;
+        int zMin = (int) extents[2][0];
+        int zMax = inputObject.getNSlices() - (int) extents[2][1] - 1;
+
+        if (applyMaxDist) {
+            int maxDistXY = (int) Math.ceil(maxDist);
+            int maxDistZ = (int) Math.ceil(maxDist * inputObject.getDppXY() /
+                    inputObject.getDppZ());
+
+            // Only add borders if using bands outside the object
+            if (!bandMode.equals(BandModes.INSIDE_OBJECTS)) {
+                xMin = Math.min(xMin, maxDistXY);
+                yMin = Math.min(yMin, maxDistXY);
+                zMin = Math.min(zMin, maxDistZ);
+                xMax = Math.min(xMax, maxDistXY);
+                yMax = Math.min(yMax, maxDistXY);
+                zMax = Math.min(zMax, maxDistZ);
+            }
+        }
+
+        int[][] borderWidths = new int[][] { { xMin, xMax }, { yMin, yMax }, { zMin, zMax } };
+
+        if (inputObject.getNSlices() == 1) {
+            borderWidths[2][0] = 0;
+            borderWidths[2][1] = 0;
+        }
+
+        return borderWidths;
+
+    }
+
     static <T extends RealType<T> & NativeType<T>> void addMeasurements(Objs bands, Image<T> distPx, double bandWidthPx,
             boolean internalObjects) {
         double dppXY = bands.getDppXY();
@@ -272,7 +361,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         // Applying measurements
         for (Obj obj : bands.values()) {
             // Measure distance value of first pixel
-            Point pt = obj.getImgPlusCoordinateIterator(distPxImg, 0).next();
+            net.imglib2.Point pt = obj.getImgPlusCoordinateIterator(distPxImg, 0).next();
             double val = distPxImg.getAt(pt).getRealDouble();
 
             // Converting value to distance
@@ -299,6 +388,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
         String relativeMode = parameters.getValue(RELATIVE_MODE, workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
+        boolean ignoreEdgesXY = parameters.getValue(IGNORE_EDGES_XY, workspace);
+        boolean ignoreEdgesZ = parameters.getValue(IGNORE_EDGES_Z, workspace);
         String bandMode = parameters.getValue(BAND_MODE, workspace);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
         String weightMode = parameters.getValue(WEIGHT_MODE, workspace);
@@ -330,28 +421,20 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         Objs bandObjects = new Objs(outputObjectsName, inputObjects);
 
         // Iterating over each object, creating distance bands
+        int count = 0;
         for (Obj inputObject : inputObjects.values()) {
-            // Creating binary image
-            Image inputImage;
-            switch (relativeMode) {
-                default:
-                case RelativeModes.OBJECT_CENTROID:
-                    inputImage = inputObject.getCentroidAsImage("Binary", true);
-                    break;
-                case RelativeModes.OBJECT_SURFACE:
-                    inputImage = inputObject.getSurface().getAsImage("Binary", 0, 1);
-                    // inputImage = inputObject.getAsImage("Binary", true);
-                    break;
-                case RelativeModes.PARENT_CENTROID:
-                    Obj parentObject = inputObject.getParent(parentObjectsName);
-                    if (parentObject == null)
-                        continue;
-                    inputImage = parentObject.getCentroidAsImage("Binary", true);                    
-                    break;
-            }
-            InvertIntensity.process(inputImage);
+            int[][] inputBorderWidths = getBorderWidths(inputObject, bandMode, applyMaxDist, maxDist);
 
-            Image<T> maskImage = inputObject.getAsImage("Mask", true);
+            // Creating reference object
+            Volume referenceObject = getReferenceVolume(inputObject, relativeMode, ignoreEdgesXY, ignoreEdgesZ,
+                    parentObjectsName);
+            double[][] extents = referenceObject.getExtents(true, false);
+            int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);
+
+            // Creating binary image for distance transform
+            Image<T> inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
+            InvertIntensity.process(inputImage);
+            Image<T> maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
 
             Objs tempBandObjects;
             switch (bandMode) {
@@ -372,6 +455,15 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
             // Transferring new band objects to main collection
             for (Obj tempBandObject : tempBandObjects.values()) {
+                // Update spatial calibration, so translated coordinates aren't out of range
+                tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
+
+                // Shifting back to original coordinates
+                int xShift = (int) Math.round(extents[0][0] - referenceBorderWidths[0][0]);
+                int yShift = (int) Math.round(extents[1][0] - referenceBorderWidths[1][0]);
+                int zShift = (int) Math.round(extents[2][0] - referenceBorderWidths[2][0]);
+                tempBandObject.translateCoords(xShift, yShift, zShift);
+
                 tempBandObject.setID(bandObjects.getAndIncrementID());
                 for (Measurement measurement : tempBandObject.getMeasurements().values())
                     tempBandObject.addMeasurement(new Measurement(measurement.getName(), measurement.getValue()));
@@ -383,6 +475,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
                 bandObjects.add(tempBandObject);
             }
+
+            writeProgressStatus(++count, inputObjects.size(), "objects");
         }
 
         // Adding objects to workspace
@@ -390,7 +484,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
         // Showing objects
         if (showOutput)
-            bandObjects.convertToImageIDColours().show();
+            bandObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 
@@ -406,6 +500,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         parameters.add(new SeparatorP(BAND_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.OBJECT_CENTROID, RelativeModes.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
+        parameters.add(new BooleanP(IGNORE_EDGES_XY, this, false));
+        parameters.add(new BooleanP(IGNORE_EDGES_Z, this, false));
         parameters.add(new ChoiceP(BAND_MODE, this, BandModes.INSIDE_AND_OUTSIDE, BandModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.W13_18_22_29_31, WeightModes.ALL));
@@ -437,6 +533,11 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 returnedParameters.add(parameters.get(PARENT_OBJECTS));
                 ParentObjectsP param = parameters.getParameter(PARENT_OBJECTS);
                 param.setChildObjectsName(parameters.getValue(INPUT_OBJECTS, null));
+                break;
+
+            case RelativeModes.OBJECT_SURFACE:
+                returnedParameters.add(parameters.getParameter(IGNORE_EDGES_XY));
+                returnedParameters.add(parameters.getParameter(IGNORE_EDGES_Z));
                 break;
         }
         returnedParameters.add(parameters.get(BAND_MODE));
@@ -501,8 +602,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

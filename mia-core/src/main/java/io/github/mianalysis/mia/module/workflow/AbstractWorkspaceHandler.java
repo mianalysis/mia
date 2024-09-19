@@ -87,7 +87,6 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         return parameters;
 
     }

@@ -495,7 +495,7 @@ public class CreateSkeleton extends Module {
         // Linking junctions and loops with surfaces separated by 1px or less
         for (Obj loopObject : loopObjects.values()) {
             for (Obj junctionObject : junctionObjects.values()) {
-                if (loopObject.getSurfaceSeparation(junctionObject, true) <= 1) {
+                if (loopObject.getSurfaceSeparation(junctionObject, true,false,false) <= 1) {
                     loopObject.addPartner(junctionObject);
                     junctionObject.addPartner(loopObject);
                 }
@@ -685,14 +685,14 @@ public class CreateSkeleton extends Module {
             switch (inputMode) {
                 case InputModes.IMAGE:
                     edgeObjects.showMeasurements(this, modules);
-                    skeletonObjects.convertToImageIDColours().show();
+                    skeletonObjects.convertToImageIDColours().show(false);
                     break;
 
                 case InputModes.OBJECTS:
                     inputObjects.showMeasurements(this, modules);
                     if (addToWorkspace) {
                         edgeObjects.showMeasurements(this, modules);
-                        skeletonObjects.convertToImageIDColours().show();
+                        skeletonObjects.convertToImageIDColours().show(false);
                     }
                     break;
             }

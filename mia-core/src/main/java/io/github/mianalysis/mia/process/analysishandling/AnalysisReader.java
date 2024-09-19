@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
@@ -15,6 +16,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.scijava.util.VersionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -48,13 +53,22 @@ public class AnalysisReader {
     public static Modules loadModules()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
+
+        FileNameExtensionFilter allFilter = new FileNameExtensionFilter("All workflow files (.mia, .xlsx)", "mia",
+                "xlsx");
+        FileNameExtensionFilter excelFilter = new FileNameExtensionFilter("Excel file (.xlsx)", "xlsx");
+        FileNameExtensionFilter miaFilter = new FileNameExtensionFilter("MIA workflow (.mia)", "mia");
+
         // We always want to open at the last place a workflow was opened from (not just
         // any file, as images are often in sub-directories).
         String previousPath = Prefs.get("MIA.PreviousWorkflowPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
+        fileChooser.addChoosableFileFilter(allFilter);
+        fileChooser.addChoosableFileFilter(excelFilter);
+        fileChooser.addChoosableFileFilter(miaFilter);
+        fileChooser.setFileFilter(allFilter);
         fileChooser.showDialog(null, "Load workflow");
 
         File file = fileChooser.getSelectedFile();
@@ -65,13 +79,29 @@ public class AnalysisReader {
         // loading should look in this folder.
         Prefs.set("MIA.PreviousWorkflowPath", file.getAbsolutePath());
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+        Prefs.savePreferences();
 
-        Modules analysis = loadModules(file);
-        analysis.setAnalysisFilename(file.getAbsolutePath());
+        // If an Excel file, read the String contents, then transfer to the normal
+        // loadModules method
+        Modules modules;
+        switch (FilenameUtils.getExtension(file.getAbsolutePath()).toLowerCase()) {
+            case "mia":
+            default:
+                modules = loadModules(file);
+                break;
+            case "xlsx":
+                modules = loadModulesFromXLSX(file);
+                break;
+        }
+
+        if (modules == null)
+            return null;
+
+        modules.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
 
-        return analysis;
+        return modules;
 
     }
 
@@ -81,6 +111,49 @@ public class AnalysisReader {
         String xml = FileUtils.readFileToString(file, "UTF-8");
 
         return loadModules(xml);
+
+    }
+
+    public static Modules loadModulesFromXLSX(File file)
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
+            IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        FileInputStream fileStream = new FileInputStream(file);
+        XSSFWorkbook workbook = new XSSFWorkbook(fileStream);
+        XSSFSheet sheet = workbook.getSheet("CONFIGURATION");
+
+        if (sheet == null) {
+            sheet = workbook.getSheet("Configuration");
+
+            if (sheet == null) {
+                MIA.log.writeWarning("MIA workflow not found in Excel file \"" + file.getAbsolutePath() + "\"");
+                return null;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        boolean record = false;
+        for (Row row : sheet) {
+            for (Cell cell : row) {
+                if (cell.toString().contains("WORKFLOW CONFIGURATION (XML)")) {
+                    record = true;
+                    continue;
+                } else if (cell.toString().length() == 0) {
+                    record = false;
+                    continue;
+                }
+
+                if (record)
+                    sb.append(cell.toString());
+            }
+        }
+
+        if (sb.toString().length() == 0) {
+            MIA.log.writeWarning("MIA workflow not found in Excel file \"" + file.getAbsolutePath() + "\"");
+            return null;
+        }
+
+        return loadModules(sb.toString());
 
     }
 

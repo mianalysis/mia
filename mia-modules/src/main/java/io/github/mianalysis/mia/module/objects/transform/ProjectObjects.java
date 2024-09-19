@@ -41,7 +41,7 @@ public class ProjectObjects extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
 
 	/**
-	* Objects to be projected into the xy-plane.  Tese are related as a parent of their respective projected object.
+	* Objects to be projected into the xy-plane.  These are related as a parent of their respective projected object.
 	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
@@ -105,7 +105,7 @@ public class ProjectObjects extends Module {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) outputObjects.convertToImageIDColours().show();
+        if (showOutput) outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
 
@@ -169,7 +169,7 @@ return null;
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_OBJECTS).setDescription("Objects to be projected into the xy-plane.  Tese are related as a parent of their respective projected object.");
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to be projected into the xy-plane.  These are related as a parent of their respective projected object.");
 
         parameters.get(OUTPUT_OBJECTS).setDescription("Output projected objects to be stored in the workspace.  These are related as children of the respective input object.");
 
