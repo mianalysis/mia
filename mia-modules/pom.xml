@@ -226,6 +226,13 @@
             <version>5.9</version>
             <scope>${scp}</scope>
         </dependency>
+
+        <!-- Currently, the following needs to be locally installed -->
+        <!-- <dependency>
+            <groupId>ai.nets</groupId>
+            <artifactId>samj</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency> -->
     </dependencies>
 
     
