@@ -228,11 +228,11 @@
         </dependency>
 
         <!-- Currently, the following needs to be locally installed -->
-        <!-- <dependency>
+        <dependency>
             <groupId>ai.nets</groupId>
             <artifactId>samj</artifactId>
             <version>0.0.2-SNAPSHOT</version>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
     

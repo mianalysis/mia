@@ -112,6 +112,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private String pointMode;
     private String volumeTypeString;
     private ClassSelector classSelector;
+    private ArrayList<JPanel> extraTools = new ArrayList<>();
     private int gridWidth = 4;
     private String previousOverlayMode = OverlayModes.NONE;
 
