@@ -6,10 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.TreeSet;
 
+import org.scijava.InstantiableException;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+import org.scijava.plugin.PluginInfo;
 
 import com.drew.lang.annotations.NotNull;
 
@@ -22,6 +27,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
+import io.github.mianalysis.mia.module.objects.detect.manualextensions.ManuallyIdentifyObjectsExtension;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
@@ -48,6 +54,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
@@ -224,8 +231,18 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
+    protected ArrayList<ManuallyIdentifyObjectsExtension> extensions = new ArrayList<>();
+
+    public ManuallyIdentifyObjects(String name, Modules modules) {
+        super(name, modules);
+
+        extensions = getAvailableExtensions();
+
+    }
+
+ 
     public ManuallyIdentifyObjects(Modules modules) {
-        super("Manually identify objects", modules);
+        this("Manually identify objects", modules);
     }
 
     public interface SelectorTypes {
@@ -277,6 +294,23 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     }
 
     public interface ObjMetadataItems extends ObjectSelector.ObjMetadataItems {
+    }
+
+    ArrayList<ManuallyIdentifyObjectsExtension> getAvailableExtensions() {
+        ArrayList<ManuallyIdentifyObjectsExtension> extensions = new ArrayList<>();
+
+        List<PluginInfo<ManuallyIdentifyObjectsExtension>> plugins = ClassHunter.getPlugins(ManuallyIdentifyObjectsExtension.class);
+        for (PluginInfo<ManuallyIdentifyObjectsExtension> plugin : plugins) {
+            try {
+                ManuallyIdentifyObjectsExtension extension = plugin.createInstance();
+                extensions.add(extension);
+            } catch (InstantiableException e) {
+                MIA.log.writeError(e);
+            }
+        }
+
+        return extensions;
+        
     }
 
     void setSelector(String selectorType) {
@@ -334,7 +368,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 + "Add to existing\" control.";
     }
 
-    static TreeSet<String> getClasses(String classesSource, String classFile, String classList) {
+    protected static TreeSet<String> getClasses(String classesSource, String classFile, String classList) {
         TreeSet<String> classes = new TreeSet<>();
 
         switch (classesSource) {
@@ -369,7 +403,31 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     }
 
-    void writeClassesFile(String classFile, TreeSet<String> allClasses) {
+    protected void createClassFile(String classesSource, ClassSelector classSelector, String classFile,
+            Workspace workspace, String appendSeriesMode, String appendDateTimeMode, String suffix) {
+        switch (classesSource) {
+            case ClassesSources.EXISTING_CLASS_FILE:
+                TreeSet<String> allClasses = classSelector.getAllClasses();
+                writeClassesFile(classFile, allClasses);
+                break;
+            case ClassesSources.NEW_CLASS_FILE:
+                allClasses = classSelector.getAllClasses();
+                String outputPath = getOutputPath(modules, workspace);
+                String outputName = getOutputName(modules, workspace);
+
+                // Adding last bits to name
+                outputPath = outputPath + outputName;
+                outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+                outputPath = appendDateTime(outputPath, appendDateTimeMode);
+                outputPath = outputPath + suffix + ".csv";
+
+                writeClassesFile(outputPath, allClasses);
+
+                break;
+        }
+    }
+
+    protected void writeClassesFile(String classFile, TreeSet<String> allClasses) {
         try {
             FileWriter writer;
             try {
@@ -425,14 +483,21 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         if (!outputTracks)
             outputTrackObjectsName = null;
 
+        // Initialising any available extensions before the image is shown
+        for (ManuallyIdentifyObjectsExtension extension:extensions)
+            extension.initialiseBeforeImageShown(this, workspace);
+
+        ObjectSelector objectSelector = new ObjectSelector();
+
         ClassSelector classSelector = null;
         if (assignClasses) {
             TreeSet<String> classes = getClasses(classesSource, classFile, classList);
             classSelector = new ClassSelector(classes, allowAdditions);
+            objectSelector.setClassSelector(classSelector);
         }
 
-        ObjectSelector objectSelector = new ObjectSelector(inputImagePlus, outputObjectsName, messageOnImage,
-                instructionText, volumeTypeString, pointMode, outputTrackObjectsName, classSelector,false);
+        objectSelector.initialise(inputImagePlus, outputObjectsName, messageOnImage, instructionText, volumeTypeString,
+                pointMode, outputTrackObjectsName, false);
 
         // Loading existing objects
         if (addExistingObjects) {
@@ -446,8 +511,12 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             }
         }
 
+        // Initialising any available extensions after the image is shown
+        ImagePlus displayIpl = objectSelector.getDisplayIpl();
+        for (ManuallyIdentifyObjectsExtension extension:extensions)
+            extension.initialiseAfterImageShown(displayIpl);
+
         objectSelector.setVisible(true);
-        
 
         // All the while the control is open, do nothing
         while (objectSelector.isActive())
@@ -462,29 +531,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             return Status.FAIL;
 
         // Writing classes to file
-        if (assignClasses && classSelector != null) {
-            switch (classesSource) {
-                case ClassesSources.EXISTING_CLASS_FILE:
-                    TreeSet<String> allClasses = classSelector.getAllClasses();
-                    writeClassesFile(classFile, allClasses);
-                    break;
-                case ClassesSources.NEW_CLASS_FILE:
-                    allClasses = classSelector.getAllClasses();
-                    String outputPath = getOutputPath(modules, workspace);
-                    String outputName = getOutputName(modules, workspace);
-
-                    // Adding last bits to name
-                    outputPath = outputPath + outputName;
-                    outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
-                    outputPath = appendDateTime(outputPath, appendDateTimeMode);
-                    outputPath = outputPath + suffix + ".csv";
-
-                    writeClassesFile(outputPath, allClasses);
-
-                    break;
-            }
-
-        }
+        if (assignClasses)
+            createClassFile(classesSource, classSelector, classFile, workspace, appendSeriesMode, appendDateTimeMode,
+                    suffix);
 
         // Getting objects
         Objs outputObjects = objectSelector.getObjects();
@@ -712,7 +761,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         @Override
         public <T extends Parameter> T duplicate(Module newModule) {
-            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(), getDescription());
+            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(),
+                    getDescription());
 
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());
