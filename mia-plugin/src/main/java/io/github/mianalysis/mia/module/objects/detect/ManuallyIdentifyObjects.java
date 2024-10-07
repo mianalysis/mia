@@ -6,12 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.scijava.InstantiableException;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginInfo;
@@ -27,7 +26,8 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
-import io.github.mianalysis.mia.module.objects.detect.manualextensions.ManuallyIdentifyObjectsExtension;
+import io.github.mianalysis.mia.module.objects.detect.manualextensions.ManualExtension;
+import io.github.mianalysis.mia.module.objects.detect.manualextensions.ManualExtensionDependencies;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
@@ -231,16 +231,19 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
-    protected ArrayList<ManuallyIdentifyObjectsExtension> extensions = new ArrayList<>();
+    private ArrayList<ManualExtension> extensions = new ArrayList<>();
 
     public ManuallyIdentifyObjects(String name, Modules modules) {
         super(name, modules);
 
+        // Getting extensions and adding their parameters to this collection, so they
+        // can be saved and loaded
         extensions = getAvailableExtensions();
+        for (ManualExtension extension : extensions)
+            parameters.addAll(extension.getAllParameters());
 
     }
 
- 
     public ManuallyIdentifyObjects(Modules modules) {
         this("Manually identify objects", modules);
     }
@@ -296,21 +299,34 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     public interface ObjMetadataItems extends ObjectSelector.ObjMetadataItems {
     }
 
-    ArrayList<ManuallyIdentifyObjectsExtension> getAvailableExtensions() {
-        ArrayList<ManuallyIdentifyObjectsExtension> extensions = new ArrayList<>();
+    ArrayList<ManualExtension> getAvailableExtensions() {
+        // Getting available extension dependencies
+        ManualExtensionDependencies dependencies = new ManualExtensionDependencies();
+        
+        // Creating a list of available extensions
+        ArrayList<ManualExtension> extensions = new ArrayList<>();
 
-        List<PluginInfo<ManuallyIdentifyObjectsExtension>> plugins = ClassHunter.getPlugins(ManuallyIdentifyObjectsExtension.class);
-        for (PluginInfo<ManuallyIdentifyObjectsExtension> plugin : plugins) {
+        List<PluginInfo<ManualExtension>> plugins = ClassHunter.getPlugins(ManualExtension.class);
+        for (PluginInfo<ManualExtension> plugin : plugins) {
+            // Checking dependencies have been met
+            String className = plugin.getClassName().substring(plugin.getClassName().lastIndexOf(".")+1);
+            if (!dependencies.compatible(className, false))
+                continue;
+
             try {
-                ManuallyIdentifyObjectsExtension extension = plugin.createInstance();
+                ManualExtension extension = (ManualExtension) Class.forName(plugin.getClassName())
+                        .getConstructor(Module.class).newInstance(this);
+
                 extensions.add(extension);
-            } catch (InstantiableException e) {
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException
+                    | ClassNotFoundException e) {
                 MIA.log.writeError(e);
             }
         }
 
         return extensions;
-        
+
     }
 
     void setSelector(String selectorType) {
@@ -484,8 +500,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             outputTrackObjectsName = null;
 
         // Initialising any available extensions before the image is shown
-        for (ManuallyIdentifyObjectsExtension extension:extensions)
-            extension.initialiseBeforeImageShown(this, workspace);
+        for (ManualExtension extension : extensions)
+            extension.initialiseBeforeImageShown(workspace);
 
         ObjectSelector objectSelector = new ObjectSelector();
 
@@ -512,11 +528,12 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
 
         // Initialising any available extensions after the image is shown
+        objectSelector.setImageVisible(true);
         ImagePlus displayIpl = objectSelector.getDisplayIpl();
-        for (ManuallyIdentifyObjectsExtension extension:extensions)
+        for (ManualExtension extension : extensions)
             extension.initialiseAfterImageShown(displayIpl);
 
-        objectSelector.setVisible(true);
+        objectSelector.setControlPanelVisible(true);
 
         // All the while the control is open, do nothing
         while (objectSelector.isActive())
@@ -664,6 +681,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         returnedParameters.add(parameters.get(INSTRUCTION_TEXT));
         returnedParameters.add(parameters.get(SELECTOR_TYPE));
         returnedParameters.add(parameters.get(MESSAGE_ON_IMAGE));
+
+        for (ManualExtension extension : extensions)
+            returnedParameters.addAll(extension.updateAndGetParameters());
 
         return returnedParameters;
 

@@ -218,8 +218,17 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     }
 
-    public void setVisible(boolean visible) {
+    public void setControlPanelVisible(boolean visible) {
         frame.setVisible(visible);
+        if (visible) {
+            displayIpl.show();
+            displayIpl.getWindow().getComponent(0).addKeyListener(this);
+        } else {
+            displayIpl.hide();
+        }
+    }
+
+    public void setImageVisible(boolean visible) {
         if (visible) {
             displayIpl.show();
             displayIpl.getWindow().getComponent(0).addKeyListener(this);
@@ -1235,10 +1244,10 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
-            new Thread(() -> {
-                addNewObject();
-            }).start();
+        // if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
+        //     new Thread(() -> {
+        //         addNewObject();
+        //     }).start();
     }
 
     @Override
