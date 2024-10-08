@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.objects.detect.manualextensions;
+package io.github.mianalysis.mia.module.objects.detect.extensions;
 
 import io.github.mianalysis.mia.object.CoreDependency;
 

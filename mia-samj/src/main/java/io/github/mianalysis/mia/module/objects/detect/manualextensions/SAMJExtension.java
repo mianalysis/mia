@@ -24,7 +24,8 @@ import ij.gui.PolygonRoi;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
+// import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -67,26 +68,23 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     }
 
     @Override
-    public void initialiseBeforeImageShown(Workspace workspace) {
+    public void initialiseBeforeImageShown(Workspace workspace, Image image) {
         this.workspace = workspace;
 
         // Getting parameters
         boolean useSAM = parameters.getValue(USE_SAM, workspace);
         if (!useSAM)
             return;
-
+ 
         String modelName = parameters.getValue(MODEL, workspace);
         String envionmentPathMode = parameters.getValue(ENVIRONMENT_PATH_MODE, workspace);
         String environmentPath = parameters.getValue(ENVIRONMENT_PATH, workspace)+"/";
         boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
-
-        String inputImageName = module.getParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImage(inputImageName);
-
+        
         efficientSamJ = null;
 
         AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 3000;
+        AbstractSamJ.MAX_ENCODED_SIDE = 3000;        
 
         try {
             switch (envionmentPathMode) {
@@ -116,7 +114,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
                 }
 
             efficientSamJ = EfficientSamJ.initializeSam(manager);
-            efficientSamJ.setImage(inputImage.getImgPlus());
+            efficientSamJ.setImage(image.getImgPlus());
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {

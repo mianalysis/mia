@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-modules</artifactId>
+    <artifactId>mia-samj</artifactId>
     <version>1.6.9</version>
     <packaging>jar</packaging>
-    <name>mia-modules</name>
+    <name>mia-samj</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -127,104 +127,20 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.6.9</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>AnalyzeSkeleton_</artifactId>
-            <scope>${scp}</scope>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-modules</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Auto_Local_Threshold</artifactId>
+            <groupId>ai.nets</groupId>
+            <artifactId>samj</artifactId>
+            <version>0.0.1</version>
             <scope>${scp}</scope>
         </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>bUnwarpJ_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Colocalisation_Analysis</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Colour_Deconvolution</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>CorrectBleach_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Directionality_</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Fiji_Plugins</artifactId>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Skeletonize3D_</artifactId>
-            <version>2.1.1</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>TrackMate</artifactId>
-            <version>7.12.2</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Trainable_Segmentation</artifactId>
-            <version>3.3.2</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.biomedical-imaging.imagej</groupId>
-            <artifactId>ij_ridge_detect</artifactId>
-            <version>1.4.1</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inra.ijpb</groupId>
-            <artifactId>MorphoLibJ_</artifactId>
-            <version>1.6.2</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>mpicbg</groupId>
-            <artifactId>mpicbg</artifactId>
-            <version>1.5.0</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>5.9</version>
-            <scope>${scp}</scope>
-        </dependency>
-    </dependencies>
+    </dependencies>    
 </project>

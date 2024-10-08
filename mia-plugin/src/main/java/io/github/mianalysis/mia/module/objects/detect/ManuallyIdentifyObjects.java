@@ -26,8 +26,8 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
-import io.github.mianalysis.mia.module.objects.detect.manualextensions.ManualExtension;
-import io.github.mianalysis.mia.module.objects.detect.manualextensions.ManualExtensionDependencies;
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependencies;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
@@ -501,7 +501,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         // Initialising any available extensions before the image is shown
         for (ManualExtension extension : extensions)
-            extension.initialiseBeforeImageShown(workspace);
+            extension.initialiseBeforeImageShown(workspace, inputImage);
 
         ObjectSelector objectSelector = new ObjectSelector();
 

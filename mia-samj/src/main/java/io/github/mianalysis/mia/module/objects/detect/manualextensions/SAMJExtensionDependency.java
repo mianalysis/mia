@@ -3,6 +3,8 @@ package io.github.mianalysis.mia.module.objects.detect.manualextensions;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependency;
+
 @Plugin(type = ManualExtensionDependency.class, priority=Priority.LOW, visible=true)
 public class SAMJExtensionDependency extends ManualExtensionDependency {
     @Override

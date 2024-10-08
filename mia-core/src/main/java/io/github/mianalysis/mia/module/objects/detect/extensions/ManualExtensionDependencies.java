@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.objects.detect.manualextensions;
+package io.github.mianalysis.mia.module.objects.detect.extensions;
 
 import java.util.HashMap;
 import java.util.HashSet;
