@@ -14,6 +14,7 @@ models/*
 lib/*
 */target/*
 
+appose_x86_64/*
 *.log
 .vscode/settings.json
 lib/macosx/.crashed

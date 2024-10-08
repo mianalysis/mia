@@ -183,20 +183,15 @@ public class MeasureObjectIntensity extends Module {
         CumStat csY = new CumStat();
         CumStat csZ = new CumStat();
 
-        // Getting pixel coordinates
-        ArrayList<Integer> x = object.getXCoords();
-        ArrayList<Integer> y = object.getYCoords();
-        ArrayList<Integer> z = object.getZCoords();
         int tPos = object.getT();
 
         // Running through all pixels in this object and adding the intensity to the
         // MultiCumStat object
-        for (int i = 0; i < x.size(); i++) {
-            ipl.setPosition(1, z.get(i) + 1, tPos + 1);
-            csX.addMeasure(x.get(i), ipl.getProcessor().getPixelValue(x.get(i), y.get(i)));
-            csY.addMeasure(y.get(i), ipl.getProcessor().getPixelValue(x.get(i), y.get(i)));
-            csZ.addMeasure(z.get(i), ipl.getProcessor().getPixelValue(x.get(i), y.get(i)));
-
+        for (Point<Integer> pt:object.getCoordinateSet()) {
+            ipl.setPosition(1, pt.z + 1, tPos + 1);
+            csX.addMeasure(pt.x, ipl.getProcessor().getPixelValue(pt.x, pt.y));
+            csY.addMeasure(pt.y, ipl.getProcessor().getPixelValue(pt.x, pt.y));
+            csZ.addMeasure(pt.z, ipl.getProcessor().getPixelValue(pt.x, pt.y));
         }
 
         if (addMeasurements) {

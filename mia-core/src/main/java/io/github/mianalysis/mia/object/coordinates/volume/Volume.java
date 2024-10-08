@@ -13,6 +13,7 @@ import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -271,23 +272,6 @@ public class Volume {
 
     public boolean is2D() {
         return spatCal.nSlices == 1;
-    }
-
-    @Deprecated
-    public ArrayList<Integer> getXCoords() {
-        return getPoints().stream().map(Point::getX).collect(Collectors.toCollection(ArrayList::new));
-
-    }
-
-    @Deprecated
-    public ArrayList<Integer> getYCoords() {
-        return getPoints().stream().map(Point::getY).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Deprecated
-    public ArrayList<Integer> getZCoords() {
-        return getPoints().stream().map(Point::getZ).collect(Collectors.toCollection(ArrayList::new));
-
     }
 
     @Deprecated
@@ -846,7 +830,7 @@ public class Volume {
                 + borderWidths[2][1] + 1;
 
         ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
-        spatCal.setImageCalibration(ipl);
+        spatCal.applyImageCalibration(ipl);
 
         // Populating ipl
         for (Point<Integer> point : getCoordinateSet()) {
@@ -860,7 +844,7 @@ public class Volume {
 
     public Image getAsImage(String imageName, int t, int nFrames) {
         ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
-        spatCal.setImageCalibration(ipl);
+        spatCal.applyImageCalibration(ipl);
 
         for (Point<Integer> point : getCoordinateSet()) {
             int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);

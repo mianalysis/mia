@@ -13,6 +13,7 @@ import ij.Prefs;
 import ij.plugin.frame.Recorder;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
+import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.DependencyValidator;

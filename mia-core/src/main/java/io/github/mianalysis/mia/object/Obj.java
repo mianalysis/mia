@@ -526,9 +526,9 @@ public class Obj extends Volume {
 
     public Image getAsImage(String imageName, boolean singleTimepoint) {
         if (singleTimepoint)
-            return getAsImage(imageName, getT(), objCollection.getNFrames());
-        else
             return getAsImage(imageName, 0, 1);
+        else
+            return getAsImage(imageName, getT(), objCollection.getNFrames());
     }
 
     public Image getCentroidAsImage(String imageName, boolean singleTimepoint) {
@@ -536,7 +536,7 @@ public class Obj extends Volume {
         int t = singleTimepoint ? 0 : getT();
 
         ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
-        spatCal.setImageCalibration(ipl);
+        spatCal.applyImageCalibration(ipl);
 
         Point<Double> centroid = getMeanCentroid(true, false);
         int x = (int) Math.round(centroid.getX());

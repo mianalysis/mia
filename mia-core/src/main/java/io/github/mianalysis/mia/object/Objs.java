@@ -261,7 +261,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         // Assigning the spatial cal from the cal
-        spatCal.setImageCalibration(image.getImagePlus());
+        spatCal.applyImageCalibration(image.getImagePlus());
 
         return image;
 
@@ -336,7 +336,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
             object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        spatCal.setImageCalibration(image.getImagePlus());
+        spatCal.applyImageCalibration(image.getImagePlus());
 
         return image;
 
