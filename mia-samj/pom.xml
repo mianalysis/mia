@@ -125,6 +125,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij1-patcher</artifactId>
+            <version>1.2.6</version>
+            <scope>${scp}</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
             <version>${project.version}</version>
@@ -133,6 +140,12 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-modules</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
 

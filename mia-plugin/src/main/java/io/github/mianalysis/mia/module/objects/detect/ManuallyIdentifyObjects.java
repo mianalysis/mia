@@ -8,8 +8,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
+
+import javax.swing.JPanel;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -19,6 +22,7 @@ import com.drew.lang.annotations.NotNull;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -231,7 +235,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
-    private ArrayList<ManualExtension> extensions = new ArrayList<>();
+    protected HashSet<ManualExtension> extensions = new HashSet<>();
+    protected ObjectSelector objectSelector = null;
 
     public ManuallyIdentifyObjects(String name, Modules modules) {
         super(name, modules);
@@ -257,10 +262,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String POLYGON = "Polygon";
         String RECTANGLE = "Rectangle";
         String SEGMENTED_LINE = "Segmented line";
+        String SINGLE_POINT = "Single point";
         String WAND = "Wand (tracing) tool";
 
         String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POINTS, POLYGON, RECTANGLE,
-                SEGMENTED_LINE, WAND };
+                SEGMENTED_LINE, SINGLE_POINT, WAND };
 
     }
 
@@ -299,17 +305,17 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     public interface ObjMetadataItems extends ObjectSelector.ObjMetadataItems {
     }
 
-    ArrayList<ManualExtension> getAvailableExtensions() {
+    HashSet<ManualExtension> getAvailableExtensions() {
         // Getting available extension dependencies
         ManualExtensionDependencies dependencies = new ManualExtensionDependencies();
-        
+
         // Creating a list of available extensions
-        ArrayList<ManualExtension> extensions = new ArrayList<>();
+        HashSet<ManualExtension> extensions = new HashSet<>();
 
         List<PluginInfo<ManualExtension>> plugins = ClassHunter.getPlugins(ManualExtension.class);
         for (PluginInfo<ManualExtension> plugin : plugins) {
             // Checking dependencies have been met
-            String className = plugin.getClassName().substring(plugin.getClassName().lastIndexOf(".")+1);
+            String className = plugin.getClassName().substring(plugin.getClassName().lastIndexOf(".") + 1);
             if (!dependencies.compatible(className, false))
                 continue;
 
@@ -345,7 +351,10 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 IJ.setTool(Toolbar.OVAL);
                 return;
             case SelectorTypes.POINTS:
-                IJ.setTool(Toolbar.POINT);
+                IJ.setTool("multi");
+                return;
+            case SelectorTypes.POLYGON:
+                IJ.setTool(Toolbar.POLYGON);
                 return;
             case SelectorTypes.RECTANGLE:
                 IJ.setTool(Toolbar.RECTANGLE);
@@ -353,8 +362,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             case SelectorTypes.SEGMENTED_LINE:
                 IJ.setTool(Toolbar.POLYLINE);
                 return;
-            case SelectorTypes.POLYGON:
-                IJ.setTool(Toolbar.POLYGON);
+            case SelectorTypes.SINGLE_POINT:
+                IJ.setTool("point");
                 return;
             case SelectorTypes.WAND:
                 IJ.setTool(Toolbar.WAND);
@@ -462,6 +471,10 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
     }
 
+    public ObjectSelector getObjectSelector() {
+        return objectSelector;
+    }
+
     @Override
     public Status process(Workspace workspace) {// Local access to this is required for the action listeners
         // Getting parameters
@@ -500,16 +513,26 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             outputTrackObjectsName = null;
 
         // Initialising any available extensions before the image is shown
-        for (ManualExtension extension : extensions)
-            extension.initialiseBeforeImageShown(workspace, inputImage);
+        for (ManualExtension extension : extensions) {
+            Status extensionStatus = extension.initialiseBeforeImageShown(workspace);
+            if (extensionStatus != Status.PASS)
+                return extensionStatus;
+        }
 
-        ObjectSelector objectSelector = new ObjectSelector();
+        objectSelector = new ObjectSelector();
+        objectSelector.setExtensions(extensions);
 
         ClassSelector classSelector = null;
         if (assignClasses) {
             TreeSet<String> classes = getClasses(classesSource, classFile, classList);
             classSelector = new ClassSelector(classes, allowAdditions);
             objectSelector.setClassSelector(classSelector);
+        }
+
+        for (ManualExtension extension : extensions) {
+            JPanel extensionControlPanel = extension.getControlPanel();
+            if (extensionControlPanel != null)
+                objectSelector.addExtraPanel(extensionControlPanel);
         }
 
         objectSelector.initialise(inputImagePlus, outputObjectsName, messageOnImage, instructionText, volumeTypeString,
@@ -530,8 +553,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         // Initialising any available extensions after the image is shown
         objectSelector.setImageVisible(true);
         ImagePlus displayIpl = objectSelector.getDisplayIpl();
-        for (ManualExtension extension : extensions)
-            extension.initialiseAfterImageShown(displayIpl);
+        for (ManualExtension extension : extensions) {
+            Status extensionStatus = extension.initialiseAfterImageShown(displayIpl);
+            if (extensionStatus != Status.PASS)
+                return extensionStatus;
+        }
 
         objectSelector.setControlPanelVisible(true);
 

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -54,7 +55,7 @@ public class AnalysisRunner {
 
         AnalysisTester.testModules(modules, null, null);
 
-        HashSet<Job> jobs = getJobs(modules);
+        LinkedHashSet<Job> jobs = getJobs(modules);
         if (jobs.size() == 0) {
             MIA.log.writeWarning("No valid images found at specified path");
             return;
@@ -136,15 +137,15 @@ public class AnalysisRunner {
         }
     }
 
-    public HashSet<Job> getJobs(Modules modules) {
-        HashSet<Job> jobs = new HashSet<>();
+    public LinkedHashSet<Job> getJobs(Modules modules) {
+        LinkedHashSet<Job> jobs = new LinkedHashSet<>();
 
         InputControl inputControl = modules.getInputControl();
 
         File inputFile = getInputFile(inputControl);
 
         if (inputFile == null)
-            return new HashSet<>();
+            return new LinkedHashSet<>();
 
         FileCrawler fileCrawler = new FileCrawler(inputFile);
         fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE, null));
