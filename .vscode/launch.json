@@ -1,6 +1,12 @@
 {
     "configurations": [
-
+        {
+            "type": "java",
+            "name": "SAMJExtension",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.objects.detect.manualextensions.SAMJExtension",
+            "projectName": "mia-samj"
+        },
         {
             "type": "java",
             "name": "CommaSeparatedStringInterpreter",

@@ -60,12 +60,16 @@ public class SpatCal {
 
     }
 
-    public void setImageCalibration(ImagePlus ipl) {
+    public void applyImageCalibration(ImagePlus ipl) {
         ipl.getCalibration().pixelWidth = dppXY;
         ipl.getCalibration().pixelHeight = dppXY;
         ipl.getCalibration().pixelDepth = nSlices == 1 ? 1 : dppZ;
         ipl.getCalibration().setUnit(units);
+    }
 
+    @Deprecated
+    public void setImageCalibration(ImagePlus ipl) {
+        applyImageCalibration(ipl);
     }
 
     public Calibration createImageCalibration() {
