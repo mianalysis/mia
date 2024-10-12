@@ -37,7 +37,6 @@ import ai.nets.samj.models.Sam2;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
-import ij.process.ImageProcessor;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
@@ -54,8 +53,6 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
-import net.imglib2.img.Img;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 
 @Plugin(type = ManualExtension.class, priority = Priority.LOW, visible = true)
 public class SAMJExtension extends ManualExtension implements MouseListener {
