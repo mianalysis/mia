@@ -74,7 +74,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         public String SMALL = "Small";
         public String TINY = "Tiny";
 
-        public String[] ALL = new String[] { EFFICIENT, TINY };
+        public String[] ALL = new String[] { EFFICIENT, LARGE, SMALL, TINY, };
 
     }
 
@@ -376,8 +376,8 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             case Roi.OVAL:
             case Roi.POLYGON:
             case Roi.TRACED_ROI:
-            //     polygons = getPolygonFromMask(roi);
-            // break;
+                // polygons = getPolygonFromMask(roi);
+                // break;
             case Roi.RECTANGLE:
                 polygons = getPolygonFromRectangle(roi);
                 break;
@@ -418,17 +418,17 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     }
 
     // public List<Polygon> getPolygonFromMask(Roi roi) {
-        
-    //     ImageProcessor mask = roi.getMask();
-    //     Img img = ImageJFunctions.wrap(new ImagePlus("Mask",mask));
-    //     ImageJFunctions.show(img);
-    //     try {
-    //         return samJ.processMask(img);
-    //     } catch (IOException | InterruptedException | RuntimeException e) {
-    //         MIA.log.writeError(e);
-    //     }
 
-    //     return null;
+    // ImageProcessor mask = roi.getMask();
+    // Img img = ImageJFunctions.wrap(new ImagePlus("Mask",mask));
+    // ImageJFunctions.show(img);
+    // try {
+    // return samJ.processMask(img);
+    // } catch (IOException | InterruptedException | RuntimeException e) {
+    // MIA.log.writeError(e);
+    // }
+
+    // return null;
 
     // }
 
@@ -438,7 +438,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         ArrayList<int[]> pts = new ArrayList<>();
         for (Point point : points)
             pts.add(new int[] { point.x, point.y });
-        
+
         try {
             return samJ.processPoints(pts);
         } catch (IOException | InterruptedException | RuntimeException e) {
