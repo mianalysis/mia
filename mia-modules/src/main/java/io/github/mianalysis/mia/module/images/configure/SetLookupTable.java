@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -27,6 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.math.WavelengthToColorConverter;
 
 /**
  * Set look-up table (LUT) for an image or a specific channel of an image. The
@@ -81,6 +83,8 @@ public class SetLookupTable extends Module {
      */
     public static final String LOOKUP_TABLE = "Lookup table";
 
+    public static final String WAVELENGTH = "Wavelength (nm)";
+
     /**
      * Controls how the minimum value in the look-up table should be rendered:<br>
      * <br>
@@ -115,6 +119,7 @@ public class SetLookupTable extends Module {
     }
 
     public interface LookupTables {
+        String FROM_WAVELENGTH = "From wavelength";
         String GREY = "Grey";
         String RED = "Red";
         String GREEN = "Green";
@@ -126,16 +131,17 @@ public class SetLookupTable extends Module {
         String ICE = "Ice";
         String JET = "Jet";
         String PHYSICS = "Physics";
+        String RANDOM = "Random";
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
-        String RANDOM = "Random";
 
-        String[] ALL = new String[] { GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE, ICE, JET, PHYSICS, SPECTRUM,
-                THERMAL, RANDOM };
+        String[] ALL = new String[] { FROM_WAVELENGTH, GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE, ICE, JET,
+                PHYSICS, RANDOM, SPECTRUM,
+                THERMAL };
 
     }
 
-    public static LUT getLUT(String lookupTableName) {
+    public static LUT getLUT(String lookupTableName, double wavelengthNM) {
         switch (lookupTableName) {
             case LookupTables.GREY:
             default:
@@ -166,6 +172,9 @@ public class SetLookupTable extends Module {
                 return LUTs.Thermal();
             case LookupTables.RANDOM:
                 return LUTs.Random(true);
+            case LookupTables.FROM_WAVELENGTH:
+                Color colour = WavelengthToColorConverter.wavelengthToColor(wavelengthNM);
+                return LUT.createLutFromColor(colour);
         }
     }
 
@@ -251,6 +260,7 @@ public class SetLookupTable extends Module {
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
         int channel = parameters.getValue(CHANNEL, workspace);
         String displayMode = parameters.getValue(DISPLAY_MODE, workspace);
+        double wavelengthNM = parameters.getValue(WAVELENGTH, workspace);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -265,7 +275,7 @@ public class SetLookupTable extends Module {
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
             case ChannelModes.SPECIFIC_CHANNELS:
-                LUT lut = getLUT(lookupTableName);
+                LUT lut = getLUT(lookupTableName, wavelengthNM);
                 switch (displayMode) {
                     case DisplayModes.SET_ZERO_TO_BLACK:
                         lut = setZeroToBlack(lut);
@@ -282,7 +292,7 @@ public class SetLookupTable extends Module {
         inputImage.getImagePlus().updateChannelAndDraw();
 
         if (showOutput)
-            inputImage.showImage(inputImageName, null, false, true);
+            inputImage.show(inputImageName, null, false, true);
 
         return Status.PASS;
 
@@ -298,6 +308,7 @@ public class SetLookupTable extends Module {
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(CHANNEL, this, 1));
         parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY, LookupTables.ALL));
+        parameters.add(new DoubleP(WAVELENGTH, this, 405));
         parameters.add(new ChoiceP(DISPLAY_MODE, this, DisplayModes.FULL_RANGE, DisplayModes.ALL));
 
         addParameterDescriptions();
@@ -318,6 +329,8 @@ public class SetLookupTable extends Module {
         switch ((String) parameters.getValue(CHANNEL_MODE, workspace)) {
             case ChannelModes.ALL_CHANNELS:
                 returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
+                if (((String) parameters.getValue(LOOKUP_TABLE, workspace)).equals(LookupTables.FROM_WAVELENGTH))
+                    returnedParameters.add(parameters.getParameter(WAVELENGTH));
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
                 break;
             case ChannelModes.COPY_FROM_IMAGE:
@@ -326,6 +339,8 @@ public class SetLookupTable extends Module {
             case ChannelModes.SPECIFIC_CHANNELS:
                 returnedParameters.add(parameters.getParameter(CHANNEL));
                 returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
+                if (((String) parameters.getValue(LOOKUP_TABLE, workspace)).equals(LookupTables.FROM_WAVELENGTH))
+                    returnedParameters.add(parameters.getParameter(WAVELENGTH));
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
                 break;
         }
@@ -345,8 +360,8 @@ public class SetLookupTable extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
