@@ -6,7 +6,7 @@ import java.awt.Color;
  * Uses the CIE color-matching algorithm.  Taken from https://www.baeldung.com/cs/rgb-color-light-frequency (accessed 2024-10-14)
  */
 public class WavelengthToColorConverter {
-    public static Color wavelengthToColor(double wavelengthNM) {
+    public static Color convert(double wavelengthNM) {
         // Calculating X value
         double factorXt1 = wavelengthNM < 442 ? 0.0624 : 0.0374;
         double Xt1 = (wavelengthNM - 442) * factorXt1;
