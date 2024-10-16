@@ -173,7 +173,7 @@ public class SetLookupTable extends Module {
             case LookupTables.RANDOM:
                 return LUTs.Random(true);
             case LookupTables.FROM_WAVELENGTH:
-                Color colour = WavelengthToColorConverter.wavelengthToColor(wavelengthNM);
+                Color colour = WavelengthToColorConverter.convert(wavelengthNM);
                 return LUT.createLutFromColor(colour);
         }
     }
