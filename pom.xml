@@ -12,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.6.9</version>
+    <version>1.6.10-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -122,6 +122,7 @@
         <module>mia-modules</module>
         <module>mia-plugin</module>
         <module>mia-ptbiop</module>
+        <module>mia-samj</module>
         <module>mia-stardist</module>
     </modules>
 

@@ -6,15 +6,23 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.TreeSet;
+
+import javax.swing.JPanel;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+import org.scijava.plugin.PluginInfo;
 
 import com.drew.lang.annotations.NotNull;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -22,6 +30,8 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependencies;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
@@ -48,6 +58,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
@@ -224,8 +235,22 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
+    protected HashSet<ManualExtension> extensions = new HashSet<>();
+    protected ObjectSelector objectSelector = null;
+
+    public ManuallyIdentifyObjects(String name, Modules modules) {
+        super(name, modules);
+
+        // Getting extensions and adding their parameters to this collection, so they
+        // can be saved and loaded
+        extensions = getAvailableExtensions();
+        for (ManualExtension extension : extensions)
+            parameters.addAll(extension.getAllParameters());
+
+    }
+
     public ManuallyIdentifyObjects(Modules modules) {
-        super("Manually identify objects", modules);
+        this("Manually identify objects", modules);
     }
 
     public interface SelectorTypes {
@@ -237,10 +262,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String POLYGON = "Polygon";
         String RECTANGLE = "Rectangle";
         String SEGMENTED_LINE = "Segmented line";
+        String SINGLE_POINT = "Single point";
         String WAND = "Wand (tracing) tool";
 
         String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POINTS, POLYGON, RECTANGLE,
-                SEGMENTED_LINE, WAND };
+                SEGMENTED_LINE, SINGLE_POINT, WAND };
 
     }
 
@@ -279,6 +305,36 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     public interface ObjMetadataItems extends ObjectSelector.ObjMetadataItems {
     }
 
+    HashSet<ManualExtension> getAvailableExtensions() {
+        // Getting available extension dependencies
+        ManualExtensionDependencies dependencies = new ManualExtensionDependencies();
+
+        // Creating a list of available extensions
+        HashSet<ManualExtension> extensions = new HashSet<>();
+
+        List<PluginInfo<ManualExtension>> plugins = ClassHunter.getPlugins(ManualExtension.class);
+        for (PluginInfo<ManualExtension> plugin : plugins) {
+            // Checking dependencies have been met
+            String className = plugin.getClassName().substring(plugin.getClassName().lastIndexOf(".") + 1);
+            if (!dependencies.compatible(className, false))
+                continue;
+
+            try {
+                ManualExtension extension = (ManualExtension) Class.forName(plugin.getClassName())
+                        .getConstructor(Module.class).newInstance(this);
+
+                extensions.add(extension);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException
+                    | ClassNotFoundException e) {
+                MIA.log.writeError(e);
+            }
+        }
+
+        return extensions;
+
+    }
+
     void setSelector(String selectorType) {
         switch (selectorType) {
             case SelectorTypes.FREEHAND_LINE:
@@ -295,7 +351,10 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 IJ.setTool(Toolbar.OVAL);
                 return;
             case SelectorTypes.POINTS:
-                IJ.setTool(Toolbar.POINT);
+                IJ.setTool("multi");
+                return;
+            case SelectorTypes.POLYGON:
+                IJ.setTool(Toolbar.POLYGON);
                 return;
             case SelectorTypes.RECTANGLE:
                 IJ.setTool(Toolbar.RECTANGLE);
@@ -303,8 +362,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             case SelectorTypes.SEGMENTED_LINE:
                 IJ.setTool(Toolbar.POLYLINE);
                 return;
-            case SelectorTypes.POLYGON:
-                IJ.setTool(Toolbar.POLYGON);
+            case SelectorTypes.SINGLE_POINT:
+                IJ.setTool("point");
                 return;
             case SelectorTypes.WAND:
                 IJ.setTool(Toolbar.WAND);
@@ -334,7 +393,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 + "Add to existing\" control.";
     }
 
-    static TreeSet<String> getClasses(String classesSource, String classFile, String classList) {
+    protected static TreeSet<String> getClasses(String classesSource, String classFile, String classList) {
         TreeSet<String> classes = new TreeSet<>();
 
         switch (classesSource) {
@@ -369,7 +428,31 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     }
 
-    void writeClassesFile(String classFile, TreeSet<String> allClasses) {
+    protected void createClassFile(String classesSource, ClassSelector classSelector, String classFile,
+            Workspace workspace, String appendSeriesMode, String appendDateTimeMode, String suffix) {
+        switch (classesSource) {
+            case ClassesSources.EXISTING_CLASS_FILE:
+                TreeSet<String> allClasses = classSelector.getAllClasses();
+                writeClassesFile(classFile, allClasses);
+                break;
+            case ClassesSources.NEW_CLASS_FILE:
+                allClasses = classSelector.getAllClasses();
+                String outputPath = getOutputPath(modules, workspace);
+                String outputName = getOutputName(modules, workspace);
+
+                // Adding last bits to name
+                outputPath = outputPath + outputName;
+                outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+                outputPath = appendDateTime(outputPath, appendDateTimeMode);
+                outputPath = outputPath + suffix + ".csv";
+
+                writeClassesFile(outputPath, allClasses);
+
+                break;
+        }
+    }
+
+    protected void writeClassesFile(String classFile, TreeSet<String> allClasses) {
         try {
             FileWriter writer;
             try {
@@ -386,6 +469,10 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         } catch (IOException e) {
             MIA.log.writeError(e);
         }
+    }
+
+    public ObjectSelector getObjectSelector() {
+        return objectSelector;
     }
 
     @Override
@@ -425,14 +512,31 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         if (!outputTracks)
             outputTrackObjectsName = null;
 
+        // Initialising any available extensions before the image is shown
+        for (ManualExtension extension : extensions) {
+            Status extensionStatus = extension.initialiseBeforeImageShown(workspace);
+            if (extensionStatus != Status.PASS)
+                return extensionStatus;
+        }
+
+        objectSelector = new ObjectSelector();
+        objectSelector.setExtensions(extensions);
+
         ClassSelector classSelector = null;
         if (assignClasses) {
             TreeSet<String> classes = getClasses(classesSource, classFile, classList);
             classSelector = new ClassSelector(classes, allowAdditions);
+            objectSelector.setClassSelector(classSelector);
         }
 
-        ObjectSelector objectSelector = new ObjectSelector(inputImagePlus, outputObjectsName, messageOnImage,
-                instructionText, volumeTypeString, pointMode, outputTrackObjectsName, classSelector,false);
+        for (ManualExtension extension : extensions) {
+            JPanel extensionControlPanel = extension.getControlPanel();
+            if (extensionControlPanel != null)
+                objectSelector.addExtraPanel(extensionControlPanel);
+        }
+
+        objectSelector.initialise(inputImagePlus, outputObjectsName, messageOnImage, instructionText, volumeTypeString,
+                pointMode, outputTrackObjectsName, false);
 
         // Loading existing objects
         if (addExistingObjects) {
@@ -446,8 +550,16 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             }
         }
 
-        objectSelector.setVisible(true);
-        
+        // Initialising any available extensions after the image is shown
+        objectSelector.setImageVisible(true);
+        ImagePlus displayIpl = objectSelector.getDisplayIpl();
+        for (ManualExtension extension : extensions) {
+            Status extensionStatus = extension.initialiseAfterImageShown(displayIpl);
+            if (extensionStatus != Status.PASS)
+                return extensionStatus;
+        }
+
+        objectSelector.setControlPanelVisible(true);
 
         // All the while the control is open, do nothing
         while (objectSelector.isActive())
@@ -462,29 +574,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             return Status.FAIL;
 
         // Writing classes to file
-        if (assignClasses && classSelector != null) {
-            switch (classesSource) {
-                case ClassesSources.EXISTING_CLASS_FILE:
-                    TreeSet<String> allClasses = classSelector.getAllClasses();
-                    writeClassesFile(classFile, allClasses);
-                    break;
-                case ClassesSources.NEW_CLASS_FILE:
-                    allClasses = classSelector.getAllClasses();
-                    String outputPath = getOutputPath(modules, workspace);
-                    String outputName = getOutputName(modules, workspace);
-
-                    // Adding last bits to name
-                    outputPath = outputPath + outputName;
-                    outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
-                    outputPath = appendDateTime(outputPath, appendDateTimeMode);
-                    outputPath = outputPath + suffix + ".csv";
-
-                    writeClassesFile(outputPath, allClasses);
-
-                    break;
-            }
-
-        }
+        if (assignClasses)
+            createClassFile(classesSource, classSelector, classFile, workspace, appendSeriesMode, appendDateTimeMode,
+                    suffix);
 
         // Getting objects
         Objs outputObjects = objectSelector.getObjects();
@@ -616,6 +708,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         returnedParameters.add(parameters.get(SELECTOR_TYPE));
         returnedParameters.add(parameters.get(MESSAGE_ON_IMAGE));
 
+        for (ManualExtension extension : extensions)
+            returnedParameters.addAll(extension.updateAndGetParameters());
+
         return returnedParameters;
 
     }
@@ -712,7 +807,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         @Override
         public <T extends Parameter> T duplicate(Module newModule) {
-            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(), getDescription());
+            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(),
+                    getDescription());
 
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());

@@ -329,11 +329,9 @@ public class LoadObjectsFromROIs extends Module {
             workspace.addObjects(trackObjects);
         }
 
-        if (!new File(filePath).exists()) {
-            MIA.log.writeWarning("ROI file \""+filePath+"\" not found.  No ROIs loaded.");
+        if (!new File(filePath).exists())
             return Status.PASS;
-        }
-
+        
         loadObjects(filePath, outputObjects, trackObjects, assignClass);
 
         if (showOutput)

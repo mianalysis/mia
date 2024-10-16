@@ -13,6 +13,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -74,6 +77,7 @@ import ij.plugin.Duplicator;
 import ij.process.BinaryInterpolator;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
+import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
@@ -84,16 +88,18 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
-public class ObjectSelector implements ActionListener, KeyListener {
+public class ObjectSelector implements ActionListener, KeyListener, MouseListener {
     private Objs outputObjects = null;
     private Objs outputTrackObjects = null;
 
     private boolean overflow = false;
     private String saveObjectsPath = null;
+    private HashSet<ManualExtension> extensions = new HashSet<>();
 
     private JFrame frame;
     private JMenuBar menuBar;
     private JTextField objectNumberField;
+    private JComboBox<String> autoAcceptMode;
     private CustomListModel<ObjRoi> listModel = new CustomListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
@@ -104,7 +110,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private JPanel fontPanel;
     private JTextField labelFontSize;
 
-    private ImagePlus displayImagePlus;
+    private ImagePlus displayIpl;
     private Overlay overlay;
     private Overlay origOverlay;
     private HashMap<Integer, ArrayList<ObjRoi>> rois;
@@ -112,8 +118,11 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private String pointMode;
     private String volumeTypeString;
     private ClassSelector classSelector;
+    private ArrayList<JPanel> extraPanels = new ArrayList<>();
     private int gridWidth = 4;
     private String previousOverlayMode = OverlayModes.NONE;
+    private static int x0 = Prefs.getInt("MIA.ObjectSelector.x0", 100);
+    private static int y0 = Prefs.getInt("MIA.ObjectSelector.y0", 100);
 
     // Menu bar options
     private static final String FILE = "File";
@@ -131,7 +140,16 @@ public class ObjectSelector implements ActionListener, KeyListener {
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
-    private interface OverlayModes {
+    public interface AutoAcceptModes {
+        String DO_NOTHING = "Do nothing";
+        String ADD_AS_NEW_OBJECT = "Add as new object";
+        String ADD_TO_EXISTING_OBJECT = "Add to existing object";
+
+        String[] ALL = new String[] { DO_NOTHING, ADD_AS_NEW_OBJECT, ADD_TO_EXISTING_OBJECT };
+
+    }
+
+    public interface OverlayModes {
         String NONE = "None";
         String FILL = "Fill";
         String OUTLINES = "Outlines";
@@ -140,7 +158,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     }
 
-    private interface ColourModesNoClass {
+    public interface ColourModesNoClass {
         String BY_ID = "By ID";
         String BLACK = "Black";
         String BLUE = "Blue";
@@ -174,36 +192,50 @@ public class ObjectSelector implements ActionListener, KeyListener {
         String CLASS = "CLASS";
     }
 
-    public ObjectSelector(ImagePlus inputImagePlus, String outputObjectsName, String messageOnImage,
-            String instructionText, String volumeTypeString, String pointMode,
-            @Nullable String outputTrackObjectsName, @Nullable ClassSelector classSelector,
+    public void setClassSelector(ClassSelector classSelector) {
+        this.classSelector = classSelector;
+    }
+
+    public void addExtraPanel(JPanel extraPanel) {
+        extraPanels.add(extraPanel);
+    }
+
+    public void setExtensions(HashSet<ManualExtension> extensions) {
+        this.extensions = extensions;
+    }
+
+    public void addExtension(ManualExtension extension) {
+        extensions.add(extension);
+    }
+
+    public void initialise(ImagePlus inputIpl, String outputObjectsName, String messageOnImage, String instructionText,
+            String volumeTypeString, String pointMode, @Nullable String outputTrackObjectsName,
             boolean showControlOnCreation) {
         this.pointMode = pointMode;
         this.volumeTypeString = volumeTypeString;
-        this.classSelector = classSelector;
 
         if (classSelector != null)
             gridWidth = 5;
 
-        displayImagePlus = new Duplicator().run(inputImagePlus);
-        displayImagePlus.setCalibration(null);
-        displayImagePlus.setTitle(messageOnImage);
-        displayImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
+        displayIpl = new Duplicator().run(inputIpl);
+        displayIpl.setCalibration(null);
+        displayIpl.setTitle(messageOnImage);
+        displayIpl.setDisplayMode(CompositeImage.COMPOSITE);
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
         listModel.clear();
 
-        origOverlay = displayImagePlus.getOverlay();
+        origOverlay = displayIpl.getOverlay();
         overlay = new Overlay();
-        displayImagePlus.setOverlay(overlay);
-        displayImagePlus.setHideOverlay(false);
+        displayIpl.setOverlay(overlay);
+        displayIpl.setHideOverlay(false);
         updateOverlay();
 
         // Initialising output objects
-        outputObjects = new Objs(outputObjectsName, inputImagePlus);
+        outputObjects = new Objs(outputObjectsName, inputIpl);
         if (outputTrackObjectsName != null)
-            outputTrackObjects = new Objs(outputTrackObjectsName, inputImagePlus);
+            outputTrackObjects = new Objs(outputTrackObjectsName, inputIpl);
 
         // Displaying the image and showing the control
         createControlPanel(instructionText);
@@ -211,13 +243,23 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     }
 
-    public void setVisible(boolean visible) {
+    public void setControlPanelVisible(boolean visible) {
         frame.setVisible(visible);
         if (visible) {
-            displayImagePlus.show();
-            displayImagePlus.getWindow().getComponent(0).addKeyListener(this);
+            displayIpl.show();
+            displayIpl.getWindow().getComponent(0).addKeyListener(this);
         } else {
-            displayImagePlus.hide();
+            displayIpl.hide();
+        }
+    }
+
+    public void setImageVisible(boolean visible) {
+        if (visible) {
+            displayIpl.show();
+            displayIpl.getWindow().getComponent(0).addKeyListener(this);
+            displayIpl.getWindow().getCanvas().addMouseListener(this);
+        } else {
+            displayIpl.hide();
         }
     }
 
@@ -229,12 +271,20 @@ public class ObjectSelector implements ActionListener, KeyListener {
         return frame != null;
     }
 
+    public ImagePlus getDisplayIpl() {
+        return displayIpl;
+    }
+
     public Objs getObjects() {
         return outputObjects;
     }
 
     public Objs getTrackObjects() {
         return outputTrackObjects;
+    }
+
+    public String getAutoAcceptMode() {
+        return (String) autoAcceptMode.getSelectedItem();
     }
 
     private void createControlPanel(String instructionText) {
@@ -313,6 +363,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
         newObjectButton.setActionCommand(ADD_NEW);
         c.gridy++;
         c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(newObjectButton, c);
 
         JButton existingObjectButton = new JButton("Add to existing object");
@@ -343,16 +394,53 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         // Object number panel
         JLabel objectNumberLabel = new JLabel("Existing object number");
+        objectNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
         c.gridx = 0;
         c.gridy++;
         c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
         frame.add(objectNumberLabel, c);
 
         objectNumberField = new JTextField();
         c.gridx++;
-        c.gridwidth = gridWidth - 1;
+        c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField, c);
+
+        // Auto accept panel
+        JLabel autoAcceptLabel = new JLabel("When region drawn");
+        autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
+        c.gridx = gridWidth - 2;
+        c.anchor = GridBagConstraints.EAST;
+        frame.add(autoAcceptLabel, c);
+
+        autoAcceptMode = new JComboBox<>(AutoAcceptModes.ALL);
+        autoAcceptMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.AutoAccept", AutoAcceptModes.DO_NOTHING));
+        autoAcceptMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Prefs.set("MIA.ObjectSelector.AutoAccept", (String) autoAcceptMode.getSelectedItem());
+            }
+        });
+        c.gridx++;
+        c.anchor = GridBagConstraints.WEST;
+        frame.add(autoAcceptMode, c);
+
+        // Extra tools panels
+        for (JPanel extraPanel : extraPanels) {
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = gridWidth;
+            c.gridheight = 1;
+            c.anchor = GridBagConstraints.WEST;
+            c.fill = GridBagConstraints.BOTH;
+            c.insets = new Insets(0, 0, 0, 0);
+
+            frame.add(extraPanel, c);
+
+        }
+
+        c.insets = new Insets(5, 5, 5, 5);
 
         objectsScrollPane.setPreferredSize(new Dimension(0, 200));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -375,10 +463,10 @@ public class ObjectSelector implements ActionListener, KeyListener {
         c.gridheight = 1;
         frame.add(overlayPanel, c);
 
-        displayImagePlus.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
+        displayIpl.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
 
         frame.pack();
-        frame.setLocation(100, 100);
+        frame.setLocation(new Point(x0, y0));
         frame.setResizable(false);
 
         frame.setVisible(true);
@@ -396,13 +484,15 @@ public class ObjectSelector implements ActionListener, KeyListener {
         c.gridwidth = 1;
 
         overlayMode = new JComboBox<>(OverlayModes.ALL);
-        overlayMode.setSelectedItem(OverlayModes.FILL);
+        overlayMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.OverlayMode", OverlayModes.FILL));
         overlayMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Prefs.set("MIA.ObjectSelector.OverlayMode", (String) overlayMode.getSelectedItem());
+
                 boolean showOverlay = !overlayMode.getSelectedItem().equals(OverlayModes.NONE);
 
-                displayImagePlus.setHideOverlay(!showOverlay);
+                displayIpl.setHideOverlay(!showOverlay);
                 Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
                 labelCheck.setEnabled(showOverlay);
                 if (labelCheck.isSelected())
@@ -423,15 +513,25 @@ public class ObjectSelector implements ActionListener, KeyListener {
         colourPanel.add(new JLabel("Colour mode"));
         if (classSelector == null) {
             colourMode = new JComboBox<>(ColourModesNoClass.ALL);
-            colourMode.setSelectedItem(ColourModesNoClass.BY_ID);
+            try {
+                colourMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.ColourModeNoClass", ColourModesNoClass.BY_ID));
+            } catch (Exception e) {
+                colourMode.setSelectedItem(ColourModesNoClass.BY_ID);
+            }
         } else {
             colourMode = new JComboBox<>(ColourModesWithClass.ALL);
-            colourMode.setSelectedItem(ColourModesWithClass.BY_CLASS);
+            colourMode.setSelectedItem(
+                    Prefs.get("MIA.ObjectSelector.ColourModeWithClass", ColourModesWithClass.BY_CLASS));
         }
         colourMode.setEnabled(true);
         colourMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (classSelector == null)
+                    Prefs.set("MIA.ObjectSelector.ColourModeNoClass", (String) colourMode.getSelectedItem());
+                else
+                    Prefs.set("MIA.ObjectSelector.ColourModeWithClass", (String) colourMode.getSelectedItem());
+
                 updateOverlay();
             }
         });
@@ -441,11 +541,12 @@ public class ObjectSelector implements ActionListener, KeyListener {
         overlayPanel.add(colourPanel, c);
 
         labelCheck = new JCheckBox("Show labels");
-        labelCheck.setSelected(true);
+        labelCheck.setSelected(Prefs.get("MIA.ObjectSelector.ShowLabels", true));
         labelCheck.setEnabled(true);
         labelCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Prefs.set("MIA.ObjectSelector.ShowLabels", labelCheck.isSelected());
                 Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(labelCheck.isSelected()));
 
                 updateOverlay();
@@ -457,7 +558,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
         fontPanel = new JPanel();
         fontPanel.add(new JLabel("Font size"));
         int defaultSize = (int) Math
-                .round(Math.max(12, Math.max(displayImagePlus.getWidth(), displayImagePlus.getHeight()) / 50));
+                .round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
         labelFontSize = new JTextField(String.valueOf(defaultSize));
         labelFontSize.setEnabled(true);
         labelFontSize.addFocusListener(new FocusListener() {
@@ -485,7 +586,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
         for (Obj trackObj : trackObjects.values()) {
             // Keeping a record of frames which have an object (these will be unchanged, so
             // don't need a new object)
-            ArrayList<Integer> timepoints = new ArrayList<>(); 
+            ArrayList<Integer> timepoints = new ArrayList<>();
 
             // Creating a blank image for this track
             Image binaryImage = trackObj.getAsImage("Track", false);
@@ -610,26 +711,26 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 break;
 
             case (SELECT_EMPTY_SPACE_AT_CLICK):
-                new NonOverlaySelector(displayImagePlus);
+                new NonOverlaySelector(displayIpl);
                 break;
 
             case (SELECT_EMPTY_SPACE_IN_REGION):
-                Roi currRoi = displayImagePlus.getRoi();
+                Roi currRoi = displayIpl.getRoi();
                 if (currRoi == null)
                     MIA.log.writeMessage("Please select a region of interest first");
 
-                ImagePlus binaryIpl = NonOverlaySelector.convertOverlayToBinary(displayImagePlus);
+                ImagePlus binaryIpl = NonOverlaySelector.convertOverlayToBinary(displayIpl);
                 Roi selectedRoi = NonOverlaySelector.getRegionInsideRoi(binaryIpl, currRoi);
 
                 if (selectedRoi != null)
-                    displayImagePlus.setRoi(selectedRoi);
+                    displayIpl.setRoi(selectedRoi);
 
         }
     }
 
     public void addNewObject() {
         // Getting the ROI
-        Roi roi = displayImagePlus.getRoi();
+        Roi roi = displayIpl.getRoi();
 
         if (roi == null) {
             frame.setAlwaysOnTop(false);
@@ -660,30 +761,28 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         // Deselecting the current ROI. This can be re-enabled by selecting it from the
         // list.
-        displayImagePlus.killRoi();
+        displayIpl.killRoi();
 
     }
 
     public void addSingleRoi(Roi roi) {
-        if (classSelector != null)
-            classSelector.setVisible(true);
-
         int ID = ++maxID;
-
         ArrayList<ObjRoi> currentRois = new ArrayList<>();
 
-        // If a ClassSelector has been provided, show it and wait for response
         String assignedClass = null;
         if (classSelector != null) {
+            classSelector.setVisible(true);
+
             while (classSelector.isActive())
                 try {
                     Thread.sleep(100);
                 } catch (Exception e) {
+
                 }
             assignedClass = classSelector.getLastSelectedClass();
         }
 
-        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1, assignedClass);
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1, assignedClass);
         currentRois.add(objRoi);
         rois.put(ID, currentRois);
 
@@ -692,8 +791,24 @@ public class ObjectSelector implements ActionListener, KeyListener {
     }
 
     public void addToExistingObject() {
+        // If there are no existing objects, add as new object
+        if (rois.size() == 0 || objectNumberField.getText().equals(""))
+            new Thread(() -> {
+                addNewObject();
+            }).start();
+
+        int ID = -1;
+        try {
+            ID = Integer.parseInt(objectNumberField.getText());        
+        } catch (NumberFormatException e) {
+            new Thread(() -> {
+                addNewObject();
+            }).start();
+            return;
+        }
+
         // Getting points
-        Roi roi = displayImagePlus.getRoi();
+        Roi roi = displayIpl.getRoi();
 
         if (roi == null) {
             frame.setAlwaysOnTop(false);
@@ -701,8 +816,6 @@ public class ObjectSelector implements ActionListener, KeyListener {
             frame.setAlwaysOnTop(true);
             return;
         }
-
-        int ID = Integer.parseInt(objectNumberField.getText());
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = rois.get(ID);
@@ -715,8 +828,8 @@ public class ObjectSelector implements ActionListener, KeyListener {
         }
 
         // If there's already a ROI in this image with the same ID, combine them
-        int t = displayImagePlus.getT() - 1;
-        int z = displayImagePlus.getZ() - 1;
+        int t = displayIpl.getT() - 1;
+        int z = displayIpl.getZ() - 1;
         ListIterator<ObjRoi> iterator = currentRois.listIterator();
         while (iterator.hasNext()) {
             ObjRoi currentRoi = iterator.next();
@@ -725,7 +838,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 updateOverlay();
 
             } else {
-                ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1,
+                ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
                         assignedClass);
                 iterator.add(objRoi);
                 rois.put(ID, currentRois);
@@ -781,13 +894,19 @@ public class ObjectSelector implements ActionListener, KeyListener {
     }
 
     public void processObjectsAndFinish() {
+        Point location = frame.getLocation();
+        x0 = (int) Math.round(location.getX());
+        y0 = (int) Math.round(location.getY());
+        Prefs.set("MIA.ObjectSelector.x0", x0);
+        Prefs.set("MIA.ObjectSelector.y0", y0);
+
         // If the frame isn't already closed, hide it while we finish processing the
         // objects
         if (frame != null)
             frame.setVisible(false);
-        
-        displayImagePlus.changes = false;
-        displayImagePlus.close();
+
+        displayIpl.changes = false;
+        displayIpl.close();
 
         try {
             if (outputTrackObjects == null) {
@@ -830,7 +949,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 for (Point point : points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
-                    if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
+                    if (x >= 0 && x < displayIpl.getWidth() && y >= 0 && y < displayIpl.getHeight()) {
                         try {
                             outputObject.add(x, y, z);
                         } catch (PointOutOfRangeException e) {
@@ -883,7 +1002,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                 for (Point point : points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
-                    if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
+                    if (x >= 0 && x < displayIpl.getWidth() && y >= 0 && y < displayIpl.getHeight()) {
                         try {
                             outputObject.add(x, y, z);
                         } catch (PointOutOfRangeException e) {
@@ -926,7 +1045,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
         // Adding overlay showing ROI and its ID number
         Roi overlayRoi = ObjRoi.duplicateRoi(roi);
-        if (displayImagePlus.isHyperStack())
+        if (displayIpl.isHyperStack())
             overlayRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
         else
             overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
@@ -990,7 +1109,7 @@ public class ObjectSelector implements ActionListener, KeyListener {
                     new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
 
             // Setting stack location
-            if (displayImagePlus.isHyperStack())
+            if (displayIpl.isHyperStack())
                 text.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
             else
                 text.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
@@ -1000,14 +1119,15 @@ public class ObjectSelector implements ActionListener, KeyListener {
                     text.getYBase() - text.getFloatHeight() / 2 + 1);
 
             overlay.add(text);
+
         }
 
-        displayImagePlus.updateAndDraw();
+        displayIpl.updateAndDraw();
 
     }
 
     void displayObject(ObjRoi objRoi) {
-        displayImagePlus.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
+        displayIpl.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
     }
 
     String getSavePath() {
@@ -1208,10 +1328,10 @@ public class ObjectSelector implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
-            new Thread(() -> {
-                addNewObject();
-            }).start();
+        // if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
+        // new Thread(() -> {
+        // addNewObject();
+        // }).start();
     }
 
     @Override
@@ -1226,5 +1346,45 @@ public class ObjectSelector implements ActionListener, KeyListener {
         public void redraw() {
             fireContentsChanged(this, 0, getSize());
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // Checking if any extension prevents auto accepting. This may be because that
+        // extension will itself automatically accept the object.
+        for (ManualExtension extension : extensions)
+            if (extension.skipAutoAccept())
+                return;
+
+        switch ((String) autoAcceptMode.getSelectedItem()) {
+            case AutoAcceptModes.DO_NOTHING:
+            default:
+                // No action required
+                break;
+            case AutoAcceptModes.ADD_AS_NEW_OBJECT:
+                new Thread(() -> {
+                    addNewObject();
+                }).start();
+                break;
+            case AutoAcceptModes.ADD_TO_EXISTING_OBJECT:
+                addToExistingObject();
+                break;
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }

@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.9</version>
+        <version>1.6.10-SNAPSHOT</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.6.9</version>
+    <version>1.6.10-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -127,7 +127,7 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.6.9</version>
+            <version>1.6.10-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -226,14 +226,5 @@
             <version>5.9</version>
             <scope>${scp}</scope>
         </dependency>
-
-        <!-- Currently, the following needs to be locally installed -->
-        <!-- <dependency>
-            <groupId>ai.nets</groupId>
-            <artifactId>samj</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
-        </dependency> -->
     </dependencies>
-
-    
 </project>

@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Set;
@@ -34,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import com.drew.lang.annotations.Nullable;
 
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 
 public class ClassSelector implements ActionListener, KeyListener {
     private boolean allowAdditions;
@@ -62,11 +64,11 @@ public class ClassSelector implements ActionListener, KeyListener {
         this.allowAdditions = allowAdditions;
         fullListModel.addAll(classes);
 
-        String recentsList = Prefs.get("MIA.classSelector.recentList", "");
-        for (String item : Arrays.asList(recentsList.split(",")))
-            if (fullListModel.contains(item))
-                recentListModel.add(item);
-
+        String[] recentsArray = Prefs.get("MIA.classSelector.recentList", "").split(",");
+        for (int i=recentsArray.length-1;i>=0;i--)
+            if (fullListModel.contains(recentsArray[i]))
+                recentListModel.add(recentsArray[i]);
+        
         showOptionsPanel();
 
     }
@@ -218,9 +220,6 @@ public class ClassSelector implements ActionListener, KeyListener {
     }
 
     public void setVisible(boolean visible) {
-        if (visible)
-            frame.pack();
-
         frame.setVisible(visible);
 
     }
