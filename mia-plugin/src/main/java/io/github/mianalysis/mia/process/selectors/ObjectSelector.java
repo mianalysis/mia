@@ -323,7 +323,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                processObjectsAndFinish();                
+                processObjectsAndFinish();
             };
         });
 
@@ -466,7 +466,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         displayIpl.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
 
         frame.pack();
-        frame.setLocation(new Point(x0,y0));
+        frame.setLocation(new Point(x0, y0));
         frame.setResizable(false);
 
         frame.setVisible(true);
@@ -791,6 +791,22 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     }
 
     public void addToExistingObject() {
+        // If there are no existing objects, add as new object
+        if (rois.size() == 0 || objectNumberField.getText().equals(""))
+            new Thread(() -> {
+                addNewObject();
+            }).start();
+
+        int ID = -1;
+        try {
+            ID = Integer.parseInt(objectNumberField.getText());        
+        } catch (NumberFormatException e) {
+            new Thread(() -> {
+                addNewObject();
+            }).start();
+            return;
+        }
+
         // Getting points
         Roi roi = displayIpl.getRoi();
 
@@ -800,8 +816,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             frame.setAlwaysOnTop(true);
             return;
         }
-
-        int ID = Integer.parseInt(objectNumberField.getText());
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = rois.get(ID);

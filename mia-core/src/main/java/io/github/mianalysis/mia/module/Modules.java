@@ -59,6 +59,8 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
      * user interaction elements
      */
     public boolean execute(Workspace workspace, boolean clearMemoryAtEnd) {
+        double t1 = System.currentTimeMillis();
+
         MIA.log.writeDebug("Processing file \"" + workspace.getMetadata().getFile().getAbsolutePath() + "\"");
 
         // Setting the MacroHandler to the current workspace (only if macro modules are
@@ -130,11 +132,15 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
             String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
 
-            DecimalFormat df = new DecimalFormat("#.0");
+            DecimalFormat df1 = new DecimalFormat("#.0");
+            DecimalFormat df3 = new DecimalFormat("0.000");
 
-            String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
-                    + ", ANALYSIS COMPLETE, DATE/TIME = " + dateTime + ", FILE = \"" + workspace.getMetadata().getFile()
-                    + "\"";
+            double t2 = System.currentTimeMillis();
+            double elapsed = (t2-t1)/1000;
+
+            String memoryMessage = df1.format(usedMemory * 1E-6) + "/" + df1.format(totalMemory * 1E-6) + " MB"
+                    + ", ANALYSIS COMPLETE , ELAPSED: "+df3.format(elapsed)+" s, DATE/TIME: " + dateTime + ", FILE: \""
+                    + workspace.getMetadata().getFile() + "\"";
 
             MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
 
