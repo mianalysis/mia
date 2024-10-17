@@ -18,9 +18,9 @@ For the full documentation, please go to [mianalysis.github.io](https://mianalys
 Paper and poster
 ------------
 
-You can check out the MIA paper [here](https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227) and the latest MIA poster from CBIAS 2022 [here](./img/CBIAS_poster_2022.jpg)
+You can check out the MIA paper [here](https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227) and the latest MIA poster from CBIAS 2022 [here](./resources/img/CBIAS_poster_2022.jpg)
 <p align="middle">
-<a href="https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227"><img src="./resources/img/Paper_thumb.png" height="200"></a> <a href="https://github.com/mianalysis/mia/tree/main/docs/img/CBIAS_poster_2022.jpg"><img src="./resources/img/CBIAS_poster_2022_thumb.jpg" height="200"></a>
+<a href="https://onlinelibrary.wiley.com/doi/10.1111/jmi.13227"><img src="./resources/img/Paper_thumb.png" height="200"></a> <a href="https://github.com/mianalysis/mia/tree/main/resources/img/CBIAS_poster_2022.jpg"><img src="./resources/img/CBIAS_poster_2022_thumb.jpg" height="200"></a>
 </p>
 
 Installation
