@@ -792,10 +792,12 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void addToExistingObject() {
         // If there are no existing objects, add as new object
-        if (rois.size() == 0 || objectNumberField.getText().equals(""))
+        if (rois.size() == 0 || objectNumberField.getText().equals("")) {
             new Thread(() -> {
                 addNewObject();
             }).start();
+            return;
+        }
 
         int ID = -1;
         try {

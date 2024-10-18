@@ -66,7 +66,9 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     public static final String STORE_ENCODING = "Store encoding";
     public static final String TERMINATE_AFTER_ENCODING = "Terminate after encoding";
 
-    HashMap<String, String> encodings = new HashMap<>();
+    protected HashMap<String, String> encodings = new HashMap<>();
+    protected long currWidth = 0;
+    protected long currHeight = 0;
 
     public interface SAMJModels {
         public String EFFICIENT = "Efficient";
@@ -197,8 +199,12 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
                 | !environmentPath.equals(prevEnvironmentPath))
             initialiseSAMJ();
 
+        String imageName = module.getParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE, workspace);
+        Image image = workspace.getImage(imageName);
+
         String path = workspace.getMetadata().getFile().getAbsolutePath();
-        if (useEncoding && encodings.containsKey(path))
+        if (useEncoding && encodings.containsKey(path) && image.getWidth() == currWidth
+                && image.getHeight() == currHeight)
             try {
                 samJ.selectEncoding(encodings.get(path));
             } catch (Exception e) {
@@ -206,11 +212,12 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             }
         else {
             try {
-                String imageName = module.getParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE, workspace);
-                Image image = workspace.getImage(imageName);
                 samJ.setImage(image.getImgPlus());
+                currWidth = image.getWidth();
+                currHeight = image.getHeight();
             } catch (IOException | RuntimeException | InterruptedException e) {
                 MIA.log.writeError(e);
+                return Status.FAIL;
             }
         }
 
