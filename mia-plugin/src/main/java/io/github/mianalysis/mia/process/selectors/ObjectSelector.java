@@ -793,6 +793,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     public void addToExistingObject() {
         // If there are no existing objects, add as new object
         if (rois.size() == 0 || objectNumberField.getText().equals("")) {
+            MIA.log.writeDebug("No ROIs, so adding as new object");
             new Thread(() -> {
                 addNewObject();
             }).start();
@@ -801,8 +802,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         int ID = -1;
         try {
-            ID = Integer.parseInt(objectNumberField.getText());        
+            ID = Integer.parseInt(objectNumberField.getText());
         } catch (NumberFormatException e) {
+            MIA.log.writeDebug("No existing object number present, so adding as new object");
             new Thread(() -> {
                 addNewObject();
             }).start();
@@ -838,17 +840,19 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             if (currentRoi.getT() == t && currentRoi.getZ() == z) {
                 currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
                 updateOverlay();
-
-            } else {
-                ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
-                        assignedClass);
-                iterator.add(objRoi);
-                rois.put(ID, currentRois);
-
-                addObjectToList(objRoi, ID);
-                updateOverlay();
+                return;
             }
         }
+        
+        // If no ROI was found, this will add it as a new ROI
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
+                assignedClass);
+        iterator.add(objRoi);
+        rois.put(ID, currentRois);
+
+        addObjectToList(objRoi, ID);
+        updateOverlay();
+
     }
 
     public void changeObjectClass() {

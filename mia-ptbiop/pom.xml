@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.10-SNAPSHOT</version>
+        <version>1.6.10</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-ptbiop</artifactId>
-    <version>1.6.10-SNAPSHOT</version>
+    <version>1.6.10</version>
     <packaging>jar</packaging>
     <name>mia-ptbiop</name>
     <url>https://github.com/mianalysis/mia</url>
