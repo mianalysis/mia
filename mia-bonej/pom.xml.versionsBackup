@@ -6,14 +6,14 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.10</version>
+        <version>1.6.9</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-ptbiop</artifactId>
-    <version>1.6.10</version>
+    <artifactId>mia-bonej</artifactId>
+    <version>1.6.9</version>
     <packaging>jar</packaging>
-    <name>mia-ptbiop</name>
+    <name>mia-bonej</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -137,10 +137,12 @@
         </dependency>
 
         <dependency>
-            <groupId>ch.epfl.biop</groupId>
-            <artifactId>ijl-utilities-wrappers</artifactId>
-            <version>0.9.4</version>
+            <groupId>org.bonej</groupId>
+            <artifactId>bonej-legacy-util_</artifactId>
+            <version>7.0.15</version>
             <scope>${scp}</scope>
         </dependency>
-    </dependencies>    
+    </dependencies>
+
+    
 </project>

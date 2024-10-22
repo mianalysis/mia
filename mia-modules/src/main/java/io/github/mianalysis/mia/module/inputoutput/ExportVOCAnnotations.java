@@ -94,6 +94,7 @@ public class ExportVOCAnnotations extends AbstractSaver {
         
         // Ensuring folders have been created
         new File(outputPath).mkdirs();
+        
 
         // Adding filename
         String outputName = getOutputName(modules, workspace);

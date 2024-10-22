@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.macro.MacroHandler;

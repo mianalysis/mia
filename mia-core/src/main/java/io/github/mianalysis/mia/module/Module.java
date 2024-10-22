@@ -214,6 +214,8 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     // PUBLIC METHODS
 
     public Status execute(Workspace workspace) {
+        double t1 = System.currentTimeMillis();
+
         writeStatus("Processing");
 
         // By default all modules should use this format
@@ -242,10 +244,14 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
             String dateTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date());
 
-            DecimalFormat df = new DecimalFormat("#.0");
+            DecimalFormat df1 = new DecimalFormat("#.0");
+            DecimalFormat df3 = new DecimalFormat("0.000");
 
-            String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
-                    + ", MODULE = \"" + getName() + "\"" + ", DATE/TIME = " + dateTime + ", FILE = \""
+            double t2 = System.currentTimeMillis();
+            double elapsed = (t2-t1)/1000;
+
+            String memoryMessage = df1.format(usedMemory * 1E-6) + "/" + df1.format(totalMemory * 1E-6) + " MB"
+                    + ", MODULE: \"" + getName() + "\"" + ", ELAPSED: "+df3.format(elapsed)+" s, DATE/TIME: " + dateTime + ", FILE: \""
                     + workspace.getMetadata().getFile() + "\"";
 
             MIA.log.writeMemory(memoryMessage);

@@ -6,14 +6,14 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.10</version>
+        <version>1.6.9</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-ptbiop</artifactId>
-    <version>1.6.10</version>
+    <artifactId>mia-core</artifactId>
+    <version>1.6.9</version>
     <packaging>jar</packaging>
-    <name>mia-ptbiop</name>
+    <name>mia-core</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -126,21 +126,71 @@
     <dependencies>
         <dependency>
             <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-core</artifactId>
+            <artifactId>mia-algorithms</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-modules</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.epfl.biop</groupId>
-            <artifactId>ijl-utilities-wrappers</artifactId>
-            <version>0.9.4</version>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-ij</artifactId>
+            <version>2.0.1</version>
             <scope>${scp}</scope>
         </dependency>
-    </dependencies>    
+
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij1-patcher</artifactId>
+            <version>1.2.6</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+            <version>1.54j</version>
+            <scope>${scp}</scope>
+          </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-lite</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or later -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
+            <scope>${scp}</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+    
 </project>
