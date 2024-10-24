@@ -49,7 +49,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //    public Status process(Workspace workspace) {
 //        // Getting input objects
 //        String inputObjectsName = parameters.getValue(TRACK_OBJECTS,workspace);
-//        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+//        Objs inputObjects = workspace.getObjects(inputObjectsName);
 //
 //        // Getting classification file and storing classifications as HashMap that can be easily read later on
 //        String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE,workspace);

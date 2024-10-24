@@ -80,7 +80,7 @@ public class MeasureObjectCentroid extends Module {
     public Status process(Workspace workspace) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
 
         // Getting the centroids of each and saving them to the objects
         int count = 0;

@@ -222,7 +222,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE, workspace);
         String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1, workspace);
         String imageMeasurementName2 = parameters.getValue(IMAGE_MEASUREMENT_2, workspace);

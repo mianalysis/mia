@@ -137,7 +137,7 @@ public class InterpolateAlongZ extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         double outputZCalibration = parameters.getValue(OUTPUT_Z_SPATIAL_CALIBRATION, workspace);
 
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
 
         Objs outputObjects = process(inputObjects, outputZCalibration, outputObjectsName);
         workspace.addObjects(outputObjects);

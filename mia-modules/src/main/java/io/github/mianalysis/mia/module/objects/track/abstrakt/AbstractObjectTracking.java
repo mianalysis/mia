@@ -207,7 +207,7 @@ public abstract class AbstractObjectTracking extends Module {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs trackObjects = new Objs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 

@@ -262,7 +262,7 @@ public class MeasureObjectShape extends Module {
         int surfaceAreaMethodInt = getSurfaceAreaMethod(surfaceAreaMethodStr);
 
         // Getting input objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;

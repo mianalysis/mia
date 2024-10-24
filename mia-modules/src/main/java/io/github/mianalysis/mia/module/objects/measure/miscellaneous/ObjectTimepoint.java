@@ -67,7 +67,7 @@ public class ObjectTimepoint extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
 
         if (objects == null)
             return Status.PASS;

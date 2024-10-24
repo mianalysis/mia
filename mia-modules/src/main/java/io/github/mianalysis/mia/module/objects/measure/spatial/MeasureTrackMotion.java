@@ -638,7 +638,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
     public Status process(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
-        Objs trackObjects = workspace.getObjects().get(inputTrackObjectsName);
+        Objs trackObjects = workspace.getObjects(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);

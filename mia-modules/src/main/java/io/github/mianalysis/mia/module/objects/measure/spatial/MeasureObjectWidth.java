@@ -92,7 +92,7 @@ public class MeasureObjectWidth extends Module {
     public Status process(Workspace workspace) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
         Image binaryImage = inputObjects.convertToImage("Binary", hues, 8, false);

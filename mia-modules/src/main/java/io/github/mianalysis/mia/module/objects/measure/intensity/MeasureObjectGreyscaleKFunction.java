@@ -125,7 +125,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         // Getting input objects
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
 
         int minRadius = parameters.getValue(MINIMUM_RADIUS_PX, workspace);
         int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX, workspace);

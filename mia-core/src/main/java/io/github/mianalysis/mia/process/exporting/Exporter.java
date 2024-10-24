@@ -910,7 +910,7 @@ public class Exporter {
         // Running through each Workspace, adding rows
         for (Workspace workspace : workspaces) {
             for (String objectName : workspace.getObjects().keySet()) {
-                Objs objects = workspace.getObjects().get(objectName);
+                Objs objects = workspace.getObjects(objectName);
 
                 if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportMetadata(objectName))
                     continue;

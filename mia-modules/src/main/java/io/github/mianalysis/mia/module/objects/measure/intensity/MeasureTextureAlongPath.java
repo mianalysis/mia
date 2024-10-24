@@ -171,7 +171,7 @@ public class MeasureTextureAlongPath extends Module {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // If no objects were detected, skipping this module
         if (inputObjects.size() == 0)

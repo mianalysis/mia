@@ -79,7 +79,7 @@ public class ChildObjectCount extends Module {
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
 
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
         String measurementName = getFullName(childObjectsName);
 
         if (objects == null)

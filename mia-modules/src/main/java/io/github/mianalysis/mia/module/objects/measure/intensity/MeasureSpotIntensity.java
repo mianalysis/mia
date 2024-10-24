@@ -184,7 +184,7 @@ public class MeasureSpotIntensity extends Module {
 
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         double radius = parameters.getValue(FIXED_VALUE,workspace);

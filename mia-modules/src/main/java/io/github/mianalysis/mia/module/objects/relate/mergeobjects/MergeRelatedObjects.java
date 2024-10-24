@@ -202,7 +202,7 @@ public class MergeRelatedObjects extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
-        Objs parentObjects = workspace.getObjects().get(parentObjectName);
+        Objs parentObjects = workspace.getObjects(parentObjectName);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
         String outputMode = parameters.getValue(OUTPUT_MODE, workspace);

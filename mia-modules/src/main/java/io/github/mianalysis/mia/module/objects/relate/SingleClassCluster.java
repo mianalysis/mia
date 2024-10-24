@@ -266,7 +266,7 @@ public class SingleClassCluster extends Module {
     public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS, workspace);
@@ -783,7 +783,7 @@ public class SingleClassCluster extends Module {
 // public Status process(Workspace workspace) {
 // // Getting objects to measure
 // String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-// Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+// Objs inputObjects = workspace.getObjects(inputObjectsName);
 //
 // // Getting output objects name
 // String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
