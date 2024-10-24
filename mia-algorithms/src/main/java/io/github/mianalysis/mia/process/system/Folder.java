@@ -224,8 +224,8 @@ class AlphanumericComparator implements Comparator<File> {
         if (matcher1.matches() && matcher2.matches()) {
             // The regex format has been found for both name types
             if (matcher1.group(1).equals(matcher2.group(1)))
-            // The non-numeric parts match
-                if (matcher1.groupCount() > 2 && matcher2.groupCount() > 2)
+                // The non-numeric parts match
+                if (matcher1.group(2) != null && matcher2.group(2) != null)
                     // There are numeric parts to these filenames
                     if (matcher1.group(2).equals(matcher2.group(2)))
                         // Numeric parts are also equal, so compare based on extension
@@ -234,7 +234,7 @@ class AlphanumericComparator implements Comparator<File> {
                         // Numeric parts are different, so compare based on these
                         return Integer.parseInt(matcher1.group(2)) - Integer.parseInt(matcher2.group(2));
                 else {
-                    // They don't have numeric parts to compare, so compare based on extensions
+                    // They don't both have numeric parts to compare, so compare based on extensions
                     return o1.getName().compareTo(o2.getName());
                 }
 

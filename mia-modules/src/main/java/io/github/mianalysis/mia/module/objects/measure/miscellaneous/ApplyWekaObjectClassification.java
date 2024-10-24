@@ -185,7 +185,7 @@ public class ApplyWekaObjectClassification extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting other parameters
         String classifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);

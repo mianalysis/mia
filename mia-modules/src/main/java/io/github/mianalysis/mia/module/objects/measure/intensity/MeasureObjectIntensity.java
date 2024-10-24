@@ -274,7 +274,7 @@ public class MeasureObjectIntensity extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
 
         // Getting input image
         String imageName = parameters.getValue(INPUT_IMAGE, workspace);

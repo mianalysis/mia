@@ -88,7 +88,7 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
         // Getting input objects
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
 
         Image inputImage = workspace.getImage(inputImageName);
         String measurementName = getFullName(inputImageName);

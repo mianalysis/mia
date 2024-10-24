@@ -91,7 +91,7 @@ public class AdoptParentMeasurement extends Module {
         String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_MEASUREMENT, workspace);
 
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
 
         if (objects == null)
             return Status.PASS;

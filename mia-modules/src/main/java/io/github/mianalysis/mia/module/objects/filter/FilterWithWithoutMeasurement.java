@@ -109,7 +109,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);

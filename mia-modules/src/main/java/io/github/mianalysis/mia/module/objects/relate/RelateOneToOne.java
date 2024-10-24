@@ -399,10 +399,10 @@ public class RelateOneToOne extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
-        Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
-        Objs inputObjects2 = workspace.getObjects().get(inputObjects2Name);
+        Objs inputObjects2 = workspace.getObjects(inputObjects2Name);
 
         // Getting parameters
         boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace);

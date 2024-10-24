@@ -240,7 +240,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         // Getting input objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         if (liveSelection)
             refValue = getThreshold(inputObjects, measName, refValue, filterMethod);

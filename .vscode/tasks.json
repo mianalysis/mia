@@ -12,7 +12,7 @@
         {
             "label": "maven: package-quick",
             "type": "shell",
-            "command": "mvn clean package -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip",
+            "command": "mvn clean package -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip -T 1C",
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -39,7 +39,7 @@
         {
             "label": "maven: package-complete",
             "type": "shell",
-            "command": "mvn clean package -Dscp=provided site -e",
+            "command": "mvn clean package -Dscp=provided site -e -T 1C -Dparallel=all -DperCoreThreadCount=true",
             "group": {
                 "kind": "build",
                 "isDefault": true

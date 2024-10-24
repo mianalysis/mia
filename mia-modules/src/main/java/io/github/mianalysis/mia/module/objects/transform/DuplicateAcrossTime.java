@@ -213,7 +213,7 @@ public class DuplicateAcrossTime extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);

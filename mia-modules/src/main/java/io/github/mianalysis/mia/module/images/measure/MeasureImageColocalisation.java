@@ -522,7 +522,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         Image maskImage = (Image) workspace.getImage(maskImageName);
         String imageMaskLogic = parameters.getValue(IMAGE_MASK_LOGIC,workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
         String objectMaskLogic = parameters.getValue(OBJECT_MASK_LOGIC,workspace);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE,workspace);
         String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1,workspace);
