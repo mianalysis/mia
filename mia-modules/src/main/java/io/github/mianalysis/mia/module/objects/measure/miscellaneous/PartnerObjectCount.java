@@ -85,7 +85,7 @@ public class PartnerObjectCount extends Module {
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
 
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
         String measurementName = getFullName(partnerObjectsName);
 
         if (objects == null)

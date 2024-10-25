@@ -410,7 +410,7 @@ public class GetLocalObjectRegion extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Getting input objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Creating store for output objects
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);

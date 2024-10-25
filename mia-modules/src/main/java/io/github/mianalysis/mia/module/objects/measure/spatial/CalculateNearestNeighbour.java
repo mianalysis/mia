@@ -521,7 +521,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
     public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);

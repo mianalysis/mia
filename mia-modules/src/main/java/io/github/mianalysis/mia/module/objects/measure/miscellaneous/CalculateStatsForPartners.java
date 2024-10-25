@@ -230,7 +230,7 @@ public class CalculateStatsForPartners extends Module {
         statsToCalculate[5] = parameters.getValue(CALCULATE_MEDIAN, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         int count = 0;
         int total = inputObjects.size();

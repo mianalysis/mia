@@ -106,7 +106,7 @@ public class ResolveObjectOverlap extends Module {
     public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         process(inputObjects, workspace);
 
         // // Showing objects

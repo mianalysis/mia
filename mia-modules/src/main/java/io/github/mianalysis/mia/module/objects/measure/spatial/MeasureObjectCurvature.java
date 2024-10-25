@@ -537,7 +537,7 @@ public class MeasureObjectCurvature extends Module {
     public Status process(Workspace workspace) {
         // Getting parameters
         String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE,workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS,workspace);

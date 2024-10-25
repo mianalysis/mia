@@ -323,7 +323,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
     public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         ParameterGroup inputImages = parameters.getParameter(MEASURE_ANOTHER_IMAGE);

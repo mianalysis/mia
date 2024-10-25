@@ -604,7 +604,7 @@ public class TrackObjects extends Module {
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs trackObjects = new Objs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 

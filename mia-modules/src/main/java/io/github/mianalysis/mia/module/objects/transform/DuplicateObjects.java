@@ -91,7 +91,7 @@ public class DuplicateObjects extends Module {
         boolean duplicateMetadata = parameters.getValue(DUPLICATE_METADATA, workspace);
         boolean addOriginalDuplicateRelationship = parameters.getValue(ADD_ORIGINAL_DUPLICATE_RELATIONSHIP, workspace);
 
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects(inputObjectName);
 
         Objs outputObjects = inputObjects.duplicate(outputObjectsName, duplicateRelationships, duplicateMeasurements,
                 duplicateMetadata, addOriginalDuplicateRelationship);

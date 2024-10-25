@@ -338,7 +338,7 @@ public class ExtractObjectEdges extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         boolean createEdgeObjects = parameters.getValue(CREATE_EDGE_OBJECTS, workspace);

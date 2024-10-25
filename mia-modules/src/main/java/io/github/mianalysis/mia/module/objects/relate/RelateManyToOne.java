@@ -670,10 +670,10 @@ public class RelateManyToOne extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
-        Objs parentObjects = workspace.getObjects().get(parentObjectName);
+        Objs parentObjects = workspace.getObjects(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS, workspace);
-        Objs childObjects = workspace.getObjects().get(childObjectName);
+        Objs childObjects = workspace.getObjects(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE, workspace);

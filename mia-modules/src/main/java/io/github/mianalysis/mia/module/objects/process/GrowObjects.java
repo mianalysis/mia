@@ -282,7 +282,7 @@ public class GrowObjects extends Module {
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
         boolean excludeInputRegions = parameters.getValue(EXCLUDE_INPUT_REGIONS, workspace);
 
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         if (outputMode.equals(OutputModes.UPDATE_INPUT))
             outputObjectsName = null;

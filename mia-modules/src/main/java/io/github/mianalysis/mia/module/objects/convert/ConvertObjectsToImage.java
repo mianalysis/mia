@@ -233,7 +233,7 @@ public class ConvertObjectsToImage extends Module {
     String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR, workspace);
     String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR, workspace);
 
-    Objs inputObjects = workspace.getObjects().get(objectName);
+    Objs inputObjects = workspace.getObjects(objectName);
 
     // Generating colours for each object
     HashMap<Integer, Float> hues = null;
