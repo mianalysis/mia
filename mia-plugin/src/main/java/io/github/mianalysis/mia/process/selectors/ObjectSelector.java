@@ -843,7 +843,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 return;
             }
         }
-        
+
         // If no ROI was found, this will add it as a new ROI
         ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
                 assignedClass);
@@ -867,14 +867,14 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 } catch (Exception e) {
                 }
             assignedClass = classSelector.getLastSelectedClass();
+
         }
 
         // Get selected ROIs
         List<ObjRoi> selected = list.getSelectedValuesList();
 
-        for (ObjRoi objRoi : selected) {
+        for (ObjRoi objRoi : selected)
             objRoi.setAssignedClass(assignedClass);
-        }
 
         listModel.redraw();
 
@@ -1095,12 +1095,24 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 break;
         }
 
-        switch ((String) overlayMode.getSelectedItem()) {
-            case OverlayModes.FILL:
-                overlayRoi.setFillColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
+        switch (overlayRoi.getType()) {
+            // Lines are a special case when it comes to rendering
+            case Roi.LINE:
+            case Roi.FREELINE:
+            case Roi.POLYLINE:
+                overlayRoi.setStrokeColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
                 break;
-            case OverlayModes.OUTLINES:
-                overlayRoi.setStrokeColor(colour);
+
+            // Everything else is rendered as the normal fill or outlines
+            default:
+                switch ((String) overlayMode.getSelectedItem()) {
+                    case OverlayModes.FILL:
+                        overlayRoi.setFillColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
+                        break;
+                    case OverlayModes.OUTLINES:
+                        overlayRoi.setStrokeColor(colour);
+                        break;
+                }
                 break;
         }
 

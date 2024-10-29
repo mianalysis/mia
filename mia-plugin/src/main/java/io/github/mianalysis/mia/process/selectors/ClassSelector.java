@@ -9,8 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,12 +48,13 @@ public class ClassSelector implements ActionListener, KeyListener {
     private SortedListModel<String> searchListModel = new SortedListModel<>();
     private JList<String> searchList = new JList<>(searchListModel);
     private String lastSelectedClass = null;
-    private ActiveList activeList = ActiveList.FULL;
 
-    private enum ActiveList {
-        FULL, CURRENT, RECENT, SEARCH
-    }
-
+    // Tab names
+    private static final String ALL_CLASSES = "All classes";
+    private static final String CURRENT = "Current classes";
+    private static final String RECENT = "Recent classes";
+    private static final String SEARCH = "Search";
+    
     // GUI buttons
     private static final String CREATE_CLASS = "+";
     private static final String APPLY_CLASS = "Apply class";
@@ -101,58 +100,31 @@ public class ClassSelector implements ActionListener, KeyListener {
         tabbedPane = new JTabbedPane();
         frame.add(tabbedPane, c);
 
+        currentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         fullList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fullList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                activeList = ActiveList.FULL;
-            }
-        });
+        recentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        searchList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane fullListScrollPane = new JScrollPane(fullList);
         fullListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         fullListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         fullListScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         fullListScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        tabbedPane.add("All classes", fullListScrollPane);
-
-        currentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        currentList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                activeList = ActiveList.CURRENT;
-            }
-        });
+        tabbedPane.add(ALL_CLASSES, fullListScrollPane);
 
         JScrollPane currentListScrollPane = new JScrollPane(currentList);
         currentListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         currentListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentListScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         currentListScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        tabbedPane.add("Current classes", currentListScrollPane);
-
-        recentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        recentList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                activeList = ActiveList.RECENT;
-            }
-        });
+        tabbedPane.add(CURRENT, currentListScrollPane);
 
         JScrollPane recentListScrollPane = new JScrollPane(recentList);
         recentListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         recentListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         recentListScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         recentListScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        tabbedPane.add("Recent classes", recentListScrollPane);
-
-        searchList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        searchList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                activeList = ActiveList.SEARCH;
-            }
-        });
+        tabbedPane.add(RECENT, recentListScrollPane);        
 
         JPanel searchPane = new JPanel();
         searchPane.setLayout(new BoxLayout(searchPane, BoxLayout.PAGE_AXIS));
@@ -192,7 +164,7 @@ public class ClassSelector implements ActionListener, KeyListener {
             }
         });
         searchPane.add(searchField);
-        tabbedPane.add("Search", searchPane);
+        tabbedPane.add(SEARCH, searchPane);
 
         JButton createClassButton = new JButton(CREATE_CLASS);
         createClassButton.addActionListener(this);
@@ -254,8 +226,10 @@ public class ClassSelector implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case (APPLY_CLASS):
+                String activeList = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+
                 switch (activeList) {
-                    case FULL:
+                    case ALL_CLASSES:
                         lastSelectedClass = fullList.getSelectedValue();
                         currentListModel.add(lastSelectedClass);
                         recentListModel.add(lastSelectedClass);
