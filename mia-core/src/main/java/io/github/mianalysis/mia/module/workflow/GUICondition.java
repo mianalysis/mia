@@ -121,7 +121,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String choice = parameters.getValue(CHOICE, workspace);
         boolean storeAsMetadata = parameters.getValue(STORE_AS_METADATA_ITEM, workspace);

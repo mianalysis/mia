@@ -8,6 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.*;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.*;
@@ -78,7 +79,7 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 

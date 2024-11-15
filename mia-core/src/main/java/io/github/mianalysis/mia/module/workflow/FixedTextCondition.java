@@ -132,7 +132,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String testValue = parameters.getValue(TEST_VALUE, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION, workspace);

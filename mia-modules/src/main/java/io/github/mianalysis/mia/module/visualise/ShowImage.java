@@ -146,7 +146,7 @@ public class ShowImage extends Module {
         parameters.add(new InputImageP(DISPLAY_IMAGE, this, "", "Image to display."));
 
         parameters.add(new SeparatorP(DISPLAY_SEPARATOR,this));
-        parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL, "Select what title the image window should have.<br>" +
+        parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_AND_FILE_NAME,TitleModes.ALL, "Select what title the image window should have.<br>" +
                 "<br>- \""+TitleModes.IMAGE_NAME+"\" Set the image window title to the name of the image.<br>" +
                 "<br>- \""+TitleModes.FILE_NAME+"\" Set the image window title to the filename of the root file for this workspace (i.e. the file set in \"Input control\".<br>" +
                 "<br>- \""+TitleModes.IMAGE_AND_FILE_NAME+"\" Set the image window title to a composite of the filename of the root file for this workspace and the name of the image."));

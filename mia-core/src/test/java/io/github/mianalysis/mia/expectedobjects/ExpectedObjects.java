@@ -15,12 +15,12 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;

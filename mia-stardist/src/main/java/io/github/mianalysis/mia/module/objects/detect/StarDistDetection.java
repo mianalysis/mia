@@ -283,7 +283,7 @@ public class StarDistDetection extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);

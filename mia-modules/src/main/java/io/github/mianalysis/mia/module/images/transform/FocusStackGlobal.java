@@ -45,11 +45,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -671,7 +671,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Remove any previously-entered references
         listModel.clear();
 

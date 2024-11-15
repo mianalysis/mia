@@ -13,10 +13,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
 import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -395,7 +395,7 @@ public class WorkflowHandling extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String testMode = parameters.getValue(TEST_MODE, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);

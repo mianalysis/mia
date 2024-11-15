@@ -63,7 +63,7 @@ public class ShowObjectMeasurements extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjects = parameters.getValue(INPUT_OBJECTS,workspace);
 
         if (showOutput) workspace.getObjects(inputObjects).showAllMeasurements();

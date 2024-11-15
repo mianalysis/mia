@@ -101,7 +101,7 @@ public class WhiteBalanceCorrection extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image and reference object(s)
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);

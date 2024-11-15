@@ -251,7 +251,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);        
         String maskMode = parameters.getValue(MASK_MODE, workspace);
@@ -350,6 +350,8 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 returnedParameters.add(parameters.getParameter(MASK_OBJECTS));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(REMOVE_EMPTY_OBJECTS));
 
         return returnedParameters;
 

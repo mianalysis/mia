@@ -13,13 +13,14 @@ import ij.gui.Overlay;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
+import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import net.imagej.ImgPlus;
@@ -29,7 +30,7 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by stephen on 30/04/2017.
  */
-public abstract class Image<T extends RealType<T> & NativeType<T>> {
+public abstract class Image<T extends RealType<T> & NativeType<T>> implements MeasurementProvider {
     private static ImageRenderer globalImageRenderer = new ImagePlusRenderer();
     private static boolean useGlobalImageRenderer = false; // When true, all image types will use the same image
                                                            // renderer
@@ -296,8 +297,8 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
         return measurements;
     }
 
-    public void setMeasurements(LinkedHashMap<String, Measurement> singleMeasurements) {
-        this.measurements = singleMeasurements;
+    public void setMeasurements(LinkedHashMap<String, Measurement> measurements) {
+        this.measurements = measurements;
     }
 
 }

@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.type.NativeType;
