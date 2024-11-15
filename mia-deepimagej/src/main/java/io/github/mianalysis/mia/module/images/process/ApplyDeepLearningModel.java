@@ -121,7 +121,7 @@
 //     }
 
 //     @Override
-//     protected Status process(Workspace workspace) {
+//     public Status process(Workspace workspace) {
 //         // Getting parameters
 //         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 //         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);

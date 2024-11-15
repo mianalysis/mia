@@ -162,7 +162,7 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE, workspace);
 
         for (Parameters collection : collections.values()) {

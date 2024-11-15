@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Folder",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.system.Folder",
+            "projectName": "mia-algorithms"
+        },
+        {
+            "type": "java",
             "name": "SAMJExtension",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.objects.detect.manualextensions.SAMJExtension",

@@ -96,7 +96,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
@@ -105,7 +105,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         String trackSegmentObjectsName = parameters.getValue(TRACK_SEGMENT_OBJECTS, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs trackObjects = new Objs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 

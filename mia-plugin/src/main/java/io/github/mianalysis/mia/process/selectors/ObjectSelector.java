@@ -792,15 +792,19 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void addToExistingObject() {
         // If there are no existing objects, add as new object
-        if (rois.size() == 0 || objectNumberField.getText().equals(""))
+        if (rois.size() == 0 || objectNumberField.getText().equals("")) {
+            MIA.log.writeDebug("No ROIs, so adding as new object");
             new Thread(() -> {
                 addNewObject();
             }).start();
+            return;
+        }
 
         int ID = -1;
         try {
-            ID = Integer.parseInt(objectNumberField.getText());        
+            ID = Integer.parseInt(objectNumberField.getText());
         } catch (NumberFormatException e) {
+            MIA.log.writeDebug("No existing object number present, so adding as new object");
             new Thread(() -> {
                 addNewObject();
             }).start();
@@ -836,17 +840,19 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             if (currentRoi.getT() == t && currentRoi.getZ() == z) {
                 currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
                 updateOverlay();
-
-            } else {
-                ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
-                        assignedClass);
-                iterator.add(objRoi);
-                rois.put(ID, currentRois);
-
-                addObjectToList(objRoi, ID);
-                updateOverlay();
+                return;
             }
         }
+
+        // If no ROI was found, this will add it as a new ROI
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
+                assignedClass);
+        iterator.add(objRoi);
+        rois.put(ID, currentRois);
+
+        addObjectToList(objRoi, ID);
+        updateOverlay();
+
     }
 
     public void changeObjectClass() {
@@ -861,14 +867,14 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 } catch (Exception e) {
                 }
             assignedClass = classSelector.getLastSelectedClass();
+
         }
 
         // Get selected ROIs
         List<ObjRoi> selected = list.getSelectedValuesList();
 
-        for (ObjRoi objRoi : selected) {
+        for (ObjRoi objRoi : selected)
             objRoi.setAssignedClass(assignedClass);
-        }
 
         listModel.redraw();
 
@@ -1089,12 +1095,24 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 break;
         }
 
-        switch ((String) overlayMode.getSelectedItem()) {
-            case OverlayModes.FILL:
-                overlayRoi.setFillColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
+        switch (overlayRoi.getType()) {
+            // Lines are a special case when it comes to rendering
+            case Roi.LINE:
+            case Roi.FREELINE:
+            case Roi.POLYLINE:
+                overlayRoi.setStrokeColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
                 break;
-            case OverlayModes.OUTLINES:
-                overlayRoi.setStrokeColor(colour);
+
+            // Everything else is rendered as the normal fill or outlines
+            default:
+                switch ((String) overlayMode.getSelectedItem()) {
+                    case OverlayModes.FILL:
+                        overlayRoi.setFillColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
+                        break;
+                    case OverlayModes.OUTLINES:
+                        overlayRoi.setStrokeColor(colour);
+                        break;
+                }
                 break;
         }
 

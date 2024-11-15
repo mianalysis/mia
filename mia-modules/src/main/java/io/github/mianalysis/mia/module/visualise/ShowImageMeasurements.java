@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.module.visualise;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
@@ -64,7 +63,7 @@ public class ShowImageMeasurements extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputImage = parameters.getValue(INPUT_IMAGE,workspace);
 
         if (showOutput) workspace.getImage(inputImage).showAllMeasurements();
@@ -81,7 +80,6 @@ public class ShowImageMeasurements extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         return parameters;
     }
 

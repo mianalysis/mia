@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 
+import java.util.Collection;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -7,10 +9,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
-import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.module.images.measure.abstrakt.MeasurementCalculator;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -27,7 +29,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
@@ -37,7 +38,7 @@ import io.github.mianalysis.mia.process.math.CumStat;
 * Perform a mathematical operation on measurements associated with each object of an object collection in the workspace.  The calculation can replace either or both values with fixed values, measurements associated with an image or a statistic of all measurements associated with another object collection (e.g. the mean volume of all objects).  The resulting measurements are associated with the corresponding input objects as new measurements.
 */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ObjectMeasurementCalculator extends Module {
+public class ObjectMeasurementCalculator extends MeasurementCalculator {
 
 	/**
 	* 
@@ -50,249 +51,15 @@ public class ObjectMeasurementCalculator extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
 
-	/**
-	* 
-	*/
-    public static final String VALUE_SEPARATOR_1 = "Value 1 selection";
+    public interface ValueModes extends MeasurementCalculator.ValueModes{};
 
-	/**
-	* Controls how the first value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 1"is used.</li><li>"Image measurement" A measurement associated with an image (specified by "Image 1") and defined by "Image measurement 1" is used.</li><li>"Measurement" A measurement associated with the input object and defined by "Measurement 1" is used.</li><li>"Object collection statistic" A statistic (specified by "Statistic mode 1") of a measurement (specified by "Reference measurement 1") associated with all objects in an object collection (specified by "Reference objects 1") is used.  For example, the mean object volume.  Note: The object collection used to calculate the statistic doesn't have to be the same as the input object collection.</li></ul>
-	*/
-    public static final String VALUE_MODE_1 = "Value mode 1";
+    public interface CalculationModes extends MeasurementCalculator.CalculationModes{};
 
-	/**
-	* Fixed value to use in the calculation when "Value mode 1" is in "Fixed" mode.
-	*/
-    public static final String FIXED_VALUE_1 = "Fixed value 1";
+    public interface StatisticModes extends MeasurementCalculator.StatisticModes{};
 
-	/**
-	* A measurement associated with this image will be used in the calculated when "Value mode 1" is in "Image measurement" mode.
-	*/
-    public static final String IMAGE_1 = "Image 1";
-
-	/**
-	* Measurement associated with an image (specified by "Image 1") to use in the calculation when "Value mode 1" is in "Image measurement" mode.
-	*/
-    public static final String IMAGE_MEASUREMENT_1 = "Image measurement 1";
-
-	/**
-	* Measurement, associated with the current object, to use in the calculation when "Value mode 1" is in "Measurement" mode.
-	*/
-    public static final String MEASUREMENT_1 = "Measurement 1";
-
-	/**
-	* Object collection for which a statistic of an associated measurement will be used in the calculation when "Value mode 1" is in "Object collection statistic" mode.
-	*/
-    public static final String REFERENCE_OBJECTS_1 = "Reference objects 1";
-
-	/**
-	* Measurement associated with the objects in the collection specified by "Reference objects 1".  A statistic of all object measurements will be used in the calculation when "Value mode 1" is in "Object collection statistic" mode.
-	*/
-    public static final String REFERENCE_MEASUREMENT_1 = "Reference measurement 1";
-
-	/**
-	* Statistic to apply to all measurements (specified by "Reference measurement 1") of an object collection (specified by "Reference objects 1").  The resulting value will be used in the calculation when "Value mode 1" is in "Object collection statistic" mode.  Choices are: First value, Last value, Minimum, Mean, Maximum, Range, Standard deviation, Sum.
-	*/
-    public static final String STATISTIC_MODE_1 = "Statistic mode 1";
-
-
-	/**
-	* 
-	*/
-    public static final String VALUE_SEPARATOR_2 = "Value 2 selection";
-
-	/**
-	* Controls how the second value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 2"is used.</li><li>"Image measurement" A measurement associated with an image (specified by "Image 2") and defined by "Image measurement 2" is used.</li><li>"Measurement" A measurement associated with the input object and defined by "Measurement 2" is used.</li><li>"Object collection statistic" A statistic (specified by "Statistic mode 2") of a measurement (specified by "Reference measurement 2") associated with all objects in an object collection (specified by "Reference objects 2") is used.  For example, the mean object volume.  Note: The object collection used to calculate the statistic doesn't have to be the same as the input object collection.</li></ul>
-	*/
-    public static final String VALUE_MODE_2 = "Value mode 2";
-
-	/**
-	* Fixed value to use in the calculation when "Value mode 2" is in "Fixed" mode.
-	*/
-    public static final String FIXED_VALUE_2 = "Fixed value 2";
-
-	/**
-	* A measurement associated with this image will be used in the calculated when "Value mode 2" is in "Image measurement" mode.
-	*/
-    public static final String IMAGE_2 = "Image 2";
-
-	/**
-	* Measurement associated with an image (specified by "Image 2") to use in the calculation when "Value mode 2" is in "Image measurement" mode.
-	*/
-    public static final String IMAGE_MEASUREMENT_2 = "Image measurement 2";
-
-	/**
-	* Measurement, associated with the current object, to use in the calculation when "Value mode 2" is in "Measurement" mode.
-	*/
-    public static final String MEASUREMENT_2 = "Measurement 2";
-
-	/**
-	* Object collection for which a statistic of an associated measurement will be used in the calculation when "Value mode 2" is in "Object collection statistic" mode.
-	*/
-    public static final String REFERENCE_OBJECTS_2 = "Reference objects 2";
-
-	/**
-	* Measurement associated with the objects in the collection specified by "Reference objects 2".  A statistic of all object measurements will be used in the calculation when "Value mode 2" is in "Object collection statistic" mode.
-	*/
-    public static final String REFERENCE_MEASUREMENT_2 = "Reference measurement 2";
-
-	/**
-	* Statistic to apply to all measurements (specified by "Reference measurement 2") of an object collection (specified by "Reference objects 2").  The resulting value will be used in the calculation when "Value mode 2" is in "Object collection statistic" mode.  Choices are: First value, Last value, Minimum, Mean, Maximum, Range, Standard deviation, Sum.
-	*/
-    public static final String STATISTIC_MODE_2 = "Statistic mode 2";
-
-
-	/**
-	* 
-	*/
-    public static final String CALCULATION_SEPARATOR = "Measurement calculation";
-
-	/**
-	* The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the corresponding object from the input object collection.
-	*/
-    public static final String OUTPUT_MEASUREMENT = "Output measurement";
-
-	/**
-	* Calculation to perform.  Choices are: Add measurement 1 and measurement 2, Divide measurement 1 by measurement 2, Multiply measurement 1 and measurement 2, Subtract measurement 2 from measurement 1.
-	*/
-    public static final String CALCULATION_MODE = "Calculation mode";
-
-    public interface ValueModes {
-        String FIXED = "Fixed";
-        String IMAGE_MEASUREMENT = "Image measurement";
-        String MEASUREMENT = "Measurement";
-        String OBJECT_COLLECTION_STATISTIC = "Object collection statistic";
-
-        String[] ALL = new String[] { FIXED, IMAGE_MEASUREMENT, MEASUREMENT, OBJECT_COLLECTION_STATISTIC };
-
-    }
-
-    public interface StatisticModes {
-        String FIRST = "First value";
-        String LAST = "Last value";
-        String MIN = "Minimum";
-        String MEAN = "Mean";
-        String MAX = "Maximum";
-        String RANGE = "Range";
-        String STDEV = "Standard deviation";
-        String SUM = "Sum";
-
-        String[] ALL = new String[] { FIRST, LAST, MIN, MEAN, MAX, RANGE, STDEV, SUM };
-
-    }
-
-    public interface CalculationModes {
-        String ADD = "Add measurement 1 and measurement 2";
-        String DIVIDE = "Divide measurement 1 by measurement 2";
-        String MULTIPLY = "Multiply measurement 1 and measurement 2";
-        String SUBTRACT = "Subtract measurement 2 from measurement 1";
-
-        String[] ALL = new String[] { ADD, DIVIDE, MULTIPLY, SUBTRACT };
-
-    }
-
+    
     public ObjectMeasurementCalculator(Modules modules) {
         super("Object measurement calculator", modules);
-    }
-
-    public static double getObjectCollectionStatistic(Objs objects, String measurementName, String statistic) {
-        // The first and last values are calculated slightly differently
-        switch (statistic) {
-            case StatisticModes.FIRST:
-                return getFirstValue(objects, measurementName);
-            case StatisticModes.LAST:
-                return getLastValue(objects, measurementName);
-        }
-
-        CumStat cs = new CumStat();
-
-        // Creating statistics calculator
-        for (Obj object : objects.values()) {
-            Measurement measurement = object.getMeasurement(measurementName);
-            if (measurement == null)
-                continue;
-
-            cs.addMeasure(measurement.getValue());
-
-        }
-
-        switch (statistic) {
-            default:
-                return Double.NaN;
-            case StatisticModes.MAX:
-                return cs.getMax();
-            case StatisticModes.MEAN:
-                return cs.getMean();
-            case StatisticModes.MIN:
-                return cs.getMin();
-            case StatisticModes.RANGE:
-                return cs.getMax() - cs.getMin();
-            case StatisticModes.STDEV:
-                return cs.getStd();
-            case StatisticModes.SUM:
-                return cs.getSum();
-        }
-    }
-
-    static double getFirstValue(Objs objects, String measurementName) {
-        CumStat cs = new CumStat();
-
-        int minFrame = Integer.MAX_VALUE;
-
-        // Creating statistics calculator
-        for (Obj object : objects.values()) {
-            int t = object.getT();
-
-            if (t < minFrame) {
-                // Create a new CumStat for this timepoint
-                minFrame = t;
-                cs = new CumStat();
-                cs.addMeasure(object.getMeasurement(measurementName).getValue());
-            } else if (t == minFrame) {
-                cs.addMeasure(object.getMeasurement(measurementName).getValue());
-            }
-        }
-
-        return cs.getMean();
-
-    }
-
-    static double getLastValue(Objs objects, String measurementName) {
-        CumStat cs = new CumStat();
-
-        int maxFrame = -Integer.MAX_VALUE;
-
-        // Creating statistics calculator
-        for (Obj object : objects.values()) {
-            int t = object.getT();
-
-            if (t > maxFrame) {
-                // Create a new CumStat for this timepoint
-                maxFrame = t;
-                cs = new CumStat();
-                cs.addMeasure(object.getMeasurement(measurementName).getValue());
-            } else if (t == maxFrame) {
-                cs.addMeasure(object.getMeasurement(measurementName).getValue());
-            }
-        }
-
-        return cs.getMean();
-
-    }
-
-    public static double doCalculation(double value1, double value2, String calculationMode) {
-        switch (calculationMode) {
-            default:
-                return Double.NaN;
-            case CalculationModes.ADD:
-                return value1 + value2;
-            case CalculationModes.DIVIDE:
-                return value1 / value2;
-            case CalculationModes.MULTIPLY:
-                return value1 * value2;
-            case CalculationModes.SUBTRACT:
-                return value1 - value2;
-        }
     }
 
     @Override
@@ -302,7 +69,7 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -311,86 +78,14 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
-        String valueMode1 = parameters.getValue(VALUE_MODE_1, workspace);
-        double fixedValue1 = parameters.getValue(FIXED_VALUE_1, workspace);
-        String imageName1 = parameters.getValue(IMAGE_1, workspace);
-        String imageMeasurement1 = parameters.getValue(IMAGE_MEASUREMENT_1, workspace);
-        String measurementName1 = parameters.getValue(MEASUREMENT_1, workspace);
-        String refObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1, workspace);
-        String refMeasurementName1 = parameters.getValue(REFERENCE_MEASUREMENT_1, workspace);
-        String statisticMode1 = parameters.getValue(STATISTIC_MODE_1, workspace);
+        Status status = process(workspace, ImageObjectMode.OBJECT, inputObjects.values());
 
-        String valueMode2 = parameters.getValue(VALUE_MODE_2, workspace);
-        double fixedValue2 = parameters.getValue(FIXED_VALUE_2, workspace);
-        String imageName2 = parameters.getValue(IMAGE_2, workspace);
-        String imageMeasurement2 = parameters.getValue(IMAGE_MEASUREMENT_2, workspace);
-        String measurementName2 = parameters.getValue(MEASUREMENT_2, workspace);
-        String refObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2, workspace);
-        String refMeasurementName2 = parameters.getValue(REFERENCE_MEASUREMENT_2, workspace);
-        String statisticMode2 = parameters.getValue(STATISTIC_MODE_2, workspace);
-
-        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT, workspace);
-        String calculationMode = parameters.getValue(CALCULATION_MODE, workspace);
-
-        // Getting reference object collections
-        double refValue1 = Double.NaN;
-        double refValue2 = Double.NaN;
-        if (valueMode1.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            Objs refObjects1 = workspace.getObjects(refObjectsName1);
-            refValue1 = getObjectCollectionStatistic(refObjects1, refMeasurementName1, statisticMode1);
-        }
-        if (valueMode2.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            Objs refObjects2 = workspace.getObjects(refObjectsName2);
-            refValue2 = getObjectCollectionStatistic(refObjects2, refMeasurementName2, statisticMode2);
-        }
-
-        // Getting measurements
-        for (Obj inputObject : inputObjects.values()) {
-            // Getting value 1
-            double value1 = 0;
-            switch (valueMode1) {
-                case ValueModes.FIXED:
-                    value1 = fixedValue1;
-                    break;
-                case ValueModes.IMAGE_MEASUREMENT:
-                    value1 = workspace.getImage(imageName1).getMeasurement(imageMeasurement1).getValue();
-                    break;
-                case ValueModes.MEASUREMENT:
-                    value1 = inputObject.getMeasurement(measurementName1).getValue();
-                    break;
-                case ValueModes.OBJECT_COLLECTION_STATISTIC:
-                    value1 = refValue1;
-                    break;
-            }
-
-            // Getting value 2
-            double value2 = 0;
-            switch (valueMode2) {
-                case ValueModes.FIXED:
-                    value2 = fixedValue2;
-                    break;
-                case ValueModes.IMAGE_MEASUREMENT:
-                    value2 = workspace.getImage(imageName2).getMeasurement(imageMeasurement2).getValue();
-                    break;
-                case ValueModes.MEASUREMENT:
-                    value2 = inputObject.getMeasurement(measurementName2).getValue();
-                    break;
-                case ValueModes.OBJECT_COLLECTION_STATISTIC:
-                    value2 = refValue2;
-                    break;
-            }
-
-            // Performing calculation
-            double result = doCalculation(value1, value2, calculationMode);
-
-            // Assigning measurement
-            inputObject.addMeasurement(new Measurement(outputMeasurementName, result));
-
-        }
+        if (status != Status.PASS)
+            return status;
 
         // Showing results
         if (showOutput)

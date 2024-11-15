@@ -44,13 +44,13 @@ import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -910,7 +910,7 @@ public class Exporter {
         // Running through each Workspace, adding rows
         for (Workspace workspace : workspaces) {
             for (String objectName : workspace.getObjects().keySet()) {
-                Objs objects = workspace.getObjects().get(objectName);
+                Objs objects = workspace.getObjects(objectName);
 
                 if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportMetadata(objectName))
                     continue;

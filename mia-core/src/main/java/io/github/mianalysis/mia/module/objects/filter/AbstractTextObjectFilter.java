@@ -6,7 +6,6 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
 
 public abstract class AbstractTextObjectFilter extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";

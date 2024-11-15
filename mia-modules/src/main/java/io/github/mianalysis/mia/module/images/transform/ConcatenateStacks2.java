@@ -297,7 +297,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
         boolean removeInputImages = parameters.getValue(REMOVE_INPUT_IMAGES, workspace);

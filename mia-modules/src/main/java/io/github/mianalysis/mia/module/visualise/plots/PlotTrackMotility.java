@@ -260,7 +260,7 @@ public class PlotTrackMotility extends AbstractOverlay {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputTracksName = parameters.getValue(INPUT_TRACKS, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);

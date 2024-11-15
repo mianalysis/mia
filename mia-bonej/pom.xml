@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.6.10-SNAPSHOT</version>
+        <version>1.6.13-SNAPSHOT</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-bonej</artifactId>
-    <version>1.6.10-SNAPSHOT</version>
+    <version>1.6.13-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>mia-bonej</name>
     <url>https://github.com/mianalysis/mia</url>

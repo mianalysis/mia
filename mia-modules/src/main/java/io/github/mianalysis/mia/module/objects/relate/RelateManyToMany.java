@@ -99,7 +99,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -124,6 +123,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 
 /**
  * Relate objects of two classes based on spatial proximity or overlap. With
@@ -506,12 +506,12 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE, workspace);
 
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
-        Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
         Objs inputObjects2;
@@ -521,7 +521,7 @@ public class RelateManyToMany extends Module {
                 MIA.log.writeError("Unknown object source mode");
                 return Status.FAIL;
             case ObjectSourceModes.DIFFERENT_CLASSES:
-                inputObjects2 = workspace.getObjects().get(inputObjects2Name);
+                inputObjects2 = workspace.getObjects(inputObjects2Name);
                 inputObjects1.removePartners(inputObjects2Name);
                 inputObjects2.removePartners(inputObjects1Name);
                 break;

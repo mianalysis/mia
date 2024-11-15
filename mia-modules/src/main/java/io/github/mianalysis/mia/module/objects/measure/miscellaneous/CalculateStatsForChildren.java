@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -230,7 +230,7 @@ public class CalculateStatsForChildren extends Module {
         statsToCalculate[5] = parameters.getValue(CALCULATE_MEDIAN, workspace);
 
         // Getting objects
-        Objs parentObjects = workspace.getObjects().get(parentObjectsName);
+        Objs parentObjects = workspace.getObjects(parentObjectsName);
 
         int count = 0;
         int total = parentObjects.size();

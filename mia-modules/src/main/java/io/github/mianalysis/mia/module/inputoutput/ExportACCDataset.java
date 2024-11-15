@@ -259,7 +259,7 @@ public class ExportACCDataset extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
         String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE,workspace);

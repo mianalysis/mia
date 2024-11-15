@@ -14,7 +14,6 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JCheckBox;
@@ -29,21 +28,19 @@ import org.scijava.plugin.Plugin;
 import com.drew.lang.annotations.Nullable;
 
 import ai.nets.samj.install.EfficientSamEnvManager;
-import ai.nets.samj.install.Sam2EnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
-import ai.nets.samj.models.Sam2;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -58,25 +55,10 @@ import net.imagej.patcher.LegacyInjector;
 public class SAMJExtension extends ManualExtension implements MouseListener {
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
     public static final String USE_SAM = "Enable Segment Anything";
-    public static final String MODEL = "Segment Anything model";
     public static final String ENVIRONMENT_PATH_MODE = "Environment path mode";
     public static final String ENVIRONMENT_PATH = "Environment path";
     public static final String INSTALL_IF_MISSING = "Install model if missing";
-    public static final String USE_ENCODING_IF_AVAILABLE = "Use encoding if available";
-    public static final String STORE_ENCODING = "Store encoding";
-    public static final String TERMINATE_AFTER_ENCODING = "Terminate after encoding";
-
-    HashMap<String, String> encodings = new HashMap<>();
-
-    public interface SAMJModels {
-        public String EFFICIENT = "Efficient";
-        public String LARGE = "Large";
-        public String SMALL = "Small";
-        public String TINY = "Tiny";
-
-        public String[] ALL = new String[] { EFFICIENT, LARGE, SMALL, TINY, };
-
-    }
+    public static final String PREINITIALISE = "Preinitialise (batch only)";
 
     public interface EnvironmentPathModes {
         String DEFAULT = "Default";
@@ -88,11 +70,13 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
     protected Workspace workspace;
     protected AbstractSamJ samJ = null;
+    protected AbstractSamJ preinitSamJ = null;
+    protected AbstractSamJ tempSamJ = null;
+    protected String preinitPath = null;
+    protected boolean preinitComplete = false;
     protected ImagePlus displayIpl;
     protected boolean useSAM = true;
 
-    protected String prevModelName = "";
-    protected String prevEnvionmentPathMode = "";
     protected String prevEnvironmentPath = "";
 
     public static void main(String[] args) throws Exception {
@@ -114,67 +98,33 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         super(module);
     }
 
-    protected void initialiseSAMJ() {
-        String modelName = parameters.getValue(MODEL, workspace);
-        prevModelName = modelName;
-        String envionmentPathMode = parameters.getValue(ENVIRONMENT_PATH_MODE, workspace);
-        prevEnvionmentPathMode = envionmentPathMode;
-        String environmentPath = parameters.getValue(ENVIRONMENT_PATH, workspace) + "/";
-        prevEnvironmentPath = environmentPath;
-        boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
-
+    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {        
         AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
         AbstractSamJ.MAX_ENCODED_SIDE = 3000;
 
+        AbstractSamJ loadedSamJ = null;
         try {
-            switch (envionmentPathMode) {
-                case EnvironmentPathModes.DEFAULT:
-                    environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
-                    break;
-            }
-
-            SamEnvManagerAbstract manager;
-            switch (modelName) {
-                case SAMJModels.EFFICIENT:
-                default:
-                    manager = EfficientSamEnvManager.create(environmentPath);
-                    break;
-                case SAMJModels.LARGE:
-                    manager = Sam2EnvManager.create(environmentPath, "large");
-                    break;
-                case SAMJModels.SMALL:
-                    manager = Sam2EnvManager.create(environmentPath, "small");
-                    break;
-                case SAMJModels.TINY:
-                    manager = Sam2EnvManager.create(environmentPath, "tiny");
-                    break;
-            }
+            SamEnvManagerAbstract manager = EfficientSamEnvManager.create(environmentPath);
 
             if (!manager.checkEverythingInstalled())
                 if (installIfMissing) {
                     module.writeStatus("Installing SAM model");
+                    MIA.log.writeDebug("Installing SAM model to "+environmentPath);
                     manager.installEverything();
                 } else {
-                    MIA.log.writeWarning(modelName + " not available.  Please install manually or enable \""
+                    MIA.log.writeWarning("Model not available.  Please install manually or enable \""
                             + INSTALL_IF_MISSING + "\" parameter.");
                 }
 
-            switch (modelName) {
-                case SAMJModels.EFFICIENT:
-                default:
-                    samJ = EfficientSamJ.initializeSam(manager);
-                    break;
-                case SAMJModels.LARGE:
-                case SAMJModels.SMALL:
-                case SAMJModels.TINY:
-                    samJ = Sam2.initializeSam(manager);
-                    break;
-            }
+            loadedSamJ = EfficientSamJ.initializeSam(manager);
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {
             e.printStackTrace();
         }
+
+        return loadedSamJ;
+
     }
 
     @Override
@@ -186,45 +136,87 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         if (!useSAM)
             return Status.PASS;
 
-        String modelName = parameters.getValue(MODEL, workspace);
+        String imageName = module.getParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE, workspace);
         String envionmentPathMode = parameters.getValue(ENVIRONMENT_PATH_MODE, workspace);
         String environmentPath = parameters.getValue(ENVIRONMENT_PATH, workspace) + "/";
-        boolean useEncoding = parameters.getValue(USE_ENCODING_IF_AVAILABLE, workspace);
-        boolean storeEncoding = parameters.getValue(STORE_ENCODING, workspace);
-        boolean terminateAfterEncoding = parameters.getValue(TERMINATE_AFTER_ENCODING, workspace);
+        boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
+        boolean preinitialise = parameters.getValue(PREINITIALISE, workspace);
 
-        if (samJ == null | !modelName.equals(prevModelName) | !envionmentPathMode.equals(prevEnvionmentPathMode)
-                | !environmentPath.equals(prevEnvironmentPath))
-            initialiseSAMJ();
+        switch (envionmentPathMode) {
+            case EnvironmentPathModes.DEFAULT:
+                environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+                break;
+        }
 
+        if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
+            samJ = initialiseSAMJ(environmentPath, installIfMissing);
+
+        if (preinitialise && preinitSamJ == null)
+            // No need to install as this is the same environment as the main environment
+            preinitSamJ = initialiseSAMJ(environmentPath, false);
+
+        // Checking if SamJ has been preinitialised for this file
         String path = workspace.getMetadata().getFile().getAbsolutePath();
-        if (useEncoding && encodings.containsKey(path))
-            try {
-                samJ.selectEncoding(encodings.get(path));
-            } catch (Exception e) {
-                MIA.log.writeError(e);
+        try {
+            if (path.equals(preinitPath)) {
+                while (!preinitComplete)
+                    Thread.sleep(100);
+
+                tempSamJ = samJ;
+                samJ = preinitSamJ;
+                preinitSamJ = tempSamJ;
+            } else {
+                samJ.setImage(workspace.getImage(imageName).getImgPlus());
             }
-        else {
-            try {
-                String imageName = module.getParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE, workspace);
-                Image image = workspace.getImage(imageName);
-                samJ.setImage(image.getImgPlus());
-            } catch (IOException | RuntimeException | InterruptedException e) {
-                MIA.log.writeError(e);
+        } catch (InterruptedException | IOException | RuntimeException e) {
+            e.printStackTrace();
+            return Status.FAIL;
+        }
+
+        if (preinitialise) {
+            // Preinitialise next file on a separate thread
+            preinitComplete = false;
+            boolean isNext = false;
+            Workspace nextWorkspace = null;
+            for (Workspace currWorkspace : workspace.getWorkspaces()) {
+                if (isNext) {
+                    nextWorkspace = currWorkspace;
+                    break;
+                } else if (currWorkspace == workspace) {
+                    isNext = true;
+                }
+            }
+
+            if (nextWorkspace != null) {
+                preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
+                Workspace finalNextWorkspace = nextWorkspace;
+                Thread t = new Thread(() -> {
+                    // Running modules up to this point
+                    Modules modules = module.getModules();
+                    for (Module currModule : modules) {
+                        if (currModule == module)
+                            break;
+                        currModule.execute(finalNextWorkspace);
+                    }
+
+                    try {
+                        preinitSamJ.setImage(finalNextWorkspace.getImage(imageName).getImgPlus());
+                    } catch (IOException | RuntimeException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    finalNextWorkspace.clearAllImages(false);
+                    finalNextWorkspace.clearAllObjects(false);
+                    finalNextWorkspace.clearMetadata();
+
+                    preinitComplete = true;
+
+                });
+                t.start();
             }
         }
 
-        if (storeEncoding) {
-            try {
-                encodings.put(path, samJ.persistEncoding());
-
-                if (terminateAfterEncoding)
-                    return Status.TERMINATE_SILENT;
-
-            } catch (IOException | InterruptedException e) {
-                MIA.log.writeError(e);
-            }
-        }
+        prevEnvironmentPath = environmentPath;
 
         return Status.PASS;
 
@@ -248,14 +240,11 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     public Parameters initialiseParameters() {
         parameters.add(new SeparatorP(SAMJ_SEPARATOR, module));
         parameters.add(new BooleanP(USE_SAM, module, false));
-        parameters.add(new ChoiceP(MODEL, module, SAMJModels.EFFICIENT, SAMJModels.ALL));
         parameters.add(
                 new ChoiceP(ENVIRONMENT_PATH_MODE, module, EnvironmentPathModes.DEFAULT, EnvironmentPathModes.ALL));
         parameters.add(new FolderPathP(ENVIRONMENT_PATH, module));
         parameters.add(new BooleanP(INSTALL_IF_MISSING, module, true));
-        parameters.add(new BooleanP(USE_ENCODING_IF_AVAILABLE, module, true));
-        parameters.add(new BooleanP(STORE_ENCODING, module, true));
-        parameters.add(new BooleanP(TERMINATE_AFTER_ENCODING, module, false));
+        parameters.add(new BooleanP(PREINITIALISE, module, false));
 
         return parameters;
 
@@ -269,7 +258,6 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         returnedParameters.add(parameters.getParameter(USE_SAM));
 
         if ((boolean) parameters.getValue(USE_SAM, workspace)) {
-            returnedParameters.add(parameters.getParameter(MODEL));
             returnedParameters.add(parameters.getParameter(ENVIRONMENT_PATH_MODE));
 
             switch ((String) parameters.getValue(ENVIRONMENT_PATH_MODE, workspace)) {
@@ -279,9 +267,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             }
 
             returnedParameters.add(parameters.getParameter(INSTALL_IF_MISSING));
-            returnedParameters.add(parameters.getParameter(USE_ENCODING_IF_AVAILABLE));
-            returnedParameters.add(parameters.getParameter(STORE_ENCODING));
-            returnedParameters.add(parameters.getParameter(TERMINATE_AFTER_ENCODING));
+            returnedParameters.add(parameters.getParameter(PREINITIALISE));
 
         }
 

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.mianalysis.mia.module.testmodules.FilterImage;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 
 public class MeasurementTest {
     @Test

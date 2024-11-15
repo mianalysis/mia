@@ -94,7 +94,7 @@ public class MergeSingleClass extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);

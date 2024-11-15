@@ -58,7 +58,7 @@ public class ShowMetadata extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         if (showOutput)
             workspace.showMetadata();
 

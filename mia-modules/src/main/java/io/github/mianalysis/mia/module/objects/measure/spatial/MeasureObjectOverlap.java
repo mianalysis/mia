@@ -14,11 +14,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -152,7 +152,7 @@ public class MeasureObjectOverlap extends Module {
 
         // Getting input objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1,workspace);
-        Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(OBJECT_SET_2,workspace);
         Objs inputObjects2;
@@ -162,7 +162,7 @@ public class MeasureObjectOverlap extends Module {
                 MIA.log.writeError("Unknown object source mode");
                 return Status.FAIL;
             case ObjectSourceModes.DIFFERENT_CLASSES:
-                inputObjects2 = workspace.getObjects().get(inputObjects2Name);
+                inputObjects2 = workspace.getObjects(inputObjects2Name);
                 inputObjects1.removePartners(inputObjects2Name);
                 inputObjects2.removePartners(inputObjects1Name);
                 break;

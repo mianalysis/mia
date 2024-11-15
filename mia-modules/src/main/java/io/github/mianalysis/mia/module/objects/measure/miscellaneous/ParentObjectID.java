@@ -81,7 +81,7 @@ public class ParentObjectID extends Module {
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
 
-        Objs objects = workspace.getObjects().get(objectName);
+        Objs objects = workspace.getObjects(objectName);
         String measurementName = getFullName(parentObjectsName);
 
         if (objects == null)

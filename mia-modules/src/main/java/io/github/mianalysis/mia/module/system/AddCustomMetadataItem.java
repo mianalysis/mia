@@ -64,7 +64,7 @@ public class AddCustomMetadataItem extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String metadataName = parameters.getValue(METADATA_NAME,workspace);
         String metadataValue = parameters.getValue(METADATA_VALUE,workspace);
 

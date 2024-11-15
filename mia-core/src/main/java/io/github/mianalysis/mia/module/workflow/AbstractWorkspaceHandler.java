@@ -38,7 +38,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     }
 
-    protected Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
+    public Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE,workspace);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE,workspace);
         boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING,workspace);
