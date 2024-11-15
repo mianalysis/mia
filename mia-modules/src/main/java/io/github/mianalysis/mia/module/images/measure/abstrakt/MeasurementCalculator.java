@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module.images.measure.abstrakt;
 import java.util.Collection;
 import java.util.List;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;

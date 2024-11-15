@@ -171,7 +171,7 @@ public class CalculateStatsForChildren extends Module {
                 String name = getFullName(childObjectsName, measurement, Measurements.MIN);
                 parentObject.addMeasurement(new Measurement(name, cs.getMin()));
             }
-
+            
             if (statsToCalculate[3]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.MAX);
                 parentObject.addMeasurement(new Measurement(name, cs.getMax()));
