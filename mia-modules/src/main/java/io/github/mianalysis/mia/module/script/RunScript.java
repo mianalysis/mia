@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -257,19 +258,29 @@ public class RunScript extends Module {
      */
     String redirectImports(String scriptText, String extension) {
         HashMap<String, String> movedClasses = new HashMap<>();
-        movedClasses.put("io.github.sjcross.sjcommon.exceptions.IntegerOverflowException",
-                IntegerOverflowException.class.getName());
+
         movedClasses.put("io.github.sjcross.sjcommon.exceptions.PointOutOfRangeException",
                 PointOutOfRangeException.class.getName());
-        movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
-        movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException",                          
+                PointOutOfRangeException.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",                          
+                PointOutOfRangeException.class.getName());
+
+        movedClasses.put("io.github.sjcross.sjcommon.exceptions.IntegerOverflowException",
+                IntegerOverflowException.class.getName());
         movedClasses.put("io.github.sjcross.common.exceptions.IntegerOverflowException",
                 IntegerOverflowException.class.getName());
-        movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",
-                PointOutOfRangeException.class.getName());
+
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.SpatCal", SpatCal.class.getName());
-        movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
+
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.VolumeType", VolumeType.class.getName());
+        
+        movedClasses.put("io.github.mianalysis.mia.object.Image", Image.class.getName());
+        
+        movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
+        
         movedClasses.put("io.github.mianalysis.mia.object.Measurement", Measurement.class.getName());
 
         for (String oldLocation : movedClasses.keySet()) {
