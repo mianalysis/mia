@@ -8,7 +8,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -113,7 +112,7 @@ public class ApplyDeepImageJModel extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);

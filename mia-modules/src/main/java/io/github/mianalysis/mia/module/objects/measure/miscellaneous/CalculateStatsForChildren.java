@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -171,7 +171,7 @@ public class CalculateStatsForChildren extends Module {
                 String name = getFullName(childObjectsName, measurement, Measurements.MIN);
                 parentObject.addMeasurement(new Measurement(name, cs.getMin()));
             }
-
+            
             if (statsToCalculate[3]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.MAX);
                 parentObject.addMeasurement(new Measurement(name, cs.getMax()));

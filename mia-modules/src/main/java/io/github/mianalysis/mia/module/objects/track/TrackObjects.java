@@ -26,7 +26,6 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -52,6 +51,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.math.Indexer;
 
 /**

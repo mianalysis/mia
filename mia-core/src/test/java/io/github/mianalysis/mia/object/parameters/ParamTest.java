@@ -23,7 +23,7 @@ public class ParamTest extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         return Status.FAIL;
     }
 

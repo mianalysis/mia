@@ -135,7 +135,7 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
@@ -202,14 +202,20 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If setting a dimension to an image, there is an option to use that image's
         // calibration
-        if (xScaleMode.equals(ScaleModes.MATCH_IMAGE) && xAdoptCalibration)
+        if (xScaleMode.equals(ScaleModes.MATCH_IMAGE) && xAdoptCalibration) {
             outputCal.pixelWidth = workspace.getImage(xImageName).getImagePlus().getCalibration().pixelWidth;
+            outputCal.setXUnit(workspace.getImage(xImageName).getImagePlus().getCalibration().getXUnit());
+        }
 
-        if (yScaleMode.equals(ScaleModes.MATCH_IMAGE) && yAdoptCalibration)
+        if (yScaleMode.equals(ScaleModes.MATCH_IMAGE) && yAdoptCalibration) {
             outputCal.pixelHeight = workspace.getImage(yImageName).getImagePlus().getCalibration().pixelHeight;
+            outputCal.setYUnit(workspace.getImage(yImageName).getImagePlus().getCalibration().getYUnit());
+        }
 
-        if (zScaleMode.equals(ScaleModes.MATCH_IMAGE) && zAdoptCalibration)
+        if (zScaleMode.equals(ScaleModes.MATCH_IMAGE) && zAdoptCalibration) {
             outputCal.pixelDepth = workspace.getImage(zImageName).getImagePlus().getCalibration().pixelDepth;
+            outputCal.setZUnit(workspace.getImage(zImageName).getImagePlus().getCalibration().getZUnit());
+        }
 
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
 

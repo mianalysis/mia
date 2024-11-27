@@ -98,7 +98,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         super(module);
     }
 
-    protected AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {        
+    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {        
         AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
         AbstractSamJ.MAX_ENCODED_SIDE = 3000;
 
@@ -129,7 +129,6 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
     @Override
     public Status initialiseBeforeImageShown(Workspace workspace) {
-        long t1 = System.currentTimeMillis();
         this.workspace = workspace;
 
         // Getting parameters
@@ -218,9 +217,6 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         }
 
         prevEnvironmentPath = environmentPath;
-
-        long t2 = System.currentTimeMillis();
-        MIA.log.writeDebug("Elapsed: "+(t2-t1)+" ms");
 
         return Status.PASS;
 

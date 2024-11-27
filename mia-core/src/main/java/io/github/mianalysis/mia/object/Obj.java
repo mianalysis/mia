@@ -16,6 +16,8 @@ import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -26,7 +28,7 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends Volume {
+public class Obj extends Volume implements MeasurementProvider {
     /**
      * Unique instance ID for this object
      */

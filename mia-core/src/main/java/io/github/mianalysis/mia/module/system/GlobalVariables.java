@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdate
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -30,17 +31,22 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-
 /**
-* Create fixed values which can be accessed by text entry parameters from all modules.  Use of global variables allows the same value to be used across multiple different modules without the need to explicitly type it.  Global variables are accessed with the notation "V{[NAME]}", where "[NAME]" is replaced with the name of the relevant variable.  Global variables can be used by any text or numeric parameter.
-*/
+ * Create fixed values which can be accessed by text entry parameters from all
+ * modules. Use of global variables allows the same value to be used across
+ * multiple different modules without the need to explicitly type it. Global
+ * variables are accessed with the notation "V{[NAME]}", where "[NAME]" is
+ * replaced with the name of the relevant variable. Global variables can be used
+ * by any text or numeric parameter.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalVariables extends Module {
     public static final String VARIABLE_SEPARATOR = "Variable settings";
 
-	/**
-	* Add a new global variable.  Added variables can be removed using the "Remove" button.
-	*/
+    /**
+     * Add a new global variable. Added variables can be removed using the "Remove"
+     * button.
+     */
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_TYPE = "Variable type";
@@ -50,6 +56,7 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_FOLDER = "Variable folder";
     public static final String VARIABLE_CHOICES = "Variable choices";
     public static final String VARIABLE_CHOICE = "Variable choice";
+    public static final String VARIABLE_TEXT_AREA = "Variable text";
     public static final String STORE_AS_METADATA_ITEM = "Store as metadata item";
 
     protected static final HashMap<StringP, String> globalVariables = new HashMap<>();
@@ -60,8 +67,9 @@ public class GlobalVariables extends Module {
         String FILE = "File";
         String FOLDER = "Folder";
         String TEXT = "Text";
+        String TEXT_AREA = "Text area";
 
-        String[] ALL = new String[] { BOOLEAN, CHOICE, FILE, FOLDER, TEXT };
+        String[] ALL = new String[] { BOOLEAN, CHOICE, FILE, FOLDER, TEXT, TEXT_AREA };
 
     }
 
@@ -162,7 +170,7 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE, workspace);
 
         for (Parameters collection : collections.values()) {
@@ -191,6 +199,9 @@ public class GlobalVariables extends Module {
                     case VariableTypes.TEXT:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_VALUE, workspace));
                         break;
+                    case VariableTypes.TEXT_AREA:
+                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_TEXT_AREA, workspace));
+                        break;
                 }
             }
         }
@@ -212,6 +223,7 @@ public class GlobalVariables extends Module {
         parameterCollection.add(new StringP(VARIABLE_CHOICES, this));
         parameterCollection.add(new ChoiceP(VARIABLE_CHOICE, this, "", new String[0]));
         parameterCollection.add(new BooleanP(STORE_AS_METADATA_ITEM, this, false));
+        parameterCollection.add(new TextAreaP(VARIABLE_TEXT_AREA, this, true));
 
         parameters.add(new ParameterGroup(ADD_NEW_VARIABLE, this, parameterCollection, 1, getUpdaterAndGetter()));
 
@@ -250,6 +262,9 @@ public class GlobalVariables extends Module {
                     case VariableTypes.TEXT:
                         globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE, workspace));
                         break;
+                    case VariableTypes.TEXT_AREA:
+                        globalVariables.put(variableName, collection.getValue(VARIABLE_TEXT_AREA, workspace));
+                        break;
                 }
 
             } else if (globalVariables.containsKey(variableName)) {
@@ -272,8 +287,8 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
@@ -340,7 +355,11 @@ public class GlobalVariables extends Module {
                 + "\" parameter.  The variable will be set to the full path to this folder.  Note: backslash characters will be escaped (i.e. \"\\\" will appear as \"\\\\\").</li>"
 
                 + "<li>\"" + VariableTypes.TEXT + "\" Specify a fixed text value for this variable using the \""
-                + VARIABLE_VALUE + "\" parameter.</li></ul>");
+                + VARIABLE_VALUE + "\" parameter.</li></ul>"
+
+                + "<li>\"" + VariableTypes.TEXT_AREA + "\" Specify a fixed text value for this variable using the \""
+                + VARIABLE_TEXT_AREA
+                + "\" parameter.  This simply provides a larger, multiline area in which text can be entered.</li></ul>");
 
         collection.get(VARIABLE_BOOLEAN).setDescription("Boolean value for the corresponding global variable when \""
                 + VARIABLE_TYPE + "\" is in \"" + VariableTypes.BOOLEAN + "\" mode.");
@@ -394,6 +413,9 @@ public class GlobalVariables extends Module {
                         break;
                     case VariableTypes.TEXT:
                         returnedParameters.add(params.getParameter(VARIABLE_VALUE));
+                        break;
+                    case VariableTypes.TEXT_AREA:
+                        returnedParameters.add(params.getParameter(VARIABLE_TEXT_AREA));
                         break;
                 }
                 returnedParameters.add(params.getParameter(STORE_AS_METADATA_ITEM));

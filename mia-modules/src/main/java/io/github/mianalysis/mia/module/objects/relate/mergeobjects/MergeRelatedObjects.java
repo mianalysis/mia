@@ -199,7 +199,7 @@ public class MergeRelatedObjects extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
         Objs parentObjects = workspace.getObjects(parentObjectName);

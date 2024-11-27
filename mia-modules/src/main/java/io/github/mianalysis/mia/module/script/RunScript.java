@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.Priority;
@@ -35,6 +37,9 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -47,6 +52,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -114,6 +120,14 @@ public class RunScript extends Module {
      */
     public static final String SCRIPT_TEXT = "Script text";
 
+    public static final String PARAMETER_SEPARATOR = "Input parameters";
+    public static final String PARAMETER_NAME = "Parameter name";
+    public static final String PARAMETER_TYPE = "Parameter type";
+    public static final String PARAMETER_CHECKBOX = "Parameter checkbox";
+    public static final String PARAMETER_NUMERIC_VALUE = "Parameter numeric value";
+    public static final String PARAMETER_TEXT_VALUE = "Parameter text value";
+    public static final String ADD_PARAMETER = "Add parameter";
+
     /**
      * Select a script file to be run by this module. As with the "Script text"
      * parameter, this script can start with the lines "#@
@@ -169,6 +183,15 @@ public class RunScript extends Module {
         String IMAGEJ1 = "ImageJ 1.x macro";
 
         String[] ALL = new String[] { BEANSHELL, CLOJURE, GROOVY, IMAGEJ1, JAVASCRIPT, JRUBY, JYTHON };
+
+    }
+
+    public interface ParameterTypes {
+        String BOOLEAN = "Boolean";
+        String NUMBER = "Number";
+        String TEXT = "Text";
+
+        String[] ALL = new String[] { BOOLEAN, NUMBER, TEXT };
 
     }
 
@@ -235,19 +258,30 @@ public class RunScript extends Module {
      */
     String redirectImports(String scriptText, String extension) {
         HashMap<String, String> movedClasses = new HashMap<>();
-        movedClasses.put("io.github.sjcross.sjcommon.exceptions.IntegerOverflowException",
-                IntegerOverflowException.class.getName());
+
         movedClasses.put("io.github.sjcross.sjcommon.exceptions.PointOutOfRangeException",
                 PointOutOfRangeException.class.getName());
-        movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
-        movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException",                          
+                PointOutOfRangeException.class.getName());
+        movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",                          
+                PointOutOfRangeException.class.getName());
+
+        movedClasses.put("io.github.sjcross.sjcommon.exceptions.IntegerOverflowException",
+                IntegerOverflowException.class.getName());
         movedClasses.put("io.github.sjcross.common.exceptions.IntegerOverflowException",
                 IntegerOverflowException.class.getName());
-        movedClasses.put("io.github.sjcross.common.object.volume.PointOutOfRangeException",
-                PointOutOfRangeException.class.getName());
+
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.SpatCal", SpatCal.class.getName());
-        movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
+
+        movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.VolumeType", VolumeType.class.getName());
+        
+        movedClasses.put("io.github.mianalysis.mia.object.Image", Image.class.getName());
+        
+        movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
+        
+        movedClasses.put("io.github.mianalysis.mia.object.Measurement", Measurement.class.getName());
 
         for (String oldLocation : movedClasses.keySet()) {
             String newLocation = movedClasses.get(oldLocation);
@@ -269,6 +303,40 @@ public class RunScript extends Module {
 
     }
 
+    public static String insertParameterValues(String string, LinkedHashMap<Integer, Parameters> inputParameters) {
+        Pattern pattern = Pattern.compile("P\\{([\\w]+)}");
+        Matcher matcher = pattern.matcher(string);
+
+        while (matcher.find()) {
+            String fullName = matcher.group(0);
+            String variableName = matcher.group(1);
+
+            for (Parameters inputParameterSet : inputParameters.values()) {
+                if (inputParameterSet.getValue(PARAMETER_NAME, null).equals(variableName)) {
+                    String value = "";
+                    switch ((String) inputParameterSet.getValue(PARAMETER_TYPE, null)) {
+                        case ParameterTypes.BOOLEAN:
+                            value = inputParameterSet.getValue(PARAMETER_CHECKBOX, null).toString();
+                            break;
+                        case ParameterTypes.NUMBER:
+                            value = inputParameterSet.getValue(PARAMETER_NUMERIC_VALUE, null).toString();
+                            break;
+                        case ParameterTypes.TEXT:
+                            value = inputParameterSet.getValue(PARAMETER_TEXT_VALUE, null).toString();
+                            break;
+                    }
+
+                    string = string.replace(fullName, value);
+                    break;
+
+                }
+            }
+        }
+
+        return string;
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
@@ -276,6 +344,7 @@ public class RunScript extends Module {
         String scriptText = parameters.getValue(SCRIPT_TEXT, workspace);
         String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE, workspace);
         String scriptFile = parameters.getValue(SCRIPT_FILE, workspace);
+        LinkedHashMap<Integer, Parameters> inputParameters = parameters.getValue(ADD_PARAMETER, workspace);
 
         Map<String, Object> scriptParameters = new HashMap<>();
         String extension = "";
@@ -301,6 +370,31 @@ public class RunScript extends Module {
 
         if (scriptText.contains("@ io.github.mianalysis.mia.module.Module thisModule"))
             scriptParameters.put("thisModule", this);
+
+        for (Parameters inputParameterSet : inputParameters.values()) {
+            String parameterName = inputParameterSet.getValue(PARAMETER_NAME, workspace);
+            String parameterType = inputParameterSet.getValue(PARAMETER_TYPE, workspace);
+
+            String classNameString = "";
+            switch (parameterType) {
+                case ParameterTypes.BOOLEAN:
+                    classNameString = "#@ Boolean " + parameterName;
+                    scriptParameters.put(parameterName, inputParameterSet.getValue(PARAMETER_CHECKBOX, workspace));
+                    break;
+                case ParameterTypes.NUMBER:
+                    classNameString = "#@ Double " + parameterName;
+                    scriptParameters.put(parameterName, inputParameterSet.getValue(PARAMETER_NUMERIC_VALUE, workspace));
+                    break;
+                case ParameterTypes.TEXT:
+                    classNameString = "#@ String " + parameterName;
+                    scriptParameters.put(parameterName, inputParameterSet.getValue(PARAMETER_TEXT_VALUE, workspace));
+                    break;
+            }
+
+            if (!scriptText.contains(classNameString))
+                scriptText = classNameString + "\n" + scriptText;
+
+        }
 
         // Resolving moved files
         scriptText = redirectImports(scriptText, extension);
@@ -362,7 +456,16 @@ public class RunScript extends Module {
                 true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
 
-        parameters.add(new SeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
+        Parameters variableCollection = new Parameters();
+        variableCollection.add(new ChoiceP(PARAMETER_TYPE, this, ParameterTypes.TEXT, ParameterTypes.ALL));
+        variableCollection.add(new StringP(PARAMETER_NAME, this));
+        variableCollection.add(new BooleanP(PARAMETER_CHECKBOX, this, true));
+        variableCollection.add(new DoubleP(PARAMETER_NUMERIC_VALUE, this, 0d));
+        variableCollection.add(new StringP(PARAMETER_TEXT_VALUE, this));
+
+        parameters.add(new SeparatorP(PARAMETER_SEPARATOR, this));
+        parameters.add(new ParameterGroup(ADD_PARAMETER, this, variableCollection, getParameterUpdaterAndGetter()));
+
         Parameters parameterCollection = new Parameters();
         parameterCollection.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.IMAGE, OutputTypes.ALL));
         parameterCollection.add(new OutputImageP(OUTPUT_IMAGE, this));
@@ -376,7 +479,9 @@ public class RunScript extends Module {
         parameterCollection.add(new InputObjectsInclusiveP(CHILDREN_NAME, this));
         parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_1, this));
         parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_2, this));
-        parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getUpdaterAndGetter()));
+
+        parameters.add(new SeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
+        parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getOutputUpdaterAndGetter()));
 
         addParameterDescriptions();
 
@@ -399,6 +504,9 @@ public class RunScript extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(PARAMETER_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_PARAMETER));
+
         returnedParameters.add(parameters.getParameter(IMAGE_OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_OUTPUT));
 
@@ -411,6 +519,9 @@ public class RunScript extends Module {
         Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
+        ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
+        LinkedHashMap<Integer, Parameters> inputParameters = inputParameterGroup.getCollections(true);
+
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
@@ -418,6 +529,10 @@ public class RunScript extends Module {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.IMAGE_MEASUREMENT)) {
                 String imageName = collection.getValue(ASSOCIATED_IMAGE, workspace);
                 String measurementName = collection.getValue(MEASUREMENT_NAME, workspace);
+
+                imageName = insertParameterValues(imageName, inputParameters);
+                measurementName = insertParameterValues(measurementName, inputParameters);
+
                 ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(measurementName);
                 ref.setImageName(imageName);
                 returnedRefs.add(ref);
@@ -433,6 +548,9 @@ public class RunScript extends Module {
         Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
+        ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
+        LinkedHashMap<Integer, Parameters> inputParameters = inputParameterGroup.getCollections(true);
+
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
@@ -440,6 +558,10 @@ public class RunScript extends Module {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_MEASUREMENT)) {
                 String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
                 String measurementName = collection.getValue(MEASUREMENT_NAME, workspace);
+
+                objectsName = insertParameterValues(objectsName, inputParameters);
+                measurementName = insertParameterValues(measurementName, inputParameters);
+
                 ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
                 ref.setObjectsName(objectsName);
                 returnedRefs.add(ref);
@@ -455,6 +577,9 @@ public class RunScript extends Module {
         Workspace workspace = null;
         ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
 
+        ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
+        LinkedHashMap<Integer, Parameters> inputParameters = inputParameterGroup.getCollections(true);
+
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
@@ -462,6 +587,10 @@ public class RunScript extends Module {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_METADATA_ITEM)) {
                 String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
                 String metadataName = collection.getValue(OBJECT_METADATA_NAME, workspace);
+
+                objectsName = insertParameterValues(objectsName, inputParameters);
+                metadataName = insertParameterValues(metadataName, inputParameters);
+
                 ObjMetadataRef ref = objectMetadataRefs.getOrPut(metadataName);
                 ref.setObjectsName(objectsName);
                 returnedRefs.add(ref);
@@ -477,12 +606,18 @@ public class RunScript extends Module {
         Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
+        ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
+        LinkedHashMap<Integer, Parameters> inputParameters = inputParameterGroup.getCollections(true);
+
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (Parameters collection : collections.values()) {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.METADATA)) {
                 String metadataName = collection.getValue(METADATA_NAME, workspace);
+
+                metadataName = insertParameterValues(metadataName, inputParameters);
+
                 MetadataRef ref = metadataRefs.getOrPut(metadataName);
                 returnedRefs.add(ref);
             }
@@ -497,6 +632,9 @@ public class RunScript extends Module {
         Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
+        ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
+        LinkedHashMap<Integer, Parameters> inputParameters = inputParameterGroup.getCollections(true);
+
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
@@ -505,6 +643,10 @@ public class RunScript extends Module {
                 case OutputTypes.PARENT_CHILD:
                     String parentsName = collection.getValue(PARENT_NAME, workspace);
                     String childrenName = collection.getValue(CHILDREN_NAME, workspace);
+
+                    parentsName = insertParameterValues(parentsName, inputParameters);
+                    childrenName = insertParameterValues(childrenName, inputParameters);
+
                     ParentChildRef ref = parentChildRefs.getOrPut(parentsName, childrenName);
                     returnedRefs.add(ref);
                     break;
@@ -520,6 +662,9 @@ public class RunScript extends Module {
         Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
+        ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
+        LinkedHashMap<Integer, Parameters> inputParameters = inputParameterGroup.getCollections(true);
+
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
@@ -528,6 +673,10 @@ public class RunScript extends Module {
                 case OutputTypes.PARTNERS:
                     String partnersName1 = collection.getValue(PARTNERS_NAME_1, workspace);
                     String partnersName2 = collection.getValue(PARTNERS_NAME_2, workspace);
+
+                    partnersName1 = insertParameterValues(partnersName1, inputParameters);
+                    partnersName2 = insertParameterValues(partnersName2, inputParameters);
+
                     PartnerRef ref = partnerRefs.getOrPut(partnersName1, partnersName2);
                     returnedRefs.add(ref);
                     break;
@@ -606,7 +755,34 @@ public class RunScript extends Module {
 
     }
 
-    private ParameterUpdaterAndGetter getUpdaterAndGetter() {
+    private ParameterUpdaterAndGetter getParameterUpdaterAndGetter() {
+        return new ParameterUpdaterAndGetter() {
+
+            @Override
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
+
+                returnedParameters.add(params.getParameter(PARAMETER_NAME));
+                returnedParameters.add(params.getParameter(PARAMETER_TYPE));
+                switch ((String) params.getValue(PARAMETER_TYPE, null)) {
+                    case ParameterTypes.BOOLEAN:
+                        returnedParameters.add(params.getParameter(PARAMETER_CHECKBOX));
+                        break;
+                    case ParameterTypes.NUMBER:
+                        returnedParameters.add(params.getParameter(PARAMETER_NUMERIC_VALUE));
+                        break;
+                    case ParameterTypes.TEXT:
+                        returnedParameters.add(params.getParameter(PARAMETER_TEXT_VALUE));
+                        break;
+                }
+
+                return returnedParameters;
+
+            }
+        };
+    }
+
+    private ParameterUpdaterAndGetter getOutputUpdaterAndGetter() {
         return new ParameterUpdaterAndGetter() {
 
             @Override

@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.math.CumStat;
@@ -206,7 +206,7 @@ public abstract class TextType extends Parameter {
         if (workspace == null)
             return string;
 
-        Pattern pattern = Pattern.compile("Co\\{([^\\}]+)}");
+        Pattern pattern = Pattern.compile("Oc\\{([^\\}]+)}");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             Objs objs = workspace.getObjects(matcher.group(1));

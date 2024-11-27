@@ -77,7 +77,7 @@ public class ExportVOCAnnotations extends AbstractSaver {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);

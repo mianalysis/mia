@@ -99,7 +99,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -124,6 +123,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 
 /**
  * Relate objects of two classes based on spatial proximity or overlap. With
@@ -506,7 +506,7 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    protected Status process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE, workspace);
 
         // Getting input objects
