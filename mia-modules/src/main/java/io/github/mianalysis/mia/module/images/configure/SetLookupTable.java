@@ -1,12 +1,19 @@
 package io.github.mianalysis.mia.module.images.configure;
 
 import java.awt.Color;
+import java.io.File;
+import java.util.Arrays;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.apache.commons.lang.WordUtils;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.CompositeImage;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.LutLoader;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -15,6 +22,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.imagej.LUTs;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -96,6 +104,12 @@ public class SetLookupTable extends Module {
      * background will be 0 or NaN and should be rendered as black.<br>
      */
     public static final String DISPLAY_MODE = "Display mode";
+
+    public static final String INVERT_LUT = "Invert LUT";
+
+
+    TreeMap<String,String> imageJLUTs;
+    // TreeMap<String, String> allLUTs;
 
     public SetLookupTable(Modules modules) {
         super("Set lookup table", modules);
@@ -261,6 +275,7 @@ public class SetLookupTable extends Module {
         int channel = parameters.getValue(CHANNEL, workspace);
         String displayMode = parameters.getValue(DISPLAY_MODE, workspace);
         double wavelengthNM = parameters.getValue(WAVELENGTH, workspace);
+        boolean invertLUT = parameters.getValue(INVERT_LUT, workspace);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -275,13 +290,23 @@ public class SetLookupTable extends Module {
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
             case ChannelModes.SPECIFIC_CHANNELS:
-                LUT lut = getLUT(lookupTableName, wavelengthNM);
+                LUT lut;
+                if (imageJLUTs.keySet().contains(lookupTableName))
+                    lut = LutLoader.openLut(IJ.getDir("luts") + lookupTableName + ".lut");
+                else
+                    lut = getLUT(lookupTableName, wavelengthNM);
+                
                 switch (displayMode) {
                     case DisplayModes.SET_ZERO_TO_BLACK:
                         lut = setZeroToBlack(lut);
                         break;
                 }
+
+                if (invertLUT)
+                    lut = lut.createInvertedLut();
+
                 setLUT(inputImage, lut, channelMode, channel);
+
                 break;
             case ChannelModes.COPY_FROM_IMAGE:
                 Image referenceImage = workspace.getImage(referenceImageName);
@@ -292,7 +317,7 @@ public class SetLookupTable extends Module {
         inputImage.getImagePlus().updateChannelAndDraw();
 
         if (showOutput)
-            inputImage.show(inputImageName, null, false, true);
+            inputImage.show(inputImageName, null, false, Image.DisplayModes.COMPOSITE);
 
         return Status.PASS;
 
@@ -307,9 +332,22 @@ public class SetLookupTable extends Module {
         parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.ALL_CHANNELS, ChannelModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(CHANNEL, this, 1));
-        parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY, LookupTables.ALL));
+
+        TreeSet<String> allLUTs = new TreeSet<>();
+        imageJLUTs = new TreeMap<>();
+
+        String[] lutFiles = new File(IJ.getDirectory("luts")).list();
+        if (lutFiles != null)
+            Arrays.stream(lutFiles).forEach(v -> imageJLUTs.put(WordUtils.capitalize(v.replace(".lut", "")),v));
+        
+        allLUTs.addAll(imageJLUTs.keySet());
+        Arrays.stream(LookupTables.ALL).forEach(v -> allLUTs.add(v));
+
+        parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY,
+                allLUTs.toArray(new String[allLUTs.size()])));
         parameters.add(new DoubleP(WAVELENGTH, this, 405));
         parameters.add(new ChoiceP(DISPLAY_MODE, this, DisplayModes.FULL_RANGE, DisplayModes.ALL));
+        parameters.add(new BooleanP(INVERT_LUT, this, false));
 
         addParameterDescriptions();
 
@@ -332,6 +370,7 @@ public class SetLookupTable extends Module {
                 if (((String) parameters.getValue(LOOKUP_TABLE, workspace)).equals(LookupTables.FROM_WAVELENGTH))
                     returnedParameters.add(parameters.getParameter(WAVELENGTH));
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
+                returnedParameters.add(parameters.getParameter(INVERT_LUT));
                 break;
             case ChannelModes.COPY_FROM_IMAGE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
@@ -342,6 +381,7 @@ public class SetLookupTable extends Module {
                 if (((String) parameters.getValue(LOOKUP_TABLE, workspace)).equals(LookupTables.FROM_WAVELENGTH))
                     returnedParameters.add(parameters.getParameter(WAVELENGTH));
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
+                returnedParameters.add(parameters.getParameter(INVERT_LUT));
                 break;
         }
 

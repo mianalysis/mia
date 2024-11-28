@@ -12,26 +12,48 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 public class ImgPlusRenderer implements ImageRenderer {
 
     @Override
-    public void render(Image image, String title, LUT lut, boolean normalise, boolean composite, Overlay overlay) {
-        ImagePlus ipl = ImageJFunctions.show(image.getImgPlus());
+    public void render(Image image, String title, LUT lut, boolean normalise, String displayMode, Overlay overlay) {
+        ImagePlus dispIpl = ImageJFunctions.show(image.getImgPlus());
+        
         // Adds the specified overlay rather than the overlay associated with this image
         // ImagePlus ipl = image.getImagePlus();
         ImgPlus img = image.getImgPlus();
 
-        if (lut != null && ipl.getBitDepth() != 24)
-            ipl.setLut(lut);
+        if (lut != null && dispIpl.getBitDepth() != 24)
+            dispIpl.setLut(lut);
 
-        if (composite && ipl.getNChannels() > 1)
-            ipl.setDisplayMode(CompositeImage.COMPOSITE);
-        else
-            ipl.setDisplayMode(CompositeImage.COLOR);
+        switch (displayMode) {
+            case Image.DisplayModes.COLOUR:
+                dispIpl.setDisplayMode(CompositeImage.COLOR);
+                break;
 
-        ImgPlusImage.setCalibration(ipl, img);
-        ipl.setOverlay(overlay);
+            case Image.DisplayModes.COMPOSITE:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Sum");
+                break;
 
-        ipl.setTitle(title);
+            case Image.DisplayModes.COMPOSITE_INVERT:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Invert");
+                break;
 
-        ipl.show();
+            case Image.DisplayModes.COMPOSITE_MAX:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Max");
+                break;
+
+            case Image.DisplayModes.COMPOSITE_MIN:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Min");
+                break;
+        }
+
+        ImgPlusImage.setCalibration(dispIpl, img);
+        dispIpl.setOverlay(overlay);
+
+        dispIpl.setTitle(title);
+
+        dispIpl.show();
 
     }
 }
