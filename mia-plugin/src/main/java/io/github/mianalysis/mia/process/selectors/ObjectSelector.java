@@ -1061,7 +1061,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         switch ((String) colourMode.getSelectedItem()) {
             case ColourModesWithClass.BY_CLASS:
                 float hue = objRoi.getAssignedClass() == null ? 0.167f
-                        : new Random(objRoi.getAssignedClass().hashCode() * 1000 * 31).nextFloat();
+                        : new Random(objRoi.getAssignedClass().hashCode() * 2000 * 31).nextFloat();
                 colour = Color.getHSBColor(hue, 1, 1);
                 break;
             case ColourModesWithClass.BY_ID:
