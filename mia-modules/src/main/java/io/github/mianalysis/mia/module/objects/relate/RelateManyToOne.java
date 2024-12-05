@@ -744,7 +744,7 @@ public class RelateManyToOne extends Module {
                 HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
                 Image childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
                 SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
-                childImage.show(childObjectName, LUTs.Random(true, false), false, false);
+                childImage.show(childObjectName, LUTs.Random(true, false), false, Image.DisplayModes.COLOUR);
 
             }
 

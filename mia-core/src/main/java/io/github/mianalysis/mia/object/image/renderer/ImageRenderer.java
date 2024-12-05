@@ -7,5 +7,5 @@ import ij.process.LUT;
 import io.github.mianalysis.mia.object.image.Image;
 
 public interface ImageRenderer {
-    public void render(Image image, String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay);
+    public void render(Image image, String title, @Nullable LUT lut, boolean normalise, String displayMode, Overlay overlay);
 }

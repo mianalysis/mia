@@ -12,7 +12,8 @@ import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 public class ImagePlusRenderer implements ImageRenderer {
     @Override
-    public void render(Image image, String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
+    public void render(Image image, String title, @Nullable LUT lut, boolean normalise, String displayMode,
+            Overlay overlay) {
         ImagePlus imagePlus = image.getImagePlus();
 
         // Adds the specified overlay rather than the overlay associated with this image
@@ -27,13 +28,34 @@ public class ImagePlusRenderer implements ImageRenderer {
         if (lut != null && dispIpl.getBitDepth() != 24)
             dispIpl.setLut(lut);
 
-        if (composite && dispIpl.getNChannels() > 1)
-            dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
-        else
-            dispIpl.setDisplayMode(CompositeImage.COLOR);
+        switch (displayMode) {
+            case Image.DisplayModes.COLOUR:
+                dispIpl.setDisplayMode(CompositeImage.COLOR);
+                break;
+
+            case Image.DisplayModes.COMPOSITE:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Sum");
+                break;
+
+            case Image.DisplayModes.COMPOSITE_INVERT:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Invert");
+                break;
+
+            case Image.DisplayModes.COMPOSITE_MAX:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Max");
+                break;
+
+            case Image.DisplayModes.COMPOSITE_MIN:
+                dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+                dispIpl.setProp("CompositeProjection", "Min");
+                break;
+        }
 
         dispIpl.repaintWindow();
         dispIpl.show();
-        
-    }    
+
+    }
 }

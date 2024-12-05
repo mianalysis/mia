@@ -38,6 +38,17 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
     protected String name;
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
+    public interface DisplayModes {
+        String COLOUR = "Colour";
+        String COMPOSITE = "Composite";
+        String COMPOSITE_INVERT = "Composite (invert)";
+        String COMPOSITE_MAX = "Composite (max)";
+        String COMPOSITE_MIN = "Composite (min)";
+
+        String[] ALL = new String[]{COLOUR, COMPOSITE, COMPOSITE_INVERT, COMPOSITE_MAX, COMPOSITE_MIN};
+
+    }
+
     // Abstract methods
 
     public abstract ImageRenderer getRenderer();
@@ -46,9 +57,9 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
 
     public abstract void setRenderer(ImageRenderer imageRenderer);
 
-    public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite);
+    public abstract void show(String title, @Nullable LUT lut, boolean normalise, String displayMode);
 
-    public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite,
+    public abstract void show(String title, @Nullable LUT lut, boolean normalise, String displayMode,
             Overlay overlay);
 
     public abstract long getWidth();
@@ -134,11 +145,11 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
     }
 
     public void show(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, false, overlay);
+        show(title, lut, true, DisplayModes.COLOUR, overlay);
     }
 
     public void show(String title, LUT lut) {
-        show(title, lut, true, false);
+        show(title, lut, true, DisplayModes.COLOUR);
     }
 
     public void show(String title) {
@@ -158,28 +169,28 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
     }
 
     public void show(boolean normalise) {
-        show(name, null, normalise, false);
+        show(name, null, normalise, DisplayModes.COLOUR);
     }
 
     @Deprecated
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        show(title, lut, normalise, composite);
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, String displayMode) {
+        show(title, lut, normalise, displayMode);
     }
 
     @Deprecated
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite,
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, String displayMode,
             Overlay overlay) {
-        show(title, lut, normalise, composite, overlay);
+        show(title, lut, normalise, displayMode, overlay);
     }
 
     @Deprecated
     public void showImage(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, false, overlay);
+        show(title, lut, true, DisplayModes.COLOUR, overlay);
     }
 
     @Deprecated
     public void showImage(String title, LUT lut) {
-        show(title, lut, true, false);
+        show(title, lut, true, DisplayModes.COLOUR);
     }
 
     @Deprecated

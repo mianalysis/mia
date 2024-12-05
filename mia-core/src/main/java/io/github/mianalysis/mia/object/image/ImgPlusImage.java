@@ -257,13 +257,13 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         }
     }
 
-    public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode) {
         // Show using this overlay
-        show(title, lut, normalise, composite, overlay);
+        show(title, lut, normalise, displayMode, overlay);
     }
 
-    public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
-        getRenderer().render(this, title, lut, normalise, composite, overlay);
+    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode, Overlay overlay) {
+        getRenderer().render(this, title, lut, normalise, displayMode, overlay);
 
     }
 
