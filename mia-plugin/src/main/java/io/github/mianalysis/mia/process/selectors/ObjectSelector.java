@@ -442,7 +442,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         c.insets = new Insets(5, 5, 5, 5);
 
-        objectsScrollPane.setPreferredSize(new Dimension(0, 200));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
@@ -453,6 +452,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridwidth = gridWidth;
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
+        c.weighty = 1;
         frame.add(objectsScrollPane, c);
 
         JPanel overlayPanel = createOverlayPanel();
@@ -461,14 +461,16 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridy++;
         c.gridwidth = 5;
         c.gridheight = 1;
+        c.weighty = 0;
         frame.add(overlayPanel, c);
 
         displayIpl.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
 
+        frame.setMinimumSize(new Dimension(800,480));
+        frame.setMaximumSize(new Dimension(800,Integer.MAX_VALUE));
         frame.pack();
         frame.setLocation(new Point(x0, y0));
-        frame.setResizable(false);
-
+        frame.setResizable(true);        
         frame.setVisible(true);
 
     }
