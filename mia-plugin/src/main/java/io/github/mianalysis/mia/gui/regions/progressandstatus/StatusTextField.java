@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JLabel;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 
@@ -30,24 +31,25 @@ public class StatusTextField extends JLabel implements MouseListener{
     @Override
     public void mouseClicked(MouseEvent e) {
         Thread t = new Thread(() -> {
-            try {
-                boolean state = Module.isVerbose();
-                Module.setVerbose(false);
+            MIA.log.writeDebug("Status bar click needs reimplementing");
+            // try {
+                // boolean state = Module.isVerbose();
+                // Module.setVerbose(false);
 
-                if (state) {
-                    setText("Verbose output disabled");
-                    TimeUnit.SECONDS.sleep(1);
-                    GUI.updateProgressBar();
-                } else {
-                    setText("Verbose output enabled");
-                    TimeUnit.SECONDS.sleep(1);
-                }
+                // if (state) {
+                //     setText("Verbose output disabled");
+                //     TimeUnit.SECONDS.sleep(1);
+                //     GUI.updateProgressBar();
+                // } else {
+                //     setText("Verbose output enabled");
+                //     TimeUnit.SECONDS.sleep(1);
+                // }
 
-                Module.setVerbose(!state);
+                // Module.setVerbose(!state);
 
-            } catch (InterruptedException e1) {
-                // Do nothing as the user has selected this
-            }
+            // } catch (InterruptedException e1) {
+            //     // Do nothing as the user has selected this
+            // }
         });
         t.start();
 

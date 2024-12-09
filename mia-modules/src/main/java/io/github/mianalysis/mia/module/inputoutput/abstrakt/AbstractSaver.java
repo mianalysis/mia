@@ -203,7 +203,7 @@ public abstract class AbstractSaver extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));

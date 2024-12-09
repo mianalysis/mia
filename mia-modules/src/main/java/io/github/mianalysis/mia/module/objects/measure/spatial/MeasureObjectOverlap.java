@@ -262,7 +262,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters
                 .add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));

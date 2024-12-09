@@ -514,7 +514,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(EXTRACTOR_SEPARATOR, this));
         parameters.add(new ChoiceP(EXTRACTOR_MODE, this, ExtractorModes.FILENAME_MODE, ExtractorModes.ALL));
         parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this, FilenameExtractors.GENERIC, FilenameExtractors.ALL));

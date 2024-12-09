@@ -36,10 +36,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 public class IdentifyObjectsTest extends ModuleTest {
     private static int nThreads = Prefs.getThreads();
 
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @BeforeAll
     public static void setThreadsBefore() {

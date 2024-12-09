@@ -307,7 +307,7 @@ public class GrowObjects extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL));

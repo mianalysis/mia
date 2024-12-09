@@ -86,7 +86,7 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(TRACKING_SEPARATOR, this));

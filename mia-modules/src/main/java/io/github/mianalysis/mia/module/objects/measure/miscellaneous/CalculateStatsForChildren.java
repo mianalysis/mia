@@ -252,7 +252,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));

@@ -336,7 +336,7 @@ public class CellposeDetection extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         // Getting defaults
         String keyPrefix = Cellpose.class.getName() + ".";
 

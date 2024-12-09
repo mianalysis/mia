@@ -99,8 +99,6 @@ public class MIAHeadless extends MIA implements Command {
             log.addRenderer(newRenderer);
             mainRenderer = newRenderer;
 
-            Module.setVerbose(verbose);
-
             // The macro recorder doesn't appear to pick up the parameters from this plugin,
             // so manually show the command
             Recorder.recordString("run(\"MIA (headless)\", \"workflowpath=[" + workflowPath + "] inputpath=["
@@ -116,6 +114,9 @@ public class MIAHeadless extends MIA implements Command {
                 modules = AnalysisReader.loadModules(workflowPath);
                 modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH, inputPath);
             }
+
+            for (Module module:modules)
+                module.setVerbose(verbose);
 
             // Inserting variables
             if (variables != null && variables.length() != 0)

@@ -22,10 +22,6 @@ public class DistanceMapTest extends ModuleTest {
     static final String outputImageName = "Test_output";
     static final String expectedImageName = "Expected";
 
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     void testImage(Workspace workspace, String expectedImagePath) throws UnsupportedEncodingException {
         assertEquals(2, workspace.getImages().size());

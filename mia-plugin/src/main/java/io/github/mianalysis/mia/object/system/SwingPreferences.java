@@ -53,7 +53,7 @@ public class SwingPreferences extends Preferences {
         GUI.updateAvailableModules();
     }
 
-    protected void initialiseParameters() {    
+    public void initialiseParameters() {    
         super.initialiseParameters();
 
         // GUI parameters

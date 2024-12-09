@@ -27,10 +27,6 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
  */
 
 public class ImageLoaderTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @BeforeEach
     public void setupTest() {

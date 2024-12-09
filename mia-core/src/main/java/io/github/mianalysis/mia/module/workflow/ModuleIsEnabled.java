@@ -115,7 +115,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));

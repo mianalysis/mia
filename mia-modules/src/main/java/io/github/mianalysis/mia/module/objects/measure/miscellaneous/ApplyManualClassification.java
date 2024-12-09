@@ -113,7 +113,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //    }
 //
 //    @Override
-//    protected void initialiseParameters() {
+//    public void initialiseParameters() {
 //        parameters.addRef(new InputObjectsP(TRACK_OBJECTS,this));
 //        parameters.addRef(new FilePathP(CLASSIFICATION_FILE, this));
 //

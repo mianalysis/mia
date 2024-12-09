@@ -115,7 +115,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to which the correction will be applied."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Set to \"true\" to apply correction to the input image or \"false\" to store the corrected image separately."));

@@ -82,7 +82,7 @@ public class AddCustomMetadataItem extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(METADATA_SEPARATOR, this));
         parameters.add(new StringP(METADATA_NAME, this));
         parameters.add(new StringP(METADATA_VALUE, this));

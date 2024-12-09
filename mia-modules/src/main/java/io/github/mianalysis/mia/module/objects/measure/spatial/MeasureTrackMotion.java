@@ -696,7 +696,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS, this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS, this));

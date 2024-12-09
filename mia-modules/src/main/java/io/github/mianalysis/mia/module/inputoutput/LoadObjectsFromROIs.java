@@ -345,7 +345,7 @@ public class LoadObjectsFromROIs extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new BooleanP(ASSIGN_TRACKS, this, false));

@@ -452,7 +452,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(MESSAGE_SEPARATOR, this));
         parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
                 "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",

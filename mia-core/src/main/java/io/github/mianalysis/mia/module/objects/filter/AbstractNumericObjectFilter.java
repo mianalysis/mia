@@ -229,7 +229,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));

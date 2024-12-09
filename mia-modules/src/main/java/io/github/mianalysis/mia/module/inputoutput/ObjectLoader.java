@@ -618,7 +618,7 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 

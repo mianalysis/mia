@@ -703,7 +703,7 @@ public class CreateSkeleton extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new ChoiceP(INPUT_MODE, this, InputModes.OBJECTS, InputModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));

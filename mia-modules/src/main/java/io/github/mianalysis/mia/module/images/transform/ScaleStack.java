@@ -229,7 +229,7 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to process."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output scaled image."));

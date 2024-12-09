@@ -169,7 +169,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new BooleanP(ALLOW_TRACK_SPLITTING, this, false));

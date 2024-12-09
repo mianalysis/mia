@@ -477,7 +477,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));

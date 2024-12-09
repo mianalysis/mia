@@ -145,7 +145,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));

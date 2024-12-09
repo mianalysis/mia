@@ -28,7 +28,7 @@ public class ParamTest extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
 
     }
 

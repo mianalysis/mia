@@ -128,7 +128,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));

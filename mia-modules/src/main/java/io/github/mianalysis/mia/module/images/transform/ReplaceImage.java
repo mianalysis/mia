@@ -74,7 +74,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE1,this,"","Pixel intensities for this image will be replaced."));
         parameters.add(new InputImageP(INPUT_IMAGE2,this,"","The image to copy pixel intensities from"));
 

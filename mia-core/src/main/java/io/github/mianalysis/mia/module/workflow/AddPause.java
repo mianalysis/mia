@@ -116,7 +116,7 @@ public class AddPause extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(PAUSE_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(INPUT_IMAGE, this));

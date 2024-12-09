@@ -24,10 +24,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
  */
 
 public class ChannelExtractorTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

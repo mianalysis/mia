@@ -150,7 +150,7 @@ public class InterpolateAlongZ extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(MESSAGE_SEPARATOR, this));
         parameters.add(new MessageP(QUALITY_MESSAGE, this,
                 "Interpolation works best for large objects which don't vary too much between slices.  Small objects, especially those which appear in only one slice, may end up disproportionately small.",

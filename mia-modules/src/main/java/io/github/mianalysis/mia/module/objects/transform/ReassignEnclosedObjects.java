@@ -137,7 +137,7 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         addParameterDescriptions();

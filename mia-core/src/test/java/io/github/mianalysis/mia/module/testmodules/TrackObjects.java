@@ -108,7 +108,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS, this));

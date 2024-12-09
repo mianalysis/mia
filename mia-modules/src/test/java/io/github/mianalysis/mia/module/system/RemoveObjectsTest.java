@@ -21,10 +21,6 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 
 
 public class RemoveObjectsTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

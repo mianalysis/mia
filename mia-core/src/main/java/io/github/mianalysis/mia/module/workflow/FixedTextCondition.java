@@ -150,7 +150,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         Parameters collection = new Parameters();

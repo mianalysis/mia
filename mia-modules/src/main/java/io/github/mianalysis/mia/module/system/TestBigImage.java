@@ -103,7 +103,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
     }

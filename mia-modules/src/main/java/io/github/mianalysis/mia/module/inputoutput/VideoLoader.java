@@ -495,7 +495,7 @@
 //     }
 
 //     @Override
-//     protected void initialiseParameters() {
+//     public void initialiseParameters() {
 //         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
 //         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 //         parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL));

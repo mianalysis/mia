@@ -69,7 +69,8 @@ public class AnalysisRunner {
 
         // Set verbose if showing the GUI
         if (!MIA.isHeadless())
-            Module.setVerbose(jobs.size() == 1);
+            for (Module module:modules)
+                module.setVerbose(jobs.size() == 1);
 
         // Setting up the pool
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't

@@ -288,7 +288,7 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this,"","Input image to be converted to another bit-depth."));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true,"If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image."));

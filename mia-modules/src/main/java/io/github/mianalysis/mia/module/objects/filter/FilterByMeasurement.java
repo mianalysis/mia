@@ -134,7 +134,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));

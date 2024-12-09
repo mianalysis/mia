@@ -183,7 +183,7 @@ public class Preferences extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         if (currentValues == null)
             currentValues = new HashMap<>();
 

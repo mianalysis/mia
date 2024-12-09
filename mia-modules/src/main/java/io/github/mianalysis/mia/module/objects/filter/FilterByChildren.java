@@ -127,7 +127,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));

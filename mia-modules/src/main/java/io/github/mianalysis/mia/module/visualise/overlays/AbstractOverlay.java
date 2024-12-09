@@ -118,7 +118,7 @@ public abstract class AbstractOverlay extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(COLOUR_SEPARATOR, this));
         parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
         parameters.add(new ChoiceP(COLOUR_MAP, this, ColourMaps.SPECTRUM, ColourMaps.ALL));

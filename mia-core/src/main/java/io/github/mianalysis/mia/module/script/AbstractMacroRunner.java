@@ -102,7 +102,7 @@ public abstract class AbstractMacroRunner extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         Parameters variableCollection = new Parameters();
         variableCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
         variableCollection.add(new StringP(VARIABLE_NAME, this));

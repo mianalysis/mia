@@ -25,10 +25,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 public class ThresholdImageTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

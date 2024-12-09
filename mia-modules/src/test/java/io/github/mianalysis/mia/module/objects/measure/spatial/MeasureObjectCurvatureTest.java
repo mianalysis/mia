@@ -34,10 +34,6 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
 public class MeasureObjectCurvatureTest extends ModuleTest {
     private double tolerance = 1E-1; // As these are fit values, the tolerance is larger than usual
 
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

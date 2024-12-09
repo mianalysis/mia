@@ -29,10 +29,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
 public class AddObjectsOverlayTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Test @Disabled
     public void getColours() {

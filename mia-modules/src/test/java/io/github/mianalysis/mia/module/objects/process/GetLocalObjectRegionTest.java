@@ -19,10 +19,6 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 
 public class GetLocalObjectRegionTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

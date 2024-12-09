@@ -356,7 +356,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image from which the substack will be taken."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Output substack image."));

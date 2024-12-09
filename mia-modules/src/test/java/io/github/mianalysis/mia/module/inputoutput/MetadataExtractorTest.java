@@ -9,10 +9,6 @@ import io.github.mianalysis.mia.module.ModuleTest;
 
 
 public class MetadataExtractorTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

@@ -488,7 +488,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE1, this, "", "First image to be processed as part of calculation."));
         parameters.add(new InputImageP(INPUT_IMAGE2, this, "", "Second image to be processed as part of calculation."));

@@ -235,7 +235,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));

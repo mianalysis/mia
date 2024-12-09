@@ -363,25 +363,25 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-
-        parameters.add(new SeparatorP(FITTING_SEPARATOR, this));
-        parameters.add(new ChoiceP(FITTING_MODE, this, FittingModes.FIT_TO_SURFACE, FittingModes.ALL));
-        parameters.add(new BooleanP(LIMIT_AXIS_LENGTH, this, false));
-        parameters.add(new DoubleP(MAXIMUM_AXIS_LENGTH, this, 1000d));
-
-        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.DO_NOT_STORE, OutputModes.ALL));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-
-        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        addParameterDescriptions();
-
-    }
+        public void initialiseParameters() {
+            parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+            parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+    
+            parameters.add(new SeparatorP(FITTING_SEPARATOR, this));
+            parameters.add(new ChoiceP(FITTING_MODE, this, FittingModes.FIT_TO_SURFACE, FittingModes.ALL));
+            parameters.add(new BooleanP(LIMIT_AXIS_LENGTH, this, false));
+            parameters.add(new DoubleP(MAXIMUM_AXIS_LENGTH, this, 1000d));
+    
+            parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
+            parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.DO_NOT_STORE, OutputModes.ALL));
+            parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+    
+            parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+            parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+    
+            addParameterDescriptions();
+    
+        }
 
     @Override
     public Parameters updateAndGetParameters() {

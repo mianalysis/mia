@@ -73,7 +73,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
         parameters.add(new ModuleP(REDIRECT_MODULE, this, true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));

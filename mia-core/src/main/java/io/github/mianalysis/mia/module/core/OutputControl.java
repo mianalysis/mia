@@ -558,7 +558,7 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(POSTPROCESSING_SEPARATOR, this));

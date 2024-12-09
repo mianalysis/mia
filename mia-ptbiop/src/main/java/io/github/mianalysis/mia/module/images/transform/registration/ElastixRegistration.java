@@ -123,7 +123,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(ELASTIX_SEPARATOR, this));

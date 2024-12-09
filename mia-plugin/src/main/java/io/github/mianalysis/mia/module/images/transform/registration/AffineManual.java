@@ -223,7 +223,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));

@@ -164,7 +164,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));

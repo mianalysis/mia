@@ -241,7 +241,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         Parameters collection = new Parameters();
         collection.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE, this, collection, 2));

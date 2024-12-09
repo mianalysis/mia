@@ -10,10 +10,6 @@ import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.Logic;
 
 public abstract class ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Test
     public abstract void testGetHelp();

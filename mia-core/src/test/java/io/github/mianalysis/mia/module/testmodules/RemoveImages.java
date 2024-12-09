@@ -55,7 +55,7 @@ public class RemoveImages extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(REMOVAL_SEPARATOR, this));
 
         Parameters collection = new Parameters();

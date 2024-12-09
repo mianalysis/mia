@@ -98,7 +98,7 @@
 //     }
 
 //     @Override
-//     protected void initialiseParameters() {
+//     public void initialiseParameters() {
 //         String[] moduleGroupNames = getAvailableModuleGroupNames(moduleGroupPath);
 //         parameters.add(new SeparatorP(MODULE_GROUP_SEPARATOR, this));
 //         parameters.add(new ChoiceP(MODULE_GROUP, this, moduleGroupNames[0], moduleGroupNames));

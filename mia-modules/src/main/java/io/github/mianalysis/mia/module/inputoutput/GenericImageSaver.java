@@ -200,7 +200,7 @@ public class GenericImageSaver extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 

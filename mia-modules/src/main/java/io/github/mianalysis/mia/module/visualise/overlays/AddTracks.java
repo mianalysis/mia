@@ -331,7 +331,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         // Updating colour modes to the custom version, which includes the option to

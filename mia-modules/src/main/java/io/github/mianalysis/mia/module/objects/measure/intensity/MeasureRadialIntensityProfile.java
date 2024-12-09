@@ -219,7 +219,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //     }
 
 //     @Override
-//     protected void initialiseParameters() {
+//     public void initialiseParameters() {
 //         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 //         parameters.add(new InputImageP(INPUT_IMAGE, this));
 //         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.DISTANCE_FROM_CENTROID, ReferenceModes.ALL));

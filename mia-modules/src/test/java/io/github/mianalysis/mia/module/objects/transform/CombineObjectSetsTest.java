@@ -23,10 +23,6 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 
 public class CombineObjectSetsTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

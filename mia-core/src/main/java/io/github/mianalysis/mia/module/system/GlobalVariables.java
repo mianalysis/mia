@@ -211,7 +211,7 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         Parameters parameterCollection = new Parameters();
         parameterCollection.add(new SeparatorP(VARIABLE_SEPARATOR, this));
         parameterCollection.add(new StringP(VARIABLE_NAME, this));

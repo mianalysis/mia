@@ -259,7 +259,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new ChoiceP(POINT_SELECTION_MODE, this, PointSelectionModes.RUNTIME, PointSelectionModes.ALL));

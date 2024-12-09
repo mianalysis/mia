@@ -405,7 +405,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         Parameters collection = new Parameters();
         collection.add(new CustomInputImageP(INPUT_IMAGE, this, "", "Image for concatenation."));

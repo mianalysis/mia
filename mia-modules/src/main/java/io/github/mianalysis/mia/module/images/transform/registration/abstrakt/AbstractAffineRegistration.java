@@ -292,7 +292,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));

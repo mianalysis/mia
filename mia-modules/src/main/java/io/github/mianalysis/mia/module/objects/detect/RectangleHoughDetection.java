@@ -217,7 +217,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(RANGE_SEPARATOR, this));

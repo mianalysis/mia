@@ -67,7 +67,7 @@ public class ShowMetadata extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new MessageP(MESSAGE, this, "There are no parameters for this module", ParameterState.NORMAL));
 
     }

@@ -146,7 +146,7 @@ public class WhiteBalanceCorrection extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply white balance correction to."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Select if the white balance correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));

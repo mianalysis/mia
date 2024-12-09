@@ -31,10 +31,6 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
  */
 
 public class MeasureObjectIntensityTest extends ModuleTest {
-    @BeforeAll
-    public static void setVerbose() {
-        Module.setVerbose(false);
-    }
 
     @Override
     public void testGetHelp() {

@@ -131,7 +131,7 @@ public class FilterByMetadata extends AbstractTextObjectFilter {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new ObjectMetadataP(METADATA_VALUE, this));

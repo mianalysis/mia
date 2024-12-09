@@ -121,7 +121,7 @@ public class ClearOverlay extends AbstractOverlay {
     }
     
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
         
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
