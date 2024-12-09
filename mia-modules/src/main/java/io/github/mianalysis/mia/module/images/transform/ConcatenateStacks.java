@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
@@ -103,7 +104,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(Workspace workspace,
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(WorkspaceI workspace,
             LinkedHashMap<Integer, Parameters> collections) {
         ArrayList<Image> available = new ArrayList<>();
 
@@ -368,7 +369,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
@@ -424,7 +425,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
 
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);

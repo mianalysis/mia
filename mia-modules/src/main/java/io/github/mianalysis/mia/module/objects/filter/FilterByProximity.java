@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.objects.measure.spatial.CalculateNearestN
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -173,7 +174,7 @@ public class FilterByProximity extends AbstractObjectFilter {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -271,7 +272,7 @@ public class FilterByProximity extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Parameters returnedParameters = new Parameters();

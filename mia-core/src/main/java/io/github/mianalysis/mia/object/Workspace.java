@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class Workspace {
+public class Workspace implements WorkspaceI {
     private Workspaces workspaces;
     private LinkedHashMap<String, Objs> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
@@ -177,8 +177,8 @@ public class Workspace {
     /*
      * Creates a structure containing new Workspaces, each of which represent a different time point
      */
-    public HashMap<Integer,Workspace> getSingleTimepointWorkspaces() {
-        HashMap<Integer, Workspace> workspaceList = new HashMap<>();
+    public HashMap<Integer,WorkspaceI> getSingleTimepointWorkspaces() {
+        HashMap<Integer, WorkspaceI> workspaceList = new HashMap<>();
         Workspaces workspacesT = new Workspaces();
 
         for (Objs collection:objects.values()) {
@@ -187,7 +187,7 @@ public class Workspace {
 
                 // If there isn't already a Workspace for this time point, addRef one
                 if (!workspaceList.containsKey(t)) {
-                    Workspace workspace = workspacesT.getNewWorkspace(null, -1);
+                    WorkspaceI workspace = workspacesT.getNewWorkspace(null, -1);
                     workspace.setMetadata(metadata);
                     workspace.setImages(images);
                     workspaceList.put(t,workspace);

@@ -32,7 +32,7 @@ public class WorkspaceTest {
 
         // Creating a new workspace and checking it is empty
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
         assertEquals(0, workspace.getObjects().size());
         
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
@@ -53,7 +53,7 @@ public class WorkspaceTest {
     @Test
     public void testClearAllImagesDoRetainMeasurements() {
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
@@ -89,7 +89,7 @@ public class WorkspaceTest {
     @Test
     public void testClearAllImagesDontRetainMeasurements() {
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
         
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
@@ -129,7 +129,7 @@ public class WorkspaceTest {
 
         // Creating a new workspace and populating it with a set of objects
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
         
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
@@ -194,7 +194,7 @@ public class WorkspaceTest {
 
         // Creating a new workspace and populating it with a set of objects
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
@@ -255,7 +255,7 @@ public class WorkspaceTest {
 
         // Creating a new workspace and populating it with a set of objects
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
         
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
@@ -273,7 +273,7 @@ public class WorkspaceTest {
         workspace.addObjects(otherObjects);
 
         // Getting single timepoint workspaces
-        HashMap<Integer, Workspace> singleTimepoints = workspace.getSingleTimepointWorkspaces();
+        HashMap<Integer, WorkspaceI> singleTimepoints = workspace.getSingleTimepointWorkspaces();
 
         assertEquals(3,singleTimepoints.size());
         assertEquals(2, singleTimepoints.get(0).getObjects().size());

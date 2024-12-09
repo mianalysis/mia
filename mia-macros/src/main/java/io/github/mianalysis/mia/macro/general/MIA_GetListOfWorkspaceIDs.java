@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
@@ -21,12 +21,12 @@ public class MIA_GetListOfWorkspaceIDs extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         // Getting Workspaces
         Workspaces workspaces = workspace.getWorkspaces();
 
         StringBuilder sb = new StringBuilder();
-        for (Workspace currWorkspace : workspaces) {
+        for (WorkspaceI currWorkspace : workspaces) {
             if (sb.length() == 0) {
                 sb.append(currWorkspace.getID());
             } else {

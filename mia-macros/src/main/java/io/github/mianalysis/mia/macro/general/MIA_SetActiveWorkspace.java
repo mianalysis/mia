@@ -7,7 +7,7 @@ import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_SetActiveWorkspace extends MacroOperation {
@@ -21,11 +21,11 @@ public class MIA_SetActiveWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         int workspaceID = (int) Math.round((Double) objects[0]);
 
         // Getting this workspace
-        Workspace newActiveWorkspace = workspace.getWorkspaces().getWorkspace(workspaceID);
+        WorkspaceI newActiveWorkspace = workspace.getWorkspaces().getWorkspace(workspaceID);
 
         // If this Workspace is present, change the active Workspace
         if (newActiveWorkspace != null) MacroHandler.setWorkspace(newActiveWorkspace);

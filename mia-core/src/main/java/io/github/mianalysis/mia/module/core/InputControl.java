@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.script.RunMacro;
 import io.github.mianalysis.mia.module.script.RunMacroOnObjects;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -447,7 +448,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         return Status.PASS;
     }
 
@@ -492,7 +493,7 @@ public class InputControl extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(MESSAGE_SEPARATOR));

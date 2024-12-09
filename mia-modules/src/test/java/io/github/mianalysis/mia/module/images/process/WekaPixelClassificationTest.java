@@ -15,6 +15,7 @@
 // import io.github.mianalysis.mia.module.ModuleTest;
 // import io.github.mianalysis.mia.module.Modules;
 // import io.github.mianalysis.mia.object.Workspace;
+// import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.Workspaces;
 // import io.github.mianalysis.mia.object.image.Image;
 // import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -35,7 +36,7 @@
 //     public void testRun2D8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -74,7 +75,7 @@
 //     public void testRun2D16Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -113,7 +114,7 @@
 //     public void testRun2D32Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -152,7 +153,7 @@
 //     public void testRun3D8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -191,7 +192,7 @@
 //     public void testRun4D8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -230,7 +231,7 @@
 //     public void testRun5D8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -269,7 +270,7 @@
 //     public void testRun3DChannels8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -308,7 +309,7 @@
 //     public void testRun3DChannels8Bit1Block() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -347,7 +348,7 @@
 //     public void testRun4DChannelsSlice8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -387,7 +388,7 @@
 //     public void testRun4DChannelsSlice8Bit1Block() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -427,7 +428,7 @@
 //     public void testRun4DChannelsSlice8Bit3Block() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -467,7 +468,7 @@
 //     public void testRun4DChannelsTime8Bit() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =
@@ -506,7 +507,7 @@
 //     public void testRunMissingClassifier() throws Exception {
 //     // Creating a new workspace
 //     Workspaces workspaces = new Workspaces();
-//     Workspace workspace = workspaces.getNewWorkspace(null,1);
+//     WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //     // Loading the test image and adding to workspace
 //     String pathToImage =

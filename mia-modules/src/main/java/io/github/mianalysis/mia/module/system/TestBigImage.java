@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
@@ -55,7 +56,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 

@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -207,7 +208,7 @@ public abstract class AbstractHoughDetection extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         ObjMeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);

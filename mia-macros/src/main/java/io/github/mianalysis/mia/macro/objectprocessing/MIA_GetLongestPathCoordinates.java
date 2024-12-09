@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
@@ -26,7 +27,7 @@ public class MIA_GetLongestPathCoordinates extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 

@@ -14,6 +14,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -32,7 +33,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     public void testRun2DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -62,7 +63,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     public void testRun2DImage16bit() throws UnsupportedEncodingException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_16bit.zip").getPath(),"UTF-8");
@@ -92,7 +93,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     public void testRun3DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -122,7 +123,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     public void testRun4DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
@@ -152,7 +153,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     public void testRun5DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");

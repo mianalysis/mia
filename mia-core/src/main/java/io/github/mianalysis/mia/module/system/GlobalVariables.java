@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -170,7 +171,7 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE, workspace);
 
         for (Parameters collection : collections.values()) {
@@ -233,7 +234,7 @@ public class GlobalVariables extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
         if (group == null)
             return parameters;
@@ -293,7 +294,7 @@ public class GlobalVariables extends Module {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE, workspace);

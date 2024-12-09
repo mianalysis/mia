@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -93,7 +94,7 @@ public class ImageLoaderTest extends ModuleTest {
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Initialising ImageFileLoader
         ImageLoader imageLoader = new ImageLoader(new Modules());
@@ -141,7 +142,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -193,7 +194,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -239,7 +240,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -291,7 +292,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -341,7 +342,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -369,7 +370,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -397,7 +398,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -447,7 +448,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -475,7 +476,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -503,7 +504,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -553,7 +554,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -581,7 +582,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -609,7 +610,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -659,7 +660,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -705,7 +706,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -743,7 +744,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -790,7 +791,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -844,7 +845,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -895,7 +896,7 @@ public class ImageLoaderTest extends ModuleTest {
 
     //     // Initialising a blank workspace
     //     Workspaces workspaces = new Workspaces();
-    //     Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+    //     WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
     //     // Initialising the ImageFileLoader
     //     ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -941,7 +942,7 @@ public class ImageLoaderTest extends ModuleTest {
 
     //     // Initialising a blank workspace
     //     Workspaces workspaces = new Workspaces();
-    //     Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+    //     WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
     //     // Initialising the ImageFileLoader
     //     ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -987,7 +988,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -1033,7 +1034,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -1079,7 +1080,7 @@ public class ImageLoaderTest extends ModuleTest {
         
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -1114,7 +1115,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());
@@ -1150,7 +1151,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new Modules());

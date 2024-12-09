@@ -6,6 +6,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -105,7 +106,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
     }
 
     @Override
-    public void getParameters(Param param, Workspace workspace) {
+    public void getParameters(Param param, WorkspaceI workspace) {
         // Setting up the parameters
         BUnwarpJParam bUnwarpParam = (BUnwarpJParam) param;
 
@@ -166,7 +167,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

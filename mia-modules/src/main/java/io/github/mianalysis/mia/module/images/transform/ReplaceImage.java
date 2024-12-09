@@ -9,6 +9,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -58,7 +59,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
@@ -82,7 +83,7 @@ public class ReplaceImage extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parameters;
     }
 

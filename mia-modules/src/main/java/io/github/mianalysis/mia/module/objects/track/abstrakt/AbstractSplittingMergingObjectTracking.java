@@ -6,6 +6,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -96,7 +97,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
@@ -180,7 +181,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -200,7 +201,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         // Completely overrides superclass definition as we don't want those
         // relationships
 
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);

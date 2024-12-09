@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.system.Colours;
@@ -157,10 +158,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     public synchronized void updatePanel() {
         // Iterate over all current rows, removing any that don't exist
-        HashSet<Workspace> currentWorkspaces = new HashSet<>();
+        HashSet<WorkspaceI> currentWorkspaces = new HashSet<>();
         if (model.getRowCount() > 0) {
             for (int row = model.getRowCount() - 1; row >= 0; row--) {
-                Workspace workspace = (Workspace) model.getValueAt(row, COL_PROGRESS);
+                WorkspaceI workspace = (Workspace) model.getValueAt(row, COL_PROGRESS);
                 if (!workspaces.contains(workspace)) {
                     model.removeRow(row);
                 } else {
@@ -171,7 +172,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         }
 
         // Iterating over all current Workspaces, adding any that are missing
-        for (Workspace workspace : workspaces) {
+        for (WorkspaceI workspace : workspaces) {
             if (!currentWorkspaces.contains(workspace)) {
                 JobNumber jobNumber = new JobNumber(++maxJob);
                 Metadata metadata = workspace.getMetadata();
@@ -250,7 +251,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 return label;
 
             case "Progress":
-                Workspace workspace = (Workspace) value;
+                WorkspaceI workspace = (Workspace) value;
                 int progress = (int) Math.round(((double) workspace.getProgress()) * 100);
                 JProgressBar progressBar = new JProgressBar(0, 100);
                 progressBar.setBorderPainted(false);

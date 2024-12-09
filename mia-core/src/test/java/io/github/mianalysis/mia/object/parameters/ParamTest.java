@@ -4,6 +4,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -23,7 +24,7 @@ public class ParamTest extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         return Status.FAIL;
     }
 
@@ -34,19 +35,19 @@ public class ParamTest extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return imageMeasurementRefs;
     }
 
     @Override
 public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return objectMeasurementRefs;
     }
 
@@ -57,19 +58,19 @@ Workspace workspace = null;
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return metadataRefs;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parentChildRefs;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return partnerRefs;
     }
 

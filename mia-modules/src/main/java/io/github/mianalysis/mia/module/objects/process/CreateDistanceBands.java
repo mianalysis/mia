@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
@@ -380,7 +381,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -563,7 +564,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String outputObjects = parameters.getValue(OUTPUT_OBJECTS, workspace);
 

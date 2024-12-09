@@ -8,6 +8,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.refs.abstrakt.SpreadsheetWriter;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 
@@ -73,7 +74,7 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
     }
 
     @Override
-    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer, Workspace> workspaces) {
+    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer, WorkspaceI> workspaces) {
         if (!isExportGlobal()) return;
 
 
@@ -90,7 +91,7 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
         for (int rowN:workspaces.keySet()) {
             Row row = sheet.getRow(rowN);
             cell = row.createCell(col);
-            Workspace workspace = workspaces.get(rowN);
+            WorkspaceI workspace = workspaces.get(rowN);
             cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
         }
     }

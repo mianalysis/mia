@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -35,7 +36,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultWhiteBG2D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -76,7 +77,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -117,7 +118,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultWhiteBG4D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
@@ -158,7 +159,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultWhiteBG5D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
@@ -199,7 +200,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D16bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.zip").getPath(),"UTF-8");
@@ -242,7 +243,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D32bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
@@ -283,7 +284,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLimsNoMultBlackBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -324,7 +325,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLims2xMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -365,7 +366,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangNoLims0p5xMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -406,7 +407,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangMinLimPassNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -448,7 +449,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalHuangMinLimFailNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -515,7 +516,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunLocalSlicePhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -557,7 +558,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunLocalSlicePhansalkarNoLimsNoMultBlackBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -599,7 +600,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunManual8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -641,7 +642,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalIntermodesNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -683,7 +684,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalIsodataNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -724,7 +725,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalMaxEntropyNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -765,7 +766,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalOtsuNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -806,7 +807,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunGlobalTriangleNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -850,7 +851,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunStoreThresholdGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -888,7 +889,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunStoreThresholdGlobalHuangApplyNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -922,7 +923,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunStoreThresholdGlobalHuangApplyMinLimNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -956,7 +957,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunStoreThresholdLocal() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -987,7 +988,7 @@ public class ThresholdImageTest extends ModuleTest {
     public void testRunStoreThresholdManual() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");

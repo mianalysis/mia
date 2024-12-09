@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AbstractOverlay;
 import io.github.mianalysis.mia.module.visualise.overlays.AddAllObjectPoints;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -221,7 +222,7 @@ public class ConvertObjectsToImage extends Module {
   }
 
   @Override
-  public Status process(Workspace workspace) {
+  public Status process(WorkspaceI workspace) {
     String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
     String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
     String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
@@ -357,7 +358,7 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public Parameters updateAndGetParameters() {
-    Workspace workspace = null;
+    WorkspaceI workspace = null;
     String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
     String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR, workspace);
 
@@ -448,7 +449,7 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public PartnerRefs updateAndGetPartnerRefs() {
-    Workspace workspace = null;
+    WorkspaceI workspace = null;
     return null;
   }
 

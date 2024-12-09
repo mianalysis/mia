@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -103,7 +104,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     //     // Doing the main part of the test
     //     // Creating a new workspace
     //     Workspaces workspaces = new Workspaces();
-    //     Workspace workspace = workspaces.getNewWorkspace(null, 1);
+    //     WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
     //     // Loading the test image and adding to workspace
     //     // String inputPath = URLDecoder.decode(ProjectImage.class.getResource(inputName).getPath(), "UTF-8");
@@ -414,7 +415,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Loading image into workspace
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);

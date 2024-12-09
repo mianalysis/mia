@@ -18,6 +18,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -131,7 +132,7 @@ public class AffineMOPS extends AbstractAffineRegistration {
     }
 
     @Override
-    public void getParameters(Param param, Workspace workspace) {
+    public void getParameters(Param param, WorkspaceI workspace) {
         super.getParameters(param, workspace);
 
         // Setting up the parameters
@@ -210,7 +211,7 @@ public class AffineMOPS extends AbstractAffineRegistration {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

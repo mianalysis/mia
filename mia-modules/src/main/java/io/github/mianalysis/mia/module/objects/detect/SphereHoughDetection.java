@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
@@ -84,7 +85,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
@@ -267,7 +268,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(updateAndGetInputParameters());

@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -52,7 +53,7 @@ public class GUI {
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
-    private static Workspace testWorkspace = new Workspaces().getNewWorkspace(null, 1);
+    private static WorkspaceI testWorkspace = new Workspaces().getNewWorkspace(null, 1);
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 520;
@@ -341,7 +342,7 @@ public class GUI {
         GUI.lastModuleEval = Math.max(lastModuleEval, -1);
     }
 
-    public static Workspace getTestWorkspace() {
+    public static WorkspaceI getTestWorkspace() {
         return testWorkspace;
     }
 

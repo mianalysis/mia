@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.RemovableInputImageP;
@@ -50,7 +51,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     private OutputControl outputControl = new OutputControl(this);
     private String analysisFilename = "";
 
-    public boolean execute(Workspace workspace) {
+    public boolean execute(WorkspaceI workspace) {
         return execute(workspace, true);
     }
 
@@ -58,7 +59,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
      * The method that gets called by the AnalysisRunner. This shouldn't have any
      * user interaction elements
      */
-    public boolean execute(Workspace workspace, boolean clearMemoryAtEnd) {
+    public boolean execute(WorkspaceI workspace, boolean clearMemoryAtEnd) {
         double t1 = System.currentTimeMillis();
 
         MIA.log.writeDebug("Processing file \"" + workspace.getMetadata().getFile().getAbsolutePath() + "\"");

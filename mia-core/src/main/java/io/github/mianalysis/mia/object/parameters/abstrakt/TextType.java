@@ -8,7 +8,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -81,7 +81,7 @@ public abstract class TextType extends Parameter {
 
     }
 
-    public static String insertWorkspaceValues(String string, Workspace workspace) {
+    public static String insertWorkspaceValues(String string, WorkspaceI workspace) {
         if (workspace == null)
             return string;
 
@@ -101,7 +101,7 @@ public abstract class TextType extends Parameter {
 
     }
 
-    public static String insertMetadataValues(String string, Workspace workspace) {
+    public static String insertMetadataValues(String string, WorkspaceI workspace) {
         if (workspace == null)
             return string;
 
@@ -122,7 +122,7 @@ public abstract class TextType extends Parameter {
 
     }
 
-    public static String insertImageMeasurementValues(String string, Workspace workspace) {
+    public static String insertImageMeasurementValues(String string, WorkspaceI workspace) {
         if (workspace == null)
             return string;
 
@@ -149,7 +149,7 @@ public abstract class TextType extends Parameter {
 
     }
 
-    public static String insertObjectMeasurementValues(String string, Workspace workspace) {
+    public static String insertObjectMeasurementValues(String string, WorkspaceI workspace) {
         if (workspace == null)
             return string;
 
@@ -202,7 +202,7 @@ public abstract class TextType extends Parameter {
 
     }
 
-    public static String insertObjectCountValues(String string, Workspace workspace) {
+    public static String insertObjectCountValues(String string, WorkspaceI workspace) {
         if (workspace == null)
             return string;
 

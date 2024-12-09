@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 
 /**
@@ -58,7 +59,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration {
     }
 
     @Override
-    public void getParameters(Param param, Workspace workspace) {
+    public void getParameters(Param param, WorkspaceI workspace) {
         super.getParameters(param, workspace);
     }
 

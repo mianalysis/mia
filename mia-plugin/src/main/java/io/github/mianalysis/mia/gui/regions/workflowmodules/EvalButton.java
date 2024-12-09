@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -283,7 +284,7 @@ public class EvalButton extends JButton implements ActionListener {
 
     public boolean evaluateModule(Module module) {
         Modules modules = GUI.getModules();
-        Workspace testWorkspace = GUI.getTestWorkspace();
+        WorkspaceI testWorkspace = GUI.getTestWorkspace();
 
         // Setting the index to the previous module. This will make the
         // currently-evaluated module go red

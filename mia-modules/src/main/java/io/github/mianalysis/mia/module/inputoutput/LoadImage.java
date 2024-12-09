@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
@@ -251,7 +252,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String importMode = parameters.getValue(IMPORT_MODE, workspace);
@@ -357,7 +358,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));

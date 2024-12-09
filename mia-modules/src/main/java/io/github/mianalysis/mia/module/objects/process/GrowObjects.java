@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
@@ -158,7 +159,7 @@ public class GrowObjects extends Module {
 
     public static Objs process(Objs inputObjects, @Nullable String outputObjectsName, String startingObjectsMode,
             String growthMode, @Nullable String intensityImageName, @Nullable String maskImageName,
-            boolean blackBackground, int connectivity, boolean excludeInputRegions, Workspace workspace) {
+            boolean blackBackground, int connectivity, boolean excludeInputRegions, WorkspaceI workspace) {
         Objs outputObjects = outputObjectsName == null ? null : new Objs(outputObjectsName, inputObjects);
 
         // Loop over timepoints
@@ -233,9 +234,7 @@ public class GrowObjects extends Module {
         }
     }
 
-    public static Image getIntensityImage(Objs objects, int frame, String growthMode,
-            @Nullable String intensityImageName,
-            Workspace workspace) {
+    public static Image getIntensityImage(Objs objects, int frame, String growthMode, @Nullable String intensityImageName, WorkspaceI workspace) {
         switch (growthMode) {
             case GrowthModes.EQUIDISTANT_FROM_OBJECTS:
             default:
@@ -251,7 +250,7 @@ public class GrowObjects extends Module {
     }
 
     public static Image getMaskImage(Objs objects, int frame, @Nullable String maskImageName, boolean blackBackground,
-            Workspace workspace) {
+            WorkspaceI workspace) {
         if (maskImageName != null) {
             Image fullMaskImage = workspace.getImage(maskImageName);
             Image maskImage = ExtractSubstack.extractSubstack(fullMaskImage, maskImageName, "1", "1-end",
@@ -268,7 +267,7 @@ public class GrowObjects extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -385,7 +384,7 @@ public class GrowObjects extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)) {

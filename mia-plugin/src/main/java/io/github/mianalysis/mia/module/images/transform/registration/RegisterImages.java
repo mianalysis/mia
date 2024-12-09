@@ -29,6 +29,7 @@ import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -668,7 +669,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         IJ.setBackgroundColor(255, 255, 255);
 
         // Getting parameters
@@ -793,7 +794,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -860,7 +861,7 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         if (parameters.getValue(ALIGNMENT_MODE,workspace).equals(AlignmentModes.MANUAL)) {

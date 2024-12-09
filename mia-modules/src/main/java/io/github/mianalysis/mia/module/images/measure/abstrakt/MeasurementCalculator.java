@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -255,7 +256,7 @@ public abstract class MeasurementCalculator extends Module {
         return "1.0.0";
     }
 
-    public Status process(Workspace workspace, ImageObjectMode imageObjectMode,
+    public Status process(WorkspaceI workspace, ImageObjectMode imageObjectMode,
             Collection<? extends MeasurementProvider> inputImageObjects) {
 
         String valueMode1 = parameters.getValue(VALUE_MODE_1, workspace);
@@ -377,7 +378,7 @@ public abstract class MeasurementCalculator extends Module {
     }
 
     public Parameters updateAndGetParameters(ImageObjectMode imageObjectMode, String inputImageObjectName) {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));

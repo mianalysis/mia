@@ -107,6 +107,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -396,7 +397,7 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
         Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
@@ -489,7 +490,7 @@ public class RelateOneToOne extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -526,7 +527,7 @@ public class RelateOneToOne extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1, workspace);
         String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME, workspace);
@@ -591,7 +592,7 @@ public class RelateOneToOne extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace)) {
@@ -611,7 +612,7 @@ public class RelateOneToOne extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);

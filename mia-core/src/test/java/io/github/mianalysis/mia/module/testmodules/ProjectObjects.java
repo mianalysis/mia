@@ -5,6 +5,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -37,7 +38,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         return Status.PASS;
 
     }
@@ -77,7 +78,7 @@ public class ProjectObjects extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS, workspace),

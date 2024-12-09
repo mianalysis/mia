@@ -46,7 +46,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //    }
 //
 //    @Override
-//    public Status process(Workspace workspace) {
+//    public Status process(WorkspaceI workspace) {
 //        // Getting input objects
 //        String inputObjectsName = parameters.getValue(TRACK_OBJECTS,workspace);
 //        Objs inputObjects = workspace.getObjects(inputObjectsName);

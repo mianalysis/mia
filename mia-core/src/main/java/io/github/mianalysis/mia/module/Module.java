@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -81,7 +82,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin, M
 
     // PUBLIC METHODS
 
-    public Status execute(Workspace workspace) {
+    public Status execute(WorkspaceI workspace) {
         double t1 = System.currentTimeMillis();
 
         writeStatus("Processing");
@@ -184,7 +185,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin, M
 
     }
 
-    public <T> T getParameterValue(String name, Workspace workspace) {
+    public <T> T getParameterValue(String name, WorkspaceI workspace) {
         return parameters.getParameter(name).getValue(workspace);
     }
 
@@ -348,7 +349,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin, M
         return il2Support;
     }
 
-    public String getRedirectModuleID(Workspace workspace) {
+    public String getRedirectModuleID(WorkspaceI workspace) {
         return this.redirectModuleID;
     }
 

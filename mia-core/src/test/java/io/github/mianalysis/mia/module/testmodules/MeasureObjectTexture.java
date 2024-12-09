@@ -5,6 +5,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -69,7 +70,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         return Status.PASS;
 
     }
@@ -101,7 +102,7 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);

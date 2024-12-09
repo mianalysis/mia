@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -263,7 +264,7 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -387,7 +388,7 @@ public class SingleClassCluster extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -437,7 +438,7 @@ public class SingleClassCluster extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS, workspace);
@@ -780,7 +781,7 @@ public class SingleClassCluster extends Module {
 // }
 //
 // @Override
-// public Status process(Workspace workspace) {
+// public Status process(WorkspaceI workspace) {
 // // Getting objects to measure
 // String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 // Objs inputObjects = workspace.getObjects(inputObjectsName);

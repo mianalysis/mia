@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -120,7 +121,7 @@ public class ApplyDeepImageJModel extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
@@ -246,7 +247,7 @@ public class ApplyDeepImageJModel extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String modelName = parameters.getValue(MODEL, workspace);
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
 
@@ -287,7 +288,7 @@ public class ApplyDeepImageJModel extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
 
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 

@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectParentID extends MacroOperation {
@@ -22,7 +23,7 @@ public class MIA_GetObjectParentID extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         String inputObjectsName = (String) objects[0];
         int objectID = (int) Math.round((Double) objects[1]);
         String parentObjectsName = (String) objects[2];

@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -667,7 +668,7 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
         Objs parentObjects = workspace.getObjects(parentObjectName);
@@ -792,7 +793,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -849,7 +850,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
@@ -981,7 +982,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships

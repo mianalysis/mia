@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 
@@ -23,7 +24,7 @@ public class DistanceMapTest extends ModuleTest {
     static final String expectedImageName = "Expected";
 
 
-    void testImage(Workspace workspace, String expectedImagePath) throws UnsupportedEncodingException {
+    void testImage(WorkspaceI workspace, String expectedImagePath) throws UnsupportedEncodingException {
         assertEquals(2, workspace.getImages().size());
         assertNotNull(workspace.getImage(inputImageName));
         assertNotNull(workspace.getImage(outputImageName));
@@ -52,7 +53,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip", inputImageName);
@@ -79,7 +80,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundChessboardMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip",
@@ -107,7 +108,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundCityblockMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip", inputImageName);
@@ -134,7 +135,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundBorgeforsMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip", inputImageName);
@@ -161,7 +162,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip", inputImageName);
@@ -188,7 +189,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithBlackObjects2DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip", inputImageName);
@@ -215,7 +216,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundSvensonMatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip", inputImageName);
@@ -242,7 +243,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundSvensonUnmatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip", inputImageName);
@@ -269,7 +270,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundSvensonUnmatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip",
@@ -304,7 +305,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip", inputImageName);
@@ -331,7 +332,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundChessboardMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip",
@@ -359,7 +360,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundCityblockMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip", inputImageName);
@@ -386,7 +387,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundBorgeforsMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip", inputImageName);
@@ -413,7 +414,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip", inputImageName);
@@ -440,7 +441,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithBlackObjects3DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip", inputImageName);
@@ -467,7 +468,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundSvensonMatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip", inputImageName);
@@ -494,7 +495,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundSvensonUnmatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip", inputImageName);
@@ -521,7 +522,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects3DBlackBackgroundSvensonUnmatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip",
@@ -556,7 +557,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
@@ -583,7 +584,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundChessboardMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip",
@@ -611,7 +612,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundCityblockMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
@@ -638,7 +639,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundBorgeforsMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
@@ -665,7 +666,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip", inputImageName);
@@ -692,7 +693,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithBlackObjects4DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip", inputImageName);
@@ -719,7 +720,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundSvensonMatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
@@ -746,7 +747,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundSvensonUnmatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
@@ -773,7 +774,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects4DBlackBackgroundSvensonUnmatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip",
@@ -808,7 +809,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip", inputImageName);
@@ -835,7 +836,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundChessboardMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip",
@@ -863,7 +864,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundCityblockMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip", inputImageName);
@@ -890,7 +891,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundBorgeforsMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip", inputImageName);
@@ -917,7 +918,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_whiteBG_diffC.zip", inputImageName);
@@ -944,7 +945,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithBlackObjects5DWhiteBackgroundSvensonMatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_whiteBG_diffC.zip", inputImageName);
@@ -971,7 +972,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundSvensonMatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip", inputImageName);
@@ -998,7 +999,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundSvensonUnmatchCalibrated() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip", inputImageName);
@@ -1025,7 +1026,7 @@ public class DistanceMapTest extends ModuleTest {
     public void testRunWithWhiteObjects5DBlackBackgroundSvensonUnmatchPixels() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG_diffC.zip",

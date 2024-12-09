@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -516,7 +517,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -662,7 +663,7 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
@@ -752,7 +753,7 @@ return null;
 
     @Override
 public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // If the filtered objects are to be moved to a new class, assign them the

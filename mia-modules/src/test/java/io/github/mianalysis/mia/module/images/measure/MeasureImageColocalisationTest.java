@@ -81,7 +81,7 @@ package io.github.mianalysis.mia.module.images.measure;
 //     public void testMeasurePCCWholeImage() throws Exception {
 //         // Creating a new workspace
 //         Workspaces workspaces = new Workspaces();
-//         Workspace workspace = workspaces.getNewWorkspace(null,1);
+//         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
@@ -110,7 +110,7 @@ package io.github.mianalysis.mia.module.images.measure;
 //     public void testMeasurePCCMaskImage() throws Exception {
 //         // Creating a new workspace
 //         Workspaces workspaces = new Workspaces();
-//         Workspace workspace = workspaces.getNewWorkspace(null,1);
+//         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
@@ -255,7 +255,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //    public void testMeasurePCCWholeImage() throws Exception {
 // //        // Creating a new workspace
 // //        Workspaces workspaces = new Workspaces();
-// //        Workspace workspace = workspaces.getNewWorkspace(null,1);
+// //        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
@@ -284,7 +284,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //    public void testMeasurePCCMaskImage() throws Exception {
 // //        // Creating a new workspace
 // //        Workspaces workspaces = new Workspaces();
-// //        Workspace workspace = workspaces.getNewWorkspace(null,1);
+// //        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");

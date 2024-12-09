@@ -4,6 +4,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
@@ -79,7 +80,7 @@ public class DoubleP extends TextType {
     }
 
     @Override
-    public <T> T getValue(Workspace workspace) throws NumberFormatException {
+    public <T> T getValue(WorkspaceI workspace) throws NumberFormatException {
         String converted = GlobalVariables.convertString(value, module.getModules());
         converted = insertWorkspaceValues(converted, workspace);
         converted = applyCalculation(converted);

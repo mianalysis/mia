@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public abstract class ChoiceType extends TextSwitchableParameter {
@@ -53,7 +54,7 @@ public abstract class ChoiceType extends TextSwitchableParameter {
     }
 
     @Override
-    public <T> T getValue(Workspace workspace) {
+    public <T> T getValue(WorkspaceI workspace) {
         if (choice == null)
         return null;
 

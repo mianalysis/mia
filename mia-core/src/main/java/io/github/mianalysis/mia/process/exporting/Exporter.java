@@ -48,6 +48,7 @@ import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -104,7 +105,7 @@ public class Exporter {
             case GROUP_BY_METADATA:
                 // Getting list of unique metadata values
                 HashSet<String> metadataValues = new HashSet<>();
-                for (Workspace workspace : workspaces) {
+                for (WorkspaceI workspace : workspaces) {
                     if (!workspace.exportWorkspace())
                         continue;
                     if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
@@ -116,7 +117,7 @@ public class Exporter {
                     Workspaces currentWorkspaces = new Workspaces();
 
                     // Adding Workspaces matching this metadata value
-                    for (Workspace workspace : workspaces) {
+                    for (WorkspaceI workspace : workspaces) {
                         if (!workspace.exportWorkspace())
                             continue;
                         if (!workspace.getMetadata().containsKey(metadataItemForGrouping))
@@ -137,7 +138,7 @@ public class Exporter {
         }
     }
 
-    public void exportResults(Workspace workspace, Modules modules, String name) throws IOException {
+    public void exportResults(WorkspaceI workspace, Modules modules, String name) throws IOException {
         Workspaces currentWorkspaces = new Workspaces();
         currentWorkspaces.add(workspace);
 
@@ -362,7 +363,7 @@ public class Exporter {
         int summaryRow = 1;
         switch (summaryType) {
             case PER_FILE:
-                for (Workspace workspace : workspaces) {
+                for (WorkspaceI workspace : workspaces) {
                     if (!workspace.exportWorkspace())
                         continue;
                     Row summaryValueRow = summarySheet.createRow(summaryRow++);
@@ -371,14 +372,14 @@ public class Exporter {
                 break;
 
             case PER_TIMEPOINT_PER_FILE:
-                for (Workspace workspace : workspaces) {
+                for (WorkspaceI workspace : workspaces) {
                     if (!workspace.exportWorkspace())
                         continue;
                     // For the current workspace, iterating over all available time points and
                     // creating a new workspace
-                    HashMap<Integer, Workspace> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
+                    HashMap<Integer, WorkspaceI> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
                     for (Integer timepoint : currentWorkspaces.keySet()) {
-                        Workspace currentWorkspace = currentWorkspaces.get(timepoint);
+                        WorkspaceI currentWorkspace = currentWorkspaces.get(timepoint);
                         Row summaryValueRow = summarySheet.createRow(summaryRow++);
                         populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, "TIMEPOINT",
                                 String.valueOf(timepoint));
@@ -388,10 +389,10 @@ public class Exporter {
                 break;
 
             case GROUP_BY_METADATA:
-                HashMap<String, Workspace> metadataWorkspaces = workspaces
+                HashMap<String, WorkspaceI> metadataWorkspaces = workspaces
                         .getMetadataWorkspaces(metadataItemForSummary);
                 for (String metadataValue : metadataWorkspaces.keySet()) {
-                    Workspace currentWorkspace = metadataWorkspaces.get(metadataValue);
+                    WorkspaceI currentWorkspace = metadataWorkspaces.get(metadataValue);
                     if (!currentWorkspace.exportWorkspace())
                         continue;
                     Row summaryValueRow = summarySheet.createRow(summaryRow++);
@@ -629,7 +630,7 @@ public class Exporter {
 
     }
 
-    private void populateSummaryRow(Row summaryValueRow, Workspace workspace, Modules modules,
+    private void populateSummaryRow(Row summaryValueRow, WorkspaceI workspace, Modules modules,
             HashMap<String, Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
 
         // Adding metadata values
@@ -908,7 +909,7 @@ public class Exporter {
         }
 
         // Running through each Workspace, adding rows
-        for (Workspace workspace : workspaces) {
+        for (WorkspaceI workspace : workspaces) {
             for (String objectName : workspace.getObjects().keySet()) {
                 Objs objects = workspace.getObjects(objectName);
 

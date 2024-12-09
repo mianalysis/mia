@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -86,7 +87,7 @@ public class AdoptParentMetadata extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
@@ -145,7 +146,7 @@ public class AdoptParentMetadata extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -179,7 +180,7 @@ public class AdoptParentMetadata extends Module {
 
     @Override
     public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);

@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -360,7 +361,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean outputOrientationMap = parameters.getValue(OUTPUT_ORIENTATION_MAP, workspace);
@@ -527,7 +528,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);

@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -128,7 +129,7 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean useMask = parameters.getValue(USE_MASK, workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
@@ -158,7 +159,7 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -173,7 +174,7 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);

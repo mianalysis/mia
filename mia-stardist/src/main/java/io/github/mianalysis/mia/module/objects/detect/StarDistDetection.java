@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
@@ -219,7 +220,7 @@ public class StarDistDetection extends Module {
         return "Implements the StarDist plugin to detect objects.  For more information on StarDist please see <a href=\"https://imagej.net/plugins/stardist\">https://imagej.net/plugins/stardist</a>.";
     }
 
-    File getModelFile(@Nullable HashMap<String, Object> paramsCNN, Workspace workspace) {
+    File getModelFile(@Nullable HashMap<String, Object> paramsCNN, WorkspaceI workspace) {
         switch ((String) parameters.getValue(MODEL_MODE, workspace)) {
             case ModelModes.FROM_FILE:
                 return new File((String) parameters.getValue(MODEL_PATH, workspace));
@@ -283,7 +284,7 @@ public class StarDistDetection extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);

@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractRegistration;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -50,7 +51,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
     }
 
     @Override
-    public void getParameters(Param param, Workspace workspace) {
+    public void getParameters(Param param, WorkspaceI workspace) {
         // Setting up the parameters
         ElastixParam elastixParam = (ElastixParam) param;
 
@@ -140,7 +141,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

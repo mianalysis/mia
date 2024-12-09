@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
@@ -79,7 +80,7 @@ public abstract class AbstractSaver extends Module {
 
     }
 
-    public static String appendSeries(String inputName, Workspace workspace, String appendSeriesMode) {
+    public static String appendSeries(String inputName, WorkspaceI workspace, String appendSeriesMode) {
         switch (appendSeriesMode) {
             case AppendSeriesModes.NONE:
             default:
@@ -110,7 +111,7 @@ public abstract class AbstractSaver extends Module {
         }
     }
 
-    public String getOutputPath(Modules modules, Workspace workspace) {
+    public String getOutputPath(Modules modules, WorkspaceI workspace) {
         String saveLocation = parameters.getValue(SAVE_LOCATION, workspace);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT, workspace);
         String filePath = parameters.getValue(SAVE_FILE_PATH, workspace);
@@ -182,7 +183,7 @@ public abstract class AbstractSaver extends Module {
         }
     }
 
-    public String getOutputName(Modules modules, Workspace workspace) {
+    public String getOutputName(Modules modules, WorkspaceI workspace) {
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
         try {
@@ -220,7 +221,7 @@ public abstract class AbstractSaver extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));

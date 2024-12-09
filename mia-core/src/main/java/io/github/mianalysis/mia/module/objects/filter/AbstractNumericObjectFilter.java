@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module.objects.filter;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -144,7 +145,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     }
 
-    public String getIndividualMeasurementName(String targetName, Workspace workspace) {
+    public String getIndividualMeasurementName(String targetName, WorkspaceI workspace) {
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
         double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
@@ -167,7 +168,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         }
     }
 
-    public String getSummaryMeasurementName(String targetName, Workspace workspace) {
+    public String getSummaryMeasurementName(String targetName, WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
@@ -192,7 +193,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         }
     }
 
-    public double getReferenceValue(Workspace workspace, Obj inputObject) {
+    public double getReferenceValue(WorkspaceI workspace, Obj inputObject) {
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
         String refImage = parameters.getValue(REFERENCE_VAL_IMAGE, workspace);
@@ -250,7 +251,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Parameters returnedParameters = new Parameters();

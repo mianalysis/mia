@@ -8,6 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -64,7 +65,7 @@ public class AddCustomMetadataItem extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String metadataName = parameters.getValue(METADATA_NAME,workspace);
         String metadataValue = parameters.getValue(METADATA_VALUE,workspace);
 
@@ -93,7 +94,7 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parameters;
     }
 
@@ -114,7 +115,7 @@ return null;
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME,workspace)));

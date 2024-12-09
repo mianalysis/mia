@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
@@ -45,7 +46,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     public void testRunCircleNoRelate10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -100,7 +101,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -164,7 +165,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     public void testRunCircleRelateClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

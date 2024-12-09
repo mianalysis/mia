@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.inputoutput.ImageSaver.FileFormats;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver.AppendDateTimeModes;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -140,7 +141,7 @@ public class GenericImageSaver extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String genericFormat = parameters.getValue(GENERIC_FORMAT, workspace);
@@ -223,7 +224,7 @@ public class GenericImageSaver extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));

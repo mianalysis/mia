@@ -10,7 +10,7 @@ import io.github.mianalysis.mia.process.math.CumStat;
 /**
  * Created by sc13967 on 27/10/2016.
  */
-public class Workspaces extends LinkedHashSet<Workspace> {
+public class Workspaces extends LinkedHashSet<WorkspaceI> {
     /**
      *
      */
@@ -22,8 +22,8 @@ public class Workspaces extends LinkedHashSet<Workspace> {
     /*
      * Creates a new workspace and adds it to the collection
      */
-    public Workspace getNewWorkspace(File currentFile, int series) {
-        Workspace workspace = new Workspace(++maxID, currentFile, series, this);
+    public WorkspaceI getNewWorkspace(File currentFile, int series) {
+        WorkspaceI workspace = new Workspace(++maxID, currentFile, series, this);
 
         add(workspace);
 
@@ -31,8 +31,8 @@ public class Workspaces extends LinkedHashSet<Workspace> {
 
     }
 
-    public Workspace getWorkspace(int ID) {
-        for (Workspace workspace : this)
+    public WorkspaceI getWorkspace(int ID) {
+        for (WorkspaceI workspace : this)
             if (workspace.getID() == ID)
                 return workspace;
 
@@ -41,17 +41,17 @@ public class Workspaces extends LinkedHashSet<Workspace> {
 
     }
 
-    public HashMap<String, Workspace> getMetadataWorkspaces(String metadataName) {
-        HashMap<String, Workspace> workspaceList = new HashMap<>();
+    public HashMap<String, WorkspaceI> getMetadataWorkspaces(String metadataName) {
+        HashMap<String, WorkspaceI> workspaceList = new HashMap<>();
         Workspaces workspacesMeta = new Workspaces();
 
-        for (Workspace currWorkspace:this) {
+        for (WorkspaceI currWorkspace:this) {
             // The metadata value to group on
             String metadataValue = currWorkspace.getMetadata().getAsString(metadataName);
 
             // If no workspace exists for this metadata value, create one
             if (!workspaceList.containsKey(metadataValue)) {
-                Workspace metadataWorkspace = workspacesMeta.getNewWorkspace(null, -1);
+                WorkspaceI metadataWorkspace = workspacesMeta.getNewWorkspace(null, -1);
                 
                 // Creating a store for the number of workspaces in this collection
                 metadataWorkspace.getMetadata().put("Count",0);
@@ -61,7 +61,7 @@ public class Workspaces extends LinkedHashSet<Workspace> {
             }
 
             // Getting the metadata workspace
-            Workspace metadataWorkspace = workspaceList.get(metadataValue);
+            WorkspaceI metadataWorkspace = workspaceList.get(metadataValue);
 
             // Incrementing the workspace count
             metadataWorkspace.getMetadata().put("Count",((int) metadataWorkspace.getMetadata().get("Count")) + 1);
@@ -94,14 +94,14 @@ public class Workspaces extends LinkedHashSet<Workspace> {
     }
 
     public synchronized void resetProgress() {
-        for (Workspace workspace : this) {
+        for (WorkspaceI workspace : this) {
             workspace.setProgress(0);
         }
     }
 
     public synchronized double getOverallProgress() {
         CumStat cs = new CumStat();
-        for (Workspace workspace : this)
+        for (WorkspaceI workspace : this)
             cs.addMeasure(workspace.getProgress());
 
         // Subtracting 1 from the total, so it doesn't hit 100% until exporting is done

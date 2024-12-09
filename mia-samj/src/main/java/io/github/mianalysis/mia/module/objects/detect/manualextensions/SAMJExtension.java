@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +41,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -69,7 +69,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
     }
 
-    protected Workspace workspace;
+    protected WorkspaceI workspace;
     protected AbstractSamJ samJ = null;
     protected AbstractSamJ preinitSamJ = null;
     protected AbstractSamJ tempSamJ = null;
@@ -129,7 +129,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     }
 
     @Override
-    public Status initialiseBeforeImageShown(Workspace workspace) {
+    public Status initialiseBeforeImageShown(WorkspaceI workspace) {
         this.workspace = workspace;
 
         // Getting parameters
@@ -178,8 +178,8 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             // Preinitialise next file on a separate thread
             preinitComplete = false;
             boolean isNext = false;
-            Workspace nextWorkspace = null;
-            for (Workspace currWorkspace : workspace.getWorkspaces()) {
+            WorkspaceI nextWorkspace = null;
+            for (WorkspaceI currWorkspace : workspace.getWorkspaces()) {
                 if (isNext) {
                     nextWorkspace = currWorkspace;
                     break;
@@ -190,7 +190,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
             if (nextWorkspace != null) {
                 preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
-                Workspace finalNextWorkspace = nextWorkspace;
+                WorkspaceI finalNextWorkspace = nextWorkspace;
                 Thread t = new Thread(() -> {
                     // Running modules up to this point
                     Modules modules = module.getModules();

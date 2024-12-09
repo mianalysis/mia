@@ -10,14 +10,14 @@ import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.process.ClassHunter;
 
 public class MacroHandler implements MacroExtension {
     private static MacroHandler macroHandler = null;
     private static ArrayList<MacroOperation> macroOperations = null;
-    private static Workspace workspace;
+    private static WorkspaceI workspace;
     private static Modules modules;
 
     // Constructor is private to prevent instantiation
@@ -97,11 +97,11 @@ public class MacroHandler implements MacroExtension {
         MacroHandler.modules = modules;
     }
 
-    public static Workspace getWorkspace() {
+    public static WorkspaceI getWorkspace() {
         return workspace;
     }
 
-    public static void setWorkspace(Workspace workspace) {
+    public static void setWorkspace(WorkspaceI workspace) {
         MacroHandler.workspace = workspace;
     }
 

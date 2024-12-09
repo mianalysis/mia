@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
@@ -553,7 +554,7 @@ public class CreateSkeleton extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputMode = parameters.getValue(INPUT_MODE, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
@@ -733,7 +734,7 @@ public class CreateSkeleton extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -787,7 +788,7 @@ public class CreateSkeleton extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         if (((String) parameters.getValue(INPUT_MODE, workspace)).equals(InputModes.OBJECTS)) {
@@ -827,7 +828,7 @@ public class CreateSkeleton extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
@@ -862,7 +863,7 @@ public class CreateSkeleton extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE, workspace)) {

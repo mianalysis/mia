@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -138,7 +139,7 @@ public class SetSpatialCalibration extends Module {
         return "Update spatial calibration for XY and Z axes based on defined physical and corresponding image (pixel) distances.  Both physical and image distances can be drawn from a variety of sources including image and object measurements, fixed values and user-defined values (specified at runtime).  Calibration can be applied to XY and Z axes simultaneously or independently.";
     }
 
-    public static double getFirstObjectMeasurement(Workspace workspace, String objectsName, String measurementName) {
+    public static double getFirstObjectMeasurement(WorkspaceI workspace, String objectsName, String measurementName) {
         Obj firstObj = workspace.getObjects(objectsName).getFirst();
         if (firstObj == null) {
             MIA.log.writeWarning("No object to provide distance.  Setting calibration to NaN.");
@@ -174,7 +175,7 @@ public class SetSpatialCalibration extends Module {
 
     }
 
-    public static double getImageMeasurement(Workspace workspace, String imageName, String measurementName) {
+    public static double getImageMeasurement(WorkspaceI workspace, String imageName, String measurementName) {
         Image image = workspace.getImage(imageName);
         if (image == null) {
             MIA.log.writeWarning("No image to provide distance.  Setting calibration to NaN.");
@@ -192,7 +193,7 @@ public class SetSpatialCalibration extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         String pdSource = parameters.getValue(PD_SOURCE,workspace);
@@ -304,7 +305,7 @@ public class SetSpatialCalibration extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.get(INPUT_SEPARATOR));
@@ -380,7 +381,7 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         if (parameters.getValue(PD_SOURCE,workspace).equals(DistanceSources.GUI_SELECTION_TEXT)

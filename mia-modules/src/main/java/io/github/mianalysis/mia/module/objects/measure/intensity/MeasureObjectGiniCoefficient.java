@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -84,7 +85,7 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
@@ -146,7 +147,7 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -164,7 +165,7 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);

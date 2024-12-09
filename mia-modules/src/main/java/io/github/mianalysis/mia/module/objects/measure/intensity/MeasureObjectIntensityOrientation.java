@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddText;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -348,7 +349,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
@@ -493,7 +494,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);

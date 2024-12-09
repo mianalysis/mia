@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
@@ -285,7 +286,7 @@ public class LoadObjectsFromROIs extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         boolean assignTracks = parameters.getValue(ASSIGN_TRACKS, workspace);
@@ -365,7 +366,7 @@ public class LoadObjectsFromROIs extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
@@ -428,7 +429,7 @@ public class LoadObjectsFromROIs extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(ASSIGN_TRACKS, workspace)) {
@@ -443,7 +444,7 @@ public class LoadObjectsFromROIs extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         if ((boolean) parameters.getValue(ASSIGN_TRACKS, workspace)) {

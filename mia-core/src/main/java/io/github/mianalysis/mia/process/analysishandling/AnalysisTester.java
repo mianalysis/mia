@@ -10,10 +10,11 @@ import io.github.mianalysis.mia.module.workflow.FixedTextCondition;
 import io.github.mianalysis.mia.module.workflow.GUICondition;
 import io.github.mianalysis.mia.module.workflow.ModuleIsEnabled;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AnalysisTester {
-    public static int testModules(Modules modules, Workspace workspace, @Nullable Module startModule) {
+    public static int testModules(Modules modules, WorkspaceI workspace, @Nullable Module startModule) {
         GlobalVariables.updateVariables(modules);
         
         // Iterating over all modules, checking if they are runnable

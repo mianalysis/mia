@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.object.parameters;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
@@ -19,7 +20,7 @@ public class SeparatorP extends Parameter {
     }
 
     @Override
-    public <T> T getValue(Workspace workspace) {
+    public <T> T getValue(WorkspaceI workspace) {
         return null;
     }
 

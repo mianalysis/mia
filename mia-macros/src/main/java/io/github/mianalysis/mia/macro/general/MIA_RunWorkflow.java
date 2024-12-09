@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 
@@ -29,7 +30,7 @@ public class MIA_RunWorkflow extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         File workflowPath = new File((String) objects[0]);
         String inputPath = (String) objects[1];
 

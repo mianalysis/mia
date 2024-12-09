@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.registration.AffineFixedTransform;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -245,7 +246,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     }
 
     @Override
-    public void getParameters(Param param, Workspace workspace) {
+    public void getParameters(Param param, WorkspaceI workspace) {
         super.getParameters(param, workspace);
 
         AffineParam affineParam = (AffineParam) param;
@@ -306,7 +307,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         // Adding all default parameters and adding transformation mode just after

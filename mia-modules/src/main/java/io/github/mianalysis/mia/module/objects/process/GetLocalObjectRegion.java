@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -284,7 +285,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    protected int getRadius(Obj inputObject, Workspace workspace) {
+    protected int getRadius(Obj inputObject, WorkspaceI workspace) {
         String radiusSource = parameters.getValue(RADIUS_SOURCE, workspace);
         double radius = parameters.getValue(FIXED_VALUE_FOR_RADIUS, workspace);
         String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT, workspace);
@@ -319,7 +320,7 @@ public class GetLocalObjectRegion extends Module {
         }
     }
 
-    protected int[] getCentroid(Obj inputObject, Workspace workspace) {
+    protected int[] getCentroid(Obj inputObject, WorkspaceI workspace) {
         String centroidSource = parameters.getValue(CENTROID_SOURCE, workspace);
         double xPosition = parameters.getValue(X_POSITION, workspace);
         double yPosition = parameters.getValue(Y_POSITION, workspace);
@@ -404,7 +405,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -479,7 +480,7 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String parentObjectsForCentroidName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID, workspace);
         String parentObjectsForRadiusName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS, workspace);
@@ -585,7 +586,7 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships

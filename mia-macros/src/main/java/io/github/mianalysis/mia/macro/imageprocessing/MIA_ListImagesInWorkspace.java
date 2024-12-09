@@ -9,9 +9,8 @@ import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListImagesInWorkspace extends MacroOperation {
@@ -25,7 +24,7 @@ public class MIA_ListImagesInWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         // Creating a new ResultsTable to hold the Image names
         ResultsTable rt = new ResultsTable();
         int row = 0;

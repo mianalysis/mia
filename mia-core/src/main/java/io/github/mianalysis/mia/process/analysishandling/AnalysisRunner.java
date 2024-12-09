@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.process.exporting.Exporter;
@@ -99,7 +100,7 @@ public class AnalysisRunner {
         for (Job job : jobs) {
             // Iterating over all seriesNumber to analyse, adding each one as a new
             // workspace
-            Workspace workspace = workspaces.getNewWorkspace(job.getFile(), job.getSeriesNumber());
+            WorkspaceI workspace = workspaces.getNewWorkspace(job.getFile(), job.getSeriesNumber());
             workspace.getMetadata().setSeriesName(job.getSeriesName());
             workspace.getMetadata().put("FILE_DEPTH", job.getFileDepth());
 
@@ -108,7 +109,7 @@ public class AnalysisRunner {
 
         }
 
-        for (Workspace workspace : workspaces)            
+        for (WorkspaceI workspace : workspaces)            
             pool.submit(createRunnable(modules, workspace, exporter, clearMemoryAtEnd));
         
         // Telling the pool not to accept any more jobs and to wait until all queued
@@ -302,7 +303,7 @@ public class AnalysisRunner {
 
     }
 
-    Runnable createRunnable(Modules modules, Workspace workspace, Exporter exporter, boolean clearMemoryAtEnd) {
+    Runnable createRunnable(Modules modules, WorkspaceI workspace, Exporter exporter, boolean clearMemoryAtEnd) {
         return () -> {
             File file = workspace.getMetadata().getFile();
             int seriesNumber = workspace.getMetadata().getSeriesNumber();

@@ -12,6 +12,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -417,7 +418,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
@@ -455,7 +456,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunSecondChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
@@ -493,7 +494,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunBothChannelsBelowAndAbove5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
@@ -530,7 +531,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelBothBelow5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
@@ -568,7 +569,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelSinglePlane5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
@@ -606,7 +607,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAboveIndicesInverted5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
@@ -644,7 +645,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAboveSingleChannel4D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
@@ -682,7 +683,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAboveSingleTimepoint4D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
@@ -720,7 +721,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAbove3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");

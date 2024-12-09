@@ -46,6 +46,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
@@ -671,7 +672,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Remove any previously-entered references
         listModel.clear();
 
@@ -818,7 +819,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -870,7 +871,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
@@ -911,7 +912,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         if (parameters.getValue(BEST_FOCUS_CALCULATION, workspace).equals(BestFocusCalculations.MANUAL)) {

@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
@@ -288,7 +289,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    File getInputFile(Workspace workspace) {
+    File getInputFile(WorkspaceI workspace) {
         String coordinateSource = parameters.getValue(COORDINATE_SOURCE, workspace);
         String nameFormat = parameters.getValue(NAME_FORMAT, workspace);
         String genericFormat = parameters.getValue(GENERIC_FORMAT, workspace);
@@ -329,7 +330,7 @@ public class ObjectLoader extends Module {
         }
     }
 
-    int[] getLimitsFromImage(Workspace workspace) {
+    int[] getLimitsFromImage(WorkspaceI workspace) {
         String referenceImageName = parameters.getValue(LIMITS_REFERENCE_IMAGE, workspace);
         Image image = workspace.getImage(referenceImageName);
         ImagePlus ipl = image.getImagePlus();
@@ -338,7 +339,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    int[] getLimitsFromManualValues(Workspace workspace) {
+    int[] getLimitsFromManualValues(WorkspaceI workspace) {
         int[] limits = new int[4];
 
         limits[0] = parameters.getValue(WIDTH, workspace);
@@ -350,7 +351,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    int[] getLimitsFromMaximumCoordinates(Workspace workspace, File inputFile) {
+    int[] getLimitsFromMaximumCoordinates(WorkspaceI workspace, File inputFile) {
         int xIdx = parameters.getValue(X_COLUMN_INDEX, workspace);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX, workspace);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX, workspace);
@@ -403,7 +404,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    double[] getSpatialCalibrationFromImage(Workspace workspace) {
+    double[] getSpatialCalibrationFromImage(WorkspaceI workspace) {
         double[] cal = new double[2];
 
         String referenceImageName = parameters.getValue(SPATIAL_CALIBRATION_REFERENCE_IMAGE, workspace);
@@ -417,7 +418,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    double[] getSpatialCalibrationFromManualValues(Workspace workspace) {
+    double[] getSpatialCalibrationFromManualValues(WorkspaceI workspace) {
         double[] cal = new double[2];
 
         cal[0] = parameters.getValue(XY_CAL, workspace);
@@ -427,7 +428,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    double getTemporalCalibrationFromImage(Workspace workspace) {
+    double getTemporalCalibrationFromImage(WorkspaceI workspace) {
         String referenceImageName = parameters.getValue(TEMPORAL_CALIBRATION_REFERENCE_IMAGE, workspace);
         Image image = workspace.getImage(referenceImageName);
 
@@ -435,12 +436,12 @@ public class ObjectLoader extends Module {
 
     }
 
-    double getTemporalCalibrationFromManualValues(Workspace workspace) {
+    double getTemporalCalibrationFromManualValues(WorkspaceI workspace) {
         return parameters.getValue(FRAME_INTERVAL, workspace);
 
     }
 
-    void loadObjects(Objs outputObjects, File inputFile, Workspace workspace, @Nullable Objs parentObjects) {
+    void loadObjects(Objs outputObjects, File inputFile, WorkspaceI workspace, @Nullable Objs parentObjects) {
         int xIdx = parameters.getValue(X_COLUMN_INDEX, workspace);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX, workspace);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX, workspace);
@@ -537,7 +538,7 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         String limitsSource = parameters.getValue(LIMITS_SOURCE, workspace);
@@ -668,7 +669,7 @@ public class ObjectLoader extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
@@ -778,7 +779,7 @@ public class ObjectLoader extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(CREATE_PARENTS, workspace)) {

@@ -1,14 +1,10 @@
 package io.github.mianalysis.mia.module;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-import org.apache.poi.ss.formula.functions.T;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -57,7 +53,7 @@ public interface ModuleI {
      *                  the workflow).
      * @return Exit status
      */
-    Status process(Workspace workspace);
+    Status process(WorkspaceI workspace);
 
     /**
      * Creates an instance of each parameter, each of which is stored in the
@@ -161,7 +157,7 @@ public interface ModuleI {
 
     // PUBLIC METHODS
 
-    Status execute(Workspace workspace);
+    Status execute(WorkspaceI workspace);
 
     void addObjectMeasurementRef(ObjMeasurementRef ref);
 
@@ -189,7 +185,7 @@ public interface ModuleI {
 
     public Module updateParameterValue(String name, Object value);
 
-    public <T> T getParameterValue(String name, Workspace workspace);
+    public <T> T getParameterValue(String name, WorkspaceI workspace);
 
     public void setParameterVisibility(String name, boolean visible);
 
@@ -252,7 +248,7 @@ public interface ModuleI {
 
     public IL2Support getIL2Support();
 
-    public String getRedirectModuleID(Workspace workspace);
+    public String getRedirectModuleID(WorkspaceI workspace);
 
     public void setRedirectModuleID(String redirectModuleID);
 

@@ -29,6 +29,7 @@ import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
@@ -247,9 +248,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects,
-            Workspace workspace,
-            @Nullable Objs inputObjects, @Nullable int[][] spatialLimits) {
+    public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, WorkspaceI workspace, @Nullable Objs inputObjects, @Nullable int[][] spatialLimits) {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
         boolean useVolume = parameters.getValue(USE_VOLUME, workspace);
         double frameGapWeighting = parameters.getValue(FRAME_GAP_WEIGHTING, workspace);
@@ -597,7 +596,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
@@ -734,7 +733,7 @@ public class TrackObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -805,7 +804,7 @@ public class TrackObjects extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
@@ -834,7 +833,7 @@ public class TrackObjects extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
@@ -848,7 +847,7 @@ public class TrackObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRelationships = new PartnerRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);

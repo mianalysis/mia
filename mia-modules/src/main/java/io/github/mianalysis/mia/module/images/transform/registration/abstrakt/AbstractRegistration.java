@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -453,7 +454,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
@@ -607,7 +608,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -774,7 +775,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public void getParameters(Param param, Workspace workspace) {
+    public void getParameters(Param param, WorkspaceI workspace) {
         param.fillMode = parameters.getValue(FILL_MODE, workspace);
     }
 

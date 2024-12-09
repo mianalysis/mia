@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -81,7 +82,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
@@ -123,7 +124,7 @@ public class ProjectObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parameters;
     }
 
@@ -149,7 +150,7 @@ return null;
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS,workspace),parameters.getValue(OUTPUT_OBJECTS,workspace)));

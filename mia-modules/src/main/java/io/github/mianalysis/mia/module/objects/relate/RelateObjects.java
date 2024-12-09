@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -241,7 +242,7 @@ public class RelateObjects extends Module {
      * Iterates over each testObject, calculating getting the smallest distance to a
      * parentObject. If this is smaller than linkingDistance the link is assigned.
      */
-    public void proximity(Objs parentObjects, Objs childObjects, Workspace workspace, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+    public void proximity(Objs parentObjects, Objs childObjects, WorkspaceI workspace, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE, workspace);
@@ -353,8 +354,7 @@ public class RelateObjects extends Module {
 
     }
 
-    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink,
-            Workspace workspace) {
+    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink, WorkspaceI workspace) {
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
 
         if (minLink != null) {
@@ -579,7 +579,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
         Objs parentObjects = workspace.getObjects(parentObjectName);
@@ -659,7 +659,7 @@ public class RelateObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -712,7 +712,7 @@ public class RelateObjects extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
@@ -825,7 +825,7 @@ public class RelateObjects extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships

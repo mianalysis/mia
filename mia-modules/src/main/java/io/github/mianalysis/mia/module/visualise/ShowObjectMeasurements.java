@@ -7,6 +7,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -63,7 +64,7 @@ public class ShowObjectMeasurements extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputObjects = parameters.getValue(INPUT_OBJECTS,workspace);
 
         if (showOutput) workspace.getObjects(inputObjects).showAllMeasurements();
@@ -80,7 +81,7 @@ public class ShowObjectMeasurements extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parameters;
     }
 

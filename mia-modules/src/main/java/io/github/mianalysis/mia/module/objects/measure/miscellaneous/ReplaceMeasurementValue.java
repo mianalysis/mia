@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilte
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -122,7 +123,7 @@ public class ReplaceMeasurementValue extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
@@ -208,7 +209,7 @@ public class ReplaceMeasurementValue extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParams = new Parameters();

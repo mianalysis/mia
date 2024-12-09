@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -170,7 +171,7 @@ public class CombineObjectSets extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
@@ -248,7 +249,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -283,7 +284,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // If the filtered objects are to be moved to a new class, assign them the
@@ -306,7 +307,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -332,7 +333,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         // Where necessary, redirect relationships
         ParentChildRefs returnedRefs = new ParentChildRefs();
 

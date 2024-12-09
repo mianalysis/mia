@@ -36,6 +36,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -198,7 +199,7 @@ public class RunTrackMate extends Module {
         deprecated = true;
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, Workspace workspace) {
+    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, WorkspaceI workspace) {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING,workspace);
@@ -441,7 +442,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
@@ -570,7 +571,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -614,7 +615,7 @@ return null;
 
     @Override
 public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace);
 
@@ -675,7 +676,7 @@ return null;
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(DO_TRACKING,workspace)) {

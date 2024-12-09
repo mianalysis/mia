@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -41,7 +42,7 @@ public class ImageSaverTest extends ModuleTest {
 
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(testFile, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(testFile, 1);
 
         // Load the test image and put in the workspace
         String pathToImage = URLDecoder.decode(
@@ -84,7 +85,7 @@ public class ImageSaverTest extends ModuleTest {
 
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Load the test image and put in the workspace
         String pathToImage = URLDecoder.decode(

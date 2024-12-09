@@ -7,6 +7,7 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -42,7 +43,7 @@ public abstract class AbstractMacroRunner extends Module {
         return "MACRO // " + assignedName;
     }
 
-    public static String addVariables(String macroString, ParameterGroup group, Workspace workspace) {
+    public static String addVariables(String macroString, ParameterGroup group, WorkspaceI workspace) {
         StringBuilder sb = new StringBuilder();
 
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
@@ -77,7 +78,7 @@ public abstract class AbstractMacroRunner extends Module {
 
     }
 
-    public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group, String measurementHeading, Workspace workspace) {
+    public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group, String measurementHeading, WorkspaceI workspace) {
         LinkedHashSet<String> addedMeasurements = new LinkedHashSet<>();
 
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);

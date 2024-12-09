@@ -6,9 +6,8 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
@@ -23,7 +22,7 @@ public class MIA_GetImageMeasurement extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         String imageName = (String) objects[0];
         String measurementName = (String) objects[1];
 

@@ -10,6 +10,7 @@
 // import io.github.mianalysis.mia.module.Module;
 // import io.github.mianalysis.mia.module.Modules;
 // import io.github.mianalysis.mia.object.Workspace;
+// import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.image.Image;
 // import io.github.mianalysis.mia.object.parameters.InputImageP;
 // import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -47,7 +48,7 @@
 //     }
 
 //     @Override
-//     public Status process(Workspace workspace) {
+//     public Status process(WorkspaceI workspace) {
 //         // Getting input image
 //         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 

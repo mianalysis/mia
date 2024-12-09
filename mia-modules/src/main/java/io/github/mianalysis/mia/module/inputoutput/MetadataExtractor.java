@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.metadata.CV1000FilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.CV1000FoldernameExtractor;
 import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
@@ -432,7 +433,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String extractorMode = parameters.getValue(EXTRACTOR_MODE, workspace);
         String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR, workspace);
@@ -544,7 +545,7 @@ public class MetadataExtractor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(EXTRACTOR_SEPARATOR));
@@ -650,7 +651,7 @@ public class MetadataExtractor extends Module {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         switch ((String) parameters.getValue(EXTRACTOR_MODE, workspace)) {

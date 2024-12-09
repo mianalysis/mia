@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -55,7 +56,7 @@ public abstract class AbstractOverlay extends Module {
 
     }
 
-    public HashMap<Integer, Color> getColours(Objs inputObjects, Workspace workspace) {
+    public HashMap<Integer, Color> getColours(Objs inputObjects, WorkspaceI workspace) {
         // Getting colour settings
         String colourMode = parameters.getValue(COLOUR_MODE, workspace);
         String colourMap = parameters.getValue(COLOUR_MAP, workspace);

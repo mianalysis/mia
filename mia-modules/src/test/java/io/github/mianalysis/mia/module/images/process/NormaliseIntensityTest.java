@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -30,7 +31,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit2D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -65,7 +66,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -100,7 +101,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit4D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient5D_8bit_C1.zip").getPath(),"UTF-8");
@@ -135,7 +136,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit5D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient5D_8bit.zip").getPath(),"UTF-8");
@@ -170,7 +171,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity16bit3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_16bit.zip").getPath(),"UTF-8");
@@ -205,7 +206,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity32bitOverOne3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/LightNoisyGradient3D_32bit.zip").getPath(),"UTF-8");
@@ -240,7 +241,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity32bitUnderOne3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_32bit.zip").getPath(),"UTF-8");
@@ -275,7 +276,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testRunDoApply8bit3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_8bit.zip").getPath(),"UTF-8");
@@ -308,7 +309,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit2DClipPrecise() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientClip2D_8bit.zip").getPath(),"UTF-8");

@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.object.parameters.abstrakt;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public abstract class BooleanType extends TextSwitchableParameter {
@@ -47,7 +48,7 @@ public abstract class BooleanType extends TextSwitchableParameter {
     }
 
     @Override
-    public <T> T getValue(Workspace workspace) {
+    public <T> T getValue(WorkspaceI workspace) {
         String converted = GlobalVariables.convertString(value, module.getModules());
         return (T) (Boolean) Boolean.parseBoolean(converted);
     }

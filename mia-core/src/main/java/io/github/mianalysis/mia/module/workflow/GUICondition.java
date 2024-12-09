@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -70,7 +71,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
         deprecated = true;
     }
 
-    public String getRedirectModuleID(Workspace workspace) {
+    public String getRedirectModuleID(WorkspaceI workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
@@ -121,7 +122,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String choice = parameters.getValue(CHOICE, workspace);
         boolean storeAsMetadata = parameters.getValue(STORE_AS_METADATA_ITEM, workspace);
@@ -174,7 +175,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
@@ -210,7 +211,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM, workspace))

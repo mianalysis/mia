@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module.interfaces;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -53,7 +54,7 @@ public interface MeasurementPositionProvider {
     }
 
     default Parameters updateAndGetPositionParameters(String objectsName, Parameters parameters) {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(POSITION_MODE));

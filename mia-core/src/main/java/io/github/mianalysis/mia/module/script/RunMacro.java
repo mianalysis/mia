@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -175,7 +176,7 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
@@ -298,7 +299,7 @@ public class RunMacro extends AbstractMacroRunner {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -345,7 +346,7 @@ public class RunMacro extends AbstractMacroRunner {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // If no input image is provided, there's nowhere to store the values

@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -103,7 +104,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     }
 
-    public String getRedirectModuleID(Workspace workspace) {
+    public String getRedirectModuleID(WorkspaceI workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
@@ -132,7 +133,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String testValue = parameters.getValue(TEST_VALUE, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION, workspace);

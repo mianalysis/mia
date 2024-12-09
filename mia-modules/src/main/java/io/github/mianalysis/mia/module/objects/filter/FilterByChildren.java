@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -63,7 +64,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -138,7 +139,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
@@ -159,7 +160,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = super.updateAndGetObjectMeasurementRefs();
 
         if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS, workspace)) {
@@ -185,7 +186,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole

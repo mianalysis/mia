@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -71,7 +72,7 @@ public abstract class AbstractObjectTracking extends Module {
         String MIA_ID = "MIA_ID";
     }
 
-    protected abstract SpotTracker getSpotTracker(SpotCollection spotCollection, Workspace workspace);
+    protected abstract SpotTracker getSpotTracker(SpotCollection spotCollection, WorkspaceI workspace);
 
     protected abstract void addSpotMeasurements(Objs inputObjects, SpotCollection spotCollection);
 
@@ -201,7 +202,7 @@ public abstract class AbstractObjectTracking extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
@@ -284,7 +285,7 @@ public abstract class AbstractObjectTracking extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
@@ -298,7 +299,7 @@ public abstract class AbstractObjectTracking extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRelationships = new PartnerRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);

@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.workflow;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
@@ -38,7 +38,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     }
 
-    public Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
+    public Status processTermination(Parameters parameters, WorkspaceI workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE,workspace);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE,workspace);
         boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING,workspace);

@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.tracks.Timepoint;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
@@ -635,7 +636,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         Objs trackObjects = workspace.getObjects(inputTrackObjectsName);
@@ -714,7 +715,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -745,7 +746,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         String inputSpotObjects = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);

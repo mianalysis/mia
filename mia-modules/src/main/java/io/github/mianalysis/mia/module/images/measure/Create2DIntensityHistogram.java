@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -85,7 +86,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImage(inputImageName1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
@@ -148,7 +149,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         return parameters;
     }
 

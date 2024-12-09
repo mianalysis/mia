@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureIntensityAlongPath;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -258,7 +259,7 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean useMask = parameters.getValue(USE_MASK, workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
@@ -350,7 +351,7 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));

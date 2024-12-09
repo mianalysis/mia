@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.objects.process.GrowObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -49,7 +50,7 @@ public class ResolveObjectOverlap extends Module {
         super("Resolve object overlap", modules);
     }
 
-    public static void process(Objs inputObjects, Workspace workspace) {
+    public static void process(Objs inputObjects, WorkspaceI workspace) {
         if (inputObjects == null || inputObjects.size() == 0)
             return;
 
@@ -103,7 +104,7 @@ public class ResolveObjectOverlap extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Objs inputObjects = workspace.getObjects(inputObjectsName);

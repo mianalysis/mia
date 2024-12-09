@@ -22,6 +22,7 @@ import io.github.mianalysis.enums.OutputMode;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -110,7 +111,7 @@ public class InvertIntensityMSTest extends ModuleTest {
         // Doing the main part of the test
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(InvertIntensityMSTest.class.getResource(inputName).getPath(), "UTF-8");

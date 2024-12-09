@@ -32,6 +32,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -150,7 +151,7 @@ public class SpotDetection extends Module {
         super("Spot detection", modules);
     }
 
-    public ArrayList<Obj> processStack(Image inputImage, Objs spotObjects, boolean estimateSize, Workspace workspace) {
+    public ArrayList<Obj> processStack(Image inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
         ImagePlus ipl = inputImage.getImagePlus();
         SpatCal calibration = SpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
@@ -179,7 +180,7 @@ public class SpotDetection extends Module {
 
     }
 
-    public Objs processSlice(Image inputImage, Objs spotObjects, boolean estimateSize, Workspace workspace) {
+    public Objs processSlice(Image inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
         int nSlices = inputImage.getImagePlus().getNSlices();
 
         for (int z=0;z<nSlices;z++) {
@@ -196,7 +197,7 @@ public class SpotDetection extends Module {
 
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, Workspace workspace) {
+    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, WorkspaceI workspace) {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING,workspace);
@@ -333,7 +334,7 @@ public class SpotDetection extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace);
@@ -397,7 +398,7 @@ public class SpotDetection extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -424,7 +425,7 @@ return null;
 
     @Override
 public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace);
 

@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractObjectTracking;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -33,7 +33,7 @@ public class TrackObjectsKalman extends AbstractObjectTracking {
     }
 
     @Override
-    protected SpotTracker getSpotTracker(SpotCollection spotCollection, Workspace workspace) {
+    protected SpotTracker getSpotTracker(SpotCollection spotCollection, WorkspaceI workspace) {
         SpotTrackerFactory spotTrackerFactory = new KalmanTrackerFactory();
         Map<String, Object> trackerSettings = spotTrackerFactory.getDefaultSettings();
 

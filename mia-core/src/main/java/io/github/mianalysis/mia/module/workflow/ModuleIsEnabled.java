@@ -8,6 +8,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -63,7 +64,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     }
 
-    public boolean testDoRedirect(Workspace workspace) {
+    public boolean testDoRedirect(WorkspaceI workspace) {
         String testMode = parameters.getValue(TEST_MODE,workspace);
         Module testModule = modules.getModuleByID(parameters.getValue(TEST_MODULE,workspace));
 
@@ -103,7 +104,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace);
 
@@ -131,7 +132,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));

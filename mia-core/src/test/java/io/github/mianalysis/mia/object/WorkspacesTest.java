@@ -16,7 +16,7 @@ public class WorkspacesTest {
         assertEquals(0,collection.size());
 
         // Adding a Workspace
-        Workspace workspace = collection.getNewWorkspace(new File("test1"),2);
+        WorkspaceI workspace = collection.getNewWorkspace(new File("test1"),2);
         assertEquals(1,collection.size());
         assertEquals(1,workspace.getID());
         assertEquals("test1",workspace.getMetadata().getFilename());

@@ -102,6 +102,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -506,7 +507,7 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE, workspace);
 
         // Getting input objects
@@ -703,7 +704,7 @@ public class RelateManyToMany extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -769,7 +770,7 @@ public class RelateManyToMany extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1, workspace);
         String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2, workspace);
 
@@ -805,7 +806,7 @@ public class RelateManyToMany extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         // Getting input objects
@@ -826,7 +827,7 @@ public class RelateManyToMany extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);

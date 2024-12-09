@@ -9,6 +9,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.refs.abstrakt.SpreadsheetWriter;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -20,7 +21,7 @@ public class XLSXExporter {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Summary");
 
-        LinkedHashMap<Integer,Workspace> workspacesMap = createRowList(sheet,workspaces);
+        LinkedHashMap<Integer,WorkspaceI> workspacesMap = createRowList(sheet,workspaces);
 
         addMetadataSummary(sheet, workspacesMap, modules);
 
@@ -33,7 +34,7 @@ public class XLSXExporter {
         }
     }
 
-    public void addMetadataSummary(Sheet sheet, LinkedHashMap<Integer,Workspace> workspaces, Modules modules) {
+    public void addMetadataSummary(Sheet sheet, LinkedHashMap<Integer,WorkspaceI> workspaces, Modules modules) {
         MetadataRefs metadataRefs = modules.getMetadataRefs(null);
 
         // Iterating over each metadata value, adding values
@@ -41,11 +42,11 @@ public class XLSXExporter {
 
     }
 
-    public LinkedHashMap<Integer,Workspace> createRowList(Sheet sheet, Workspaces workspaces) {
-        LinkedHashMap<Integer,Workspace> workspacesMap = new LinkedHashMap<>();
+    public LinkedHashMap<Integer,WorkspaceI> createRowList(Sheet sheet, Workspaces workspaces) {
+        LinkedHashMap<Integer,WorkspaceI> workspacesMap = new LinkedHashMap<>();
 
         int rowN = 1;
-        for (Workspace workspace:workspaces) {
+        for (WorkspaceI workspace:workspaces) {
             sheet.createRow(rowN);
             workspacesMap.put(rowN++,workspace);
         }

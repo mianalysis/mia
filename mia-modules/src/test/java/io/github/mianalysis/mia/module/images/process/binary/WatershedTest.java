@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.github.mianalysis.mia.TestUtils;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 
 
@@ -33,7 +34,7 @@ public class WatershedTest extends ModuleTest {
         
     // }
 
-    void testImageMaskOnly(Workspace workspace, String expectedImagePath) throws UnsupportedEncodingException {
+    void testImageMaskOnly(WorkspaceI workspace, String expectedImagePath) throws UnsupportedEncodingException {
         assertEquals(2, workspace.getImages().size());
         assertNotNull(workspace.getImage(inputMaskImageName));
         assertNotNull(workspace.getImage(outputImageName));
@@ -46,7 +47,7 @@ public class WatershedTest extends ModuleTest {
 
     }
 
-    void testImageMaskAndMarker(Workspace workspace, String expectedImagePath) throws UnsupportedEncodingException {
+    void testImageMaskAndMarker(WorkspaceI workspace, String expectedImagePath) throws UnsupportedEncodingException {
         assertEquals(3, workspace.getImages().size());
         assertNotNull(workspace.getImage(inputMaskImageName));
         assertNotNull(workspace.getImage(inputMarkerImageName));
@@ -60,7 +61,7 @@ public class WatershedTest extends ModuleTest {
 
     }
 
-    void testImageMaskAndIntensity(Workspace workspace, String expectedImagePath) throws UnsupportedEncodingException {
+    void testImageMaskAndIntensity(WorkspaceI workspace, String expectedImagePath) throws UnsupportedEncodingException {
         assertEquals(3, workspace.getImages().size());
         assertNotNull(workspace.getImage(inputMaskImageName));
         assertNotNull(workspace.getImage(inputIntensityImageName));
@@ -74,7 +75,7 @@ public class WatershedTest extends ModuleTest {
 
     }
 
-    void testImageMaskMarkerAndIntensity(Workspace workspace, String expectedImagePath)
+    void testImageMaskMarkerAndIntensity(WorkspaceI workspace, String expectedImagePath)
             throws UnsupportedEncodingException {
         assertEquals(4, workspace.getImages().size());
         assertNotNull(workspace.getImage(inputMaskImageName));
@@ -107,7 +108,7 @@ public class WatershedTest extends ModuleTest {
     public void testRunWithWhiteObjects2DBlackBackgroundSvensonMatchPixels() throws Exception {
         // // Creating a new workspace
         // Workspaces workspaces = new Workspaces();
-        // Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        // WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // // Loading the test image and adding to workspace
         // TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip", c;

@@ -272,7 +272,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
 
     // PACKAGE PRIVATE METHODS
 
-    public static VolumeType getVolumeType(String volumeType) {
+    public VolumeType getVolumeType(String volumeType) {
         switch (volumeType) {
             case VolumeTypesInterface.OCTREE:
                 return VolumeType.OCTREE;

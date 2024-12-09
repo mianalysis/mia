@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilte
 import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -271,7 +272,7 @@ public class WorkflowHandling extends Module {
 
     }
 
-    Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
+    Status processTermination(Parameters parameters, WorkspaceI workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE, workspace);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE, workspace);
         String messageLevel = parameters.getValue(MESSAGE_LEVEL, workspace);
@@ -395,7 +396,7 @@ public class WorkflowHandling extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String testMode = parameters.getValue(TEST_MODE, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
@@ -488,7 +489,7 @@ public class WorkflowHandling extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));

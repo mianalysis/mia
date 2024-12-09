@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
@@ -57,7 +58,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit2DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -111,7 +112,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit2DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -166,7 +167,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit2DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -220,7 +221,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -275,7 +276,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -329,7 +330,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -383,7 +384,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit4DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -438,7 +439,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit4DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -493,7 +494,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit4DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -560,7 +561,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DLabelledPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -613,7 +614,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DLabelledQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -666,7 +667,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DLabelledOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -719,7 +720,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunWhiteBackground8Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -773,7 +774,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunWhiteBackground8Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -827,7 +828,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunWhiteBackground8Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -881,7 +882,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DSingleObjectPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -936,7 +937,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DSingleObjectQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -991,7 +992,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DSingleObjectOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1047,7 +1048,7 @@ public class IdentifyObjectsTest extends ModuleTest {
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1102,7 +1103,7 @@ public class IdentifyObjectsTest extends ModuleTest {
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1157,7 +1158,7 @@ public class IdentifyObjectsTest extends ModuleTest {
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1211,7 +1212,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1265,7 +1266,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1319,7 +1320,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1373,7 +1374,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1430,7 +1431,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1487,7 +1488,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1544,7 +1545,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DNot255PointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1598,7 +1599,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DNot255QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1652,7 +1653,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DNot255OcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1706,7 +1707,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DNot65535PointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1760,7 +1761,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DNot65535QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1814,7 +1815,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DNot65535OcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1868,7 +1869,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DNot1PointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1925,7 +1926,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DNot1QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -1982,7 +1983,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DNot1OcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2039,7 +2040,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit2DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2093,7 +2094,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit2DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2147,7 +2148,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit2DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2201,7 +2202,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2255,7 +2256,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2309,7 +2310,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2363,7 +2364,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit4DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2418,7 +2419,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit4DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2473,7 +2474,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit4DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2534,7 +2535,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DLabelledPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2587,7 +2588,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DLabelledQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2640,7 +2641,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DLabelledOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2693,7 +2694,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunWhiteBackground8Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2747,7 +2748,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunWhiteBackground8Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2801,7 +2802,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunWhiteBackground8Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2855,7 +2856,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DSingleObjectPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2910,7 +2911,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DSingleObjectQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -2965,7 +2966,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DSingleObjectOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3021,7 +3022,7 @@ public class IdentifyObjectsTest extends ModuleTest {
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3075,7 +3076,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3129,7 +3130,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3183,7 +3184,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3237,7 +3238,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3291,7 +3292,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3345,7 +3346,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3402,7 +3403,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3459,7 +3460,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3516,7 +3517,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DNot255PointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3570,7 +3571,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DNot255QuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3624,7 +3625,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8Bit3DNot255OcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3678,7 +3679,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DNot65535PointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3732,7 +3733,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DNot65535QuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3786,7 +3787,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground16Bit3DNot65535OcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3840,7 +3841,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DNot1PointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3897,7 +3898,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DNot1QuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
@@ -3954,7 +3955,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground32Bit3DNot1OcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
-        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+        WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(

@@ -6,6 +6,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
@@ -35,7 +36,7 @@ public class OutputObjectsP extends TextType {
     }
 
     @Override
-    public <T> T getValue(Workspace workspace) {
+    public <T> T getValue(WorkspaceI workspace) {
         return (T) objectsName;
     }
 

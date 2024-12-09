@@ -1,6 +1,6 @@
 // // Example Groovy script taking an image "ExampleInputImage" from the workspace,
 // // cropping it and returning it as "ExampleOutputImage"
-// #@ io.github.mianalysis.MIA.Object.Workspace workspace
+// #@ io.github.mianalysis.MIA.Object.WorkspaceI workspace
 
 // import io.github.mianalysis.MIA.MIA
 // import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.CropImage
@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -112,7 +113,7 @@ public class RunScript extends Module {
     /**
      * Script code to be executed. Access to the active MIA workspace and module are
      * provided by the first two lines of code ("#@
-     * io.github.mianalysis.mia.object.Workspace workspace" and "#@
+     * io.github.mianalysis.mia.object.WorkspaceI workspace" and "#@
      * io.github.mianalysis.mia.module.Module thisModule"), which are included by
      * default. With these lines present in the script, the workspace can be
      * accessed via the "workspace" variable and the current module (i.e. this
@@ -131,7 +132,7 @@ public class RunScript extends Module {
     /**
      * Select a script file to be run by this module. As with the "Script text"
      * parameter, this script can start with the lines "#@
-     * io.github.mianalysis.mia.object.Workspace workspace" and "#@
+     * io.github.mianalysis.mia.object.WorkspaceI workspace" and "#@
      * io.github.mianalysis.mia.module.Module thisModule", which provide access to
      * the active workspace and this module.
      */
@@ -338,7 +339,7 @@ public class RunScript extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting input image
         String scriptMode = parameters.getValue(SCRIPT_MODE, workspace);
         String scriptText = parameters.getValue(SCRIPT_TEXT, workspace);
@@ -365,7 +366,7 @@ public class RunScript extends Module {
                 break;
         }
 
-        if (scriptText.contains("@ io.github.mianalysis.mia.object.Workspace workspace"))
+        if (scriptText.contains("@ io.github.mianalysis.mia.object.WorkspaceI workspace"))
             scriptParameters.put("workspace", workspace);
 
         if (scriptText.contains("@ io.github.mianalysis.mia.module.Module thisModule"))
@@ -452,7 +453,7 @@ public class RunScript extends Module {
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
         parameters.add(new TextAreaP(SCRIPT_TEXT, this,
-                "// The following two parameters will provide references to the workspace and current module.\n#@ io.github.mianalysis.mia.object.Workspace workspace\n#@ io.github.mianalysis.mia.module.Module thisModule\n\nimport io.github.mianalysis.mia.MIA",
+                "// The following two parameters will provide references to the workspace and current module.\n#@ io.github.mianalysis.mia.object.WorkspaceI workspace\n#@ io.github.mianalysis.mia.module.Module thisModule\n\nimport io.github.mianalysis.mia.MIA",
                 true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
 
@@ -489,7 +490,7 @@ public class RunScript extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(SCRIPT_SEPARATOR));
@@ -516,7 +517,7 @@ public class RunScript extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
@@ -545,7 +546,7 @@ public class RunScript extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
@@ -574,7 +575,7 @@ public class RunScript extends Module {
 
     @Override
     public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
 
         ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
@@ -603,7 +604,7 @@ public class RunScript extends Module {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
@@ -629,7 +630,7 @@ public class RunScript extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
@@ -659,7 +660,7 @@ public class RunScript extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
+        WorkspaceI workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         ParameterGroup inputParameterGroup = parameters.getParameter(ADD_PARAMETER);
@@ -705,11 +706,11 @@ public class RunScript extends Module {
                 + "\" box.  This parameter is not necessary when loading a script from file, since the file extension provides the language information.");
 
         parameters.get(SCRIPT_TEXT).setDescription(
-                "Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code (\"#@ io.github.mianalysis.mia.object.Workspace workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\"), which are included by default.  With these lines present in the script, the workspace can be accessed via the \"workspace\" variable and the current module (i.e. this script module) via the \"thisModule\" variable.");
+                "Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code (\"#@ io.github.mianalysis.mia.object.WorkspaceI workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\"), which are included by default.  With these lines present in the script, the workspace can be accessed via the \"workspace\" variable and the current module (i.e. this script module) via the \"thisModule\" variable.");
 
         parameters.get(SCRIPT_FILE).setDescription("Select a script file to be run by this module.  As with the \""
                 + SCRIPT_TEXT
-                + "\" parameter, this script can start with the lines \"#@ io.github.mianalysis.mia.object.Workspace workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\", which provide access to the active workspace and this module.");
+                + "\" parameter, this script can start with the lines \"#@ io.github.mianalysis.mia.object.WorkspaceI workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\", which provide access to the active workspace and this module.");
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_OUTPUT);
         Parameters collection = group.getTemplateParameters();

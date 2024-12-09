@@ -8,6 +8,7 @@ import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectTexture;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_MeasureObjectTexture extends MacroOperation {
@@ -22,7 +23,7 @@ public class MIA_MeasureObjectTexture extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(modules);
 
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS,objects[0]);
