@@ -2,8 +2,6 @@ package io.github.mianalysis.mia.module;
 
 import java.util.LinkedHashSet;
 
-import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;

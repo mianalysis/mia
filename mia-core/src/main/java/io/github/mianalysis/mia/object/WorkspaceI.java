@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Status;
 

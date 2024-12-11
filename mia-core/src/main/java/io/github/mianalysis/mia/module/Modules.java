@@ -16,7 +16,6 @@ import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;

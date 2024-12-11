@@ -7,7 +7,6 @@ import java.util.Arrays;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
