@@ -1,7 +1,10 @@
 package io.github.mianalysis.mia.object.system;
 
+import javax.swing.JComboBox;
+
 import ij.IJ;
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -60,17 +63,17 @@ public class SwingPreferences extends Preferences {
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
 
         Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
-        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-            if (evt.getOldValue() != null)
-                setTheme();
-        });
+        // parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+        //     if (evt.getOldValue() != null)
+        //         setTheme();
+        // });
         parameters.add(parameter);
 
         parameter = new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false));
-        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-            if (evt.getOldValue() != null)
-                setShowDeprecated();
-        });
+        // parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+        //     if (evt.getOldValue() != null)
+        //         setShowDeprecated();
+        // });
         parameters.add(parameter);
 
         addSwingParameterDescriptions();

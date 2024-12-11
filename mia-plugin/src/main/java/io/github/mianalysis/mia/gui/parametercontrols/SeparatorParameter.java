@@ -24,6 +24,8 @@ public class SeparatorParameter extends ParameterControl {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         control = new JPanel(new GridBagLayout());
+        control.setOpaque(false);
+        
         GridBagConstraints c = new GridBagConstraints();
 
         c.gridx = 0;
@@ -37,7 +39,7 @@ public class SeparatorParameter extends ParameterControl {
         separatorLeft.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 1;
         c.gridx++;
-        c.insets = new Insets(0, 0, 0, 5);
+        c.insets = new Insets(0, 0, 0, 10);
         control.add(separatorLeft, c);
 
         JLabel label = new JLabel();
@@ -52,7 +54,7 @@ public class SeparatorParameter extends ParameterControl {
         separatorRight.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 1;
         c.gridx++;
-        c.insets = new Insets(0, 5, 0, 0);
+        c.insets = new Insets(0, 10, 0, 0);
         control.add(separatorRight, c);
 
     }

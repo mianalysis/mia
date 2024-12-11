@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.UIManager;
@@ -10,7 +11,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
 import ij.Prefs;
-import ij.plugin.frame.Recorder;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
 import io.github.mianalysis.mia.module.AvailableModules;
@@ -51,7 +51,7 @@ public class MIA_ extends MIA implements Command {
     }
 
     @Override
-    public void run() {        
+    public void run() {
         headless = false;
 
         // Adding LogService to LogHistory
@@ -68,6 +68,8 @@ public class MIA_ extends MIA implements Command {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
             UIManager.put("TitlePane.showIconBesideTitle", true);
+            UIManager.put("TabbedPane.selectedBackground", new Color(0, 0, 0, 0));
+            System.setProperty("apple.awt.application.appearance", "system");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {

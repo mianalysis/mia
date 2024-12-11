@@ -8,10 +8,8 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
@@ -50,13 +48,13 @@ public class EditingControlPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(10, 10, 0, 10);
         c.anchor = GridBagConstraints.PAGE_START;
 
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
         setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight - 350));
 
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));        
         setLayout(new GridBagLayout());
 
         // Add module button
@@ -109,7 +107,7 @@ public class EditingControlPanel extends JPanel {
         AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,
                 bigButtonSize);
         c.gridy++;
-        c.insets = new Insets(5, 5, 5, 5);
+        c.insets = new Insets(5, 10, 10, 10);
         add(stopAnalysisButton, c);
 
         validate();

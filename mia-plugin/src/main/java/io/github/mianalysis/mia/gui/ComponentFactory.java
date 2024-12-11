@@ -81,13 +81,14 @@ public class ComponentFactory {
 
     public JPanel createParameterControl(Parameter parameter, Modules modules, Module module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
+        paramPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(2, 5, 0, 0);
+        c.insets = new Insets(2, 10, 0, 0);
 
         ParameterControl parameterControl = parameter.getControl();
         parameterControl.updateControl();
@@ -98,7 +99,7 @@ public class ComponentFactory {
         if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
             String value = parameter.getAlternativeString();
             parameterComponent.setToolTipText(value == null ? "" : value);
-            c.insets = new Insets(10, 3, 5, 5);
+            c.insets = new Insets(10, 3, 10, 10);
             paramPanel.add(parameterComponent, c);
 
         } else if (parameter instanceof SeparatorP) {
@@ -110,9 +111,9 @@ public class ComponentFactory {
             if (firstParameter == parameter
                     || (firstParameter instanceof ParameterGroup && ((ParameterGroup) firstParameter)
                             .getCollections(true).values().iterator().next().values().iterator().next() == parameter)) {
-                c.insets = new Insets(0, 5, 5, 8);
+                c.insets = new Insets(0, 10, 10, 10);
             } else {
-                c.insets = new Insets(30, 5, 5, 8);
+                c.insets = new Insets(30, 10, 10, 10);
             }
             paramPanel.add(parameterComponent, c);
 
@@ -146,7 +147,7 @@ public class ComponentFactory {
             }
 
             if (editable) {
-                c.insets = new Insets(2, 5, 0, 5);
+                c.insets = new Insets(2, 10, 0, 10);
                 c.gridx++;
                 c.weightx = 0;
                 c.anchor = GridBagConstraints.EAST;
@@ -162,12 +163,14 @@ public class ComponentFactory {
 
     public JPanel createParametersTopRow(Module activeModule) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
+        paramPanel.setOpaque(false);
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(10, 10, 0, 0);
 
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
@@ -204,6 +207,7 @@ public class ComponentFactory {
         separator.setPreferredSize(new Dimension(5, 25));
         c.gridx++;
         c.weightx = 0;
+        c.insets = new Insets(10, 10, 0, 10);
         paramPanel.add(separator, c);
 
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
@@ -255,6 +259,7 @@ public class ComponentFactory {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -287,7 +292,7 @@ public class ComponentFactory {
                 leftArrowLabel.setIcon(rightArrow);
         }
 
-        c.insets = new Insets(0, 0, 0, 5);
+        c.insets = new Insets(0, 0, 0, 10);
         c.gridx++;
         panel.add(leftArrowLabel, c);
 
@@ -313,7 +318,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
-        c.insets = new Insets(0, 5, 0, 0);
+        c.insets = new Insets(0, 10, 0, 0);
         panel.add(separatorRight, c);
 
         JLabel rightArrowLabel = new JLabel();
@@ -401,7 +406,7 @@ public class ComponentFactory {
         if (!module.isRunnable() & !module.invalidParameterIsVisible())
             return modulePanel;
 
-        c.insets = new Insets(0, 40, 0, 17);
+        c.insets = new Insets(0, 40, 0, 0);
         addProcessingParameters(module, module.updateAndGetParameters(), modulePanel, c, false);
 
         return modulePanel;
@@ -434,6 +439,7 @@ public class ComponentFactory {
 
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setPreferredSize(new Dimension(200, 25));
+        labelPanel.setOpaque(false);
 
         // If we're not exporting anything, skip this
         if (exportMode.equals(OutputControl.ExportModes.NONE))
@@ -450,6 +456,7 @@ public class ComponentFactory {
         exportLabel.setPreferredSize(new Dimension(40, 25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportLabel.setEnabled(exportIndividual.isSelected());
+        exportLabel.setOpaque(false);
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
@@ -501,6 +508,7 @@ public class ComponentFactory {
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200, 25));
+        controlPanel.setOpaque(false);
 
         // If we're not exporting anything, skip this
         if (exportMode.equals(OutputControl.ExportModes.NONE))
@@ -531,6 +539,7 @@ public class ComponentFactory {
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200, 25));
+        controlPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -622,11 +631,12 @@ public class ComponentFactory {
 
     public JPanel createRefExportHeader(String name, Refs refs, boolean includeSummary) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
+        headerPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(10, 10, 0, 0);
         c.weightx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
@@ -648,6 +658,7 @@ public class ComponentFactory {
         JLabel headerName = new JLabel(name);
         headerName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         headerName.setPreferredSize(new Dimension(-1, elementHeight));
+        headerName.setOpaque(false);        
         headerName.setBorder(null);
         c.gridx++;
         c.weightx = 1;
@@ -671,13 +682,14 @@ public class ComponentFactory {
 
     public JPanel createSingleRefControl(ExportableRef ref) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
+        measurementPanel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(10, 10, 0, 0);
 
         ExportEnableButton enabledButton = new ExportEnableButton(ref);
         enabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
@@ -703,7 +715,7 @@ public class ComponentFactory {
         resetExport.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(10, 10, 0, 10);
         measurementPanel.add(resetExport, c);
 
         return measurementPanel;
@@ -718,7 +730,7 @@ public class ComponentFactory {
         c.gridy = 0;
         c.weightx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(10, 10, 0, 0);
 
         ExportEnableButton enabledButton = new ExportEnableButton(ref);
         enabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
@@ -744,7 +756,7 @@ public class ComponentFactory {
         resetExport.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(10, 10, 0, 10);
         measurementPanel.add(resetExport, c);
 
         return measurementPanel;

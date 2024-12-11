@@ -3,6 +3,8 @@ package io.github.mianalysis.mia.gui.parametercontrols;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 
@@ -15,6 +17,7 @@ public class GenericButton extends ParameterControl {
     public GenericButton(GenericButtonP parameter) {
         super(parameter);
         
+        control.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         control = new JButton(parameter.getRawStringValue());
         control.addActionListener(parameter.getActionListener());
 

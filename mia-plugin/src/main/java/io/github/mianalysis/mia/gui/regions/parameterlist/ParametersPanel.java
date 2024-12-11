@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.gui.regions.parameterlist;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -13,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
-import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
@@ -21,10 +21,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
@@ -35,32 +35,42 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
 
-public class ParametersPanel extends JScrollPane {
+public class ParametersPanel extends JPanel {
     private static final long serialVersionUID = 1455273666893303846L;
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 600;
 
+    private JScrollPane scrollPane;
     private JPanel panel;
 
     public ParametersPanel() {
+        setLayout(new BorderLayout(0,0));
+
         panel = new JPanel();
-        setViewportView(panel);        
-        
+        panel.setOpaque(false);
+
+        scrollPane = new JScrollPane(panel);
+        scrollPane.setViewportView(panel);        
+
         // Initialising the scroll panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setViewportBorder(BorderFactory.createEmptyBorder());
-        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        getVerticalScrollBar().setUnitIncrement(10);
-        setMinimumSize(new Dimension(minimumWidth,1));
-        setPreferredSize(new Dimension(preferredWidth,1));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.setMinimumSize(new Dimension(minimumWidth,1));
+        scrollPane.setPreferredSize(new Dimension(preferredWidth,1));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();
         panel.repaint();
 
-        validate();
-        repaint();
+        scrollPane.validate();
+        scrollPane.repaint();
+
+        add(scrollPane,BorderLayout.CENTER);
 
     }
 
@@ -78,7 +88,7 @@ public class ParametersPanel extends JScrollPane {
         c.weightx = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 20, 0);
+        c.insets = new Insets(10, 10, 20, 0);
         c.anchor = GridBagConstraints.WEST;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
@@ -98,7 +108,7 @@ public class ParametersPanel extends JScrollPane {
         // If the active module hasn't got parameters enabled, skip it
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridwidth = 1;
-        c.insets = new Insets(2, 5, 0, 0);
+        c.insets = new Insets(2, 10, 0, 0);
         if (module.updateAndGetParameters() != null) {
             for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
@@ -144,8 +154,8 @@ public class ParametersPanel extends JScrollPane {
         panel.revalidate();
         panel.repaint();
 
-        revalidate();
-        repaint();
+        scrollPane.revalidate();
+        scrollPane.repaint();
 
     }
 
@@ -193,7 +203,7 @@ public class ParametersPanel extends JScrollPane {
         ComponentFactory componentFactory = GUI.getComponentFactory();
         Module activeModule = GUI.getFirstSelectedModule();
 
-        c.insets = new Insets(2, 5, 0, 0);
+        c.insets = new Insets(2, 10, 0, 10);
         c.gridx = 0;
         c.gridy++;
         c.weightx = 1;

@@ -5,7 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+
+import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -14,9 +17,9 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
 /**
  * Created by sc13967 on 22/05/2017.
  */
-public class ChoiceArrayParameter extends TextSwitchableParameterControl implements ActionListener  {
-    private WiderDropDownCombo choiceControl;
-    
+public class ChoiceArrayParameter extends TextSwitchableParameterControl implements ActionListener {
+    private JComboBox choiceControl;
+
     public ChoiceArrayParameter(ChoiceType parameter) {
         super(parameter);
 
@@ -25,12 +28,12 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
         String[] choices = parameter.getChoices();
         if (choices == null)
             choices = new String[] { "" };
-        choiceControl = new WiderDropDownCombo(choices);
+        choiceControl = new JComboBox(choices);
 
+        choiceControl.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         choiceControl.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         choiceControl.setSelectedItem(parameter.getValue(null));
         choiceControl.addActionListener(this);
-        choiceControl.setWide(true);
 
     }
 
@@ -58,21 +61,21 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
 
     @Override
     public void updateDefaultControl() {
-            String[] choices = ((ChoiceType) parameter).getChoices();
-            if (choices == null)
-                choices = new String[] { "" };
+        String[] choices = ((ChoiceType) parameter).getChoices();
+        if (choices == null)
+            choices = new String[] { "" };
 
-            // Getting previously-selected item
-            String selected = parameter.getValue(null);            
+        // Getting previously-selected item
+        String selected = parameter.getValue(null);
 
-            // Creating a new model
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel(choices);
-            model.setSelectedItem(selected);
+        // Creating a new model
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel(choices);
+        model.setSelectedItem(selected);
 
-            // Updating the control
-            choiceControl.setModel(model);
-            choiceControl.repaint();
-            choiceControl.revalidate();
+        // Updating the control
+        choiceControl.setModel(model);
+        choiceControl.repaint();
+        choiceControl.revalidate();
 
     }
 }
