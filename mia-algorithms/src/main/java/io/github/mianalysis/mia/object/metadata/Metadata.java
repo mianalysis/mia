@@ -10,51 +10,7 @@ import java.util.regex.Pattern;
  * High-content result structure as an abstract class, which is extended on an experiment-by experiment basis
  * Created by sc13967 on 25/10/2016.
  */
-public class Metadata extends LinkedHashMap<String,Object> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 8055147730108225349L;
-
-    public static final String FILENAME = "Filename";
-    public static final String FILEPATH = "Filepath";
-    public static final String WELL = "Well";
-    public static final String ROW = "Row";
-    public static final String COL = "Col";
-    public static final String FIELD = "Field";
-    public static final String TIMEPOINT = "Timepoint";
-    public static final String ZPOSITION = "Z-position";
-    public static final String CHANNEL = "Channel";
-    public static final String YEAR = "Year";
-    public static final String MONTH = "Month";
-    public static final String DAY = "Day";
-    public static final String HOUR = "Hour";
-    public static final String MINUTE = "Minute";
-    public static final String SECOND = "Second";
-    public static final String CELLTYPE = "CellType";
-    public static final String MAGNIFICATION = "Magnification";
-    public static final String COMMENT = "Comment";
-    public static final String FILE = "File";
-    public static final String EXTENSION = "Extension";
-    public static final String KEYWORD = "Keyword";
-    public static final String SERIES_NUMBER = "Series number";
-    public static final String SERIES_NAME = "Series name";
-    public static final String UNITS = "Units";
-    public static final String PLATE_NAME = "Plate name";
-    public static final String PLATE_MANUFACTURER = "Plate manufacturer";
-    public static final String PLATE_MODEL = "Plate model";
-    public static final String TIMELINE_NUMBER = "Timeline number";
-    public static final String ACTION_NUMBER = "Action number";
-    public static final String AREA_NAME = "Area name";
-
-
-    // CONSTRUCTOR
-
-    public Metadata() {
-
-    }
-
-
+public class Metadata extends LinkedHashMap<String,Object> implements MetadataI {
     // GETTERS AND SETTERS
 
     public String getFilename() {
@@ -340,4 +296,9 @@ public class Metadata extends LinkedHashMap<String,Object> {
         return outputName;
 
     }
+
+    @Override
+    public boolean containsKey(String key) {
+        return this.containsKey(key);
+    }   
 }

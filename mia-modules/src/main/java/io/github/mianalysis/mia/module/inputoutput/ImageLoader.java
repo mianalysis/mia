@@ -41,6 +41,7 @@ import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.IncuCyteShortFilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.metadata.NameExtractor;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -1258,7 +1259,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    private String getYokogawaName(Metadata metadata, int channel)
+    private String getYokogawaName(MetadataI metadata, int channel)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Creating metadata object
@@ -1378,7 +1379,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case SeriesModes.SPECIFIC_SERIES:
                     String seriesNumberText = parameters.getValue(SERIES_NUMBER, workspace);
-                    Metadata metadata = workspace.getMetadata();
+                    MetadataI metadata = workspace.getMetadata();
                     seriesNumber = (int) Math
                             .round(Double.parseDouble(metadata.insertMetadataValues(seriesNumberText)));
                     break;

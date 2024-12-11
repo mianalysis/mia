@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -268,7 +269,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
             case SeriesModes.SPECIFIC_SERIES:
                 String seriesNumberText = parameters.getValue(SERIES_NUMBER, workspace);
-                Metadata metadata = workspace.getMetadata();
+                MetadataI metadata = workspace.getMetadata();
                 seriesNumber = (int) Math
                         .round(Double.parseDouble(metadata.insertMetadataValues(seriesNumberText)));
                 break;

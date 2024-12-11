@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.module.script.RunMacro.MacroModes;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -374,7 +375,7 @@ public class OutputControl extends AbstractMacroRunner {
         return parameters.getValue(EXPORT_MODE, null).equals(ExportModes.GROUP_BY_METADATA);
     }
 
-    public String getIndividualOutputPath(Metadata metadata) {
+    public String getIndividualOutputPath(MetadataI metadata) {
         String mirroredRoot = getParameterValue(MIRRORED_DIRECTORY_ROOT, null);
         String saveLocation = getParameterValue(INDIVIDUAL_SAVE_LOCATION, null);
         String saveFilePath = getParameterValue(SAVE_FILE_PATH, null);
@@ -407,7 +408,7 @@ public class OutputControl extends AbstractMacroRunner {
 
     }
 
-    public static String getMirroredDirectory(File rootFile, Metadata metadata, String mirroredDirectoryRoot) {
+    public static String getMirroredDirectory(File rootFile, MetadataI metadata, String mirroredDirectoryRoot) {
         int fileDepth = metadata.containsKey("FILE_DEPTH") ? (int) metadata.get("FILE_DEPTH") : 0;
 
         StringBuilder sb = new StringBuilder();

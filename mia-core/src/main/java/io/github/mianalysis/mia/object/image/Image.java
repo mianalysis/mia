@@ -172,47 +172,6 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
         show(name, null, normalise, DisplayModes.COLOUR);
     }
 
-    @Deprecated
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, String displayMode) {
-        show(title, lut, normalise, displayMode);
-    }
-
-    @Deprecated
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, String displayMode,
-            Overlay overlay) {
-        show(title, lut, normalise, displayMode, overlay);
-    }
-
-    @Deprecated
-    public void showImage(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, DisplayModes.COLOUR, overlay);
-    }
-
-    @Deprecated
-    public void showImage(String title, LUT lut) {
-        show(title, lut, true, DisplayModes.COLOUR);
-    }
-
-    @Deprecated
-    public void showImage(String title) {
-        show(title, LUT.createLutFromColor(Color.WHITE));
-    }
-
-    @Deprecated
-    public void showImage(LUT lut) {
-        show(name, lut);
-    }
-
-    @Deprecated
-    public void showImage() {
-        show(name, null);
-    }
-
-    @Deprecated
-    public void showImage(Overlay overlay) {
-        show(name, null, overlay);
-    }
-
     /**
      * Displays measurement values from a specific Module
      *

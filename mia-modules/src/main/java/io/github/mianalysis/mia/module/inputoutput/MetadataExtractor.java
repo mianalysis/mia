@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.metadata.GenericExtractor;
 import io.github.mianalysis.mia.object.metadata.IncuCyteLongFilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.IncuCyteShortFilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.metadata.NameExtractor;
 import io.github.mianalysis.mia.object.metadata.OperaFileExtractor;
 import io.github.mianalysis.mia.object.metadata.OperaFilenameExtractor;
@@ -266,7 +267,7 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private void extractFilename(Metadata metadata, String filenameExtractorName) {
+    private void extractFilename(MetadataI metadata, String filenameExtractorName) {
         NameExtractor filenameExtractor = null;
 
         switch (filenameExtractorName) {
@@ -302,7 +303,7 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private void extractGeneric(Metadata metadata, String input, String pattern, String groupString,
+    private void extractGeneric(MetadataI metadata, String input, String pattern, String groupString,
             boolean caseInsensitive) {
         String[] groups = getGroups(groupString);
 
@@ -315,7 +316,7 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private void extractFoldername(Metadata metadata, String foldernameExtractorName) {
+    private void extractFoldername(MetadataI metadata, String foldernameExtractorName) {
         // Getting folder name extractor
         NameExtractor foldernameExtractor = null;
         switch (foldernameExtractorName) {
@@ -336,7 +337,7 @@ public class MetadataExtractor extends Module {
         }
     }
 
-    private void extractMetadataFile(Metadata metadata, String metadataFileExtractorName) {
+    private void extractMetadataFile(MetadataI metadata, String metadataFileExtractorName) {
         FileExtractor metadataFileExtractor = null;
 
         switch (metadataFileExtractorName) {
@@ -355,7 +356,7 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private String getExternalMetadataRegex(Metadata metadata, String inputFilePath, String metadataItemToMatch) {
+    private String getExternalMetadataRegex(MetadataI metadata, String inputFilePath, String metadataItemToMatch) {
         // Reading contents of metadata file
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
@@ -450,7 +451,7 @@ public class MetadataExtractor extends Module {
         String metadataValueName = parameters.getValue(METADATA_VALUE_NAME, workspace);
 
         // Getting current result
-        Metadata metadata = workspace.getMetadata();
+        MetadataI metadata = workspace.getMetadata();
 
         switch (extractorMode) {
             case ExtractorModes.FILENAME_MODE:

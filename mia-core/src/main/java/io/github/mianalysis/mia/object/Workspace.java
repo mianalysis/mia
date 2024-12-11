@@ -10,6 +10,7 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.system.Status;
@@ -21,7 +22,7 @@ public class Workspace implements WorkspaceI {
     private Workspaces workspaces;
     private LinkedHashMap<String, Objs> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
-    private Metadata metadata = new Metadata();
+    private MetadataI metadata = new Metadata();
     private int ID;
     private double progress = 0;
     private Status status = Status.PASS;
@@ -227,11 +228,11 @@ public class Workspace implements WorkspaceI {
         this.images = images;
     }
 
-    public Metadata getMetadata() {
+    public MetadataI getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Metadata metadata) {
+    public void setMetadata(MetadataI metadata) {
         this.metadata = metadata;
     }
 

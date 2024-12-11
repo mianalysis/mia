@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
-import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.math.CumStat;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -108,7 +108,7 @@ public abstract class TextType extends Parameter {
         // Inserting metadata values
         Pattern pattern = Pattern.compile("Me\\{([^}]+)}");
         Matcher matcher = pattern.matcher(string);
-        Metadata metadata = workspace.getMetadata();
+        MetadataI metadata = workspace.getMetadata();
         while (matcher.find()) {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);

@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.object.parameters;
 
 import java.util.LinkedHashMap;
 
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.Refs;

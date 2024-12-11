@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -322,7 +323,7 @@ public class WorkflowHandling extends Module {
         }
     }
 
-    public static boolean testFileExists(Metadata metadata, String genericFormat) {
+    public static boolean testFileExists(MetadataI metadata, String genericFormat) {
         String name = "";
         try {
             name = FileTools.getGenericName(metadata, genericFormat);

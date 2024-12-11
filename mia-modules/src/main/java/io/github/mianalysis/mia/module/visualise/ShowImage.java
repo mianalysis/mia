@@ -7,9 +7,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -22,7 +22,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.metadata.Metadata;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -119,12 +118,12 @@ public class ShowImage extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String imageName = parameters.getValue(DISPLAY_IMAGE, workspace);
-        Image image = workspace.getImage(imageName);
         String titleMode = parameters.getValue(TITLE_MODE, workspace);
         boolean normalisation = parameters.getValue(QUICK_NORMALISATION, workspace);
         String channelMode = parameters.getValue(CHANNEL_MODE, workspace);
+        
+        MetadataI metadata = workspace.getMetadata();
 
-        Metadata metadata = workspace.getMetadata();
         String title = "";
         switch (titleMode) {
             case TitleModes.FILE_NAME:
@@ -137,6 +136,8 @@ public class ShowImage extends Module {
                 title = metadata.getFilename() + "." + metadata.getExt() + "_" + imageName;
                 break;
         }
+
+        Image image = workspace.getImage(imageName);
 
         if (showOutput)
             image.show(title, null, normalisation, channelMode);

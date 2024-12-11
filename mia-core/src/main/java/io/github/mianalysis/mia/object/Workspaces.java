@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
+import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 /**

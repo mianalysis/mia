@@ -53,6 +53,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -634,7 +635,7 @@ public class Exporter {
             HashMap<String, Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
 
         // Adding metadata values
-        Metadata metadata = workspace.getMetadata();
+        MetadataI metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
             String headerName = getMetadataString(name);
             if (!colNumbers.containsKey(headerName))
@@ -928,7 +929,7 @@ public class Exporter {
                         objectIDValueCell.setCellValue(object.getID());
 
                         // Adding metadata (if enabled)
-                        Metadata metadata = workspace.getMetadata();
+                        MetadataI metadata = workspace.getMetadata();
                         for (int column : metadataNames.keySet()) {
                             Cell metaValueCell = objectValueRow.createCell(column);
                             metaValueCell.setCellValue(metadata.getAsString(metadataNames.get(column)));

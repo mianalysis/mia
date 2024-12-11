@@ -36,6 +36,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.metadata.Metadata;
+import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
@@ -175,7 +176,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         for (WorkspaceI workspace : workspaces) {
             if (!currentWorkspaces.contains(workspace)) {
                 JobNumber jobNumber = new JobNumber(++maxJob);
-                Metadata metadata = workspace.getMetadata();
+                MetadataI metadata = workspace.getMetadata();
                 File file = metadata.getFile();
                 String seriesName = metadata.getSeriesName();
                 String seriesNumber = String.valueOf(metadata.getSeriesNumber());
