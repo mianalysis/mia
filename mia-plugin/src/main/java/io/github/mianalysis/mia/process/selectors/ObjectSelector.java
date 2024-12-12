@@ -330,9 +330,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                List<ObjRoi> selected = list.getSelectedValuesList();
-                for (ObjRoi objRoi : selected)
-                    displayObject(objRoi);
+                displayObjects(list.getSelectedValuesList());
             }
         });
 
@@ -1118,7 +1116,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 break;
         }
 
-        overlay.add(overlayRoi);
+        if (!overlayMode.equals(OverlayModes.NONE))
+            overlay.add(overlayRoi);
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
@@ -1146,8 +1145,19 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    void displayObject(ObjRoi objRoi) {
-        displayIpl.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
+    void displayObjects(List<ObjRoi>  objRois) {
+        ShapeRoi roi = null;
+        for (ObjRoi objRoi:objRois) {
+            if (roi == null) {
+                roi = new ShapeRoi(objRoi.getRoi());
+                continue;
+            }
+
+            roi.or(new ShapeRoi(objRoi.getRoi()));
+        }
+
+        displayIpl.setRoi(roi);
+
     }
 
     String getSavePath() {
