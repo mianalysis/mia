@@ -44,15 +44,14 @@ import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
-import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -651,8 +650,8 @@ public class Exporter {
         }
 
         // Adding image measurements
-        HashMap<String, Image> images = workspace.getImages();
-        for (Image image : images.values()) {
+        HashMap<String, ImageI> images = workspace.getImages();
+        for (ImageI image : images.values()) {
             String imageName = image.getName();
 
             ImageMeasurementRefs imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);

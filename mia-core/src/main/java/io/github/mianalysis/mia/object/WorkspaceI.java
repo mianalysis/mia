@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Status;
 
@@ -13,7 +13,7 @@ public interface WorkspaceI {
 
     public void removeObjects(String name, boolean retainMeasurements);
 
-    public void addImage(Image image);
+    public void addImage(ImageI image);
 
     public void removeImage(String name, boolean retainMeasurements);
 
@@ -31,7 +31,7 @@ public interface WorkspaceI {
 
     public void showMetadata();
 
-    public Image getImage(String name);
+    public ImageI getImage(String name);
 
     public Objs getObjects(String name);
 
@@ -50,9 +50,9 @@ public interface WorkspaceI {
 
     public void setObjects(LinkedHashMap<String, Objs> objects);
 
-    public LinkedHashMap<String, Image> getImages();
+    public LinkedHashMap<String, ImageI> getImages();
 
-    public void setImages(LinkedHashMap<String, Image> images);
+    public void setImages(LinkedHashMap<String, ImageI> images);
 
     public MetadataI getMetadata();
 

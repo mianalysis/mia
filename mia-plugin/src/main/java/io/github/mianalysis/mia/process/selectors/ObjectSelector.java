@@ -308,7 +308,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         JMenuItem toolMenuItem = new JMenuItem(SELECT_EMPTY_SPACE_AT_CLICK);
         toolMenuItem.addActionListener(this);
         toolsMenu.add(toolMenuItem);
-
+ 
         toolMenuItem = new JMenuItem(SELECT_EMPTY_SPACE_IN_REGION);
         toolMenuItem.addActionListener(this);
         toolsMenu.add(toolMenuItem);

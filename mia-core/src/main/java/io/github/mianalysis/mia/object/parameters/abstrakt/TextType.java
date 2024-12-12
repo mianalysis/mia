@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
@@ -132,7 +132,7 @@ public abstract class TextType extends Parameter {
             Pattern imMeasPattern = Pattern.compile("([^\\|]+)\\|([^\\|]+)");
             Matcher imMeasMatcher = imMeasPattern.matcher(matcher.group(1));
             if (imMeasMatcher.find()) {
-                Image image = workspace.getImage(imMeasMatcher.group(1));
+                ImageI image = workspace.getImage(imMeasMatcher.group(1));
                 if (image == null)
                     break;
 

@@ -8,7 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.system.Status;
 public class Workspace implements WorkspaceI {
     private Workspaces workspaces;
     private LinkedHashMap<String, Objs> objects = new LinkedHashMap<>();
-    private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
+    private LinkedHashMap<String, ImageI> images = new LinkedHashMap<>();
     private MetadataI metadata = new Metadata();
     private int ID;
     private double progress = 0;
@@ -67,7 +67,7 @@ public class Workspace implements WorkspaceI {
         }
     }
 
-    public void addImage(Image image) {
+    public void addImage(ImageI image) {
         images.put(image.getName(), image);
     }
 
@@ -84,15 +84,13 @@ public class Workspace implements WorkspaceI {
      * @param retainMeasurements When true, measurements associated with this image will be retained, while the pixel information will be cleared
      */
     public void clearAllImages(boolean retainMeasurements) {
-        if (retainMeasurements) {
+        if (retainMeasurements)
             // Sets the ImagePlus to null, but leaves measurements
-            for (Image image:images.values()) {
+            for (ImageI image:images.values())
                 image.setImagePlus(null);
-            }
-        } else {
+        else
             // Removes all the data
             images = new LinkedHashMap<>();
-        }
     }
 
     public void clearAllObjects(boolean retainMeasurements) {
@@ -156,7 +154,7 @@ public class Workspace implements WorkspaceI {
 
     }
 
-    public Image getImage(String name) {
+    public ImageI getImage(String name) {
         return images.get(name);
 
     }
@@ -220,11 +218,11 @@ public class Workspace implements WorkspaceI {
         this.objects = objects;
     }
 
-    public LinkedHashMap<String, Image> getImages() {
+    public LinkedHashMap<String, ImageI> getImages() {
         return images;
     }
 
-    public void setImages(LinkedHashMap<String, Image> images) {
+    public void setImages(LinkedHashMap<String, ImageI> images) {
         this.images = images;
     }
 
