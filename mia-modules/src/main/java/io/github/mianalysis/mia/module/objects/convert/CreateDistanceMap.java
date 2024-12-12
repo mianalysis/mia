@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -51,7 +51,7 @@ public class CreateDistanceMap extends Module {
 	/**
 	* 
 	*/
-    public static final String INPUT_SEPARATOR = "Objects input / image output";
+    public static final String INPUT_SEPARATOR = "Objects input / ImageI output";
 
 	/**
 	* Objects from workspace for which distance map will be created.  A single distance map will be created for all objects.
@@ -118,7 +118,7 @@ public class CreateDistanceMap extends Module {
     public interface SpatialUnitsModes extends SpatialUnitsInterface {
     }
 
-    public static Image getCentroidDistanceMap(Objs inputObjects, String outputImageName) {
+    public static ImageI getCentroidDistanceMap(Objs inputObjects, String outputImageName) {
         // Getting image parameters
         int width = inputObjects.getWidth();
         int height = inputObjects.getHeight();
@@ -127,7 +127,7 @@ public class CreateDistanceMap extends Module {
 
         // Creating a blank image (8-bit, so binary operations work)
         ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
-        Image distanceMap = ImageFactory.createImage(outputImageName, distanceMapIpl);
+        ImageI distanceMap = ImageFactory.createImage(outputImageName, distanceMapIpl);
         inputObjects.applyCalibration(distanceMap);
 
         // Adding a spot to the centre of each object
@@ -147,18 +147,18 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static Image getEdgeDistanceMap(Objs inputObjects, String outputImageName, boolean invertInside) {
+    public static ImageI getEdgeDistanceMap(Objs inputObjects, String outputImageName, boolean invertInside) {
         // Creating an objects image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects,
                 ColourFactory.SingleColours.WHITE);
-        Image objImage = inputObjects.convertToImage(outputImageName, hues, 8, false);
+        ImageI objImage = inputObjects.convertToImage(outputImageName, hues, 8, false);
 
         // Calculating the distance maps. The inside map is set to negative
         String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
-        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", false, weightMode, true, false);
+        ImageI outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", false, weightMode, true, false);
         InvertIntensity.process(objImage);
         BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1, false);
-        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", false, weightMode, true, false);
+        ImageI insideDistImage = DistanceMap.process(objImage, "DistanceInside", false, weightMode, true, false);
 
         // If selected, inverting the inside of the object, so values here are negative
         if (invertInside)
@@ -170,7 +170,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static void applyMasking(Image inputImage, Objs inputObjects, String maskingMode) {
+    public static void applyMasking(ImageI inputImage, Objs inputObjects, String maskingMode) {
         // If the masking mode is set to INSIDE_AND_OUTSIDE skip this method
         if (maskingMode.equals(MaskingModes.INSIDE_AND_OUTSIDE))
             return;
@@ -197,7 +197,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static void applyNormalisation(Image inputImage, Objs inputObjects) {
+    public static void applyNormalisation(ImageI inputImage, Objs inputObjects) {
         // Iterating over each object, calculating the largest distance, then dividing
         // all pixels within that object by
         // this value
@@ -207,7 +207,7 @@ public class CreateDistanceMap extends Module {
         }
     }
 
-    static double getMaximumDistance(Image inputImage, Obj inputObject) {
+    static double getMaximumDistance(ImageI inputImage, Obj inputObject) {
         // Iterating over each point in the object, getting the largest distance
         double maxDistance = Double.MIN_VALUE;
 
@@ -230,7 +230,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    static void applyNormalisation(Image inputImage, Obj inputObject, double maxDistance) {
+    static void applyNormalisation(ImageI inputImage, Obj inputObject, double maxDistance) {
         int t = inputObject.getT();
         ImagePlus inputIpl = inputImage.getImagePlus();
 
@@ -276,7 +276,7 @@ public class CreateDistanceMap extends Module {
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
 
         // Initialising the distance map
-        Image distanceMap = null;
+        ImageI distanceMap = null;
         switch (referenceMode) {
             case ReferenceModes.DISTANCE_FROM_CENTROID:
                 distanceMap = getCentroidDistanceMap(inputObjects, outputImageName);

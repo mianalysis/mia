@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -335,10 +335,10 @@ public class RelateObjects extends Module {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
-            Image parentImage = parentObject.getAsImage("Parent", false);
-            Image distImage = DistanceMap.process(parentImage, "Distance", true,
+            ImageI parentImage = parentObject.getAsImage("Parent", false);
+            ImageI distImage = DistanceMap.process(parentImage, "Distance", true,
                     DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
-            Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",
+            ImageI projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",
                     ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 

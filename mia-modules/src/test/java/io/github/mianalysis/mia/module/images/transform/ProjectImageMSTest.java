@@ -21,7 +21,7 @@
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.Workspaces;
-// import io.github.mianalysis.mia.object.image.Image;
+// import io.github.mianalysis.mia.object.image.ImageI;
 // import io.github.mianalysis.mia.object.image.ImageFactory;
 // import io.github.mianalysis.mia.object.image.ImageType;
 // import io.github.mianalysis.mia.object.system.Status;
@@ -141,7 +141,7 @@
 //         // Loading the test image and adding to workspace
 //         String inputPath = URLDecoder.decode(ProjectImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
 //         ImagePlus ipl = IJ.openImage(inputPath);
-//         Image image = ImageFactory.createImage("Test_image", ipl, imageType);
+//         ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
 //         workspace.addImage(image);
 
 //         // Loading the expected image
@@ -150,7 +150,7 @@
 //         assumeTrue(ProjectImageMSTest.class.getResource(expectedName) != null);
 
 //         String expectedPath = URLDecoder.decode(ProjectImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-//         Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+//         ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
 //         // When loading a 2D image (but not a single-slice hyperstack), ImageJ will
 //         // disregard any Z-axis spatial calibration. Since this calibration will be
@@ -162,7 +162,7 @@
 //             expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
 //         // Initialising module and setting parameters
-//         ProjectImage projectImage = new ProjectImage(new Modules());
+//         ProjectImageI projectImage = new ProjectImage(new Modules());
 //         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE, "Test_image");
 //         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE, "Test_output");
 
@@ -208,7 +208,7 @@
 //         assertNotNull(workspace.getImage("Test_image"));
 //         assertNotNull(workspace.getImage("Test_output"));
 
-//         Image outputImage = workspace.getImage("Test_output");
+//         ImageI outputImage = workspace.getImage("Test_output");
 
 //         // new ij.ImageJ();
 //         // expectedImage.showImage();

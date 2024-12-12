@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilte
 import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -337,7 +337,7 @@ public class WorkflowHandling extends Module {
 
     }
 
-    public static boolean testImageMeasurement(Image inputImage, String measurementName, String referenceMode,
+    public static boolean testImageMeasurement(ImageI inputImage, String measurementName, String referenceMode,
             double referenceValue) {
         // Getting the measurement
         Measurement measurement = inputImage.getMeasurement(measurementName);
@@ -423,7 +423,7 @@ public class WorkflowHandling extends Module {
                 terminate = fixedValueNumber == referenceValueNumber;
                 break;
             case TestModes.IMAGE_MEASUREMENT:
-                Image inputImage = workspace.getImage(inputImageName);
+                ImageI inputImage = workspace.getImage(inputImageName);
                 terminate = testImageMeasurement(inputImage, referenceImageMeasurement, numericFilterMode,
                         referenceValueNumber);
                 break;

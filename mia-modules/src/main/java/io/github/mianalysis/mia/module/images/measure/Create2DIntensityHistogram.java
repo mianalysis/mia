@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -88,9 +88,9 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
     @Override
     public Status process(WorkspaceI workspace) {
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
-        Image inputImage1 = workspace.getImage(inputImageName1);
+        ImageI inputImage1 = workspace.getImage(inputImageName1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
-        Image inputImage2 = workspace.getImage(inputImageName2);
+        ImageI inputImage2 = workspace.getImage(inputImageName2);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
         double minBin1 = parameters.getValue(MIN_BIN_1,workspace);
@@ -114,7 +114,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
         hist.addData(intervals);
         
-        Image outputImage = ImageFactory.createImage(outputImageName, ImageJFunctions.wrapFloat(hist, outputImageName));
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ImageJFunctions.wrapFloat(hist, outputImageName));
         workspace.addImage(outputImage);
 
         if (showOutput)

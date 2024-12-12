@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -614,7 +614,7 @@ public class AddContourLines extends Module {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         double minIntensity = parameters.getValue(MINIMUM_INTENSITY,workspace);
@@ -660,7 +660,7 @@ public class AddContourLines extends Module {
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)

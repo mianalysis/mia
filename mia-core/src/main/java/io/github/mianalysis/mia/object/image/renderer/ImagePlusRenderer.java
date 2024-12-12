@@ -7,12 +7,12 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
 
 public class ImagePlusRenderer implements ImageRenderer {
     @Override
-    public void render(Image image, String title, @Nullable LUT lut, boolean normalise, String displayMode,
+    public void render(ImageI image, String title, @Nullable LUT lut, boolean normalise, String displayMode,
             Overlay overlay) {
         ImagePlus imagePlus = image.getImagePlus();
 
@@ -29,26 +29,26 @@ public class ImagePlusRenderer implements ImageRenderer {
             dispIpl.setLut(lut);
 
         switch (displayMode) {
-            case Image.DisplayModes.COLOUR:
+            case ImageI.DisplayModes.COLOUR:
                 dispIpl.setDisplayMode(CompositeImage.COLOR);
                 break;
 
-            case Image.DisplayModes.COMPOSITE:
+            case ImageI.DisplayModes.COMPOSITE:
                 dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
                 dispIpl.setProp("CompositeProjection", "Sum");
                 break;
 
-            case Image.DisplayModes.COMPOSITE_INVERT:
+            case ImageI.DisplayModes.COMPOSITE_INVERT:
                 dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
                 dispIpl.setProp("CompositeProjection", "Invert");
                 break;
 
-            case Image.DisplayModes.COMPOSITE_MAX:
+            case ImageI.DisplayModes.COMPOSITE_MAX:
                 dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
                 dispIpl.setProp("CompositeProjection", "Max");
                 break;
 
-            case Image.DisplayModes.COMPOSITE_MIN:
+            case ImageI.DisplayModes.COMPOSITE_MIN:
                 dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
                 dispIpl.setProp("CompositeProjection", "Min");
                 break;

@@ -16,7 +16,7 @@ import ome.units.UNITS;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -57,7 +57,7 @@ public class WorkspaceTest {
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
-        Image image = ImageFactory.createImage("Test im",imagePlus);
+        ImageI image = ImageFactory.createImage("Test im",imagePlus);
         image.addMeasurement(new Measurement("Test meas",4.6));
         workspace.addImage(image);
 
@@ -93,7 +93,7 @@ public class WorkspaceTest {
         
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
-        Image image = ImageFactory.createImage("Test im",imagePlus);
+        ImageI image = ImageFactory.createImage("Test im",imagePlus);
         image.addMeasurement(new Measurement("Test meas",4.6));
         workspace.addImage(image);
 

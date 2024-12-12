@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -142,7 +142,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
         }
 
-        Image objectImage = inputObject.getAsTightImage("Temp", borderWidths);
+        ImageI objectImage = inputObject.getAsTightImage("Temp", borderWidths);
 
         Prefs.blackBackground = false;
 

@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -48,7 +48,7 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class PlotMeasurementTimeseries extends Module {
-    public static final String INPUT_SEPARATOR = "Object input/image output";
+    public static final String INPUT_SEPARATOR = "Object input/ImageI output";
     public static final String INPUT_TRACKS = "Input tracks";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -249,7 +249,7 @@ public class PlotMeasurementTimeseries extends Module {
 
         }
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)

@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -113,7 +113,7 @@ public class BinaryOperations2D extends Module {
         process(ImageFactory.createImage("Image", ipl), operationMode, numIterations, count, blackBackground);
     }
 
-    public static void process(Image image, String operationMode, int numIterations, int count,
+    public static void process(ImageI image, String operationMode, int numIterations, int count,
             boolean blackBackground) {
         ImagePlus ipl = image.getImagePlus();
 
@@ -191,7 +191,7 @@ public class BinaryOperations2D extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -215,7 +215,7 @@ public class BinaryOperations2D extends Module {
             if (showOutput)
                 inputImage.show();
         } else {
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.show();

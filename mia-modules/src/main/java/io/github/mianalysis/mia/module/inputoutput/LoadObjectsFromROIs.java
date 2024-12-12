@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -299,7 +299,7 @@ public class LoadObjectsFromROIs extends Module {
         String genericFilePath = parameters.getValue(GENERIC_FILE_PATH, workspace);
 
         // Getting reference image
-        Image refImage = workspace.getImage(referenceImageName);
+        ImageI refImage = workspace.getImage(referenceImageName);
         if (refImage == null) {
             MIA.log.writeWarning("Reference image not found.  Skipping file.");
             return Status.FAIL;

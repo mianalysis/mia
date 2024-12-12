@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
@@ -113,7 +113,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -165,7 +165,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -211,7 +211,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -263,7 +263,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -313,7 +313,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -419,7 +419,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -525,7 +525,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -631,7 +631,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -677,7 +677,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -726,13 +726,13 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/cropimage/NoisyGradient5D_8bit_3-12-52-49.zip").getPath(),"UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_Output_Image");
+        ImageI outputImage = workspace.getImage("Test_Output_Image");
         assertEquals(expectedImage,outputImage);
 
     }
@@ -765,7 +765,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -810,7 +810,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -864,7 +864,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -914,7 +914,7 @@ public class ImageLoaderTest extends ModuleTest {
     //     assertEquals(1,workspace.getImages().size());
 
     //     // Getting the loaded image
-    //     Image image = workspace.getImage("Test_Output_Image");
+    //     ImageI image = workspace.getImage("Test_Output_Image");
 
     //     // Checking the image has the expected name
     //     assertEquals("Test_Output_Image",image.getName());
@@ -960,7 +960,7 @@ public class ImageLoaderTest extends ModuleTest {
     //     assertEquals(1,workspace.getImages().size());
 
     //     // Getting the loaded image
-    //     Image image = workspace.getImage("Test_Output_Image");
+    //     ImageI image = workspace.getImage("Test_Output_Image");
 
     //     // Checking the image has the expected name
     //     assertEquals("Test_Output_Image",image.getName());
@@ -1006,7 +1006,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -1052,7 +1052,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,workspace.getImages().size());
 
         // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+        ImageI image = workspace.getImage("Test_Output_Image");
 
         // Checking the image has the expected name
         assertEquals("Test_Output_Image",image.getName());
@@ -1097,13 +1097,13 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0-11.zip").getPath(),"UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_Output_Image");
+        ImageI outputImage = workspace.getImage("Test_Output_Image");
         assertEquals(expectedImage,outputImage);
 
     }
@@ -1133,13 +1133,13 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq3-11-2.zip").getPath(),"UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_Output_Image");
+        ImageI outputImage = workspace.getImage("Test_Output_Image");
         assertEquals(expectedImage,outputImage);
 
     }
@@ -1169,13 +1169,13 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq4-8-2.zip").getPath(),"UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_Output_Image");
+        ImageI outputImage = workspace.getImage("Test_Output_Image");
         assertEquals(expectedImage,outputImage);
 
     }

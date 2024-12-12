@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -50,7 +50,7 @@ public class ReassignEnclosedObjects extends Module {
             return;
 
         // Creating a binary image of the input object
-        Image binaryImage = object.getAsImage("Binary",false);
+        ImageI binaryImage = object.getAsImage("Binary",false);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
 
         // Filling holes in the binary image

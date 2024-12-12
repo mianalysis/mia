@@ -35,7 +35,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -196,7 +196,7 @@ public class ClusterPoints extends Module {
         }
 
         // Reducing the size of the cluster area by eps
-        Image objectImage = outputObject.getAsTightImage("Object");
+        ImageI objectImage = outputObject.getAsTightImage("Object");
         objectImage = DistanceMap.process(objectImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true,
                 false);
         ImagePlus objectIpl = objectImage.getImagePlus();
@@ -250,7 +250,7 @@ public class ClusterPoints extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting objects to measure
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting output objects name

@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -323,7 +323,7 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    public static Image convertToImage(CumStat[] cumStats, Indexer indexer, String outputImageName,
+    public static ImageI convertToImage(CumStat[] cumStats, Indexer indexer, String outputImageName,
             Calibration calibration) {
         int[] dim = indexer.getDim();
         int width = dim[0];
@@ -409,7 +409,7 @@ public class CreateMeasurementMap extends Module {
 
         // Converting statistic array to Image
         Calibration imagecalibration = inputObjects.getSpatialCalibration().createImageCalibration();
-        Image outputImage = convertToImage(blurCumStats, indexer, outputImageName, imagecalibration);
+        ImageI outputImage = convertToImage(blurCumStats, indexer, outputImageName, imagecalibration);
 
         workspace.addImage(outputImage);
         if (showOutput)

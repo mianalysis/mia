@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -89,7 +89,7 @@ public class FillHolesInObjects extends Module {
     public static Obj processObject(Obj inputObject, String method) throws IntegerOverflowException {
         // Convert each object to an image, do the hole filling, then convert back to an
         // object
-        Image objectImage = inputObject.getAsTightImage("Temp");
+        ImageI objectImage = inputObject.getAsTightImage("Temp");
 
         // Applying morphological transform. Erode and dilate are used "backwards", as
         // the image that comes

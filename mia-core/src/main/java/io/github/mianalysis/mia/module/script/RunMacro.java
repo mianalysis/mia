@@ -21,9 +21,8 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -98,7 +97,7 @@ public class RunMacro extends AbstractMacroRunner {
 	/**
 	* 
 	*/
-    public static final String IMAGE_OUTPUT_SEPARATOR = "Image output";
+    public static final String IMAGE_OUTPUT_SEPARATOR = "ImageI output";
 
 	/**
 	* When selected, the image currently active in ImageJ at completion of the macro can be stored into the workspace.  This can either overwrite the input image in the workspace or be stored as a new image (controlled by "Apply to input image").
@@ -244,7 +243,7 @@ public class RunMacro extends AbstractMacroRunner {
                 if (showOutput)
                     inputImage.show();
             } else {
-                Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+                ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.show();

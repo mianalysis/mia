@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -222,7 +222,7 @@ public class CellposeDetection extends Module {
         boolean useClustering = parameters.getValue(USE_CLUSTERING, workspace);
         String additionalFlags = parameters.getValue(ADDITIONAL_FLAGS, workspace);
 
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         Cellpose.setEnvDirPath(new File(cellposePath));
         Cellpose.setEnvType(environmentType);
@@ -299,14 +299,14 @@ public class CellposeDetection extends Module {
 
             for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
                 for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
-                    Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end",
+                    ImageI currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end",
                             String.valueOf(z + 1) + "-" + String.valueOf(z + 1),
                             String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
 
                     cellpose.setImagePlus(currImage.getImagePlus());
                     cellpose.run();
 
-                    Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                    ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
                     Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
 
                     for (Obj currOutputObject : currOutputObjects.values()) {
@@ -323,7 +323,7 @@ public class CellposeDetection extends Module {
         } else {
             cellpose.setImagePlus(inputImage.getImagePlus());
             cellpose.run();
-            Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+            ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
             outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
         }
 

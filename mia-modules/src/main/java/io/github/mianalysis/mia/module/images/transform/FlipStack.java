@@ -10,7 +10,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -108,7 +108,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         }
     }
 
-    public Image applyFlip(Image inputImage, String axis, String outputImageName) {
+    public ImageI applyFlip(ImageI inputImage, String axis, String outputImageName) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         long[] dims = new long[inputImg.numDimensions()];
@@ -173,7 +173,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
@@ -184,7 +184,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         if (applyToInput) outputImageName = inputImageName;
 
         // Applying flip
-        Image outputImage = applyFlip(inputImage, axisMode, outputImageName);
+        ImageI outputImage = applyFlip(inputImage, axisMode, outputImageName);
         if (outputImage == null) return Status.FAIL;
 
         if (showOutput) outputImage.show();

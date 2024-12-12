@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
@@ -148,7 +148,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(LocalAutoThresholdMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         String radiusStr = Integer.toString((int) (calibration == Calibration.CALIBRATED ? radius / ipl.getCalibration().pixelWidth : radius));
@@ -158,7 +158,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
 
         String expectedPath = URLDecoder.decode(LocalAutoThresholdMSTest.class.getResource(expectedName).getPath(),
                 "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
         // Initialising module and setting parameters
         LocalAutoThreshold module = new LocalAutoThreshold(new Modules());
@@ -237,7 +237,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
             assertEquals(1, workspace.getImages().size());
             assertNotNull(workspace.getImage("Test_image"));
 
-            Image outputImage = workspace.getImage("Test_image");
+            ImageI outputImage = workspace.getImage("Test_image");
             assertEquals(expectedImage, outputImage);
 
         } else {
@@ -245,7 +245,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_image"));
             assertNotNull(workspace.getImage("Test_output"));
 
-            Image outputImage = workspace.getImage("Test_output");
+            ImageI outputImage = workspace.getImage("Test_output");
             assertEquals(expectedImage, outputImage);
 
         }

@@ -10,7 +10,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -62,10 +62,10 @@ public class ReplaceImage extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
-        Image inputImage1 = workspace.getImages().get(inputImageName1);
+        ImageI inputImage1 = workspace.getImages().get(inputImageName1);
 
         String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
-        Image inputImage2 = workspace.getImages().get(inputImageName2);
+        ImageI inputImage2 = workspace.getImages().get(inputImageName2);
         ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
         inputImage1.setImagePlus(inputImagePlus2);

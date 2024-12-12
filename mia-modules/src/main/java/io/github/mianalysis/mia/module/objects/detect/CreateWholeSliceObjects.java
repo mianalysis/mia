@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -101,8 +101,8 @@ public class CreateWholeSliceObjects extends Module {
         return "For conversion of an image to individual slice objects.  This is useful for subsequently making independent measurements on each slice of an image.  Individual objects can either be created per slice or per timepoint.  Output objects are automatically assigned measurements for timepoint and optionally also slice if processing slice-by-slice.";
     }
 
-    public static Objs process(Image inputImage, String outputObjectsName, String outputMode) {
-        Image blankImage = ImageFactory.createImage("Temp", inputImage.getImagePlus().duplicate());
+    public static Objs process(ImageI inputImage, String outputObjectsName, String outputMode) {
+        ImageI blankImage = ImageFactory.createImage("Temp", inputImage.getImagePlus().duplicate());
         ImageMath.process(blankImage, ImageMath.CalculationModes.MULTIPLY, 0);
         ImageTypeConverter.process(blankImage, 8, ImageTypeConverter.ScalingModes.CLIP);
 
@@ -148,7 +148,7 @@ public class CreateWholeSliceObjects extends Module {
         String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
 
         // Getting input image
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
 
         // Getting objects
         Objs outputObjects = process(inputImage, outputObjectsName, outputMode);

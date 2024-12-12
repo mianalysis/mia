@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
@@ -96,7 +96,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/Tracks.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Convert3DStack.process(ipl,Convert3DStack.Modes.OUTPUT_TIMESERIES);
-        Image intensityImage = ImageFactory.createImage(imageName,ipl);
+        ImageI intensityImage = ImageFactory.createImage(imageName,ipl);
         workspace.addImage(intensityImage);
 
         AddObjectsOverlay addObjectsOverlay = (AddObjectsOverlay) new AddObjectsOverlay(null)

@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.NormaliseIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -166,7 +166,7 @@ public class SetDisplayRange extends Module {
 
     }
 
-    public static void setDisplayRangeManual(Image image, double[] intRange) {
+    public static void setDisplayRangeManual(ImageI image, double[] intRange) {
         setDisplayRangeManual(image.getImagePlus(), intRange);
     }
 
@@ -187,8 +187,8 @@ public class SetDisplayRange extends Module {
 
     }
 
-    public static void setDisplayRangeAuto(Image image, String calculationMode, double[] clipFraction,
-            boolean[] setRange, @Nullable Image externalImage) {
+    public static void setDisplayRangeAuto(ImageI image, String calculationMode, double[] clipFraction,
+            boolean[] setRange, @Nullable ImageI externalImage) {
         setDisplayRangeAuto(image.getImagePlus(), calculationMode, clipFraction, setRange,
                 externalImage.getImagePlus());
     }
@@ -266,7 +266,7 @@ public class SetDisplayRange extends Module {
         double maxRange = parameters.getValue(MAX_RANGE, workspace);
 
         // Getting input image
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -302,14 +302,14 @@ public class SetDisplayRange extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show(outputImageName, null, false, Image.DisplayModes.COMPOSITE);
+                outputImage.show(outputImageName, null, false, ImageI.DisplayModes.COMPOSITE);
 
         } else {
             if (showOutput)
-                inputImage.show(inputImageName, null, false, Image.DisplayModes.COMPOSITE);
+                inputImage.show(inputImageName, null, false, ImageI.DisplayModes.COMPOSITE);
 
         }
 

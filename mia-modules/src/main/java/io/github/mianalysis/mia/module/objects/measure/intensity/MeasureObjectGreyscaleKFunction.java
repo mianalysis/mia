@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -139,7 +139,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         SXSSFWorkbook workbook = initialiseWorkbook();
         SXSSFSheet sheet = workbook.getSheetAt(0);
 
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
 
         int rowI = 1;
         int count = 0;
@@ -153,21 +153,21 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
             int left = (int) Math.round(extents[0][0]);
             int width = (int) Math.round(extents[0][1] - left) + 1;
             int height = (int) Math.round(extents[1][1] - top) + 1;
-            Image cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
+            ImageI cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
 
             // Cropping image in Z
             int minZ = (int) Math.round(extents[2][0]);
             int maxZ = (int) Math.round(extents[2][1]);
-            Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ + 1) + "-" + (maxZ + 1),
+            ImageI subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ + 1) + "-" + (maxZ + 1),
                     "1");
 
             // Getting
-            Image maskImage = object.getAsTightImage("Mask");
+            ImageI maskImage = object.getAsTightImage("Mask");
 
             for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
-                Image currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
+                ImageI currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
                         String.valueOf(z + 1), String.valueOf(t + 1));
-                Image currMask = ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1",
+                ImageI currMask = ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1",
                         String.valueOf(z + 1), String.valueOf(t + 1));
 
                 for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {

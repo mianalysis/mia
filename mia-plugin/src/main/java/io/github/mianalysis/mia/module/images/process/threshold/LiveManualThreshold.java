@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -197,7 +197,7 @@ public class LiveManualThreshold extends Module {
         boolean liveSelection = parameters.getValue(LIVE_SELECTION, workspace);
 
         // Getting input image
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // If applying to a new image, the input image is duplicated
@@ -228,7 +228,7 @@ public class LiveManualThreshold extends Module {
 
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
 
             outputImage.addMeasurement(new Measurement("THRESHOLD", thresholdValue));

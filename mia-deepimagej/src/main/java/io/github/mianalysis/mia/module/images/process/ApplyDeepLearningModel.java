@@ -29,7 +29,7 @@
 // import io.github.mianalysis.mia.module.Modules;
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.WorkspaceI;
-// import io.github.mianalysis.mia.object.image.Image;
+// import io.github.mianalysis.mia.object.image.ImageI;
 // import io.github.mianalysis.mia.object.image.ImageFactory;
 // import io.github.mianalysis.mia.object.parameters.ChoiceP;
 // import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -129,7 +129,7 @@
 //         String modelName = parameters.getValue(MODEL, workspace);
 
 //         // Get input image
-//         Image inputImage = workspace.getImage(inputImageName);
+//         ImageI inputImage = workspace.getImage(inputImageName);
 //         ImgPlus img = inputImage.getImgPlus();
 
 //         String modelPath = modelPaths.values().iterator().next();
@@ -155,7 +155,7 @@
 //             ImagePlus iplOut = ImagePlus2TensorNew.tensor2ImagePlus(outputTensor.getData(), "bcyx");
 
 //             // Storing output image
-//             Image outputImage = ImageFactory.createImage(outputImageName, iplOut);
+//             ImageI outputImage = ImageFactory.createImage(outputImageName, iplOut);
 //             workspace.addImage(outputImage);
 
 //             if (showOutput)

@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -130,7 +130,7 @@ public class MeasureObjectIntensity extends Module {
         return "INTENSITY // " + imageName + "_" + measurement;
     }
 
-    public static CumStat measureIntensity(Obj object, Image image, boolean measureMedian, boolean addMeasurements) {
+    public static CumStat measureIntensity(Obj object, ImageI image, boolean measureMedian, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -172,7 +172,7 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public static CumStat[] measureWeightedCentre(Obj object, Image image, boolean addMeasurements) {
+    public static CumStat[] measureWeightedCentre(Obj object, ImageI image, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -208,7 +208,7 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public static CumStat[] measurePeakLocation(Obj object, Image image, boolean addMeasurements) {
+    public static CumStat[] measurePeakLocation(Obj object, ImageI image, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -279,7 +279,7 @@ public class MeasureObjectIntensity extends Module {
 
         // Getting input image
         String imageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(imageName);
+        ImageI inputImage = workspace.getImages().get(imageName);
 
         boolean measureMedian = parameters.getValue(MEASURE_MEDIAN, workspace);
         boolean measureWeightedCentre = parameters.getValue(MEASURE_WEIGHTED_CENTRE, workspace);

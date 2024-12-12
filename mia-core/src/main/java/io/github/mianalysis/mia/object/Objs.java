@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -240,14 +240,14 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Image convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground) {
+    public ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground) {
         return convertToImage(outputName, hues, bitDepth, nanBackground, false);
     }
 
-    public Image convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground,
+    public ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground,
             boolean verbose) {
         // Create output image
-        Image image = createImage(outputName, bitDepth);
+        ImageI image = createImage(outputName, bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
         if (bitDepth == 32 && nanBackground)
@@ -268,9 +268,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Image convertToImageRandomColours() {
+    public ImageI convertToImageRandomColours() {
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(this);
-        Image dispImage = convertToImage(name, hues, 8, false);
+        ImageI dispImage = convertToImage(name, hues, 8, false);
 
         if (dispImage == null)
             return null;
@@ -286,9 +286,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Image convertToImageBinary() {
+    public ImageI convertToImageBinary() {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(this, ColourFactory.SingleColours.WHITE);
-        Image dispImage = convertToImage(name, hues, 8, false);
+        ImageI dispImage = convertToImage(name, hues, 8, false);
 
         if (dispImage == null)
             return null;
@@ -304,9 +304,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Image convertToImageIDColours() {
+    public ImageI convertToImageIDColours() {
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(this, false);
-        Image dispImage = convertToImage(name, hues, 32, false);
+        ImageI dispImage = convertToImage(name, hues, 32, false);
 
         if (dispImage == null)
             return null;
@@ -323,10 +323,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Image convertCentroidsToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
+    public ImageI convertCentroidsToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
             boolean nanBackground) {
         // Create output image
-        Image image = createImage(outputName, bitDepth);
+        ImageI image = createImage(outputName, bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
         if (bitDepth == 32 && nanBackground)
@@ -343,7 +343,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public void applyCalibration(Image image) {
+    public void applyCalibration(ImageI image) {
         applyCalibration(image.getImagePlus());
     }
 
@@ -363,7 +363,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    Image createImage(String outputName, int bitDepth) {
+    ImageI createImage(String outputName, int bitDepth) {
         // Creating a new image
         ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
                 spatCal.getNSlices(), nFrames, bitDepth);

@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddAllObjectPoints;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -62,7 +62,7 @@ public class ConvertObjectsToImage extends Module {
   /**
   * 
   */
-  public static final String INPUT_SEPARATOR = "Object input/image output";
+  public static final String INPUT_SEPARATOR = "Object input/ImageI output";
 
   /**
    * Object collection to convert to an image. All objects will be rendered onto
@@ -283,7 +283,7 @@ public class ConvertObjectsToImage extends Module {
         break;
     }
 
-    Image outputImage = null;
+    ImageI outputImage = null;
     switch (outputMode) {
       case OutputModes.CENTROID:
         outputImage = inputObjects.convertCentroidsToImage(outputImageName, hues, bitDepth, nanBackground);

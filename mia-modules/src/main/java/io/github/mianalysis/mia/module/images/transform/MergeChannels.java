@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -83,9 +83,9 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     }
 
-    public Image combineImages(Image[] inputImages, String outputImageName) {
+    public ImageI combineImages(ImageI[] inputImages, String outputImageName) {
         // Processing first two images
-        Image outputImage = combineImages(inputImages[0], inputImages[1], outputImageName);
+        ImageI outputImage = combineImages(inputImages[0], inputImages[1], outputImageName);
 
         // Appending any additional images
         for (int i = 2; i < inputImages.length; i++) {
@@ -96,7 +96,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     }
 
-    public Image combineImages(Image inputImage1, Image inputImage2, String outputImageName) {
+    public ImageI combineImages(ImageI inputImage1, ImageI inputImage2, String outputImageName) {
         ImgPlus<T> img1 = inputImage1.getImgPlus();
         ImgPlus<T> img2 = inputImage2.getImgPlus();
 
@@ -213,18 +213,18 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
         // Creating a collection of images
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE,workspace);
-        Image[] inputImages = new Image[collections.size()];
+        ImageI[] inputImages = new ImageI[collections.size()];
         int i = 0;
         for (Parameters collection : collections.values()) {
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE,workspace));
         }
 
-        Image mergedImage = combineImages(inputImages, outputImageName);
+        ImageI mergedImage = combineImages(inputImages, outputImageName);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
-                Image outputImage = ImageFactory.createImage(outputImageName, mergedImage.getImagePlus());
+                ImageI outputImage = ImageFactory.createImage(outputImageName, mergedImage.getImagePlus());
                 workspace.addImage(outputImage);
                 break;
 

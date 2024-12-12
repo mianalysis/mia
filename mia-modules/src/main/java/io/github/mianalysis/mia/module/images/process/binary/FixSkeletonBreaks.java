@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -112,7 +112,7 @@ public class FixSkeletonBreaks extends Module {
         super("Fix skeleton breaks", modules);
     }
 
-    public static void fixBreaks(Image inputImage, int nPx, int maxDist, double maxAngle, boolean onlyLinkEnds,
+    public static void fixBreaks(ImageI inputImage, int nPx, int maxDist, double maxAngle, boolean onlyLinkEnds,
             double angleWeight, double distanceWeight, double endWeight, boolean blackBackground) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -147,7 +147,7 @@ public class FixSkeletonBreaks extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -180,7 +180,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.show();

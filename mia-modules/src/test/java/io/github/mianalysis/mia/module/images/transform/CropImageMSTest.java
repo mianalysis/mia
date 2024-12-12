@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
@@ -158,11 +158,11 @@ public class CropImageMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(CropImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         // Loading the expected image (if we're expecting one)
-        Image expectedImage = null;
+        ImageI expectedImage = null;
         if (w >= 0 && h >= 0) {
             String expectedName = "/msimages/cropimage/CropImage_" + dimension + "_" + bitDepth + "_X" + x + "_Y" + y
                     + "_W" + w + "_H" + h + ".zip";
@@ -222,7 +222,7 @@ public class CropImageMSTest extends ModuleTest {
             assertEquals(1, workspace.getImages().size());
             assertNotNull(workspace.getImage("Test_image"));
 
-            Image outputImage = workspace.getImage("Test_image");
+            ImageI outputImage = workspace.getImage("Test_image");
             assertEquals(expectedImage, outputImage);
 
         } else {
@@ -230,7 +230,7 @@ public class CropImageMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_image"));
             assertNotNull(workspace.getImage("Test_output"));
 
-            Image outputImage = workspace.getImage("Test_output");
+            ImageI outputImage = workspace.getImage("Test_output");
             assertEquals(expectedImage, outputImage);
 
         }

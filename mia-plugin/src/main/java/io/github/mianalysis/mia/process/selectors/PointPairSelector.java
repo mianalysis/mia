@@ -33,7 +33,7 @@ import ij.gui.TextRoi;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 public class PointPairSelector implements ActionListener {
     private static final String ADD_PAIRS = "Add pair(s)";
@@ -324,7 +324,7 @@ public class PointPairSelector implements ActionListener {
 
     }
 
-    public static ArrayList<PointPair> getPreselectedPoints(Image inputImage, Image reference) {
+    public static ArrayList<PointPair> getPreselectedPoints(ImageI inputImage, ImageI reference) {
         ArrayList<PointPair> pairs = new ArrayList<>();
         Roi roi1 = inputImage.getImagePlus().getRoi();
         Roi roi2 = reference.getImagePlus().getRoi();

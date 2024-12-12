@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -505,7 +505,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String classList = parameters.getValue(CLASS_LIST, workspace);
 
         // Getting input image
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         setSelector(selectorType);

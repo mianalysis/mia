@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
@@ -42,12 +42,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddNot32.zip").getPath(),"UTF-8");
@@ -117,12 +117,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddNot32.zip").getPath(),"UTF-8");
@@ -190,12 +190,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddNot32.zip").getPath(),"UTF-8");
@@ -263,12 +263,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddIs32.zip").getPath(),"UTF-8");
@@ -338,12 +338,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddIs32.zip").getPath(),"UTF-8");
@@ -411,12 +411,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddIs32.zip").getPath(),"UTF-8");
@@ -487,12 +487,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientSubtractNot32.zip").getPath(),"UTF-8");
@@ -562,12 +562,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientSubtractIs32.zip").getPath(),"UTF-8");
@@ -640,12 +640,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientMultiplyNot32.zip").getPath(),"UTF-8");
@@ -715,12 +715,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientMultiplyIs32.zip").getPath(),"UTF-8");
@@ -793,12 +793,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientDivideNot32.zip").getPath(),"UTF-8");
@@ -868,12 +868,12 @@ public class ImageCalculatorTest extends ModuleTest {
         // Loading the test images and adding to workspace
         String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
-        Image image1 = ImageFactory.createImage("Test_image_1",ipl1);
+        ImageI image1 = ImageFactory.createImage("Test_image_1",ipl1);
         workspace.addImage(image1);
 
         String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
-        Image image2 = ImageFactory.createImage("Test_image_2",ipl2);
+        ImageI image2 = ImageFactory.createImage("Test_image_2",ipl2);
         workspace.addImage(image2);
 
         pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientDivideIs32.zip").getPath(),"UTF-8");

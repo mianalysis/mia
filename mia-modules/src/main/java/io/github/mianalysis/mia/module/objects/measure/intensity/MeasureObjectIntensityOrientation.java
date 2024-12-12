@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -216,7 +216,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
                 "<ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>";
     }
 
-    public static Directionality_ processObject(Obj obj, Image inputImage, int nBins, double binStart, double binEnd,
+    public static Directionality_ processObject(Obj obj, ImageI inputImage, int nBins, double binStart, double binEnd,
             AnalysisMethod method, boolean includeBinRange, boolean includeBinNumber) {
         ArrayList<double[]> tempHistograms = new ArrayList<>();
         HashMap<Integer, Roi> rois = obj.getRois();
@@ -224,7 +224,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
         for (int z : rois.keySet()) {
             // Getting current image slice
-            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z+1),
+            ImageI sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z+1),
                     String.valueOf(obj.getT() + 1));
             ImagePlus sliceIpl = sliceImage.getImagePlus();
             sliceIpl.setRoi(rois.get(z));
@@ -366,7 +366,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         String histGroupMode = parameters.getValue(HISTOGRAM_GROUPING_MODE, workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME, workspace);
 
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         AnalysisMethod method;

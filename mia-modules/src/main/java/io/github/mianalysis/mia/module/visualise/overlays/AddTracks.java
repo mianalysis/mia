@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -89,7 +89,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
     /**
     * 
     */
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
     /**
      * Determines if the modifications made to the input image (added overlay
@@ -260,7 +260,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         String colourMode = parameters.getValue(COLOUR_MODE, workspace);
@@ -318,7 +318,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
             writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
         }
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.

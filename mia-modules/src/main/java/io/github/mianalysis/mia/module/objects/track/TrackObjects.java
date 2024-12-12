@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -563,7 +563,7 @@ public class TrackObjects extends Module {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
         // Creating a parent-ID encoded image of the objects
-        Image dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false);
+        ImageI dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();

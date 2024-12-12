@@ -6,7 +6,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 public class ImageFactory {
-    public static <T extends RealType<T> & NativeType<T>> Image<T> createImage(String name, ImagePlus imagePlus,
+    public static <T extends RealType<T> & NativeType<T>> ImageI<T> createImage(String name, ImagePlus imagePlus,
             ImageType imageType) {
         switch (imageType) {
             case IMAGEPLUS:
@@ -18,7 +18,7 @@ public class ImageFactory {
         return null;
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> createImage(String name, ImgPlus img,
+    public static <T extends RealType<T> & NativeType<T>> ImageI<T> createImage(String name, ImgPlus img,
             ImageType imageType) {
         switch (imageType) {
             case IMAGEPLUS:
@@ -30,7 +30,7 @@ public class ImageFactory {
         return null;
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> createImage(String name, ImagePlus imagePlus) {
+    public static <T extends RealType<T> & NativeType<T>> ImageI<T> createImage(String name, ImagePlus imagePlus) {
         // switch (MIA.getPreferences().getDataStorageMode()) {
         // case Preferences.DataStorageModes.KEEP_IN_RAM:
         // default:
@@ -40,7 +40,7 @@ public class ImageFactory {
         // }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> createImage(String name, ImgPlus img) {
+    public static <T extends RealType<T> & NativeType<T>> ImageI<T> createImage(String name, ImgPlus img) {
         // switch (MIA.getPreferences().getDataStorageMode()) {
         // case Preferences.DataStorageModes.KEEP_IN_RAM:
         // default:

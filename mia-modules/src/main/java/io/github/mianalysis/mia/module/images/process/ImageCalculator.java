@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -78,7 +78,7 @@ public class ImageCalculator extends Module {
     public static final String OVERWRITE_MODE = "Overwrite mode";
 
     /**
-     * Name of the output image created during the image calculation. This image
+     * Name of the output image created during the ImageI calculation. This image
      * will be added to the workspace.
      */
     public static final String OUTPUT_IMAGE = "Output image";
@@ -94,7 +94,7 @@ public class ImageCalculator extends Module {
     /**
     * 
     */
-    public static final String CALCULATION_SEPARATOR = "Image calculation";
+    public static final String CALCULATION_SEPARATOR = "ImageI calculation";
 
     /**
      * The calculation to apply to the two input images.
@@ -114,7 +114,7 @@ public class ImageCalculator extends Module {
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
     public ImageCalculator(Modules modules) {
-        super("Image calculator", modules);
+        super("ImageI calculator", modules);
     }
 
     public interface OverwriteModes {
@@ -181,13 +181,13 @@ public class ImageCalculator extends Module {
         }
     }
 
-    public static Image process(Image inputImage1, Image inputImage2, String calculationMethod, String overwriteMode,
+    public static ImageI process(ImageI inputImage1, ImageI inputImage2, String calculationMethod, String overwriteMode,
             @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
         return process(inputImage1, inputImage2, calculationMethod, overwriteMode, outputImageName, output32Bit,
                 setNaNToZero, 1);
     }
 
-    public static Image process(Image inputImage1, Image inputImage2, String calculationMethod, String overwriteMode,
+    public static ImageI process(ImageI inputImage1, ImageI inputImage2, String calculationMethod, String overwriteMode,
             @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero, double im2Contibution) {
         ImagePlus ipl1 = inputImage1.getImagePlus();
         ImagePlus ipl2 = inputImage2.getImagePlus();
@@ -417,11 +417,11 @@ public class ImageCalculator extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1, workspace);
-        Image inputImage1 = workspace.getImages().get(inputImageName1);
+        ImageI inputImage1 = workspace.getImages().get(inputImageName1);
         ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
 
         String inputImageName2 = parameters.getValue(INPUT_IMAGE2, workspace);
-        Image inputImage2 = workspace.getImages().get(inputImageName2);
+        ImageI inputImage2 = workspace.getImages().get(inputImageName2);
         ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
         // Getting parameters
@@ -465,7 +465,7 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
                 newIpl.updateChannelAndDraw();
-                Image outputImage = ImageFactory.createImage(outputImageName, newIpl);
+                ImageI outputImage = ImageFactory.createImage(outputImageName, newIpl);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.show();
@@ -505,7 +505,7 @@ public class ImageCalculator extends Module {
                         + "<li>\"" + OverwriteModes.OVERWRITE_IMAGE2
                         + "\" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul>"));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
-                "Name of the output image created during the image calculation.  This image will be added to the workspace."));
+                "Name of the output image created during the ImageI calculation.  This image will be added to the workspace."));
         parameters.add(new BooleanP(OUTPUT_32BIT, this, false,
                 "When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image."));
         parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));

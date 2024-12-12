@@ -14,7 +14,7 @@ import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.process.analysis.CentroidCalculator;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
@@ -805,14 +805,14 @@ public class Volume {
 
     }
 
-    public Image getAsTightImage(String imageName) {
+    public ImageI getAsTightImage(String imageName) {
         int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
 
         return getAsTightImage(imageName, borderWidths);
 
     }
 
-    public Image getAsTightImage(String imageName, @Nullable int[][] borderWidths) {
+    public ImageI getAsTightImage(String imageName, @Nullable int[][] borderWidths) {
         if (borderWidths == null)
             return getAsImage(imageName, 0, 1);
 
@@ -841,7 +841,7 @@ public class Volume {
 
     }
 
-    public Image getAsImage(String imageName, int t, int nFrames) {
+    public ImageI getAsImage(String imageName, int t, int nFrames) {
         ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
         spatCal.applyImageCalibration(ipl);
 

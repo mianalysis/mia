@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -126,14 +126,14 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
         int outputHeightPx = parameters.getValue(OUTPUT_HEIGHT_PX, workspace);
         String tileAxis = parameters.getValue(TILE_AXIS, workspace);
 
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         ImagePlus outputIpl = ImageTiler.stitch(inputIpl, xNumTiles, yNumTiles, xOverlapPx, yOverlapPx, outputWidthPx, outputHeightPx, tileAxis);
         outputIpl.setTitle(outputImageName);
         outputIpl = outputIpl.duplicate();
 
-        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, outputIpl);
         SetLookupTable.copyLUTFromImage(outputImage, inputImage);
 
         workspace.addImage(outputImage);

@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -42,7 +42,7 @@ import io.github.mianalysis.mia.process.math.CumStat;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class PlotTrackMotility extends AbstractOverlay {
-    public static final String INPUT_SEPARATOR = "Object input/image output";
+    public static final String INPUT_SEPARATOR = "Object input/ImageI output";
     public static final String INPUT_TRACKS = "Input tracks";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -104,7 +104,7 @@ public class PlotTrackMotility extends AbstractOverlay {
 
     }
 
-    public static Image createPlotsAllTogether(Objs trackObjects, String inputObjectsName, String outputImageName,
+    public static ImageI createPlotsAllTogether(Objs trackObjects, String inputObjectsName, String outputImageName,
             double lineWidth, HashMap<Integer, Color> colours, String[] rangeModes, double[] ranges) {
         // Creating plot
         Plot plot = new Plot("Motility", "x-position (px)", "y-position (px)");
@@ -138,7 +138,7 @@ public class PlotTrackMotility extends AbstractOverlay {
 
     }
 
-    public static Image createPlotsSeparately(Objs trackObjects, String inputObjectsName, String outputImageName,
+    public static ImageI createPlotsSeparately(Objs trackObjects, String inputObjectsName, String outputImageName,
             double lineWidth, HashMap<Integer, Color> colours, double[] ranges, boolean addObjectID, String objectIDColour) {
         ImagePlus ipl = null;
 
@@ -288,7 +288,7 @@ public class PlotTrackMotility extends AbstractOverlay {
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(trackObjects, workspace);
 
-        Image outputImage;
+        ImageI outputImage;
         switch (plotMode) {
             case PlotModes.ALL_TOGETHER:
             default:

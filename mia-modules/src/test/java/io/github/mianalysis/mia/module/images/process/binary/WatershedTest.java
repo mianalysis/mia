@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.TestUtils;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 
 public class WatershedTest extends ModuleTest {
@@ -40,8 +40,8 @@ public class WatershedTest extends ModuleTest {
         assertNotNull(workspace.getImage(outputImageName));
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage(outputImageName);
-        Image expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
+        ImageI outputImage = workspace.getImage(outputImageName);
+        ImageI expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
 
         assertEquals(expectedImage, outputImage);
 
@@ -54,8 +54,8 @@ public class WatershedTest extends ModuleTest {
         assertNotNull(workspace.getImage(outputImageName));
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage(outputImageName);
-        Image expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
+        ImageI outputImage = workspace.getImage(outputImageName);
+        ImageI expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
 
         assertEquals(expectedImage, outputImage);
 
@@ -68,8 +68,8 @@ public class WatershedTest extends ModuleTest {
         assertNotNull(workspace.getImage(outputImageName));
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage(outputImageName);
-        Image expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
+        ImageI outputImage = workspace.getImage(outputImageName);
+        ImageI expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
 
         assertEquals(expectedImage, outputImage);
 
@@ -84,8 +84,8 @@ public class WatershedTest extends ModuleTest {
         assertNotNull(workspace.getImage(outputImageName));
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage(outputImageName);
-        Image expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
+        ImageI outputImage = workspace.getImage(outputImageName);
+        ImageI expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
 
         assertEquals(expectedImage, outputImage);
 

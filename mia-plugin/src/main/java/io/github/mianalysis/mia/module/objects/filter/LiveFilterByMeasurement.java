@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -170,7 +170,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         String measurementName = getIndividualFixedValueFullName(filterMethod, measName, String.valueOf(refValue));
         HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementName, false,
                 new double[] { -1, 1 });
-        Image dispImage = inputObjects.convertToImage("Thresholded", hues, 32, true);
+        ImageI dispImage = inputObjects.convertToImage("Thresholded", hues, 32, true);
         SetLookupTable.setLUT(dispImage, LUTs.BlackSpectrum(), SetLookupTable.ChannelModes.ALL_CHANNELS, 0);
 
         // Replacing

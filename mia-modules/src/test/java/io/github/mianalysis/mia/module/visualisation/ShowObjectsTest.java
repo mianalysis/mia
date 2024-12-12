@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.convert.ConvertObjectsToImage;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.ColourFactory;
 
 /**
@@ -62,7 +62,7 @@ public class ShowObjectsTest extends ModuleTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
-        Image testImage = testObjects.convertToImage("Test image",hues,32,false);
+        ImageI testImage = testObjects.convertToImage("Test image",hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();

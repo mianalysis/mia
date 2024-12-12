@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -249,7 +249,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Objs getAllBands(Image<T> inputImage, Image<T> maskImage,
+    public static <T extends RealType<T> & NativeType<T>> Objs getAllBands(ImageI<T> inputImage, ImageI<T> maskImage,
             String outputObjectsName, String weightMode, boolean matchZToXY, double bandWidthPx, double minDistPx,
             double maxDistPx, String type) {
         // Get distance map
@@ -269,10 +269,10 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Objs getBands(Image<T> inputImage, Image<T> maskImage,
+    public static <T extends RealType<T> & NativeType<T>> Objs getBands(ImageI<T> inputImage, ImageI<T> maskImage,
             String outputObjectsName, boolean internalBands, String weightMode, boolean matchZToXY, double bandWidthPx,
             double minDistPx, double maxDistPx, String type) {
-        Image<T> distPx = DistanceMap.process(inputImage, "Distance", true, weightMode, matchZToXY, false);
+        ImageI<T> distPx = DistanceMap.process(inputImage, "Distance", true, weightMode, matchZToXY, false);
         ImageMath.process(distPx, ImageMath.CalculationModes.DIVIDE, bandWidthPx);
 
         // Applying masking (can occur due to ZtoXY interpolation)
@@ -298,7 +298,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void applyDistanceLimits(Image<T> inputImage,
+    public static <T extends RealType<T> & NativeType<T>> void applyDistanceLimits(ImageI<T> inputImage,
             double minDistPx, double maxDistPx, double bandWidthPx) {
         // Skipping this step if no limits were set
         if (minDistPx == 0 && maxDistPx == Double.MAX_VALUE)
@@ -353,7 +353,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> void addMeasurements(Objs bands, Image<T> distPx, double bandWidthPx,
+    static <T extends RealType<T> & NativeType<T>> void addMeasurements(Objs bands, ImageI<T> distPx, double bandWidthPx,
             boolean internalObjects) {
         double dppXY = bands.getDppXY();
         double sign = internalObjects ? -1 : 1;
@@ -433,9 +433,9 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);
 
             // Creating binary image for distance transform
-            Image<T> inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
+            ImageI<T> inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
             InvertIntensity.process(inputImage);
-            Image<T> maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
+            ImageI<T> maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
 
             Objs tempBandObjects;
             switch (bandMode) {

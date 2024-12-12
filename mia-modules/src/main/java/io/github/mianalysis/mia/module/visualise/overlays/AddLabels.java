@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -84,7 +84,7 @@ public class AddLabels extends AbstractOverlay {
     /**
     * 
     */
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
     /**
      * Determines if the modifications made to the input image (added overlay
@@ -312,7 +312,7 @@ public class AddLabels extends AbstractOverlay {
 
     public static double[] getInsideObjectLocation(Obj obj) {
         // Binarise object and calculate its distance map
-        Image binaryImage = obj.getAsImage("Binary", false);
+        ImageI binaryImage = obj.getAsImage("Binary", false);
         BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1, true);
         ImagePlus distanceIpl = DistanceMap
                 .process(binaryImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false)
@@ -527,7 +527,7 @@ public class AddLabels extends AbstractOverlay {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
@@ -578,7 +578,7 @@ public class AddLabels extends AbstractOverlay {
                 renderInAllSlices,
                 renderInAllFrames, multithread, measurementNames, positions);
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.

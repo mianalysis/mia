@@ -6,14 +6,13 @@ import java.util.LinkedHashMap;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.measurements.Measurement;
-import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by stephen on 30/04/2017.
  */
-public abstract class Image<T extends RealType<T> & NativeType<T>> implements ImageI<T>, MeasurementProvider {
+public abstract class Image<T extends RealType<T> & NativeType<T>> implements ImageI<T> {
     protected String name;
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 

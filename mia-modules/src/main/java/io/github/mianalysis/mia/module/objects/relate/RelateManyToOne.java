@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -492,11 +492,11 @@ public class RelateManyToOne extends Module {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
-            Image parentImage = parentObject.getAsImage("Parent", false);
-            Image distImage = DistanceMap.process(parentImage, "Distance", true,
+            ImageI parentImage = parentObject.getAsImage("Parent", false);
+            ImageI distImage = DistanceMap.process(parentImage, "Distance", true,
                     DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
 
-            Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",
+            ImageI projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",
                     ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 
@@ -738,14 +738,14 @@ public class RelateManyToOne extends Module {
                 for (int ID : parentObjects.keySet())
                     maxID = Math.max(ID, maxID);
 
-                Image parentImage = parentObjects.convertToImageIDColours();
+                ImageI parentImage = parentObjects.convertToImageIDColours();
                 SetDisplayRange.setDisplayRangeManual(parentImage, new double[] { 0, maxID });
                 parentImage.show(false);
 
                 HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
-                Image childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
+                ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
                 SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
-                childImage.show(childObjectName, LUTs.Random(true, false), false, Image.DisplayModes.COLOUR);
+                childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR);
 
             }
 

@@ -370,7 +370,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         if (!(obj instanceof Image))
             return false;
 
-        Image image = (Image) obj;
+        ImageI image = (Image) obj;
         ImagePlus imagePlus2 = image.getImagePlus();
 
         // Comparing calibrations

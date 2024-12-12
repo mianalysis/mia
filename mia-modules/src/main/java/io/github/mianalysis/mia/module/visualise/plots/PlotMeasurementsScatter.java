@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -47,7 +47,7 @@ public class PlotMeasurementsScatter extends Module {
 	/**
 	* 
 	*/
-    public static final String INPUT_SEPARATOR = "Object input/image output";
+    public static final String INPUT_SEPARATOR = "Object input/ImageI output";
 
 	/**
 	* Input object collection for which object-associated measurements will be plotted.
@@ -85,7 +85,7 @@ public class PlotMeasurementsScatter extends Module {
     public static final String MISC_SEPARATOR = "Miscellaneous controls";
 
 	/**
-	* When selected, and if displaying module output in realtime ("Show output" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard image output will be displayed (i.e. the same image added to the workspace).
+	* When selected, and if displaying module output in realtime ("Show output" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard ImageI output will be displayed (i.e. the same image added to the workspace).
 	*/
     public static final String SHOW_AS_INTERACTIVE_PLOT = "Show as interactive plot";
 
@@ -205,7 +205,7 @@ public class PlotMeasurementsScatter extends Module {
 
         plot.setLimits(cs[0].getMin(), cs[0].getMax(), cs[1].getMin(), cs[1].getMax());
 
-        Image outputImage = ImageFactory.createImage(outputImageName, plot.getImagePlus());
+        ImageI outputImage = ImageFactory.createImage(outputImageName, plot.getImagePlus());
         workspace.addImage(outputImage);
 
         if (showOutput)
@@ -329,7 +329,7 @@ return null;
                 + "\" is selected, this is the colourmap that will control how marker colours vary in response to the magnitude of their values.");
 
         parameters.get(SHOW_AS_INTERACTIVE_PLOT).setDescription(
-                "When selected, and if displaying module output in realtime (\"Show output\" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard image output will be displayed (i.e. the same image added to the workspace).");
+                "When selected, and if displaying module output in realtime (\"Show output\" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard ImageI output will be displayed (i.e. the same image added to the workspace).");
 
     }
 }

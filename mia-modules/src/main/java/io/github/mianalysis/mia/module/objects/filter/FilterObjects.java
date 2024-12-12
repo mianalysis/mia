@@ -33,7 +33,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -451,7 +451,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     public void filterObjectsByID(Objs inputObjects, @Nullable Objs outputObjects, boolean remove,
-            @Nullable Image image) {
+            @Nullable ImageI image) {
         ImagePlus ipl = null;
         if (image != null) {
             ipl = image.getImagePlus().duplicate();
@@ -618,7 +618,7 @@ public class FilterObjects extends Module implements ActionListener {
                 break;
 
             case FilterMethods.RUNTIME_OBJECT_ID:
-                Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
+                ImageI displayImage = showImage ? workspace.getImage(displayImageName) : null;
                 filterObjectsByID(inputObjects, outputObjects, remove, displayImage);
                 break;
         }

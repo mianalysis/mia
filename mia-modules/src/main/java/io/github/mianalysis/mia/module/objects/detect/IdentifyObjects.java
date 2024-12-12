@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -350,7 +350,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
+    public static Objs process(ImageI inputImage, String outputObjectsName, boolean blackBackground,
             boolean singleObject, String detectionMode, int connectivity, String type, boolean multithread,
             int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
@@ -415,7 +415,7 @@ public class IdentifyObjects extends Module {
                 }
 
                 // Converting image to objects
-                Image tempImage = ImageFactory.createImage("Temp image", currStack);
+                ImageI tempImage = ImageFactory.createImage("Temp image", currStack);
                 Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
 
                 // If processing each slice separately, offsetting it to the correct Z-position
@@ -478,7 +478,7 @@ public class IdentifyObjects extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);

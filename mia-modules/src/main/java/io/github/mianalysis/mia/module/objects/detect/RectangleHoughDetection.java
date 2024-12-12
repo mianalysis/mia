@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -75,7 +75,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting parameters
@@ -145,7 +145,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
                         ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
                         if (outputTransformImage) {
-                            Image outputImage = ImageFactory.createImage(outputImageName, showIpl);
+                            ImageI outputImage = ImageFactory.createImage(outputImageName, showIpl);
                             workspace.addImage(outputImage);
                         }
                         if (showOutput && showTransformImage) {

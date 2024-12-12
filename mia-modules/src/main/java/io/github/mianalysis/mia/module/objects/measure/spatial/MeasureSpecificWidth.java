@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -165,7 +165,7 @@ public class MeasureSpecificWidth extends Module {
 
     }
 
-    public static Point<Double> getImageReference(final Image image, final String xMeasName, final String yMeasName,
+    public static Point<Double> getImageReference(final ImageI image, final String xMeasName, final String yMeasName,
             final String zMeasName) {
         final Calibration calibration = image.getImagePlus().getCalibration();
 
@@ -284,12 +284,12 @@ public class MeasureSpecificWidth extends Module {
 
         final Objs inputObjects = workspace.getObjects(inputObjectsName);
 
-        Image referenceImage1 = null;
+        ImageI referenceImage1 = null;
         if (refMode1.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
             referenceImage1 = workspace.getImage(referenceImageName1);
         }
 
-        Image referenceImage2 = null;
+        ImageI referenceImage2 = null;
         if (refMode2.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
             referenceImage2 = workspace.getImage(referenceImageName2);
         }

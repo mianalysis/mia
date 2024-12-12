@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -64,7 +64,7 @@ public class AddLine extends AbstractOverlay {
 	/**
 	* 
 	*/
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
 	/**
 	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
@@ -172,7 +172,7 @@ public class AddLine extends AbstractOverlay {
 
     }
 
-    public static Point<Double> getImageReference(final Image image, final String xMeasName, final String yMeasName) {
+    public static Point<Double> getImageReference(final ImageI image, final String xMeasName, final String yMeasName) {
         final double xMeas = image.getMeasurement(xMeasName).getValue();
         final double yMeas = image.getMeasurement(yMeasName).getValue();
 
@@ -229,7 +229,7 @@ public class AddLine extends AbstractOverlay {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         final String refMode1 = parameters.getValue(REFERENCE_MODE_1,workspace);
@@ -255,12 +255,12 @@ public class AddLine extends AbstractOverlay {
         double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
-        Image referenceImage1 = null;
+        ImageI referenceImage1 = null;
         if (refMode1.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
             referenceImage1 = workspace.getImage(referenceImageName1);
         }
 
-        Image referenceImage2 = null;
+        ImageI referenceImage2 = null;
         if (refMode2.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
             referenceImage2 = workspace.getImage(referenceImageName2);
         }
@@ -313,7 +313,7 @@ public class AddLine extends AbstractOverlay {
 
         }
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.

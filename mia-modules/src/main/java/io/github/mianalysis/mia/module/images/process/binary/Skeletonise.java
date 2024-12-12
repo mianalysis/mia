@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractRegistration;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -81,7 +81,7 @@ public class Skeletonise extends Module {
     }
 
 
-    public static void process(Image image, boolean blackBackground) {
+    public static void process(ImageI image, boolean blackBackground) {
         if (!blackBackground)
             InvertIntensity.process(image);
 
@@ -135,7 +135,7 @@ public class Skeletonise extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters

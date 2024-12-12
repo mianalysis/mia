@@ -8,7 +8,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -87,7 +87,7 @@ public class ShowImage extends Module {
 
     }
 
-    public interface ChannelModes extends Image.DisplayModes {}
+    public interface ChannelModes extends ImageI.DisplayModes {}
 
     public ShowImage(Modules modules) {
         super("Show image", modules);
@@ -137,7 +137,7 @@ public class ShowImage extends Module {
                 break;
         }
 
-        Image image = workspace.getImage(imageName);
+        ImageI image = workspace.getImage(imageName);
 
         if (showOutput)
             image.show(title, null, normalisation, channelMode);

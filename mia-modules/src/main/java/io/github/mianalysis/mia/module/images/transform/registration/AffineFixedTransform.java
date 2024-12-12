@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -127,7 +127,7 @@ public class AffineFixedTransform extends Module {
 
     }
 
-    public void applyTransformation(Image inputImage, String transform, String fillMode, boolean multithread)
+    public void applyTransformation(ImageI inputImage, String transform, String fillMode, boolean multithread)
             throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -211,7 +211,7 @@ public class AffineFixedTransform extends Module {
 
         // Getting the input image and duplicating if the output will be stored
         // separately
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
             inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 

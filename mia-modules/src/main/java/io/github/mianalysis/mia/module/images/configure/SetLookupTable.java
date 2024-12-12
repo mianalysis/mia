@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -210,7 +210,7 @@ public class SetLookupTable extends Module {
 
     }
 
-    public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
+    public static void setLUT(ImageI inputImage, LUT lut, String channelMode, int channel) {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Single channel images shouldn't be set to composite
@@ -240,7 +240,7 @@ public class SetLookupTable extends Module {
 
     }
 
-    public static void copyLUTFromImage(Image inputImage, Image referenceImage) {
+    public static void copyLUTFromImage(ImageI inputImage, ImageI referenceImage) {
         ImagePlus inputIpl = inputImage.getImagePlus();
         LUT[] luts = referenceImage.getImagePlus().getLuts();
         for (int ch = 0; ch < Math.min(inputIpl.getNChannels(), luts.length); ch++)
@@ -267,7 +267,7 @@ public class SetLookupTable extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String lookupTableName = parameters.getValue(LOOKUP_TABLE, workspace);
@@ -310,7 +310,7 @@ public class SetLookupTable extends Module {
 
                 break;
             case ChannelModes.COPY_FROM_IMAGE:
-                Image referenceImage = workspace.getImage(referenceImageName);
+                ImageI referenceImage = workspace.getImage(referenceImageName);
                 copyLUTFromImage(inputImage, referenceImage);
                 break;
         }
@@ -318,7 +318,7 @@ public class SetLookupTable extends Module {
         inputImage.getImagePlus().updateChannelAndDraw();
 
         if (showOutput)
-            inputImage.show(inputImageName, null, false, Image.DisplayModes.COMPOSITE);
+            inputImage.show(inputImageName, null, false, ImageI.DisplayModes.COMPOSITE);
 
         return Status.PASS;
 

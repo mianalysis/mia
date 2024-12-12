@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -125,7 +125,7 @@ public class ExtendedMinima extends Module {
     public interface BinaryLogic extends BinaryLogicInterface {
     }
 
-    public static Image process(Image inputImage, String outputImageName, String minimaMaxima, boolean blackBackground,
+    public static ImageI process(ImageI inputImage, String outputImageName, String minimaMaxima, boolean blackBackground,
             int dynamic, int connectivity, boolean multithread) throws InterruptedException {
         ImagePlus inputIpl = inputImage.getImagePlus();
         int width = inputIpl.getWidth();
@@ -214,7 +214,7 @@ public class ExtendedMinima extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
@@ -227,7 +227,7 @@ public class ExtendedMinima extends Module {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // Getting region minima
-        Image outputImage;
+        ImageI outputImage;
         try {
             outputImage = process(inputImage, outputImageName, minimaMaximaMode, blackBackground, dynamic, connectivity,
                     multithread);

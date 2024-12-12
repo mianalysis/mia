@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -65,7 +65,7 @@ public class AddObjectCentroid extends AbstractOverlay {
 	/**
 	* 
 	*/
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
 	/**
 	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
@@ -267,7 +267,7 @@ public class AddObjectCentroid extends AbstractOverlay {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         String pointSize = parameters.getValue(POINT_SIZE, workspace);
@@ -288,7 +288,7 @@ public class AddObjectCentroid extends AbstractOverlay {
 
         addOverlay(ipl, inputObjects, colours, pointSize, pointType, renderInAllFrames, multithread);
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.

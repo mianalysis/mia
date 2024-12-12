@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -153,7 +153,7 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static boolean saveImage(Image image, String folderName, String fileName) {
+    static boolean saveImage(ImageI image, String folderName, String fileName) {
         // Check analysis folder exists
         File analysisFolder = new File(folderName);
         if (!analysisFolder.exists()) {
@@ -264,9 +264,9 @@ public class ExportACCDataset extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
         String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE,workspace);
-        Image inputRawImage = workspace.getImage(inputRawImageName);
+        ImageI inputRawImage = workspace.getImage(inputRawImageName);
         String inputOverlayImageName = parameters.getValue(INPUT_OVERLAY_IMAGE,workspace);
-        Image inputOverlayImage = workspace.getImage(inputOverlayImageName);
+        ImageI inputOverlayImage = workspace.getImage(inputOverlayImageName);
         String rootFolder = parameters.getValue(ROOT_DATASET_FOLDER,workspace);
         String plateMetadataName = parameters.getValue(PLATE_NAME,workspace);
         String plateName = workspace.getMetadata().getAsString(plateMetadataName);

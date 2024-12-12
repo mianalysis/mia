@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -190,7 +190,7 @@ public abstract class AbstractObjectTracking extends Module {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
         // Creating a parent-ID encoded image of the objects
-        Image dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false);
+        ImageI dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();

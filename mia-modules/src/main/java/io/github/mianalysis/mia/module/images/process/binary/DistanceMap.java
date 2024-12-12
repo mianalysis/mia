@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -150,7 +150,7 @@ public class DistanceMap extends Module {
                 weightMode, matchZToXY, verbose).getImagePlus();
     }
 
-    public static Image process(Image inputImage, String outputImageName, boolean blackBackground, String weightMode,
+    public static ImageI process(ImageI inputImage, String outputImageName, boolean blackBackground, String weightMode,
             boolean matchZToXY, boolean verbose) {
         String name = new DistanceMap(null).getName();
 
@@ -256,7 +256,7 @@ public class DistanceMap extends Module {
         }
     }
 
-    public static void applyCalibratedUnits(Image inputImage, double dppXY) {
+    public static void applyCalibratedUnits(ImageI inputImage, double dppXY) {
         ImageTypeConverter.process(inputImage, 32, ImageTypeConverter.ScalingModes.CLIP);
         ImageMath.process(inputImage, ImageMath.CalculationModes.MULTIPLY, dppXY);
 
@@ -284,7 +284,7 @@ public class DistanceMap extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
@@ -295,7 +295,7 @@ public class DistanceMap extends Module {
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // Running distance map
-        Image distanceMap = process(inputImage, outputImageName, blackBackground, weightMode, matchZToXY, true);
+        ImageI distanceMap = process(inputImage, outputImageName, blackBackground, weightMode, matchZToXY, true);
 
         // Applying spatial calibration
         if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {

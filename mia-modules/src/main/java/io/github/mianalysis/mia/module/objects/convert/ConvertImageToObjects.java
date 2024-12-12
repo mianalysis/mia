@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -105,7 +105,7 @@ public class ConvertImageToObjects extends Module {
                 + "\" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.";
     }
 
-    public static Objs createParents(Objs inputObjects, Image image, String parentsName) {
+    public static Objs createParents(Objs inputObjects, ImageI image, String parentsName) {
         Objs parentObjects = new Objs(parentsName, inputObjects);
 
         for (Obj inputObject : inputObjects.values()) {
@@ -130,7 +130,7 @@ public class ConvertImageToObjects extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         String volumeType = parameters.getValue(VOLUME_TYPE,workspace);

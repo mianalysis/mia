@@ -47,7 +47,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -356,11 +356,11 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         });
     }
 
-    boolean isSingleSlice(Image image) {
+    boolean isSingleSlice(ImageI image) {
         return image.getNSlices() == 1;
     }
 
-    int[] getBestFocusAuto(Image inputImage, Image calculationImage, Stat stat, MinMaxMode minMax, int channel) {
+    int[] getBestFocusAuto(ImageI inputImage, ImageI calculationImage, Stat stat, MinMaxMode minMax, int channel) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Iterating over frame, extracting the relevant substack, then appending it to
@@ -376,7 +376,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    int[] getBestFocusManual(Image refImage) {
+    int[] getBestFocusManual(ImageI refImage) {
         if (refImage != null) {
             String uniqueName = WindowManager.getUniqueName("Select timepoints");
             refImage.show(uniqueName);            
@@ -435,7 +435,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    static int getOptimalStatSlice(Image image, int frame, int channel, Stat stat, MinMaxMode mode) {
+    static int getOptimalStatSlice(ImageI image, int frame, int channel, Stat stat, MinMaxMode mode) {
         ImagePlus inputIpl = image.getImagePlus();
 
         // Setting the channels to measure over. If channel is -1, use all channels
@@ -484,7 +484,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image extract(Image<T> inputImage, int relativeStart,
+    public static <T extends RealType<T> & NativeType<T>> ImageI extract(ImageI<T> inputImage, int relativeStart,
             int relativeEnd, int[] bestSlices,
             String outputImageName) {
         // Creating the empty container image
@@ -639,7 +639,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> void addMeasurements(Image image, int[] slices) {
+    static <T extends RealType<T> & NativeType<T>> void addMeasurements(ImageI image, int[] slices) {
         CumStat cs = new CumStat();
         for (int slice : slices)
             cs.addMeasure(slice);
@@ -678,7 +678,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
 
         // Getting other parameters
         String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
@@ -700,7 +700,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             updateAndGetImageMeasurementRefs().addBlankMeasurements(inputImage);
 
             if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
-                Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
+                ImageI outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
                 workspace.addImage(outputImage);
 
                 if (showOutput)
@@ -720,7 +720,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
         // The input image will be used for calculation unless an external image was
         // specified
-        Image calculationImage = inputImage;
+        ImageI calculationImage = inputImage;
         switch (calculationSource) {
             case CalculationSources.EXTERNAL:
                 calculationImage = workspace.getImage(externalSourceName);
@@ -731,7 +731,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         int[] bestSlices;
         switch (bestFocusCalculation) {
             case BestFocusCalculations.MANUAL:
-                Image refImage = workspace.getImage(referenceImageName);
+                ImageI refImage = workspace.getImage(referenceImageName);
                 bestSlices = getBestFocusManual(refImage);
                 String metadataString = Arrays.stream(bestSlices).mapToObj(String::valueOf)
                         .collect(Collectors.joining(","));
@@ -780,7 +780,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             inputImage.showMeasurements(this);
 
         if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
-            Image outputImage = extract(inputImage, relativeStart, relativeEnd, bestSlices, outputImageName);
+            ImageI outputImage = extract(inputImage, relativeStart, relativeEnd, bestSlices, outputImageName);
             workspace.addImage(outputImage);
 
             if (showOutput)
@@ -975,7 +975,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
                 "If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.");
 
         parameters.get(CALCULATION_SOURCE).setDescription(
-                "When using automatic best focus slice determination this controls the image source:<br><ul>"
+                "When using automatic best focus slice determination this controls the ImageI source:<br><ul>"
 
                         + "<li>\"" + CalculationSources.EXTERNAL
                         + "\" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li>"

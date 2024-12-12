@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -66,7 +66,7 @@ public class WhiteBalanceCorrection extends Module {
 
 
 
-    static double[] getRGBIntensities(Image image, Obj refObj) {
+    static double[] getRGBIntensities(ImageI image, Obj refObj) {
         // Splitting channels
         ImagePlus[] channels = ChannelSplitter.split(image.getImagePlus());
 
@@ -79,7 +79,7 @@ public class WhiteBalanceCorrection extends Module {
 
     }
 
-    static void applyWhiteBalanceCorrection(Image inputImage, double[] rgbMeans) {
+    static void applyWhiteBalanceCorrection(ImageI inputImage, double[] rgbMeans) {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Applying white balance correction
@@ -105,7 +105,7 @@ public class WhiteBalanceCorrection extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image and reference object(s)
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
         String refObjectsName = parameters.getValue(REFERENCE_OBJECT,workspace);

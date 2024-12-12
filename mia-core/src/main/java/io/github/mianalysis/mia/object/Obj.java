@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
@@ -526,14 +526,14 @@ public class Obj extends Volume implements MeasurementProvider {
         }
     }
 
-    public Image getAsImage(String imageName, boolean singleTimepoint) {
+    public ImageI getAsImage(String imageName, boolean singleTimepoint) {
         if (singleTimepoint)
             return getAsImage(imageName, 0, 1);
         else
             return getAsImage(imageName, getT(), objCollection.getNFrames());
     }
 
-    public Image getCentroidAsImage(String imageName, boolean singleTimepoint) {
+    public ImageI getCentroidAsImage(String imageName, boolean singleTimepoint) {
         int nFrames = singleTimepoint ? 1 : objCollection.getNFrames();
         int t = singleTimepoint ? 0 : getT();
 
@@ -552,7 +552,7 @@ public class Obj extends Volume implements MeasurementProvider {
 
     }
 
-    public void addToImage(Image image, float hue) {
+    public void addToImage(ImageI image, float hue) {
         ImagePlus ipl = image.getImagePlus();
         int bitDepth = ipl.getBitDepth();
 
@@ -576,7 +576,7 @@ public class Obj extends Volume implements MeasurementProvider {
         }
     }
 
-    public void addCentroidToImage(Image image, float hue) {
+    public void addCentroidToImage(ImageI image, float hue) {
         ImagePlus ipl = image.getImagePlus();
         int bitDepth = ipl.getBitDepth();
 

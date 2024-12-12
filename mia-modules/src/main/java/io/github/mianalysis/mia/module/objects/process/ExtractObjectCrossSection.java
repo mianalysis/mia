@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -186,7 +186,7 @@ public class ExtractObjectCrossSection extends Module {
         // same for all objects
         switch (referenceMode) {
             case ReferenceModes.IMAGE_MEASUREMENT:
-                Image imageForMeasurement = workspace.getImage(imageForMeasurementName);
+                ImageI imageForMeasurement = workspace.getImage(imageForMeasurementName);
                 Measurement imageMeasurement = imageForMeasurement.getMeasurement(imageMeasurementName);
                 indices = applyIndexOffset(indices, imageMeasurement);
                 break;

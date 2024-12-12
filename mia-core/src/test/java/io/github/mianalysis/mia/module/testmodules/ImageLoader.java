@@ -49,7 +49,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
-    public static final String CROP_SEPARATOR = "Image cropping";
+    public static final String CROP_SEPARATOR = "ImageI cropping";
     public static final String CROP_MODE = "Crop mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";

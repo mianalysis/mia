@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -169,9 +169,9 @@ public class GrowObjects extends Module {
             Objs currObjs = inputObjects.getObjectsInFrame("This frame", frame);
 
             // Get marker, intensity and mask images
-            Image markerImage = getMarkerImage(currObjs, startingObjectsMode);
-            Image intensityImage = getIntensityImage(currObjs, frame, growthMode, intensityImageName, workspace);
-            Image maskImage = getMaskImage(currObjs, frame, maskImageName, blackBackground,
+            ImageI markerImage = getMarkerImage(currObjs, startingObjectsMode);
+            ImageI intensityImage = getIntensityImage(currObjs, frame, growthMode, intensityImageName, workspace);
+            ImageI maskImage = getMaskImage(currObjs, frame, maskImageName, blackBackground,
                     workspace);
 
             // Apply watershed transform
@@ -183,7 +183,7 @@ public class GrowObjects extends Module {
                 segmentedIpl = Watershed.computeWatershed(intensityImage.getImagePlus(),
                         markerImage.getImagePlus(), maskImage.getImagePlus(), connectivity, true, false);
 
-            Image segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
+            ImageI segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
 
             // Get objects and create new object collection
             Objs segmentedObjects = segmentedImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
@@ -222,7 +222,7 @@ public class GrowObjects extends Module {
 
     }
 
-    public static Image getMarkerImage(Objs objects, String startingObjectsMode) {
+    public static ImageI getMarkerImage(Objs objects, String startingObjectsMode) {
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(objects, false);
 
         switch (startingObjectsMode) {
@@ -234,26 +234,26 @@ public class GrowObjects extends Module {
         }
     }
 
-    public static Image getIntensityImage(Objs objects, int frame, String growthMode, @Nullable String intensityImageName, WorkspaceI workspace) {
+    public static ImageI getIntensityImage(Objs objects, int frame, String growthMode, @Nullable String intensityImageName, WorkspaceI workspace) {
         switch (growthMode) {
             case GrowthModes.EQUIDISTANT_FROM_OBJECTS:
             default:
                 // No intensity image, so creating blank (black) image
-                Image intensityImage = objects.convertToImageBinary();
+                ImageI intensityImage = objects.convertToImageBinary();
                 ImageMath.process(intensityImage, ImageMath.CalculationModes.MULTIPLY, 0);
                 return intensityImage;
             case GrowthModes.FROM_IMAGE:
-                Image fullIntensityImage = workspace.getImage(intensityImageName);
+                ImageI fullIntensityImage = workspace.getImage(intensityImageName);
                 return ExtractSubstack.extractSubstack(fullIntensityImage, intensityImageName, "1", "1-end",
                         String.valueOf(frame + 1));
         }
     }
 
-    public static Image getMaskImage(Objs objects, int frame, @Nullable String maskImageName, boolean blackBackground,
+    public static ImageI getMaskImage(Objs objects, int frame, @Nullable String maskImageName, boolean blackBackground,
             WorkspaceI workspace) {
         if (maskImageName != null) {
-            Image fullMaskImage = workspace.getImage(maskImageName);
-            Image maskImage = ExtractSubstack.extractSubstack(fullMaskImage, maskImageName, "1", "1-end",
+            ImageI fullMaskImage = workspace.getImage(maskImageName);
+            ImageI maskImage = ExtractSubstack.extractSubstack(fullMaskImage, maskImageName, "1", "1-end",
                     String.valueOf(frame + 1));
 
             if (!blackBackground)

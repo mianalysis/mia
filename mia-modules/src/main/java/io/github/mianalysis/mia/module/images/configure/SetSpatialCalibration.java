@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -84,8 +84,8 @@ public class SetSpatialCalibration extends Module {
 	/**
 	* 
 	*/
-    public static final String ID_SEPARATOR = "Image distance controls";
-    public static final String ID_SOURCE = "Image distance (ID) source";
+    public static final String ID_SEPARATOR = "ImageI distance controls";
+    public static final String ID_SOURCE = "ImageI distance (ID) source";
     public static final String OBJECTS_FOR_ID = "Objects for measurement (ID)";
     public static final String OBJECTS_MEASURUREMENT_FOR_ID = "Objects measurement (ID)";
     public static final String FIXED_VALUE_FOR_ID = "Fixed value (ID)";
@@ -156,7 +156,7 @@ public class SetSpatialCalibration extends Module {
 
     }
 
-    public static double getGUITextValue(Image image, boolean showImage, boolean storeMeasurement, String message) {
+    public static double getGUITextValue(ImageI image, boolean showImage, boolean storeMeasurement, String message) {
         ImagePlus dispIpl = null;
         if (showImage) {
             dispIpl = image.getImagePlus().duplicate();
@@ -176,7 +176,7 @@ public class SetSpatialCalibration extends Module {
     }
 
     public static double getImageMeasurement(WorkspaceI workspace, String imageName, String measurementName) {
-        Image image = workspace.getImage(imageName);
+        ImageI image = workspace.getImage(imageName);
         if (image == null) {
             MIA.log.writeWarning("No image to provide distance.  Setting calibration to NaN.");
             return Double.NaN;
@@ -215,7 +215,7 @@ public class SetSpatialCalibration extends Module {
         String idImageName = parameters.getValue(IMAGE_FOR_ID,workspace);
         String idImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_ID,workspace);
 
-        Image image = workspace.getImage(inputImageName);
+        ImageI image = workspace.getImage(inputImageName);
 
         // If not using a fixed value, updating the fixed value with the correct value
         switch (pdSource) {

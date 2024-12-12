@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -293,7 +293,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
     }
 
-    public static Image getHistogramIJ(double[] bins, double[] data) {
+    public static ImageI getHistogramIJ(double[] bins, double[] data) {
         int n = 1000;
         double sum = 0;
         for (double val : data)
@@ -320,7 +320,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
     }
 
-    public static Image getHistogramRGB(Directionality_ directionality) {
+    public static ImageI getHistogramRGB(Directionality_ directionality) {
         JFrame frame = directionality.plotResults();
         frame.setUndecorated(true);
         frame.setPreferredSize(new Dimension(histWidth, histHeight));
@@ -377,7 +377,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
         
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         AnalysisMethod method;
@@ -438,7 +438,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
         if (outputOrientationMap) {
             ImagePlus oriIpl = new ImagePlus(orientationMapName, directionality.getOrientationMap());
-            Image oriImage = ImageFactory.createImage(orientationMapName, oriIpl);
+            ImageI oriImage = ImageFactory.createImage(orientationMapName, oriIpl);
             workspace.addImage(oriImage);
 
             if (showOutput)
@@ -447,7 +447,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
         if (saveHistogram) {
             // Image histogramImage = getHistogramIJ(binsDegs, hist);
-            Image histogramImage = getHistogramRGB(directionality);
+            ImageI histogramImage = getHistogramRGB(directionality);
 
             String outputPath = getOutputPath(modules, workspace);
             String outputName = getOutputName(modules, workspace);

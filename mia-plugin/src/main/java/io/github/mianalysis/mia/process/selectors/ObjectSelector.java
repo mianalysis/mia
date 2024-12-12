@@ -84,7 +84,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
@@ -591,7 +591,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             ArrayList<Integer> timepoints = new ArrayList<>();
 
             // Creating a blank image for this track
-            Image binaryImage = trackObj.getAsImage("Track", false);
+            ImageI binaryImage = trackObj.getAsImage("Track", false);
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
@@ -626,7 +626,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         }
     }
 
-    static void applyTemporalInterpolation(Image binaryImage) {
+    static void applyTemporalInterpolation(ImageI binaryImage) {
         ImagePlus binaryIpl = binaryImage.getImagePlus();
         int nSlices = binaryIpl.getNSlices();
         int nFrames = binaryIpl.getNFrames();

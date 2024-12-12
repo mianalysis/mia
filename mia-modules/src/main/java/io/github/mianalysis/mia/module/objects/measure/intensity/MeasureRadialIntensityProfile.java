@@ -73,7 +73,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 
 //     }
 
-//     static Image getDistanceMap(Objs inputObjects, Image inputImage, String referenceMode) {
+//     static Image getDistanceMap(Objs inputObjects, ImageI inputImage, String referenceMode) {
 //         switch (referenceMode) {
 //             case ReferenceModes.DISTANCE_FROM_CENTROID:
 //                 return CreateDistanceMap.getCentroidDistanceMap(inputObjects, "Distance map");
@@ -86,7 +86,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 
 //     }
 
-//     static CumStat[] processObject(Obj inputObject, Image inputImage, Image distanceMap, double[] distanceBins) {
+//     static CumStat[] processObject(Obj inputObject, ImageI inputImage, ImageI distanceMap, double[] distanceBins) {
 //         // Setting up CumStats to hold results
 //         CumStat[] cumStats = new CumStat[distanceBins.length];
 //         for (int i = 0; i < cumStats.length; i++)
@@ -147,7 +147,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 
 //         // Getting input image
 //         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-//         Image inputImage = workspace.getImage(inputImageName);
+//         ImageI inputImage = workspace.getImage(inputImageName);
 
 //         // Getting other parameters
 //         String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
@@ -159,7 +159,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //         double maxDistance = parameters.getValue(MAX_DISTANCE,workspace);
 
 //         // Getting the distance map for all objects
-//         Image distanceMap = null;
+//         ImageI distanceMap = null;
 //         switch (referenceMode) {
 //             case ReferenceModes.CUSTOM_DISTANCE_MAP:
 //                 distanceMap = workspace.getImage(distanceMapImageName);

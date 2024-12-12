@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -310,14 +310,14 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static Image createGaussianImage(Objs objects, String outputImageName, @Nullable Module module) {
+    static ImageI createGaussianImage(Objs objects, String outputImageName, @Nullable Module module) {
         if (objects.size() == 0)
             return null;
 
         // Create blank image
         Obj firstObject = objects.getFirst();
         ImagePlus ipl = IJ.createImage(outputImageName, firstObject.getWidth(), firstObject.getHeight(), 1, 32);
-        Image image = ImageFactory.createImage(outputImageName, ipl);
+        ImageI image = ImageFactory.createImage(outputImageName, ipl);
 
         // Get the image for the first object. Not adding the background to any object,
         // as the average background will
@@ -354,7 +354,7 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static void addGaussianProfile(Obj obj, Image inputImage, boolean zeroBackground) {
+    static void addGaussianProfile(Obj obj, ImageI inputImage, boolean zeroBackground) {
         // Create the 2D Gaussian distribution
         double x0 = obj.getMeasurement(Measurements.X0_PX).getValue();
         double y0 = obj.getMeasurement(Measurements.Y0_PX).getValue();
@@ -402,7 +402,7 @@ public class FitGaussian2D extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = new Duplicator().run(inputImagePlus);
 
@@ -467,7 +467,7 @@ public class FitGaussian2D extends Module {
 
             // Cropping image
             inputImagePlus.setPosition(1, z + 1, t + 1);
-            Image preCropImage = ImageFactory.createImage("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
+            ImageI preCropImage = ImageFactory.createImage("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
             ImageProcessor iprCrop = CropImage
                     .cropImage(preCropImage, "Crop", x - halfW, y - halfW, halfW * 2 + 1, halfW * 2 + 1).getImagePlus()
                     .getProcessor();
@@ -511,7 +511,7 @@ public class FitGaussian2D extends Module {
             assignVolume(inputObjects);
 
         // Creating a Gaussian image
-        Image gaussianImage = null;
+        ImageI gaussianImage = null;
         if (createGaussianImage) {
             gaussianImage = createGaussianImage(inputObjects, gaussianImageName, this);
             workspace.addImage(gaussianImage);

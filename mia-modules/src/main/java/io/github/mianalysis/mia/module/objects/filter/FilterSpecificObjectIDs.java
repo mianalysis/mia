@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -138,7 +138,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     }
 
     public int filter(Objs inputObjects, @Nullable Objs outputObjects, boolean remove,
-            @Nullable Image image) {
+            @Nullable ImageI image) {
         ImagePlus ipl = null;
         if (image != null) {
             ipl = image.getImagePlus().duplicate();
@@ -215,7 +215,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
-        Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
+        ImageI displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
         int count = filter(inputObjects, outputObjects, remove, displayImage);
 

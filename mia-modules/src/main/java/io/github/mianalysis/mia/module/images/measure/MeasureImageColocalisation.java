@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectCo
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -82,22 +82,22 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 	/**
 	* 
 	*/
-    public static final String MASKING_SEPARATOR = "Image masking";
+    public static final String MASKING_SEPARATOR = "ImageI masking";
 
 	/**
-	* Controls which regions of the image will be evaluated for colocalisation:<br><ul><li>"Mask using image" A binary image (specified using "Mask image") determines which pixels are evaluated for colocalisation.  The "Image mask logic" parameter controls whether the pixels to be evaluated are black (0 intensity) or white (255 intensity).</li><li>"Mask using objects" An object collection (specified using "Input objects") determines which pixels are evaluated for colocalisation.  The "Object mask logic" parameter controls whether the pixels to be evaluated are inside or outside the objects.</li><li>"None" No mask will be applied.  All pixels in the image will be evaluated for colocalisation.</li></ul>
+	* Controls which regions of the image will be evaluated for colocalisation:<br><ul><li>"Mask using image" A binary image (specified using "Mask image") determines which pixels are evaluated for colocalisation.  The "ImageI mask logic" parameter controls whether the pixels to be evaluated are black (0 intensity) or white (255 intensity).</li><li>"Mask using objects" An object collection (specified using "Input objects") determines which pixels are evaluated for colocalisation.  The "Object mask logic" parameter controls whether the pixels to be evaluated are inside or outside the objects.</li><li>"None" No mask will be applied.  All pixels in the image will be evaluated for colocalisation.</li></ul>
 	*/
     public static final String MASKING_MODE = "Masking mode";
 
 	/**
-	* If "Masking mode" is set to "Mask using image", this is the binary image which will control the pixels to be evaluated for colocalisation.  The "Image mask logic" parameter controls whether the pixels to be evaluated are black (0 intensity) or white (255 intensity).
+	* If "Masking mode" is set to "Mask using image", this is the binary image which will control the pixels to be evaluated for colocalisation.  The "ImageI mask logic" parameter controls whether the pixels to be evaluated are black (0 intensity) or white (255 intensity).
 	*/
     public static final String MASK_IMAGE = "Mask image";
 
 	/**
 	* Controls whether colocalisation is measured for pixels coincident with black (0 intensity) or white (255 intensity) pixels in the mask image.
 	*/
-    public static final String IMAGE_MASK_LOGIC = "Image mask logic";
+    public static final String IMAGE_MASK_LOGIC = "ImageI mask logic";
 
 	/**
 	* If "Masking mode" is set to "Mask using objects", this is the object collection which will control the pixels to be evaluated for colocalisation.  The "Object mask logic" parameter controls whether the pixels to be evaluated are inside or outside the objects.
@@ -247,9 +247,9 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
     }
 
-    public static Image getObjectMask(Objs objects, String maskLogic) {
+    public static ImageI getObjectMask(Objs objects, String maskLogic) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(objects, ColourFactory.SingleColours.WHITE);
-        Image mask = objects.convertToImage("Mask", hues, 8, false);
+        ImageI mask = objects.convertToImage("Mask", hues, 8, false);
 
         if (maskLogic.equals(ObjectMaskLogic.MEASURE_OUTSIDE_OBJECTS))
             InvertIntensity.process(mask);
@@ -258,8 +258,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> DataContainer<T> prepareDataContainer(Image image1,
-            Image image2, @Nullable Image mask) {
+    public static <T extends RealType<T> & NativeType<T>> DataContainer<T> prepareDataContainer(ImageI image1,
+            ImageI image2, @Nullable ImageI mask) {
         DataContainer<T> data;
 
         try {
@@ -277,7 +277,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
     }
 
-    public void setImageMeasurements(Image image, HashMap<String, Double> measurements, String imageName1,
+    public void setImageMeasurements(ImageI image, HashMap<String, Double> measurements, String imageName1,
             String imageName2) {
         for (String measurementName : measurements.keySet()) {
             String fullName = getFullName(imageName1, imageName2, measurementName);
@@ -327,7 +327,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void setManualThresholds(DataContainer<T> data, Image image1,
+    public static <T extends RealType<T> & NativeType<T>> void setManualThresholds(DataContainer<T> data, ImageI image1,
             double fixedThreshold1, double fixedThreshold2) {
         ManualThreshold<T> manualThreshold = new ManualThreshold<T>(image1, fixedThreshold1, fixedThreshold2);
         data.setAutoThreshold(manualThreshold);
@@ -512,15 +512,15 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     public Status process(WorkspaceI workspace) {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1,workspace);
-        Image image1 = (Image) workspace.getImage(imageName1);
+        ImageI image1 = (ImageI) workspace.getImage(imageName1);
 
         String imageName2 = parameters.getValue(INPUT_IMAGE_2,workspace);
-        Image image2 = (Image) workspace.getImages().get(imageName2);
+        ImageI image2 = (ImageI) workspace.getImages().get(imageName2);
 
         // Getting parameters
         String maskingMode = parameters.getValue(MASKING_MODE,workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE,workspace);
-        Image maskImage = (Image) workspace.getImage(maskImageName);
+        ImageI maskImage = (ImageI) workspace.getImage(maskImageName);
         String imageMaskLogic = parameters.getValue(IMAGE_MASK_LOGIC,workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs objects = workspace.getObjects(objectName);
@@ -944,7 +944,7 @@ class ManualThreshold<T extends net.imglib2.type.numeric.RealType<T>> extends Au
     private T fixedThreshold1;
     private T fixedThreshold2;
 
-    public ManualThreshold(Image image, double fixedThreshold1, double fixedThreshold2) {
+    public ManualThreshold(ImageI image, double fixedThreshold1, double fixedThreshold2) {
         super(null);
 
         T type = (T) image.getImgPlus().getImg().firstElement();

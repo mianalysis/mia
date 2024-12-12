@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureIntensityAlongPath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -99,7 +99,7 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         return "Measure's Ripley's K-function for greyscale images.  This method is re-written from the publication \"Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images\" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.";
     }
 
-    public static double[] calculateGSKfunction(Image image, int radius, @Nullable Image maskImage) {
+    public static double[] calculateGSKfunction(ImageI image, int radius, @Nullable ImageI maskImage) {
         if (radius <= 0)
             return null;
 
@@ -274,8 +274,8 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         SXSSFWorkbook workbook = initialiseWorkbook();
         SXSSFSheet sheet = workbook.getSheetAt(0);
 
-        Image inputImage = workspace.getImage(inputImageName);
-        Image maskImage = useMask ? workspace.getImage(maskImageName) : null;
+        ImageI inputImage = workspace.getImage(inputImageName);
+        ImageI maskImage = useMask ? workspace.getImage(maskImageName) : null;
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         int rowI = 1;
@@ -284,9 +284,9 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         int total = inputIpl.getNFrames() * inputIpl.getNSlices() * nRadii;
         for (int t = 0; t < inputIpl.getNFrames(); t++) {
             for (int z = 0; z < inputIpl.getNSlices(); z++) {
-                Image currImage = ExtractSubstack.extractSubstack(inputImage, "TimepointImage", "1-end",
+                ImageI currImage = ExtractSubstack.extractSubstack(inputImage, "TimepointImage", "1-end",
                         String.valueOf(z) + 1, String.valueOf(t) + 1);
-                Image currMask = useMask ? ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1-end",
+                ImageI currMask = useMask ? ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1-end",
                         String.valueOf(z) + 1, String.valueOf(t) + 1) : null;
 
                 for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {

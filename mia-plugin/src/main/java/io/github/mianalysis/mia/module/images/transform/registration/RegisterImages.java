@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -125,7 +125,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 	/**
 	* 
 	*/
-    public static final String REFERENCE_SEPARATOR = "Reference image source";
+    public static final String REFERENCE_SEPARATOR = "Reference ImageI source";
 
 	/**
 	* Controls what reference image each image will be compared to:<br><ul><li>"First frame" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li><li>"Previous frame" Each image will be compared to the frame (or slice when in Z-axis mode) immediately before it.  This copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li><li>"Specific image" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the "Reference image" parameter.</li></ul>
@@ -193,8 +193,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 	*/
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    private Image inputImage;
-    private Image reference;
+    private ImageI inputImage;
+    private ImageI reference;
 
     public RegisterImages(Modules modules) {
         super("Register images", modules);
@@ -262,14 +262,14 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param,
-            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference,
-            @Nullable Image externalSource) {
+    public void processAutomatic(ImageI inputImage, int calculationChannel, String relativeMode, Param param,
+            int correctionInterval, String fillMode, boolean multithread, @Nullable ImageI reference,
+            @Nullable ImageI externalSource) {
         // Creating a reference image
-        Image projectedReference = null;
+        ImageI projectedReference = null;
 
         // Assigning source image
-        Image source = externalSource == null ? inputImage : externalSource;
+        ImageI source = externalSource == null ? inputImage : externalSource;
 
         // Assigning fixed reference images
         switch (relativeMode) {
@@ -305,9 +305,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             }
 
             // Getting the projected image at this time-point
-            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel),
+            ImageI warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel),
                     "1-end", String.valueOf(t));
-            Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped",
+            ImageI projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped",
                     ProjectImage.ProjectionModes.MAX);
 
             // Calculating the transformation for this image pair
@@ -366,14 +366,14 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         }
     }
 
-    public void processManual(Image inputImage, String transformationMode, boolean multithread, String fillMode,
-            Image reference) {
+    public void processManual(ImageI inputImage, String transformationMode, boolean multithread, String fillMode,
+            ImageI reference) {
         // Creating a reference image
-        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+        ImageI projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
                 ProjectImage.ProjectionModes.MAX);
 
         // Creating a projection of the main image
-        Image projectedWarped = ProjectImage.projectImageInZ(inputImage, "ProjectedWarped",
+        ImageI projectedWarped = ProjectImage.projectImageInZ(inputImage, "ProjectedWarped",
                 ProjectImage.ProjectionModes.MAX);
 
         ImagePlus ipl1 = new Duplicator().run(projectedWarped.getImagePlus());
@@ -393,7 +393,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-                Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
+                ImageI warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
                         String.valueOf(t));
                 try {
                     applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
@@ -476,7 +476,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, String fillMode,
+    public static void applyTransformation(ImageI inputImage, ImageI referenceImage, Mapping mapping, String fillMode,
             boolean multithread) throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -540,7 +540,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         }        
     }
 
-    public static void replaceStack(Image inputImage, Image newStack, int channel, int timepoint) {
+    public static void replaceStack(ImageI inputImage, ImageI newStack, int channel, int timepoint) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         ImagePlus newStackImagePlus = newStack.getImagePlus();
 
@@ -556,7 +556,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         
     }
 
-    static void addManualMeasurements(Image image, AbstractAffineModel2D model) {
+    static void addManualMeasurements(ImageI image, AbstractAffineModel2D model) {
         AffineTransform transform = model.createAffine();
 
         image.addMeasurement(new Measurement(Measurements.TRANSLATE_X, transform.getTranslateX()));
@@ -568,14 +568,14 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> Image<T> createOverlay(Image<T> inputImage, Image<T> referenceImage) {
+    static <T extends RealType<T> & NativeType<T>> ImageI<T> createOverlay(ImageI<T> inputImage, ImageI<T> referenceImage) {
         // Only create the overlay if the two images have matching dimensions
         ImagePlus ipl1 = inputImage.getImagePlus();
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
             String axis = ConcatenateStacks2.AxisModes.CHANNEL;
-            ArrayList<Image<T>> images = new ArrayList<>();
+            ArrayList<ImageI<T>> images = new ArrayList<>();
             images.add(inputImage);
             images.add(referenceImage);
             return ConcatenateStacks2.process(images, axis, "Overlay");
@@ -596,12 +596,12 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
 
         // Creating a reference image
-        Image<T> projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+        ImageI<T> projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
                 ProjectImage.ProjectionModes.MAX);
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image<T> dupImage = ImageFactory.createImage("Registered", dupIpl);
+        ImageI<T> dupImage = ImageFactory.createImage("Registered", dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -616,7 +616,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 1; c <= dupImage.getImagePlus().getNChannels(); c++) {
-                Image<T> warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end",
+                ImageI<T> warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end",
                         String.valueOf(t));
                 try {
                     applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
@@ -632,7 +632,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         }
 
-        ArrayList<Image<T>> images = new ArrayList<>();
+        ArrayList<ImageI<T>> images = new ArrayList<>();
         images.add(reference);
         images.add(dupImage);
         ConcatenateStacks2.process(images, ConcatenateStacks2.AxisModes.CHANNEL, "Registration comparison")
@@ -719,7 +719,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                 param.minInlierRatio = (float) minInlierRatio;
 
                 // Getting external source image
-                Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
+                ImageI externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
                         ? ImageFactory.createImage(externalSourceName,
                                 workspace.getImage(externalSourceName).getImagePlus().duplicate())
                         : null;

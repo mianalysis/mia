@@ -40,7 +40,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -107,7 +107,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
         super("Measure intensity along path", modules);
     }
 
-    public static SXSSFWorkbook process(Objs objects, Image[] images, boolean includeCentroids,
+    public static SXSSFWorkbook process(Objs objects, ImageI[] images, boolean includeCentroids,
             boolean includeTimepoints) {
         // Creating workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -125,7 +125,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
 
     }
 
-    public static void process(Obj object, Image image, Sheet sheet, boolean includeCentroids,
+    public static void process(Obj object, ImageI image, Sheet sheet, boolean includeCentroids,
             boolean includeTimepoints) {
         if (object.size() < 2)
             return;
@@ -142,7 +142,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
 
     }
 
-    public static LinkedHashMap<Double, Double> measureIntensityProfile(Collection<Point<Integer>> points, Image image,
+    public static LinkedHashMap<Double, Double> measureIntensityProfile(Collection<Point<Integer>> points, ImageI image,
             int t, SpatCal spatCal) {
         ImagePlus ipl = image.getImagePlus();
 
@@ -342,7 +342,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
         if (firstObj == null)
             return Status.PASS;
 
-        Image[] images = new Image[imageCollections.size()];
+        ImageI[] images = new ImageI[imageCollections.size()];
         int i = 0;
         for (Parameters imageCollection : imageCollections.values()) {
             String imageName = imageCollection.getValue(INPUT_IMAGE, workspace);

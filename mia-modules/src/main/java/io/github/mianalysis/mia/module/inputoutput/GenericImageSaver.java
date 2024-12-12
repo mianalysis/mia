@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.inputoutput.ImageSaver.FileFormats;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver.AppendDateTimeModes;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -154,7 +154,7 @@ public class GenericImageSaver extends Module {
         boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB, workspace);
 
         // Loading the image to save
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         MetadataI metadata = workspace.getMetadata();

@@ -32,7 +32,7 @@ import loci.formats.Memoizer;
  */
 public class Preferences extends Module {
     public static final String WORKFLOW_SEPARATOR = "Workflow parameters";
-    public static final String IMAGE_DISPLAY_MODE = "Image display mode";
+    public static final String IMAGE_DISPLAY_MODE = "ImageI display mode";
 
     public static final String DATA_SEPARATOR = "Data parameters";
     public static final String USE_MEMOIZER = "Use memoizer";

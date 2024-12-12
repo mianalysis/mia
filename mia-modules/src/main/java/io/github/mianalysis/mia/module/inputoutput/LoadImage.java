@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -198,7 +198,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         return "1.0.0";
     }
 
-    public Image<T> loadImage(String filePath, int seriesNumber, String outputImageName)
+    public ImageI<T> loadImage(String filePath, int seriesNumber, String outputImageName)
             throws IOException, URISyntaxException, io.scif.FormatException {
         SCIFIOConfig config = new SCIFIOConfig();
         config.imgOpenerSetImgModes(ImgMode.CELL);
@@ -323,7 +323,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
             return Status.FAIL;
         }
 
-        Image<T> image;
+        ImageI<T> image;
         try {
             image = loadImage(file.getAbsolutePath(), seriesNumber, outputImageName);
         } catch (IOException | URISyntaxException | io.scif.FormatException e) {

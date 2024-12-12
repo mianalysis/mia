@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 
 /**
@@ -49,7 +49,7 @@ public class ImageSaverTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = ImageFactory.createImage("Test_image", ipl);
+        ImageI image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module
@@ -92,7 +92,7 @@ public class ImageSaverTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = ImageFactory.createImage("Test_image", ipl);
+        ImageI image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module

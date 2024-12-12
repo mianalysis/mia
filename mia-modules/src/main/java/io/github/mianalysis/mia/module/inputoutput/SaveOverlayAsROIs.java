@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.module.inputoutput.SaveObjectsAsROIs.FileModes;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -72,7 +72,7 @@ public class SaveOverlayAsROIs extends AbstractSaver {
         return "Saves image overlay as a zipped set of ROIs.  This method preserves colours and labels and allows overlays to be stored in a memory efficient manner.";
     }
 
-    public static void saveOverlay(String outPath, Image inputImage) {
+    public static void saveOverlay(String outPath, ImageI inputImage) {
         try {
             ZipOutputStream zos = null;
             DataOutputStream out = null;
@@ -109,7 +109,7 @@ public class SaveOverlayAsROIs extends AbstractSaver {
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
 
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
 
         String outputPath = getOutputPath(modules, workspace);
         String outputName = getOutputName(modules, workspace);

@@ -6,14 +6,14 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class ZInterpolator {
     public static void applySpatialInterpolation(Objs inputObjects, String type) throws IntegerOverflowException {
         for (Obj inputObj : inputObjects.values()) {
-            Image binaryImage = inputObj.getAsTightImage("BinaryTight");
+            ImageI binaryImage = inputObj.getAsTightImage("BinaryTight");
 
             // We need at least 3 slices to make interpolation worthwhile
             if (binaryImage.getImagePlus().getNSlices() < 3)
@@ -33,7 +33,7 @@ public class ZInterpolator {
         }
     }
 
-    static void applySpatialInterpolation(Image binaryImage) {
+    static void applySpatialInterpolation(ImageI binaryImage) {
         ImagePlus binaryIpl = binaryImage.getImagePlus();
         int nSlices = binaryIpl.getNSlices();
         int nFrames = binaryIpl.getNFrames();

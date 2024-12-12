@@ -7,7 +7,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 
 public class TestUtils {
@@ -15,13 +15,13 @@ public class TestUtils {
             throws UnsupportedEncodingException {
         String pathToImage = URLDecoder.decode(TestUtils.class.getResource(path).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = ImageFactory.createImage(imageName, ipl);
+        ImageI image = ImageFactory.createImage(imageName, ipl);
         
         workspace.addImage(image);
 
     }
 
-    public static Image loadImage(String path, String imageName) throws UnsupportedEncodingException {
+    public static ImageI loadImage(String path, String imageName) throws UnsupportedEncodingException {
         String pathToImage = URLDecoder.decode(TestUtils.class.getResource(path).getPath(), "UTF-8");
 
         return ImageFactory.createImage(imageName, IJ.openImage(pathToImage));

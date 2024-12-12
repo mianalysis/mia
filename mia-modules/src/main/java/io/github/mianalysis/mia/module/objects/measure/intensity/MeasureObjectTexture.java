@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -121,7 +121,7 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    public static void processObject(Obj object, Image image, TextureCalculator textureCalculator, double[] offs,
+    public static void processObject(Obj object, ImageI image, TextureCalculator textureCalculator, double[] offs,
             boolean calibratedOffset) {
         ImagePlus ipl = image.getImagePlus();
 
@@ -175,7 +175,7 @@ public class MeasureObjectTexture extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // This requires an 8-bit image. If the provided image isn't 8-bit, convert it

@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -117,7 +117,7 @@ public class ImageTypeConverter extends Module {
 
     }
 
-    public static void process(Image inputImage, int outputBitDepth, String scalingMode) {
+    public static void process(ImageI inputImage, int outputBitDepth, String scalingMode) {
         process(inputImage.getImagePlus(), outputBitDepth, scalingMode);
         
     }
@@ -205,7 +205,7 @@ public class ImageTypeConverter extends Module {
         imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
     }
 
-    static HashMap<Integer, LUT> getLUTs(Image image) {
+    static HashMap<Integer, LUT> getLUTs(ImageI image) {
         ImagePlus ipl = image.getImagePlus();
         HashMap<Integer,LUT> luts = new HashMap<>();
 
@@ -219,7 +219,7 @@ public class ImageTypeConverter extends Module {
 
     }
 
-    static void setLUTs(Image image, HashMap<Integer,LUT> luts) {
+    static void setLUTs(ImageI image, HashMap<Integer,LUT> luts) {
         ImagePlus ipl = image.getImagePlus();
 
         if (!ipl.isComposite()) return;
@@ -251,7 +251,7 @@ public class ImageTypeConverter extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -273,7 +273,7 @@ public class ImageTypeConverter extends Module {
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
             writeStatus("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             setLUTs(outputImage,luts);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.show();

@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -224,7 +224,7 @@ public class ExtractObjectEdges extends Module {
     public interface WeightModes extends DistanceMap.WeightModes {
     }
 
-    public static Obj getRegion(Obj inputObject, Objs outputObjects, Image distImage, double edgeDistance, Mode mode) {
+    public static Obj getRegion(Obj inputObject, Objs outputObjects, ImageI distImage, double edgeDistance, Mode mode) {
         ImagePlus distIpl = distImage.getImagePlus();
 
         // Creating new edge object
@@ -264,7 +264,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Image getPaddedDistanceMap(Obj inputObject, String weightMode) {
+    public static ImageI getPaddedDistanceMap(Obj inputObject, String weightMode) {
         // Creating a Hyperstack to hold the distance transform. The image is padded by
         // 1px to ensure the distance
         // map knows where the object edges are. If the image is a single plane there is
@@ -300,7 +300,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    static double convertEdgePercentageToDistance(Image distImage, double edgePercentage) {
+    static double convertEdgePercentageToDistance(ImageI distImage, double edgePercentage) {
         // If percentage is being used, calculate the current value for edgeDistance
         StackStatistics stackStatistics = new StackStatistics(distImage.getImagePlus());
         double maxDist = stackStatistics.max;
@@ -311,7 +311,7 @@ public class ExtractObjectEdges extends Module {
 
     static void showObjects(Objs objects, String parentObjectsName, LUT lut) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(objects, parentObjectsName, true);
-        Image dispImage = objects.convertToImage(objects.getName(), hues, 8, false);
+        ImageI dispImage = objects.convertToImage(objects.getName(), hues, 8, false);
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(lut);
         dispIpl.setPosition(1, 1, 1);
@@ -381,7 +381,7 @@ public class ExtractObjectEdges extends Module {
 
         for (Obj inputObject : inputObjects.values()) {
             // Creating distance map
-            Image distImage = getPaddedDistanceMap(inputObject, weightMode);
+            ImageI distImage = getPaddedDistanceMap(inputObject, weightMode);
             switch (edgeMode) {
                 case EdgeModes.OBJECT_MEASUREMENT:
                     edgeDistance = inputObject.getMeasurement(measurementName).getValue();

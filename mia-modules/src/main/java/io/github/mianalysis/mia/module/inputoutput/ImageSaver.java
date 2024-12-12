@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -125,7 +125,7 @@ public class ImageSaver extends AbstractSaver {
         super("Save image", modules);
     }
 
-    public static void saveImage(Image inputImage, String fileFormat, String path) {
+    public static void saveImage(ImageI inputImage, String fileFormat, String path) {
         saveImage(inputImage.getImagePlus(), fileFormat, path);
     }
 
@@ -198,7 +198,7 @@ public class ImageSaver extends AbstractSaver {
         boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB, workspace);
 
         // Loading the image to save
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         if (channelMode.equals(ChannelModes.COMPOSITE))

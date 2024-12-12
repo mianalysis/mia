@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.refs.collections;
 
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -45,7 +45,7 @@ public class ImageMeasurementRefs extends TreeMap<String, ImageMeasurementRef>
         return true;
     }
 
-    public void addBlankMeasurements(Image image) {
+    public void addBlankMeasurements(ImageI image) {
         for (ImageMeasurementRef ref : values())
             image.addMeasurement(new Measurement(ref.getName(), Double.NaN));
     }

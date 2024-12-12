@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -57,7 +57,7 @@ public class FocusStackLocal extends Module {
 	/**
 	* 
 	*/
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
 	/**
 	* 
@@ -113,7 +113,7 @@ public class FocusStackLocal extends Module {
         super("Focus stack (local)", modules);
     }
 
-    public static Image getHeightMap(Image inputImage, String outputHeightImageName, int range, boolean smooth) {
+    public static ImageI getHeightMap(ImageI inputImage, String outputHeightImageName, int range, boolean smooth) {
         String moduleName = new FocusStackLocal(null).getName();
 
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -122,7 +122,7 @@ public class FocusStackLocal extends Module {
         // If necessary, creating the height image
         ImagePlus heightIpl = createEmptyImage(inputIpl, outputHeightImageName, 16);
         heightIpl.setCalibration(inputIpl.getCalibration());
-        Image heightImage = ImageFactory.createImage(outputHeightImageName, heightIpl);
+        ImageI heightImage = ImageFactory.createImage(outputHeightImageName, heightIpl);
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -161,7 +161,7 @@ public class FocusStackLocal extends Module {
 
     }
 
-    public static Image focusStack(Image inputImage, String outputImageName, Image inputHeightImage) {
+    public static ImageI focusStack(ImageI inputImage, String outputImageName, ImageI inputHeightImage) {
         String moduleName = new FocusStackLocal(null).getName();
 
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -170,7 +170,7 @@ public class FocusStackLocal extends Module {
         // Creating array to hold [0] the focused image and [1] the height map
         ImagePlus outputIpl = createEmptyImage(inputIpl, outputImageName, inputIpl.getBitDepth());
         outputIpl.setCalibration(inputIpl.getCalibration());
-        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, outputIpl);
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -267,10 +267,10 @@ public class FocusStackLocal extends Module {
         int range = parameters.getValue(RANGE,workspace);
         boolean smooth = parameters.getValue(SMOOTH_HEIGHT_MAP,workspace);
 
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
 
         // Getting height map
-        Image heightMap = null;
+        ImageI heightMap = null;
         if (useExisting) {
             // Duplicating the image, so the addition doesn't affect it
             heightMap = workspace.getImage(inputHeightImageName);
@@ -287,7 +287,7 @@ public class FocusStackLocal extends Module {
         switch (outputMode) {
             case OutputModes.FOCUSED_IMAGE_AND_HEIGHT_MAP:
             case OutputModes.FOCUSED_IMAGE_ONLY:
-                Image outputImage = focusStack(inputImage, outputFocusedImageName, heightMap);
+                ImageI outputImage = focusStack(inputImage, outputFocusedImageName, heightMap);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.show();

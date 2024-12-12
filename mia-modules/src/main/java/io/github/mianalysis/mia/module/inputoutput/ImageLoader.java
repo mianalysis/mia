@@ -34,7 +34,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
@@ -269,7 +269,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     /**
     * 
     */
-    public static final String CROP_SEPARATOR = "Image cropping";
+    public static final String CROP_SEPARATOR = "ImageI cropping";
 
     /**
      * Choice of loading the entire image, or cropping in XY:<br>
@@ -556,7 +556,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static int[] getCropROI(Image referenceImage) {
+    public static int[] getCropROI(ImageI referenceImage) {
         int[] crop = null;
         // Displaying the image
         ImagePlus referenceIpl = referenceImage.getImagePlus().duplicate();
@@ -1314,7 +1314,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    private void addCropMeasurements(Image image, int[] crop) {
+    private void addCropMeasurements(ImageI image, int[] crop) {
         image.addMeasurement(new Measurement(Measurements.ROI_LEFT, crop[0]));
         image.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
         image.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
@@ -1397,7 +1397,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
             case CropModes.FROM_REFERENCE:
                 // Displaying the image
-                Image referenceImage = workspace.getImage(referenceImageName);
+                ImageI referenceImage = workspace.getImage(referenceImageName);
                 crop = getCropROI(referenceImage);
                 break;
             case CropModes.OBJECT_COLLECTION_LIMITS:
@@ -1606,7 +1606,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)

@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -96,8 +96,8 @@ public class MeasureObjectWidth extends Module {
         Objs inputObjects = workspace.getObjects(inputObjectName);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
-        Image binaryImage = inputObjects.convertToImage("Binary", hues, 8, false);
-        Image distanceMap = DistanceMap.process(binaryImage, "DistanceMapTemp", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, false, false);
+        ImageI binaryImage = inputObjects.convertToImage("Binary", hues, 8, false);
+        ImageI distanceMap = DistanceMap.process(binaryImage, "DistanceMapTemp", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, false, false);
         ImageMath.process(distanceMap, ImageMath.CalculationModes.MULTIPLY, 2);
         
         // Getting the centroids of each and saving them to the objects

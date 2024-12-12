@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -132,7 +132,7 @@ public class ApplyDeepImageJModel extends Module {
         String patchSize = parameters.getValue(PATCH_SIZE, workspace);
 
         // Get input image
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Running deep learning model
@@ -215,7 +215,7 @@ public class ApplyDeepImageJModel extends Module {
             outputIpl.setStack(outputIst);
 
             // Storing output image
-            Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, outputIpl);
             workspace.addImage(outputImage);
 
             if (showOutput)

@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -216,10 +216,10 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
     public Status process(WorkspaceI workspace) {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1, workspace);
-        Image image1 = (Image) workspace.getImage(imageName1);
+        ImageI image1 = (ImageI) workspace.getImage(imageName1);
 
         String imageName2 = parameters.getValue(INPUT_IMAGE_2, workspace);
-        Image image2 = (Image) workspace.getImages().get(imageName2);
+        ImageI image2 = (ImageI) workspace.getImages().get(imageName2);
 
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
@@ -241,7 +241,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         int count = 0;
         int total = objects.size();
         for (Obj inputObject : objects.values()) {
-            Image maskImage = null;
+            ImageI maskImage = null;
 
             if (inputObject.size() > 0)
                 maskImage = inputObject.getAsTightImage("Mask");
@@ -254,12 +254,12 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
             int width = (int) Math.round(extents[0][1] - extents[0][0] + 1);
             int height = (int) Math.round(extents[1][1] - extents[1][0] + 1);
             int nSlices = (int) Math.round(extents[2][1] - extents[2][0] + 1);
-            Image crop1 = CropImage.cropImage(image1, "Crop1", left, top, width, height);
-            Image crop2 = CropImage.cropImage(image2, "Crop2", left, top, width, height);
+            ImageI crop1 = CropImage.cropImage(image1, "Crop1", left, top, width, height);
+            ImageI crop2 = CropImage.cropImage(image2, "Crop2", left, top, width, height);
 
-            Image timepoint1 = ExtractSubstack.extractSubstack(crop1, "Timepoint1", "1-end", String.valueOf(zOffs)+"-"+String.valueOf(nSlices),
+            ImageI timepoint1 = ExtractSubstack.extractSubstack(crop1, "Timepoint1", "1-end", String.valueOf(zOffs)+"-"+String.valueOf(nSlices),
                     String.valueOf(inputObject.getT() + 1));
-            Image timepoint2 = ExtractSubstack.extractSubstack(crop2, "Timepoint2", "1-end", String.valueOf(zOffs)+"-"+String.valueOf(nSlices),
+            ImageI timepoint2 = ExtractSubstack.extractSubstack(crop2, "Timepoint2", "1-end", String.valueOf(zOffs)+"-"+String.valueOf(nSlices),
                     String.valueOf(inputObject.getT() + 1));
 
             // Creating data container against which all algorithms will be run

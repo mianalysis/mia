@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -260,7 +260,7 @@ public class NormaliseIntensity extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -326,14 +326,14 @@ public class NormaliseIntensity extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show(outputImageName, LUT.createLutFromColor(Color.WHITE), false, Image.DisplayModes.COMPOSITE);
+                outputImage.show(outputImageName, LUT.createLutFromColor(Color.WHITE), false, ImageI.DisplayModes.COMPOSITE);
 
         } else {
             if (showOutput)
-                inputImage.show(inputImageName, LUT.createLutFromColor(Color.WHITE), false, Image.DisplayModes.COMPOSITE);
+                inputImage.show(inputImageName, LUT.createLutFromColor(Color.WHITE), false, ImageI.DisplayModes.COMPOSITE);
 
         }
 

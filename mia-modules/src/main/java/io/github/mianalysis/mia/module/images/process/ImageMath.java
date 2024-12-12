@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -73,7 +73,7 @@ public class ImageMath extends Module {
 	/**
 	* 
 	*/
-    public static final String CALCULATION_SEPARATOR = "Image calculation";
+    public static final String CALCULATION_SEPARATOR = "ImageI calculation";
 
 	/**
 	* Controls the mathematical operation being applied to all pixels of this image.  Choices are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract
@@ -125,7 +125,7 @@ public class ImageMath extends Module {
 
     }
 
-    public static void process(Image inputImage, String calculationType, double mathValue) {
+    public static void process(ImageI inputImage, String calculationType, double mathValue) {
         process(inputImage.getImagePlus(), calculationType, mathValue);
 
     }
@@ -190,7 +190,7 @@ public class ImageMath extends Module {
         
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -214,7 +214,7 @@ public class ImageMath extends Module {
         // Updating value if taken from a measurement
         switch (valueSource) {
             case ValueSources.MEASUREMENT:
-                Image imageForMeasurement = workspace.getImage(imageForMeasurementName);
+                ImageI imageForMeasurement = workspace.getImage(imageForMeasurementName);
                 mathValue = imageForMeasurement.getMeasurement(measurement).getValue();
                 break;
         }
@@ -228,7 +228,7 @@ public class ImageMath extends Module {
             if (showOutput)
                 inputImage.show();
         } else {
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.show();

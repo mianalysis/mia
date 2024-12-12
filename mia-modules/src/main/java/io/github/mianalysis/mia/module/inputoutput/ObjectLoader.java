@@ -26,7 +26,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -332,7 +332,7 @@ public class ObjectLoader extends Module {
 
     int[] getLimitsFromImage(WorkspaceI workspace) {
         String referenceImageName = parameters.getValue(LIMITS_REFERENCE_IMAGE, workspace);
-        Image image = workspace.getImage(referenceImageName);
+        ImageI image = workspace.getImage(referenceImageName);
         ImagePlus ipl = image.getImagePlus();
 
         return new int[] { ipl.getWidth(), ipl.getHeight(), ipl.getNSlices(), ipl.getNFrames() };
@@ -408,7 +408,7 @@ public class ObjectLoader extends Module {
         double[] cal = new double[2];
 
         String referenceImageName = parameters.getValue(SPATIAL_CALIBRATION_REFERENCE_IMAGE, workspace);
-        Image image = workspace.getImage(referenceImageName);
+        ImageI image = workspace.getImage(referenceImageName);
         Calibration calibration = image.getImagePlus().getCalibration();
 
         cal[0] = calibration.pixelWidth;
@@ -430,7 +430,7 @@ public class ObjectLoader extends Module {
 
     double getTemporalCalibrationFromImage(WorkspaceI workspace) {
         String referenceImageName = parameters.getValue(TEMPORAL_CALIBRATION_REFERENCE_IMAGE, workspace);
-        Image image = workspace.getImage(referenceImageName);
+        ImageI image = workspace.getImage(referenceImageName);
 
         return image.getImagePlus().getCalibration().frameInterval;
 

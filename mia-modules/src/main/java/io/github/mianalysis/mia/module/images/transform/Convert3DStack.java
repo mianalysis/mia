@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -98,7 +98,7 @@ public class Convert3DStack extends Module {
         return "Ensures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
     }
 
-    public static void process(Image inputImage, String mode) {
+    public static void process(ImageI inputImage, String mode) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         process(inputImagePlus, mode);
@@ -136,7 +136,7 @@ public class Convert3DStack extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -153,7 +153,7 @@ public class Convert3DStack extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
 
             if (showOutput)

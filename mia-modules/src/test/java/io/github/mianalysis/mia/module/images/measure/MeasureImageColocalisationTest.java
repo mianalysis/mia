@@ -50,7 +50,7 @@ package io.github.mianalysis.mia.module.images.measure;
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
 //         ImagePlus expectedIpl = IJ.openImage(pathToImage);
-//         Image expectedImage = ImageFactory.createImage("Expected",expectedIpl);
+//         ImageI expectedImage = ImageFactory.createImage("Expected",expectedIpl);
 
 //         Image actual = MeasureImageColocalisation.getObjectMask(expectedObjects,MeasureImageColocalisation.ObjectMaskLogic.MEASURE_INSIDE_OBJECTS);
 
@@ -69,7 +69,7 @@ package io.github.mianalysis.mia.module.images.measure;
 
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),"UTF-8");
 //         ImagePlus expectedIpl = IJ.openImage(pathToImage);
-//         Image expectedImage = ImageFactory.createImage("Expected",expectedIpl);
+//         ImageI expectedImage = ImageFactory.createImage("Expected",expectedIpl);
 
 //         Image actual = MeasureImageColocalisation.getObjectMask(expectedObjects,MeasureImageColocalisation.ObjectMaskLogic.MEASURE_OUTSIDE_OBJECTS);
 
@@ -86,12 +86,12 @@ package io.github.mianalysis.mia.module.images.measure;
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 //         ImagePlus ipl1 = IJ.openImage(pathToImage);
-//         Image image1 = ImageFactory.createImage("Im1",ipl1);
+//         ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 //         workspace.addImage(image1);
 
 //         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel2_2D_8bit.zip").getPath(),"UTF-8");
 //         ImagePlus ipl2 = IJ.openImage(pathToImage);
-//         Image image2 = ImageFactory.createImage("Im2",ipl2);
+//         ImageI image2 = ImageFactory.createImage("Im2",ipl2);
 //         workspace.addImage(image2);
 
 //         // Running the analysis
@@ -115,17 +115,17 @@ package io.github.mianalysis.mia.module.images.measure;
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 //         ImagePlus ipl1 = IJ.openImage(pathToImage);
-//         Image image1 = ImageFactory.createImage("Im1",ipl1);
+//         ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 //         workspace.addImage(image1);
 
 //         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel2_2D_8bit.zip").getPath(),"UTF-8");
 //         ImagePlus ipl2 = IJ.openImage(pathToImage);
-//         Image image2 = ImageFactory.createImage("Im2",ipl2);
+//         ImageI image2 = ImageFactory.createImage("Im2",ipl2);
 //         workspace.addImage(image2);
 
 //         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
 //         ImagePlus maskIpl = IJ.openImage(pathToImage);
-//         Image maskImage = ImageFactory.createImage("Mask", maskIpl);        
+//         ImageI maskImage = ImageFactory.createImage("Mask", maskIpl);        
 //         workspace.addImage(maskImage);
 
 //         // Running the analysis
@@ -195,7 +195,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl1 = IJ.openImage(pathToImage);
-// //        Image image1 = ImageFactory.createImage("Im1",ipl1);
+// //        ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 // //
 // //        Image actual = MeasureImageColocalisation.getObjectMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.NONE);
 // //
@@ -215,11 +215,11 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl1 = IJ.openImage(pathToImage);
-// //        Image image1 = ImageFactory.createImage("Im1",ipl1);
+// //        ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 // //
 // //        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
 // //        ImagePlus expectedIpl = IJ.openImage(pathToImage);
-// //        Image expectedImage = ImageFactory.createImage("Expected",expectedIpl);
+// //        ImageI expectedImage = ImageFactory.createImage("Expected",expectedIpl);
 // //
 // //        Image actual = MeasureImageColocalisation.getObjectMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_INSIDE_OBJECTS);
 // //
@@ -239,11 +239,11 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl1 = IJ.openImage(pathToImage);
-// //        Image image1 = ImageFactory.createImage("Im1",ipl1);
+// //        ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 // //
 // //        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),"UTF-8");
 // //        ImagePlus expectedIpl = IJ.openImage(pathToImage);
-// //        Image expectedImage = ImageFactory.createImage("Expected",expectedIpl);
+// //        ImageI expectedImage = ImageFactory.createImage("Expected",expectedIpl);
 // //
 // //        Image actual = MeasureImageColocalisation.getObjectMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_OUTSIDE_OBJECTS);
 // //
@@ -260,12 +260,12 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl1 = IJ.openImage(pathToImage);
-// //        Image image1 = ImageFactory.createImage("Im1",ipl1);
+// //        ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 // //        workspace.addImage(image1);
 // //
 // //        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel2_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl2 = IJ.openImage(pathToImage);
-// //        Image image2 = ImageFactory.createImage("Im2",ipl2);
+// //        ImageI image2 = ImageFactory.createImage("Im2",ipl2);
 // //        workspace.addImage(image2);
 // //
 // //        // Running the analysis
@@ -289,17 +289,17 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl1 = IJ.openImage(pathToImage);
-// //        Image image1 = ImageFactory.createImage("Im1",ipl1);
+// //        ImageI image1 = ImageFactory.createImage("Im1",ipl1);
 // //        workspace.addImage(image1);
 // //
 // //        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel2_2D_8bit.zip").getPath(),"UTF-8");
 // //        ImagePlus ipl2 = IJ.openImage(pathToImage);
-// //        Image image2 = ImageFactory.createImage("Im2",ipl2);
+// //        ImageI image2 = ImageFactory.createImage("Im2",ipl2);
 // //        workspace.addImage(image2);
 // //
 // //        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
 // //        ImagePlus maskIpl = IJ.openImage(pathToImage);
-// //        Image maskImage = ImageFactory.createImage("Mask",maskIpl);
+// //        ImageI maskImage = ImageFactory.createImage("Mask",maskIpl);
 // //        workspace.addImage(maskImage);
 // //
 // //        // Running the analysis

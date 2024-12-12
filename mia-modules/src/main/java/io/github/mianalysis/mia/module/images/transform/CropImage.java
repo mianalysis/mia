@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -117,7 +117,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         super("Crop image", modules);
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image cropImage(Image inputImage, String outputImageName,
+    public static <T extends RealType<T> & NativeType<T>> ImageI cropImage(ImageI inputImage, String outputImageName,
             int left, int top, int width, int height) {
         Calibration calibration = inputImage.getImagePlus().getCalibration();
         ImgPlus<T> inputImg = inputImage.getImgPlus();
@@ -171,7 +171,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         outputImagePlus.setCalibration(calibration);
         ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
-        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
         SetLookupTable.copyLUTFromImage(outputImage,inputImage);
         
         dcImage.shutdown();
@@ -199,7 +199,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
@@ -233,7 +233,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Applying crop
-        Image outputImage = cropImage(inputImage, outputImageName, left, top, width, height);
+        ImageI outputImage = cropImage(inputImage, outputImageName, left, top, width, height);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {

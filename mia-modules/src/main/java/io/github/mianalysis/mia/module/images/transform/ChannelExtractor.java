@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -88,7 +88,7 @@ public class ChannelExtractor extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image ("+outputImageName+") to workspace");
-        Image outputImage = ImageFactory.createImage(outputImageName,outputChannelImagePlus);
+        ImageI outputImage = ImageFactory.createImage(outputImageName,outputChannelImagePlus);
         workspace.addImage(outputImage);
 
         if (showOutput) outputImage.show();

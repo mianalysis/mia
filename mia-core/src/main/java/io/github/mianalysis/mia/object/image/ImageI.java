@@ -20,13 +20,15 @@ import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public interface ImageI<T extends RealType<T> & NativeType<T>>  {
+public interface ImageI<T extends RealType<T> & NativeType<T>> extends MeasurementProvider {
+
     public interface DisplayModes {
         String COLOUR = "Colour";
         String COMPOSITE = "Composite";
@@ -77,7 +79,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>>  {
 
     public void addObjectCentroid(Obj obj, float hue);
 
-    public Image<T> duplicate(String outputImageName);
+    public ImageI<T> duplicate(String outputImageName);
 
     public Overlay getOverlay();
 

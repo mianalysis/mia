@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -86,8 +86,8 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
         return "Measure the Gini coefficient for all pixels in the specified image.  The Gini coefficient measures the inequality in intensity of pixels.  A coefficient of 0 indicates perfect intensity homogeneity (all pixels with the same value), while a value of 1 indicates the maximum possible inequality (all pixels are black, except for a single bright pixel).";
     }
 
-    public static <T extends RealType<T> & NativeType<T>> double calculateGiniCoefficient(Image<T> image,
-            @Nullable Image<T> maskImage) {
+    public static <T extends RealType<T> & NativeType<T>> double calculateGiniCoefficient(ImageI<T> image,
+            @Nullable ImageI<T> maskImage) {
         Cursor<T> cursor1 = image.getImgPlus().localizingCursor();
         RandomAccess<T> randomAccessMask = maskImage == null ? null : maskImage.getImgPlus().randomAccess();
 
@@ -134,8 +134,8 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
         boolean useMask = parameters.getValue(USE_MASK, workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
 
-        Image<T> inputImage = workspace.getImage(inputImageName);
-        Image<T> maskImage = useMask ? workspace.getImage(maskImageName) : null;
+        ImageI<T> inputImage = workspace.getImage(inputImageName);
+        ImageI<T> maskImage = useMask ? workspace.getImage(maskImageName) : null;
 
         double giniCoeff = calculateGiniCoefficient(inputImage, maskImage);
 

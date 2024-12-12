@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 public class DistanceMapTest extends ModuleTest {
 
@@ -30,8 +30,8 @@ public class DistanceMapTest extends ModuleTest {
         assertNotNull(workspace.getImage(outputImageName));
 
         // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage(outputImageName);
-        Image expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
+        ImageI outputImage = workspace.getImage(outputImageName);
+        ImageI expectedImage = TestUtils.loadImage(expectedImagePath, expectedImageName);
         
         assertEquals(expectedImage, outputImage);
 

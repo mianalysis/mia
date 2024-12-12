@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -285,7 +285,7 @@ public class GlobalAutoThreshold extends Module {
 
     }
 
-    public void addMeasurements(Image image, double threshold, String algorithm) {
+    public void addMeasurements(ImageI image, double threshold, String algorithm) {
         String measurementName = getFullName(Measurements.GLOBAL_VALUE, algorithm);
 
         image.addMeasurement(new Measurement(measurementName, threshold));
@@ -316,7 +316,7 @@ public class GlobalAutoThreshold extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -363,7 +363,7 @@ public class GlobalAutoThreshold extends Module {
 
             } else {
                 String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
-                Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+                ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
                 workspace.addImage(outputImage);
 
                 addMeasurements(outputImage, threshold, algorithm);

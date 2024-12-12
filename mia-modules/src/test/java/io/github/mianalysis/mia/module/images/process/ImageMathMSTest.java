@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -192,7 +192,7 @@ public class ImageMathMSTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(FilterImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         // Initialising module and setting parameters
@@ -268,7 +268,7 @@ public class ImageMathMSTest {
         assumeTrue(FilterImageMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(FilterImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
         // Running Module
         Status status = imageMath.execute(workspace);
@@ -279,7 +279,7 @@ public class ImageMathMSTest {
             assertEquals(1, workspace.getImages().size());
             assertNotNull(workspace.getImage("Test_image"));
 
-            Image outputImage = workspace.getImage("Test_image");
+            ImageI outputImage = workspace.getImage("Test_image");
             assertEquals(expectedImage, outputImage);
 
         } else {
@@ -287,7 +287,7 @@ public class ImageMathMSTest {
             assertNotNull(workspace.getImage("Test_image"));
             assertNotNull(workspace.getImage("Test_output"));
 
-            Image outputImage = workspace.getImage("Test_output");
+            ImageI outputImage = workspace.getImage("Test_output");
             assertEquals(expectedImage, outputImage);
 
         }

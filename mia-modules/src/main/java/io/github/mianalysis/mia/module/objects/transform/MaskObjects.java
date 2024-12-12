@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -138,7 +138,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static Objs maskObjects(Objs inputObjects, Image maskImage, @Nullable String outputObjectsName,
+    public static Objs maskObjects(Objs inputObjects, ImageI maskImage, @Nullable String outputObjectsName,
             boolean removeEmptyObjects, boolean verbose) {
         String moduleName = new MaskObjects<>(null).getName();
         String outputMode = outputObjectsName == null ? OutputModes.UPDATE_INPUT : OutputModes.CREATE_NEW_OBJECT;
@@ -185,7 +185,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage,
+    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, ImageI<T> maskImage,
             String maskObjectsName) {
         Objs tempObjects = new Objs(maskObjectsName, inputObject.getObjectCollection());
 
@@ -268,7 +268,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
             outputObjectsName = null;
             
         // If masking by objects, converting mask objects to an image
-        Image<T> maskImage;
+        ImageI<T> maskImage;
         switch (maskMode) {
             default:
                 MIA.log.writeWarning("Mask not found");

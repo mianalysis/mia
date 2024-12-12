@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -80,7 +80,7 @@ public class AddPause extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         if (showImage) {
-            Image inputImage = workspace.getImage(inputImageName);
+            ImageI inputImage = workspace.getImage(inputImageName);
             ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
             showIpl.setTitle(inputImageName);
             showIpl.show();

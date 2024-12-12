@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -151,7 +151,7 @@ public class SpotDetection extends Module {
         super("Spot detection", modules);
     }
 
-    public ArrayList<Obj> processStack(Image inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
+    public ArrayList<Obj> processStack(ImageI inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
         ImagePlus ipl = inputImage.getImagePlus();
         SpatCal calibration = SpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
@@ -180,11 +180,11 @@ public class SpotDetection extends Module {
 
     }
 
-    public Objs processSlice(Image inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
+    public Objs processSlice(ImageI inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
         int nSlices = inputImage.getImagePlus().getNSlices();
 
         for (int z=0;z<nSlices;z++) {
-            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z+1), "1-end");
+            ImageI sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z+1), "1-end");
             ArrayList<Obj> newSpots = processStack(sliceImage, spotObjects, estimateSize, workspace);
 
             // Putting the new spots at the correct Z-plane
@@ -342,7 +342,7 @@ public class SpotDetection extends Module {
         boolean estimateSize = parameters.getValue(ESTIMATE_SIZE,workspace);
 
         // Loading input image
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         SpatCal calibration = SpatCal.getFromImage(ipl);

@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -91,7 +91,7 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs objects = workspace.getObjects(objectName);
 
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         String measurementName = getFullName(inputImageName);
 
         int count = 0;
@@ -105,16 +105,16 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
             int left = (int) Math.round(extents[0][0]);
             int width = (int) Math.round(extents[0][1] - left) + 1;
             int height = (int) Math.round(extents[1][1] - top) + 1;
-            Image cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
+            ImageI cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
 
             // Cropping image in Z
             int minZ = (int) Math.round(extents[2][0]);
             int maxZ = (int) Math.round(extents[2][1]);
-            Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1",
+            ImageI subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1",
                     (minZ + 1) + "-" + (maxZ + 1), String.valueOf(t+1));
 
             // Getting mask image
-            Image maskImage = object.getAsTightImage("Mask");
+            ImageI maskImage = object.getAsTightImage("Mask");
 
             double giniCoeff = MeasureGiniCoefficient.calculateGiniCoefficient(subsImage, maskImage);
             object.addMeasurement(new Measurement(measurementName,giniCoeff));

@@ -11,7 +11,7 @@
 // import io.github.mianalysis.mia.module.Modules;
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.WorkspaceI;
-// import io.github.mianalysis.mia.object.image.Image;
+// import io.github.mianalysis.mia.object.image.ImageI;
 // import io.github.mianalysis.mia.object.parameters.InputImageP;
 // import io.github.mianalysis.mia.object.parameters.Parameters;
 // import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -52,7 +52,7 @@
 //         // Getting input image
 //         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
-//         Image inputImage = workspace.getImages().get(inputImageName);
+//         ImageI inputImage = workspace.getImages().get(inputImageName);
 //         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
 //         Tesseract tesseract = new Tesseract();

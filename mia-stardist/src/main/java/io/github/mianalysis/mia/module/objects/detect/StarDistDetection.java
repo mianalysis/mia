@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -289,7 +289,7 @@ public class StarDistDetection extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
-        Image image = workspace.getImages().get(inputImageName);
+        ImageI image = workspace.getImages().get(inputImageName);
         ImagePlus ipl = image.getImagePlus();
         SpatCal cal = SpatCal.getFromImage(ipl);
         int nFrames = ipl.getNFrames();
@@ -332,7 +332,7 @@ public class StarDistDetection extends Module {
         int total = ipl.getNFrames() * ipl.getNSlices();
         for (int t = 0; t < ipl.getNFrames(); t++) {
             for (int z = 0; z < ipl.getNSlices(); z++) {
-                Image subs = ExtractSubstack.extractSubstack(image, "Subs", "1-end", String.valueOf(z + 1),
+                ImageI subs = ExtractSubstack.extractSubstack(image, "Subs", "1-end", String.valueOf(z + 1),
                         String.valueOf(t + 1));
                 ImgPlus img = subs.getImgPlus();
                 DefaultDataset dataset = new DefaultDataset(context, img);

@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
@@ -80,7 +80,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 	/**
 	* 
 	*/
-    public static final String PROJECTION_SEPARATOR = "Image projection";
+    public static final String PROJECTION_SEPARATOR = "ImageI projection";
     // public static final String AXIS_1 = "Axis 2";
     // public static final String AXIS_2 = "Axis 1";
 
@@ -109,11 +109,11 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     //     // Loading the test image and adding to workspace
     //     // String inputPath = URLDecoder.decode(ProjectImage.class.getResource(inputName).getPath(), "UTF-8");
     //     ImagePlus ipl = IJ.openImage(inputPath);
-    //     Image image = ImageFactory.createImage("Test_image", ipl, ImageType.IMAGEPLUS);
+    //     ImageI image = ImageFactory.createImage("Test_image", ipl, ImageType.IMAGEPLUS);
     //     workspace.addImage(image);
 
     //     Modules modules = new Modules();
-    //     ProjectImage projectImage = new ProjectImage<>(modules);
+    //     ProjectImageI projectImage = new ProjectImage<>(modules);
     //     projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE, "Test_image");
     //     modules.add(projectImage);
 
@@ -180,18 +180,18 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image projectImageInZ(Image inputImage,
+    public static <T extends RealType<T> & NativeType<T>> ImageI projectImageInZ(ImageI inputImage,
             String outputImageName, String projectionMode) {
         // return project(inputImage, outputImageName, AxisModes.X, AxisModes.Y,
         // AxisModes.Z, projectionMode);
         return project(inputImage, outputImageName, AxisModes.Z, projectionMode);
     }
 
-    // public static <T extends RealType<T> & NativeType<T>> Image project(Image
+    // public static <T extends RealType<T> & NativeType<T>> ImageI project(Image
     // inputImage, String outputImageName,
     // String outputXAxis, String outputYAxis, String projectionAxis, String
     // projectionMode) {
-    public static <T extends RealType<T> & NativeType<T>> Image project(Image inputImage, String outputImageName,
+    public static <T extends RealType<T> & NativeType<T>> ImageI project(ImageI inputImage, String outputImageName,
             String projectionAxis, String projectionMode) {
         ImgPlus<T> img = inputImage.getImgPlus();
         
@@ -274,7 +274,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         CalibratedAxis axOut = new DefaultLinearAxis(axIn.type(), axIn.unit(), axIn.calibratedValue(1));
         proj.setAxis(axOut, proj.numDimensions() - 1);
 
-        Image projectedImage = ImageFactory.createImage(outputImageName, proj);
+        ImageI projectedImage = ImageFactory.createImage(outputImageName, proj);
 
         SetLookupTable.copyLUTFromImage(projectedImage,inputImage);
         
@@ -284,7 +284,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     }
 
-    static <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>> Image getNonProjectedImage(ImgPlus<T> img, String outputImageName,
+    static <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>> ImageI getNonProjectedImage(ImgPlus<T> img, String outputImageName,
             AxisType xType, AxisType yType, String projectionMode) {
         HashMap<Integer, AxisType> axisAssignments = getAxisAssignments(img);
 
@@ -418,7 +418,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     public Status process(WorkspaceI workspace) {
         // Loading image into workspace
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
@@ -428,9 +428,9 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         String projectionMode = parameters.getValue(PROJECTION_MODE, workspace);
 
         // Create max projection image
-        // Image outputImage = project(inputImage, outputImageName, xAxis, yAxis,
+        // ImageI outputImage = project(inputImage, outputImageName, xAxis, yAxis,
         // projectionAxis, projectionMode);
-        Image outputImage = project(inputImage, outputImageName, projectionAxis, projectionMode);
+        ImageI outputImage = project(inputImage, outputImageName, projectionAxis, projectionMode);
 
         // Adding projected image to workspace
         workspace.addImage(outputImage);

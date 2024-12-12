@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
@@ -84,7 +84,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     /**
     * 
     */
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
     /**
      * The resultant image of concatenation to be added to the workspace.
@@ -113,12 +113,12 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(WorkspaceI workspace,
+    static <T extends RealType<T> & NativeType<T>> ArrayList<ImageI<T>> getAvailableImages(WorkspaceI workspace,
             LinkedHashMap<Integer, Parameters> collections) {
-        ArrayList<Image<T>> available = new ArrayList<>();
+        ArrayList<ImageI<T>> available = new ArrayList<>();
 
         for (Parameters collection : collections.values()) {
-            Image<T> image = workspace.getImage(collection.getValue(INPUT_IMAGE, workspace));
+            ImageI<T> image = workspace.getImage(collection.getValue(INPUT_IMAGE, workspace));
             if (image != null)
                 available.add(image);
         }
@@ -148,7 +148,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> process(ArrayList<Image<T>> inputImages,
+    public static <T extends RealType<T> & NativeType<T>> ImageI<T> process(ArrayList<ImageI<T>> inputImages,
             String axis, String outputImageName) {
         long[] dimsOut = getOutputImageDimensions(inputImages, axis);
         long[] offsetOut = new long[5];
@@ -195,7 +195,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
     }
 
     public static <T extends RealType<T> & NativeType<T>> long[] getOutputImageDimensions(
-            ArrayList<Image<T>> inputImages,
+            ArrayList<ImageI<T>> inputImages,
             String axis) {
         long[] dimsOut = new long[5];
 
@@ -232,7 +232,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    // static <T extends RealType<T> & NativeType<T>> LUT[] getLUTs(Image<T>[]
+    // static <T extends RealType<T> & NativeType<T>> LUT[] getLUTs(ImageI<T>[]
     // images) {
     // int count = 0;
     // for (int i = 0; i < images.length; i++) {
@@ -253,8 +253,8 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
     // }
 
-    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image<T> image,
-            ArrayList<Image<T>> inputImages) {
+    public static <T extends RealType<T> & NativeType<T>> void convertToColour(ImageI<T> image,
+            ArrayList<ImageI<T>> inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
         int nChannels = ipl.getNChannels();
@@ -308,7 +308,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
         // Creating a collection of images
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);
-        ArrayList<Image<T>> inputImages = getAvailableImages(workspace, collections);
+        ArrayList<ImageI<T>> inputImages = getAvailableImages(workspace, collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
             MIA.log.writeError("Input images missing.");
@@ -317,13 +317,13 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
         // If only one image was specified, simply create a duplicate of the input,
         // otherwise do concatenation.
-        Image outputImage;
+        ImageI outputImage;
         if (inputImages.size() == 1)
             outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
         else {
             if (removeInputImages) {
                 ArrayList<RandomAccessibleInterval<T>> inputImgs = new ArrayList<>();
-                for (Image<T> inputImage : inputImages)
+                for (ImageI<T> inputImage : inputImages)
                     inputImgs.add(ImgPlusTools.forceImgPlusToXYCZT(inputImage.getImgPlus()));
 
                 ConvertService convertService = MIA.getIJService().getContext().getService(ConvertService.class);

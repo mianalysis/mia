@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -579,7 +579,7 @@ public class MeasureObjectCurvature extends Module {
 
         ImagePlus inputIpl = null;
         if (drawSpline) {
-            Image inputImage = workspace.getImage(inputImageName);
+            ImageI inputImage = workspace.getImage(inputImageName);
             inputIpl = inputImage.getImagePlus();
             if (!applyToImage)
                 inputIpl = new Duplicator().run(inputIpl);

@@ -32,7 +32,7 @@
 // import io.github.mianalysis.mia.object.Objs;
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.WorkspaceI;
-// import io.github.mianalysis.mia.object.image.Image;
+// import io.github.mianalysis.mia.object.image.ImageI;
 // import io.github.mianalysis.mia.object.image.ImageFactory;
 // import io.github.mianalysis.mia.object.parameters.BooleanP;
 // import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -404,7 +404,7 @@
 //                 break;
 //             case CropModes.FROM_REFERENCE:
 //                 // Displaying the image
-//                 Image referenceImage = workspace.getImage(referenceImageName);
+//                 ImageI referenceImage = workspace.getImage(referenceImageName);
 //                 crop = ImageLoader.getCropROI(referenceImage);
 //                 break;
 //             case CropModes.OBJECT_COLLECTION_LIMITS:
@@ -456,7 +456,7 @@
 //         if (pathName == null)
 //             return Status.FAIL;
 
-//         Image outputImage = null;
+//         ImageI outputImage = null;
 //         try {
 //             // First first, testing new loader
 //             ImagePlus outputIpl = getVideo(pathName, frameRange, channelRange, crop, scaleFactors, scaleMode);

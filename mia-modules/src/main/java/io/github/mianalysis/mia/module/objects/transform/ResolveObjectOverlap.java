@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -54,7 +54,7 @@ public class ResolveObjectOverlap extends Module {
         if (inputObjects == null || inputObjects.size() == 0)
             return;
 
-        Image finalMask = inputObjects.convertToImageBinary();
+        ImageI finalMask = inputObjects.convertToImageBinary();
 
         // Creating overlap image
         ImagePlus overlap = IJ.createHyperStack("Overlap", inputObjects.getWidth(), inputObjects.getHeight(), 1,
@@ -78,7 +78,7 @@ public class ResolveObjectOverlap extends Module {
         }
 
         // Masking input objects
-        Image maskImage = ImageFactory.createImage("Mask", overlap);
+        ImageI maskImage = ImageFactory.createImage("Mask", overlap);
         MaskObjects.maskObjects(inputObjects, maskImage, null, true, false);
   
         // Growing input objects into overlap regions

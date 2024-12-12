@@ -34,7 +34,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -219,7 +219,7 @@ public class TrackEditor extends Module {
 
     }
 
-    public static void displayTrackScheme(Model model, Image image, boolean showProjected) {
+    public static void displayTrackScheme(Model model, ImageI image, boolean showProjected) {
         SelectionModel selectionModel = new SelectionModel(model);
 
         // Removing the image spatial calibration, since values are in pixel and slice
@@ -301,7 +301,7 @@ public class TrackEditor extends Module {
 
         // Getting input image
         String inputImageName = parameters.getValue(DISPLAY_IMAGE, workspace);
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         boolean showProjected = parameters.getValue(SHOW_PROJECTED, workspace);
 
         // Converting MIA objects and tracks into TrackMate Model format

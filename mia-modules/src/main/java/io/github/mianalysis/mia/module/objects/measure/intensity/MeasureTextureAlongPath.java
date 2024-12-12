@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -96,7 +96,7 @@ public class MeasureTextureAlongPath extends Module {
 
     }
 
-    public static void processObject(Obj object, Image image, TextureCalculator textureCalculator,
+    public static void processObject(Obj object, ImageI image, TextureCalculator textureCalculator,
             int offs) {
         ImagePlus ipl = image.getImagePlus();
 
@@ -158,7 +158,7 @@ public class MeasureTextureAlongPath extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // This requires an 8-bit image. If the provided image isn't 8-bit, convert it

@@ -10,7 +10,7 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListImagesInWorkspace extends MacroOperation {
@@ -30,7 +30,7 @@ public class MIA_ListImagesInWorkspace extends MacroOperation {
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        HashMap<String,Image> images = workspace.getImages();
+        HashMap<String,ImageI> images = workspace.getImages();
         for (String imageName:images.keySet()) {
             if (row != 0) rt.incrementCounter();
 

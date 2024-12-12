@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -56,7 +56,7 @@ public class ColourDeconvolution extends Module {
 	/**
 	* 
 	*/
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
 	/**
 	* When selected, the first stain in the stain matrix will be output to the workspace with the name specified by "Output image 1 name"
@@ -235,7 +235,7 @@ public class ColourDeconvolution extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -268,21 +268,21 @@ public class ColourDeconvolution extends Module {
 
         // If selected, displaying the image
         if (outputImage1) {
-            Image outImage1 = ImageFactory.createImage(outputImageName1, outputImagePluses[0]);
+            ImageI outImage1 = ImageFactory.createImage(outputImageName1, outputImagePluses[0]);
             workspace.addImage(outImage1);
             if (showOutput)
                 outImage1.show();
         }
 
         if (outputImage2) {
-            Image outImage2 = ImageFactory.createImage(outputImageName2, outputImagePluses[1]);
+            ImageI outImage2 = ImageFactory.createImage(outputImageName2, outputImagePluses[1]);
             workspace.addImage(outImage2);
             if (showOutput)
                 outImage2.show();
         }
 
         if (outputImage3) {
-            Image outImage3 = ImageFactory.createImage(outputImageName3, outputImagePluses[2]);
+            ImageI outImage3 = ImageFactory.createImage(outputImageName3, outputImagePluses[2]);
             workspace.addImage(outImage3);
             if (showOutput)
                 outImage3.show();

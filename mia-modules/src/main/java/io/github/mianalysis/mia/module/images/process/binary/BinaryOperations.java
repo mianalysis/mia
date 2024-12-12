@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -391,7 +391,7 @@ public class BinaryOperations extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -468,7 +468,7 @@ public class BinaryOperations extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeStatus("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
+            ImageI outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
         }

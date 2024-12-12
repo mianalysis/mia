@@ -454,7 +454,7 @@ WorkspaceI workspace = null;
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \"" + inputObjectsName
                 + "\".  Measured in degrees, relative to positive x-axis (positive above x-axis, "
-                + "negative below x-axis).  Note: ImageJ displays images with an inverted y-axis.");
+                + "negative below x-axis).  Note: ImageI displays images with an inverted y-axis.");
         returnedRefs.add(reference);
 
         return returnedRefs;

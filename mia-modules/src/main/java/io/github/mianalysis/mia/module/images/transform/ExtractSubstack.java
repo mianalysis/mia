@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -241,7 +241,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
-    public static Image extractSubstack(Image inputImage, String outputImageName, String channels, String slices, String frames) {
+    public static ImageI extractSubstack(ImageI inputImage, String outputImageName, String channels, String slices, String frames) {
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         ImagePlus outputIpl = extractSubstack(inputIpl, outputImageName, channels, slices, frames);
@@ -273,7 +273,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         return true;
     }
 
-    static boolean checkLimits(Image inputImage, List<Integer> cList, List<Integer> zList, List<Integer> tList) {
+    static boolean checkLimits(ImageI inputImage, List<Integer> cList, List<Integer> zList, List<Integer> tList) {
         return checkLimits(inputImage.getImagePlus(), cList, zList, tList);
 
     }
@@ -299,7 +299,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     public Status process(WorkspaceI workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String selectionMode = parameters.getValue(SELECTION_MODE,workspace);
@@ -343,7 +343,7 @@ public class ExtractSubstack extends Module implements ActionListener {
                 break;
         }
 
-        Image outputImage = extractSubstack(inputImage,outputImageName,channels,slices,frames);
+        ImageI outputImage = extractSubstack(inputImage,outputImageName,channels,slices,frames);
         if (outputImage == null) return Status.FAIL;
 
         workspace.addImage(outputImage);

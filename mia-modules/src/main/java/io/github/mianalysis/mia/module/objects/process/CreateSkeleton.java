@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -240,9 +240,9 @@ public class CreateSkeleton extends Module {
         super("Create skeleton", modules);
     }
 
-    public static Image getSkeletonImage(Obj inputObject) {
+    public static ImageI getSkeletonImage(Obj inputObject) {
         // Getting tight image of object
-        Image skeletonImage = inputObject.getAsTightImage("Skeleton");
+        ImageI skeletonImage = inputObject.getAsTightImage("Skeleton");
 
         // Running 3D skeletonisation
         Skeletonise.process(skeletonImage, true);
@@ -253,7 +253,7 @@ public class CreateSkeleton extends Module {
 
     public static Object[] initialiseAnalyzer(Obj inputObject, double minLengthFinal,
             boolean exportLargestShortestPathFinal) {
-        Image skeletonImage = getSkeletonImage(inputObject);
+        ImageI skeletonImage = getSkeletonImage(inputObject);
 
         try {
             AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
@@ -347,7 +347,7 @@ public class CreateSkeleton extends Module {
         // Creating a binary image of all the points with a 1px border, so we can remove
         // objects on the image edge still
         int[][] borders = new int[][] { { 1, 1 }, { 1, 1 }, { 0, 0 } };
-        Image binaryImage = tempObject.getAsTightImage("outputName", borders);
+        ImageI binaryImage = tempObject.getAsTightImage("outputName", borders);
 
         // Converting binary image to loop objects
         Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false,
@@ -576,7 +576,7 @@ public class CreateSkeleton extends Module {
         Objs inputObjects;
         switch (inputMode) {
             case InputModes.IMAGE:
-                Image inputImage = workspace.getImage(inputImageName);
+                ImageI inputImage = workspace.getImage(inputImageName);
                 boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
                 String detectionMode = IdentifyObjects.DetectionModes.THREE_D;
                 String volumeType = IdentifyObjects.VolumeTypes.QUADTREE;

@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -77,7 +77,7 @@ public class WekaPixelClassification extends Module {
 	/**
 	* 
 	*/
-    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_SEPARATOR = "ImageI output";
 
 	/**
 	* Controls whether the output image is a probability map or single channel classified image.  For probabiliy maps, each class is assigned its own channel with floating point values in the range 0-1 depending on the likelihood of that pixel belonging to that class.  With classified images the pixel value corresponds to the most probable class at that position (class numbering starts at 0).
@@ -308,7 +308,7 @@ public class WekaPixelClassification extends Module {
         int tileFactor = parameters.getValue(TILE_FACTOR,workspace);
 
         // Getting input image
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Converting to RGB if requested
@@ -344,7 +344,7 @@ public class WekaPixelClassification extends Module {
             return Status.FAIL;
 
         // Adding the output image (probability maps or classes) to the workspace
-        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+        ImageI outputImage = ImageFactory.createImage(outputImageName, outputIpl);
         workspace.addImage(outputImage);
 
         if (showOutput)

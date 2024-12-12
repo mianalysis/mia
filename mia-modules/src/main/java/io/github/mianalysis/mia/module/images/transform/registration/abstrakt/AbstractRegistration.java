@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -67,7 +67,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static final String SHOW_DETECTED_POINTS = "Show detected points";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public static final String REFERENCE_SEPARATOR = "Reference image source";
+    public static final String REFERENCE_SEPARATOR = "Reference ImageI source";
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String NUM_PREV_FRAMES = "Number of previous frames";
     public static final String PREV_FRAMES_STAT_MODE = "Previous frames statistic";
@@ -141,16 +141,16 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
     }
 
-    public void processIndependent(Image inputImage, Image calculationImage, String referenceMode, int numPrevFrames,
+    public void processIndependent(ImageI inputImage, ImageI calculationImage, String referenceMode, int numPrevFrames,
             String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread,
-            @Nullable Image reference) {
+            @Nullable ImageI reference) {
         // This works in a very similar manner to processLinked, except it's performed
         // one slice at a time
         for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
             // Getting the current slices (input and calculation)
-            Image currInputImage = ExtractSubstack.extractSubstack(inputImage, inputImage.getName(), "1-end",
+            ImageI currInputImage = ExtractSubstack.extractSubstack(inputImage, inputImage.getName(), "1-end",
                     String.valueOf(z + 1), "1-end");
-            Image currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(), "1-end",
+            ImageI currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(), "1-end",
                     String.valueOf(z + 1), "1-end");
 
                     // Performing the registration on this slice
@@ -163,9 +163,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
     }
 
-    public void processLinked(Image inputImage, Image calculationImage, String referenceMode, int numPrevFrames,
+    public void processLinked(ImageI inputImage, ImageI calculationImage, String referenceMode, int numPrevFrames,
             String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread,
-            @Nullable Image reference) {
+            @Nullable ImageI reference) {
         // Assigning fixed reference images
         switch (referenceMode) {
             case ReferenceModes.FIRST_FRAME:
@@ -201,7 +201,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                         continue;
 
                     int minT = Math.max(1, t - numPrevFrames + 1);
-                    Image referenceStack = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1",
+                    ImageI referenceStack = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1",
                             minT + "-" + t);
                     Convert3DStack.process(referenceStack.getImagePlus(), Convert3DStack.Modes.OUTPUT_Z_STACK);
                     reference = ProjectImage.projectImageInZ(referenceStack, "Reference", prevFrameStatMode);
@@ -210,7 +210,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             }
 
             // Getting the calculation image at this time-point
-            Image warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
+            ImageI warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
 
             // Calculating the transformation for this image pair
             Transform transform = getTransform(reference.getImagePlus().getProcessor(),
@@ -225,7 +225,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
-                Image warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1),
+                ImageI warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1),
                         "1-end", String.valueOf(t + 1));
 
                 try {
@@ -290,7 +290,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public void applyTransformation(Image inputImage, Transform transform, String fillMode, boolean multithread)
+    public void applyTransformation(ImageI inputImage, Transform transform, String fillMode, boolean multithread)
             throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -327,7 +327,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public static boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
+    public static boolean testReferenceValidity(ImageI inputImage, ImageI calculationImage, String otherAxisMode) {
         ImagePlus inputIpl = inputImage.getImagePlus();
         ImagePlus calculationIpl = calculationImage.getImagePlus();
 
@@ -370,15 +370,15 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> createOverlay(Image<T> inputImage,
-            Image<T> referenceImage) {
+    public static <T extends RealType<T> & NativeType<T>> ImageI<T> createOverlay(ImageI<T> inputImage,
+            ImageI<T> referenceImage) {
         // Only create the overlay if the two images have matching dimensions
         ImagePlus ipl1 = inputImage.getImagePlus();
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
             String axis = ConcatenateStacks2.AxisModes.CHANNEL;
-            ArrayList<Image<T>> images = new ArrayList<>();
+            ArrayList<ImageI<T>> images = new ArrayList<>();
             images.add(inputImage);
             images.add(referenceImage);
 
@@ -390,7 +390,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public static void changeStackOrder(Image image) {
+    public static void changeStackOrder(ImageI image) {
         ImagePlus inputIpl = image.getImagePlus();
 
         // InputIpl must be a HyperStack (but at least be a stack)
@@ -425,7 +425,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
     }
 
-    public static void replaceStack(Image targetImage, Image sourceImage, int channel, int timepoint) {
+    public static void replaceStack(ImageI targetImage, ImageI sourceImage, int channel, int timepoint) {
         ImagePlus targetIpl = targetImage.getImagePlus();
         ImageStack sourceIst = sourceImage.getImagePlus().getStack();
 
@@ -433,7 +433,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public static void replaceSlice(Image targetImage, Image sourceSlice, int slice) {
+    public static void replaceSlice(ImageI targetImage, ImageI sourceSlice, int slice) {
         ImagePlus targetIpl = targetImage.getImagePlus();
         ImagePlus sourceIpl = sourceSlice.getImagePlus();
 
@@ -474,20 +474,20 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         // Getting the input image and duplicating if the output will be stored
         // separately
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
             inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         // If comparing to a fixed image, get this now
-        Image reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
+        ImageI reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
                 : null;
 
         // Getting the image the registration will be calculated from.
         String calcC = String.valueOf(calculationChannel);
-        Image calculationImage = null;
+        ImageI calculationImage = null;
         switch (calculationSource) {
             case CalculationSources.EXTERNAL:
-                Image externalImage = workspace.getImage(externalSourceName);
+                ImageI externalImage = workspace.getImage(externalSourceName);
                 calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
                 break;
 
