@@ -17,9 +17,9 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.visualise.overlays.AbstractOverlay;
 import io.github.mianalysis.mia.module.visualise.overlays.AddAllObjectPoints;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -39,7 +39,6 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 
 /**
  * Created by sc13967 on 04/05/2017.

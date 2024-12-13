@@ -11,6 +11,7 @@ import ij.measure.Calibration;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -91,7 +92,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                 TemporalUnit.getOMEUnit());
 
         // Will return null if optimised
-        VolumeType volumeType = getVolumeType(type);
+        VolumeType volumeType = ImageI.getVolumeType(type);
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -245,6 +246,17 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
     }
 
+    public Object getRawImage() {
+        return imagePlus;
+    }
+
+    public void setRawImage(Object image) {
+        if (image instanceof ImagePlus)
+            this.imagePlus = (ImagePlus) image;
+        else
+            MIA.log.writeError("Error in ImagePlusImage.setRawImage(Object image).  Image not instance of ImagePlus.");
+    }
+
     public synchronized static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel,
             @Nullable ImageStack toPut) {
         int nSlices = inputImagePlus.getNSlices();
@@ -374,8 +386,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
     @Override
     public ImageRenderer getRenderer() {
-        if (getUseGlobalImageRenderer())
-            return getGlobalImageRenderer();
+        if (ImageI.getUseGlobalImageRenderer())
+            return ImageI.getGlobalImageRenderer();
         else
             return renderer;
     }

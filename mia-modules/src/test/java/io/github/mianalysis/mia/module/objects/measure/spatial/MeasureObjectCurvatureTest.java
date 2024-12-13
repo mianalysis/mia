@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,17 +14,15 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Rings2D;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 /**

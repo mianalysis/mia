@@ -6,20 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.File;
 import java.net.URLDecoder;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ij.IJ;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 

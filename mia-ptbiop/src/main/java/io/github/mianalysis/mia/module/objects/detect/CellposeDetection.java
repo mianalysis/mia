@@ -320,6 +320,7 @@ public class CellposeDetection extends Module {
 
                 }
             }
+            
         } else {
             cellpose.setImagePlus(inputImage.getImagePlus());
             cellpose.run();

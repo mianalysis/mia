@@ -20,22 +20,22 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Im
 
 
     public Objs convertImageToObjects(String outputObjectsName) {
-        String type = getVolumeType(VolumeType.POINTLIST);
+        String type = ImageI.getVolumeType(VolumeType.POINTLIST);
         return convertImageToObjects(type, outputObjectsName, false);
     }
         
     public Objs convertImageToObjects(String outputObjectsName, boolean singleObject) {
-        String type = getVolumeType(VolumeType.POINTLIST);
+        String type = ImageI.getVolumeType(VolumeType.POINTLIST);
         return convertImageToObjects(type, outputObjectsName, singleObject);
     }
 
     public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
-        String type = getVolumeType(volumeType);
+        String type = ImageI.getVolumeType(volumeType);
         return convertImageToObjects(type, outputObjectsName, false);
     }
 
     public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
-        String type = getVolumeType(volumeType);
+        String type = ImageI.getVolumeType(volumeType);
         return convertImageToObjects(type, outputObjectsName, singleObject);
     }
 

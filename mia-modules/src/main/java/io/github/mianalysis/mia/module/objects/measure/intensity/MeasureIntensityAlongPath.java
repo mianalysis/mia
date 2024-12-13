@@ -33,7 +33,6 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;

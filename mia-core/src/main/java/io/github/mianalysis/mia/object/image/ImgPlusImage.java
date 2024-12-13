@@ -10,6 +10,7 @@ import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -104,7 +105,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                 TemporalUnit.getOMEUnit());
 
         // Will return null if optimised
-        VolumeType volumeType = getVolumeType(type);
+        VolumeType volumeType = ImageI.getVolumeType(type);
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -318,6 +319,17 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         this.img = img;
     }
 
+    public Object getRawImage() {
+        return img;
+    }
+
+    public void setRawImage(Object image) {
+        if (image instanceof ImgPlus)
+            this.img = (ImgPlus) image;
+            else
+            MIA.log.writeError("Error in ImgPlusImage.setRawImage(Object image).  Image not instance of ImgPlus.");
+    }
+
     @Override
     public void clear() {
         System.out.println(img.factory());
@@ -431,8 +443,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     @Override
     public ImageRenderer getRenderer() {
-        if (getUseGlobalImageRenderer())
-            return getGlobalImageRenderer();
+        if (ImageI.getUseGlobalImageRenderer())
+            return ImageI.getGlobalImageRenderer();
         else
             return renderer;
     }

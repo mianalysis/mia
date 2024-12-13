@@ -69,11 +69,11 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public void setImgPlus(ImgPlus<T> img);
 
+    public Object getRawImage();
+
+    public void setRawImage(Object image);
+
     public Objs initialiseEmptyObjs(String outputObjectsName);
-
-    public Objs convertImageToSingleObjects(String type, String outputObjectsName, boolean blackBackground);
-
-    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject);
 
     public void addObject(Obj obj, float hue);
 
@@ -86,19 +86,19 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
     public void setOverlay(Overlay overlay);
 
 
-    public default ImageRenderer getGlobalImageRenderer() {
+    public static ImageRenderer getGlobalImageRenderer() {
         return GlobalImageRenderer.globalImageRenderer;
     }
     
-    public default void setGlobalRenderer(ImageRenderer imageRenderer) {
+    public static void setGlobalRenderer(ImageRenderer imageRenderer) {
         GlobalImageRenderer.globalImageRenderer = imageRenderer;
     }
 
-    public default boolean getUseGlobalImageRenderer() {
+    public static boolean getUseGlobalImageRenderer() {
         return UseGlobalImageRenderer.useGlobalImageRenderer;
     }
     
-    public default void setUseGlobalImageRenderer(boolean state) {
+    public static void setUseGlobalImageRenderer(boolean state) {
         UseGlobalImageRenderer.useGlobalImageRenderer = state;
     }
 
@@ -108,7 +108,11 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName);
 
+    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject);
+
     public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject);
+
+    public Objs convertImageToSingleObjects(String type, String outputObjectsName, boolean blackBackground);
 
     public void addMeasurement(Measurement measurement);
 
@@ -123,7 +127,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
     }
 
     public default void show(String title) {
-        show(title, LUT.createLutFromColor(Color.WHITE));
+        show(title, null);
     }
 
     public default void show(LUT lut) {
@@ -203,7 +207,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     // PACKAGE PRIVATE METHODS
 
-    public default VolumeType getVolumeType(String volumeType) {
+    public static VolumeType getVolumeType(String volumeType) {
         switch (volumeType) {
             case VolumeTypesInterface.OCTREE:
                 return VolumeType.OCTREE;
@@ -217,7 +221,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
         }
     }
 
-    public default String getVolumeType(VolumeType volumeType) {
+    public static String getVolumeType(VolumeType volumeType) {
         switch (volumeType) {
             case OCTREE:
                 return VolumeTypesInterface.OCTREE;
