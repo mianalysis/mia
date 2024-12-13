@@ -90,7 +90,7 @@ MIA is also archived at Zenodo, which provides a unique DOI for each released ve
 
 Publications
 ------------
-MIA has been used in a variety of different analyses, a few published examples of which are listed below. For a more complete list, please go to [Publications](https://mianalysis.github.io/publications.html).
+MIA has been used in a variety of different analyses, a few published examples of which are listed below. For a more complete list, please go to [Publications](https://mianalysis.github.io/publications/).
 
 Edmunds, G.L., _et al._, "Adenosine 2A receptor and TIM3 suppress cytolytic killing of tumor cells via cytoskeletal polarization", _Communications Biology_ (2022) **5**, doi: [10.1038/s42003-021-02972-8](https://doi.org/10.1038/s42003-021-02972-8)
 
