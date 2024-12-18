@@ -1,15 +1,14 @@
 package io.github.mianalysis.mia.module.objects.relate.mergeobjects;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -136,7 +135,7 @@ public class MergeRelatedObjects extends Module {
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = relatedObjects.createAndAddNewObject(parentObj.getVolumeType());
+            Obj relatedObject = relatedObjects.createAndAddNewObject(parentObj.getFactory());
             relatedObject.setT(parentObj.getT());
             relatedObjects.add(relatedObject);
             parentObj.addChild(relatedObject);

@@ -3,20 +3,17 @@ package io.github.mianalysis.mia.module.system;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.Spots3D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 
@@ -29,8 +26,8 @@ public class RemoveObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunSingleObjs(VolumeType volumeType) throws Exception{
+    @EnumSource(VolumeTypes.class)
+    public void testRunSingleObjs(VolumeTypes volumeType) throws Exception{
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -41,7 +38,7 @@ public class RemoveObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising the module
@@ -60,8 +57,8 @@ public class RemoveObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunMultipleObjss(VolumeType volumeType) throws Exception{
+    @EnumSource(VolumeTypes.class)
+    public void testRunMultipleObjss(VolumeTypes volumeType) throws Exception{
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -72,10 +69,10 @@ public class RemoveObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        Objs spotObjects = new Spots3D(volumeType).getObjects("SpotObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs spotObjects = new Spots3D(VolumeTypes.getFactory(volumeType)).getObjects("SpotObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(spotObjects);
 
         // Initialising the module

@@ -22,12 +22,12 @@ import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.filter.FilterOnImageEdge;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -287,7 +287,7 @@ public class CreateSkeleton extends Module {
         int zOffs = (int) Math.round(extents[2][0]);
 
         // The Skeleton object links branches, junctions and loops.
-        Obj skeletonObject = skeletonObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj skeletonObject = skeletonObjects.createAndAddNewObject(new PointListFactory());
         skeletonObject.setT(inputObject.getT());
         if (addRelationship) {
             inputObject.addChild(skeletonObject);
@@ -334,8 +334,8 @@ public class CreateSkeleton extends Module {
 
         // Creating an object for the entire skeleton
         Objs tempCollection = new Objs("Skeleton", loopObjects);
-        Obj tempObject = tempCollection.createAndAddNewObject(VolumeType.POINTLIST);
-        CoordinateSet coords = tempObject.getCoordinateSet();
+        Obj tempObject = tempCollection.createAndAddNewObject(new PointListFactory());
+        CoordinateSetI coords = tempObject.getCoordinateSet();
 
         // Adding all points from edges and junctions
         for (Obj edgeObject : skeletonObject.getChildren(edgeObjectsName).values())
@@ -352,7 +352,7 @@ public class CreateSkeleton extends Module {
         // Converting binary image to loop objects
         Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false,
                 IdentifyObjects.DetectionModes.THREE_D, 6,
-                VolumeTypesInterface.QUADTREE, false, 0, false);
+                new QuadtreeFactory(), false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops
         FilterOnImageEdge.process(tempLoopObjects, 0, null, false, true, null);
@@ -377,7 +377,7 @@ public class CreateSkeleton extends Module {
 
     public static Obj createEdgeObject(Obj skeletonObject, Objs edgeObjects, Edge edge, int xOffs, int yOffs,
             int zOffs) {
-        Obj edgeObject = edgeObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj edgeObject = edgeObjects.createAndAddNewObject(new PointListFactory());
         edgeObject.setT(skeletonObject.getT());
         skeletonObject.addChild(edgeObject);
         edgeObject.addParent(skeletonObject);
@@ -398,7 +398,7 @@ public class CreateSkeleton extends Module {
     public static Obj createJunctionObject(Obj skeletonObject, Objs junctionObjects, Vertex junction, int xOffs,
             int yOffs,
             int zOffs) {
-        Obj junctionObject = junctionObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj junctionObject = junctionObjects.createAndAddNewObject(new PointListFactory());
         junctionObject.setT(skeletonObject.getT());
         skeletonObject.addChild(junctionObject);
         junctionObject.addParent(skeletonObject);
@@ -467,7 +467,7 @@ public class CreateSkeleton extends Module {
                 inputObject,
                 analyzeSkeleton, skeletonResult);
 
-        Obj largestShortestPath = largestShortestPathObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj largestShortestPath = largestShortestPathObjects.createAndAddNewObject(new PointListFactory());
         largestShortestPath.getCoordinateSet().addAll(points);
         largestShortestPath.setT(inputObject.getT());
 
@@ -579,9 +579,9 @@ public class CreateSkeleton extends Module {
                 ImageI inputImage = workspace.getImage(inputImageName);
                 boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
                 String detectionMode = IdentifyObjects.DetectionModes.THREE_D;
-                String volumeType = IdentifyObjects.VolumeTypes.QUADTREE;
+                CoordinateSetFactoryI factory = new QuadtreeFactory();
                 inputObjects = IdentifyObjects.process(inputImage, "TempObjects", blackBackground, false, detectionMode,
-                        26, volumeType, multithread, 60, false);
+                        26, factory, multithread, 60, false);
                 break;
             case InputModes.OBJECTS:
             default:

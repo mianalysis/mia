@@ -10,10 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.Tracks3D;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 /**
@@ -58,8 +58,8 @@ public class MeasureTrackMotionTest extends ModuleTest {
     // }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testCreateAverageTrack(VolumeType volumeType) throws IntegerOverflowException {
+    @EnumSource(VolumeTypes.class)
+    public void testCreateAverageTrack(VolumeTypes volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;

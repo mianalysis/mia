@@ -3,21 +3,18 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 
 public class BinObjectsByMeasurementTest extends ModuleTest {
@@ -30,8 +27,8 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunAllInRange(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunAllInRange(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -45,7 +42,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -70,8 +67,8 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunSomeBelowRange(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunSomeBelowRange(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -85,7 +82,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -110,8 +107,8 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunSomeAboveRange(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunSomeAboveRange(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -125,7 +122,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement

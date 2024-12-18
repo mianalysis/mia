@@ -9,12 +9,13 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -132,11 +133,11 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     static void process(Obj inputObject, Objs outputObjects, int[] indices) {
-        VolumeType volumeType = inputObject.getVolumeType();
-        if (volumeType == VolumeType.OCTREE)
-            volumeType = VolumeType.QUADTREE;
+        CoordinateSetFactoryI factory = inputObject.getFactory();
+        if (factory instanceof OctreeFactory)
+            factory = new QuadtreeFactory();
 
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory(), inputObject.getID());
 
         for (int idx : indices) {
             if (idx < 0 || idx >= inputObject.getNSlices())

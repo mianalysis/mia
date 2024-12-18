@@ -2,6 +2,8 @@ package io.github.mianalysis.mia.module;
 
 import java.util.LinkedHashSet;
 
+import org.scijava.plugin.SciJavaPlugin;
+
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -20,7 +22,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-public interface ModuleI {
+public interface ModuleI extends SciJavaPlugin {
     // ABSTRACT METHODS
 
     /**

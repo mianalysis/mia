@@ -19,13 +19,12 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -201,7 +200,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
 
                 for (double[] sphere : spheres) {
                     // Initialising the object
-                    Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                    Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
 
                     // Getting sphere parameters
                     int x = (int) Math.round(sphere[0]) * samplingRate;

@@ -8,14 +8,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import ome.units.UNITS;
 
 
@@ -27,8 +26,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPresentParentDoNothing(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPresentParentDoNothing(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -40,7 +39,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testObjects);
 
@@ -52,7 +51,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject : testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);                
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));                
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
 
@@ -87,8 +86,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPresentParentMove(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPresentParentMove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -100,7 +99,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -112,7 +111,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject : testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -157,8 +156,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPresentParentRemove(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPresentParentRemove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -170,7 +169,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -181,7 +180,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -210,8 +209,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunMissingParentDoNothing(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunMissingParentDoNothing(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -223,7 +222,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -234,7 +233,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -263,8 +262,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunMissingParentMove(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunMissingParentMove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -276,7 +275,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -288,7 +287,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -323,8 +322,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunMissingParentRemove(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunMissingParentRemove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -336,7 +335,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -347,7 +346,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -375,8 +374,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithParent(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithParent(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -388,7 +387,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -398,7 +397,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
+                Obj parentObject = parentObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);

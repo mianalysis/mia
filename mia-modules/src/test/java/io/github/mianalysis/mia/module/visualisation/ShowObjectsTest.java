@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.net.URLDecoder;
 import java.util.HashMap;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -15,11 +14,10 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.convert.ConvertObjectsToImage;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.ColourFactory;
 
@@ -42,8 +40,8 @@ public class ShowObjectsTest extends ModuleTest {
      * @throws Exception
      */
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testConvertObjectsToImagebit3D(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testConvertObjectsToImagebit3D(VolumeTypes volumeType) throws Exception {
         // Initialising parameters
         String colourMode = ConvertObjectsToImage.ColourModes.ID;
 
@@ -54,7 +52,7 @@ public class ShowObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        Objs testObjects = new Objects3D(volumeType).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_32bit.zip").getPath(),"UTF-8");

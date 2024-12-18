@@ -13,9 +13,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import ij.ImagePlus;
 import ome.units.UNITS;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -23,8 +24,8 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class WorkspaceTest {
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testAddObject(VolumeType volumeType) {
+    @EnumSource(VolumeTypes.class)
+    public void testAddObject(VolumeTypes volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -39,7 +40,8 @@ public class WorkspaceTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         // Creating and adding the new object
-        objects.createAndAddNewObject(volumeType,0);
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        objects.createAndAddNewObject(factory,0);
         workspace.addObjects(objects);
 
         // Checking the workspace behaved as expected
@@ -120,8 +122,8 @@ public class WorkspaceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testClearAllObjectsDoRetainMeasurements(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testClearAllObjectsDoRetainMeasurements(VolumeTypes volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -133,14 +135,15 @@ public class WorkspaceTest {
         
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj = objects.createAndAddNewObject(volumeType,0);
+        Obj obj = objects.createAndAddNewObject(factory,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         
-        obj = objects.createAndAddNewObject(volumeType,1);
+        obj = objects.createAndAddNewObject(factory,1);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
@@ -148,13 +151,13 @@ public class WorkspaceTest {
         workspace.addObjects(objects);
 
         Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
-        obj = otherObjects.createAndAddNewObject(volumeType,0);
+        obj = otherObjects.createAndAddNewObject(factory,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         
-        obj = otherObjects.createAndAddNewObject(volumeType,1);
+        obj = otherObjects.createAndAddNewObject(factory,1);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
@@ -185,8 +188,8 @@ public class WorkspaceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testClearAllObjectsDontRetainMeasurements(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testClearAllObjectsDontRetainMeasurements(VolumeTypes volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -198,14 +201,16 @@ public class WorkspaceTest {
 
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj = objects.createAndAddNewObject(volumeType,0);
+        Obj obj = objects.createAndAddNewObject(factory,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
 
-        obj = objects.createAndAddNewObject(volumeType,1);
+        obj = objects.createAndAddNewObject(factory,1);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
@@ -213,13 +218,13 @@ public class WorkspaceTest {
         workspace.addObjects(objects);
 
         Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
-        obj = otherObjects.createAndAddNewObject(volumeType,0);
+        obj = otherObjects.createAndAddNewObject(factory,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
 
-        obj = otherObjects.createAndAddNewObject(volumeType,1);
+        obj = otherObjects.createAndAddNewObject(factory,1);
         obj.add(12,5,2);
         obj.add(12,5,3);
         obj.add(12,6,2);
@@ -246,8 +251,8 @@ public class WorkspaceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetSingleTimepointWorkspaces(VolumeType volumeType) {
+    @EnumSource(VolumeTypes.class)
+    public void testGetSingleTimepointWorkspaces(VolumeTypes volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -257,18 +262,20 @@ public class WorkspaceTest {
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
         
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj = objects.createAndAddNewObject(volumeType,0);
+        Obj obj = objects.createAndAddNewObject(factory,0);
         obj.setT(0);
-        obj = objects.createAndAddNewObject(volumeType,1);
+        obj = objects.createAndAddNewObject(factory,1);
         obj.setT(1);
         workspace.addObjects(objects);
 
         Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
-        obj = otherObjects.createAndAddNewObject(volumeType,0);
+        obj = otherObjects.createAndAddNewObject(factory,0);
         obj.setT(0);
-        obj = otherObjects.createAndAddNewObject(volumeType,1);
+        obj = otherObjects.createAndAddNewObject(factory,1);
         obj.setT(2);
         workspace.addObjects(otherObjects);
 

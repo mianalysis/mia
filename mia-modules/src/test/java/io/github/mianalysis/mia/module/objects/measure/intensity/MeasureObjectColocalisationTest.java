@@ -43,7 +43,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //         double dppXY = 0.02;
 //         double dppZ = 0.1;
 //         String calibratedUnits = "µm";
-//         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//         Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");

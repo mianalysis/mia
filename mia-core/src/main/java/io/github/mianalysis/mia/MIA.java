@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -15,6 +13,10 @@ import org.scijava.script.ScriptService;
 
 import io.github.mianalysis.mia.module.lostandfound.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
@@ -73,6 +75,12 @@ public abstract class MIA {
         } else {
             return versionNumber;
         }
+    }
+
+    protected static void registerCoordinateSetFactories() {
+        CoordinateSetFactories.addFactory(new PointListFactory());
+        CoordinateSetFactories.addFactory(new QuadtreeFactory());
+        CoordinateSetFactories.addFactory(new OctreeFactory());
     }
 
     public static boolean isImagePlusMode() {

@@ -15,7 +15,6 @@ import org.w3c.dom.Node;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -41,7 +40,7 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
  * defined action such as image filtering, object detection or adding a
  * component to an overlay
  */
-public abstract class Module extends Ref implements Comparable, SciJavaPlugin, ModuleI {
+public abstract class Module extends Ref implements Comparable, ModuleI {
     protected Modules modules;
 
     protected Parameters parameters = new Parameters();

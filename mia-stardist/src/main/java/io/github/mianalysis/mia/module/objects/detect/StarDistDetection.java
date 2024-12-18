@@ -33,10 +33,9 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -358,7 +357,7 @@ public class StarDistDetection extends Module {
 
                     for (Integer idx : indices) {
                         PolygonRoi polygon = polygons.getPolygonRoi(idx);
-                        Obj obj = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                        Obj obj = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                         try {
                             obj.addPointsFromRoi(polygon, z);
                         } catch (IntegerOverflowException e) {

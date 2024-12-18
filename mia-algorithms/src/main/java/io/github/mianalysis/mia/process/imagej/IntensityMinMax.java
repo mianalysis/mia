@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ij.ImagePlus;
 import ij.process.ImageStatistics;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 
 /**
  * Created by Stephen on 15/04/2017.
@@ -93,7 +93,7 @@ public class IntensityMinMax {
 
     }
 
-    public static double[] getWeightedChannelRangeFast(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame, double minClip, double maxClip) {
+    public static double[] getWeightedChannelRangeFast(ImagePlus ipl, CoordinateSetI coordinateSet, int channel, int frame, double minClip, double maxClip) {
         double[] minMax = coordinateSet == null ? getAbsoluteRange(ipl,channel) : getAbsoluteRange(ipl,coordinateSet,channel,frame);
         double range = minMax[1]-minMax[0];
 
@@ -109,7 +109,7 @@ public class IntensityMinMax {
 
     }
 
-    public static double[] getWeightedChannelRangePrecise(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame, double minClip, double maxClip) {
+    public static double[] getWeightedChannelRangePrecise(ImagePlus ipl, CoordinateSetI coordinateSet, int channel, int frame, double minClip, double maxClip) {
         ArrayList<Float> pixels = coordinateSet == null ? getPixels(ipl,channel) : getPixels(ipl,coordinateSet,channel,frame);
         pixels.sort(Float::compareTo);
 
@@ -154,7 +154,7 @@ public class IntensityMinMax {
 
     }
 
-    public static double[] getAbsoluteRange(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame) {
+    public static double[] getAbsoluteRange(ImagePlus ipl, CoordinateSetI coordinateSet, int channel, int frame) {
         float minI = Float.MAX_VALUE;
         float maxI = -Float.MAX_VALUE;
 
@@ -193,7 +193,7 @@ public class IntensityMinMax {
 
     }
 
-    public static ArrayList<Float> getPixels(ImagePlus ipl, CoordinateSet coordinateSet, int channel, int frame) {
+    public static ArrayList<Float> getPixels(ImagePlus ipl, CoordinateSetI coordinateSet, int channel, int frame) {
         // Arranging pixel values into ArrayList, then ordering by value
         ArrayList<Float> pixels = new ArrayList<>();
 

@@ -11,9 +11,9 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -47,8 +47,8 @@ public class Obj extends Volume implements MeasurementProvider {
 
     // CONSTRUCTORS
 
-    public Obj(Objs objCollection, VolumeType volumeType, int ID) {
-        super(volumeType, objCollection.getSpatialCalibration());
+    public Obj(Objs objCollection, CoordinateSetFactoryI factory, int ID) {
+        super(factory, objCollection.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;
@@ -56,7 +56,7 @@ public class Obj extends Volume implements MeasurementProvider {
     }
 
     public Obj(Objs objCollection, int ID, Volume exampleVolume) {
-        super(exampleVolume.getVolumeType(), exampleVolume.getSpatialCalibration());
+        super(exampleVolume.getFactory(), exampleVolume.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;
@@ -64,23 +64,23 @@ public class Obj extends Volume implements MeasurementProvider {
     }
 
     public Obj(Objs objCollection, int ID, Obj exampleObj) {
-        super(exampleObj.getVolumeType(), exampleObj.getSpatialCalibration());
+        super(exampleObj.getFactory(), exampleObj.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;
 
     }
 
-    public Obj(Objs objCollection, VolumeType volumeType, int ID, Volume exampleVolume) {
-        super(volumeType, exampleVolume.getSpatialCalibration());
+    public Obj(Objs objCollection, CoordinateSetFactoryI factory, int ID, Volume exampleVolume) {
+        super(factory, exampleVolume.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;
 
     }
 
-    public Obj(Objs objCollection, VolumeType volumeType, int ID, Obj exampleObj) {
-        super(volumeType, exampleObj.getSpatialCalibration());
+    public Obj(Objs objCollection, CoordinateSetFactoryI factory, int ID, Obj exampleObj) {
+        super(factory, exampleObj.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;

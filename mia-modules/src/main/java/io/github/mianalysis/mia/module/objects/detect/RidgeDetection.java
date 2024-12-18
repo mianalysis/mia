@@ -31,11 +31,10 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectFill;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -378,7 +377,7 @@ public class RidgeDetection extends Module {
     }
 
     public static Obj initialiseObject(Objs outputObjects, int t) {
-        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
         outputObject.setT(t);
 
         return outputObject;

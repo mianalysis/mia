@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,18 +14,16 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.DenseTracks2D;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectsOverlay;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 
 public class AddObjectsOverlayTest extends ModuleTest {
@@ -60,9 +57,9 @@ public class AddObjectsOverlayTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
+    @EnumSource(VolumeTypes.class)
     @Disabled
-    public void testCreateTrackOverlay(VolumeType volumeType) throws Exception {
+    public void testCreateTrackOverlay(VolumeTypes volumeType) throws Exception {
 
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
 
@@ -78,7 +75,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new DenseTracks2D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new DenseTracks2D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Tracking objects

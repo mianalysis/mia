@@ -1,37 +1,37 @@
 package io.github.mianalysis.mia.object.coordinates.volume;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.quadtree.QuadTree;
+import org.apache.commons.math3.exception.OutOfRangeException;
 
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.quadtree.Quadtree;
 
 /**
  * Created by sc13967 on 28/07/2017.
  */
-public class QuadtreeCoordinates extends CoordinateSet {
-    private final Map<Integer, QuadTree> quadTrees;
+public class QuadtreeCoordinates implements CoordinateSetI {
+    private final Map<Integer, Quadtree> quadTrees;
 
     public QuadtreeCoordinates() {
         quadTrees = new TreeMap<>();
     }
 
     @Override
-    public VolumeType getVolumeType() {
-        return VolumeType.QUADTREE;
+    public CoordinateSetFactoryI getFactory() {
+        return new QuadtreeFactory();
     }
-
-    // Adding and removing points
 
     @Override
     public boolean add(int x, int y, int z) {
-        quadTrees.putIfAbsent(z, new QuadTree());
+        quadTrees.putIfAbsent(z, new Quadtree());
 
-        // Get relevant QuadTree
-        QuadTree quadTree = quadTrees.get(z);
+        // Get relevant Quadtree
+        Quadtree quadTree = quadTrees.get(z);
 
         // Adding this point
         quadTree.add(x, y);
@@ -39,17 +39,14 @@ public class QuadtreeCoordinates extends CoordinateSet {
         return true;
     }
 
-    @Override
     public boolean add(Point<Integer> point) {
         return add(point.x, point.y, point.z);
     }
 
-    @Override
-    public CoordinateSet createEmptyCoordinateSet() {
+    public CoordinateSetI createEmptyCoordinateSet() {
         return new QuadtreeCoordinates();
     }
 
-    @Override
     public boolean contains(Object o) {
         Point<Integer> point = (Point<Integer>) o;
 
@@ -58,7 +55,6 @@ public class QuadtreeCoordinates extends CoordinateSet {
         return quadTrees.get(point.z).contains(point.x, point.y);
     }
 
-    @Override
     public boolean remove(Object o) {
         Point<Integer> point = (Point<Integer>) o;
 
@@ -69,15 +65,14 @@ public class QuadtreeCoordinates extends CoordinateSet {
         return true;
     }
 
-    @Override
     public void clear() {
-        for (QuadTree quadTree : quadTrees.values())
+        for (Quadtree quadTree : quadTrees.values())
             quadTree.clear();
     }
 
     @Override
     public void finalise() {
-        for (QuadTree quadTree : quadTrees.values())
+        for (Quadtree quadTree : quadTrees.values())
             quadTree.optimise();
     }
 
@@ -87,13 +82,14 @@ public class QuadtreeCoordinates extends CoordinateSet {
             quadTrees.get(z).optimise();
     }
 
-    public CoordinateSet duplicate() {
+    @Override
+    public CoordinateSetI duplicate() {
         QuadtreeCoordinates newCoordinates = new QuadtreeCoordinates();
 
         // Adding slice by slice
         for (Integer slice : quadTrees.keySet()) {
-            QuadTree quadTree = new QuadTree(quadTrees.get(slice));
-            newCoordinates.putQuadTree(slice, quadTree);
+            Quadtree quadTree = new Quadtree(quadTrees.get(slice));
+            newCoordinates.putQuadtree(slice, quadTree);
         }
 
         return newCoordinates;
@@ -102,11 +98,13 @@ public class QuadtreeCoordinates extends CoordinateSet {
 
     // Creating coordinate subsets
 
-    protected CoordinateSet calculateProjected() {
-        CoordinateSet projectedCoordinates = new QuadtreeCoordinates();
+    @Override
+    public CoordinateSetI calculateProjected() {
+        CoordinateSetI projectedCoordinates = new QuadtreeCoordinates();
 
-        for (Point<Integer> point : this)
-            projectedCoordinates.add(point.x, point.y, 0);
+        for (Quadtree quadTree : quadTrees.values())
+            for (Point<Integer> point : quadTree)
+                projectedCoordinates.add(point.x, point.y, 0);
 
         projectedCoordinates.finalise();
 
@@ -114,13 +112,13 @@ public class QuadtreeCoordinates extends CoordinateSet {
 
     }
 
-    @Override
-    public CoordinateSet getSlice(int slice) {
-        CoordinateSet sliceCoordinateSet = new QuadtreeCoordinates();
+    public CoordinateSetI getSlice(int slice) {
+        CoordinateSetI sliceCoordinateSet = new QuadtreeCoordinates();
         if (!quadTrees.containsKey(slice))
             return sliceCoordinateSet;
 
-        sliceCoordinateSet.addAll(quadTrees.get(slice));
+        for (Point<Integer> point : quadTrees.get(slice))
+            sliceCoordinateSet.add(point);
 
         sliceCoordinateSet.finalise();
 
@@ -130,21 +128,19 @@ public class QuadtreeCoordinates extends CoordinateSet {
 
     // Volume properties
 
-    @Override
     public int size() {
         int nVoxels = 0;
 
-        for (QuadTree quadTree : quadTrees.values())
+        for (Quadtree quadTree : quadTrees.values())
             nVoxels += quadTree.size();
 
         return nVoxels;
     }
 
-    @Override
     public long getNumberOfElements() {
         long nElements = 0;
 
-        for (QuadTree quadTree : quadTrees.values())
+        for (Quadtree quadTree : quadTrees.values())
             nElements += quadTree.getNodeCount();
 
         return nElements;
@@ -152,27 +148,26 @@ public class QuadtreeCoordinates extends CoordinateSet {
 
     // Volume access
 
-    @Override
     public Iterator<Point<Integer>> iterator() {
-        return new QuadTreeVolumeIterator();
+        return new QuadtreeVolumeIterator();
     }
 
-    protected void putQuadTree(int slice, QuadTree quadTree) {
+    protected void putQuadtree(int slice, Quadtree quadTree) {
         quadTrees.put(slice, quadTree);
     }
 
-    protected QuadTree getQuadTree(int slice) {
+    protected Quadtree getQuadtree(int slice) {
         return quadTrees.get(slice);
     }
 
     // Miscellaneous
 
-    private class QuadTreeVolumeIterator implements Iterator<Point<Integer>> {
+    private class QuadtreeVolumeIterator implements Iterator<Point<Integer>> {
         private Iterator<Integer> sliceIterator = Collections.synchronizedSet(quadTrees.keySet()).iterator();
         private Iterator<Point<Integer>> quadTreeIterator = null;
         private int z = 0;
 
-        public QuadTreeVolumeIterator() {
+        public QuadtreeVolumeIterator() {
             if (!sliceIterator.hasNext())
                 return;
             this.z = sliceIterator.next();
@@ -235,4 +230,85 @@ public class QuadtreeCoordinates extends CoordinateSet {
         }
     }
 
+    @Override
+    public boolean isEmpty() {
+        for (Quadtree quadTree : quadTrees.values())
+            if (!quadTree.isEmpty())
+                return false;
+
+        return true;
+
+    }
+
+    @Override
+    public Object[] toArray() {
+        long pointCount = 0;
+        for (Quadtree quadTree : quadTrees.values())
+            pointCount += quadTree.getPointCount();
+
+        if (pointCount > Long.MAX_VALUE)
+            throw new OutOfRangeException(pointCount, 0, Integer.MAX_VALUE);
+
+        Object[] array = new Object[(int) pointCount];
+
+        int count = 0;
+        for (Point<Integer> point : this)
+            array[count++] = point;
+
+        return array;
+
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        int count = 0;
+        for (Point<Integer> point : this)
+            a[count++] = (T) point;
+
+        return a;
+
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'containsAll'");
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Point<Integer>> c) {
+        for (Point<Integer> point : c)
+            if (!add(point))
+                return false;
+
+        return true;
+
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'retainAll'");
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        Collection<Point<Integer>> cc = (Collection<Point<Integer>>) c;
+        for (Point<Integer> point : cc)
+            if (!remove(point))
+                return false;
+
+        return true;
+
+    }
+
+    @Override
+    public boolean contains(Point<Integer> point) {
+        for (Quadtree quadTree : quadTrees.values())
+            if (quadTree.contains(point))
+                return true;
+
+        return false;
+
+    }
 }

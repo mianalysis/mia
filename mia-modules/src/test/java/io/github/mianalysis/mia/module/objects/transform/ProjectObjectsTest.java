@@ -3,21 +3,18 @@ package io.github.mianalysis.mia.module.objects.transform;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 
 /**
  * Created by Stephen Cross on 03/09/2017.
@@ -34,8 +31,8 @@ public class ProjectObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRun(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRun(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -48,7 +45,7 @@ public class ProjectObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        Objs inputObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
+        Objs inputObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -69,7 +66,7 @@ public class ProjectObjectsTest extends ModuleTest {
         assertEquals(8,workspace.getObjects(outputObjectsName).size());
 
         // Getting expected and actual objects
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Objs actualObjects = workspace.getObjects(outputObjectsName);
 
         for (Obj object:actualObjects.values()) {

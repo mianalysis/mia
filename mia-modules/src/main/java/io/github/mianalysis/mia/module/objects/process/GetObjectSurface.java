@@ -48,7 +48,7 @@ public class GetObjectSurface extends Module {
 
     public static Obj getSurface(Obj inputObject, Objs outputObjects, boolean assignRelationships) {
         Volume outputVolume = inputObject.getSurface();
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
         outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
 
         if (assignRelationships) {

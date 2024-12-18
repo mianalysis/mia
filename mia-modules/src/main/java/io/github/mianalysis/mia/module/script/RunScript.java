@@ -36,7 +36,6 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -273,9 +272,6 @@ public class RunScript extends Module {
 
         movedClasses.put("io.github.sjcross.sjcommon.object.volume.SpatCal", SpatCal.class.getName());
         movedClasses.put("io.github.sjcross.common.object.volume.SpatCal", SpatCal.class.getName());
-
-        movedClasses.put("io.github.sjcross.sjcommon.object.volume.VolumeType", VolumeType.class.getName());
-        movedClasses.put("io.github.sjcross.common.object.volume.VolumeType", VolumeType.class.getName());
         
         movedClasses.put("io.github.mianalysis.mia.object.Image", Image.class.getName());
         

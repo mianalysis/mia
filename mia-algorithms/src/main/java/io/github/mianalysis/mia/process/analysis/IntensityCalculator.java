@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.process.analysis;
 import ij.ImagePlus;
 import ij.ImageStack;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
@@ -13,7 +13,7 @@ public class IntensityCalculator {
 
     // ANALYSIS OVER A SPECIFIED VOLUME
 
-    public static CumStat calculate(ImageStack image, CoordinateSet coordinateSet) {
+    public static CumStat calculate(ImageStack image, CoordinateSetI coordinateSet) {
         // Initialising the pixel value store
         CumStat cs = new CumStat();
 
@@ -23,7 +23,7 @@ public class IntensityCalculator {
 
     }
 
-    public static void calculate(ImageStack image, CumStat cs, CoordinateSet coordinateSet) {
+    public static void calculate(ImageStack image, CumStat cs, CoordinateSetI coordinateSet) {
         // Running through all pixels in the volume, adding them to the CumStat object
         for (Point<Integer> point:coordinateSet) {
             cs.addMeasure(image.getVoxel(point.getX(),point.getY(),point.getZ()));

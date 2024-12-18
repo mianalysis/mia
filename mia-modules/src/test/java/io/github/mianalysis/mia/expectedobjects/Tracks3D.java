@@ -8,16 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
-import ome.units.UNITS;
-import util.opencsv.CSVReader;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
+import ome.units.UNITS;
+import util.opencsv.CSVReader;
 
 
 /**
@@ -32,7 +31,7 @@ public class Tracks3D {
         return null;
     }
 
-    public Objs getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
+    public Objs getObjects(VolumeTypes volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,127,90,13);
 
         // Initialising object store
@@ -50,13 +49,13 @@ public class Tracks3D {
             int t = coordinate[6];
 
             spotID = spotID+(t*65536);
-            Obj spotObject = spotObjects.createAndAddNewObject(volumeType, spotID);
+            Obj spotObject = spotObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType), spotID);
             try {
                 spotObject.add(x,y,z);
             } catch (PointOutOfRangeException e) {}
             spotObject.setT(t);
 
-            trackObjects.putIfAbsent(trackID,new Obj(trackObjects,volumeType,trackID));
+            trackObjects.putIfAbsent(trackID,new Obj(trackObjects,VolumeTypes.getFactory(volumeType),trackID));
             Obj track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);

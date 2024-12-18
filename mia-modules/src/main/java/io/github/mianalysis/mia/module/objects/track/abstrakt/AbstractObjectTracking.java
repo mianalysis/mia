@@ -21,9 +21,8 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -105,7 +104,7 @@ public abstract class AbstractObjectTracking extends Module {
         Set<Integer> trackIDs = trackModel.trackIDs(false);
 
         for (Integer trackID : trackIDs) {
-            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID + 1);
+            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), trackID + 1);
 
             Set<DefaultWeightedEdge> trackEdges = trackModel.trackEdges(trackID);
 
@@ -133,7 +132,7 @@ public abstract class AbstractObjectTracking extends Module {
             if (inputObject.getParent(trackObjects.getName()) != null)
                 continue;
 
-            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
+            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory());
             inputObject.addParent(trackObject);
             trackObject.addChild(inputObject);
 

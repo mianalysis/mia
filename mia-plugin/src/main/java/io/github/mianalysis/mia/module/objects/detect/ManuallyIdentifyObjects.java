@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
@@ -22,7 +21,6 @@ import com.drew.lang.annotations.NotNull;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -34,9 +32,12 @@ import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependencies;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -288,9 +289,6 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     }
 
-    public interface VolumeTypes extends VolumeTypesInterface {
-    }
-
     public interface ClassesSources {
         String EXISTING_CLASS_FILE = "Existing class file";
         String FIXED_LIST = "Fixed list";
@@ -508,6 +506,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
+        CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(type);
+
         setSelector(selectorType);
 
         if (!outputTracks)
@@ -586,9 +586,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         // If necessary, apply interpolation
         try {
             if (spatialInterpolation)
-                ZInterpolator.applySpatialInterpolation(outputObjects, type);
+                ZInterpolator.applySpatialInterpolation(outputObjects, factory);
             if (outputTracks && temporalInterpolation)
-                ObjectSelector.applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
+                ObjectSelector.applyTemporalInterpolation(outputObjects, outputTrackObjects, factory);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }
@@ -620,7 +620,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
         parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
         parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
         parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));
@@ -904,11 +904,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         parameters.get(VOLUME_TYPE).setDescription(
                 "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-                        + "<li>\"" + VolumeTypes.POINTLIST
+                        + "<li>\"" + new PointListFactory().getName()
                         + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-                        + "<li>\"" + VolumeTypes.OCTREE
+                        + "<li>\"" + new QuadtreeFactory().getName()
                         + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-                        + "<li>\"" + VolumeTypes.QUADTREE
+                        + "<li>\"" + new OctreeFactory().getName()
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
         parameters.get(OUTPUT_TRACKS).setDescription(

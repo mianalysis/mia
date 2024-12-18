@@ -28,11 +28,12 @@ import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.imagej.LUTs;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -51,8 +52,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.math.Indexer;
 
 /**
@@ -549,7 +548,7 @@ public class TrackObjects extends Module {
 
     public static Obj createNewTrack(Obj currObj, Objs trackObjects) {        
         // Creating a new track object
-        Obj track = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj track = trackObjects.createAndAddNewObject(new PointListFactory());
 
         // Setting relationship between the current object and track
         track.addChild(currObj);

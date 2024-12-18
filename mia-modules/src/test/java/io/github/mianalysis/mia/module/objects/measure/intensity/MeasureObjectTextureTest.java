@@ -14,12 +14,12 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects2D;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.analysis.TextureCalculator;
 
 
@@ -59,13 +59,13 @@ public class MeasureObjectTextureTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testProcessObject1Px(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testProcessObject1Px(VolumeTypes volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -100,13 +100,13 @@ public class MeasureObjectTextureTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testProcessObject3Px(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testProcessObject3Px(VolumeTypes volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");

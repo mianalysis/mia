@@ -19,16 +19,18 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.Objects4D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 /**
  * Created by Stephen Cross on 29/08/2017.
@@ -54,8 +56,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit2DPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit2DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -75,7 +77,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -93,7 +95,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -108,8 +111,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit2DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit2DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -130,7 +133,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC,
                 IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -148,7 +151,9 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -163,8 +168,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit2DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit2DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -184,7 +189,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -202,7 +207,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -217,8 +223,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -239,7 +245,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -257,7 +263,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -272,8 +279,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -293,7 +300,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -311,7 +318,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -326,8 +334,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -347,7 +355,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -365,7 +373,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -380,8 +389,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit4DPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit4DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -401,7 +410,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -419,7 +428,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -435,8 +445,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit4DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit4DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -456,7 +466,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -474,7 +484,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -490,8 +501,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit4DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit4DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -511,7 +522,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -529,7 +540,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -557,8 +569,8 @@ public class IdentifyObjectsTest extends ModuleTest {
      * @throws Exception
      */
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DLabelledPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DLabelledPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -577,7 +589,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -595,7 +607,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -610,8 +623,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DLabelledQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DLabelledQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -630,7 +643,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -648,7 +661,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -663,8 +677,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DLabelledOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DLabelledOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -683,7 +697,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -701,7 +715,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -716,8 +731,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWhiteBackground8Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWhiteBackground8Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -737,7 +752,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -755,7 +770,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -770,8 +786,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWhiteBackground8Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWhiteBackground8Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -791,7 +807,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -809,7 +825,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -824,8 +841,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWhiteBackground8Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWhiteBackground8Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -845,7 +862,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -863,7 +880,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -878,8 +896,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DSingleObjectPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DSingleObjectPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -900,7 +918,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -918,7 +936,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -933,8 +952,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DSingleObjectQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DSingleObjectQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -955,7 +974,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -973,7 +992,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -988,8 +1008,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DSingleObjectOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DSingleObjectOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1010,7 +1030,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1028,7 +1048,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1043,8 +1064,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithoutMT(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithoutMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -1065,7 +1086,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1083,7 +1104,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1098,8 +1120,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DLabelledSingleObjectQuadTreeWithoutMT(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DLabelledSingleObjectQuadtreeWithoutMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -1120,7 +1142,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1138,7 +1160,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1153,8 +1176,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DLabelledSingleObjectOcTreeWithoutMT(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DLabelledSingleObjectOctreeWithoutMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -1175,7 +1198,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1193,7 +1216,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1208,8 +1232,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1229,7 +1253,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1247,7 +1271,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1262,8 +1287,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1283,7 +1308,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1301,7 +1326,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1316,8 +1342,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1337,7 +1363,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1355,7 +1381,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1370,8 +1397,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1391,7 +1418,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1412,7 +1439,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1427,8 +1455,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1448,7 +1476,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1469,7 +1497,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1484,8 +1513,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1505,7 +1534,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1526,7 +1555,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1541,8 +1571,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DNot255PointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DNot255PointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1562,7 +1592,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1580,7 +1610,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1595,8 +1626,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DNot255QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DNot255QuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1616,7 +1647,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1634,7 +1665,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1649,8 +1681,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DNot255OcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DNot255OctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1670,7 +1702,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1688,7 +1720,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1703,8 +1736,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DNot65535PointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DNot65535PointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1724,7 +1757,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1742,7 +1775,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1757,8 +1791,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DNot65535QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DNot65535QuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1778,7 +1812,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1796,7 +1830,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1811,8 +1846,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DNot65535OcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DNot65535OctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1832,7 +1867,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1850,7 +1885,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1865,8 +1901,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DNot1PointListWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DNot1PointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1886,7 +1922,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1907,7 +1943,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1922,8 +1959,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DNot1QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DNot1QuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -1943,7 +1980,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -1964,7 +2001,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1979,8 +2017,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DNot1OcTreeWithoutMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DNot1OctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2000,7 +2038,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2021,7 +2059,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2036,8 +2075,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit2DPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit2DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2057,7 +2096,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2075,7 +2114,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2090,8 +2130,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit2DQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit2DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2111,7 +2151,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2129,7 +2169,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2144,8 +2185,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit2DOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit2DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2165,7 +2206,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2183,7 +2224,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2198,8 +2240,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2219,7 +2261,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2237,7 +2279,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2252,8 +2295,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2273,7 +2316,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2291,7 +2334,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2306,8 +2350,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2327,7 +2371,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2345,7 +2389,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2360,8 +2405,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit4DPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit4DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2381,7 +2426,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2399,7 +2444,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2415,8 +2461,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit4DQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit4DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2436,7 +2482,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2454,7 +2500,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2470,8 +2517,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit4DOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit4DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2491,7 +2538,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2509,7 +2556,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2531,8 +2579,8 @@ public class IdentifyObjectsTest extends ModuleTest {
      * @throws Exception
      */
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DLabelledPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DLabelledPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2551,7 +2599,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2569,7 +2617,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2584,8 +2633,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DLabelledQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DLabelledQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2604,7 +2653,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2622,7 +2671,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2637,8 +2687,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DLabelledOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DLabelledOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2657,7 +2707,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2675,7 +2725,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2690,8 +2741,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWhiteBackground8Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWhiteBackground8Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2711,7 +2762,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2729,7 +2780,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2744,8 +2796,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWhiteBackground8Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWhiteBackground8Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2765,7 +2817,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2783,7 +2835,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2798,8 +2851,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWhiteBackground8Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWhiteBackground8Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2819,7 +2872,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2837,7 +2890,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2852,8 +2906,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DSingleObjectPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DSingleObjectPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2874,7 +2928,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2892,7 +2946,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2907,8 +2962,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DSingleObjectQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DSingleObjectQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2929,7 +2984,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -2947,7 +3002,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2962,8 +3018,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DSingleObjectOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DSingleObjectOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -2984,7 +3040,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3002,7 +3058,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3017,8 +3074,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithMT(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -3039,7 +3096,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3057,7 +3114,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3072,8 +3130,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DLabelledSingleObjectQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DLabelledSingleObjectQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3093,7 +3151,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3111,7 +3169,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3126,8 +3185,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8bit3DLabelledSingleObjectOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8bit3DLabelledSingleObjectOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3147,7 +3206,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3165,7 +3224,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3180,8 +3240,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3201,7 +3261,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3219,7 +3279,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3234,8 +3295,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3255,7 +3316,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3273,7 +3334,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3288,8 +3350,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3309,7 +3371,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3327,7 +3389,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3342,8 +3405,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3363,7 +3426,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3384,7 +3447,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3399,8 +3463,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3420,7 +3484,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3441,7 +3505,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3456,8 +3521,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3477,7 +3542,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3498,7 +3563,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3513,8 +3579,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DNot255PointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DNot255PointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3534,7 +3600,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3552,7 +3618,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3567,8 +3634,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DNot255QuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DNot255QuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3588,7 +3655,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3606,7 +3673,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3621,8 +3689,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground8Bit3DNot255OcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground8Bit3DNot255OctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3642,7 +3710,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3660,7 +3728,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3675,8 +3744,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DNot65535PointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DNot65535PointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3696,7 +3765,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3714,7 +3783,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3729,8 +3799,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DNot65535QuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DNot65535QuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3750,7 +3820,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3768,7 +3838,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3783,8 +3854,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground16Bit3DNot65535OcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground16Bit3DNot65535OctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3804,7 +3875,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3822,7 +3893,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3837,8 +3909,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DNot1PointListWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DNot1PointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3858,7 +3930,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new PointListFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3879,7 +3951,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3894,8 +3967,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DNot1QuadTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DNot1QuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3915,7 +3988,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new QuadtreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3936,7 +4009,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3951,8 +4025,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunBlackBackground32Bit3DNot1OcTreeWithMT(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunBlackBackground32Bit3DNot1OctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -3972,7 +4046,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, new OctreeFactory().getName());
 
         // Running IdentifyObjects
         identifyObjects.execute(workspace);
@@ -3993,7 +4067,8 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects

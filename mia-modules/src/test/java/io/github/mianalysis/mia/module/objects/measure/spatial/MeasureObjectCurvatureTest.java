@@ -14,13 +14,13 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Rings2D;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
@@ -39,8 +39,8 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunCircleNoRelate10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunCircleNoRelate10PxRadius2DLOESS(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -51,7 +51,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj = new Rings2D(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -94,8 +94,8 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -106,7 +106,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -158,8 +158,8 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunCircleRelateClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRunCircleRelateClockwise10PxRadius2DLOESS(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -170,7 +170,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace

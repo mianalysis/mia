@@ -1,7 +1,8 @@
 package io.github.mianalysis.mia.expectedobjects;
 
+import io.github.mianalysis.mia.expectedobjects.Objects3D.Measures;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import ome.units.UNITS;
  * Created by Stephen Cross on 29/08/2017.
  */
 public class Objects3D extends ExpectedObjects {
-    public Objects3D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 12, 1, 0.02, UNITS.SECOND);
+    public Objects3D(CoordinateSetFactoryI factory) {
+        super(factory, 64, 76, 12, 1, 0.02, UNITS.SECOND);
     }
 
     public enum Measures {

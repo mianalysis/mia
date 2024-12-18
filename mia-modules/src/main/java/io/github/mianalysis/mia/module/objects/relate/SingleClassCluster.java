@@ -25,10 +25,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -174,7 +173,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (LocationWrapper point : cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -188,7 +187,7 @@ public class SingleClassCluster extends Module {
         for (LocationWrapper wrapper : locations) {
             Obj obj = wrapper.getObject();
             if (obj.getParent(outputObjects.getName()) == null) {
-                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+                Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -207,7 +206,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (Cluster<LocationWrapper> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (LocationWrapper point : cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -221,7 +220,7 @@ public class SingleClassCluster extends Module {
         for (LocationWrapper wrapper : locations) {
             Obj obj = wrapper.getObject();
             if (obj.getParent(outputObjects.getName()) == null) {
-                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+                Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -236,7 +235,7 @@ public class SingleClassCluster extends Module {
 
     public void applyClusterVolume(Obj outputObject, Objs childObjects, double eps) throws IntegerOverflowException {
         Objs children = outputObject.getChildren(childObjects.getName());
-        CoordinateSet coordinateSet = outputObject.getCoordinateSet();
+        CoordinateSetI coordinateSet = outputObject.getCoordinateSet();
 
         for (Obj child : children.values())
             coordinateSet.addAll(child.getCoordinateSet().duplicate());
@@ -573,7 +572,7 @@ public class SingleClassCluster extends Module {
 // import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 // import io.github.sjcross.sjcommon.object.LUTs;
 // import io.github.mianalysis.mia.object.coordinates.Point;
-// import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+// import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 // import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 //
 // import java.util.ArrayList;
@@ -641,7 +640,7 @@ public class SingleClassCluster extends Module {
 // // Assigning relationships between points and clusters
 // for (CentroidCluster<LocationWrapper> cluster:clusters) {
 // Obj outputObject = new
-//// Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
+//// Obj(new PointListFactory(),outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
 //
 // for (LocationWrapper point:cluster.getPoints()) {
 // Obj pointObject = point.getObject();
@@ -659,7 +658,7 @@ public class SingleClassCluster extends Module {
 // Obj obj = wrapper.getObject();
 // if (obj.getParent(outputObjectsName) == null) {
 // int ID = outputObjects.getAndIncrementID();
-// VolumeType type = VolumeType.POINTLIST;
+// VolumeType type = new PointListFactory();
 // Obj outputObject = new
 //// Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 // outputObject.setT(obj.getT());
@@ -690,7 +689,7 @@ public class SingleClassCluster extends Module {
 // // Assigning relationships between points and clusters
 // for (Cluster<LocationWrapper> cluster:clusters) {
 // int ID = outputObjects.getAndIncrementID();
-// VolumeType type = VolumeType.POINTLIST;
+// VolumeType type = new PointListFactory();
 // Obj outputObject = new
 //// Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 //
@@ -710,7 +709,7 @@ public class SingleClassCluster extends Module {
 // Obj obj = wrapper.getObject();
 // if (obj.getParent(outputObjectsName) == null) {
 // int ID = outputObjects.getAndIncrementID();
-// VolumeType type = VolumeType.POINTLIST;
+// VolumeType type = new PointListFactory();
 // Obj outputObject = new
 //// Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 // outputObject.setT(obj.getT());

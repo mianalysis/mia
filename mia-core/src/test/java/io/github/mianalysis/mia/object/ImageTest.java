@@ -13,8 +13,9 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import net.imagej.ImgPlus;
@@ -81,8 +82,8 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
      * @throws Exception
      */
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testConvertImageToObjects8bit3D(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testConvertImageToObjects8bit3D(VolumeTypes volumeType) throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
@@ -105,7 +106,8 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
                 dppZ, calibratedUnits, true);
 
         for (Obj object : expectedObjects.values()) {
@@ -122,8 +124,8 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
      * @throws Exception
      */
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testConvertImageToObjects16bit3D(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testConvertImageToObjects16bit3D(VolumeTypes volumeType) throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_16bit.zip").getPath(), "UTF-8");
@@ -146,7 +148,8 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
+        CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
+        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
                 dppZ, calibratedUnits, true);
 
         for (Obj object : expectedObjects.values()) {

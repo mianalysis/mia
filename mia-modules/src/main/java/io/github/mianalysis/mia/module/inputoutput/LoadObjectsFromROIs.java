@@ -27,10 +27,9 @@ import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -258,12 +257,12 @@ public class LoadObjectsFromROIs extends Module {
                 return;
 
             if (!outputObjects.keySet().contains(oid))
-                outputObjects.createAndAddNewObject(VolumeType.QUADTREE, oid);
+                outputObjects.createAndAddNewObject(new QuadtreeFactory(), oid);
             Obj outputObject = outputObjects.get(oid);
 
             if (trackObjects != null && tid != -1) {
                 if (!trackObjects.keySet().contains(tid))
-                    trackObjects.createAndAddNewObject(VolumeType.QUADTREE, tid);
+                    trackObjects.createAndAddNewObject(new QuadtreeFactory(), tid);
                 Obj trackObject = trackObjects.get(tid);
                 trackObject.addChild(outputObject);
                 outputObject.addParent(trackObject);
@@ -278,7 +277,7 @@ public class LoadObjectsFromROIs extends Module {
         } else {
             // If the name doesn't match, just add it at the first location with the next ID
             // number.
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+            Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
             outputObject.addPointsFromRoi(roi, 0);
             outputObject.setT(0);
 

@@ -8,16 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.UNITS;
 
@@ -31,8 +30,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbour(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testGetNearestNeighbour(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -44,16 +43,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Testing against first object in set
@@ -67,8 +66,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbourOverlapping(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testGetNearestNeighbourOverlapping(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -80,19 +79,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
-        Obj obj5 = objects1.createAndAddNewObject(volumeType, 5);
+        Obj obj5 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
         obj5.add(10, 20, 40);
 
         // Testing against first object in set
@@ -106,8 +105,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbourLinkingDistanceNNFound(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testGetNearestNeighbourLinkingDistanceNNFound(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -119,16 +118,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Testing against first object in set
@@ -142,8 +141,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbourLinkingDistanceNNNotFound(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testGetNearestNeighbourLinkingDistanceNNNotFound(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -155,16 +154,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Testing against first object in set
@@ -178,8 +177,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithinSameSet(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithinSameSet(VolumeTypes volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -194,13 +193,13 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Initialising Module
@@ -252,8 +251,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetMaxDistAllPass(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithinSameSetMaxDistAllPass(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -270,16 +269,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Initialising Module
@@ -349,8 +348,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetMaxDistSomeFail(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithinSameSetMaxDistSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -367,16 +366,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Initialising Module
@@ -446,8 +445,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -464,16 +463,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Initialising Module
@@ -543,8 +542,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetWithinParent(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithinSameSetWithinParent(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -561,20 +560,20 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
+        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -583,7 +582,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(volumeType, 2);
+        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -637,8 +636,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -655,20 +654,20 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
+        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -677,7 +676,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(volumeType, 2);
+        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -731,8 +730,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunDifferentSets(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunDifferentSets(VolumeTypes volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
@@ -748,23 +747,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
+        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
         obj5.add(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(volumeType, 6);
+        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
         obj6.add(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(volumeType, 7);
+        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
         obj7.add(35, 20, 20);
 
         // Initialising Module
@@ -816,8 +815,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunDifferentSetsMaxDistSomePass(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunDifferentSetsMaxDistSomePass(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -834,23 +833,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
+        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
         obj5.add(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(volumeType, 6);
+        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
         obj6.add(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(volumeType, 7);
+        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
         obj7.add(35, 20, 20);
 
         // Initialising Module
@@ -902,8 +901,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunDifferentSetsWithinParent(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunDifferentSetsWithinParent(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -921,30 +920,30 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
+        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
         obj5.add(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(volumeType, 6);
+        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
         obj6.add(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(volumeType, 7);
+        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
         obj7.add(35, 20, 20);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
+        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -953,7 +952,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(volumeType, 2);
+        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -1013,8 +1012,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeType volumeType)
+    @EnumSource(VolumeTypes.class)
+    public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
@@ -1032,30 +1031,30 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
+        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         obj1.add(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(volumeType, 2);
+        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         obj2.add(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(volumeType, 3);
+        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
         obj3.add(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(volumeType, 4);
+        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
         obj4.add(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
+        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
         obj5.add(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(volumeType, 6);
+        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
         obj6.add(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(volumeType, 7);
+        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
         obj7.add(35, 20, 20);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
+        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -1064,7 +1063,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(volumeType, 2);
+        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);

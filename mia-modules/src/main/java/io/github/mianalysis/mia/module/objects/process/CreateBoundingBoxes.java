@@ -9,11 +9,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -50,7 +48,7 @@ public class CreateBoundingBoxes extends Module {
     public static Obj getBoundingBox(Obj inputObject, Objs outputObjects, boolean assignRelationships) {
         double[][] extents = inputObject.getExtents(true, false);
 
-        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
         int xMin = (int) Math.floor(extents[0][0]);
         int xMax = (int) Math.ceil(extents[0][1]);
         int yMin = (int) Math.floor(extents[1][0]);

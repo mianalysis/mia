@@ -14,7 +14,6 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.binary.DilateErode;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -173,7 +172,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
+        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getFactory(), "NewObjects");
 
         // During object shrinking it's possible the object will disappear entirely
         if (outputObjects.size() == 0)
@@ -300,7 +299,7 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.clearROIs();
 
             } else {
-                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getVolumeType());
+                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getFactory());
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);

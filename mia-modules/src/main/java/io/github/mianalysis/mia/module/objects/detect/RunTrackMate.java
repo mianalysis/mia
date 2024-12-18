@@ -35,12 +35,11 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -263,7 +262,7 @@ public class RunTrackMate extends Module {
         Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
-            Obj spotObject = spotObjects.createAndAddNewObject(VolumeType.POINTLIST, spot.ID());
+            Obj spotObject = spotObjects.createAndAddNewObject(new PointListFactory(), spot.ID());
             try {
                 spotObject.add((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
                         (int) spot.getDoublePosition(2));
@@ -303,7 +302,7 @@ public class RunTrackMate extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID);
+            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), trackID);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -317,7 +316,7 @@ public class RunTrackMate extends Module {
             for (Spot spot : spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and
                 // group (track) ID.
-                Obj spotObject = spotObjects.createAndAddNewObject(trackObject.getVolumeType());
+                Obj spotObject = spotObjects.createAndAddNewObject(trackObject.getFactory());
 
                 // Adding measurements
                 addSpotMeasurements(spotObject, spot, doSubpixel);

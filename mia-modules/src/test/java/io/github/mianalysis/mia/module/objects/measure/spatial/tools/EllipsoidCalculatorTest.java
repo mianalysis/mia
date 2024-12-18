@@ -32,7 +32,7 @@
 //         Ellipsoid ellipsoid = new Ellipsoid(r1,r2,r3,x,y,z,eigenVectors);
 
 //         // Initialising the calculator
-//         Volume volume = new Volume(VolumeType.POINTLIST,1,1,1,dppXY,dppZ,units);
+//         Volume volume = new Volume(new PointListFactory(),1,1,1,dppXY,dppZ,units);
 //         EllipsoidCalculator calculator = new EllipsoidCalculator(ellipsoid,volume);
 
 //         // Testing the measured value
@@ -63,7 +63,7 @@
 //         Ellipsoid ellipsoid = new Ellipsoid(r1,r2,r3,x,y,z,eigenVectors);
 
 //         // Initialising the calculator
-//         Volume volume = new Volume(VolumeType.POINTLIST,1,1,1,dppXY,dppZ,units);
+//         Volume volume = new Volume(new PointListFactory(),1,1,1,dppXY,dppZ,units);
 //         EllipsoidCalculator calculator = new EllipsoidCalculator(ellipsoid,volume);
 
 //         // Testing the measured value
@@ -102,7 +102,7 @@
 //         Ellipsoid ellipsoid = new Ellipsoid(r1,r2,r3,x,y,z,eigenVectors);
 
 //         // Initialising the calculator
-//         Volume volume = new Volume(VolumeType.POINTLIST,1,1,1,dppXY,dppZ,units);
+//         Volume volume = new Volume(new PointListFactory(),1,1,1,dppXY,dppZ,units);
 //         EllipsoidCalculator calculator = new EllipsoidCalculator(ellipsoid,volume);
 
 //         // Testing the measured value
@@ -133,7 +133,7 @@
 //         Ellipsoid ellipsoid = new Ellipsoid(r1,r2,r3,x,y,z,eigenVectors);
 
 //         // Initialising the calculator
-//         Volume volume = new Volume(VolumeType.POINTLIST,1,1,1,dppXY,dppZ,units);
+//         Volume volume = new Volume(new PointListFactory(),1,1,1,dppXY,dppZ,units);
 //         EllipsoidCalculator calculator = new EllipsoidCalculator(ellipsoid,volume);
 
 //         // Testing the measured value
@@ -164,7 +164,7 @@
 //         Ellipsoid ellipsoid = new Ellipsoid(r1,r2,r3,x,y,z,eigenVectors);
 
 //         // Initialising the calculator
-//         Volume volume = new Volume(VolumeType.POINTLIST,1,1,1,dppXY,dppZ,units);
+//         Volume volume = new Volume(new PointListFactory(),1,1,1,dppXY,dppZ,units);
 //         EllipsoidCalculator calculator = new EllipsoidCalculator(ellipsoid,volume);
 
 //         // Testing the measured value

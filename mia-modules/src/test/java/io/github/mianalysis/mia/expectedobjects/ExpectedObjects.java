@@ -14,9 +14,9 @@ import java.util.List;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.quantity.Time;
@@ -28,7 +28,7 @@ import util.opencsv.CSVReader;
  */
 public abstract class ExpectedObjects {
     public abstract List<Integer[]> getCoordinates5D();
-    private final VolumeType volumeType;
+    private final CoordinateSetFactoryI factory;
     private final int width;
     private final int height;
     private final int nSlices;
@@ -38,8 +38,8 @@ public abstract class ExpectedObjects {
 
     public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
 
-    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
-        this.volumeType = volumeType;
+    public ExpectedObjects(CoordinateSetFactoryI factory, int width, int height, int nSlices, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
+        this.factory = factory;
         this.width = width;
         this.height = height;
         this.nSlices = nSlices;
@@ -80,7 +80,7 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(testObjects,volumeType,ID));
+            testObjects.putIfAbsent(ID,new Obj(testObjects,factory,ID));
 
             Obj testObject = testObjects.get(ID);
 

@@ -12,10 +12,11 @@ import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIn
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -84,9 +85,6 @@ public class ConvertImageToObjects extends Module {
         super("Convert image to objects", modules);
     }
 
-    public interface VolumeTypes extends VolumeTypesInterface {
-    }
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_CONVERT;
@@ -114,7 +112,7 @@ public class ConvertImageToObjects extends Module {
             int ID = (int) Math.round(cs.getMax());
 
             // Getting corresponding parent object
-            parentObjects.putIfAbsent(ID, new Obj(parentObjects, VolumeType.POINTLIST, ID));
+            parentObjects.putIfAbsent(ID, new Obj(parentObjects, new PointListFactory(), ID));
             Obj parentObject = parentObjects.get(ID);
 
             // Assigning relationships
@@ -133,13 +131,13 @@ public class ConvertImageToObjects extends Module {
         ImageI inputImage = workspace.getImages().get(inputImageName);
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        String volumeType = parameters.getValue(VOLUME_TYPE,workspace);
+        String type = parameters.getValue(VOLUME_TYPE,workspace);
         boolean createParents = parameters.getValue(CREATE_TRACKS,workspace);
         String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
 
         Objs objects = null;
         try {
-            objects = inputImage.convertImageToObjects(VolumeTypesInterface.getVolumeType(volumeType), outputObjectsName);
+            objects = inputImage.convertImageToObjects(CoordinateSetFactories.getFactory(type), outputObjectsName);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }
@@ -166,7 +164,7 @@ public class ConvertImageToObjects extends Module {
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
         parameters.add(new BooleanP(CREATE_TRACKS, this, false));
         parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS_NAME, this));
 
@@ -249,11 +247,11 @@ return null;
 
         parameters.get(VOLUME_TYPE).setDescription(
                 "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-                        + "<li>\"" + VolumeTypes.POINTLIST
+                        + "<li>\"" + new PointListFactory().getName()
                         + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-                        + "<li>\"" + VolumeTypes.OCTREE
+                        + "<li>\"" + new OctreeFactory().getName()
                         + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-                        + "<li>\"" + VolumeTypes.QUADTREE
+                        + "<li>\"" + new QuadtreeFactory().getName()
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
         parameters.get(CREATE_TRACKS).setDescription(

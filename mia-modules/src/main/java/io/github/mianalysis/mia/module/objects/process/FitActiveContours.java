@@ -283,7 +283,7 @@ public class FitActiveContours extends Module {
                     inputObject.clearAllCoordinates();
                     inputObject.addPointsFromRoi(newRoi, z);
                 } else {
-                    Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
+                    Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi, z);
                 }

@@ -6,7 +6,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.process.math.CumStat;
 import io.github.mianalysis.mia.process.math.Indexer;
 
@@ -30,7 +30,7 @@ public class TextureCalculator {
     }
 
 
-    public void calculate(ImageStack image, CoordinateSet coordinateSet, int xOffs, int yOffs, int zOffs) {
+    public void calculate(ImageStack image, CoordinateSetI coordinateSet, int xOffs, int yOffs, int zOffs) {
         if (image.getBitDepth() != 8)
             image = convertTo8Bit(image);
 

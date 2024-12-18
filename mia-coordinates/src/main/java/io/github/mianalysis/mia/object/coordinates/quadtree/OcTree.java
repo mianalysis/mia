@@ -5,14 +5,14 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointCoordinates;
 
 /**
  * Created by JDJFisher on 19/07/2019.
  */
-public class OcTree extends AbstractSet<Point<Integer>> {
-    private OTNode root;
+public class Octree extends AbstractSet<Point<Integer>> {
+    private OctreeNode root;
     private int rootSize;
     private int rootMinX;
     private int rootMinY;
@@ -21,8 +21,8 @@ public class OcTree extends AbstractSet<Point<Integer>> {
     private int nodes;
 
     // default constructor
-    public OcTree() {
-        root = new OTNode();
+    public Octree() {
+        root = new OctreeNode();
         rootSize = 1;
         rootMinX = 0;
         rootMinY = 0;
@@ -32,8 +32,8 @@ public class OcTree extends AbstractSet<Point<Integer>> {
     }
 
     // copy constructor
-    public OcTree(OcTree ot) {
-        root = new OTNode(ot.root);
+    public Octree(Octree ot) {
+        root = new OctreeNode(ot.root);
         rootSize = ot.rootSize;
         rootMinX = ot.rootMinX;
         rootMinY = ot.rootMinY;
@@ -56,7 +56,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         return contains(root, x, y, z, rootSize, rootMinX, rootMinY, rootMinZ);
     }
 
-    private boolean contains(OTNode node, int x, int y, int z, int size, int minX, int minY, int minZ) {
+    private boolean contains(OctreeNode node, int x, int y, int z, int size, int minX, int minY, int minZ) {
         // recursively select the sub-node that contains the coordinates until a leaf
         // node is found
         if (node.isDivided()) {
@@ -97,7 +97,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         // while the coordinates are out of the root nodes span, increase the size of
         // the root appropriately
         while (x < rootMinX || y < rootMinY || z < rootMinZ) {
-            OTNode newRoot = new OTNode();
+            OctreeNode newRoot = new OctreeNode();
             newRoot.subDivide();
             newRoot.use = root;
 
@@ -109,7 +109,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         }
 
         while (x >= rootMinX + rootSize || y >= rootMinY + rootSize || z >= rootMinZ + rootSize) {
-            OTNode newRoot = new OTNode();
+            OctreeNode newRoot = new OctreeNode();
             newRoot.subDivide();
             newRoot.lnw = root;
 
@@ -139,7 +139,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         return set(root, x, y, z, b, rootSize, rootMinX, rootMinY, rootMinZ);
     }
 
-    private boolean set(OTNode node, int x, int y, int z, boolean b, int size, int minX, int minY, int minZ) {
+    private boolean set(OctreeNode node, int x, int y, int z, boolean b, int size, int minX, int minY, int minZ) {
         if (node.isLeaf()) {
             if (node.coloured == b)
                 return false;
@@ -178,12 +178,12 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         }
     }
 
-    // optimise the OcTree by merging sub-nodes encoding a uniform value
+    // optimise the Octree by merging sub-nodes encoding a uniform value
     public void optimise() {
         optimise(root);
     }
 
-    private void optimise(OTNode node) {
+    private void optimise(OctreeNode node) {
         if (node.isDivided()) {
             // attempt to optimise sub-nodes first
             optimise(node.lnw);
@@ -208,15 +208,15 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         }
     }
 
-    public CoordinateSet getEdgePoints(boolean is2D) {
-        CoordinateSet points = new PointCoordinates();
+    public CoordinateSetI getEdgePoints(boolean is2D) {
+        CoordinateSetI points = new PointCoordinates();
 
         getEdgePoints(root, points, is2D, rootSize, rootMinX, rootMinY, rootMinZ);
 
         return points;
     }
 
-    private void getEdgePoints(OTNode node, CoordinateSet points, boolean is2d, int size, int minX, int minY,
+    private void getEdgePoints(OctreeNode node, CoordinateSetI points, boolean is2d, int size, int minX, int minY,
             int minZ) {
         if (node.isDivided()) {
             final int halfSize = size / 2;
@@ -305,7 +305,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         recountNodes(root);
     }
 
-    private void recountNodes(OTNode node) {
+    private void recountNodes(OctreeNode node) {
         if (node.isDivided()) {
             nodes += 8;
             recountNodes(node.lnw);
@@ -324,7 +324,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         recountPoints(root, rootSize);
     }
 
-    private void recountPoints(OTNode node, int size) {
+    private void recountPoints(OctreeNode node, int size) {
         if (node.isDivided()) {
             final int halfSize = size / 2;
 
@@ -348,7 +348,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
 
     @Override
     public void clear() {
-        root = new OTNode();
+        root = new OctreeNode();
         rootSize = 1;
         rootMinX = 0;
         rootMinY = 0;
@@ -362,7 +362,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         return points;
     }
 
-    public OTNode getRoot() {
+    public OctreeNode getRoot() {
         return root;
     }
 
@@ -392,11 +392,11 @@ public class OcTree extends AbstractSet<Point<Integer>> {
 
     @Override
     public Iterator<Point<Integer>> iterator() {
-        return new OcTreeIterator();
+        return new OctreeIterator();
     }
 
-    private class OcTreeIterator implements Iterator<Point<Integer>> {
-        private final Stack<OTNode> nodeStack;
+    private class OctreeIterator implements Iterator<Point<Integer>> {
+        private final Stack<OctreeNode> nodeStack;
         private final Stack<Integer> sizeStack;
         private final Stack<Integer> minXStack;
         private final Stack<Integer> minYStack;
@@ -406,7 +406,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
         private int minX, minY, minZ;
         private int maxX, maxY, maxZ;
 
-        public OcTreeIterator() {
+        public OctreeIterator() {
             nodeStack = new Stack<>();
             sizeStack = new Stack<>();
             minXStack = new Stack<>();
@@ -461,7 +461,7 @@ public class OcTree extends AbstractSet<Point<Integer>> {
 
         private void findNextColouredLeaf() {
             while (!nodeStack.empty()) {
-                final OTNode node = nodeStack.pop();
+                final OctreeNode node = nodeStack.pop();
                 final int size = sizeStack.pop();
                 minX = minXStack.pop();
                 minY = minYStack.pop();

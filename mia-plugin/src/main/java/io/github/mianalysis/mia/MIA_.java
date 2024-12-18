@@ -13,7 +13,6 @@ import org.scijava.ui.UIService;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
-import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
@@ -55,7 +54,7 @@ public class MIA_ extends MIA implements Command {
         headless = false;
 
         // Adding LogService to LogHistory
-        MIA.linkLogServiceToLogHistory();
+        linkLogServiceToLogHistory();
 
         // Setting the ParameterControlFactory
         ParameterControlFactory.setActive(new SwingParameterControlFactory());
@@ -90,6 +89,9 @@ public class MIA_ extends MIA implements Command {
         }
 
         log.addRenderer(logHistory);
+
+        // Registering all CoordinateSetFactories
+        registerCoordinateSetFactories();
 
         // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())

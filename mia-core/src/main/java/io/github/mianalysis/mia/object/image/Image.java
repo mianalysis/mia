@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -20,23 +21,19 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Im
 
 
     public Objs convertImageToObjects(String outputObjectsName) {
-        String type = ImageI.getVolumeType(VolumeType.POINTLIST);
-        return convertImageToObjects(type, outputObjectsName, false);
+        return convertImageToObjects(new PointListFactory(), outputObjectsName, false);
     }
         
     public Objs convertImageToObjects(String outputObjectsName, boolean singleObject) {
-        String type = ImageI.getVolumeType(VolumeType.POINTLIST);
-        return convertImageToObjects(type, outputObjectsName, singleObject);
+        return convertImageToObjects(new PointListFactory(), outputObjectsName, singleObject);
     }
 
-    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
-        String type = ImageI.getVolumeType(volumeType);
-        return convertImageToObjects(type, outputObjectsName, false);
+    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName) {
+        return convertImageToObjects(factory, outputObjectsName, false);
     }
 
-    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
-        String type = ImageI.getVolumeType(volumeType);
-        return convertImageToObjects(type, outputObjectsName, singleObject);
+    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
+        return convertImageToObjects(factory, outputObjectsName, singleObject);
     }
 
     public void addMeasurement(Measurement measurement) {

@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -16,16 +15,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 
 /**
  * Created by Stephen Cross on 09/09/2017.
@@ -40,8 +37,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRun8bit3D(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRun8bit3D(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -53,7 +50,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -106,8 +103,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRun16bit3D(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRun16bit3D(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -119,7 +116,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -172,8 +169,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRun32bit3D(VolumeType volumeType) throws Exception {
+    @EnumSource(VolumeTypes.class)
+    public void testRun32bit3D(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -185,7 +182,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace

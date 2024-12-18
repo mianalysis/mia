@@ -119,7 +119,7 @@ public class CombineObjectSets extends Module {
     public static void addObjects(Objs targetObjects, Objs sourceObjects) {
         for (Obj obj : sourceObjects.values()) {
 
-            Obj newObj = targetObjects.createAndAddNewObject(obj.getVolumeType());
+            Obj newObj = targetObjects.createAndAddNewObject(obj.getFactory());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
 

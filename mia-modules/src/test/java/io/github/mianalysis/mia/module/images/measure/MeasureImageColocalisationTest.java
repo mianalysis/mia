@@ -45,7 +45,7 @@ package io.github.mianalysis.mia.module.images.measure;
 //         double dppXY = 0.02;
 //         double dppZ = 0.1;
 //         String calibratedUnits = "µm";
-//         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//         Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
@@ -65,7 +65,7 @@ package io.github.mianalysis.mia.module.images.measure;
 //         double dppXY = 0.02;
 //         double dppZ = 0.1;
 //         String calibratedUnits = "µm";
-//         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//         Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),"UTF-8");
 //         ImagePlus expectedIpl = IJ.openImage(pathToImage);
@@ -190,7 +190,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        double dppXY = 0.02;
 // //        double dppZ = 0.1;
 // //        String calibratedUnits = "µm";
-// //        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+// //        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
@@ -210,7 +210,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        double dppXY = 0.02;
 // //        double dppZ = 0.1;
 // //        String calibratedUnits = "µm";
-// //        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+// //        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
@@ -234,7 +234,7 @@ package io.github.mianalysis.mia.module.images.measure;
 // //        double dppXY = 0.02;
 // //        double dppZ = 0.1;
 // //        String calibratedUnits = "µm";
-// //        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+// //        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");

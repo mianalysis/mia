@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.expectedobjects;
 
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import java.util.List;
 import ome.units.UNITS;
 
 public class Rings2D extends ExpectedObjects {
-    public Rings2D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 1, 1, 0.02, UNITS.SECOND);
+    public Rings2D(CoordinateSetFactoryI factory) {
+        super(factory, 64, 76, 1, 1, 0.02, UNITS.SECOND);
     }
 
     public enum Measures {

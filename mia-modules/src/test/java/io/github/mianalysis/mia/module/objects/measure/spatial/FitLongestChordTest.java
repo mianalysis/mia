@@ -6,19 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.HorizontalCylinderR22;
 import io.github.mianalysis.mia.expectedobjects.VerticalCylinderR5;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.process.FitLongestChord;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
@@ -28,15 +26,15 @@ public class FitLongestChordTest extends ModuleTest {
 
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testProcessObjectHorizontalCylinderR22(VolumeType volumeType) throws IntegerOverflowException {
+    @EnumSource(VolumeTypes.class)
+    public void testProcessObjectHorizontalCylinderR22(VolumeTypes volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObjs = new HorizontalCylinderR22(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObjs = new HorizontalCylinderR22(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Obj inputObj = inputObjs.getFirst();
 
         // Processing object
@@ -97,15 +95,15 @@ public class FitLongestChordTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testProcessObjectVerticalCylinderR5(VolumeType volumeType) throws IntegerOverflowException {
+    @EnumSource(VolumeTypes.class)
+    public void testProcessObjectVerticalCylinderR5(VolumeTypes volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObjs = new VerticalCylinderR5(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObjs = new VerticalCylinderR5(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Obj inputObj = inputObjs.getFirst();
 
         // Processing object

@@ -81,9 +81,10 @@ import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
@@ -583,7 +584,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    public static void applyTemporalInterpolation(Objs inputObjects, Objs trackObjects, String type)
+    public static void applyTemporalInterpolation(Objs inputObjects, Objs trackObjects, CoordinateSetFactoryI factory)
             throws IntegerOverflowException {
         for (Obj trackObj : trackObjects.values()) {
             // Keeping a record of frames which have an object (these will be unchanged, so
@@ -602,7 +603,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             applyTemporalInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            Objs interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
+            Objs interpObjs = binaryImage.convertImageToObjects(factory, inputObjects.getName(), true);
 
             // Transferring new timepoint objects to inputObjects Objs
             Iterator<Obj> iterator = interpObjs.values().iterator();
@@ -943,8 +944,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 continue;
 
             // Creating the new object
-            VolumeType volumeType = VolumeTypesInterface.getVolumeType(volumeTypeString);
-            Obj outputObject = outputObjects.createAndAddNewObject(volumeType, ID);
+            CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(volumeTypeString);
+            Obj outputObject = outputObjects.createAndAddNewObject(factory, ID);
 
             for (ObjRoi objRoi : currentRois) {
                 Roi roi = objRoi.getRoi();
@@ -981,10 +982,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 continue;
 
             // Creating current track object
-            Obj outputTrack = outputTrackObjects.createAndAddNewObject(VolumeType.POINTLIST, ID);
+            Obj outputTrack = outputTrackObjects.createAndAddNewObject(new PointListFactory(), ID);
 
-            // Creating the new object
-            VolumeType volumeType = VolumeTypesInterface.getVolumeType(volumeTypeString);
+            CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(volumeTypeString);
 
             HashMap<Integer, Obj> objectsByT = new HashMap<>();
             for (ObjRoi objRoi : currentRois) {
@@ -996,7 +996,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                     outputObject = objectsByT.get(t);
                 } else {
                     // Creating a new object
-                    outputObject = outputObjects.createAndAddNewObject(volumeType);
+                    outputObject = outputObjects.createAndAddNewObject(factory);
                     outputObject.setT(t);
                     outputObject.addParent(outputTrack);
                     outputTrack.addChild(outputObject);

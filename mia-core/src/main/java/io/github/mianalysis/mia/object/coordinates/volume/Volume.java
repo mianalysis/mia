@@ -14,8 +14,8 @@ import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.analysis.CentroidCalculator;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
@@ -23,31 +23,24 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class Volume {
     protected SpatCal spatCal;
-    protected CoordinateSet coordinateSet;
+    protected CoordinateSetI coordinateSet;
     protected Volume surface = null;
     protected Volume projection = null;
     protected Point<Double> meanCentroidPx = null;
 
-    public Volume(VolumeType volumeType, SpatCal spatCal) {
+    public Volume(CoordinateSetFactoryI factory, SpatCal spatCal) {
         this.spatCal = spatCal;
-        coordinateSet = createCoordinateStore(volumeType);
+        coordinateSet = factory.createCoordinateSet();
     }
 
-    public Volume(VolumeType volumeType, int width, int height, int nSlices, double dppXY, double dppZ, String units) {
+    public Volume(CoordinateSetFactoryI factory, int width, int height, int nSlices, double dppXY, double dppZ,
+            String units) {
         this.spatCal = new SpatCal(dppXY, dppZ, units, width, height, nSlices);
-        coordinateSet = createCoordinateStore(volumeType);
+        coordinateSet = factory.createCoordinateSet();
     }
 
-    CoordinateSet createCoordinateStore(VolumeType type) {
-        switch (type) {
-            case OCTREE:
-                return new OctreeCoordinates();
-            case QUADTREE:
-                return new QuadtreeCoordinates();
-            case POINTLIST:
-            default:
-                return new PointCoordinates();
-        }
+    public CoordinateSetFactoryI getFactory() {
+        return coordinateSet.getFactory();
     }
 
     public void add(int x, int y, int z) throws PointOutOfRangeException {
@@ -68,7 +61,7 @@ public class Volume {
     }
 
     public void translateCoords(int xOffs, int yOffs, int zOffs) {
-        Volume newVol = new Volume(coordinateSet.getVolumeType(), spatCal);
+        Volume newVol = new Volume(coordinateSet.getFactory(), spatCal);
 
         // CoordinateSet newCoordinateSet = coordinateSet.createEmptyCoordinateSet();
         for (Point<Integer> point : coordinateSet) {
@@ -111,8 +104,8 @@ public class Volume {
         // If ignoring edges, we want to create a new surface as it's not the "proper"
         // surface. We also don't want to retain this surface, so we return it directly.
         if (ignoreEdgesXY || ignoreEdgesZ) {
-            Volume tempSurface = new Volume(VolumeType.POINTLIST, getSpatialCalibration());
-            CoordinateSet tempSurfaceCoords = new PointCoordinates();
+            Volume tempSurface = new Volume(new PointListFactory(), getSpatialCalibration());
+            CoordinateSetI tempSurfaceCoords = new PointCoordinates();
             for (Point<Integer> pt : coordinateSet.calculateSurface(is2D())) {
                 if (ignoreEdgesXY && isOnEdgeXY(pt))
                     continue;
@@ -131,7 +124,7 @@ public class Volume {
         }
 
         if (surface == null) {
-            surface = new Volume(VolumeType.POINTLIST, getSpatialCalibration());
+            surface = new Volume(new PointListFactory(), getSpatialCalibration());
             surface.setCoordinateSet(coordinateSet.calculateSurface(is2D()));
         }
 
@@ -140,22 +133,16 @@ public class Volume {
     }
 
     public Volume getProjected() {
-        if (projection == null) {
-            VolumeType outputType;
-            // Octree is best represented by quadtree. Pointlist can stay as pointlist.
-            switch (getVolumeType()) {
-                case OCTREE:
-                case QUADTREE:
-                    outputType = VolumeType.QUADTREE;
-                    break;
-                case POINTLIST:
-                default:
-                    outputType = VolumeType.POINTLIST;
-                    break;
-            }
 
-            projection = new Volume(outputType, spatCal.width, spatCal.height, 1, spatCal.dppXY, spatCal.dppZ,
+        if (projection == null) {
+            // Octree is best represented by quadtree. Pointlist can stay as pointlist.
+            CoordinateSetFactoryI factory = getFactory();
+            if (factory instanceof OctreeFactory)
+                factory = new QuadtreeFactory();
+
+            projection = new Volume(factory, spatCal.width, spatCal.height, 1, spatCal.dppXY, spatCal.dppZ,
                     spatCal.units);
+
             projection.setCoordinateSet(coordinateSet.calculateProjected());
 
         }
@@ -175,20 +162,12 @@ public class Volume {
     }
 
     public Volume getSlice(int slice) {
-        VolumeType outputType;
         // Octree is best represented by quadtree. Pointlist can stay as pointlist.
-        switch (getVolumeType()) {
-            case OCTREE:
-            case QUADTREE:
-                outputType = VolumeType.QUADTREE;
-                break;
-            case POINTLIST:
-            default:
-                outputType = VolumeType.POINTLIST;
-                break;
-        }
+        CoordinateSetFactoryI factory = getFactory();
+        if (factory instanceof OctreeFactory)
+            factory = new QuadtreeFactory();
 
-        Volume sliceVol = new Volume(outputType, spatCal.width, spatCal.height, spatCal.nSlices, spatCal.dppXY,
+        Volume sliceVol = new Volume(factory, spatCal.width, spatCal.height, spatCal.nSlices, spatCal.dppXY,
                 spatCal.dppZ,
                 spatCal.units);
         sliceVol.setCoordinateSet(coordinateSet.getSlice(slice));
@@ -387,10 +366,10 @@ public class Volume {
 
     public double calculatePointPointSeparation(Point<Integer> point1, Point<Integer> point2, boolean pixelDistances) {
         try {
-            Volume volume1 = new Volume(VolumeType.POINTLIST, spatCal.duplicate());
+            Volume volume1 = new Volume(new PointListFactory(), spatCal.duplicate());
             volume1.add(point1.getX(), point1.getY(), point1.getZ());
 
-            Volume volume2 = new Volume(VolumeType.POINTLIST, spatCal.duplicate());
+            Volume volume2 = new Volume(new PointListFactory(), spatCal.duplicate());
             volume2.add(point2.getX(), point2.getY(), point2.getZ());
 
             return volume1.getCentroidSeparation(volume2, pixelDistances);
@@ -626,7 +605,7 @@ public class Volume {
     }
 
     public Volume getOverlappingPoints(Volume volume2) {
-        Volume overlapping = new Volume(getVolumeType(), getSpatialCalibration());
+        Volume overlapping = new Volume(coordinateSet.getFactory(), getSpatialCalibration());
 
         try {
             if (size() < volume2.size()) {
@@ -766,15 +745,11 @@ public class Volume {
         return spatCal.nSlices;
     }
 
-    public CoordinateSet getCoordinateSet() {
+    public CoordinateSetI getCoordinateSet() {
         return coordinateSet;
     }
 
-    public VolumeType getVolumeType() {
-        return coordinateSet.getVolumeType();
-    }
-
-    public void setCoordinateSet(CoordinateSet coordinateSet) {
+    public void setCoordinateSet(CoordinateSetI coordinateSet) {
         this.coordinateSet = coordinateSet;
 
         // Calculated properties are now invalid

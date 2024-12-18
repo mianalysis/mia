@@ -15,7 +15,6 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -202,7 +201,7 @@ public class ObjectSlicesTo3D extends Module {
             }
 
             for (ArrayList<Obj> cluster : clusters) {
-                Obj outputObject = outputObjects.createAndAddNewObject(cluster.get(0).getVolumeType());
+                Obj outputObject = outputObjects.createAndAddNewObject(cluster.get(0).getFactory());
                 outputObject.setT(t);
                 for (Obj clusterSlice : cluster)
                     outputObject.getCoordinateSet().addAll(clusterSlice.getCoordinateSet());

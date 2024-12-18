@@ -5,7 +5,6 @@ import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -18,10 +17,10 @@ import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -152,9 +151,6 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         super("Create distance bands", modules);
     }
 
-    public interface VolumeTypes extends VolumeTypesInterface {
-    }
-
     public interface RelativeModes {
         String OBJECT_CENTROID = "Object centroid";
         String OBJECT_SURFACE = "Object surface";
@@ -219,7 +215,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 case RelativeModes.OBJECT_CENTROID:
                     Point<Double> centroidPoint = inputObject.getMeanCentroid();
 
-                    Volume centroidVolume = new Volume(inputObject.getVolumeType(),
+                    Volume centroidVolume = new Volume(inputObject.getFactory(),
                             inputObject.getSpatialCalibration());
 
                     centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
@@ -236,7 +232,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                         return null;
 
                     centroidPoint = parentObject.getMeanCentroid();
-                    centroidVolume = new Volume(parentObject.getVolumeType(), parentObject.getSpatialCalibration());
+                    centroidVolume = new Volume(parentObject.getFactory(), parentObject.getSpatialCalibration());
                     centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
                             (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
 
@@ -251,12 +247,12 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     public static <T extends RealType<T> & NativeType<T>> Objs getAllBands(ImageI<T> inputImage, ImageI<T> maskImage,
             String outputObjectsName, String weightMode, boolean matchZToXY, double bandWidthPx, double minDistPx,
-            double maxDistPx, String type) {
+            double maxDistPx, CoordinateSetFactoryI factory) {
         // Get distance map
         Objs internalBands = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
-                bandWidthPx, minDistPx, maxDistPx, type);
+                bandWidthPx, minDistPx, maxDistPx, factory);
         Objs externalBands = getBands(inputImage, maskImage, outputObjectsName, false, weightMode, matchZToXY,
-                bandWidthPx, minDistPx, maxDistPx, type);
+                bandWidthPx, minDistPx, maxDistPx, factory);
 
         // Getting max ID for internal bands
         int ID = internalBands.getLargestID() + 1;
@@ -271,7 +267,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     public static <T extends RealType<T> & NativeType<T>> Objs getBands(ImageI<T> inputImage, ImageI<T> maskImage,
             String outputObjectsName, boolean internalBands, String weightMode, boolean matchZToXY, double bandWidthPx,
-            double minDistPx, double maxDistPx, String type) {
+            double minDistPx, double maxDistPx, CoordinateSetFactoryI factory) {
         ImageI<T> distPx = DistanceMap.process(inputImage, "Distance", true, weightMode, matchZToXY, false);
         ImageMath.process(distPx, ImageMath.CalculationModes.DIVIDE, bandWidthPx);
 
@@ -290,7 +286,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         applyDistanceLimits(distPx, minDistPx, maxDistPx, bandWidthPx);
 
         // Creating external bands objects
-        Objs bands = distPx.convertImageToObjects(type, outputObjectsName, false);
+        Objs bands = distPx.convertImageToObjects(factory, outputObjectsName, false);
 
         addMeasurements(bands, distPx, bandWidthPx, false);
 
@@ -401,6 +397,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         boolean applyMaxDist = parameters.getValue(APPLY_MAXIMUM_BAND_DISTANCE, workspace);
         double maxDist = parameters.getValue(MAXIMUM_BAND_DISTANCE, workspace);
 
+        CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(type);
+
         // Getting input objects
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
@@ -442,15 +440,15 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 case BandModes.INSIDE_AND_OUTSIDE:
                 default:
                     tempBandObjects = getAllBands(inputImage, maskImage, outputObjectsName, weightMode, matchZToXY,
-                            bandWidth, minDist, maxDist, type);
+                            bandWidth, minDist, maxDist, factory);
                     break;
                 case BandModes.INSIDE_OBJECTS:
                     tempBandObjects = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
-                            bandWidth, minDist, maxDist, type);
+                            bandWidth, minDist, maxDist, factory);
                     break;
                 case BandModes.OUTSIDE_OBJECTS:
                     tempBandObjects = getBands(inputImage, maskImage, outputObjectsName, false, weightMode, matchZToXY,
-                            bandWidth, minDist, maxDist, type);
+                            bandWidth, minDist, maxDist, factory);
                     break;
             }
 
@@ -496,7 +494,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
 
         parameters.add(new SeparatorP(BAND_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.OBJECT_CENTROID, RelativeModes.ALL));

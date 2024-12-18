@@ -14,9 +14,9 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -71,16 +71,21 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public Objs convertImageToSingleObjects(String type, String outputObjectsName, boolean blackBackground) {
-        return convertImageToObjects(type, outputObjectsName, true, blackBackground);
+    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground) {
+        return convertImageToObjects(factory, outputObjectsName, true, blackBackground);
     }
 
     @Override
-    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
-        return convertImageToObjects(type, outputObjectsName, singleObject, true);
+    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
+        return convertImageToObjects(factory, outputObjectsName, singleObject, true);
     }
 
-    Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject, boolean blackBackground) {
+    @Override
+    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName) {
+        return convertImageToObjects(factory, outputObjectsName, false, true);
+    }
+
+    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject, boolean blackBackground) {
         int xIdx = img.dimensionIndex(Axes.X);
         int yIdx = img.dimensionIndex(Axes.Y);
         int cIdx = img.dimensionIndex(Axes.CHANNEL);
@@ -103,9 +108,6 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
         Objs outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
-
-        // Will return null if optimised
-        VolumeType volumeType = ImageI.getVolumeType(type);
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -142,7 +144,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                             int finalT = t;
 
                             outputObjects.computeIfAbsent(outID,
-                                    k -> new Obj(outputObjects, volumeType, outID).setT(finalT));
+                                    k -> new Obj(outputObjects, factory, outID).setT(finalT));
                             try {
                                 outputObjects.get(outID).add(x, y, z);
                             } catch (PointOutOfRangeException e) {
@@ -151,7 +153,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                     }
 
                     // Finalising the object store for this slice (this only does something for
-                    // QuadTrees)
+                    // Quadtrees)
                     for (Obj obj : outputObjects.values())
                         obj.finalise(z);
 

@@ -3,34 +3,34 @@ package io.github.mianalysis.mia.object.coordinates.quadtree;
 /**
  * Created by JDJFisher on 19/07/2019.
  */
-public class OTNode
+public class OctreeNode
 {
     public boolean coloured;
-    public OTNode lnw, lne, lsw, lse, unw, une, usw, use;
+    public OctreeNode lnw, lne, lsw, lse, unw, une, usw, use;
 
-    public OTNode()
+    public OctreeNode()
     {
         this.coloured = false;
     }
 
-    public OTNode(boolean coloured)
+    public OctreeNode(boolean coloured)
     {
         this.coloured = coloured;
     }
 
     // copy constructor
-    public OTNode(OTNode otNode)
+    public OctreeNode(OctreeNode otNode)
     {
         if (otNode.isDivided())
         {
-            lnw = new OTNode(otNode.lnw);
-            lne = new OTNode(otNode.lne);
-            lsw = new OTNode(otNode.lsw);
-            lse = new OTNode(otNode.lse);
-            unw = new OTNode(otNode.unw);
-            une = new OTNode(otNode.une);
-            usw = new OTNode(otNode.usw);
-            use = new OTNode(otNode.use);
+            lnw = new OctreeNode(otNode.lnw);
+            lne = new OctreeNode(otNode.lne);
+            lsw = new OctreeNode(otNode.lsw);
+            lse = new OctreeNode(otNode.lse);
+            unw = new OctreeNode(otNode.unw);
+            une = new OctreeNode(otNode.une);
+            usw = new OctreeNode(otNode.usw);
+            use = new OctreeNode(otNode.use);
         }
         else
         {
@@ -40,14 +40,14 @@ public class OTNode
 
     protected void subDivide()
     {
-        lnw = new OTNode(coloured);
-        lne = new OTNode(coloured);
-        lsw = new OTNode(coloured);
-        lse = new OTNode(coloured);
-        unw = new OTNode(coloured);
-        une = new OTNode(coloured);
-        usw = new OTNode(coloured);
-        use = new OTNode(coloured);
+        lnw = new OctreeNode(coloured);
+        lne = new OctreeNode(coloured);
+        lsw = new OctreeNode(coloured);
+        lse = new OctreeNode(coloured);
+        unw = new OctreeNode(coloured);
+        une = new OctreeNode(coloured);
+        usw = new OctreeNode(coloured);
+        use = new OctreeNode(coloured);
     }
 
     public boolean isDivided()
@@ -60,9 +60,9 @@ public class OTNode
         return lnw == null;
     }
 
-    public OTNode[] getChildren()
+    public OctreeNode[] getChildren()
     {
-        return new OTNode[] {lnw, lne, lsw, lse, unw, une, usw, use};
+        return new OctreeNode[] {lnw, lne, lsw, lse, unw, une, usw, use};
     }
 
     @Override
@@ -71,7 +71,7 @@ public class OTNode
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OTNode node = (OTNode) o;
+        OctreeNode node = (OctreeNode) o;
 
         if (isLeaf() && node.isLeaf()) return coloured == node.coloured;
 

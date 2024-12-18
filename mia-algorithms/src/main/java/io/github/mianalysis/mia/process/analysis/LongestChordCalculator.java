@@ -5,7 +5,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.process.math.CumStat;
 import io.github.mianalysis.mia.process.math.GeneralOps;
 
@@ -14,14 +14,14 @@ import io.github.mianalysis.mia.process.math.GeneralOps;
 */
 public class LongestChordCalculator {
     private double tolerance = 1E-10;
-    private final CoordinateSet surfaceCoordinateSet;
+    private final CoordinateSetI surfaceCoordinateSet;
     private final double dppXY;
     private final double dppZ;
     
     
     private final double[][] LC; //Longest chord
     
-    public LongestChordCalculator(CoordinateSet coordinateSet, double dppXY, double dppZ) {
+    public LongestChordCalculator(CoordinateSetI coordinateSet, double dppXY, double dppZ) {
         this.surfaceCoordinateSet = coordinateSet;
         this.dppXY = dppXY;
         this.dppZ = dppZ;

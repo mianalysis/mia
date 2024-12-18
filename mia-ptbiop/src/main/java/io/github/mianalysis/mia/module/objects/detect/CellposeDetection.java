@@ -15,12 +15,11 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -307,10 +306,10 @@ public class CellposeDetection extends Module {
                     cellpose.run();
 
                     ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                    Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+                    Objs currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName);
 
                     for (Obj currOutputObject : currOutputObjects.values()) {
-                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                         outputObject.setT(t);
                         outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
                         outputObject.translateCoords(0, 0, z);
@@ -325,7 +324,7 @@ public class CellposeDetection extends Module {
             cellpose.setImagePlus(inputImage.getImagePlus());
             cellpose.run();
             ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-            outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+            outputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName);
         }
 
         workspace.addObjects(outputObjects);

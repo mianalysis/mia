@@ -15,13 +15,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -40,23 +39,29 @@ import io.github.mianalysis.mia.process.voxel.MidpointCircle;
  */
 
 /**
-* Detects circles within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the circle features must be brighter than their surrounding background and have dark centres (i.e. be rings).  For solid circles, a gradient filter or equivalent should be applied to the image first.  Detected circles are output to the workspace as solid objects.  Circles are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the circle feartures in the input image and the feature circularity).
-*/
+ * Detects circles within grayscale images using the Hough transform. Input
+ * images can be of binary or grayscale format, but the circle features must be
+ * brighter than their surrounding background and have dark centres (i.e. be
+ * rings). For solid circles, a gradient filter or equivalent should be applied
+ * to the image first. Detected circles are output to the workspace as solid
+ * objects. Circles are detected within a user-defined radius range and must
+ * exceed a user-defined threshold score (based on the intensity of the circle
+ * feartures in the input image and the feature circularity).
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CircleHoughDetection extends AbstractHoughDetection {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RANGE_SEPARATOR = "Parameter ranges";
     public static final String X_RANGE = "X range (px)";
     public static final String Y_RANGE = "Y range (px)";
     public static final String RADIUS_RANGE = "Radius range (px)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
     public static final String RADIUS_RESIZE = "Output radius resize (px)";
 
@@ -83,38 +88,38 @@ public class CircleHoughDetection extends AbstractHoughDetection {
     @Override
     public Status process(WorkspaceI workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting parameters
-        String xRange = parameters.getValue(X_RANGE,workspace);
-        String yRange = parameters.getValue(Y_RANGE,workspace);
-        String radiusRange = parameters.getValue(RADIUS_RANGE,workspace);
-        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
-        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES,workspace);
-        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
-        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD,workspace);
-        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS,workspace);
-        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS,workspace);
-        int radiusResize = parameters.getValue(RADIUS_RESIZE,workspace);
-        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE,workspace);
-        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE,workspace);
-        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE,workspace);
-        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
+        String xRange = parameters.getValue(X_RANGE, workspace);
+        String yRange = parameters.getValue(Y_RANGE, workspace);
+        String radiusRange = parameters.getValue(RADIUS_RANGE, workspace);
+        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES, workspace);
+        String detectionMode = parameters.getValue(DETECTION_MODE, workspace);
+        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD, workspace);
+        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS, workspace);
+        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS, workspace);
+        int radiusResize = parameters.getValue(RADIUS_RESIZE, workspace);
+        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE, workspace);
+        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE, workspace);
+        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE, workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE, workspace);
 
         // Storing the image calibration
         SpatCal cal = SpatCal.getFromImage(ipl);
         int nFrames = ipl.getNFrames();
         double frameInterval = ipl.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
-        
+
         xRange = resampleRange(xRange, samplingRate);
         yRange = resampleRange(yRange, samplingRate);
         radiusRange = resampleRange(radiusRange, samplingRate);
@@ -177,7 +182,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object
-                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0]) * samplingRate;
@@ -245,7 +250,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(updateAndGetInputParameters());

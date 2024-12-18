@@ -30,10 +30,9 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -174,7 +173,7 @@ public class TrackEditor extends Module {
             if (spot.getFeatures().containsKey("ID"))
                 continue;
 
-            Obj spotObj = spotObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID);
+            Obj spotObj = spotObjects.createAndAddNewObject(new PointListFactory(), ++maxID);
             int x = (int) Math.round(spot.getFeature(Spot.POSITION_X));
             int y = (int) Math.round(spot.getFeature(Spot.POSITION_Y));
             int z = (int) Math.round(spot.getFeature(Spot.POSITION_Z));
@@ -281,7 +280,7 @@ public class TrackEditor extends Module {
         // Single timepoint "tracks" aren't assigned track IDs yet, so doing that now
         for (Obj obj : spotObjects.values()) {
             if (obj.getParent(inputTrackObjectsName) == null) {
-                Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID + 1);
+                Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), ++maxID + 1);
                 obj.addParent(trackObject);
                 trackObject.addChild(obj);
             }
@@ -327,7 +326,7 @@ public class TrackEditor extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID + 1);
+            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), trackID + 1);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number

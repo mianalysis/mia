@@ -4,9 +4,8 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -56,9 +55,6 @@ public class IdentifyObjects extends Module {
     public interface Connectivity extends ConnectivityInterface {
     }
 
-    public interface VolumeTypes extends VolumeTypesInterface {
-    }
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_DETECT;
@@ -91,7 +87,7 @@ public class IdentifyObjects extends Module {
         parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.QUADTREE, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));

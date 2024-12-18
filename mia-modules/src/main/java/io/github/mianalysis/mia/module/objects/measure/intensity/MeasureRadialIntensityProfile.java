@@ -32,7 +32,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 // import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefs;
-// import io.github.mianalysis.mia.object.coordinates.quadtree.QuadTree;
+// import io.github.mianalysis.mia.object.coordinates.quadtree.Quadtree;
 // import io.github.mianalysis.mia.object.coordinates.Point;
 
 //public class MeasureRadialIntensityProfile extends Module {

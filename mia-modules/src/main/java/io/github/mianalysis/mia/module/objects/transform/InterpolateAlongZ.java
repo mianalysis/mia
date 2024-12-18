@@ -9,12 +9,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeCoordinates;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -38,13 +38,13 @@ import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 public class InterpolateAlongZ extends Module {
 
     /**
-	* 
-	*/
+    * 
+    */
     public static final String MESSAGE_SEPARATOR = "Message";
 
     /**
-	* 
-	*/
+    * 
+    */
     public static final String QUALITY_MESSAGE = "Quality message";
 
     /**
@@ -102,34 +102,33 @@ public class InterpolateAlongZ extends Module {
         double inputZCalibration = outputObjects.getDppZ();
         int inputNSlices = outputObjects.getNSlices();
 
-        double scale = inputZCalibration/outputZCalibration;
-        int outputNSlices = (int) Math.ceil(inputNSlices*scale);
+        double scale = inputZCalibration / outputZCalibration;
+        int outputNSlices = (int) Math.ceil(inputNSlices * scale);
         outputObjects.getSpatialCalibration().nSlices = outputNSlices;
         outputObjects.getSpatialCalibration().dppZ = outputZCalibration;
-        
+
         // Iterating over each coordinate, moving it to a new slice
-        for (Obj outputObject:outputObjects.values()) {
+        for (Obj outputObject : outputObjects.values()) {
             outputObject.getSpatialCalibration().nSlices = outputNSlices;
             outputObject.getSpatialCalibration().dppZ = outputZCalibration;
 
-            CoordinateSet inputCoords = outputObject.getCoordinateSet();
+            CoordinateSetI inputCoords = outputObject.getCoordinateSet();
             outputObject.setCoordinateSet(new QuadtreeCoordinates());
             outputObject.clearROIs();
 
-            for (Point<Integer> pt:inputCoords) {
+            for (Point<Integer> pt : inputCoords) {
                 try {
-                    outputObject.add(pt.x,pt.y,(int) Math.round(pt.getZ()*scale));
+                    outputObject.add(pt.x, pt.y, (int) Math.round(pt.getZ() * scale));
                 } catch (PointOutOfRangeException e) {
                 }
             }
         }
-        
-        ZInterpolator.applySpatialInterpolation(outputObjects,"Quadtree");
+
+        ZInterpolator.applySpatialInterpolation(outputObjects, new QuadtreeFactory());
 
         return outputObjects;
 
     }
-
 
     @Override
     public Status process(WorkspaceI workspace) {

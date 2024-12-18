@@ -5,9 +5,8 @@ import fiji.plugin.trackmate.tracking.SpotTracker;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.objects.OutputTrackObjectsP;
@@ -144,7 +143,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
                     continue;
 
                 // Creating a new track segment object
-                Obj trackSegmentObject = trackSegmentObjects.createAndAddNewObject(VolumeType.POINTLIST);
+                Obj trackSegmentObject = trackSegmentObjects.createAndAddNewObject(new PointListFactory());
 
                 addTrackSegmentRelationships(inputObject, trackSegmentObject, trackObjectsName);
 

@@ -14,10 +14,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -70,7 +69,7 @@ public class FitConcaveHull2D extends Module {
     public Obj processObject(Obj inputObject, Objs outputObjects, int range) {
         // We have to explicitly define this, as the number of slices is 1 (potentially
         // unlike the input object)
-        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
         outputObject.setT(inputObject.getT());
         outputObject.addParent(inputObject);
         inputObject.addChild(outputObject);

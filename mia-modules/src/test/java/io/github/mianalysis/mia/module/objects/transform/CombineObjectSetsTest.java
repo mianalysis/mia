@@ -3,7 +3,6 @@ package io.github.mianalysis.mia.module.objects.transform;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -11,15 +10,13 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.MergedObjects3D;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.Spots3D;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.relate.mergeobjects.CombineObjectSets;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 
@@ -31,8 +28,8 @@ public class CombineObjectSetsTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunWithoutObjectDeletion(VolumeType volumeType) throws IntegerOverflowException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunWithoutObjectDeletion(VolumeTypes volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -43,9 +40,9 @@ public class CombineObjectSetsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj1 = new Objects3D(volumeType).getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj1 = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj1);
-        Objs inputObj2 = new Spots3D(volumeType).getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj2 = new Spots3D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
         // Initialising FilterObjects module
@@ -58,7 +55,7 @@ public class CombineObjectSetsTest extends ModuleTest {
         combineObjectSets.execute(workspace);
 
         // Getting expected output objects
-        Objs expectedOutputObj= new MergedObjects3D(volumeType).getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedOutputObj= new MergedObjects3D(VolumeTypes.getFactory(volumeType)).getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(expectedOutputObj);
 
         // Getting actual output objects

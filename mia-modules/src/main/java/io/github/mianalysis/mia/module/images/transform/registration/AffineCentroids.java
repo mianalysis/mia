@@ -104,10 +104,10 @@ public class AffineCentroids extends AbstractAffineRegistration {
             if ((referenceMode.equals(ReferenceModes.FIRST_FRAME) && obj.getT() == 0)
                     || (referenceMode.equals(ReferenceModes.PREVIOUS_N_FRAMES)
                             && ((p.t - obj.getT()) <= numPrevFrames && (p.t - obj.getT()) > 0))) {
-                Obj candidateObj = candidates1.createAndAddNewObject(obj.getVolumeType());
+                Obj candidateObj = candidates1.createAndAddNewObject(obj.getFactory());
                 candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             } else if (obj.getT() == p.t) {
-                Obj candidateObj = candidates2.createAndAddNewObject(obj.getVolumeType());
+                Obj candidateObj = candidates2.createAndAddNewObject(obj.getFactory());
                 candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             }
         }

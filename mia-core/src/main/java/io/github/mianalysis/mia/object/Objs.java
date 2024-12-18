@@ -14,9 +14,10 @@ import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -80,16 +81,16 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Obj createAndAddNewObject(VolumeType volumeType) {
-        Obj newObject = new Obj(this, volumeType, getAndIncrementID());
+    public Obj createAndAddNewObject(CoordinateSetFactoryI factory) {
+        Obj newObject = new Obj(this, factory, getAndIncrementID());
         add(newObject);
 
         return newObject;
 
     }
 
-    public Obj createAndAddNewObject(VolumeType volumeType, int ID) {
-        Obj newObject = new Obj(this, volumeType, ID);
+    public Obj createAndAddNewObject(CoordinateSetFactoryI factory, int ID) {
+        Obj newObject = new Obj(this, factory, ID);
         add(newObject);
 
         // Updating the maxID if necessary
@@ -220,12 +221,12 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     public Obj getAsSingleObject() {
         Objs newCollection = new Objs("Single", this);
 
-        VolumeType volumeType = VolumeType.POINTLIST;
+        CoordinateSetFactoryI factory = new PointListFactory();
         Obj firstObj = getFirst();
         if (firstObj != null)
-            volumeType = firstObj.getVolumeType();
+            factory = firstObj.getFactory();
 
-        Obj newObj = newCollection.createAndAddNewObject(volumeType);
+        Obj newObj = newCollection.createAndAddNewObject(factory);
         for (Obj obj : values())
             for (Point<Integer> point : obj.getCoordinateSet())
                 try {
@@ -672,7 +673,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         // Iterating over objects, getting those in this frame
         for (Obj obj : values()) {
             if (obj.getT() == frame) {
-                Obj outputObject = new Obj(outputObjects, obj.getVolumeType(), obj.getID());
+                Obj outputObject = new Obj(outputObjects, obj.getFactory(), obj.getID());
                 outputObject.setCoordinateSet(obj.getCoordinateSet().duplicate());
                 outputObject.setT(0);
                 outputObjects.add(outputObject);

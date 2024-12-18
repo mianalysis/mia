@@ -13,7 +13,7 @@ public class AvailableModules {
             return moduleNames;
 
         // Otherwise, scan for moduleNames
-        moduleNames = new ClassHunter<Module>().getClassNames(Module.class);
+        moduleNames = new ClassHunter<ModuleI>().getClassNames(ModuleI.class);
 
         return moduleNames;
 
@@ -23,11 +23,19 @@ public class AvailableModules {
         moduleNames = newModuleNames;
     }
 
-    public static <T extends Module> void addModuleName(Class<T> clazz) {
+    public static <T extends ModuleI> void addModuleName(Class<T> clazz) {
         if (moduleNames == null)
             getModuleNames(true);
             
         moduleNames.add(clazz.getCanonicalName());
+
+    } 
+
+    public static <T extends ModuleI> void addModuleName(ModuleI module) {
+        if (moduleNames == null)
+            getModuleNames(true);
+        
+        moduleNames.add(module.getClass().getCanonicalName());
 
     } 
 }

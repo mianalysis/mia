@@ -3,20 +3,17 @@ package io.github.mianalysis.mia.module.objects.measure.spatial;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import ome.units.UNITS;
 
 
@@ -31,8 +28,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsNoOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testGetNOverlappingPointsNoOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -44,7 +41,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -58,19 +55,19 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(20,22,32);
         object2_2.add(20,21,32);
         object2_2.add(20,22,33);
         object2_2.add(19,22,32);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(10,22,32);
         object2_3.add(10,21,32);
         object2_3.add(10,22,33);
@@ -84,8 +81,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsPartialSingleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testGetNOverlappingPointsPartialSingleObjectOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -97,7 +94,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -111,13 +108,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
         object2_2.add(10,14,32);
@@ -126,7 +123,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(10,22,32);
         object2_3.add(10,21,32);
         object2_3.add(10,22,33);
@@ -140,8 +137,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsPartialMultipleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testGetNOverlappingPointsPartialMultipleObjectOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -153,7 +150,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -167,13 +164,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
         object2_2.add(10,14,32);
@@ -182,7 +179,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(9,13,33);
         object2_3.add(11,12,33);
         object2_3.add(11,13,34);
@@ -202,8 +199,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
      * @throws PointOutOfRangeException
      */
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsPartialMultipleObjectOverlapWithInternalClash(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testGetNOverlappingPointsPartialMultipleObjectOverlapWithInternalClash(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -215,7 +212,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -229,13 +226,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
         object2_2.add(10,14,32);
@@ -244,7 +241,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(9,13,33);
         object2_3.add(10,13,33);
         object2_3.add(11,12,33);
@@ -260,8 +257,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsTotalOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testGetNOverlappingPointsTotalOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
 // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -273,7 +270,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -287,13 +284,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(10,12,32);
         object2_2.add(11,12,32);
         object2_2.add(10,13,32);
@@ -305,7 +302,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(9,13,33);
         object2_3.add(10,13,33);
         object2_3.add(11,12,33);
@@ -320,8 +317,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunNoOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunNoOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -337,7 +334,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -351,19 +348,19 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(20,22,32);
         object2_2.add(20,21,32);
         object2_2.add(20,22,33);
         object2_2.add(19,22,32);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(10,22,32);
         object2_3.add(10,21,32);
         object2_3.add(10,22,33);
@@ -424,8 +421,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPartialSingleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPartialSingleObjectOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -441,7 +438,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -455,13 +452,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
         object2_2.add(10,14,32);
@@ -470,7 +467,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(10,22,32);
         object2_3.add(10,21,32);
         object2_3.add(10,22,33);
@@ -531,8 +528,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPartialMultipleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPartialMultipleObjectOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -548,7 +545,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -562,13 +559,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
         object2_2.add(10,14,32);
@@ -577,7 +574,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(9,13,33);
         object2_3.add(11,12,33);
         object2_3.add(11,13,34);
@@ -639,8 +636,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPartialMultipleObjectOverlapWithInternalClash(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPartialMultipleObjectOverlapWithInternalClash(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -656,7 +653,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -670,13 +667,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
         object2_2.add(10,14,32);
@@ -685,7 +682,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(9,13,33);
         object2_3.add(10,13,33);
         object2_3.add(11,12,33);
@@ -748,8 +745,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunTotalOverlap(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunTotalOverlap(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -765,7 +762,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -779,13 +776,13 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.add(10,12,32);
         object2_2.add(11,12,32);
         object2_2.add(10,13,32);
@@ -797,7 +794,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.add(9,13,33);
         object2_3.add(10,13,33);
         object2_3.add(11,12,33);
@@ -860,8 +857,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testRunPartialMultipleObjectOverlapMultipleTimepoints(VolumeType volumeType) throws PointOutOfRangeException {
+    @EnumSource(VolumeTypes.class)
+    public void testRunPartialMultipleObjectOverlapMultipleTimepoints(VolumeTypes volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
@@ -877,7 +874,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(volumeType,1);
+        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.setT(2);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
@@ -892,14 +889,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(volumeType,1);
+        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.setT(2);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
         object2_1.add(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(volumeType,2);
+        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.setT(3);
         object2_2.add(9,13,32);
         object2_2.add(9,14,32);
@@ -909,7 +906,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.add(10,13,33);
         object2_2.add(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(volumeType,3);
+        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.setT(2);
         object2_3.add(9,13,33);
         object2_3.add(11,12,33);

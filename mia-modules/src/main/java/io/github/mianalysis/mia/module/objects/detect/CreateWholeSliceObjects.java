@@ -14,6 +14,8 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -118,10 +120,10 @@ public class CreateWholeSliceObjects extends Module {
         }
 
         int connectivity = IdentifyObjects.getConnectivity(IdentifyObjects.Connectivity.SIX);
-        String type = IdentifyObjects.VolumeTypes.QUADTREE;
-
+        CoordinateSetFactoryI factory = new QuadtreeFactory();
+        
         Objs outputObjects = IdentifyObjects.process(blankImage, outputObjectsName, false, false, detectionMode,
-                connectivity, type, false, 60, false);
+                connectivity, factory, false, 60, false);
 
         for (Obj outputObject : outputObjects.values()) {
             outputObject.addMeasurement(new Measurement(Measurements.TIMEPOINT, outputObject.getT()));

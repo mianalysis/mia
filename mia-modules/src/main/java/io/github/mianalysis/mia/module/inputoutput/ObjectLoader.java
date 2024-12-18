@@ -21,11 +21,11 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -457,7 +457,7 @@ public class ObjectLoader extends Module {
         }
 
         // Iterating over each row, adding as a new Obj
-        VolumeType type = VolumeType.POINTLIST;
+        CoordinateSetFactoryI factory = new PointListFactory();
         int outOfRangeCount = 0;
         try {
             CSVReader csvReader = new CSVReader(reader);
@@ -475,7 +475,7 @@ public class ObjectLoader extends Module {
                     int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
                     // Creating the object and setting the coordinates
-                    Obj obj = outputObjects.createAndAddNewObject(type);
+                    Obj obj = outputObjects.createAndAddNewObject(factory);
                     try {
                         obj.add(x, y, z);
                     } catch (PointOutOfRangeException e) {
@@ -491,7 +491,7 @@ public class ObjectLoader extends Module {
                         // Getting parent object. If it doesn't exist, adding it to the parent objects
                         // collection
                         if (!parentObjects.containsKey(parentID))
-                            parentObjects.createAndAddNewObject(obj.getVolumeType(), parentID);
+                            parentObjects.createAndAddNewObject(obj.getFactory(), parentID);
                         Obj parentObj = parentObjects.get(parentID);
 
                         // Adding relationship

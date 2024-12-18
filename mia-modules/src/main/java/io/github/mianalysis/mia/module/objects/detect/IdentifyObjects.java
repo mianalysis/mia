@@ -25,8 +25,12 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -172,9 +176,6 @@ public class IdentifyObjects extends Module {
     }
 
     public interface Connectivity extends ConnectivityInterface {
-    }
-
-    public interface VolumeTypes extends VolumeTypesInterface {
     }
 
     public static ImageStack connectedComponentsLabellingMT(ImageStack ist, int connectivity, int minStripWidth) {
@@ -350,7 +351,7 @@ public class IdentifyObjects extends Module {
     }
 
     public static Objs process(ImageI inputImage, String outputObjectsName, boolean blackBackground,
-            boolean singleObject, String detectionMode, int connectivity, String type, boolean multithread,
+            boolean singleObject, String detectionMode, int connectivity, CoordinateSetFactoryI factory, boolean multithread,
             int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
@@ -415,7 +416,7 @@ public class IdentifyObjects extends Module {
 
                 // Converting image to objects
                 ImageI tempImage = ImageFactory.createImage("Temp image", currStack);
-                Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+                Objs currOutputObjects = tempImage.convertImageToObjects(factory, outputObjectsName, singleObject);
 
                 // If processing each slice separately, offsetting it to the correct Z-position
                 if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
@@ -493,9 +494,10 @@ public class IdentifyObjects extends Module {
 
         // Getting options
         int connectivity = getConnectivity(connectivityName);
+        CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(type);
 
         Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject, detectionMode,
-                connectivity, type, multithread, minStripWidth, true);
+                connectivity, factory, multithread, minStripWidth, true);
 
         // Adding objects to workspace
         workspace.addObjects(outputObjects);
@@ -519,7 +521,7 @@ public class IdentifyObjects extends Module {
         parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.QUADTREE, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -608,11 +610,11 @@ public class IdentifyObjects extends Module {
 
         parameters.get(VOLUME_TYPE).setDescription(
                 "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-                        + "<li>\"" + VolumeTypes.POINTLIST
+                        + "<li>\"" + new PointListFactory().getName()
                         + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-                        + "<li>\"" + VolumeTypes.OCTREE
+                        + "<li>\"" + new OctreeFactory().getName()
                         + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-                        + "<li>\"" + VolumeTypes.QUADTREE
+                        + "<li>\"" + new QuadtreeFactory().getName()
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
         parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());

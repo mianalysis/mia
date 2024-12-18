@@ -28,15 +28,13 @@ import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSet;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -134,7 +132,7 @@ public class ClusterPoints extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<DoublePoint> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (DoublePoint point : cluster.getPoints()) {
                 outputObject.setT(t);
@@ -157,7 +155,7 @@ public class ClusterPoints extends Module {
 
         // Assigning relationships between points and clusters
         for (Cluster<DoublePoint> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (DoublePoint point : cluster.getPoints()) {
                 outputObject.setT(t);
@@ -177,7 +175,7 @@ public class ClusterPoints extends Module {
     public void applyClusterVolume(Obj outputObject, Objs childObjects, double eps) throws IntegerOverflowException {
         Objs children = outputObject.getChildren(childObjects.getName());
 
-        CoordinateSet coordinateSet = outputObject.getCoordinateSet();
+        CoordinateSetI coordinateSet = outputObject.getCoordinateSet();
 
         // Initial pass, adding all coordinates to cluster object
         Objs tempObjects = new Objs("Cluster", childObjects);

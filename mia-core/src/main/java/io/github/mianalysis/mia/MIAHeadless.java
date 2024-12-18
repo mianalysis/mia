@@ -107,6 +107,8 @@ public class MIAHeadless extends MIA implements Command {
                     + " showmessage=" + showMessage + " showstatus=" + showStatus + " showwarning=" + showWarning
                     + " verbose=" + verbose + "\");");
 
+            registerCoordinateSetFactories();
+
             Modules modules;
             if (inputPath == null) {
                 modules = AnalysisReader.loadModules(workflowPath);

@@ -17,13 +17,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -451,7 +450,7 @@ public class MeasureObjectCurvature extends Module {
         if (spline == null)
             return null;
 
-        Obj splineObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        Obj splineObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
         Point<Integer> previousVertex = null;
         for (Point<Integer> currentVertex : spline) {
@@ -505,7 +504,7 @@ public class MeasureObjectCurvature extends Module {
         for (Point<Integer> vertex : spline) {
             try {
                 if (i++ % everyNPoints == 0) {
-                    Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
+                    Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
                     splineObject.add(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);

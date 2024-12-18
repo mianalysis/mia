@@ -3,30 +3,30 @@ package io.github.mianalysis.mia.object.coordinates.quadtree;
 /**
  * Created by JDJFisher on 9/07/2019.
  */
-public class QTNode
+public class QuadtreeNode
 {
     public boolean coloured;
-    public QTNode nw, ne, sw, se;
+    public QuadtreeNode nw, ne, sw, se;
 
-    public QTNode()
+    public QuadtreeNode()
     {
         this.coloured = false;
     }
 
-    public QTNode(boolean coloured)
+    public QuadtreeNode(boolean coloured)
     {
         this.coloured = coloured;
     }
 
     // copy constructor
-    public QTNode(QTNode qtNode)
+    public QuadtreeNode(QuadtreeNode qtNode)
     {
         if (qtNode.isDivided())
         {
-            nw = new QTNode(qtNode.nw);
-            ne = new QTNode(qtNode.ne);
-            sw = new QTNode(qtNode.sw);
-            se = new QTNode(qtNode.se);
+            nw = new QuadtreeNode(qtNode.nw);
+            ne = new QuadtreeNode(qtNode.ne);
+            sw = new QuadtreeNode(qtNode.sw);
+            se = new QuadtreeNode(qtNode.se);
         }
         else
         {
@@ -36,10 +36,10 @@ public class QTNode
 
     protected void subDivide()
     {
-        nw = new QTNode(coloured);
-        ne = new QTNode(coloured);
-        sw = new QTNode(coloured);
-        se = new QTNode(coloured);
+        nw = new QuadtreeNode(coloured);
+        ne = new QuadtreeNode(coloured);
+        sw = new QuadtreeNode(coloured);
+        se = new QuadtreeNode(coloured);
     }
 
     public boolean isDivided()
@@ -52,9 +52,9 @@ public class QTNode
         return nw == null;
     }
 
-    public QTNode[] getChildren()
+    public QuadtreeNode[] getChildren()
     {
-        return new QTNode[] {nw, ne, sw, se};
+        return new QuadtreeNode[] {nw, ne, sw, se};
     }
 
     @Override
@@ -63,7 +63,7 @@ public class QTNode
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        QTNode node = (QTNode) o;
+        QuadtreeNode node = (QuadtreeNode) o;
 
         if (isLeaf() && node.isLeaf()) return coloured == node.coloured;
 

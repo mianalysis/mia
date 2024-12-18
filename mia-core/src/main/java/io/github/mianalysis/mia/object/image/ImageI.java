@@ -15,8 +15,7 @@ import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -106,13 +105,11 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public Objs convertImageToObjects(String outputObjectsName, boolean singleObject);
 
-    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName);
+    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName);
 
-    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject);
+    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject);
 
-    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject);
-
-    public Objs convertImageToSingleObjects(String type, String outputObjectsName, boolean blackBackground);
+    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground);
 
     public void addMeasurement(Measurement measurement);
 
@@ -203,34 +200,6 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
         // Displaying the results table
         rt.show("All measurements for \"" + getName() + "\"");
 
-    }
-
-    // PACKAGE PRIVATE METHODS
-
-    public static VolumeType getVolumeType(String volumeType) {
-        switch (volumeType) {
-            case VolumeTypesInterface.OCTREE:
-                return VolumeType.OCTREE;
-            // case VolumeTypes.OPTIMISED:
-            // return null;
-            case VolumeTypesInterface.POINTLIST:
-            default:
-                return VolumeType.POINTLIST;
-            case VolumeTypesInterface.QUADTREE:
-                return VolumeType.QUADTREE;
-        }
-    }
-
-    public static String getVolumeType(VolumeType volumeType) {
-        switch (volumeType) {
-            case OCTREE:
-                return VolumeTypesInterface.OCTREE;
-            case POINTLIST:
-            default:
-                return VolumeTypesInterface.POINTLIST;
-            case QUADTREE:
-                return VolumeTypesInterface.QUADTREE;
-        }
     }
 
     // GETTERS AND SETTERS

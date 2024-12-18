@@ -58,7 +58,7 @@ public class ProjectObjects extends Module {
     public static Obj process(Obj inputObject, Objs outputObjects, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory(), inputObject.getID());
         outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 

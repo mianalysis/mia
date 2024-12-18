@@ -12,13 +12,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -333,7 +332,7 @@ public class MeasureRelativeOrientation extends Module {
                 int y1 = (int) inputObject.getYMean(true);
                 int z1 = (int) inputObject.getZMean(true, false);
 
-                Volume centroidVol = new Volume(VolumeType.POINTLIST, inputObject.getSpatialCalibration());
+                Volume centroidVol = new Volume(new PointListFactory(), inputObject.getSpatialCalibration());
                 try {
                     centroidVol.add(x1, y1, z1);
                 } catch (IntegerOverflowException e) {
