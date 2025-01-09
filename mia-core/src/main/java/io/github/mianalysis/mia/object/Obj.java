@@ -13,7 +13,9 @@ import ij.gui.Roi;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -28,7 +30,7 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends Volume implements MeasurementProvider {
+public class Obj extends Volume implements MeasurementProvider, ObjI {
     /**
      * Unique instance ID for this object
      */
@@ -723,5 +725,11 @@ public class Obj extends Volume implements MeasurementProvider {
 
         return name;
 
+    }
+
+    @Override
+    public VolumeI createNewVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createNewVolume'");
     }
 }

@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalcula
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
-public class Volume {
+public class Volume implements VolumeI {
     protected SpatCal spatCal;
     protected CoordinateSetI coordinateSet;
     protected Volume surface = null;
@@ -870,5 +870,11 @@ public class Volume {
                 return new Point<>((double) x * spatCal.dppXY, (double) y * spatCal.dppXY, (double) z * spatCal.dppZ);
             }
         }
+    }
+
+    @Override
+    public VolumeI createNewVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createNewVolume'");
     }
 }
