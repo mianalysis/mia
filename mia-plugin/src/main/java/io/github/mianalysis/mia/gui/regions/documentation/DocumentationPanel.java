@@ -112,6 +112,9 @@ public class DocumentationPanel {
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 
+            sb.append("<h2 style=\"text-align: center;\">Version "+MIA.getVersion()+"</p>");
+            sb.append("<br><br>");
+
             sb.append("<h2>Introduction</h2>");
             URL url = Resources.getResource("templatemd/introduction.md");
             String string = Resources.toString(url, Charsets.UTF_8);
