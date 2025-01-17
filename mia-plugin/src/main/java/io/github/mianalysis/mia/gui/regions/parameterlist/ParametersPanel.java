@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -254,7 +253,7 @@ public class ParametersPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "To change parameters for an existing module," +
                 "<br>click the module name on the list to the left."+

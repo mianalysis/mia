@@ -53,6 +53,8 @@ public class MIA_ extends MIA implements Command {
     public void run() {
         headless = false;
 
+        System.setProperty("flatlaf.useRoundedPopupBorder", "true");
+        
         // Adding LogService to LogHistory
         linkLogServiceToLogHistory();
 

@@ -105,6 +105,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     synchronized public void add(Obj object) {
+        maxID = Math.max(maxID, object.getID());
         put(object.getID(), object);
 
     }
@@ -404,6 +405,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     public void resetCollection() {
         clear();
         maxID = 0;
+    }
+
+    public void recalculateMaxID() {
+        maxID = getLargestID();
     }
 
     /**

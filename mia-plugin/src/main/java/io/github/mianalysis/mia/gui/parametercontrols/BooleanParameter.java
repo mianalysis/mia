@@ -22,7 +22,7 @@ public class BooleanParameter extends TextSwitchableParameterControl implements 
 
         control = new JCheckBox();
 
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setFont(GUI.getDefaultFont().deriveFont(14f));
         control.setSelected(parameter.isSelected());
         control.addActionListener(this);
         control.setOpaque(false);

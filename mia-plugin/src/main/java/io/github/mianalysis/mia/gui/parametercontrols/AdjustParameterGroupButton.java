@@ -51,14 +51,14 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
 
         removeButton = new JButton(REMOVE);
         removeButton.addActionListener(this);
-        removeButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        removeButton.setFont(GUI.getDefaultFont().deriveFont(14f));
         removeButton.setPreferredSize(new Dimension(0, 26));
         removeButton.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         control.add(removeButton, c);
 
         moveUpButton = new JButton(MOVE_UP);
         moveUpButton.addActionListener(this);
-        moveUpButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        moveUpButton.setFont(GUI.getDefaultFont().deriveFont(14f));
         moveUpButton.setPreferredSize(new Dimension(0, 26));
         moveUpButton.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         c.gridx++;
@@ -67,7 +67,7 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
 
         moveDownButton = new JButton(MOVE_DOWN);
         moveDownButton.addActionListener(this);
-        moveDownButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        moveDownButton.setFont(GUI.getDefaultFont().deriveFont(14f));
         moveDownButton.setPreferredSize(new Dimension(0, 26));
         moveDownButton.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
         c.gridx++;

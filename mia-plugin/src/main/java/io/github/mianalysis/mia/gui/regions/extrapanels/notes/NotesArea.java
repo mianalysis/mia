@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.extrapanels.notes;
 
-import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -23,7 +22,7 @@ public class NotesArea extends JTextArea implements FocusListener {
     public NotesArea(Module module) {
         this.module = module;
 
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
 
         if (module == null) {
             setText("");

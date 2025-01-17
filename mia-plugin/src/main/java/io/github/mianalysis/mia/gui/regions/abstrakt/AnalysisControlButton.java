@@ -1,14 +1,16 @@
 package io.github.mianalysis.mia.gui.regions.abstrakt;
 
-import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 
 /**
  * Created by steph on 28/07/2017.
@@ -29,7 +31,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         addActionListener(this);
         setFocusPainted(false);
         setMargin(new Insets(0,0,0,0));
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
         setText(command);
         setPreferredSize(new Dimension(buttonSize, buttonSize));
 

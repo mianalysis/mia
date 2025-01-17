@@ -43,7 +43,7 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
         setSelected(false);
         addActionListener(this);
         addMouseListener(this);
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
         setText(module.getNickname());
         setMinimumSize(new Dimension(1, 30));
         setPreferredSize(new Dimension(1, 30));

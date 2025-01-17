@@ -24,7 +24,7 @@ public abstract class TextSwitchableParameterControl extends ParameterControl im
         super(parameter);
 
         textControl = new JTextField();
-        textControl.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        textControl.setFont(GUI.getDefaultFont().deriveFont(14f));
         textControl.setText(parameter.getRawStringValue());
         textControl.addFocusListener(this);
 

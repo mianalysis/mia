@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.gui.regions.documentation;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -13,13 +12,14 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -54,7 +54,7 @@ public class DocumentationPanel {
         JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-        editorPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        editorPane.setFont(GUI.getDefaultFont().deriveFont(16f));
         editorPane.setContentType("text/html");
         editorPane.setText(textToDisplay);
         editorPane.setCaretPosition(0);
@@ -110,6 +110,9 @@ public class DocumentationPanel {
             else
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
             sb.append("\" align=\"middle\">");
+            sb.append("<br><br>");
+
+            sb.append("<h2 style=\"text-align: center;\">Version "+MIA.getVersion()+"</p>");
             sb.append("<br><br>");
 
             sb.append("<h2>Introduction</h2>");

@@ -33,7 +33,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         this.moduleListMenu = moduleListMenu;
 
         setText(module.getName());
-        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+        Font font = GUI.getDefaultFont().deriveFont(14f);
         if (module.isDeprecated()) {
             Map attributes = font.getAttributes();
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);

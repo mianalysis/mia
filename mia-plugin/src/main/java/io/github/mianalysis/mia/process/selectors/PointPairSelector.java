@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.process.selectors;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,6 +31,7 @@ import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -129,7 +129,7 @@ public class PointPairSelector implements ActionListener {
 
         JLabel headerLabel = new JLabel("<html>Add point(s) to each image, then select \"Add pair(s)\"" +
                 "<br>(or click \"Finish adding pairs\" at any time).</html>");
-        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        headerLabel.setFont(GUI.getDefaultFont().deriveFont(16f));
 
         frame.add(headerLabel,c);
 

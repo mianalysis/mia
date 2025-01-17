@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashSet;
@@ -50,13 +49,13 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
         JMenuItem renameMenuItem = new JMenuItem();
         renameMenuItem.setText(RENAME);
-        renameMenuItem.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        renameMenuItem.setFont(GUI.getDefaultFont().deriveFont(14f));
         renameMenuItem.addActionListener(this);
         add(renameMenuItem);
 
         JMenuItem resetMenuItem = new JMenuItem("");
         resetMenuItem.setText(RESET_NAME);
-        resetMenuItem.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        resetMenuItem.setFont(GUI.getDefaultFont().deriveFont(14f));
         resetMenuItem.addActionListener(this);
         add(resetMenuItem);
 
@@ -69,7 +68,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
                 textSwitchMenuItem.setText(CHANGE_TO_DEFAULT);
             else
                 textSwitchMenuItem.setText(CHANGE_TO_TEXT);
-            textSwitchMenuItem.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            textSwitchMenuItem.setFont(GUI.getDefaultFont().deriveFont(14f));
             textSwitchMenuItem.addActionListener(this);
 
             add(textSwitchMenuItem);

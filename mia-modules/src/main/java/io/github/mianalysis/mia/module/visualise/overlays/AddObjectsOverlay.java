@@ -534,7 +534,7 @@ public class AddObjectsOverlay extends Module {
 
         // Adding text label
         TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label);
-        text.setCurrentFont(new Font(Font.SANS_SERIF, Font.PLAIN, labelSize));
+        text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, labelSize));
         text.setJustification(TextRoi.CENTER);
         text.setStrokeColor(colour);
 

@@ -1,10 +1,12 @@
 package io.github.mianalysis.mia.gui.regions.extrapanels.filelist;
 
-import javax.swing.*;
-
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JPopupMenu;
+
+import io.github.mianalysis.mia.gui.GUI;
 
 public class FileListColumnSelectorMenu extends JPopupMenu implements ActionListener {
     /**
@@ -25,35 +27,35 @@ public class FileListColumnSelectorMenu extends JPopupMenu implements ActionList
         showJobID = new JCheckBoxMenuItem();
         showJobID.setText("Show job ID");
         showJobID.setSelected(true);
-        showJobID.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showJobID.setFont(GUI.getDefaultFont().deriveFont(14f));
         showJobID.addActionListener(this);
         add(showJobID);
 
         showFilename = new JCheckBoxMenuItem();
         showFilename.setText("Show filename");
         showFilename.setSelected(true);
-        showFilename.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showFilename.setFont(GUI.getDefaultFont().deriveFont(14f));
         showFilename.addActionListener(this);
         add(showFilename);
 
         showSeriesname = new JCheckBoxMenuItem();
         showSeriesname.setText("Show series name");
         showSeriesname.setSelected(false);
-        showSeriesname.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showSeriesname.setFont(GUI.getDefaultFont().deriveFont(14f));
         showSeriesname.addActionListener(this);
         add(showSeriesname);
 
         showSeriesnumber = new JCheckBoxMenuItem();
         showSeriesnumber.setText("Show series number");
         showSeriesnumber.setSelected(false);
-        showSeriesnumber.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showSeriesnumber.setFont(GUI.getDefaultFont().deriveFont(14f));
         showSeriesnumber.addActionListener(this);
         add(showSeriesnumber);
 
         showProgress = new JCheckBoxMenuItem();
         showProgress.setText("Show progress");
         showProgress.setSelected(true);
-        showProgress.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showProgress.setFont(GUI.getDefaultFont().deriveFont(14f));
         showProgress.addActionListener(this);
         add(showProgress);
 

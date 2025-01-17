@@ -2,9 +2,11 @@ package io.github.mianalysis.mia.gui;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -72,6 +74,7 @@ public class GUI {
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();
+    private static Font defaultFont = null;
     private static CustomMenuBar menuBar = new CustomMenuBar();
     private static StatusTextField textField = new StatusTextField();
     private static ProcessingPanel processingPanel = new ProcessingPanel();
@@ -187,6 +190,21 @@ public class GUI {
         }
     }
 
+    public static Font getDefaultFont() {
+        if (defaultFont != null)
+            return defaultFont;
+
+        // create the font to use. Specify the size!
+        try {
+            defaultFont = Font.createFont(Font.TRUETYPE_FONT, GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(defaultFont);
+            return defaultFont;
+        } catch (FontFormatException | IOException e) {
+            MIA.log.writeError(e);
+            return null;
+        }
+    }
+
     public static void refreshLookAndFeel() {
         if (frame != null)
             SwingUtilities.updateComponentTreeUI(frame);
@@ -235,7 +253,7 @@ public class GUI {
         textField.setPreferredSize(new Dimension(Integer.MAX_VALUE, statusHeight));
         textField.setBorder(null);
         textField.setText("MIA (version " + MIA.getVersion() + ")");
-        textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        textField.setFont(GUI.getDefaultFont().deriveFont(Font.BOLD, 14f));
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);
 

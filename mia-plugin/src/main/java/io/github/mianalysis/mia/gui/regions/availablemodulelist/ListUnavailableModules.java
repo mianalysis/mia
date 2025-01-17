@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -9,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
@@ -34,7 +34,7 @@ public class ListUnavailableModules extends JMenuItem implements ActionListener 
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/alert_darkgreyDM_12px.png"), ""));
         else
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/alert_black_12px.png"), ""));
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
         addActionListener(this);
     }
 

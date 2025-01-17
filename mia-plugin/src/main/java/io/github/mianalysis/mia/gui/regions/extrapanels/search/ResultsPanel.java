@@ -16,6 +16,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.ModuleSearcher.SearchMatch;
@@ -39,7 +40,7 @@ public class ResultsPanel extends JPanel {
         if (matches.size() == 0) {
             JTextPane noResultsMessage = new JTextPane();
                 noResultsMessage.setContentType("text/html");
-                noResultsMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+                noResultsMessage.setFont(GUI.getDefaultFont().deriveFont(14f));
                 noResultsMessage.setText(
                     "<html><center><font face=\"sans-serif\" size=\"3\">No results</font></center></html>");
                 noResultsMessage.setEditable(false);
@@ -57,7 +58,7 @@ public class ResultsPanel extends JPanel {
             boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
             if (!module.isDeprecated() || isDark) {
                 JLabel moduleName = new JLabel(module.getName());
-                Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+                Font font = GUI.getDefaultFont().deriveFont(Font.BOLD, 14f);
                 if (module.isDeprecated()) {
                     Map attributes = font.getAttributes();
                     attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -82,7 +83,7 @@ public class ResultsPanel extends JPanel {
                 add(addModuleButton, c);
 
                 JTextArea moduleDescription = new JTextArea(module.getShortDescription());
-                moduleDescription.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+                moduleDescription.setFont(GUI.getDefaultFont().deriveFont(14f));
                 moduleDescription.setLineWrap(true);
                 moduleDescription.setWrapStyleWord(true);
                 moduleDescription.setEditable(false);

@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -8,6 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -30,7 +30,7 @@ public class ModuleListMenu extends JMenu implements Comparable {
         for (Module module : modules)
             add(new PopupMenuItem(module, topLevelMenu));
 
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
 
     }
 

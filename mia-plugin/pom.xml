@@ -22,7 +22,7 @@
     </organization>
 
     <licenses>
-        
+
         <license>
             <name>GNU General Public License v3+</name>
             <url>http://www.gnu.org/licenses/gpl.html</url>
@@ -170,7 +170,7 @@
 		<dependency>
 			<groupId>com.formdev</groupId>
 			<artifactId>flatlaf</artifactId>
-			<version>3.5</version>
+			<version>3.5.4</version>
 			<scope>${scp}</scope>
 		</dependency>
 
@@ -329,11 +329,11 @@
 			</plugin>
 		</plugins>
 
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
 </project>

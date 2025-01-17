@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.menubar;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,6 +9,7 @@ import org.apache.commons.lang.WordUtils;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 
 public class MenuLogCheckbox extends JCheckBoxMenuItem implements ActionListener {
@@ -22,7 +22,7 @@ public class MenuLogCheckbox extends JCheckBoxMenuItem implements ActionListener
     public MenuLogCheckbox(Level level, boolean state) {
         this.level = level;
         String title = WordUtils.capitalizeFully(level.toString());
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
         setText(title);
         addActionListener(this);
         setSelected(state);

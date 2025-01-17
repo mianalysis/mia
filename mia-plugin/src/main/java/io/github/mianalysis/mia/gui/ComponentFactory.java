@@ -122,7 +122,7 @@ public class ComponentFactory {
             parameterName.setBorder(null);
             parameterName.setOpaque(false);
             parameterName.setPreferredSize(new Dimension(0, elementHeight));
-            parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            parameterName.setFont(GUI.getDefaultFont().deriveFont(14f));
             parameterName
                     .setToolTipText("<html><div style=\"width:500;\">" + parameter.getDescription() + "</div></html>");
             paramPanel.add(parameterName, c);
@@ -174,7 +174,7 @@ public class ComponentFactory {
 
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
-        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+        Font font = GUI.getDefaultFont().deriveFont(Font.BOLD, 14f);
         if (activeModule.isDeprecated()) {
             Map attributes = font.getAttributes();
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -193,7 +193,7 @@ public class ComponentFactory {
         paramPanel.add(separator, c);
 
         ShowProcessingTitleCheck showProcessingTitleCheck = new ShowProcessingTitleCheck(activeModule);
-        showProcessingTitleCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showProcessingTitleCheck.setFont(GUI.getDefaultFont().deriveFont(14f));
         if (activeModule.getClass() == GUISeparator.class) {
             showProcessingTitleCheck.setEnabled(false);
             showProcessingTitleCheck.setOpaque(false);
@@ -211,7 +211,7 @@ public class ComponentFactory {
         paramPanel.add(separator, c);
 
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
-        disableableCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        disableableCheck.setFont(GUI.getDefaultFont().deriveFont(14f));
         if (activeModule.getClass() == InputControl.class) {
             disableableCheck.setEnabled(false);
             disableableCheck.setOpaque(false);
@@ -305,7 +305,7 @@ public class ComponentFactory {
 
         JLabel label = new JLabel();
         label.setText(module.getNickname());
-        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        label.setFont(GUI.getDefaultFont().deriveFont(14f));
         label.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 0;
         c.gridx++;
@@ -454,7 +454,7 @@ public class ComponentFactory {
 
         JLabel exportLabel = new JLabel("Ind");
         exportLabel.setPreferredSize(new Dimension(40, 25));
-        exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        exportLabel.setFont(GUI.getDefaultFont().deriveFont(14f));
         exportLabel.setEnabled(exportIndividual.isSelected());
         exportLabel.setOpaque(false);
         c.gridx++;
@@ -463,35 +463,35 @@ public class ComponentFactory {
         if (includeSummary) {
             exportLabel = new JLabel("Mean");
             exportLabel.setPreferredSize(new Dimension(40, 25));
-            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setFont(GUI.getDefaultFont().deriveFont(14f));
             exportLabel.setEnabled(exportSummary.isSelected());
             c.gridx++;
             labelPanel.add(exportLabel, c);
 
             exportLabel = new JLabel("Min");
             exportLabel.setPreferredSize(new Dimension(40, 25));
-            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setFont(GUI.getDefaultFont().deriveFont(14f));
             exportLabel.setEnabled(exportSummary.isSelected());
             c.gridx++;
             labelPanel.add(exportLabel, c);
 
             exportLabel = new JLabel("Max");
             exportLabel.setPreferredSize(new Dimension(40, 25));
-            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setFont(GUI.getDefaultFont().deriveFont(14f));
             exportLabel.setEnabled(exportSummary.isSelected());
             c.gridx++;
             labelPanel.add(exportLabel, c);
 
             exportLabel = new JLabel("Sum");
             exportLabel.setPreferredSize(new Dimension(40, 25));
-            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setFont(GUI.getDefaultFont().deriveFont(14f));
             exportLabel.setEnabled(exportSummary.isSelected());
             c.gridx++;
             labelPanel.add(exportLabel, c);
 
             exportLabel = new JLabel("Std");
             exportLabel.setPreferredSize(new Dimension(40, 25));
-            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setFont(GUI.getDefaultFont().deriveFont(14f));
             exportLabel.setEnabled(exportSummary.isSelected());
             c.gridx++;
             labelPanel.add(exportLabel, c);
@@ -656,7 +656,7 @@ public class ComponentFactory {
         }
 
         JLabel headerName = new JLabel(name);
-        headerName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        headerName.setFont(GUI.getDefaultFont().deriveFont(14f));
         headerName.setPreferredSize(new Dimension(-1, elementHeight));
         headerName.setOpaque(false);        
         headerName.setBorder(null);
@@ -696,7 +696,7 @@ public class ComponentFactory {
         measurementPanel.add(enabledButton, c);
 
         ExportName exportName = new ExportName(ref);
-        exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        exportName.setFont(GUI.getDefaultFont().deriveFont(14f));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
         exportName.setToolTipText("<html><div style=\"width:500px;\">" + ref.getDescription() + "</div></html>");
         exportName.setEnabled(ref.isExportGlobal());
@@ -737,7 +737,7 @@ public class ComponentFactory {
         measurementPanel.add(enabledButton, c);
 
         ExportName exportName = new ExportName(ref);
-        exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        exportName.setFont(GUI.getDefaultFont().deriveFont(14f));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
         exportName.setToolTipText("<html><div style=\"width:500px;\">" + ref.getDescription() + "</div></html>");
         exportName.setEnabled(ref.isExportGlobal());

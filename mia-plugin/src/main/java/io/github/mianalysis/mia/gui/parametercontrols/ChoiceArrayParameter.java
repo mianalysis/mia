@@ -31,7 +31,7 @@ public class ChoiceArrayParameter extends TextSwitchableParameterControl impleme
         choiceControl = new JComboBox(choices);
 
         choiceControl.putClientProperty(FlatClientProperties.STYLE, "arc: 16");
-        choiceControl.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        choiceControl.setFont(GUI.getDefaultFont().deriveFont(14f));
         choiceControl.setSelectedItem(parameter.getValue(null));
         choiceControl.addActionListener(this);
 

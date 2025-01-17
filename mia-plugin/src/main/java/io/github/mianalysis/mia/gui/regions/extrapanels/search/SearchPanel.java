@@ -63,7 +63,7 @@ public class SearchPanel extends JPanel {
         sPanel.setOpaque(false);
 
         queryEntry = new JTextField();
-        queryEntry.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        queryEntry.setFont(GUI.getDefaultFont().deriveFont(14f));
         queryEntry.setPreferredSize(new Dimension(0, 26));
         queryEntry.setMinimumSize(new Dimension(0, 26));
         queryEntry.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
@@ -149,7 +149,7 @@ public class SearchPanel extends JPanel {
 
         // Adding title to help window
         JLabel fileListLabel = new JLabel();
-        fileListLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        fileListLabel.setFont(GUI.getDefaultFont().deriveFont(Font.BOLD, 14f));
         fileListLabel.setText("Module search");
         add(fileListLabel, c);
 
@@ -171,7 +171,7 @@ public class SearchPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">"
                 + "Click a module title to<br>see help about it" + "<br><br>"
                 + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");

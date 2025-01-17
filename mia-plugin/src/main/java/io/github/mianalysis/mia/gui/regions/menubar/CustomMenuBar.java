@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.menubar;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -54,7 +53,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     public CustomMenuBar() {
         // Creating the file menu
         fileMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        fileMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        fileMenu.setFont(GUI.getDefaultFont().deriveFont(14f));
         add(fileMenu);
         fileMenu.add(newWorkflow);
         fileMenu.add(loadWorkflow);
@@ -63,7 +62,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
         // Creating the edit menu
         editMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        editMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        editMenu.setFont(GUI.getDefaultFont().deriveFont(14f));
         add(editMenu);
         editMenu.add(undo);
         editMenu.add(redo);
@@ -75,7 +74,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
         // Creating the analysis menu
         analysisMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        analysisMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        analysisMenu.setFont(GUI.getDefaultFont().deriveFont(14f));
         add(analysisMenu);
         analysisMenu.add(new MenuItem(MenuItem.RUN_ANALYSIS));
         analysisMenu.add(new MenuItem(MenuItem.STOP_ANALYSIS));
@@ -88,7 +87,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
         // Creating the new menu
         viewMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        viewMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        viewMenu.setFont(GUI.getDefaultFont().deriveFont(14f));
         add(viewMenu);
         if (MIA.isDebug())
             viewMenu.add(new MenuItem(MenuItem.PROCESSING_VIEW));
@@ -99,13 +98,13 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         // Creating the help menu
         add(helpMenu);
         helpMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        helpMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        helpMenu.setFont(GUI.getDefaultFont().deriveFont(14f));
         helpMenu.add(new MenuItem(MenuItem.SHOW_ABOUT));
         helpMenu.add(new MenuItem(MenuItem.SHOW_GETTING_STARTED));
         helpMenu.add(new MenuItem(MenuItem.SHOW_UNAVAILABLE_MODULES));
 
         helpMenu.add(logMenu);
-        logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        logMenu.setFont(GUI.getDefaultFont().deriveFont(14f));
 
         LogRenderer renderer = MIA.getMainRenderer();
 

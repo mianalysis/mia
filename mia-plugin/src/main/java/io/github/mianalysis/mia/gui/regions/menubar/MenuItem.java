@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.menubar;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -47,7 +46,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String SHOW_PONY = "Pony?";
 
     public MenuItem(String command) {
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
         setText(command);
         addActionListener(this);
         setContentAreaFilled(false);

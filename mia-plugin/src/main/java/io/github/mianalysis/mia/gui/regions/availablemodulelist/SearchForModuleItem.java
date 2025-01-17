@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,7 +19,7 @@ public class SearchForModuleItem extends JMenuItem implements ActionListener {
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/search_darkgreyDM_12px.png"), ""));
         else
             setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/search_black_12px.png"), ""));
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setFont(GUI.getDefaultFont().deriveFont(14f));
         addActionListener(this);
     }
 

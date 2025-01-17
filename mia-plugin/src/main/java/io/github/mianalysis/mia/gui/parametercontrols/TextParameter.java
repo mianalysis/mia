@@ -28,7 +28,7 @@ public class TextParameter extends ParameterControl implements CaretReporter, Fo
         control = new JTextField();
         control.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         control.setOpaque(false);
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setFont(GUI.getDefaultFont().deriveFont(14f));
         control.setText(parameter.getRawStringValue());
         control.addFocusListener(this);
 

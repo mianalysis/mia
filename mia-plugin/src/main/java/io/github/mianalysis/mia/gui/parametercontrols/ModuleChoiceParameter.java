@@ -37,7 +37,7 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         Module[] choices = parameter.getModules();
         control = new JComboBox(choices);
 
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setFont(GUI.getDefaultFont().deriveFont(14f));
         control.setSelectedItem(parameter.getSelectedModuleID());
         control.addActionListener(this);
         

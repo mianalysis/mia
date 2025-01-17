@@ -75,7 +75,7 @@ public class HelpPanel extends JPanel {
 
         // Adding title to help window
         JLabel notesLabel = new JLabel();
-        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        notesLabel.setFont(GUI.getDefaultFont().deriveFont(Font.BOLD, 14f));
         notesLabel.setText("About");
         add(notesLabel, c);
 
@@ -99,7 +99,7 @@ public class HelpPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
         usageMessage.setText(
                 "<html><center><font face=\"sans-serif\" size=\"3\">" + "Click a module title to<br>see help about it"
                         + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel"

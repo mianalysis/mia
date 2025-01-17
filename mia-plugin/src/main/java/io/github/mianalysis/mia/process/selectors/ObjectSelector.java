@@ -76,6 +76,7 @@ import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.process.BinaryInterpolator;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Obj;
@@ -331,9 +332,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                List<ObjRoi> selected = list.getSelectedValuesList();
-                for (ObjRoi objRoi : selected)
-                    displayObject(objRoi);
+                displayObjects(list.getSelectedValuesList());
             }
         });
 
@@ -349,7 +348,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         instructionText = instructionText.replace("\n", "<br>");
         JLabel headerLabel = new JLabel("<html>" + instructionText + "</html>");
-        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        headerLabel.setFont(GUI.getDefaultFont().deriveFont(16f));
 
         frame.add(headerLabel, c);
 
@@ -1118,7 +1117,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 break;
         }
 
-        overlay.add(overlayRoi);
+        if (!overlayMode.equals(OverlayModes.NONE))
+            overlay.add(overlayRoi);
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
@@ -1146,8 +1146,19 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    void displayObject(ObjRoi objRoi) {
-        displayIpl.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
+    void displayObjects(List<ObjRoi>  objRois) {
+        ShapeRoi roi = null;
+        for (ObjRoi objRoi:objRois) {
+            if (roi == null) {
+                roi = new ShapeRoi(objRoi.getRoi());
+                continue;
+            }
+
+            roi.or(new ShapeRoi(objRoi.getRoi()));
+        }
+
+        displayIpl.setRoi(roi);
+
     }
 
     String getSavePath() {

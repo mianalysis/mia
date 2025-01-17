@@ -74,7 +74,7 @@ public class NotesPanel extends JPanel {
 
         // Adding title to help window
         JLabel notesLabel = new JLabel();
-        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        notesLabel.setFont(GUI.getDefaultFont().deriveFont(Font.BOLD, 14f));
         notesLabel.setText("Notes");
         add(notesLabel, c);
 
@@ -98,7 +98,7 @@ public class NotesPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "Click a module title to<br>see an editable notes panel."+
                 "<br><br>" +

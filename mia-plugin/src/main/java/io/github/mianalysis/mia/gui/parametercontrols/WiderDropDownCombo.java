@@ -18,7 +18,7 @@
 //     private boolean wide = false;
 
 //     public WiderDropDownCombo() {
-//         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+//         setFont(GUI.getDefaultFont().deriveFont(14f));
 //         setMaximumRowCount(20);
 //     }
 
@@ -26,7 +26,7 @@
 //         super(objs);
 
 //         putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
-//         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+//         setFont(GUI.getDefaultFont().deriveFont(14f));
 //         setMaximumRowCount(20);
 //     }
 

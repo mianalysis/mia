@@ -24,7 +24,7 @@ public class AddModuleFromSearchButton extends JButton implements ActionListener
         setText("+");
         setMargin(new Insets(0, 0, 1, 1));
         addActionListener(this);
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+        setFont(GUI.getDefaultFont().deriveFont(16f));
         setPreferredSize(new Dimension(26, 26));
         setMinimumSize(new Dimension(26, 26));
         setMaximumSize(new Dimension(26, 26));

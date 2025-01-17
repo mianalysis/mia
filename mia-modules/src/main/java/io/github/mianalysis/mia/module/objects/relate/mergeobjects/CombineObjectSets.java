@@ -117,6 +117,9 @@ public class CombineObjectSets extends Module {
     }
 
     public static void addObjects(Objs targetObjects, Objs sourceObjects) {
+        // Ensuring new objects are added to end of collection
+        targetObjects.recalculateMaxID();
+        
         for (Obj obj : sourceObjects.values()) {
 
             Obj newObj = targetObjects.createAndAddNewObject(obj.getFactory());

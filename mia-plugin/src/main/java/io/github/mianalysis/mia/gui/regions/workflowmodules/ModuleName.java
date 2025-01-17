@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
@@ -49,7 +50,7 @@ public class ModuleName extends JLabel {
         setPreferredSize(new Dimension(200, 30));
         setBackground(new Color(0, 0, 0, 0));
         setOpaque(false);
-        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+        Font font = GUI.getDefaultFont().deriveFont(14f);
         if (module.isDeprecated()) {
             Map attributes = font.getAttributes();
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -119,7 +120,7 @@ public class ModuleName extends JLabel {
                 + "<br>ID: " + module.getModuleID() + "<br>Status: " + status + deprecationMessage + "</html>");
 
         if (module.isDeprecated()) {
-            Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+            Font font = GUI.getDefaultFont().deriveFont(14f);
             Map attributes = font.getAttributes();
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
             font = new Font(attributes);

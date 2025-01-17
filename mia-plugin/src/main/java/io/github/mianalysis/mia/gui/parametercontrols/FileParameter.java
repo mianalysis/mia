@@ -35,7 +35,7 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
         control = new JButton();
 
         control.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setFont(GUI.getDefaultFont().deriveFont(14f));
         control.setToolTipText(parameter.getPath());
         control.setText(FilenameUtils.getName(parameter.getPath()));
         control.addActionListener(this);

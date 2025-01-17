@@ -58,27 +58,27 @@ public class EditingControlPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         // Add module button
-        addModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        addModuleButton.setFont(GUI.getDefaultFont().deriveFont(22f));
         add(addModuleButton, c);
 
         // Remove module button
         ModuleControlButton removeModuleButton = new ModuleControlButton(ModuleControlButton.REMOVE_MODULE,
                 bigButtonSize, moduleListMenu);
-        removeModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        removeModuleButton.setFont(GUI.getDefaultFont().deriveFont(22f));
         c.gridy++;
         add(removeModuleButton, c);
 
         // Move module up button
         ModuleControlButton moveModuleUpButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_UP,
                 bigButtonSize, moduleListMenu);
-        moveModuleUpButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        moveModuleUpButton.setFont(GUI.getDefaultFont().deriveFont(18f));
         c.gridy++;
         add(moveModuleUpButton, c);
 
         // Move module down button
         ModuleControlButton moveModuleDownButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_DOWN,
                 bigButtonSize, moduleListMenu);
-        moveModuleDownButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        moveModuleDownButton.setFont(GUI.getDefaultFont().deriveFont(18f));
         c.gridy++;
         add(moveModuleDownButton, c);
 

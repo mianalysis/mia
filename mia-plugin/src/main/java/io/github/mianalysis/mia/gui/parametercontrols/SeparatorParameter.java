@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.system.Colours;
@@ -43,6 +44,7 @@ public class SeparatorParameter extends ParameterControl {
         control.add(separatorLeft, c);
 
         JLabel label = new JLabel();
+        label.setFont(GUI.getDefaultFont().deriveFont(14f));
         label.setText(parameter.getNickname());
         label.setForeground(Colours.getDarkBlue(isDark));
         c.weightx = 0;

@@ -3,7 +3,6 @@ package io.github.mianalysis.mia.gui.regions.processingpanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -198,7 +197,7 @@ public class ProcessingControlPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">"
                 + "To load an existing workflow,<br>click \"Load\" and select a .mia file." + "<br><br>"
                 + "To start creating a new workflow,<br>go to View > Switch to editing view."

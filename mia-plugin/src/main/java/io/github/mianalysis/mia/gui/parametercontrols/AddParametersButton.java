@@ -27,7 +27,7 @@ public class AddParametersButton extends ParameterControl implements ActionListe
         control = new JButton("Add");
         control.putClientProperty( FlatClientProperties.STYLE, "arc: 16" );
         control.addActionListener(this);
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setFont(GUI.getDefaultFont().deriveFont(14f));
 
     }
 
