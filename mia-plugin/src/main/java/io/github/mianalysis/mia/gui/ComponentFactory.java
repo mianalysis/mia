@@ -122,6 +122,7 @@ public class ComponentFactory {
             parameterName.setOpaque(false);
             parameterName.setPreferredSize(new Dimension(0, elementHeight));
             parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            // parameterName.setFont(GUI.getDefaultFont().deriveFont(14f));
             parameterName
                     .setToolTipText("<html><div style=\"width:500;\">" + parameter.getDescription() + "</div></html>");
             paramPanel.add(parameterName, c);

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -14,6 +18,7 @@ import fiji.analyze.directionality.Directionality_;
 import fiji.analyze.directionality.Directionality_.AnalysisMethod;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -143,6 +148,17 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
      */
     public static final String PARENT_OBJECTS_NAME = "Parent objects name";
 
+    /**
+    * 
+    */
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+    /**
+     * Process multiple input objects simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
     public interface HistogramGroupingModes {
         String ALL_TOGETHER = "All together";
         String GROUP_BY_PARENT = "Group by parent";
@@ -223,7 +239,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
         for (int z : rois.keySet()) {
             // Getting current image slice
-            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z+1),
+            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1", String.valueOf(z + 1),
                     String.valueOf(obj.getT() + 1));
             ImagePlus sliceIpl = sliceImage.getImagePlus();
             sliceIpl.setRoi(rois.get(z));
@@ -364,6 +380,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
         String histGroupMode = parameters.getValue(HISTOGRAM_GROUPING_MODE, workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         Image inputImage = workspace.getImage(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -379,15 +396,37 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
                 break;
         }
 
+        // Setting up multithreading options
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
+        // Running through each object, taking measurements and adding new object to the
+        // workspace where necessary
+        AtomicInteger count = new AtomicInteger(1);
+        int total = inputObjects.size();
         TreeMap<Integer, ImagePlus> histogramIpls = new TreeMap<>();
-        for (Obj obj : inputObjects.values()) {
-            Directionality_ directionality = processObject(obj, inputImage, nBins, binStart, binEnd, method,
-                    includeBinRange, includeBinNumber);
 
-            if (saveHistogram)
-                histogramIpls.put(obj.getID(),
-                        MeasureImageIntensityOrientation.getHistogramRGB(directionality).getImagePlus());
+        for (Obj inputObject : inputObjects.values()) {
+            Runnable task = () -> {
+                Directionality_ directionality = processObject(inputObject, inputImage, nBins, binStart, binEnd, method,
+                        includeBinRange, includeBinNumber);
 
+                if (saveHistogram)
+                    histogramIpls.put(inputObject.getID(),
+                            MeasureImageIntensityOrientation.getHistogramRGB(directionality).getImagePlus());
+
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
+            };
+            pool.submit(task);
+
+        }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
         }
 
         if (saveHistogram) {
@@ -421,7 +460,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
@@ -443,6 +482,9 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         parameters.add(new ChoiceP(HISTOGRAM_GROUPING_MODE, this, HistogramGroupingModes.ALL_TOGETHER,
                 HistogramGroupingModes.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECTS_NAME, this));
+
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();
 
@@ -480,6 +522,9 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
                     break;
             }
         }
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
@@ -552,8 +597,8 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
