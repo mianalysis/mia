@@ -42,7 +42,7 @@ public class ResultsPanel extends JPanel {
                 noResultsMessage.setContentType("text/html");
                 noResultsMessage.setFont(GUI.getDefaultFont().deriveFont(14f));
                 noResultsMessage.setText(
-                    "<html><center><font face=\"sans-serif\" size=\"3\">No results</font></center></html>");
+                    "<html><center>No results</center></html>");
                 noResultsMessage.setEditable(false);
                 noResultsMessage.setOpaque(false);                
                 c.weightx = 1;

@@ -197,11 +197,11 @@ public class ProcessingControlPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
-        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">"
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(14f));
+        usageMessage.setText("<html><center>"
                 + "To load an existing workflow,<br>click \"Load\" and select a .mia file." + "<br><br>"
                 + "To start creating a new workflow,<br>go to View > Switch to editing view."
-                + "</font></center></html>");
+                + "</center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
         usageMessage.setOpaque(false);

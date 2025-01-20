@@ -253,8 +253,8 @@ public class ParametersPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(GUI.getDefaultFont().deriveFont(16f));
-        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
+        usageMessage.setFont(GUI.getDefaultFont().deriveFont(14f));
+        usageMessage.setText("<html><center>" +
                 "To change parameters for an existing module," +
                 "<br>click the module name on the list to the left."+
                 "<br><br>" +
@@ -270,7 +270,7 @@ public class ParametersPanel extends JPanel {
                 "To execute a full analysis, click \"Run\".  " +
                 "<br>Alternatively, step through an analysis using the" +
                 "<br>arrow icons to the right of each module name." +
-                "</font></center></html>");
+                "</center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
         usageMessage.setOpaque(false);

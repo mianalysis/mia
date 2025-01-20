@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -134,6 +135,7 @@ public class GUI {
         UIManager.put("ComboBox.borderCornerRadius", 8);
         UIManager.put("ToolTip.borderCornerRadius", 8);
         UIManager.put("Button.arc", 8);
+        UIManager.put("ToolTip.foreground", Color.BLACK);
 
         frame.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
         frame.setJMenuBar(menuBar);

@@ -1,6 +1,7 @@
 package io.github.mianalysis.mia;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.UIManager;
@@ -54,7 +55,7 @@ public class MIA_ extends MIA implements Command {
         headless = false;
 
         System.setProperty("flatlaf.useRoundedPopupBorder", "true");
-        
+
         // Adding LogService to LogHistory
         linkLogServiceToLogHistory();
 
@@ -70,6 +71,7 @@ public class MIA_ extends MIA implements Command {
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
             UIManager.put("TitlePane.showIconBesideTitle", true);
             UIManager.put("TabbedPane.selectedBackground", new Color(0, 0, 0, 0));
+            UIManager.put("ToolTip.font", GUI.getDefaultFont().deriveFont(14f));
             System.setProperty("apple.awt.application.appearance", "system");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException

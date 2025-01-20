@@ -32,7 +32,6 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Status;
@@ -83,7 +82,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         model.setColumnCount(5);
         model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });
-
+        
         table = new JTable(model);
         table.setRowSelectionAllowed(false);
         table.getTableHeader().addMouseListener(this);
@@ -94,6 +93,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setOpaque(false);
         table.setBackground(new Color(0,0,0,0));
         table.setDefaultEditor(Object.class, null);
+        table.setFont(GUI.getDefaultFont().deriveFont(14f));
+        table.getTableHeader().setFont(GUI.getDefaultFont().deriveFont(14f));
 
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
@@ -114,6 +115,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         showColumn(COL_SERIESNUMBER, false);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setFont(GUI.getDefaultFont().deriveFont(14f));
         scrollPane.setOpaque(false);
         scrollPane.setBackground(new Color(0,0,0,0));
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

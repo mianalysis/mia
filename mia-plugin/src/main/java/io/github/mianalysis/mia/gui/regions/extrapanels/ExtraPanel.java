@@ -34,6 +34,7 @@ public class ExtraPanel extends JPanel {
                 "background: #00000000; tabArc: 16; hoverColor: #86d0e6");
 
         // tabbedPane.setOpaque(false);
+        tabbedPane.setFont(GUI.getDefaultFont().deriveFont(14f));
         tabbedPane.add("Files", fileListPanel);
         tabbedPane.add("Help", helpPanel);
         tabbedPane.add("Notes", notesPanel);
