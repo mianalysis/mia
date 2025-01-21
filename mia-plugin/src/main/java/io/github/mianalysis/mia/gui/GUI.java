@@ -127,9 +127,9 @@ public class GUI {
             JPanel titleBar = new JPanel();
             titleBar.setBackground(Colours.getBlue(false));
             titleBar.setPreferredSize(new Dimension(100, 50));
-            frame.add(titleBar);
+            // frame.add(titleBar);
         }
-        UIManager.put("TitlePane.background", Colours.getBlue(false));
+        // UIManager.put("TitlePane.background", Colours.getBlue(false));
         UIManager.put("PopupMenu.borderCornerRadius", 8);
         UIManager.put("Popup.borderCornerRadius", 8);
         UIManager.put("ComboBox.borderCornerRadius", 8);
@@ -138,6 +138,7 @@ public class GUI {
         UIManager.put("ToolTip.foreground", Color.BLACK);
 
         frame.getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
+        frame.getRootPane().putClientProperty("apple.awt.fullscreenable", true);
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));

@@ -55,24 +55,27 @@ public class EditingPanel extends AbstractPanel {
         c.gridwidth = 5;
 
         if (SystemInfo.isMacFullWindowContentSupported) {
-            JPanel titleBar = new JPanel();
-            titleBar.setOpaque(false);
-            titleBar.setPreferredSize(new Dimension(100, 33));
-
-            if (isDark)
-                titleBar.setBorder(new FlatDropShadowBorder(new Color(42, 42, 42), new Insets(0, 0, 5, 0), 1));
-            else
-                titleBar.setBorder(new FlatDropShadowBorder(Color.GRAY, new Insets(0, 0, 5, 0), 1));
+            JPanel titleBarColour = new JPanel();
+            titleBarColour.setBackground(Colours.getLightBlue(false));
+            titleBarColour.setPreferredSize(new Dimension(Integer.MAX_VALUE, 28));
+            titleBarColour.setMinimumSize(new Dimension(100, 28));
 
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTH;
-            add(titleBar, c);
-
-            JPanel titleBarColour = new JPanel();
-            titleBarColour.setBackground(Colours.getLightBlue(false));
-            titleBarColour.setPreferredSize(new Dimension(100, 28));
-            titleBarColour.setMinimumSize(new Dimension(100, 28));
             add(titleBarColour, c);
+
+            // JPanel titleBar = new JPanel();
+            // titleBar.setOpaque(false);
+            // titleBar.setMinimumSize(new Dimension(Integer.MAX_VALUE, 33));
+            // titleBar.setPreferredSize(new Dimension(Integer.MAX_VALUE, 33));
+
+            // if (isDark)
+            //     titleBar.setBorder(new FlatDropShadowBorder(new Color(42, 42, 42), new Insets(0, 0, 6, 0), 1));
+            // else
+            //     titleBar.setBorder(new FlatDropShadowBorder(Color.GRAY, new Insets(0, 0, 6, 0), 1));
+            
+            // add(titleBar, c);
+
             c.gridy++;
 
         }
@@ -80,7 +83,7 @@ public class EditingPanel extends AbstractPanel {
         c.weighty = 1;
         c.gridwidth = 1;
         c.insets = new Insets(5, 10, 5, 0);
-        c.fill = GridBagConstraints.VERTICAL;
+        c.fill = GridBagConstraints.BOTH;
         add(new ShadowPanel(editingControlPanel), c);
 
         // Initialising the status panel

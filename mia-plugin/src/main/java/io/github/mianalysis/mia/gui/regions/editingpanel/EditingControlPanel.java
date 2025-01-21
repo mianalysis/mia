@@ -1,10 +1,11 @@
 package io.github.mianalysis.mia.gui.regions.editingpanel;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -52,7 +53,7 @@ public class EditingControlPanel extends JPanel {
         c.anchor = GridBagConstraints.PAGE_START;
 
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight - 350));
+        setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight));
 
         // setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));        
         setLayout(new GridBagLayout());
