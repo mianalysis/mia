@@ -52,124 +52,191 @@ import io.github.mianalysis.mia.process.voxel.BresenhamLine;
  */
 
 /**
-* Fits a 2D spline to the backbone of objects.  Each object in the input collection will be reduced to a single (longest skeleton path) backbone, which will be fit with the spline.  Local curvature of the spline can be calculated and any measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Curvature values can be calculated as "absolute" (always greater than 0, irrespective of the direction of curvature), or "signed" (sign dependent on direction of curvature, but requires the "start" end of the backbone to be specified).<br><br>Note: Spline fitting will be performed in 2D, so any 3D objects will be projected into a single plane first.
-*/
+ * Fits a 2D spline to the backbone of objects. Each object in the input
+ * collection will be reduced to a single (longest skeleton path) backbone,
+ * which will be fit with the spline. Local curvature of the spline can be
+ * calculated and any measurements will be assigned to the relevant object
+ * (irrespective of whether spline objects are exported). Curvature values can
+ * be calculated as "absolute" (always greater than 0, irrespective of the
+ * direction of curvature), or "signed" (sign dependent on direction of
+ * curvature, but requires the "start" end of the backbone to be specified).<br>
+ * <br>
+ * Note: Spline fitting will be performed in 2D, so any 3D objects will be
+ * projected into a single plane first.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectCurvature extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input/output";
 
-	/**
-	* Objects to which splines will be fit.  A single spline will be fit to each object in this collection.  Any calculated measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Note: Spline fitting will be performed in 2D, so any 3D objects will be projected into a single plane first.
-	*/
+    /**
+     * Objects to which splines will be fit. A single spline will be fit to each
+     * object in this collection. Any calculated measurements will be assigned to
+     * the relevant object (irrespective of whether spline objects are exported).
+     * Note: Spline fitting will be performed in 2D, so any 3D objects will be
+     * projected into a single plane first.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Controls whether spline objects are exported:<br><ul><li>"Do not store" No spline objects are output by this module.</li><li>"Individual control points" Specific points along the contour are exported.  Each control point is itself a separate object, which is a child of the corresponding input object.  As such, each input object will generally have multiple child control point objects.</li><li>"Full contour" All points along the spline are exported as a single object.  This object is stored as a child of the corresponding input object.</li></ul>
-	*/
+    /**
+     * Controls whether spline objects are exported:<br>
+     * <ul>
+     * <li>"Do not store" No spline objects are output by this module.</li>
+     * <li>"Individual control points" Specific points along the contour are
+     * exported. Each control point is itself a separate object, which is a child of
+     * the corresponding input object. As such, each input object will generally
+     * have multiple child control point objects.</li>
+     * <li>"Full contour" All points along the spline are exported as a single
+     * object. This object is stored as a child of the corresponding input
+     * object.</li>
+     * </ul>
+     */
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
 
-	/**
-	* The name assigned to the objects if they are being exported.
-	*/
+    /**
+     * The name assigned to the objects if they are being exported.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-	/**
-	* If spline objects are being exported (either as full contours or as individual control points), this value controls the interval between points.  As such, increasing values will export fewer and fewer points.
-	*/
+    /**
+     * If spline objects are being exported (either as full contours or as
+     * individual control points), this value controls the interval between points.
+     * As such, increasing values will export fewer and fewer points.
+     */
     public static final String EXPORT_EVERY_N_POINTS = "Export every N points";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FITTING_SEPARATOR = "Spline fitting";
 
-	/**
-	* Controls how the spline is fit to the input object:<br><ul><li>"LOESS (smooth fitting)" Performs a local regression (LOESS) interpolation of the line to give a smoothed representation of the object backbone (longest skeleton path).  Uses <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">Apache Math3 LoessInterpolator</a>.</li><li>"Standard (fits all points)" Fit spline is formed of straight line segments between every other point along the input object backbone (longest skeleton path).  This method doesn't perform any smoothing.  Uses <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/SplineInterpolator.html">Apache Math3 SplineInterpolator</a>.</li></ul>
-	*/
+    /**
+     * Controls how the spline is fit to the input object:<br>
+     * <ul>
+     * <li>"LOESS (smooth fitting)" Performs a local regression (LOESS)
+     * interpolation of the line to give a smoothed representation of the object
+     * backbone (longest skeleton path). Uses <a href=
+     * "https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">Apache
+     * Math3 LoessInterpolator</a>.</li>
+     * <li>"Standard (fits all points)" Fit spline is formed of straight line
+     * segments between every other point along the input object backbone (longest
+     * skeleton path). This method doesn't perform any smoothing. Uses <a href=
+     * "https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/SplineInterpolator.html">Apache
+     * Math3 SplineInterpolator</a>.</li>
+     * </ul>
+     */
     public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
     public static final String N_NEIGHBOURS = "Number of neighbours (smoothing)";
 
-	/**
-	* "This many robustness iterations are done.  A sensible value is usually 0 (just the initial fit without any robustness iterations) to 4".  Description taken from <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">LoessInterpolator documentation</a>
-	*/
+    /**
+     * "This many robustness iterations are done. A sensible value is usually 0
+     * (just the initial fit without any robustness iterations) to 4". Description
+     * taken from <a href=
+     * "https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">LoessInterpolator
+     * documentation</a>
+     */
     public static final String ITERATIONS = "Iterations";
 
-	/**
-	* "If the median residual at a certain robustness iteration is less than this amount, no more iterations are done".  Description taken from <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">LoessInterpolator documentation</a>
-	*/
+    /**
+     * "If the median residual at a certain robustness iteration is less than this
+     * amount, no more iterations are done". Description taken from <a href=
+     * "https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html">LoessInterpolator
+     * documentation</a>
+     */
     public static final String ACCURACY = "Accuracy";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MEASUREMENT_SEPARATOR = "Spline measurement";
 
-	/**
-	* When selected, the fit spline will be oriented such that the first point is closer to the reference point (specified by measurements "X-axis reference measurement" and "Y-axis reference measurement") than the final point in the spline.  Having this consistency to the spline orientation allows measurements relative to the first point to be calculated (e.g. relative location of maximum curvature along the spline).  When this is not selected, there's no guarantee of which end of the spline will be "first".
-	*/
+    /**
+     * When selected, the fit spline will be oriented such that the first point is
+     * closer to the reference point (specified by measurements "X-axis reference
+     * measurement" and "Y-axis reference measurement") than the final point in the
+     * spline. Having this consistency to the spline orientation allows measurements
+     * relative to the first point to be calculated (e.g. relative location of
+     * maximum curvature along the spline). When this is not selected, there's no
+     * guarantee of which end of the spline will be "first".
+     */
     public static final String RELATE_TO_REFERENCE_POINT = "Relate to reference point";
 
-	/**
-	* If "Relate to reference point" is selected, this is the measurement associated with the input object that will provide the x-axis reference for determining the orientation of the spline.
-	*/
+    /**
+     * If "Relate to reference point" is selected, this is the measurement
+     * associated with the input object that will provide the x-axis reference for
+     * determining the orientation of the spline.
+     */
     public static final String X_REF_MEASUREMENT = "X-axis reference measurement";
 
-	/**
-	* If "Relate to reference point" is selected, this is the measurement associated with the input object that will provide the y-axis reference for determining the orientation of the spline.
-	*/
+    /**
+     * If "Relate to reference point" is selected, this is the measurement
+     * associated with the input object that will provide the y-axis reference for
+     * determining the orientation of the spline.
+     */
     public static final String Y_REF_MEASUREMENT = "Y-axis reference measurement";
 
-	/**
-	* When selected (and when "Relate to reference point" is also selected), absolute curvature values will be calculated.  Absolute curvatures are always greater than or equal to 0, irrespective of direction.  Increasing signed curvature values indicate increasing curvatures.
-	*/
+    /**
+     * When selected (and when "Relate to reference point" is also selected),
+     * absolute curvature values will be calculated. Absolute curvatures are always
+     * greater than or equal to 0, irrespective of direction. Increasing signed
+     * curvature values indicate increasing curvatures.
+     */
     public static final String ABSOLUTE_CURVATURE = "Measure absolute curvature";
 
-	/**
-	* When selected (and when "Relate to reference point" is also selected), signed curvature values will be calculated.  Signed curvatures are increasingly positive as the spline bends left and increasingly negative as the spline bends right (directions relative to path along spline, starting at first point).
-	*/
+    /**
+     * When selected (and when "Relate to reference point" is also selected), signed
+     * curvature values will be calculated. Signed curvatures are increasingly
+     * positive as the spline bends left and increasingly negative as the spline
+     * bends right (directions relative to path along spline, starting at first
+     * point).
+     */
     public static final String SIGNED_CURVATURE = "Measure signed curvature";
 
-	/**
-	* When selected, the angle between the two ends of the spline are calculated in degree units.
-	*/
+    /**
+     * When selected, the angle between the two ends of the spline are calculated in
+     * degree units.
+     */
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RENDERING_SEPARATOR = "Rendering";
 
-	/**
-	* When selected, the fit spline(s) will be rendered as an overlay on the image specified by "Input image".
-	*/
+    /**
+     * When selected, the fit spline(s) will be rendered as an overlay on the image
+     * specified by "Input image".
+     */
     public static final String DRAW_SPLINE = "Draw spline";
 
-	/**
-	* If drawing the spline(s), this is the image onto which they will be added as overlays.
-	*/
+    /**
+     * If drawing the spline(s), this is the image onto which they will be added as
+     * overlays.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* If drawing the spline(s), when this is selected, the spline overlays will be added to the image specified by "Input image".  If not selected, the image containing the overlays will be stored separately in the workspace with the name specified by "Output image".
-	*/
+    /**
+     * If drawing the spline(s), when this is selected, the spline overlays will be
+     * added to the image specified by "Input image". If not selected, the image
+     * containing the overlays will be stored separately in the workspace with the
+     * name specified by "Output image".
+     */
     public static final String APPLY_TO_IMAGE = "Apply to image";
 
-	/**
-	* If drawing the spline(s) and "Apply to image" is not selected, this is the name with which the overlay images will be stored in the workspace.
-	*/
+    /**
+     * If drawing the spline(s) and "Apply to image" is not selected, this is the
+     * name with which the overlay images will be stored in the workspace.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* If drawing the spline(s), this is the width of the spline overlay lines that will be drawn.
-	*/
+    /**
+     * If drawing the spline(s), this is the width of the spline overlay lines that
+     * will be drawn.
+     */
     public static final String LINE_WIDTH = "Line width";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
 
@@ -218,6 +285,8 @@ public class MeasureObjectCurvature extends Module {
         String REL_LOC_OF_MIN_CURVATURE = "CURVATURE // REL_LOC_OF_MIN_CURVATURE";
         String REL_LOC_OF_MAX_CURVATURE = "CURVATURE // REL_LOC_OF_MAX_CURVATURE";
         String HEAD_TAIL_ANGLE_DEGS = "CURVATURE // HEAD_TAIL_ANGLE_DEGS";
+        String ABSOLUTE_CURVATURE_PX = "ABSOLUTE_CURVATURE_(PX⁻¹)";
+        String ABSOLUTE_CURVATURE_CAL = "ABSOLUTE_CURVATURE_(${SCAL}⁻¹)";
 
     }
 
@@ -257,10 +326,11 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public static CurvatureCalculator getCurvatureCalculator(ArrayList<Point<Integer>> longestPath,
-            String splineFittingMethod, int nNeighbours, int iterations, double accuracy, boolean isLoop) {
+    public static CurvatureCalculator getCurvatureCalculator(ArrayList<Point<Double>> longestPath,
+            String splineFittingMethod, int nNeighbours, int iterations, double accuracy, boolean isLoop,
+            boolean is2D) {
         // Calculating local curvature along the path
-        CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath, isLoop);
+        CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath, isLoop, is2D);
         switch (splineFittingMethod) {
             case SplineFittingMethods.LOESS:
                 curvatureCalculator.setNNeighbours(nNeighbours);
@@ -445,7 +515,7 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public Obj createFullContour(Obj inputObject, Objs outputObjects, ArrayList<Point<Integer>> spline,
+    public Obj createFullContour(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double> spline,
             int everyNPoints, boolean isLoop) {
         if (spline == null)
             return null;
@@ -453,7 +523,7 @@ public class MeasureObjectCurvature extends Module {
         Obj splineObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
         Point<Integer> previousVertex = null;
-        for (Point<Integer> currentVertex : spline) {
+        for (Point<Integer> currentVertex : spline.keySet()) {
             if (previousVertex == null) {
                 previousVertex = currentVertex;
                 continue;
@@ -465,8 +535,11 @@ public class MeasureObjectCurvature extends Module {
         }
 
         // If a loop, connect the ends
-        if (isLoop)
-            addLineSegment(splineObject, spline.get(0), spline.get(spline.size() - 1), everyNPoints);
+        if (isLoop) {
+            ArrayList<Point<Integer>> pts = new ArrayList<>();
+            pts.addAll(spline.keySet());
+            addLineSegment(splineObject, pts.get(0), pts.get(spline.size() - 1), everyNPoints);
+        }
 
         splineObject.setT(inputObject.getT());
         splineObject.addParent(inputObject);
@@ -498,16 +571,19 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public void createControlPointObjects(Obj inputObject, Objs outputObjects, ArrayList<Point<Integer>> spline,
+    public void createControlPointObjects(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double> spline,
             int everyNPoints) {
         int i = 0;
-        for (Point<Integer> vertex : spline) {
+        for (Point<Integer> vertex : spline.keySet()) {
             try {
                 if (i++ % everyNPoints == 0) {
                     Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
                     splineObject.add(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);
+                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_PX,spline.get(vertex)));
+                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_CAL,spline.get(vertex)/inputObject.getDppXY()));
+                    
                     inputObject.addChild(splineObject);
                 }
             } catch (PointOutOfRangeException e) {
@@ -536,28 +612,28 @@ public class MeasureObjectCurvature extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectName);
-        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS,workspace);
-        String splineFittingMethod = parameters.getValue(SPLINE_FITTING_METHOD,workspace);
-        int nNeighbours = parameters.getValue(N_NEIGHBOURS,workspace);
-        int iterations = parameters.getValue(ITERATIONS,workspace);
-        double accuracy = parameters.getValue(ACCURACY,workspace);
-        boolean useReference = parameters.getValue(RELATE_TO_REFERENCE_POINT,workspace);
-        String xReference = parameters.getValue(X_REF_MEASUREMENT,workspace);
-        String yReference = parameters.getValue(Y_REF_MEASUREMENT,workspace);
-        boolean absoluteCurvature = parameters.getValue(ABSOLUTE_CURVATURE,workspace);
-        boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE,workspace);
-        boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE,workspace);
-        int fittingRange = parameters.getValue(FITTING_RANGE_PX,workspace);
-        boolean drawSpline = parameters.getValue(DRAW_SPLINE,workspace);
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
-        double maxCurvature = parameters.getValue(MAX_CURVATURE,workspace);
+        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS, workspace);
+        String splineFittingMethod = parameters.getValue(SPLINE_FITTING_METHOD, workspace);
+        int nNeighbours = parameters.getValue(N_NEIGHBOURS, workspace);
+        int iterations = parameters.getValue(ITERATIONS, workspace);
+        double accuracy = parameters.getValue(ACCURACY, workspace);
+        boolean useReference = parameters.getValue(RELATE_TO_REFERENCE_POINT, workspace);
+        String xReference = parameters.getValue(X_REF_MEASUREMENT, workspace);
+        String yReference = parameters.getValue(Y_REF_MEASUREMENT, workspace);
+        boolean absoluteCurvature = parameters.getValue(ABSOLUTE_CURVATURE, workspace);
+        boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE, workspace);
+        boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE, workspace);
+        int fittingRange = parameters.getValue(FITTING_RANGE_PX, workspace);
+        boolean drawSpline = parameters.getValue(DRAW_SPLINE, workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH, workspace);
+        double maxCurvature = parameters.getValue(MAX_CURVATURE, workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
         Objs outputObjects = null;
@@ -615,8 +691,15 @@ public class MeasureObjectCurvature extends Module {
                 }
             }
 
-            CurvatureCalculator calculator = getCurvatureCalculator(longestPath, splineFittingMethod, nNeighbours,
-                    iterations, accuracy, isLoop);
+            // Converting to ArrayList<Point<Double>> with Z-axis scaling applied
+            double conversion = inputObject.is2D() ? 1 : inputObject.getDppZ() / inputObject.getDppXY();
+
+            ArrayList<Point<Double>> longestPathConv = new ArrayList<>();
+            for (Point<Integer> ptIn : longestPath)
+                longestPathConv.add(new Point<Double>((double) ptIn.x, (double) ptIn.y, (double) ptIn.z * conversion));
+
+            CurvatureCalculator calculator = getCurvatureCalculator(longestPathConv, splineFittingMethod, nNeighbours,
+                    iterations, accuracy, isLoop, inputObject.is2D());
             TreeMap<Double, Double> curvature = calculator.getCurvature();
 
             if (curvature == null)
@@ -636,12 +719,23 @@ public class MeasureObjectCurvature extends Module {
                 measureHeadTailAngle(inputObject, longestPath, fittingRange);
 
             switch (objectOutputMode) {
-                case ObjectOutputModes.FULL_CONTOUR:
-                    createFullContour(inputObject, outputObjects, calculator.getSpline(), exportEveryNPoints, isLoop);
-
-                    break;
                 case ObjectOutputModes.CONTROL_POINTS:
-                    createControlPointObjects(inputObject, outputObjects, calculator.getSpline(), exportEveryNPoints);
+                case ObjectOutputModes.FULL_CONTOUR:
+                    TreeMap<Point<Double>, Double> spline = calculator.getSpline();
+                    TreeMap<Point<Integer>, Double> splinePath = new TreeMap<>();
+
+                    for (Point<Double> ptIn : spline.keySet())
+                        splinePath.put(new Point<Integer>((int) Math.round(ptIn.x), (int) Math.round(ptIn.y),
+                                (int) (ptIn.z / conversion)), spline.get(ptIn));
+
+                    switch (objectOutputMode) {
+                        case ObjectOutputModes.FULL_CONTOUR:
+                            createFullContour(inputObject, outputObjects, splinePath, exportEveryNPoints, isLoop);
+                            break;
+                        case ObjectOutputModes.CONTROL_POINTS:
+                            createControlPointObjects(inputObject, outputObjects, splinePath, exportEveryNPoints);
+                            break;
+                    }
                     break;
             }
 
@@ -701,13 +795,13 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE,workspace)) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)) {
             case ObjectOutputModes.CONTROL_POINTS:
             case ObjectOutputModes.FULL_CONTOUR:
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
@@ -718,7 +812,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(FITTING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPLINE_FITTING_METHOD));
-        switch ((String) parameters.getValue(SPLINE_FITTING_METHOD,workspace)) {
+        switch ((String) parameters.getValue(SPLINE_FITTING_METHOD, workspace)) {
             case SplineFittingMethods.LOESS:
                 returnedParameters.add(parameters.getParameter(N_NEIGHBOURS));
                 returnedParameters.add(parameters.getParameter(ITERATIONS));
@@ -728,8 +822,8 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_TO_REFERENCE_POINT));
-        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT,workspace)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT, workspace)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
             ((ObjectMeasurementP) parameters.getParameter(X_REF_MEASUREMENT)).setObjectName(inputObjectsName);
             ((ObjectMeasurementP) parameters.getParameter(Y_REF_MEASUREMENT)).setObjectName(inputObjectsName);
@@ -741,15 +835,15 @@ Workspace workspace = null;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATE_END_END_ANGLE));
-        if ((boolean) parameters.getValue(CALCULATE_END_END_ANGLE,workspace))
+        if ((boolean) parameters.getValue(CALCULATE_END_END_ANGLE, workspace))
             returnedParameters.add(parameters.getParameter(FITTING_RANGE_PX));
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
-        if ((boolean) parameters.getValue(DRAW_SPLINE,workspace)) {
+        if ((boolean) parameters.getValue(DRAW_SPLINE, workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
-            if (!(boolean) parameters.getValue(APPLY_TO_IMAGE,workspace))
+            if (!(boolean) parameters.getValue(APPLY_TO_IMAGE, workspace))
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
             returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
@@ -761,14 +855,14 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         ObjMeasurementRef meanCurvatureAbsolutePx = objectMeasurementRefs
                 .getOrPut(Measurements.MEAN_ABSOLUTE_CURVATURE_PX);
@@ -830,13 +924,13 @@ Workspace workspace = null;
         boolean relateToReference = false;
         boolean absoluteCurvature = false;
         boolean signedCurvature = false;
-        boolean calculateHeadTailAngle = parameters.getValue(CALCULATE_END_END_ANGLE,workspace);
+        boolean calculateHeadTailAngle = parameters.getValue(CALCULATE_END_END_ANGLE, workspace);
 
-        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT,workspace)) {
+        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT, workspace)) {
             relateToReference = true;
-            if ((boolean) parameters.getValue(ABSOLUTE_CURVATURE,workspace))
+            if ((boolean) parameters.getValue(ABSOLUTE_CURVATURE, workspace))
                 absoluteCurvature = true;
-            if ((boolean) parameters.getValue(SIGNED_CURVATURE,workspace))
+            if ((boolean) parameters.getValue(SIGNED_CURVATURE, workspace))
                 signedCurvature = true;
 
         } else {
@@ -889,28 +983,40 @@ Workspace workspace = null;
         if (calculateHeadTailAngle)
             returnedRefs.add(headTailAngle);
 
+        if (((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)).equals(ObjectOutputModes.CONTROL_POINTS)) {
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+            ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.ABSOLUTE_CURVATURE_PX);
+            ref.setObjectsName(outputObjectsName);
+            returnedRefs.add(ref);
+
+            ref = objectMeasurementRefs.getOrPut(Measurements.ABSOLUTE_CURVATURE_CAL);
+            ref.setObjectsName(outputObjectsName);
+            returnedRefs.add(ref);
+
+        }
+
         return returnedRefs;
 
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs refCollection = new ParentChildRefs();
 
-        if (!parameters.getValue(OBJECT_OUTPUT_MODE,workspace).equals(ObjectOutputModes.DO_NOT_STORE)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        if (!parameters.getValue(OBJECT_OUTPUT_MODE, workspace).equals(ObjectOutputModes.DO_NOT_STORE)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
             refCollection.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
         }
 
@@ -920,7 +1026,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
