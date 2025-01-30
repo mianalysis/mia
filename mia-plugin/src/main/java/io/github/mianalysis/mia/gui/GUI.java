@@ -2,9 +2,11 @@ package io.github.mianalysis.mia.gui;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -64,6 +66,7 @@ public class GUI {
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();
+    private static Font defaultFont = null;
     private static CustomMenuBar menuBar = new CustomMenuBar();
     private static StatusTextField textField = new StatusTextField();
     private static ProcessingPanel processingPanel = new ProcessingPanel();
@@ -89,7 +92,7 @@ public class GUI {
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
-        frameHeight = Math.max(frameHeight,minimumFrameHeight);
+        frameHeight = Math.max(frameHeight, minimumFrameHeight);
 
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
@@ -160,6 +163,21 @@ public class GUI {
                         "Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion() + ".");
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static Font getDefaultFont() {
+        if (defaultFont != null)
+            return defaultFont;
+
+        // create the font to use. Specify the size!
+        try {
+            defaultFont = Font.createFont(Font.TRUETYPE_FONT, GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(defaultFont);
+            return defaultFont;
+        } catch (FontFormatException | IOException e) {
+            MIA.log.writeError(e);
+            return null;
         }
     }
 
@@ -529,8 +547,6 @@ public class GUI {
         updateParameters(false, null);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
-
-        
 
     }
 

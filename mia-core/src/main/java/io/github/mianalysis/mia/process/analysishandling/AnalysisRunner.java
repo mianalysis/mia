@@ -346,7 +346,7 @@ public class AnalysisRunner {
 
                 MIA.log.writeError(
                         "Failed for file " + file.getName() + ", series " + seriesNumber + " (" + memoryMessage + ")");
-                t.printStackTrace();
+                MIA.log.writeError(t);
 
                 workspace.clearAllImages(true);
                 workspace.clearAllObjects(true);

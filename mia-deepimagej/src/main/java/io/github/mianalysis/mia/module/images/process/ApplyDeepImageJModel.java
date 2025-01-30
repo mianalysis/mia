@@ -8,6 +8,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -15,6 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -24,6 +26,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -102,6 +105,11 @@ public class ApplyDeepImageJModel extends Module {
 
     }
 
+    public interface Measurements {
+        String CLASSIFICATION_CLASS = "CLASSIFICATION // CLASS";
+        String CLASSIFICATION_PROBABILITY = "CLASSIFICATION // PROBABILITY";
+    }
+
     public ApplyDeepImageJModel(Modules modules) {
         super("Apply DeepImageJ model", modules);
     }
@@ -128,6 +136,7 @@ public class ApplyDeepImageJModel extends Module {
 
         // Running deep learning model
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
+        String outputType = model.params.outputList.get(0).tensorType;
 
         // Updating pre and post processing options
         boolean usePreprocessing = true;
@@ -148,39 +157,51 @@ public class ApplyDeepImageJModel extends Module {
             for (int t = 0; t < inputIpl.getNFrames(); t++) {
                 int inputIdx = inputIpl.getStackIndex(1, z + 1, t + 1);
                 ImagePlus tempIpl = new ImagePlus("Temp", inputIst.getProcessor(inputIdx));
-                ImagePlus tempOutputIpl = pDIJ.runModel(tempIpl, model, format, usePreprocessing, usePostprocessing,
+                Object modelOutput = pDIJ.runModel(tempIpl, model, format, usePreprocessing, usePostprocessing,
                         patchSize);
-                
-                // If it hasn't already been created (i.e. this is the first slice), create output ImagePlus
-                if (outputIpl == null) {
-                    int width = tempOutputIpl.getWidth();
-                    int height = tempOutputIpl.getHeight();
-                    int nChannels = tempOutputIpl.getNChannels();
-                    int nSlices = inputIpl.getNSlices();
-                    int nFrames = inputIpl.getNFrames();
 
-                    outputIpl = IJ.createHyperStack(outputImageName, width, height, nChannels, nSlices, nFrames, 32);
+                if (outputType.equals("image")) {
+                    ImagePlus tempOutputIpl = (ImagePlus) modelOutput;
 
-                    Calibration inputCal = inputIpl.getCalibration();
-                    Calibration outputCal = new Calibration();
-                    outputCal.pixelHeight = inputCal.pixelHeight;
-                    outputCal.pixelWidth = inputCal.pixelWidth;
-                    outputCal.pixelDepth = inputCal.pixelDepth;
-                    outputCal.setUnit(inputCal.getUnits());
-                    outputCal.setTimeUnit(inputCal.getTimeUnit());
-                    outputCal.fps = inputCal.fps;
-                    outputCal.frameInterval = inputCal.frameInterval;
-                    outputIpl.setCalibration(outputCal);
+                    // If it hasn't already been created (i.e. this is the first slice), create
+                    // output ImagePlus
+                    if (outputIpl == null) {
+                        int width = tempOutputIpl.getWidth();
+                        int height = tempOutputIpl.getHeight();
+                        int nChannels = tempOutputIpl.getNChannels();
+                        int nSlices = inputIpl.getNSlices();
+                        int nFrames = inputIpl.getNFrames();
 
-                    outputIst = outputIpl.getStack();
+                        outputIpl = IJ.createHyperStack(outputImageName, width, height, nChannels, nSlices, nFrames,
+                                32);
 
-                }
+                        Calibration inputCal = inputIpl.getCalibration();
+                        Calibration outputCal = new Calibration();
+                        outputCal.pixelHeight = inputCal.pixelHeight;
+                        outputCal.pixelWidth = inputCal.pixelWidth;
+                        outputCal.pixelDepth = inputCal.pixelDepth;
+                        outputCal.setUnit(inputCal.getUnits());
+                        outputCal.setTimeUnit(inputCal.getTimeUnit());
+                        outputCal.fps = inputCal.fps;
+                        outputCal.frameInterval = inputCal.frameInterval;
+                        outputIpl.setCalibration(outputCal);
 
-                ImageStack tempIst = tempOutputIpl.getStack();
-                for (int c=0;c<tempOutputIpl.getNChannels();c++) {
-                    int tempOutputIdx = tempOutputIpl.getStackIndex(c+1, 1, 1);
-                    int outputIdx = outputIpl.getStackIndex(c+1, z + 1, t + 1);
-                    outputIst.setProcessor(tempIst.getProcessor(tempOutputIdx), outputIdx);
+                        outputIst = outputIpl.getStack();
+
+                    }
+
+                    ImageStack tempIst = tempOutputIpl.getStack();
+                    for (int c = 0; c < tempOutputIpl.getNChannels(); c++) {
+                        int tempOutputIdx = tempOutputIpl.getStackIndex(c + 1, 1, 1);
+                        int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, t + 1);
+                        outputIst.setProcessor(tempIst.getProcessor(tempOutputIdx), outputIdx);
+                    }
+                } else if (outputType.equals("list")) {
+                    float[] modelOutputArray = (float[]) modelOutput;
+                    inputImage.addMeasurement(
+                            new Measurement(Measurements.CLASSIFICATION_CLASS, (int) Math.round(modelOutputArray[0])));
+                    inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_PROBABILITY,
+                            (int) Math.round(modelOutputArray[1])));
                 }
 
                 writeProgressStatus(++count, inputIst.size(), "slices");
@@ -188,15 +209,20 @@ public class ApplyDeepImageJModel extends Module {
             }
         }
 
-        // It seems necessary to reapply the ImageStack
-        outputIpl.setStack(outputIst);
+        if (outputType.equals("image")) {
+            // It seems necessary to reapply the ImageStack
+            outputIpl.setStack(outputIst);
 
-        // Storing output image
-        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
-        workspace.addImage(outputImage);
+            // Storing output image
+            Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+            workspace.addImage(outputImage);
 
-        if (showOutput)
-            outputImage.show();
+            if (showOutput)
+                outputImage.show();
+        } else if (outputType.equals("list")) {
+            if (showOutput)
+                inputImage.showMeasurements(this);
+        }
 
         return Status.PASS;
 
@@ -222,6 +248,7 @@ public class ApplyDeepImageJModel extends Module {
     public Parameters updateAndGetParameters() {
         Workspace workspace = null;
         String modelName = parameters.getValue(MODEL, workspace);
+        DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -230,7 +257,12 @@ public class ApplyDeepImageJModel extends Module {
         ((MessageP) parameters.get(AXES_ORDER))
                 .setValue("Selected model requires input image axes to be in the order: "
                         + PrepareDeepImageJ.getAxes(modelName));
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        if (model != null) {
+            String outputType = model.params.outputList.get(0).tensorType;
+            if (outputType.equals("image"))
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        }
 
         returnedParameters.add(parameters.getParameter(MODEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MODEL));
@@ -255,7 +287,28 @@ public class ApplyDeepImageJModel extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+        Workspace workspace = null;
+
+        ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
+
+        String modelName = parameters.getValue(MODEL, workspace);
+        DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
+
+        if (model != null) {
+            String outputType = model.params.outputList.get(0).tensorType;
+            if (outputType.equals("list")) {
+                ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(Measurements.CLASSIFICATION_CLASS);
+                ref.setImageName(parameters.getValue(INPUT_IMAGE, workspace));
+                returnedRefs.add(ref);
+
+                ref = imageMeasurementRefs.getOrPut(Measurements.CLASSIFICATION_PROBABILITY);
+                ref.setImageName(parameters.getValue(INPUT_IMAGE, workspace));
+                returnedRefs.add(ref);
+            }
+        }
+
+        return returnedRefs;
+
     }
 
     @Override

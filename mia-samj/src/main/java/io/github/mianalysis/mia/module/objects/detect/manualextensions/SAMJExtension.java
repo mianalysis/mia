@@ -27,6 +27,7 @@ import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
 
+import ai.nets.samj.annotation.Mask;
 import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
@@ -348,14 +349,14 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
         Roi roi = displayIpl.getRoi();
 
-        List<Polygon> polygons = null;
+        List<Mask> masks = null;
         switch (roi.getType()) {
             case Roi.FREELINE:
             case Roi.LINE:
             case Roi.POINT:
             case Roi.POLYLINE:
             default:
-                polygons = getPolygonFromPoints(roi);
+                masks = getPolygonFromPoints(roi);
                 break;
 
             case Roi.FREEROI:
@@ -365,15 +366,15 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
                 // polygons = getPolygonFromMask(roi);
                 // break;
             case Roi.RECTANGLE:
-                polygons = getPolygonFromRectangle(roi);
+                masks = getPolygonFromRectangle(roi);
                 break;
         }
 
-        if (polygons == null)
+        if (masks == null)
             return;
 
-        for (Polygon polygon : polygons) {
-            PolygonRoi polygonRoi = new PolygonRoi(polygon, PolygonRoi.POLYGON);
+        for (Mask mask : masks) {
+            PolygonRoi polygonRoi = new PolygonRoi(mask.getContour(), PolygonRoi.POLYGON);
             displayIpl.setRoi(polygonRoi);
         }
 
@@ -418,7 +419,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
     // }
 
-    public List<Polygon> getPolygonFromPoints(Roi roi) {
+    public List<Mask> getPolygonFromPoints(Roi roi) {
         Point[] points = roi.getContainedPoints();
 
         ArrayList<int[]> pts = new ArrayList<>();
@@ -435,7 +436,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
     }
 
-    public List<Polygon> getPolygonFromRectangle(Roi roi) {
+    public List<Mask> getPolygonFromRectangle(Roi roi) {
         Rectangle rectangle = roi.getBounds();
         int x0 = rectangle.x;
         int y0 = rectangle.y;

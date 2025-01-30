@@ -25,6 +25,7 @@ import deepimagej.tools.StartTensorflowService;
 import deepimagej.tools.SystemUsage;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.ResultsTable;
 import ij.plugin.PlugIn;
 import io.github.mianalysis.mia.MIA;
 
@@ -230,7 +231,7 @@ public class PrepareDeepImageJ implements PlugIn {
 
     }
 
-    public ImagePlus runModel(ImagePlus imp, DeepImageJ dp, String format, boolean usePreprocessing,
+    public Object runModel(ImagePlus imp, DeepImageJ dp, String format, boolean usePreprocessing,
             boolean usePostprocessing,
             String patchString) {
         String loadInfo = "ImageJ";
@@ -368,14 +369,14 @@ public class PrepareDeepImageJ implements PlugIn {
         if (rp != null)
             rp.setService(null);
 
-        ImagePlus outputIpl = calculateImage(imp, rp, service, dp);
+        Object outputIpl = calculateImage(imp, rp, service, dp);
         service.shutdown();
 
         return outputIpl;
 
     }
 
-    public ImagePlus calculateImage(ImagePlus inp, RunnerProgress rp, ExecutorService service, DeepImageJ dp) {
+    public Object calculateImage(ImagePlus inp, RunnerProgress rp, ExecutorService service, DeepImageJ dp) {
         int runStage = 0;
         Log log = new Log();
         HashMap<String, Object> output = null;
@@ -466,8 +467,34 @@ public class PrepareDeepImageJ implements PlugIn {
         }
 
         ImagePlus ipl = null;
+
+        // System.out.println("Size "+output.size());
+        // System.out.println(output.get("output").getClass());
         // for (String k : output.keySet())
-        //     MIA.log.writeDebug("KEY " + k);
+        //     System.out.println("KEY " + k);
+
+        if (output == null || output.size() == 0)
+            return null;
+
+        Object firstOutput = output.values().iterator().next();
+        if (firstOutput instanceof ResultsTable) {
+            ResultsTable rt = (ResultsTable) firstOutput;
+            float[] vals = rt.getColumn(0);
+            int maxIdx = -1;
+            float maxVal = 0;
+            for (int idx=0;idx<vals.length;idx++)
+                if (vals[idx] > maxVal) {
+                    maxIdx = idx;
+                    maxVal = vals[idx];
+                }
+            
+            IJ.selectWindow(rt.getTitle());
+            IJ.run("Close");
+
+            return new float[]{maxIdx,maxVal};
+
+        }
+
         Iterator<Object> iter = output.values().iterator();
         int minID = 0;
         while (iter.hasNext()) {

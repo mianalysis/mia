@@ -13,6 +13,8 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
 
+import com.fasterxml.jackson.core.util.VersionUtil;
+
 import io.github.mianalysis.mia.module.lostandfound.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
@@ -69,7 +71,7 @@ public abstract class MIA {
             } catch (IOException e) {
                 e.printStackTrace();
                 return "";
-            }            
+            }
         } else {
             return versionNumber;
         }

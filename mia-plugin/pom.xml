@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.0</version>
+        <version>1.7.1</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-plugin</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.1</version>
     <packaging>jar</packaging>
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -22,7 +22,7 @@
     </organization>
 
     <licenses>
-        
+
         <license>
             <name>GNU General Public License v3+</name>
             <url>http://www.gnu.org/licenses/gpl.html</url>
@@ -327,6 +327,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/*.ttf</exclude>
+                </excludes>
             </resource>
         </resources>
     </build>
