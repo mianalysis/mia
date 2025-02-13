@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.2</version>
+        <version>1.7.3</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-macros</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
     <packaging>jar</packaging>
     <name>mia-macros</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -127,13 +127,13 @@
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
-            <version>1.7.2</version>
+            <version>1.7.3</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-modules</artifactId>
-            <version>1.7.2</version>
+            <version>1.7.3</version>
         </dependency>
     </dependencies>
 

@@ -12,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
