@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.2</version>
+        <version>1.7.3</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-plugin</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
     <packaging>jar</packaging>
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>

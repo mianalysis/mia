@@ -291,9 +291,9 @@ public class ImageSaver extends AbstractSaver {
         DecimalFormat df = new DecimalFormat(zerosString);
 
         int count = 0;
-        int nChannelsOut = splitChannels ? inputIpl.getNChannels() : 1;
-        int nSlicesOut = splitZStack ? inputIpl.getNSlices() : 1;
-        int nFramesOut = splitTimeseries ? inputIpl.getNFrames() : 1;
+        int nChannelsOut = (!imageSequenceMode.equals(ImageSequenceModes.SINGLE_FILE) && splitChannels) ? inputIpl.getNChannels() : 1;
+        int nSlicesOut = (!imageSequenceMode.equals(ImageSequenceModes.SINGLE_FILE) && splitZStack) ? inputIpl.getNSlices() : 1;
+        int nFramesOut = (!imageSequenceMode.equals(ImageSequenceModes.SINGLE_FILE) && splitTimeseries) ? inputIpl.getNFrames() : 1;
 
         for (int t = 0; t < nFramesOut; t++) {
             for (int z = 0; z < nSlicesOut; z++) {

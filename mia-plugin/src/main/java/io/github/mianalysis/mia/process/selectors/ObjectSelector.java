@@ -134,11 +134,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private static final String SELECT_EMPTY_SPACE_IN_REGION = "Select unlabelled space in region";
 
     // GUI buttons
-    private static final String ADD_NEW = "Add new";
-    private static final String ADD_EXISTING = "Add to existing";
-    private static final String CHANGE_CLASS = "Change class";
-    private static final String REMOVE = "Remove";
-    private static final String FINISH = "Finish";
+    private static final String ADD_NEW = "Add as new object (F1)";
+    private static final String ADD_EXISTING = "Add to existing object (F2)";
+    private static final String REMOVE = "Remove object(s) (F3) ";
+    private static final String FINISH = "Finish adding objects (F4)";
+    private static final String CHANGE_CLASS = "Change object class (F5)";
 
     public interface AutoAcceptModes {
         String DO_NOTHING = "Do nothing";
@@ -245,19 +245,24 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void setControlPanelVisible(boolean visible) {
         frame.setVisible(visible);
-        if (visible) {
-            displayIpl.show();
-            displayIpl.getWindow().getComponent(0).addKeyListener(this);
-        } else {
-            displayIpl.hide();
-        }
     }
 
     public void setImageVisible(boolean visible) {
         if (visible) {
             displayIpl.show();
-            displayIpl.getWindow().getComponent(0).addKeyListener(this);
+
             displayIpl.getWindow().getCanvas().addMouseListener(this);
+
+            boolean listenerExists = false;
+            for (KeyListener listener:displayIpl.getWindow().getCanvas().getKeyListeners())
+                if (listener == this) {
+                    listenerExists = true;
+                    break;
+                }
+
+            if (!listenerExists)
+                displayIpl.getWindow().getCanvas().addKeyListener(this);
+            
         } else {
             displayIpl.hide();
         }
@@ -319,6 +324,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         frame.setJMenuBar(menuBar);
 
         frame.setAlwaysOnTop(true);
+        frame.setFocusable(true);
+        frame.addKeyListener(this);
+        list.addKeyListener(this);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -356,7 +364,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridy++;
         frame.add(sliceNotice, c);
 
-        JButton newObjectButton = new JButton("Add as new object");
+        JButton newObjectButton = new JButton(ADD_NEW);
         newObjectButton.addActionListener(this);
         newObjectButton.setActionCommand(ADD_NEW);
         c.gridy++;
@@ -364,31 +372,31 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(newObjectButton, c);
 
-        JButton existingObjectButton = new JButton("Add to existing object");
+        JButton existingObjectButton = new JButton(ADD_EXISTING);
         existingObjectButton.addActionListener(this);
         existingObjectButton.setActionCommand(ADD_EXISTING);
         c.gridx++;
         frame.add(existingObjectButton, c);
 
-        if (classSelector != null) {
-            JButton changeObjectClassButton = new JButton("Change object class");
-            changeObjectClassButton.addActionListener(this);
-            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
-            c.gridx++;
-            frame.add(changeObjectClassButton, c);
-        }
-
-        JButton removeObjectButton = new JButton("Remove object (s)");
+        JButton removeObjectButton = new JButton(REMOVE);
         removeObjectButton.addActionListener(this);
         removeObjectButton.setActionCommand(REMOVE);
         c.gridx++;
         frame.add(removeObjectButton, c);
 
-        JButton finishButton = new JButton("Finish adding objects");
+        JButton finishButton = new JButton(FINISH);
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
         c.gridx++;
         frame.add(finishButton, c);
+
+        if (classSelector != null) {
+            JButton changeObjectClassButton = new JButton(CHANGE_CLASS);
+            changeObjectClassButton.addActionListener(this);
+            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
+            c.gridx++;
+            frame.add(changeObjectClassButton, c);
+        }
 
         // Object number panel
         JLabel objectNumberLabel = new JLabel("Existing object number");
@@ -464,11 +472,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         displayIpl.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
 
-        frame.setMinimumSize(new Dimension(800,480));
-        frame.setMaximumSize(new Dimension(800,Integer.MAX_VALUE));
+        frame.setMinimumSize(new Dimension(800, 480));
+        frame.setMaximumSize(new Dimension(800, Integer.MAX_VALUE));
         frame.pack();
         frame.setLocation(new Point(x0, y0));
-        frame.setResizable(true);        
+        frame.setResizable(true);
         frame.setVisible(true);
 
     }
@@ -732,12 +740,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         // Getting the ROI
         Roi roi = displayIpl.getRoi();
 
-        if (roi == null) {
-            frame.setAlwaysOnTop(false);
-            IJ.error("Select a ROI first using the ImageJ ROI tools.");
-            frame.setAlwaysOnTop(true);
+        if (roi == null)
             return;
-        }
 
         if (roi.getType() == Roi.POINT)
             switch (pointMode) {
@@ -1145,9 +1149,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    void displayObjects(List<ObjRoi>  objRois) {
+    void displayObjects(List<ObjRoi> objRois) {
         ShapeRoi roi = null;
-        for (ObjRoi objRoi:objRois) {
+        for (ObjRoi objRoi : objRois) {
             if (roi == null) {
                 roi = new ShapeRoi(objRoi.getRoi());
                 continue;
@@ -1358,10 +1362,30 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        // if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
-        // new Thread(() -> {
-        // addNewObject();
-        // }).start();
+        String keyText = arg0.getKeyText(arg0.getKeyCode());
+
+        switch (keyText) {
+            case "F1":
+                addNewObject();
+                return;
+
+            case "F2":
+                addToExistingObject();
+                return;
+
+            case "F3":
+                removeObjects();
+                return;
+
+            case "F4":
+                processObjectsAndFinish();
+                return;
+
+            case "F5":
+                if (classSelector != null)
+                    changeObjectClass();
+                return;
+        }
     }
 
     @Override
