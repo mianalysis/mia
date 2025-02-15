@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -390,7 +391,7 @@ public class ColourFactory {
         if (Double.isNaN(min) || Double.isNaN(max)) {
             CumStat cs = new CumStat();
             for (Obj obj : objects.values()) {
-                Obj parentObj = obj.getParent(parentObjectsName);
+                ObjI parentObj = obj.getParent(parentObjectsName);
                 if (parentObj == null)
                     continue;
                 if (parentObj.getMeasurement(measurementName) == null)
@@ -409,7 +410,7 @@ public class ColourFactory {
             // Default hue value in case none is assigned
             float H = 0f;
 
-            Obj parentObj = object.getParent(parentObjectsName);
+            ObjI parentObj = object.getParent(parentObjectsName);
             if (parentObj == null) {
                 hues.put(ID, H);
                 continue;

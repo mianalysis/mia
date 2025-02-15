@@ -46,6 +46,11 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Im
 
     }
 
+    public void removeMeasurement(String name) {
+        measurements.remove(name);
+        
+    }
+
 
     // GETTERS AND SETTERS
 

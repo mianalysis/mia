@@ -2,9 +2,8 @@ package io.github.mianalysis.mia.process.coordinates;
 
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 
 public class SurfaceSeparationCalculator {
     private double dppXY;
@@ -20,16 +19,16 @@ public class SurfaceSeparationCalculator {
     //     calculate(v1, v2, force2D, false, false);
     // }
 
-    public SurfaceSeparationCalculator(Volume v1, Volume v2, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+    public SurfaceSeparationCalculator(VolumeI v1, VolumeI v2, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         calculate(v1, v2, false, ignoreEdgesXY, ignoreEdgesZ);
     }
 
-    public SurfaceSeparationCalculator(Volume v1, Volume v2, boolean force2D, boolean ignoreEdgesXY,
+    public SurfaceSeparationCalculator(VolumeI v1, VolumeI v2, boolean force2D, boolean ignoreEdgesXY,
             boolean ignoreEdgesZ) {
         calculate(v1, v2, force2D, ignoreEdgesXY, ignoreEdgesZ);
     }
 
-    protected void calculate(Volume v1, Volume v2, boolean force2D, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+    protected void calculate(VolumeI v1, VolumeI v2, boolean force2D, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         this.dppXY = v1.getDppXY();
         double minDist = Double.MAX_VALUE;
         Point<Integer> p1 = null;

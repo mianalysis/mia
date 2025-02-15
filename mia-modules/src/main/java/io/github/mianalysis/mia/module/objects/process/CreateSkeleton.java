@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;

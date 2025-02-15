@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -207,7 +208,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         return "";
     }
 
-    public static Volume getReferenceVolume(Obj inputObject, String relativeMode, boolean ignoreEdgesXY,
+    public static VolumeI getReferenceVolume(Obj inputObject, String relativeMode, boolean ignoreEdgesXY,
             boolean ignoreEdgesZ, @Nullable String parentObjectsName) {
         try {
             switch (relativeMode) {
@@ -311,7 +312,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
-    public static int[][] getBorderWidths(Volume inputObject, String bandMode, boolean applyMaxDist, double maxDist) {
+    public static int[][] getBorderWidths(VolumeI inputObject, String bandMode, boolean applyMaxDist, double maxDist) {
         // Calculating border widths for image cropping
         double[][] extents = inputObject.getExtents(true, false);
 
@@ -425,7 +426,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             int[][] inputBorderWidths = getBorderWidths(inputObject, bandMode, applyMaxDist, maxDist);
 
             // Creating reference object
-            Volume referenceObject = getReferenceVolume(inputObject, relativeMode, ignoreEdgesXY, ignoreEdgesZ,
+            VolumeI referenceObject = getReferenceVolume(inputObject, relativeMode, ignoreEdgesXY, ignoreEdgesZ,
                     parentObjectsName);
             double[][] extents = referenceObject.getExtents(true, false);
             int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);

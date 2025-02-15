@@ -13,13 +13,10 @@ import ij.gui.Roi;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
-import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -30,7 +27,7 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends Volume implements MeasurementProvider, ObjI {
+public class Obj extends Volume implements ObjI {
     /**
      * Unique instance ID for this object
      */
@@ -40,7 +37,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     private Objs objCollection;
 
-    private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjI> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
     private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
@@ -91,6 +88,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     // PUBLIC METHODS
 
+    @Override
     public void addMeasurement(Measurement measurement) {
         if (measurement == null)
             return;
@@ -98,6 +96,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     }
 
+    @Override
     public Measurement getMeasurement(String name) {
         if (measurements.get(name) == null)
             return null;
@@ -109,6 +108,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     }
 
+    @Override
     public void removeMeasurement(String name) {
         name = SpatialUnit.replace(name);
         name = TemporalUnit.replace(name);
@@ -117,6 +117,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     }
 
+    @Override
     public void addMetadataItem(ObjMetadata metadataItem) {
         if (metadataItem == null)
             return;
@@ -124,6 +125,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     }
 
+    @Override
     public ObjMetadata getMetadataItem(String name) {
         if (metadata.get(name) == null)
             return null;
@@ -135,6 +137,7 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     }
 
+    @Override
     public void removeMetadataItem(String name) {
         name = SpatialUnit.replace(name);
         name = TemporalUnit.replace(name);
@@ -143,105 +146,51 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
     }
 
+    @Override
     public Objs getObjectCollection() {
         return objCollection;
     }
 
+    @Override
     public void setObjectCollection(Objs objCollection) {
         this.objCollection = objCollection;
     }
 
+    @Override
     public String getName() {
         return objCollection.getName();
     }
 
+    @Override
     public int getID() {
         return ID;
     }
 
+    @Override
     public Obj setID(int ID) {
         this.ID = ID;
         return this;
     }
 
+    @Override
     public int getT() {
         return T;
     }
 
+    @Override
     public Obj setT(int t) {
         this.T = t;
         return this;
     }
 
-    public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
-        if (!useFullHierarchy)
-            return parents;
-
-        // Adding each parent and then the parent of that
-        LinkedHashMap<String, Obj> parentHierarchy = new LinkedHashMap<>(parents);
-
-        // Going through each parent, adding the parents of that.
-        for (Obj parent : parents.values()) {
-            if (parent == null)
-                continue;
-
-            LinkedHashMap<String, Obj> currentParents = parent.getParents(true);
-            if (currentParents == null)
-                continue;
-
-            parentHierarchy.putAll(currentParents);
-
-        }
-
-        return parentHierarchy;
-
+    @Override
+    public LinkedHashMap<String, ObjI> getParents() {
+        return parents;
     }
 
-    public void setParents(LinkedHashMap<String, Obj> parents) {
+    @Override
+    public void setParents(LinkedHashMap<String, ObjI> parents) {
         this.parents = parents;
-    }
-
-    public Obj getParent(String name) {
-        // Split name down by " // " tokenizer
-        String[] elements = name.split(" // ");
-
-        // Getting the first parent
-        Obj parent = parents.get(elements[0]);
-
-        // If the first parent was the only one listed, returning this
-        if (elements.length == 1)
-            return parent;
-
-        // If there are additional parents listed, re-constructing the string and
-        // running this method on the parent
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 1; i < elements.length; i++) {
-            stringBuilder.append(elements[i]);
-            if (i != elements.length - 1)
-                stringBuilder.append(" // ");
-        }
-
-        if (parent == null)
-            return null;
-
-        return parent.getParent(stringBuilder.toString());
-
-    }
-
-    public void addParent(Obj parent) {
-        parents.put(parent.getName(), parent);
-    }
-
-    public void addParent(String name, Obj parent) {
-        parents.put(name, parent);
-    }
-
-    public void removeParent(String name) {
-        parents.remove(name);
-    }
-
-    public void removeParent(Obj parent) {
-        parents.remove(parent.getName());
     }
 
     public LinkedHashMap<String, Objs> getChildren() {
@@ -725,11 +674,5 @@ public class Obj extends Volume implements MeasurementProvider, ObjI {
 
         return name;
 
-    }
-
-    @Override
-    public VolumeI createNewVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createNewVolume'");
     }
 }

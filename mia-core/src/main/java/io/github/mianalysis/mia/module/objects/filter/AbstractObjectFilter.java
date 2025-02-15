@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -47,7 +48,7 @@ public abstract class AbstractObjectFilter extends Module {
     protected static void processRemoval(Obj inputObject, @Nullable Objs outputObjects, Iterator<Obj> iterator) {
         // Getting existing relationships
         LinkedHashMap<String, Objs> children = inputObject.getChildren();
-        LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
+        LinkedHashMap<String, ObjI> parents = inputObject.getParents(true);
         LinkedHashMap<String, Objs> partners = inputObject.getPartners();
 
         // Removing existing relationships
@@ -66,7 +67,7 @@ public abstract class AbstractObjectFilter extends Module {
             }
 
             // Adding new parent relationships
-            for (Obj parentObject : parents.values()) {
+            for (ObjI parentObject : parents.values()) {
                 parentObject.addChild(inputObject);
                 inputObject.addParent(parentObject);
             }

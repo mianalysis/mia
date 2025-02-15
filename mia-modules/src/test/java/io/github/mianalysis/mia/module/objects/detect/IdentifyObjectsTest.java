@@ -26,9 +26,9 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 

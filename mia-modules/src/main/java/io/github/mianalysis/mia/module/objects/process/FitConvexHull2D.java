@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.QuadtreeFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;

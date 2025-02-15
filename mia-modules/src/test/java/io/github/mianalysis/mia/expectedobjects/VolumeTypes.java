@@ -1,9 +1,9 @@
 package io.github.mianalysis.mia.expectedobjects;
 
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.OctreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.QuadtreeFactory;
 
 public enum VolumeTypes {
     POINTLIST, QUADTREE, OCTREE;

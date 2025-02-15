@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.coordinates.volume;
 import java.util.HashMap;
 
 public class VolumeFactories {
-    private static VolumeFactoryI defaultFactory = new DefaultVolumeFactory();
+    private static VolumeFactoryI defaultFactory = new VolumeFactory();
 
     public static void main(String[] args) {
 

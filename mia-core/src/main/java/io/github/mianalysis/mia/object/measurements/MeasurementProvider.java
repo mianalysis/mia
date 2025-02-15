@@ -8,6 +8,8 @@ public interface MeasurementProvider {
 
     public Measurement getMeasurement(String name);
 
+    public void removeMeasurement(String name);
+    
     public HashMap<String, Measurement> getMeasurements();
 
     public void setMeasurements(LinkedHashMap<String, Measurement> measurements);
