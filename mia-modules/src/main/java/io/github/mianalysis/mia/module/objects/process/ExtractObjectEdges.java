@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -389,7 +390,7 @@ public class ExtractObjectEdges extends Module {
                         edgeDistance = edgeDistance / inputObjects.getDppXY();
                     break;
                 case EdgeModes.PARENT_OBJECT_MEASUREMENT:
-                    Obj parentObj = inputObject.getParent(parentObjectsName);
+                    ObjI parentObj = inputObject.getParent(parentObjectsName);
                     if (parentObj == null)
                         continue;
                     edgeDistance = parentObj.getMeasurement(parentMeasurementName).getValue();

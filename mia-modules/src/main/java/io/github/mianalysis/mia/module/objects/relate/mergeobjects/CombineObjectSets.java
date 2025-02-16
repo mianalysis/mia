@@ -12,9 +12,9 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -127,9 +127,9 @@ public class CombineObjectSets extends Module {
             newObj.setT(obj.getT());
 
             // Transferring parents
-            LinkedHashMap<String, Obj> parents = obj.getParents(false);
+            LinkedHashMap<String, ObjI> parents = obj.getParents(false);
             newObj.setParents(parents);
-            for (Obj parent : parents.values())
+            for (ObjI parent : parents.values())
                 parent.addChild(newObj);
 
             // Transferring children

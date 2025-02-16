@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -228,7 +229,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                     return inputObject.getSurface(ignoreEdgesXY, ignoreEdgesZ);
 
                 case RelativeModes.PARENT_CENTROID:
-                    Obj parentObject = inputObject.getParent(parentObjectsName);
+                    ObjI parentObject = inputObject.getParent(parentObjectsName);
                     if (parentObject == null)
                         return null;
 

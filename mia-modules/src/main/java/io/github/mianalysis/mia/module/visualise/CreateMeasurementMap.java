@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -204,7 +205,7 @@ public class CreateMeasurementMap extends Module {
         int nTotal = objects.size();
         for (Obj object : objects.values()) {
             // Getting parent object
-            Obj parentObject = object.getParent(parentObjectsName);
+            ObjI parentObject = object.getParent(parentObjectsName);
             if (parentObject == null)
                 continue;
 

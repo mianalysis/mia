@@ -10,8 +10,8 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -102,7 +102,7 @@ public class AdoptParentMeasurement extends Module {
         for (Obj obj : objects.values()) {
             count++;
 
-            Obj parentObj = obj.getParent(parentObjectsName);
+            ObjI parentObj = obj.getParent(parentObjectsName);
             if (parentObj == null)
                 continue;
 

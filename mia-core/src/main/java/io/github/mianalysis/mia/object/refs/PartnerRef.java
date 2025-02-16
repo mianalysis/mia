@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public class PartnerRef extends Ref implements Comparable {
@@ -24,7 +24,7 @@ public class PartnerRef extends Ref implements Comparable {
     }
 
     public PartnerRef(String object1Name, String object2Name) {
-        super(createName(Obj.getNameWithoutRelationship(object1Name), Obj.getNameWithoutRelationship(object2Name)));
+        super(createName(ObjI.getNameWithoutRelationship(object1Name), ObjI.getNameWithoutRelationship(object2Name)));
         
         this.object1Name = object1Name;
         this.object2Name = object2Name;

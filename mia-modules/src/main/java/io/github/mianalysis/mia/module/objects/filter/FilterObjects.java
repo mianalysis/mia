@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -29,8 +28,8 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -330,7 +329,7 @@ public class FilterObjects extends Module implements ActionListener {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
+            LinkedHashMap<String, ObjI> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) == null) {
                 if (remove)
                     processRemoval(inputObject, outputObjects, iterator);
@@ -344,7 +343,7 @@ public class FilterObjects extends Module implements ActionListener {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
+            LinkedHashMap<String, ObjI> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) != null) {
                 if (remove)
                     processRemoval(inputObject, outputObjects, iterator);

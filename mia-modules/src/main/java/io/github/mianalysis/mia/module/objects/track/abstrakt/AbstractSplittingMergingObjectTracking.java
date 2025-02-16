@@ -4,6 +4,7 @@ import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
@@ -29,7 +30,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         trackSegmentObject.addChild(inputObject);
 
         // Getting track and reassigning associations
-        Obj trackObject = inputObject.getParent(trackObjectsName);
+        ObjI trackObject = inputObject.getParent(trackObjectsName);
         trackObject.removeChild(inputObject);
         inputObject.removeParent(trackObject);
         trackObject.addChild(trackSegmentObject);

@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -103,7 +104,7 @@ public class AdoptParentMetadata extends Module {
         for (Obj obj : objects.values()) {
             count++;
 
-            Obj parentObj = obj.getParent(parentObjectsName);
+            ObjI parentObj = obj.getParent(parentObjectsName);
             if (parentObj == null)
                 continue;
 

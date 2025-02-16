@@ -10,6 +10,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -128,7 +129,7 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            Obj parentObject = inputObject.getParent(parentObjectName);
+            ObjI parentObject = inputObject.getParent(parentObjectName);
             // LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
             switch (filterMethod) {
                 case FilterMethods.WITHOUT_PARENT:

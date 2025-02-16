@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.object.coordinates.volume;
 
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -50,6 +53,41 @@ public interface VolumeI {
     public default void add(Point<Integer> point) throws PointOutOfRangeException {
         add(point.x, point.y, point.z);
 
+    }
+
+    public default void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
+        for (java.awt.Point point : roi.getContainedPoints()) {
+            try {
+                add((int) point.getX(), (int) point.getY(), z);
+            } catch (PointOutOfRangeException e) {
+            }
+        }
+    }
+
+    public default void addPointsFromPolygon(Polygon polygon, int z) throws PointOutOfRangeException {
+        addPointsFromShape(polygon, z);
+    }
+
+    public default void addPointsFromShape(Shape polygon, int z) throws PointOutOfRangeException {
+        // Determining xy limits
+        // int minX = Arrays.stream(polygon.xpoints).min().getAsInt();
+        // int maxX = Arrays.stream(polygon.xpoints).max().getAsInt();
+        // int minY = Arrays.stream(polygon.ypoints).min().getAsInt();
+        // int maxY = Arrays.stream(polygon.ypoints).max().getAsInt();
+
+        Rectangle bounds = polygon.getBounds();
+        int minX = bounds.x;
+        int maxX = minX + bounds.width;
+        int minY = bounds.y;
+        int maxY = minY + bounds.height;
+
+        // Iterating over all possible points, checking if they're inside the polygon
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                if (polygon.contains(x, y))
+                    add(x, y, z);
+            }
+        }
     }
 
     public default void translateCoords(int xOffs, int yOffs, int zOffs) {

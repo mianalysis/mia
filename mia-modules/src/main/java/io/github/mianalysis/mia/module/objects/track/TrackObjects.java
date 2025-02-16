@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -398,7 +399,7 @@ public class TrackObjects extends Module {
     public static double getTrackDurationCost(Obj prevObj, String trackObjectsName) {
         // Scores between 0 (track present since start of time-series) and 1 (no track
         // assigned)
-        Obj prevTrack = prevObj.getParent(trackObjectsName);
+        ObjI prevTrack = prevObj.getParent(trackObjectsName);
         if (prevTrack == null)
             return 1;
 
@@ -526,7 +527,7 @@ public class TrackObjects extends Module {
 
     public static void linkObjects(Obj prevObj, Obj currObj, Objs trackObjects) {
         // Getting the track object from the previous-frame object
-        Obj track = prevObj.getParent(trackObjects.getName());
+        ObjI track = prevObj.getParent(trackObjects.getName());
         
         // If the previous object hasn't already got a track, create one
         if (track == null)
