@@ -230,7 +230,7 @@ public class FitEllipsoid extends Module {
         if (ellipsoid == null)
             return null;
 
-        Obj ellipsoidObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
+        Obj ellipsoidObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         ellipsoidObject.setCoordinateSet(ellipsoid.getCoordinateSet());
         ellipsoidObject.setT(inputObject.getT());
 

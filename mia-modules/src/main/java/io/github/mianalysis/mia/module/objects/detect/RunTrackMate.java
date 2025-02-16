@@ -316,7 +316,7 @@ public class RunTrackMate extends Module {
             for (Spot spot : spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and
                 // group (track) ID.
-                Obj spotObject = spotObjects.createAndAddNewObject(trackObject.getFactory());
+                Obj spotObject = spotObjects.createAndAddNewObject(trackObject.getCoordinateSetFactory());
 
                 // Adding measurements
                 addSpotMeasurements(spotObject, spot, doSubpixel);

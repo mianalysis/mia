@@ -201,7 +201,7 @@ public class ObjectSlicesTo3D extends Module {
             }
 
             for (ArrayList<Obj> cluster : clusters) {
-                Obj outputObject = outputObjects.createAndAddNewObject(cluster.get(0).getFactory());
+                Obj outputObject = outputObjects.createAndAddNewObject(cluster.get(0).getCoordinateSetFactory());
                 outputObject.setT(t);
                 for (Obj clusterSlice : cluster)
                     outputObject.getCoordinateSet().addAll(clusterSlice.getCoordinateSet());

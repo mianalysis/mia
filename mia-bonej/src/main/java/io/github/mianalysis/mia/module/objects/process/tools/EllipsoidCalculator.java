@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class EllipsoidCalculator {
@@ -144,7 +145,7 @@ public class EllipsoidCalculator {
 
         double cal = volume.getDppXY() / volume.getDppZ();
 
-        Volume insideEllipsoid = new Volume(volume.getFactory(), volume.getSpatialCalibration());
+        Volume insideEllipsoid = volume.getFactory().createVolume(volume.getCoordinateSetFactory(), volume.getSpatialCalibration());
 
         // Testing which points are within the convex hull
         double[] xRange = ell.getXMinAndMax();

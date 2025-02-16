@@ -182,7 +182,7 @@ public class FitEllipse extends Module {
         if (ellipse == null)
             return null;
 
-        Obj ellipseObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
+        Obj ellipseObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         ellipseObject.setCoordinateSet(ellipse.getCoordinateSet());
         ellipseObject.setT(inputObject.getT());
 

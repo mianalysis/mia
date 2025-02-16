@@ -172,7 +172,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getFactory(), "NewObjects");
+        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), "NewObjects");
 
         // During object shrinking it's possible the object will disappear entirely
         if (outputObjects.size() == 0)
@@ -299,7 +299,7 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.clearROIs();
 
             } else {
-                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getFactory());
+                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getCoordinateSetFactory());
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);

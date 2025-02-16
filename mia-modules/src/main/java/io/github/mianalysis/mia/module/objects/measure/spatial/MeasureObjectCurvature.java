@@ -504,7 +504,7 @@ public class MeasureObjectCurvature extends Module {
         for (Point<Integer> vertex : spline) {
             try {
                 if (i++ % everyNPoints == 0) {
-                    Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
+                    Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
                     splineObject.add(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);

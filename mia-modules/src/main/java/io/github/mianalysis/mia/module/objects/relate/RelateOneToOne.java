@@ -345,7 +345,7 @@ public class RelateOneToOne extends Module {
     }
 
     static Obj createClusterObject(Obj object1, Obj object2, Objs outputObjects) {
-        Obj outputObject = outputObjects.createAndAddNewObject(object1.getFactory());
+        Obj outputObject = outputObjects.createAndAddNewObject(object1.getCoordinateSetFactory());
         outputObject.setT(object1.getT());
 
         // Adding relationships

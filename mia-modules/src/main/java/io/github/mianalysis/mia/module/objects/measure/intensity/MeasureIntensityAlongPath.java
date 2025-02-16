@@ -39,6 +39,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -157,8 +158,8 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
             double intensity = ipl.getProcessor().getPixel(x, y);
 
             if (prevPoint != null) {
-                Volume volume1 = new Volume(new PointListFactory(), spatCal.duplicate());
-                Volume volume2 = new Volume(new PointListFactory(), spatCal.duplicate());
+                Volume volume1 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), spatCal.duplicate());
+                Volume volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), spatCal.duplicate());
 
                 try {
                     volume1.add(prevPoint.getX(), prevPoint.getY(), prevPoint.getZ());

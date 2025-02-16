@@ -8,7 +8,7 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 
-public interface ObjI extends MeasurementProvider, VolumeI {
+public interface ObjI extends MeasurementProvider, Volume {
     public default LinkedHashMap<String, ObjI> getParents(boolean useFullHierarchy) {
         if (!useFullHierarchy)
             return getParents();

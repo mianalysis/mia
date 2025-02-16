@@ -539,7 +539,7 @@ public class RelateObjects extends Module {
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = relatedObjects.createAndAddNewObject(exampleParent.getFactory());
+            Obj relatedObject = relatedObjects.createAndAddNewObject(exampleParent.getCoordinateSetFactory());
             relatedObject.setT(parentObj.getT());
 
             for (Obj childObject : currChildObjects.values()) {

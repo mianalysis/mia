@@ -229,7 +229,7 @@ public class ExtractObjectEdges extends Module {
         ImagePlus distIpl = distImage.getImagePlus();
 
         // Creating new edge object
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         outputObject.setT(inputObject.getT());
 
         double[][] range = inputObject.getExtents(true, false);

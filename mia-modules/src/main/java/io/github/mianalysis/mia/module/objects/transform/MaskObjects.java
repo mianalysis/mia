@@ -190,7 +190,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         Objs tempObjects = new Objs(maskObjectsName, inputObject.getObjectCollection());
 
         // Creating the mask object
-        Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getFactory(), inputObject.getID());
+        Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
         maskObject.setT(inputObject.getT());
 
         ImgPlus<T> maskImg = maskImage.getImgPlus();

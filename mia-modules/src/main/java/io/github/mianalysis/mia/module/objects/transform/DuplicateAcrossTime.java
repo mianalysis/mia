@@ -159,7 +159,7 @@ public class DuplicateAcrossTime extends Module {
         for (Obj inputObject : inputObjects.values()) {
             for (int t = startFrame; t <= endFrame; t++) {
                 // Creating object for this timepoint
-                Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory());
+                Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
                 outputObject.setT(t);
 
                 // Setting object relationships

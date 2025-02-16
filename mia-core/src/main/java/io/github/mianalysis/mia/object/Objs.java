@@ -225,7 +225,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         CoordinateSetFactoryI factory = new PointListFactory();
         Obj firstObj = getFirst();
         if (firstObj != null)
-            factory = firstObj.getFactory();
+            factory = firstObj.getCoordinateSetFactory();
 
         Obj newObj = newCollection.createAndAddNewObject(factory);
         for (Obj obj : values())
@@ -678,7 +678,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         // Iterating over objects, getting those in this frame
         for (Obj obj : values()) {
             if (obj.getT() == frame) {
-                Obj outputObject = new Obj(outputObjects, obj.getFactory(), obj.getID());
+                Obj outputObject = new Obj(outputObjects, obj.getCoordinateSetFactory(), obj.getID());
                 outputObject.setCoordinateSet(obj.getCoordinateSet().duplicate());
                 outputObject.setT(0);
                 outputObjects.add(outputObject);

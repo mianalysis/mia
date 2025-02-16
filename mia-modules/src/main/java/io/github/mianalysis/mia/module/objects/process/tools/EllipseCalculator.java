@@ -7,19 +7,19 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import math.geom2d.Point2D;
 import math.geom2d.conic.Ellipse2D;
 
 public class EllipseCalculator {
-    private VolumeI volume;
+    private Volume volume;
     private double xCent = Double.NaN;
     private double yCent = Double.NaN;
     private double angleDegs = Double.NaN;
     private double semiMajor = Double.NaN;
     private double semiMinor = Double.NaN;
 
-    public EllipseCalculator(VolumeI volume) throws RuntimeException {
+    public EllipseCalculator(Volume volume) throws RuntimeException {
         if (!volume.is2D())
             this.volume = volume.getProjected();
         else
@@ -29,7 +29,7 @@ public class EllipseCalculator {
 
     }
 
-    public EllipseCalculator(VolumeI volume, boolean fitSurface) throws RuntimeException {
+    public EllipseCalculator(Volume volume, boolean fitSurface) throws RuntimeException {
         if (!volume.is2D())
             this.volume = volume.getProjected();
         else
@@ -39,7 +39,7 @@ public class EllipseCalculator {
 
     }
 
-    public EllipseCalculator(VolumeI volume, double maxAxisLength) throws RuntimeException {
+    public EllipseCalculator(Volume volume, double maxAxisLength) throws RuntimeException {
         if (!volume.is2D())
             this.volume = volume.getProjected();
         else
@@ -49,7 +49,7 @@ public class EllipseCalculator {
 
     }
 
-    public EllipseCalculator(VolumeI volume, double maxAxisLength, boolean fitSurface) throws RuntimeException {
+    public EllipseCalculator(Volume volume, double maxAxisLength, boolean fitSurface) throws RuntimeException {
         if (!volume.is2D())
             this.volume = volume.getProjected();
         else
@@ -122,8 +122,7 @@ public class EllipseCalculator {
     }
 
     public Volume getContainedPoints() {
-        Volume insideEllipse = new Volume(volume.getFactory(),
-                volume.getSpatialCalibration());
+        Volume insideEllipse = volume.getFactory().createVolume(volume.getCoordinateSetFactory(),volume.getSpatialCalibration());
 
         Point2D cent = new Point2D(xCent, yCent);
         Ellipse2D ell = Ellipse2D.create(cent, semiMajor, semiMinor, getEllipseThetaRads(), true);

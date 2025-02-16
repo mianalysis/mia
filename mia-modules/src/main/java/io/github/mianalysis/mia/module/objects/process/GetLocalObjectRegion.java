@@ -231,7 +231,7 @@ public class GetLocalObjectRegion extends Module {
         double xy_z_ratio = inputObject.getDppXY() / inputObject.getDppZ();
 
         // Creating new object and assigning relationship to input objects
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory(), inputObject.getID());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
 
         if (radius == 0) {
             // The output object is a single point

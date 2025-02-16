@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import net.imagej.ImgPlus;
@@ -15,7 +16,7 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends Volume implements ObjI {
+public class Obj extends DefaultVolume implements ObjI {
     /**
      * Unique instance ID for this object
      */
@@ -43,7 +44,7 @@ public class Obj extends Volume implements ObjI {
     }
 
     public Obj(Objs objCollection, int ID, Volume exampleVolume) {
-        super(exampleVolume.getFactory(), exampleVolume.getSpatialCalibration());
+        super(exampleVolume.getCoordinateSetFactory(), exampleVolume.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;
@@ -51,7 +52,7 @@ public class Obj extends Volume implements ObjI {
     }
 
     public Obj(Objs objCollection, int ID, Obj exampleObj) {
-        super(exampleObj.getFactory(), exampleObj.getSpatialCalibration());
+        super(exampleObj.getCoordinateSetFactory(), exampleObj.getSpatialCalibration());
 
         this.objCollection = objCollection;
         this.ID = ID;

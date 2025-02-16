@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -110,7 +111,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static int getNOverlappingPoints(Obj inputObject1, Objs inputObjects2, boolean linkInSameFrame) {
-        Volume overlap = new Volume(inputObject1.getFactory(), inputObject1.getSpatialCalibration());
+        Volume overlap = VolumeFactories.getDefaultFactory().createVolume(inputObject1.getCoordinateSetFactory(), inputObject1.getSpatialCalibration());
 
         // Running through each object, getting a list of overlapping pixels
         for (Obj obj2 : inputObjects2.values()) {

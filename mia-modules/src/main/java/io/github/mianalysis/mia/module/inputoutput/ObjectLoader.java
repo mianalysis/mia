@@ -491,7 +491,7 @@ public class ObjectLoader extends Module {
                         // Getting parent object. If it doesn't exist, adding it to the parent objects
                         // collection
                         if (!parentObjects.containsKey(parentID))
-                            parentObjects.createAndAddNewObject(obj.getFactory(), parentID);
+                            parentObjects.createAndAddNewObject(obj.getCoordinateSetFactory(), parentID);
                         Obj parentObj = parentObjects.get(parentID);
 
                         // Adding relationship

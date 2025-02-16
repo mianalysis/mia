@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
+import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.coordinates.volume.quadtree.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.quadtree.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -133,17 +133,17 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     static void process(Obj inputObject, Objs outputObjects, int[] indices) {
-        CoordinateSetFactoryI factory = inputObject.getFactory();
+        CoordinateSetFactoryI factory = inputObject.getCoordinateSetFactory();
         if (factory instanceof OctreeFactory)
             factory = new QuadtreeFactory();
 
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getFactory(), inputObject.getID());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
 
         for (int idx : indices) {
             if (idx < 0 || idx >= inputObject.getNSlices())
                 continue;
 
-            VolumeI slice = inputObject.getSlice(idx);
+            Volume slice = inputObject.getSlice(idx);
             if (slice == null)
                 continue;
 

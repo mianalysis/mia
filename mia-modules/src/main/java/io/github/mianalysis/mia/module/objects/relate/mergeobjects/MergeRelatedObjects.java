@@ -135,7 +135,7 @@ public class MergeRelatedObjects extends Module {
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = relatedObjects.createAndAddNewObject(parentObj.getFactory());
+            Obj relatedObject = relatedObjects.createAndAddNewObject(parentObj.getCoordinateSetFactory());
             relatedObject.setT(parentObj.getT());
             relatedObjects.add(relatedObject);
             parentObj.addChild(relatedObject);

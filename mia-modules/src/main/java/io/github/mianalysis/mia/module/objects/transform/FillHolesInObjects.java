@@ -106,7 +106,7 @@ public class FillHolesInObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getFactory(), "NewObjects");
+        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), "NewObjects");
         Obj outputObject = outputObjects.getFirst();
 
         double[][] extents = inputObject.getExtents(true, false);
@@ -200,7 +200,7 @@ public class FillHolesInObjects extends Module {
                 inputObject.clearROIs();
 
             } else {
-                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getFactory());
+                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getCoordinateSetFactory());
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);
