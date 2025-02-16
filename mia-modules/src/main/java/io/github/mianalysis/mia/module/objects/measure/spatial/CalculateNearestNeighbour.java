@@ -28,7 +28,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -436,7 +435,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
 
                 if (inputParentsName != null) {
                     cell = row.createCell(colCount++);
-                    ObjI inputParentObject = inputObject.getParent(inputParentsName);
+                    Obj inputParentObject = inputObject.getParent(inputParentsName);
                     double inputParentID = inputParentObject == null ? Double.NaN : inputParentObject.getID();
                     cell.setCellValue(inputParentID);
                 }
@@ -453,7 +452,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
 
                 if (neighbourParentsName != null) {
                     cell = row.createCell(colCount++);
-                    ObjI neighbourParentObject = neighbourObject.getParent(neighbourParentsName);
+                    Obj neighbourParentObject = neighbourObject.getParent(neighbourParentsName);
                     double neighbourParentID = neighbourParentObject == null ? Double.NaN
                             : neighbourParentObject.getID();
                     cell.setCellValue(neighbourParentID);
@@ -595,7 +594,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             }
 
             if (calculateWithinParent) {
-                ObjI parentObject = inputObject.getParent(parentObjectsName);
+                Obj parentObject = inputObject.getParent(parentObjectsName);
                 if (parentObject == null) {
                     addMeasurements(inputObject, null, referenceMode, nearestNeighbourName);
                     continue;

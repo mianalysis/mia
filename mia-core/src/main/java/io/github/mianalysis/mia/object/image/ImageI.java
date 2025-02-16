@@ -206,7 +206,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public String getName();
 
-    public HashMap<String, Measurement> getMeasurements();
+    public LinkedHashMap<String, Measurement> getMeasurements();
 
     public void setMeasurements(LinkedHashMap<String, Measurement> measurements);
 

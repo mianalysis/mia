@@ -22,7 +22,6 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -133,7 +132,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
                 int oid = inputObject.getID();
                 int tid = -1;
                 if (trackObjectsName != null) {
-                    ObjI parentObject = inputObject.getParent(trackObjectsName);
+                    Obj parentObject = inputObject.getParent(trackObjectsName);
                     if (parentObject != null)
                         tid = parentObject.getID();
                 }

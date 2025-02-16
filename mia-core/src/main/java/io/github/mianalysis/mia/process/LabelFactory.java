@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -140,7 +139,7 @@ public class LabelFactory {
             return IDs;
 
         for (Obj object : objects.values()) {
-            ObjI parentObj = object.getParent(parentObjectsName);
+            Obj parentObj = object.getParent(parentObjectsName);
             if (parentObj == null)
                 break;
 

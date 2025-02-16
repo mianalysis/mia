@@ -12,7 +12,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -461,7 +460,7 @@ public class RelateObjects extends Module {
                 // If the tests are successful, addRef the link. If the child has already been
                 // linked, but with a smaller
                 // overlap, remove that link.
-                ObjI oldParent = childObject.getParent(parentObject.getName());
+                Obj oldParent = childObject.getParent(parentObject.getName());
                 if (oldParent != null) {
                     if (childObject.getMeasurement(overlapMeasurementName).getValue() < overlap) {
                         oldParent.removeChild(childObject);

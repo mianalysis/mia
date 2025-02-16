@@ -116,7 +116,7 @@ public class ObjTest {
         Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(factory, 3);
 
-        LinkedHashMap<String, ObjI> parents = obj1.getParents(false);
+        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
         assertEquals(0, parents.size());
 
     }
@@ -143,7 +143,7 @@ public class ObjTest {
         obj1.addParent(obj3);
         obj3.addChild(obj1);
 
-        LinkedHashMap<String, ObjI> parents = obj1.getParents(false);
+        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
         assertEquals(2, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -172,7 +172,7 @@ public class ObjTest {
         obj1.addParent(obj3);
         obj3.addChild(obj1);
 
-        LinkedHashMap<String, ObjI> parents = obj1.getParents(false);
+        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
         assertEquals(1, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
 
@@ -212,7 +212,7 @@ public class ObjTest {
         obj3.addParent(obj4);
         obj4.addChild(obj3);
 
-        LinkedHashMap<String, ObjI> parents = obj1.getParents(true);
+        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
         assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -253,7 +253,7 @@ public class ObjTest {
         obj1.addParent(obj2);
         obj2.addChild(obj1);
 
-        LinkedHashMap<String, ObjI> parents = obj1.getParents(true);
+        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
         assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -301,7 +301,7 @@ public class ObjTest {
         obj3.addParent(obj5);
         obj5.addChild(obj3);
 
-        LinkedHashMap<String, ObjI> parents = obj1.getParents(true);
+        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
         assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));

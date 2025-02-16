@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.mia.object.ObjI;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public class ParentChildRef extends Ref {
@@ -23,7 +23,7 @@ public class ParentChildRef extends Ref {
     }
 
     public ParentChildRef(String parentName, String childName) {
-        super(createName(ObjI.getNameWithoutRelationship(parentName), ObjI.getNameWithoutRelationship(childName)));
+        super(createName(Obj.getNameWithoutRelationship(parentName), Obj.getNameWithoutRelationship(childName)));
         
         this.parentName = parentName;
         this.childName = childName;

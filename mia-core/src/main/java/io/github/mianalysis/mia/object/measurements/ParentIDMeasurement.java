@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.object.measurements;
 
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 
 public class ParentIDMeasurement extends Measurement {
     private Obj obj;
@@ -14,7 +13,7 @@ public class ParentIDMeasurement extends Measurement {
     }
     
     public double getValue() {
-        ObjI parentObj = obj.getParent(parentName);
+        Obj parentObj = obj.getParent(parentName);
 
         if (parentObj == null)
             return Double.NaN;

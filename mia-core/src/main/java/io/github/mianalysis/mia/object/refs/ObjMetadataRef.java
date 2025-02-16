@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.mia.object.ObjI;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 
 public class ObjMetadataRef extends SummaryRef {
@@ -21,7 +21,7 @@ public class ObjMetadataRef extends SummaryRef {
 
     public ObjMetadataRef(String name, String objectsName) {
         super(name);
-        this.objectsName = ObjI.getNameWithoutRelationship(objectsName);
+        this.objectsName = Obj.getNameWithoutRelationship(objectsName);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ObjMetadataRef extends SummaryRef {
     }
 
     public ObjMetadataRef setObjectsName(String objectsName) {
-        this.objectsName = ObjI.getNameWithoutRelationship(objectsName);
+        this.objectsName = Obj.getNameWithoutRelationship(objectsName);
         return this;
     }
 }

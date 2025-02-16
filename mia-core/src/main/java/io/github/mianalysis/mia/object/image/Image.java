@@ -58,7 +58,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Im
         return name;
     }
 
-    public HashMap<String, Measurement> getMeasurements() {
+    public LinkedHashMap<String, Measurement> getMeasurements() {
         return measurements;
     }
 

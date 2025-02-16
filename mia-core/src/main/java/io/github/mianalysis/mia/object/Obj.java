@@ -4,353 +4,426 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import org.apache.poi.ss.formula.functions.T;
+
+import ij.IJ;
+import ij.ImagePlus;
 import ij.gui.Roi;
-import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
+import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
+import io.github.mianalysis.mia.object.units.SpatialUnit;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-/**
- * Created by Stephen on 30/04/2017.
- */
-public class Obj extends DefaultVolume implements ObjI {
-    /**
-     * Unique instance ID for this object
-     */
-    private int ID;
+public interface Obj extends MeasurementProvider, Volume {
+    public default LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
+        if (!useFullHierarchy)
+            return getParents();
 
-    private int T;
+        // Adding each parent and then the parent of that
+        LinkedHashMap<String, Obj> parentHierarchy = new LinkedHashMap<>(getParents());
 
-    private Objs objCollection;
+        // Going through each parent, adding the parents of that.
+        for (Obj parent : getParents().values()) {
+            if (parent == null)
+                continue;
 
-    private LinkedHashMap<String, ObjI> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
-    private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
-    private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
-    private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
-    private HashMap<Integer, Roi> rois = new HashMap<>();
+            LinkedHashMap<String, Obj> currentParents = parent.getParents(true);
+            if (currentParents == null)
+                continue;
 
-    // CONSTRUCTORS
+            parentHierarchy.putAll(currentParents);
 
-    public Obj(Objs objCollection, CoordinateSetFactoryI factory, int ID) {
-        super(factory, objCollection.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-
-    public Obj(Objs objCollection, int ID, Volume exampleVolume) {
-        super(exampleVolume.getCoordinateSetFactory(), exampleVolume.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-
-    public Obj(Objs objCollection, int ID, Obj exampleObj) {
-        super(exampleObj.getCoordinateSetFactory(), exampleObj.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-
-    public Obj(Objs objCollection, CoordinateSetFactoryI factory, int ID, Volume exampleVolume) {
-        super(factory, exampleVolume.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-
-    public Obj(Objs objCollection, CoordinateSetFactoryI factory, int ID, Obj exampleObj) {
-        super(factory, exampleObj.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-    
-    @Override
-    public Objs getObjectCollection() {
-        return objCollection;
-    }
-
-    @Override
-    public void setObjectCollection(Objs objCollection) {
-        this.objCollection = objCollection;
-    }
-
-    @Override
-    public String getName() {
-        return objCollection.getName();
-    }
-
-    @Override
-    public int getID() {
-        return ID;
-    }
-
-    @Override
-    public Obj setID(int ID) {
-        this.ID = ID;
-        return this;
-    }
-
-    @Override
-    public int getT() {
-        return T;
-    }
-
-    @Override
-    public Obj setT(int t) {
-        this.T = t;
-        return this;
-    }
-
-    @Override
-    public LinkedHashMap<String, ObjI> getParents() {
-        return parents;
-    }
-
-    @Override
-    public void setParents(LinkedHashMap<String, ObjI> parents) {
-        this.parents = parents;
-    }
-
-    @Override
-    public LinkedHashMap<String, Objs> getChildren() {
-        return children;
-    }
-
-    @Override
-    public void setChildren(LinkedHashMap<String, Objs> children) {
-        this.children = children;
-    }
-
-    @Override
-    public LinkedHashMap<String, Objs> getPartners() {
-        return partners;
-    }
-
-    @Override
-    public void setPartners(LinkedHashMap<String, Objs> partners) {
-        this.partners = partners;
-    }
-
-    /**
-     * Removes itself from any other objects as a parent or child.
-     */
-    @Override
-    public void removeRelationships() {
-        // Removing itself as a child from its parent
-        if (parents != null) {
-            for (ObjI parent : parents.values()) {
-                if (parent != null)
-                    parent.removeChild(this);
-            }
         }
 
-        // Removing itself as a parent from any children
-        if (children != null) {
-            for (Objs childSet : children.values()) {
-                for (Obj child : childSet.values()) {
-                    if (child.getParent(getName()) == this) {
-                        child.removeParent(getName());
-                    }
-                }
-            }
+        return parentHierarchy;
+
+    }
+
+    public default Obj getParent(String name) {
+        // Split name down by " // " tokenizer
+        String[] elements = name.split(" // ");
+
+        // Getting the first parent
+        Obj parent = getParents().get(elements[0]);
+
+        // If the first parent was the only one listed, returning this
+        if (elements.length == 1)
+            return parent;
+
+        // If there are additional parents listed, re-constructing the string and
+        // running this method on the parent
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 1; i < elements.length; i++) {
+            stringBuilder.append(elements[i]);
+            if (i != elements.length - 1)
+                stringBuilder.append(" // ");
         }
 
-        // Removing itself as a partner from any partners
-        if (partners != null) {
-            for (Objs partnerSet : partners.values()) {
-                for (Obj partner : partnerSet.values()) {
-                    partner.removePartner(this);
-                }
-            }
-        }
-
-        // Clearing children and parents
-        children = new LinkedHashMap<>();
-        parents = new LinkedHashMap<>();
-        partners = new LinkedHashMap<>();
-
-    }
-
-    @Override
-    public LinkedHashMap<String, Measurement> getMeasurements() {
-        return measurements;
-    }
-
-    @Override
-    public void setMeasurements(LinkedHashMap<String, Measurement> measurements) {
-        this.measurements = measurements;
-
-    }
-
-    @Override
-    public LinkedHashMap<String, ObjMetadata> getMetadata() {
-        return metadata;
-    }
-
-    @Override
-    public void setMetadata(LinkedHashMap<String, ObjMetadata> metadata) {
-        this.metadata = metadata;
-
-    }
-
-    @Override
-    public Roi getRoi(int slice) {
-        if (rois.containsKey(slice))
-            return (Roi) rois.get(slice).clone();
-
-        Roi roi = super.getRoi(slice);
-
-        if (roi == null)
+        if (parent == null)
             return null;
 
-        rois.put(slice, roi);
+        return parent.getParent(stringBuilder.toString());
 
-        return (Roi) roi.clone();
+    }
+
+    public default void addParent(Obj parent) {
+        getParents().put(parent.getName(), parent);
+    }
+
+    public default void addParent(String name, Obj parent) {
+        getParents().put(name, parent);
+    }
+
+    public default void removeParent(String name) {
+        getParents().remove(name);
+    }
+
+    public default void removeParent(Obj parent) {
+        getParents().remove(parent.getName());
+    }
+
+    public default Objs getChildren(String name) {
+        // Split name down by " // " tokenizer
+        String[] elements = name.split(" // ");
+
+        // Getting the first set of children
+        Objs allChildren = getChildren().get(elements[0]);
+        if (allChildren == null)
+            return new Objs(elements[0], getObjectCollection());
+
+        // If the first set of children was the only one listed, returning this
+        if (elements.length == 1)
+            return allChildren;
+
+        // If there are additional parents listed, re-constructing the string and
+        // running this method on the parent
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 1; i < elements.length; i++) {
+            stringBuilder.append(elements[i]);
+            if (i != elements.length - 1)
+                stringBuilder.append(" // ");
+        }
+
+        // Going through each child in the current set, then adding all their children
+        // to the output set
+        Objs outputChildren = new Objs(name, allChildren);
+        for (Obj child : allChildren.values()) {
+            Objs currentChildren = child.getChildren(stringBuilder.toString());
+            for (Obj currentChild : currentChildren.values())
+                outputChildren.add(currentChild);
+        }
+
+        return outputChildren;
+
+    }
+
+    public default void addChildren(Objs childSet) {
+        getChildren().put(childSet.getName(), childSet);
+    }
+
+    public default void removeChildren(String name) {
+        getChildren().remove(name);
+    }
+
+    public default void addChild(Obj child) {
+        String childName = child.getName();
+
+        getChildren().computeIfAbsent(childName, k -> new Objs(childName, child.getObjectCollection()));
+        getChildren().get(childName).add(child);
+
+    }
+
+    public default void removeChild(Obj child) {
+        String childName = child.getName();
+        getChildren().get(childName).values().remove(child);
+
+    }
+
+    public default Objs getPartners(String name) {
+        return getPartners().get(name);
+    }
+
+    public default void addPartners(Objs partnerSet) {
+        getPartners().put(partnerSet.getName(), partnerSet);
+    }
+
+    public default void removePartners(String name) {
+        getPartners().remove(name);
+    }
+
+    public default void addPartner(Obj partner) {
+        String partnerName = partner.getName();
+
+        getPartners().computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getObjectCollection()));
+        getPartners().get(partnerName).add(partner);
+    }
+
+    public default void removePartner(Obj partner) {
+        String partnerName = partner.getName();
+        getPartners().get(partnerName).values().remove(partner);
+
+    }
+
+    public default void removePartner(String name) {
+        getPartners().remove(name);
+    }
+
+    /**
+     * Returns any partners that happened in previous frames
+     */
+    public default Objs getPreviousPartners(String name) {
+        Objs allPartners = getPartners(name);
+
+        if (allPartners == null)
+            return new Objs(name, getObjectCollection());
+
+        Objs previousPartners = new Objs(name, allPartners);
+        for (Obj partner : allPartners.values())
+            if (partner.getT() < getT())
+                previousPartners.add(partner);
+
+        return previousPartners;
 
     }
 
     /**
-     * Accesses and generates all ROIs for the object
-     * 
-     * @return HashMap containing each ROI. Keys are integers with zero-based
-     *         numbering, specifying Z-axis slice.
+     * Returns any partners that happen in following frames
      */
-    @Override
-    public HashMap<Integer, Roi> getRois() {
-        // This will access and generate all ROIs for this object
-        double[][] extents = getExtents(true, false);
-        int minZ = (int) Math.round(extents[2][0]);
-        int maxZ = (int) Math.round(extents[2][1]);
-        for (int z = minZ; z <= maxZ; z++)
-            getRoi(z);
+    public default Objs getSimultaneousPartners(String name) {
+        Objs allPartners = getPartners(name);
 
-        // For the sake of not wasting memory, this will output the original list of
-        // ROIs
-        return rois;
+        if (allPartners == null)
+            return new Objs(name, getObjectCollection());
 
-    }
+        Objs simultaneousPartners = new Objs(name, allPartners);
+        for (Obj partner : allPartners.values())
+            if (partner.getT() == getT())
+                simultaneousPartners.add(partner);
 
-
-    public <T extends RealType<T> & NativeType<T>> Iterator<net.imglib2.Point> getImgPlusCoordinateIterator(
-            ImgPlus<T> imgPlus, int c) {
-        return new ImgPlusCoordinateIterator<>(getCoordinateIterator(), imgPlus, c, T);
-    }
-
-    @Override
-    public void clearROIs() {
-        rois = new HashMap<>();
+        return simultaneousPartners;
 
     }
 
-    @Override
-    public void clearAllCoordinates() {
-        super.clearAllCoordinates();
-        rois = new HashMap<>();
+    /**
+     * Returns any partners that happen in following frames
+     */
+    public default Objs getNextPartners(String name) {
+        Objs allPartners = getPartners(name);
+
+        if (allPartners == null)
+            return new Objs(name, getObjectCollection());
+
+        Objs nextPartners = new Objs(name, allPartners);
+        for (Obj partner : allPartners.values())
+            if (partner.getT() > getT())
+                nextPartners.add(partner);
+
+        return nextPartners;
+
     }
 
-    @Override
-    public Obj duplicate(Objs newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
-            boolean duplicateMetadata) {
-        Obj newObj = new Obj(newCollection, getID(), this);
+    public default void addMetadataItem(ObjMetadata metadataItem) {
+        if (metadataItem == null)
+            return;
+        getMetadata().put(metadataItem.getName(), metadataItem);
 
-        // Duplicating coordinates
-        newObj.setCoordinateSet(getCoordinateSet().duplicate());
+    }
 
-        // Setting timepoint
-        newObj.setT(getT());
+    public default ObjMetadata getMetadataItem(String name) {
+        LinkedHashMap<String, ObjMetadata> metadata = getMetadata();
 
-        // Duplicating relationships
-        if (duplicateRelationships) {
-            for (ObjI parent : parents.values()) {
-                newObj.addParent(parent);
-                parent.addChild(this);
+        if (metadata.get(name) == null)
+            return null;
+
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        return metadata.get(name);
+
+    }
+
+    public default void removeMetadataItem(String name) {
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        getMetadata().remove(name);
+
+    }
+
+    public default void addMeasurement(Measurement measurement) {
+        if (measurement == null)
+            return;
+        getMeasurements().put(measurement.getName(), measurement);
+
+    }
+
+    public default Measurement getMeasurement(String name) {
+        HashMap<String, Measurement> measurements = getMeasurements();
+
+        if (measurements.get(name) == null)
+            return null;
+
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        return measurements.get(name);
+
+    }
+
+    public default void removeMeasurement(String name) {
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
+        getMeasurements().remove(name);
+
+    }
+
+    public default ImageI getAsImage(String imageName, boolean singleTimepoint) {
+        if (singleTimepoint)
+            return getAsImage(imageName, 0, 1);
+        else
+            return getAsImage(imageName, getT(), getObjectCollection().getNFrames());
+    }
+
+    public default ImageI getCentroidAsImage(String imageName, boolean singleTimepoint) {
+        SpatCal spatCal = getSpatialCalibration();
+
+        int nFrames = singleTimepoint ? 1 : getObjectCollection().getNFrames();
+        int t = singleTimepoint ? 0 : getT();
+
+        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
+        spatCal.applyImageCalibration(ipl);
+
+        Point<Double> centroid = getMeanCentroid(true, false);
+        int x = (int) Math.round(centroid.getX());
+        int y = (int) Math.round(centroid.getY());
+        int z = (int) Math.round(centroid.getZ());
+
+        int idx = ipl.getStackIndex(1, z + 1, t + 1);
+        ipl.getStack().getProcessor(idx).set(x, y, 255);
+
+        return ImageFactory.createImage(imageName, ipl);
+
+    }
+
+    public default void addToImage(ImageI image, float hue) {
+        ImagePlus ipl = image.getImagePlus();
+        int bitDepth = ipl.getBitDepth();
+
+        int tPos = getT();
+        for (Point<Integer> point : getCoordinateSet()) {
+            int xPos = point.x;
+            int yPos = point.y;
+            int zPos = point.z;
+
+            ipl.setPosition(1, zPos + 1, tPos + 1);
+
+            switch (bitDepth) {
+                case 8:
+                case 16:
+                    ipl.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
+                    break;
+                case 32:
+                    ipl.getProcessor().putPixelValue(xPos, yPos, hue);
+                    break;
             }
-
-            for (Objs currChildren : children.values())
-                for (Obj child : currChildren.values()) {
-                    newObj.addChild(child);
-                    child.addParent(newObj);
-                }
-
-            for (Objs currPartners : partners.values())
-                for (Obj partner : currPartners.values()) {
-                    newObj.addPartner(partner);
-                    partner.addPartner(newObj);
-                }
         }
+    }
 
-        // Duplicating measurements
-        if (duplicateMeasurement)
-            for (Measurement measurement : measurements.values())
-                newObj.addMeasurement(measurement.duplicate());
+    public default void addCentroidToImage(ImageI image, float hue) {
+        ImagePlus ipl = image.getImagePlus();
+        int bitDepth = ipl.getBitDepth();
 
-        // Duplicating metadata
-        if (duplicateMetadata)
-            for (ObjMetadata metadataItem : metadata.values())
-                newObj.addMetadataItem(metadataItem.duplicate());
+        int tPos = getT();
+        int xPos = (int) Math.round(getXMean(true));
+        int yPos = (int) Math.round(getYMean(true));
+        int zPos = (int) Math.round(getZMean(true, false));
 
-        return newObj;
+        ipl.setPosition(1, zPos + 1, tPos + 1);
+
+        switch (bitDepth) {
+            case 8:
+            case 16:
+                ipl.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
+                break;
+            case 32:
+                ipl.getProcessor().putPixelValue(xPos, yPos, hue);
+                break;
+        }
+    }
+
+    public default void removeOutOfBoundsCoords() {
+        SpatCal spatCal = getSpatialCalibration();
+
+        int width = spatCal.getWidth();
+        int height = spatCal.getHeight();
+        int nSlices = spatCal.getNSlices();
+
+        getCoordinateSet().removeIf(point -> point.getX() < 0 || point.getX() >= width || point.getY() < 0
+                || point.getY() >= height || point.getZ() < 0 || point.getZ() >= nSlices);
 
     }
 
-    @Override
-    public int hashCode() {
-        // Updating the hash for time-point. Measurements and relationships aren't
-        // included; only spatial location.
-        return super.hashCode() * 31 + getID() * 31 + getT() * 31 + getName().hashCode();
+    public default <T extends RealType<T> & NativeType<T>> Iterator<net.imglib2.Point> getImgPlusCoordinateIterator (
+            ImgPlus<T> imgPlus, int c) {
+        return new ImgPlusCoordinateIterator<>(getCoordinateIterator(), imgPlus, c, getT());
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        int T = getT();
+    public static String getNameWithoutRelationship(String name) {
+        if (name.contains("//"))
+            name = name.substring(name.lastIndexOf("//") + 3);
 
-        if (!super.equals(obj))
-            return false;
-
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Obj))
-            return false;
-
-        if (ID != ((Obj) obj).getID())
-            return false;
-
-        if (T != ((Obj) obj).getT())
-            return false;
-
-        return (getName().equals(((Obj) obj).getName()));
+        return name;
 
     }
 
-    @Override
-    public boolean equalsIgnoreNameAndID(Object obj) {
-        int T = getT();
+    public Objs getObjectCollection();
 
-        if (!super.equals(obj))
-            return false;
+    public void setObjectCollection(Objs objCollection);
 
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Obj))
-            return false;
+    public String getName();
 
-        return (T == ((Obj) obj).getT());
+    public int getID();
 
-    }
+    public Obj setID(int ID);
 
-    @Override
-    public String toString() {
-        return "Object \"" + getName() + "\", ID = " + ID + ", frame = " + getT();
-    }
+    public int getT();
+
+    public Obj setT(int t);
+
+    public LinkedHashMap<String, Obj> getParents();
+
+    public void setParents(LinkedHashMap<String, Obj> parents);
+
+    public LinkedHashMap<String, Objs> getChildren();
+
+    public void setChildren(LinkedHashMap<String, Objs> children);
+
+    public LinkedHashMap<String, Objs> getPartners();
+
+    public void setPartners(LinkedHashMap<String, Objs> partners);
+
+    public void removeRelationships();
+    
+    public LinkedHashMap<String, ObjMetadata> getMetadata();
+
+    public void setMetadata(LinkedHashMap<String, ObjMetadata> metadata);
+
+    public HashMap<Integer, Roi> getRois();
+
+    public void clearROIs();
+
+    public Obj duplicate(Objs newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
+            boolean duplicateMetadata);
+
+    public boolean equalsIgnoreNameAndID(Object obj);
+
 }

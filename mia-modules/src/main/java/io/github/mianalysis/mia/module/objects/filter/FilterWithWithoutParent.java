@@ -1,29 +1,27 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 
 /**
  * Filter an object collection based on the presence of a specific parent for
@@ -129,7 +127,7 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            ObjI parentObject = inputObject.getParent(parentObjectName);
+            Obj parentObject = inputObject.getParent(parentObjectName);
             // LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
             switch (filterMethod) {
                 case FilterMethods.WITHOUT_PARENT:

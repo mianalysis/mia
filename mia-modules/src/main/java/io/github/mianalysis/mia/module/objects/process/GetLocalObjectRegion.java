@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.ObjI;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -298,7 +297,7 @@ public class GetLocalObjectRegion extends Module {
                 radius = inputObject.getMeasurement(radiusMeasurement).getValue();
                 break;
             case RadiusSources.PARENT_MEASUREMENT:
-                ObjI parentObject = inputObject.getParent(radiusParentObjectsName);
+                Obj parentObject = inputObject.getParent(radiusParentObjectsName);
                 if (parentObject == null)
                     return -1;
                 else {
@@ -358,7 +357,7 @@ public class GetLocalObjectRegion extends Module {
                 break;
 
             case CentroidSources.PARENT_MEASUREMENT:
-                ObjI parentObject = inputObject.getParent(centroidParentObjectsName);
+                Obj parentObject = inputObject.getParent(centroidParentObjectsName);
                 if (parentObject == null)
                     return null;
                 else {
