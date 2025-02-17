@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -28,6 +29,7 @@ import util.opencsv.CSVReader;
  */
 public abstract class ExpectedObjects {
     public abstract List<Integer[]> getCoordinates5D();
+
     private final CoordinateSetFactoryI factory;
     private final int width;
     private final int height;
@@ -36,9 +38,12 @@ public abstract class ExpectedObjects {
     private final double frameInterval;
     private Unit<Time> temporalUnit;
 
-    public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
+    public enum Mode {
+        EIGHT_BIT, SIXTEEN_BIT, BINARY
+    };
 
-    public ExpectedObjects(CoordinateSetFactoryI factory, int width, int height, int nSlices, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
+    public ExpectedObjects(CoordinateSetFactoryI factory, int width, int height, int nSlices, int nFrames,
+            double frameInterval, Unit<Time> temporalUnit) {
         this.factory = factory;
         this.width = width;
         this.height = height;
@@ -48,17 +53,18 @@ public abstract class ExpectedObjects {
         this.temporalUnit = temporalUnit;
     }
 
-    public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
+    public abstract HashMap<Integer, HashMap<String, Double>> getMeasurements();
 
-    public Objs getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices);
+    public Objs getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits,
+            boolean includeMeasurements) throws IntegerOverflowException {
+        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, width, height, nSlices);
 
         // Initialising object store
-        Objs testObjects = new Objs(objectName,calibration,nFrames,frameInterval,temporalUnit);
+        Objs testObjects = new Objs(objectName, calibration, nFrames, frameInterval, temporalUnit);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
-        for (Integer[] coordinate:coordinates) {
+        for (Integer[] coordinate : coordinates) {
             int ID = 255;
             switch (mode) {
                 case BINARY:
@@ -79,20 +85,21 @@ public abstract class ExpectedObjects {
             int z = coordinate[5];
             int t = coordinate[6];
 
-            ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(testObjects,factory,ID));
+            ID = ID + (t * 65536);
+            testObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(testObjects, factory, ID));
 
             Obj testObject = testObjects.get(ID);
 
             try {
-                testObject.add(x,y,z);
-            } catch (PointOutOfRangeException e) {}
+                testObject.add(x, y, z);
+            } catch (PointOutOfRangeException e) {
+            }
             testObject.setT(t);
 
         }
 
         // Adding measurements to each object
-        if (includeMeasurements &! mode.equals(BINARY) &! mode.equals(SIXTEEN_BIT)) {
+        if (includeMeasurements & !mode.equals(BINARY) & !mode.equals(SIXTEEN_BIT)) {
             HashMap<Integer, HashMap<String, Double>> measurements = getMeasurements();
             if (measurements != null) {
                 for (Obj testObject : testObjects.values()) {
@@ -112,7 +119,7 @@ public abstract class ExpectedObjects {
 
     protected static List<Integer[]> getCoordinates5D(String path) {
         try {
-            String pathToCoordinates = URLDecoder.decode(ExpectedObjects.class.getResource(path).getPath(),"UTF-8");
+            String pathToCoordinates = URLDecoder.decode(ExpectedObjects.class.getResource(path).getPath(), "UTF-8");
 
             BufferedReader reader = new BufferedReader(new FileReader(pathToCoordinates));
             CSVReader csvReader = new CSVReader(reader);
@@ -123,7 +130,8 @@ public abstract class ExpectedObjects {
             while (coord != null) {
                 Integer[] thisCoord = new Integer[coord.length];
 
-                for (int j=0;j<coord.length;j++) thisCoord[j] = Integer.parseInt(coord[j]);
+                for (int j = 0; j < coord.length; j++)
+                    thisCoord[j] = Integer.parseInt(coord[j]);
 
                 coords.add(thisCoord);
                 coord = csvReader.readNext();

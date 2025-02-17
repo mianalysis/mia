@@ -15,9 +15,9 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
@@ -233,7 +233,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                         return null;
 
                     centroidPoint = parentObject.getMeanCentroid();
-                    centroidVolume = volume.getFactory().createVolume(parentObject.getCoordinateSetFactory(), parentObject.getSpatialCalibration());
+                    centroidVolume = VolumeFactories.getDefaultFactory().createVolume(parentObject.getCoordinateSetFactory(), parentObject.getSpatialCalibration());
                     centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
                             (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
 

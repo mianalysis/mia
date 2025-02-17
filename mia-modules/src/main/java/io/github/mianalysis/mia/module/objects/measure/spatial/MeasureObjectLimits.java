@@ -8,6 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.*;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;

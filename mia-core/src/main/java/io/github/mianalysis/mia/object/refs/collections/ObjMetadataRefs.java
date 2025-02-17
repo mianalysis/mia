@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.refs.collections;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;

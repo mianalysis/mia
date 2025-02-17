@@ -25,7 +25,7 @@ public class MIA_GetMetadataValue extends MacroOperation {
         String metadataName = (String) objects[0];
 
         // Returning metadata value
-        if (!workspace.getMetadata().containsKey(metadataName)) return "";
+        if (!workspace.getMetadata().hasKey(metadataName)) return "";
         return workspace.getMetadata().getAsString(metadataName);
 
     }

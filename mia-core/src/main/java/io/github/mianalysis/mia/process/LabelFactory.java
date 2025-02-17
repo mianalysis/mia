@@ -3,9 +3,9 @@ package io.github.mianalysis.mia.process;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 
 public class LabelFactory {

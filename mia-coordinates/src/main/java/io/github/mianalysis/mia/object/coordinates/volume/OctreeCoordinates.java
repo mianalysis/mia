@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.object.coordinates.volume;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.quadtree.Octree;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.Octree;
 
 
 /**

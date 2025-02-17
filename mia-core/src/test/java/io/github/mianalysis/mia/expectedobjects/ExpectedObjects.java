@@ -15,8 +15,9 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -82,7 +83,7 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(testObjects,factory,ID));
+            testObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(testObjects,factory,ID));
 
             Obj testObject = testObjects.get(ID);
 

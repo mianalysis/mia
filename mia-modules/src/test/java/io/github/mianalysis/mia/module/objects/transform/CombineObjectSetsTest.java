@@ -13,10 +13,10 @@ import io.github.mianalysis.mia.expectedobjects.Spots3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.relate.mergeobjects.CombineObjectSets;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 

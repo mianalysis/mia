@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
@@ -112,8 +112,8 @@ public abstract class TextType extends Parameter {
         while (matcher.find()) {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
-
-            if (metadata.containsKey(metadataName))
+            
+            if (metadata.hasKey(metadataName))
                 string = string.replace(fullName, metadata.getAsString(metadataName));
 
         }

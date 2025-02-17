@@ -44,11 +44,11 @@ import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -108,7 +108,7 @@ public class Exporter {
                 for (WorkspaceI workspace : workspaces) {
                     if (!workspace.exportWorkspace())
                         continue;
-                    if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
+                    if (workspace.getMetadata().hasKey(metadataItemForGrouping)) {
                         metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
                     }
                 }
@@ -120,7 +120,7 @@ public class Exporter {
                     for (WorkspaceI workspace : workspaces) {
                         if (!workspace.exportWorkspace())
                             continue;
-                        if (!workspace.getMetadata().containsKey(metadataItemForGrouping))
+                        if (!workspace.getMetadata().hasKey(metadataItemForGrouping))
                             continue;
                         if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
                             currentWorkspaces.add(workspace);

@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;

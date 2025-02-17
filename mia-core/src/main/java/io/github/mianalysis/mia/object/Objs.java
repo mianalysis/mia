@@ -13,6 +13,8 @@ import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
@@ -82,7 +84,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     public Obj createAndAddNewObject(CoordinateSetFactoryI factory) {
-        Obj newObject = new Obj(this, factory, getAndIncrementID());
+        Obj newObject = ObjFactories.getDefaultFactory().createObj(this, factory, getAndIncrementID());
         add(newObject);
 
         return newObject;
@@ -90,7 +92,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     public Obj createAndAddNewObject(CoordinateSetFactoryI factory, int ID) {
-        Obj newObject = new Obj(this, factory, ID);
+        Obj newObject = ObjFactories.getDefaultFactory().createObj(this, factory, ID);
         add(newObject);
 
         // Updating the maxID if necessary
@@ -678,7 +680,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         // Iterating over objects, getting those in this frame
         for (Obj obj : values()) {
             if (obj.getT() == frame) {
-                Obj outputObject = new Obj(outputObjects, obj.getCoordinateSetFactory(), obj.getID());
+                Obj outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, obj.getCoordinateSetFactory(), obj.getID());
                 outputObject.setCoordinateSet(obj.getCoordinateSet().duplicate());
                 outputObject.setT(0);
                 outputObjects.add(outputObject);

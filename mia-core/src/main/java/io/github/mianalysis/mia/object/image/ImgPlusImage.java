@@ -11,8 +11,9 @@ import ij.measure.Calibration;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -71,7 +72,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground) {
+    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName,
+            boolean blackBackground) {
         return convertImageToObjects(factory, outputObjectsName, true, blackBackground);
     }
 
@@ -85,7 +87,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         return convertImageToObjects(factory, outputObjectsName, false, true);
     }
 
-    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject, boolean blackBackground) {
+    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject,
+            boolean blackBackground) {
         int xIdx = img.dimensionIndex(Axes.X);
         int yIdx = img.dimensionIndex(Axes.Y);
         int cIdx = img.dimensionIndex(Axes.CHANNEL);
@@ -144,7 +147,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                             int finalT = t;
 
                             outputObjects.computeIfAbsent(outID,
-                                    k -> new Obj(outputObjects, factory, outID).setT(finalT));
+                                    k -> ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
+                                            .setT(finalT));
                             try {
                                 outputObjects.get(outID).add(x, y, z);
                             } catch (PointOutOfRangeException e) {
@@ -328,7 +332,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     public void setRawImage(Object image) {
         if (image instanceof ImgPlus)
             this.img = (ImgPlus) image;
-            else
+        else
             MIA.log.writeError("Error in ImgPlusImage.setRawImage(Object image).  Image not instance of ImgPlus.");
     }
 

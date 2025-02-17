@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.object.measurements;
 
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 
 public class ChildCountMeasurement extends Measurement {
     private Obj obj;

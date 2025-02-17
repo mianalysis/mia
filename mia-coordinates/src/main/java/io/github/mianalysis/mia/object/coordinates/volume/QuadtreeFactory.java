@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.object.coordinates.volume;
 
+
 public class QuadtreeFactory implements CoordinateSetFactoryI {
     public static final String NAME = "Quadtree";
 

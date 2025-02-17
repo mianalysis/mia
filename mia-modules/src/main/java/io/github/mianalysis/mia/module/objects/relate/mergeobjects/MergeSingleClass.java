@@ -7,10 +7,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -79,7 +80,7 @@ public class MergeSingleClass extends Module {
             // If it doesn't already exist, creating a new object for this timepoint. The ID
             // of this object is the timepoint index (numbering starting at 1).
             if (!outputObjects.containsKey(t + 1)) {
-                Obj outputObject = new Obj(outputObjects, t + 1, inputObject);
+                Obj outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, t + 1, inputObject);
                 outputObject.setT(t);
                 outputObjects.add(outputObject);
             }

@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object;
+package io.github.mianalysis.mia.object.coordinates;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +9,9 @@ import org.apache.poi.ss.formula.functions.T;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
+import io.github.mianalysis.mia.object.ObjMetadata;
+import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;

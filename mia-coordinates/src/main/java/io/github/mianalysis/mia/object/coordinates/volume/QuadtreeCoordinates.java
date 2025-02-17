@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.quadtree.Quadtree;
+import io.github.mianalysis.mia.object.coordinates.volume.quadtree.Quadtree;
 
 /**
  * Created by sc13967 on 28/07/2017.

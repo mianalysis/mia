@@ -20,30 +20,10 @@ public class PointCoordinates extends HashSet<Point<Integer>> implements Coordin
         add(new Point<>(x,y,z));
         return true;
     }
-
-    @Override
-    public boolean add(Point<Integer> point) {
-        return add(point.x, point.y, point.z);
-    }
     
     @Override
     public CoordinateSetI createEmptyCoordinateSet() {
         return new PointCoordinates();        
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return contains(o);
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return remove(o);
-    }
-
-    @Override
-    public void clear() {
-        clear();
     }
 
     @Override

@@ -370,7 +370,7 @@ public class MetadataExtractor extends Module {
             }
             bufferedReader.close();
 
-            if (metadata.containsKey(metadataItemToMatch)) {
+            if (metadata.hasKey(metadataItemToMatch)) {
                 return referenceValues.get(metadata.get(metadataItemToMatch).toString());
             } else
                 return null;

@@ -1,17 +1,15 @@
-package io.github.mianalysis.mia.object;
+package io.github.mianalysis.mia.object.coordinates;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import ij.gui.Roi;
+import io.github.mianalysis.mia.object.ObjMetadata;
+import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.measurements.Measurement;
-import net.imagej.ImgPlus;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -43,38 +41,14 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
     }
 
-    public DefaultObj(Objs objCollection, int ID, Volume exampleVolume) {
-        super(exampleVolume.getCoordinateSetFactory(), exampleVolume.getSpatialCalibration());
+    public DefaultObj(Objs objCollection, CoordinateSetFactoryI factory, int ID, SpatCal spatCal) {
+        super(factory, spatCal);
 
         this.objCollection = objCollection;
         this.ID = ID;
 
     }
 
-    public DefaultObj(Objs objCollection, int ID, Obj exampleObj) {
-        super(exampleObj.getCoordinateSetFactory(), exampleObj.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-
-    public DefaultObj(Objs objCollection, CoordinateSetFactoryI factory, int ID, Volume exampleVolume) {
-        super(factory, exampleVolume.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-
-    public DefaultObj(Objs objCollection, CoordinateSetFactoryI factory, int ID, Obj exampleObj) {
-        super(factory, exampleObj.getSpatialCalibration());
-
-        this.objCollection = objCollection;
-        this.ID = ID;
-
-    }
-    
     @Override
     public Objs getObjectCollection() {
         return objCollection;
@@ -256,7 +230,7 @@ public class DefaultObj extends DefaultVolume implements Obj {
     @Override
     public Obj duplicate(Objs newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata) {
-        Obj newObj = new DefaultObj(newCollection, getID(), this);
+        Obj newObj = new DefaultObj(newCollection, getCoordinateSetFactory(), getID());
 
         // Duplicating coordinates
         newObj.setCoordinateSet(getCoordinateSet().duplicate());

@@ -1,8 +1,8 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;

@@ -10,13 +10,14 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
+import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.quadtree.OctreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.quadtree.QuadtreeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -112,7 +113,7 @@ public class ConvertImageToObjects extends Module {
             int ID = (int) Math.round(cs.getMax());
 
             // Getting corresponding parent object
-            parentObjects.putIfAbsent(ID, new Obj(parentObjects, new PointListFactory(), ID));
+            parentObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(parentObjects, new PointListFactory(), ID));
             Obj parentObject = parentObjects.get(ID);
 
             // Assigning relationships

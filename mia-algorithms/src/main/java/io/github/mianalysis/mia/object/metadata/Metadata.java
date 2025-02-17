@@ -298,7 +298,7 @@ public class Metadata extends LinkedHashMap<String,Object> implements MetadataI 
     }
 
     @Override
-    public boolean containsKey(String key) {
-        return this.containsKey(key);
+    public boolean hasKey(String key) {
+        return containsKey(key);
     }   
 }

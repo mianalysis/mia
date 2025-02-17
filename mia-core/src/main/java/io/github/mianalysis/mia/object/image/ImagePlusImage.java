@@ -12,8 +12,9 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -62,7 +63,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     @Override
-    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground) {
+    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName,
+            boolean blackBackground) {
         return convertImageToObjects(factory, outputObjectsName, true, blackBackground);
     }
 
@@ -76,7 +78,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         return convertImageToObjects(factory, outputObjectsName, singleObject, true);
     }
 
-    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject, boolean blackBackground) {
+    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject,
+            boolean blackBackground) {
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
         double dppZ = imagePlus.getCalibration().pixelDepth;
@@ -125,7 +128,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                                 int finalT = t;
 
                                 outputObjects.computeIfAbsent(outID,
-                                        k -> new Obj(outputObjects, factory, outID).setT(finalT));
+                                        k -> ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
+                                                .setT(finalT));
                                 try {
                                     outputObjects.get(outID).add(x, y, z);
                                 } catch (PointOutOfRangeException e) {

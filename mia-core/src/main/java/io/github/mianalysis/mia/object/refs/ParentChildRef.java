@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public class ParentChildRef extends Ref {

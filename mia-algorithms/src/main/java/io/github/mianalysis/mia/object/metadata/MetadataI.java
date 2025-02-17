@@ -161,7 +161,7 @@ public interface MetadataI {
 
     public String insertMetadataValues(String genericFormat);
 
-    public boolean containsKey(String key);
+    public boolean hasKey(String key);
 
     public Set<String> keySet();
 

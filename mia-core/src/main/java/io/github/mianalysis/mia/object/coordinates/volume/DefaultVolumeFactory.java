@@ -13,8 +13,7 @@ public class DefaultVolumeFactory implements VolumeFactory {
 
     @Override
     public VolumeFactory duplicate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'duplicate'");
+        return new DefaultVolumeFactory();
     }
     
 }

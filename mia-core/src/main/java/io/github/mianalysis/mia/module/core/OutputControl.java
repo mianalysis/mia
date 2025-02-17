@@ -409,7 +409,7 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     public static String getMirroredDirectory(File rootFile, MetadataI metadata, String mirroredDirectoryRoot) {
-        int fileDepth = metadata.containsKey("FILE_DEPTH") ? (int) metadata.get("FILE_DEPTH") : 0;
+        int fileDepth = metadata.hasKey("FILE_DEPTH") ? (int) metadata.get("FILE_DEPTH") : 0;
 
         StringBuilder sb = new StringBuilder();
         File parentFile = metadata.getFile().getParentFile();
