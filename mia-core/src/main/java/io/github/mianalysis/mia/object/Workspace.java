@@ -54,10 +54,6 @@ public class Workspace implements WorkspaceI {
 
     // PUBLIC METHODS
 
-    public void addObjects(Objs object) {
-        objects.put(object.getName(), object);
-    }
-
     public void removeObjects(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
             for (Obj obj:objects.get(name).values()) {
@@ -152,11 +148,6 @@ public class Workspace implements WorkspaceI {
 
         // Displaying the results table
         rt.show("Metadata values");
-
-    }
-
-    public ImageI getImage(String name) {
-        return images.get(name);
 
     }
 

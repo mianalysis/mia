@@ -9,7 +9,15 @@ import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Status;
 
 public interface WorkspaceI {
-    public void addObjects(Objs object);
+    public default void addObjects(Objs object) {
+        getObjects().put(object.getName(), object);
+    }
+
+    public default ImageI getImage(String name) {
+        return getImages().get(name);
+
+    }
+
 
     public void removeObjects(String name, boolean retainMeasurements);
 
@@ -30,8 +38,6 @@ public interface WorkspaceI {
     public void showMetadata(Module module);
 
     public void showMetadata();
-
-    public ImageI getImage(String name);
 
     public Objs getObjects(String name);
 

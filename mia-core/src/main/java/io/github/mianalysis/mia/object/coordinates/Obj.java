@@ -12,7 +12,6 @@ import ij.gui.Roi;
 import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.image.ImageFactory;

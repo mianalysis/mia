@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.object.image;
 
-import java.awt.Color;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
