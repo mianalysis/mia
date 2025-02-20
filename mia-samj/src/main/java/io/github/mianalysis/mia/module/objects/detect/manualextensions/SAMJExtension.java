@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -99,7 +98,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         super(module);
     }
 
-    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {        
+    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
         AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
         AbstractSamJ.MAX_ENCODED_SIDE = 3000;
 
@@ -110,7 +109,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             if (!manager.checkEverythingInstalled())
                 if (installIfMissing) {
                     module.writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model to "+environmentPath);
+                    MIA.log.writeDebug("Installing SAM model to " + environmentPath);
                     manager.installEverything();
                 } else {
                     MIA.log.writeWarning("Model not available.  Please install manually or enable \""
@@ -169,9 +168,13 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             } else {
                 samJ.setImage(workspace.getImage(imageName).getImgPlus());
             }
-        } catch (InterruptedException | IOException | RuntimeException e) {
-            e.printStackTrace();
+        } catch (IOException | RuntimeException e1) {
+            e1.printStackTrace();
             return Status.FAIL;
+        } catch (InterruptedException e2) {
+            // Don't throw an error in this case, as it's likely the sleep was interrupted
+            // by the thread being manually stopped (e.g. "Stop" button on GUI)
+            return Status.TERMINATE_SILENT;
         }
 
         if (preinitialise) {
@@ -202,8 +205,11 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
                     try {
                         preinitSamJ.setImage(finalNextWorkspace.getImage(imageName).getImgPlus());
-                    } catch (IOException | RuntimeException | InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (IOException | RuntimeException e1) {
+                        e1.printStackTrace();
+                    } catch (InterruptedException e2) {
+                        // Don't throw an error in this case, as it's likely the sleep was interrupted
+                        // by the thread being manually stopped (e.g. "Stop" button on GUI)
                     }
 
                     finalNextWorkspace.clearAllImages(false);

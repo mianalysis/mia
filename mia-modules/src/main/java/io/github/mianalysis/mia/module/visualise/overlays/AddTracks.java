@@ -5,17 +5,13 @@ package io.github.mianalysis.mia.module.visualise.overlays;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import com.drew.lang.annotations.Nullable;
-
 import ij.ImagePlus;
 import ij.gui.Line;
-import ij.gui.Overlay;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.MIA;
@@ -128,7 +124,16 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
      * history is specified by the "Track history (frames)" parameter.
      */
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
+
+    /**
+     * 
+     */
     public static final String TRACK_HISTORY = "Track history (frames)";
+
+    /**
+     * 
+     */
+    public static final String FADE_OUT_TRACKS = "Fade out tracks";
 
     /**
      * Width of the rendered lines. Specified in pixel units.
@@ -159,7 +164,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
     }
 
     public void addOverlay(Obj trackObject, String spotObjectsName, ImagePlus ipl, HashMap<Integer, Color> colours,
-            double lineWidth, int history, boolean instantaneousColour) {
+            double lineWidth, int history, boolean fadeOutTracks, boolean instantaneousColour) {
         Objs pointObjects = trackObject.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
@@ -207,22 +212,31 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
                         colour = colours.get(trackObject.getID());
                     else {
                         String parentName = trackObject.getName();
-                        
+
                         if (spotObjectsName.contains("//")) {
                             String[] elements = spotObjectsName.split(" // ");
                             StringBuilder stringBuilder = new StringBuilder();
-                            for (int i = elements.length-2; i >= 0; i--)
+                            for (int i = elements.length - 2; i >= 0; i--)
                                 stringBuilder.append(elements[i]).append(" // ");
                             stringBuilder.append(trackObject.getName());
                             parentName = stringBuilder.toString();
-                        }                        
-                        
+                        }
+
                         colour = colours.get(previousPartner.getParent(parentName).getID());
                     }
-                        
-                    
-                    line.setStrokeColor(colour);
 
+                    if (fadeOutTracks) {
+                        // Calculate how far from end of track this is
+                        double opacity = 1 - (((double) t - (double) pointObject.getT()) / history);
+
+                        int alpha = (int) Math.round(colour.getAlpha() * opacity);
+
+                        colour = new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), alpha);
+
+                    }
+
+                    line.setStrokeColor(colour);
+                    
                     ovl.addElement(line);
 
                 }
@@ -271,6 +285,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR, workspace);
         boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY, workspace);
         int history = parameters.getValue(TRACK_HISTORY, workspace);
+        boolean fadeOutTracks = parameters.getValue(FADE_OUT_TRACKS, workspace);
 
         double opacity = parameters.getValue(OPACITY, workspace);
         double lineWidth = parameters.getValue(LINE_WIDTH, workspace);
@@ -313,7 +328,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
         for (Obj object : inputObjects.values()) {
-            addOverlay(object, spotObjectsName, ipl, colours, lineWidth, history, instantaneousColour);
+            addOverlay(object, spotObjectsName, ipl, colours, lineWidth, history, fadeOutTracks, instantaneousColour);
             writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
         }
 
@@ -355,6 +370,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new BooleanP(LIMIT_TRACK_HISTORY, this, false));
         parameters.add(new IntegerP(TRACK_HISTORY, this, 10));
+        parameters.add(new BooleanP(FADE_OUT_TRACKS, this, true));
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
@@ -410,8 +426,10 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
-        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY, workspace))
+        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY, workspace)) {
             returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
+            returnedParameters.add(parameters.getParameter(FADE_OUT_TRACKS));
+        }
 
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
