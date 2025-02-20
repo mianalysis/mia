@@ -11,22 +11,22 @@ public class IntegerP extends TextType {
     protected String value;
 
     public IntegerP(String name, Module module, int value) {
-        super(name,module);
+        super(name, module);
         this.value = String.valueOf(value);
     }
 
     public IntegerP(String name, Module module, String value) {
-        super(name,module);
+        super(name, module);
         this.value = value;
     }
 
     public IntegerP(String name, Module module, int value, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.value = String.valueOf(value);
     }
 
     public IntegerP(String name, Module module, String value, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.value = value;
     }
 
@@ -39,17 +39,20 @@ public class IntegerP extends TextType {
         if (GlobalVariables.containsValue(value) || containsReference(value)) {
             this.value = value;
         } else {
-            try {
-                Integer.parseInt(value);
-                this.value = value;
-            } catch (NumberFormatException e) {
-                MIA.log.writeWarning("Module \"" + module.getName() + "\", parameter \"" + getName()
-                + " \". Must either:" 
-                + "\n    - An integer-precision value,"
-                + "\n    - A global variable handle in the form V{[VARIABLE NAME]} (e.g. V{name}),"
-                + "\n    - Contain a calculation in the form CI{[EQUATION]} (e.g. CI{3-4}),"
-                + "\nNote: Global variables and calculations can be combined (e.g. CI{V{name1} + V{name2} - 4})");
-            }
+            // try {
+            // Integer.parseInt(value);
+            this.value = value;
+            // } catch (NumberFormatException e) {
+            // MIA.log.writeWarning("Module \"" + module.getName() + "\", parameter \"" +
+            // getName()
+            // + " \". Must either:"
+            // + "\n - An integer-precision value,"
+            // + "\n - A global variable handle in the form V{[VARIABLE NAME]} (e.g.
+            // V{name}),"
+            // + "\n - Contain a calculation in the form CI{[EQUATION]} (e.g. CI{3-4}),"
+            // + "\nNote: Global variables and calculations can be combined (e.g.
+            // CI{V{name1} + V{name2} - 4})");
+            // }
         }
     }
 
@@ -80,13 +83,31 @@ public class IntegerP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        IntegerP newParameter = new IntegerP(name,newModule,value,getDescription());
+        IntegerP newParameter = new IntegerP(name, newModule, value, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());
 
         return (T) newParameter;
+
+    }
+
+    @Override
+    public boolean verify() {
+        if (!super.verify())
+            return false;
+
+        try {
+            Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        if (value.equals(""))
+            return false;
+
+        return true;
 
     }
 }
