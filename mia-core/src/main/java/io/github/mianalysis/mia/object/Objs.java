@@ -288,6 +288,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     public Image convertToImageBinary() {
+            return convertToImageBinary(name);
+    }
+
+    public Image convertToImageBinary(String name) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(this, ColourFactory.SingleColours.WHITE);
         Image dispImage = convertToImage(name, hues, 8, false);
 

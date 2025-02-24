@@ -98,14 +98,17 @@ public class IntegerP extends TextType {
         if (!super.verify())
             return false;
 
+        if (value.equals(""))
+            return false;
+
+        if (GlobalVariables.variablesPresent(getRawStringValue(), module.getModules()))
+            return true;
+
         try {
             Integer.parseInt(value);
         } catch (NumberFormatException e) {
             return false;
         }
-
-        if (value.equals(""))
-            return false;
 
         return true;
 
