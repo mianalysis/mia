@@ -676,6 +676,8 @@ public class CreateSkeleton extends Module {
         pool.shutdown();
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            return Status.FAIL;
         } catch (Throwable t) {
             MIA.log.writeError(t);
             return Status.FAIL;

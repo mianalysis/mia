@@ -198,7 +198,7 @@ public class DoublePTest {
         doubleP.setValueFromString("");
 
         // The following should throw the NumberFormatException
-        assertEquals(12,doubleP.getValue(null),tolerance);
+        assertThrows(NumberFormatException.class, () -> doubleP.getValue(null));        
 
     }
 
