@@ -364,6 +364,8 @@ public class ApplySegmentAnything extends Module {
 
         }
 
+        
+
         workspace.addObjects(outputObjects);
 
         if (showOutput)

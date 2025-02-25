@@ -43,7 +43,7 @@ public class CommaSeparatedStringInterpreter {
     public static String removeInterval(String range) {
         // Removes anything after a potential second hyphen
         Pattern pattern = Pattern.compile("-");
-        Matcher matcher = pattern.matcher(range);
+        Matcher matcher = pattern.matcher(range.substring(1));
         int count = 0;
         while (matcher.find())
             if (count++ > 0)
