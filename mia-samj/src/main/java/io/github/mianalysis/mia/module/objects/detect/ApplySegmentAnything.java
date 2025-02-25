@@ -14,6 +14,7 @@ import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
+import ij.gui.PolygonRoi;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.AvailableModules;
@@ -36,6 +37,7 @@ import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -72,10 +74,49 @@ public class ApplySegmentAnything extends Module {
      */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+    /**
+     * 
+     */
+    public static final String OBJECT_SEPARATOR = "Output object controls";
+
+    /**
+     * 
+     */
+    public static final String LIMIT_OBJECT_SIZE = "Limit object size";
+
+    /**
+     * 
+     */
+    public static final String MAXIMUM_AREA = "Maximum area";
+
+    /**
+     * 
+     */
+    public static final String CALIBRATED_UNITS = "Calibrated units";
+
+    /**
+     * 
+     */
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
+
+    /**
+     * 
+     */
     public static final String ENVIRONMENT_PATH_MODE = "Environment path mode";
+
+    /**
+     * 
+     */
     public static final String ENVIRONMENT_PATH = "Environment path";
+
+    /**
+     * 
+     */
     public static final String INSTALL_IF_MISSING = "Install model if missing";
+
+    /**
+     * 
+     */
     public static final String PREINITIALISE = "Preinitialise (batch only)";
 
     protected AbstractSamJ samJ = null;
@@ -122,29 +163,31 @@ public class ApplySegmentAnything extends Module {
     }
 
     // public AbstractSamJ initialiseSAMJ() {
-    //     AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-    //     AbstractSamJ.MAX_ENCODED_SIDE = 3000;
+    // AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
+    // AbstractSamJ.MAX_ENCODED_SIDE = 3000;
 
-    //     AbstractSamJ loadedSamJ = null;
-    //     try {
-    //         String environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
-    //         SamEnvManagerAbstract manager = EfficientSamEnvManager.create(environmentPath);
+    // AbstractSamJ loadedSamJ = null;
+    // try {
+    // String environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+    // SamEnvManagerAbstract manager =
+    // EfficientSamEnvManager.create(environmentPath);
 
-    //         if (!manager.checkEverythingInstalled())
-    //             manager.installEverything();
+    // if (!manager.checkEverythingInstalled())
+    // manager.installEverything();
 
-    //         loadedSamJ = EfficientSamJ.initializeSam(manager);
+    // loadedSamJ = EfficientSamJ.initializeSam(manager);
 
-    //     } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
-    //             | MambaInstallException e) {
-    //         e.printStackTrace();
-    //     }
+    // } catch (IOException | RuntimeException | InterruptedException |
+    // ArchiveException | URISyntaxException
+    // | MambaInstallException e) {
+    // e.printStackTrace();
+    // }
 
-    //     return loadedSamJ;
+    // return loadedSamJ;
 
     // }
 
-    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {        
+    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
         AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
         AbstractSamJ.MAX_ENCODED_SIDE = 3000;
 
@@ -155,7 +198,7 @@ public class ApplySegmentAnything extends Module {
             if (!manager.checkEverythingInstalled())
                 if (installIfMissing) {
                     writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model to "+environmentPath);
+                    MIA.log.writeDebug("Installing SAM model to " + environmentPath);
                     manager.installEverything();
                 } else {
                     MIA.log.writeWarning("Model not available.  Please install manually or enable \""
@@ -194,6 +237,9 @@ public class ApplySegmentAnything extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        boolean limitObjectSize = parameters.getValue(LIMIT_OBJECT_SIZE, workspace);
+        double maxObjectArea = parameters.getValue(MAXIMUM_AREA, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
         String envionmentPathMode = parameters.getValue(ENVIRONMENT_PATH_MODE, workspace);
         String environmentPath = parameters.getValue(ENVIRONMENT_PATH, workspace) + "/";
         boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
@@ -201,6 +247,9 @@ public class ApplySegmentAnything extends Module {
 
         Image inputImage = workspace.getImages().get(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
+
+        if (calibratedUnits)
+            maxObjectArea = maxObjectArea / (inputObjects.getDppXY() * inputObjects.getDppXY());
 
         switch (envionmentPathMode) {
             case EnvironmentPathModes.DEFAULT:
@@ -215,7 +264,7 @@ public class ApplySegmentAnything extends Module {
             // No need to install as this is the same environment as the main environment
             preinitSamJ = initialiseSAMJ(environmentPath, false);
 
-            // Checking if SamJ has been preinitialised for this file
+        // Checking if SamJ has been preinitialised for this file
         String path = workspace.getMetadata().getFile().getAbsolutePath();
         try {
             if (path.equals(preinitPath)) {
@@ -288,6 +337,8 @@ public class ApplySegmentAnything extends Module {
         // Creating output objects
         Objs outputObjects = new Objs(outputObjectsName, inputImage.getImagePlus());
 
+        int count = 0;
+        int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
             List<Mask> masks = getPolygonsFromObjectCentroid(inputObject, samJ);
             if (masks == null)
@@ -296,9 +347,21 @@ public class ApplySegmentAnything extends Module {
             Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
             for (Mask mask : masks)
                 try {
+                    if (limitObjectSize && new PolygonRoi(mask.getContour(), PolygonRoi.FREEROI)
+                            .getStatistics().area > maxObjectArea) {
+                        continue;
+                    }
+
                     outputObject.addPointsFromPolygon(mask.getContour(), 0);
                 } catch (PointOutOfRangeException e) {
                 }
+
+            // Checking this object has volume.  If not, removing it
+            if (outputObject.size() == 0)
+                outputObjects.remove(outputObject.getID());
+
+            writeProgressStatus(++count, total, "objects");
+
         }
 
         workspace.addObjects(outputObjects);
@@ -317,6 +380,11 @@ public class ApplySegmentAnything extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
+        parameters.add(new SeparatorP(OBJECT_SEPARATOR, this));
+        parameters.add(new BooleanP(LIMIT_OBJECT_SIZE, this, false));
+        parameters.add(new DoubleP(MAXIMUM_AREA, this, 0));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+
         parameters.add(new SeparatorP(SAMJ_SEPARATOR, this));
         parameters.add(
                 new ChoiceP(ENVIRONMENT_PATH_MODE, this, EnvironmentPathModes.DEFAULT, EnvironmentPathModes.ALL));
@@ -334,8 +402,14 @@ public class ApplySegmentAnything extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        
-        
+
+        returnedParameters.add(parameters.getParameter(OBJECT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(LIMIT_OBJECT_SIZE));
+        if ((Boolean) parameters.getValue(LIMIT_OBJECT_SIZE, null)) {
+            returnedParameters.add(parameters.getParameter(MAXIMUM_AREA));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+        }
+
         returnedParameters.add(parameters.getParameter(SAMJ_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENVIRONMENT_PATH_MODE));
 

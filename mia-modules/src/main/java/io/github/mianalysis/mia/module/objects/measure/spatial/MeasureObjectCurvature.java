@@ -680,6 +680,7 @@ public class MeasureObjectCurvature extends Module {
                 double xRef = inputObject.getMeasurement(xReference).getValue();
                 double yRef = inputObject.getMeasurement(yReference).getValue();
 
+                
                 if (testForPathInversion(longestPath, xRef, yRef)) {
                     // Store the longest path in a list, then iterate through this backwards
                     LinkedList<Point<Integer>> temporaryPathList = new LinkedList<>(longestPath);
