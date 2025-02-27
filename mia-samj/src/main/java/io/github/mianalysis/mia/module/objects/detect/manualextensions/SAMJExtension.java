@@ -41,6 +41,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -71,12 +72,10 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     protected Workspace workspace;
     protected AbstractSamJ samJ = null;
     protected AbstractSamJ preinitSamJ = null;
-    protected AbstractSamJ tempSamJ = null;
     protected String preinitPath = null;
     protected boolean preinitComplete = false;
     protected ImagePlus displayIpl;
     protected boolean useSAM = true;
-
     protected String prevEnvironmentPath = "";
 
     public static void main(String[] args) throws Exception {
@@ -148,24 +147,21 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
                 break;
         }
 
-        if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
-            samJ = initialiseSAMJ(environmentPath, installIfMissing);
-
-        if (preinitialise && preinitSamJ == null)
-            // No need to install as this is the same environment as the main environment
-            preinitSamJ = initialiseSAMJ(environmentPath, false);
-
         // Checking if SamJ has been preinitialised for this file
         String path = workspace.getMetadata().getFile().getAbsolutePath();
         try {
+            // Checking if preinitialisation is for this file
             if (path.equals(preinitPath)) {
+                // Waiting till preinitialisation is complete for this file
                 while (!preinitComplete)
                     Thread.sleep(100);
 
-                tempSamJ = samJ;
+                // Transfer preinitialised SamJ to main copy
                 samJ = preinitSamJ;
-                preinitSamJ = tempSamJ;
+
             } else {
+                // Initialise a new copy of SamJ
+                samJ = initialiseSAMJ(environmentPath, installIfMissing);
                 samJ.setImage(workspace.getImage(imageName).getImgPlus());
             }
         } catch (IOException | RuntimeException e1) {
@@ -193,28 +189,28 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
             if (nextWorkspace != null) {
                 preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
-                Workspace finalNextWorkspace = nextWorkspace;
+
+                // Creating a dummy workspace so we don't alter the real one
+                Workspace dummyWorkspace = new Workspaces().getNewWorkspace(nextWorkspace.getMetadata().getFile(), nextWorkspace.getMetadata().getSeriesNumber());
+                String finalEnvironmentPath = environmentPath;
                 Thread t = new Thread(() -> {
                     // Running modules up to this point
                     Modules modules = module.getModules();
                     for (Module currModule : modules) {
                         if (currModule == module)
                             break;
-                        currModule.execute(finalNextWorkspace);
+                        currModule.execute(dummyWorkspace);
                     }
 
                     try {
-                        preinitSamJ.setImage(finalNextWorkspace.getImage(imageName).getImgPlus());
+                        preinitSamJ = initialiseSAMJ(finalEnvironmentPath, installIfMissing);
+                        preinitSamJ.setImage(dummyWorkspace.getImage(imageName).getImgPlus());
                     } catch (IOException | RuntimeException e1) {
                         e1.printStackTrace();
                     } catch (InterruptedException e2) {
                         // Don't throw an error in this case, as it's likely the sleep was interrupted
                         // by the thread being manually stopped (e.g. "Stop" button on GUI)
                     }
-
-                    finalNextWorkspace.clearAllImages(false);
-                    finalNextWorkspace.clearAllObjects(false);
-                    finalNextWorkspace.clearMetadata();
 
                     preinitComplete = true;
 
@@ -238,6 +234,15 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
         this.displayIpl = displayIpl;
         displayIpl.getCanvas().addMouseListener(this);
+
+        return Status.PASS;
+
+    }
+
+    @Override
+    public Status onFinishAddingObjects() {
+        if (samJ != null)
+            samJ.close();
 
         return Status.PASS;
 

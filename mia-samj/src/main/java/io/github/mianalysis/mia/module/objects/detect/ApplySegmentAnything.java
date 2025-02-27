@@ -114,16 +114,8 @@ public class ApplySegmentAnything extends Module {
      */
     public static final String INSTALL_IF_MISSING = "Install model if missing";
 
-    /**
-     * 
-     */
-    public static final String PREINITIALISE = "Preinitialise (batch only)";
-
-    protected AbstractSamJ samJ = null;
-    protected AbstractSamJ preinitSamJ = null;
-    protected AbstractSamJ tempSamJ = null;
-    protected String preinitPath = null;
-    protected boolean preinitComplete = false;
+    // protected AbstractSamJ samJ = null;
+    protected SamEnvManagerAbstract envManager = null;
     protected String prevEnvironmentPath = "";
 
     public static void main(String[] args) throws Exception {
@@ -162,50 +154,37 @@ public class ApplySegmentAnything extends Module {
 
     }
 
-    // public AbstractSamJ initialiseSAMJ() {
-    // AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-    // AbstractSamJ.MAX_ENCODED_SIDE = 3000;
-
-    // AbstractSamJ loadedSamJ = null;
-    // try {
-    // String environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
-    // SamEnvManagerAbstract manager =
-    // EfficientSamEnvManager.create(environmentPath);
-
-    // if (!manager.checkEverythingInstalled())
-    // manager.installEverything();
-
-    // loadedSamJ = EfficientSamJ.initializeSam(manager);
-
-    // } catch (IOException | RuntimeException | InterruptedException |
-    // ArchiveException | URISyntaxException
-    // | MambaInstallException e) {
-    // e.printStackTrace();
-    // }
-
-    // return loadedSamJ;
-
-    // }
-
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
-        AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 3000;
+        AbstractSamJ.MAX_ENCODED_AREA_RS = 4000;
+        AbstractSamJ.MAX_ENCODED_SIDE = 4000;
 
         AbstractSamJ loadedSamJ = null;
         try {
-            SamEnvManagerAbstract manager = EfficientSamEnvManager.create(environmentPath);
+            if (envManager == null || !environmentPath.equals(prevEnvironmentPath)) {
+                long t1 = System.nanoTime();
+                envManager = EfficientSamEnvManager.create(environmentPath);
+                long t2 = System.nanoTime();
+                if (!envManager.checkEverythingInstalled())
+                    if (installIfMissing) {
+                        writeStatus("Installing SAM model");
+                        MIA.log.writeDebug("Installing SAM model to " + environmentPath);
+                        envManager.installEverything();
+                    } else {
+                        MIA.log.writeWarning("Model not available.  Please install manually or enable \""
+                                + INSTALL_IF_MISSING + "\" parameter.");
+                    }
+                long t3 = System.nanoTime();
+                MIA.log.writeDebug("Initialise manager: " + (t2 - t1) / 1E9 + " s");
+                MIA.log.writeDebug("Check installation: " + (t3 - t2) / 1E9 + " s");
+                prevEnvironmentPath = environmentPath;
+            }
 
-            if (!manager.checkEverythingInstalled())
-                if (installIfMissing) {
-                    writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model to " + environmentPath);
-                    manager.installEverything();
-                } else {
-                    MIA.log.writeWarning("Model not available.  Please install manually or enable \""
-                            + INSTALL_IF_MISSING + "\" parameter.");
-                }
+            long t4 = System.nanoTime();
+            loadedSamJ = EfficientSamJ.initializeSam(envManager);
 
-            loadedSamJ = EfficientSamJ.initializeSam(manager);
+            long t5 = System.nanoTime();
+
+            MIA.log.writeDebug("Initialise SAM: " + (t5 - t4) / 1E9 + " s");
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {
@@ -243,7 +222,6 @@ public class ApplySegmentAnything extends Module {
         String envionmentPathMode = parameters.getValue(ENVIRONMENT_PATH_MODE, workspace);
         String environmentPath = parameters.getValue(ENVIRONMENT_PATH, workspace) + "/";
         boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
-        boolean preinitialise = parameters.getValue(PREINITIALISE, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -257,81 +235,14 @@ public class ApplySegmentAnything extends Module {
                 break;
         }
 
-        if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
-            samJ = initialiseSAMJ(environmentPath, installIfMissing);
-
-        if (preinitialise && preinitSamJ == null)
-            // No need to install as this is the same environment as the main environment
-            preinitSamJ = initialiseSAMJ(environmentPath, false);
-
-        // Checking if SamJ has been preinitialised for this file
-        String path = workspace.getMetadata().getFile().getAbsolutePath();
-        try {
-            if (path.equals(preinitPath)) {
-                while (!preinitComplete)
-                    Thread.sleep(100);
-
-                tempSamJ = samJ;
-                samJ = preinitSamJ;
-                preinitSamJ = tempSamJ;
-            } else {
-                samJ.setImage(workspace.getImage(inputImageName).getImgPlus());
-            }
-        } catch (InterruptedException | IOException | RuntimeException e) {
-            e.printStackTrace();
-            return Status.FAIL;
-        }
-
-        if (preinitialise) {
-            // Preinitialise next file on a separate thread
-            preinitComplete = false;
-            boolean isNext = false;
-            Workspace nextWorkspace = null;
-            for (Workspace currWorkspace : workspace.getWorkspaces()) {
-                if (isNext) {
-                    nextWorkspace = currWorkspace;
-                    break;
-                } else if (currWorkspace == workspace) {
-                    isNext = true;
-                }
-            }
-
-            if (nextWorkspace != null) {
-                preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
-                Workspace finalNextWorkspace = nextWorkspace;
-                Thread t = new Thread(() -> {
-                    // Running modules up to this point
-                    Modules modules = getModules();
-                    for (Module currModule : modules) {
-                        if (currModule == this)
-                            break;
-                        currModule.execute(finalNextWorkspace);
-                    }
-
-                    try {
-                        preinitSamJ.setImage(finalNextWorkspace.getImage(inputImageName).getImgPlus());
-                    } catch (IOException | RuntimeException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    finalNextWorkspace.clearAllImages(false);
-                    finalNextWorkspace.clearAllObjects(false);
-                    finalNextWorkspace.clearMetadata();
-
-                    preinitComplete = true;
-
-                });
-                t.start();
-            }
-        }
-
-        prevEnvironmentPath = environmentPath;
-
-        // AbstractSamJ samJ = initialiseSAMJ();
+        // if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
+        AbstractSamJ samJ = initialiseSAMJ(environmentPath, installIfMissing);
+                
         try {
             samJ.setImage(inputImage.getImgPlus());
         } catch (IOException | RuntimeException | InterruptedException e) {
             MIA.log.writeError(e);
+            return Status.FAIL;
         }
 
         // Creating output objects
@@ -362,9 +273,9 @@ public class ApplySegmentAnything extends Module {
 
             writeProgressStatus(++count, total, "objects");
 
-        }
+        }       
 
-        
+        samJ.close();
 
         workspace.addObjects(outputObjects);
 
@@ -392,7 +303,6 @@ public class ApplySegmentAnything extends Module {
                 new ChoiceP(ENVIRONMENT_PATH_MODE, this, EnvironmentPathModes.DEFAULT, EnvironmentPathModes.ALL));
         parameters.add(new FolderPathP(ENVIRONMENT_PATH, this));
         parameters.add(new BooleanP(INSTALL_IF_MISSING, this, true));
-        parameters.add(new BooleanP(PREINITIALISE, this, false));
 
     }
 
@@ -422,7 +332,6 @@ public class ApplySegmentAnything extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(INSTALL_IF_MISSING));
-        // returnedParameters.add(parameters.getParameter(PREINITIALISE));
 
         return returnedParameters;
 

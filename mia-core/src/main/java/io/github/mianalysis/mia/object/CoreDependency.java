@@ -3,8 +3,6 @@ package io.github.mianalysis.mia.object;
 import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.util.VersionUtils;
 
-import io.github.mianalysis.mia.MIA;
-
 public abstract class CoreDependency implements SciJavaPlugin {
     public enum Relationship {
         LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN, NOT_EQUAL_TO;
@@ -22,7 +20,7 @@ public abstract class CoreDependency implements SciJavaPlugin {
         } catch (ClassNotFoundException e) {
             return false;
         }
-        
+
         int comparison = VersionUtils.compare(dependencyClass.getPackage().getImplementationVersion(),
                 this.getVersionThreshold());
 

@@ -568,6 +568,12 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             } catch (InterruptedException e) {
             }
 
+        for (ManualExtension extension : extensions) {
+            Status extensionStatus = extension.onFinishAddingObjects();
+            if (extensionStatus != Status.PASS)
+                return extensionStatus;
+        }
+
         // If more pixels than Integer.MAX_VALUE were assigned, return false
         // (IntegerOverflowException).
         if (objectSelector.hadOverflow())
