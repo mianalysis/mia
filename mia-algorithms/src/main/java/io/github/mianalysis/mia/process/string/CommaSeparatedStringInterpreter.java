@@ -47,7 +47,7 @@ public class CommaSeparatedStringInterpreter {
         int count = 0;
         while (matcher.find())
             if (count++ > 0)
-                return range.substring(0, matcher.start());
+                return range.substring(0, matcher.start()+1);
 
         return range;
 

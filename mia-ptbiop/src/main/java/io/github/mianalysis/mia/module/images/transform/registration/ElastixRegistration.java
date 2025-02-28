@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.images.transform.registration;
 
+import java.io.File;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -155,6 +157,9 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
 
         if ((boolean) parameters.getValue(SPLINE, workspace))
             returnedParameters.add(parameters.getParameter(SPLINE_GRID_SPACING));
+
+        Elastix.setExePath(new File((String) parameters.getValue(ELASTIX_EXE, workspace)));
+        Transformix.setExePath(new File((String) parameters.getValue(TRANSFORMIX_EXE, workspace)));
 
         return returnedParameters;
 

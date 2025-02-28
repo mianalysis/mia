@@ -27,6 +27,8 @@ import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -51,8 +53,12 @@ public class LineHoughDetection extends AbstractHoughDetection {
     * 
     */
     public static final String RANGE_SEPARATOR = "Parameter ranges";
-    public static final String R_RANGE = "Distance range (px)";
     public static final String THETA_RANGE = "Angle range (degs)";
+
+    public interface Measurements extends AbstractHoughDetection.Measurements {
+        String ORIENTATION = "HOUGH_DETECTION // ORIENTATION_(DEGS)";
+
+    }
 
     public LineHoughDetection(Modules modules) {
         super("Line detection", modules);
@@ -77,18 +83,11 @@ public class LineHoughDetection extends AbstractHoughDetection {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImage(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
-
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
-
-        // Getting parameters
-        String rRange = parameters.getValue(R_RANGE, workspace);
         String thetaRange = parameters.getValue(THETA_RANGE, workspace);
         int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR, workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
@@ -102,14 +101,17 @@ public class LineHoughDetection extends AbstractHoughDetection {
         boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE, workspace);
         int labelSize = parameters.getValue(LABEL_SIZE, workspace);
 
+        // Getting image
+        Image inputImage = workspace.getImage(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
         // Storing the image calibration
         SpatCal cal = SpatCal.getFromImage(ipl);
         int nFrames = ipl.getNFrames();
         double frameInterval = ipl.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
-        rRange = resampleRange(rRange, samplingRate);
-        thetaRange = resampleRange(thetaRange, samplingRate);
+        String rRange = resampleRange("-end-end", samplingRate);
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
 
@@ -171,10 +173,10 @@ public class LineHoughDetection extends AbstractHoughDetection {
 
                         // Getting rectangle parameters
                         int r = (int) Math.round(line[0]) * samplingRate;
-                        int theta = (int) Math.round(line[1]) * samplingRate;
+                        int thetaD = (int) Math.round(line[1]);
                         double score = line[2];
 
-                        double thetaR = Math.toRadians(theta);
+                        double thetaR = Math.toRadians(thetaD);
                         int y0 = (int) Math.round(r / (Math.sin(thetaR)));
                         int y1 = (int) Math.round((r - ipl.getWidth() * Math.cos(thetaR)) / (Math.sin(thetaR)));
 
@@ -194,6 +196,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
                         // Adding measurements
                         outputObject.setT(t);
                         outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
+                        outputObject.addMeasurement(new Measurement(Measurements.ORIENTATION, thetaD));
 
                     }
 
@@ -218,8 +221,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
-        parameters.add(new StringP(R_RANGE, this, "0-end"));
-        parameters.add(new StringP(THETA_RANGE, this, "0-180"));
+        parameters.add(new StringP(THETA_RANGE, this, "-90-90"));
 
     }
 
@@ -230,7 +232,6 @@ public class LineHoughDetection extends AbstractHoughDetection {
         returnedParameters.addAll(updateAndGetInputParameters());
 
         returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(R_RANGE));
         returnedParameters.add(parameters.getParameter(THETA_RANGE));
 
         returnedParameters.addAll(updateAndGetDetectionParameters());
@@ -238,6 +239,20 @@ public class LineHoughDetection extends AbstractHoughDetection {
         returnedParameters.addAll(updateAndGetVisualisationParameters());
 
         return returnedParameters;
+
+    }
+
+    @Override
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        
+        Workspace workspace = null;
+        ObjMeasurementRefs returnedRefs = super.updateAndGetObjectMeasurementRefs();
+
+        ObjMeasurementRef orientation = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
+        orientation.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
+        returnedRefs.add(orientation);
+
+        return returnedRefs;
 
     }
 }
