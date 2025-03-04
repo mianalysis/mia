@@ -66,6 +66,8 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 	* Add another image for concatenation.
 	*/
     public static final String ADD_INPUT_IMAGE = "Add image";
+
+    
     public static final String INPUT_IMAGE = "Input image";
 
 	/**

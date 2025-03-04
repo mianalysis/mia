@@ -25,6 +25,8 @@ public abstract class ManualExtension implements SciJavaPlugin {
 
     public abstract Status initialiseAfterImageShown(@Nullable ImagePlus displayIpl);
 
+    public abstract Status onFinishAddingObjects();
+
     protected abstract Parameters initialiseParameters();
 
     public abstract Parameters updateAndGetParameters();

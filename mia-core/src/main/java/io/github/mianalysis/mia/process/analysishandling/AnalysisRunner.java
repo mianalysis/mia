@@ -29,7 +29,6 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.ProgressBar;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
-
 /**
  * Created by sc13967 on 21/10/2016.
  */
@@ -110,7 +109,7 @@ public class AnalysisRunner {
 
         for (WorkspaceI workspace : workspaces)            
             pool.submit(createRunnable(modules, workspace, exporter, clearMemoryAtEnd));
-        
+
         // Telling the pool not to accept any more jobs and to wait until all queued
         // jobs have completed
         pool.shutdown();
@@ -362,8 +361,12 @@ public class AnalysisRunner {
 
         ProgressBar.update();
 
-        Thread.currentThread().getThreadGroup().interrupt();
-        pool.shutdownNow();
+        try {
+            Thread.currentThread().getThreadGroup().interrupt();
+            pool.shutdownNow();
+        } catch (Exception e) {
+            // Do nothing, as we expect a bunch of errors to be thrown by killing the thread
+        }
 
         MIA.log.writeWarning("ANALYSIS STOPPED");
 

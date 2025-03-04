@@ -40,8 +40,8 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -72,12 +72,10 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     protected WorkspaceI workspace;
     protected AbstractSamJ samJ = null;
     protected AbstractSamJ preinitSamJ = null;
-    protected AbstractSamJ tempSamJ = null;
     protected String preinitPath = null;
     protected boolean preinitComplete = false;
     protected ImagePlus displayIpl;
     protected boolean useSAM = true;
-
     protected String prevEnvironmentPath = "";
 
     public static void main(String[] args) throws Exception {
@@ -99,7 +97,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         super(module);
     }
 
-    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {        
+    public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
         AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
         AbstractSamJ.MAX_ENCODED_SIDE = 3000;
 
@@ -110,7 +108,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             if (!manager.checkEverythingInstalled())
                 if (installIfMissing) {
                     module.writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model to "+environmentPath);
+                    MIA.log.writeDebug("Installing SAM model to " + environmentPath);
                     manager.installEverything();
                 } else {
                     MIA.log.writeWarning("Model not available.  Please install manually or enable \""
@@ -149,29 +147,30 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
                 break;
         }
 
-        if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
-            samJ = initialiseSAMJ(environmentPath, installIfMissing);
-
-        if (preinitialise && preinitSamJ == null)
-            // No need to install as this is the same environment as the main environment
-            preinitSamJ = initialiseSAMJ(environmentPath, false);
-
         // Checking if SamJ has been preinitialised for this file
         String path = workspace.getMetadata().getFile().getAbsolutePath();
         try {
+            // Checking if preinitialisation is for this file
             if (path.equals(preinitPath)) {
+                // Waiting till preinitialisation is complete for this file
                 while (!preinitComplete)
                     Thread.sleep(100);
 
-                tempSamJ = samJ;
+                // Transfer preinitialised SamJ to main copy
                 samJ = preinitSamJ;
-                preinitSamJ = tempSamJ;
+
             } else {
+                // Initialise a new copy of SamJ
+                samJ = initialiseSAMJ(environmentPath, installIfMissing);
                 samJ.setImage(workspace.getImage(imageName).getImgPlus());
             }
-        } catch (InterruptedException | IOException | RuntimeException e) {
-            e.printStackTrace();
+        } catch (IOException | RuntimeException e1) {
+            e1.printStackTrace();
             return Status.FAIL;
+        } catch (InterruptedException e2) {
+            // Don't throw an error in this case, as it's likely the sleep was interrupted
+            // by the thread being manually stopped (e.g. "Stop" button on GUI)
+            return Status.TERMINATE_SILENT;
         }
 
         if (preinitialise) {
@@ -190,25 +189,29 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
             if (nextWorkspace != null) {
                 preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
-                WorkspaceI finalNextWorkspace = nextWorkspace;
+
+                // Creating a dummy workspace so we don't alter the real one
+                WorkspaceI dummyWorkspace = new WorkspacesI().getNewWorkspace(nextWorkspace.getMetadata().getFile(), nextWorkspace.getMetadata().getSeriesNumber());
+                String finalEnvironmentPath = environmentPath;
+                
                 Thread t = new Thread(() -> {
                     // Running modules up to this point
                     Modules modules = module.getModules();
                     for (Module currModule : modules) {
                         if (currModule == module)
                             break;
-                        currModule.execute(finalNextWorkspace);
+                        currModule.execute(dummyWorkspace);
                     }
 
                     try {
-                        preinitSamJ.setImage(finalNextWorkspace.getImage(imageName).getImgPlus());
-                    } catch (IOException | RuntimeException | InterruptedException e) {
-                        e.printStackTrace();
+                        preinitSamJ = initialiseSAMJ(finalEnvironmentPath, installIfMissing);
+                        preinitSamJ.setImage(dummyWorkspace.getImage(imageName).getImgPlus());
+                    } catch (IOException | RuntimeException e1) {
+                        e1.printStackTrace();
+                    } catch (InterruptedException e2) {
+                        // Don't throw an error in this case, as it's likely the sleep was interrupted
+                        // by the thread being manually stopped (e.g. "Stop" button on GUI)
                     }
-
-                    finalNextWorkspace.clearAllImages(false);
-                    finalNextWorkspace.clearAllObjects(false);
-                    finalNextWorkspace.clearMetadata();
 
                     preinitComplete = true;
 
@@ -232,6 +235,15 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
         this.displayIpl = displayIpl;
         displayIpl.getCanvas().addMouseListener(this);
+
+        return Status.PASS;
+
+    }
+
+    @Override
+    public Status onFinishAddingObjects() {
+        if (samJ != null)
+            samJ.close();
 
         return Status.PASS;
 

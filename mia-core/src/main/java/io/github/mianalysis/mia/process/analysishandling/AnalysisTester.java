@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.process.analysishandling;
 
 import com.drew.lang.annotations.Nullable;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;

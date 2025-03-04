@@ -353,7 +353,8 @@ public class RelateManyToMany extends Module {
         }
     }
 
-    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside,
+            boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
             return false;
@@ -569,9 +570,17 @@ public class RelateManyToMany extends Module {
         HashMap<Obj, Integer> assignments = new HashMap<>();
         int maxGroupID = 0;
 
+        int count = 0;
+        int total = inputObjects1.size()*inputObjects2.size();
+
         // Iterating over all object pairs
         for (Obj object1 : inputObjects1.values()) {
             for (Obj object2 : inputObjects2.values()) {
+                count++;
+
+                if (object1 == object2)
+                    continue;
+
                 if (linkInSameFrame && object1.getT() != object2.getT())
                     continue;
 
@@ -588,7 +597,8 @@ public class RelateManyToMany extends Module {
                             linkable = false;
                         break;
                     case SpatialSeparationModes.SURFACE_SEPARATION:
-                        if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside, ignoreEdgesXY, ignoreEdgesZ))
+                        if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside, ignoreEdgesXY,
+                                ignoreEdgesZ))
                             linkable = false;
                         break;
                 }
@@ -614,6 +624,9 @@ public class RelateManyToMany extends Module {
                     assignments.putIfAbsent(object1, ++maxGroupID);
                     assignments.putIfAbsent(object2, ++maxGroupID);
                 }
+
+                writeProgressStatus(count, total, "links");
+                
             }
         }
 

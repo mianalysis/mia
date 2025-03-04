@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -170,6 +171,8 @@ public class MetadataExtractor extends Module {
      */
     public static final String REGEX_SPLITTING = "Split using regular expressions";
 
+    public static final String TEXT = "Text";
+
     /**
     * 
     */
@@ -224,8 +227,9 @@ public class MetadataExtractor extends Module {
         String FOLDERNAME_MODE = "Foldername";
         String METADATA_FILE_MODE = "Metadata file";
         String SERIES_NAME = "Series name";
+        String TEXT = "Text";
 
-        String[] ALL = new String[] { FILENAME_MODE, FOLDERNAME_MODE, METADATA_FILE_MODE, SERIES_NAME };
+        String[] ALL = new String[] { FILENAME_MODE, FOLDERNAME_MODE, METADATA_FILE_MODE, SERIES_NAME, TEXT };
 
     }
 
@@ -443,6 +447,7 @@ public class MetadataExtractor extends Module {
         String metadataFilePath = parameters.getValue(METADATA_FILE, workspace);
         String metadataFileName = parameters.getValue(METADATA_FILE_NAME, workspace);
         String metadataItemToMatch = parameters.getValue(METADATA_ITEM_TO_MATCH, workspace);
+        String text = parameters.getValue(TEXT, workspace);
         String pattern = parameters.getValue(PATTERN, workspace);
         String groups = parameters.getValue(GROUPS, workspace);
         boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE, workspace);
@@ -451,6 +456,10 @@ public class MetadataExtractor extends Module {
 
         // Getting current result
         MetadataI metadata = workspace.getMetadata();
+
+        // Removing any existing metadata items
+        for (String group:groups.split(","))
+            metadata.remove(group);
 
         switch (extractorMode) {
             case ExtractorModes.FILENAME_MODE:
@@ -505,6 +514,10 @@ public class MetadataExtractor extends Module {
             case ExtractorModes.SERIES_NAME:
                 extractGeneric(metadata, metadata.getSeriesName(), pattern, groups, caseInsensitive);
                 break;
+
+            case ExtractorModes.TEXT:
+                extractGeneric(metadata, text, pattern, groups, caseInsensitive);
+                break;
         }
 
         if (showOutput)
@@ -528,6 +541,7 @@ public class MetadataExtractor extends Module {
         parameters.add(new FilePathP(METADATA_FILE, this));
         parameters.add(new StringP(METADATA_FILE_NAME, this));
         parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH, this));
+        parameters.add(new StringP(TEXT, this));
 
         parameters.add(new SeparatorP(REGEX_SEPARATOR, this));
         parameters.add(new StringP(PATTERN, this));
@@ -598,6 +612,11 @@ public class MetadataExtractor extends Module {
                 break;
 
             case ExtractorModes.SERIES_NAME:
+                returnedParameters.addAll(getGenericExtractorParameters());
+                break;
+
+            case ExtractorModes.TEXT:
+                returnedParameters.add(parameters.getParameter(TEXT));
                 returnedParameters.addAll(getGenericExtractorParameters());
                 break;
 
@@ -769,6 +788,7 @@ public class MetadataExtractor extends Module {
                 break;
 
             case ExtractorModes.SERIES_NAME:
+            case ExtractorModes.TEXT:
                 String groupString = parameters.getValue(GROUPS, workspace);
                 String[] groups = getGroups(groupString);
                 for (String group : groups)

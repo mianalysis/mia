@@ -39,54 +39,64 @@ import io.github.mianalysis.mia.process.math.CumStat;
  */
 
 /**
-* Creates an ImageJ scatter plot of two measurements associated with specified objects.  A third measurement can be encoded as point colour.  The output plot can either be displayed immediately in an interactive ImageJ plotting window or stored as an image to the MIA workspace (allowing it to subsequently be saved to file).
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Creates an ImageJ scatter plot of two measurements associated with specified
+ * objects. A third measurement can be encoded as point colour. The output plot
+ * can either be displayed immediately in an interactive ImageJ plotting window
+ * or stored as an image to the MIA workspace (allowing it to subsequently be
+ * saved to file).
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class PlotMeasurementsScatter extends Module {
 
-	/**
-	* 
-	*/
-    public static final String INPUT_SEPARATOR = "Object input/ImageI output";
+    /**
+    * 
+    */
+    public static final String INPUT_SEPARATOR = "Object input/image output";
 
-	/**
-	* Input object collection for which object-associated measurements will be plotted.
-	*/
+    /**
+     * Input object collection for which object-associated measurements will be
+     * plotted.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Output plot image which will be saved to the workspace with this name.
-	*/
+    /**
+     * Output plot image which will be saved to the workspace with this name.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String PLOTTING_SEPARATOR = "Plotting controls";
     public static final String MEASUREMENT1 = "First measurement (X)";
     public static final String MEASUREMENT2 = "Second measurement (Y)";
 
-	/**
-	* When selected, a third measurement can be represented as the plot marker colour.  This colour will vary according to the colourmap set with the "Colourmap" parameter
-	*/
+    /**
+     * When selected, a third measurement can be represented as the plot marker
+     * colour. This colour will vary according to the colourmap set with the
+     * "Colourmap" parameter
+     */
     public static final String INCLUDE_COLOUR = "Add third measurement as colour";
     public static final String MEASUREMENT3 = "Third measurement (Colour)";
 
-	/**
-	* If "Add third measurement as colour" is selected, this is the colourmap that will control how marker colours vary in response to the magnitude of their values.
-	*/
+    /**
+     * If "Add third measurement as colour" is selected, this is the colourmap that
+     * will control how marker colours vary in response to the magnitude of their
+     * values.
+     */
     public static final String COLOURMAP = "Colourmap";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MISC_SEPARATOR = "Miscellaneous controls";
 
-	/**
-	* When selected, and if displaying module output in realtime ("Show output" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard ImageI output will be displayed (i.e. the same image added to the workspace).
-	*/
+    /**
+     * When selected, and if displaying module output in realtime ("Show output"
+     * button selected), the plot will be displayed as an interactive ImageJ plot
+     * (editable rendering). Otherwise, the standard image output will be displayed
+     * (i.e. the same image added to the workspace).
+     */
     public static final String SHOW_AS_INTERACTIVE_PLOT = "Show as interactive plot";
 
     public PlotMeasurementsScatter(Modules modules) {
@@ -138,17 +148,17 @@ public class PlotMeasurementsScatter extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        boolean useColour = parameters.getValue(INCLUDE_COLOUR,workspace);
-        String measurement1 = parameters.getValue(MEASUREMENT1,workspace);
-        String measurement2 = parameters.getValue(MEASUREMENT2,workspace);
-        String measurement3 = parameters.getValue(MEASUREMENT3,workspace);
-        String colourmap = parameters.getValue(COLOURMAP,workspace);
-        boolean showInteractive = parameters.getValue(SHOW_AS_INTERACTIVE_PLOT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        boolean useColour = parameters.getValue(INCLUDE_COLOUR, workspace);
+        String measurement1 = parameters.getValue(MEASUREMENT1, workspace);
+        String measurement2 = parameters.getValue(MEASUREMENT2, workspace);
+        String measurement3 = parameters.getValue(MEASUREMENT3, workspace);
+        String colourmap = parameters.getValue(COLOURMAP, workspace);
+        boolean showInteractive = parameters.getValue(SHOW_AS_INTERACTIVE_PLOT, workspace);
 
         // Getting measurement values
         double[] measurementValues1 = new double[inputObjects.size()];
@@ -252,12 +262,12 @@ WorkspaceI workspace = null;
         returnedParameters.add(parameters.getParameter(MEASUREMENT2));
 
         // Updating measurements with measurement choices from currently-selected object
-        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT1)).setObjectName(objectName);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT2)).setObjectName(objectName);
 
         returnedParameters.add(parameters.getParameter(INCLUDE_COLOUR));
-        if ((boolean) parameters.getValue(INCLUDE_COLOUR,workspace)) {
+        if ((boolean) parameters.getValue(INCLUDE_COLOUR, workspace)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT3));
             returnedParameters.add(parameters.getParameter(COLOURMAP));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT3)).setObjectName(objectName);
@@ -272,32 +282,32 @@ WorkspaceI workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

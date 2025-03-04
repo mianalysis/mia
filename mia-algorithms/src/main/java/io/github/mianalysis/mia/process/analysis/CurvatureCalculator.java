@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
  * Created by sc13967 on 26/01/2018.
  */
 public class CurvatureCalculator {
-    private ArrayList<Point<Integer>> path;
+    private ArrayList<Point<Double>> path;
     private PolynomialSplineFunction[] splines = null;
     private TreeMap<Double, Double> curvature = null;
     private FittingMethod fittingMethod = FittingMethod.STANDARD;
@@ -32,19 +32,20 @@ public class CurvatureCalculator {
     private double loessBandwidth = 0.04;
     private int loessIterations = 0;
     private double loessAccuracy = 100;
+    private boolean is2D = true;
 
-    public CurvatureCalculator(ArrayList<Point<Integer>> path, boolean isLoop) {
+    public CurvatureCalculator(ArrayList<Point<Double>> path, boolean isLoop, boolean is2D) {
         this.path = path;
         this.isLoop = isLoop;
-
+        this.is2D = is2D;
     }
 
     public void calculateCurvature() {
         // Checking there are enough points for fitting
         int nKnots = path.size();
         if (nKnots < (NNeighbours + 1))
-            return;        
-    
+            return;
+
         if (isLoop)
             nKnots = nKnots + 2 * NNeighbours;
 
@@ -52,48 +53,64 @@ public class CurvatureCalculator {
         double[] t = new double[nKnots];
         double[] x = new double[nKnots];
         double[] y = new double[nKnots];
+        double[] z = new double[nKnots]; // Always defining this to please the linter
 
         int count = 0;
-        Point<Integer> prevVertex = null;
+        Point<Double> prevVertex = null;
 
         // If a loop, starting with the final few points from the opposite end
         if (isLoop) {
             int len = path.size();
             for (int i = NNeighbours; i > 0; i--) {
-                Point<Integer> vertex = path.get((len - i));
+                Point<Double> vertex = path.get((len - i));
                 t[count] = count == 0 ? 0 : t[count - 1] + vertex.calculateDistanceToPoint(prevVertex);
                 x[count] = vertex.getX();
-                y[count++] = vertex.getY();
+                y[count] = vertex.getY();
+
+                if (!is2D)
+                    z[count] = vertex.getZ();
+
+                count++;
 
                 prevVertex = vertex;
 
             }
         }
 
-        for (Point<Integer> vertex : path) {
+        for (Point<Double> vertex : path) {
             t[count] = count == 0 ? 0 : t[count - 1] + vertex.calculateDistanceToPoint(prevVertex);
             x[count] = vertex.getX();
-            y[count++] = vertex.getY();
+            y[count] = vertex.getY();
+
+            if (!is2D)
+                z[count] = vertex.getZ();
+
+            count++;
 
             prevVertex = vertex;
 
         }
-        
+
         // If a loop, ending with the first few points from the opposite end
         if (isLoop) {
             for (int i = 0; i < NNeighbours; i++) {
-                Point<Integer> vertex = path.get(i);
+                Point<Double> vertex = path.get(i);
                 t[count] = count == 0 ? 0 : t[count - 1] + vertex.calculateDistanceToPoint(prevVertex);
                 x[count] = vertex.getX();
-                y[count++] = vertex.getY();
+                y[count] = vertex.getY();
+
+                if (!is2D)
+                    z[count] = vertex.getZ();
+
+                count++;
 
                 prevVertex = vertex;
 
             }
         }
 
-        // Storing splines
-        splines = new PolynomialSplineFunction[6];
+        // Storing splines x, dx, y, dy, z, dz
+        splines = is2D ? new PolynomialSplineFunction[4] : new PolynomialSplineFunction[6];
 
         // Fitting the spline pair
         switch (fittingMethod) {
@@ -101,22 +118,27 @@ public class CurvatureCalculator {
                 LoessInterpolator loessInterpolator = new LoessInterpolator(loessBandwidth, loessIterations,
                         loessAccuracy);
                 splines[0] = loessInterpolator.interpolate(t, x);
-                splines[1] = loessInterpolator.interpolate(t, y);
+                splines[2] = loessInterpolator.interpolate(t, y);
+
+                if (!is2D)
+                    splines[4] = loessInterpolator.interpolate(t, z);
                 break;
 
             case STANDARD:
                 SplineInterpolator splineInterpolator = new SplineInterpolator();
                 splines[0] = splineInterpolator.interpolate(t, x);
-                splines[1] = splineInterpolator.interpolate(t, y);
+                splines[2] = splineInterpolator.interpolate(t, y);
+                if (!is2D)
+                    splines[4] = splineInterpolator.interpolate(t, z);
                 break;
         }
 
         // Calculating curvature
-        splines[2] = splines[0].polynomialSplineDerivative(); // dx
-        splines[3] = splines[2].polynomialSplineDerivative(); // ddx
-        splines[4] = splines[1].polynomialSplineDerivative(); // dy
-        splines[5] = splines[4].polynomialSplineDerivative(); // ddy
-
+        splines[1] = splines[0].polynomialSplineDerivative(); // dx
+        splines[3] = splines[2].polynomialSplineDerivative(); // dy
+        if (!is2D)
+            splines[5] = splines[4].polynomialSplineDerivative(); // dz
+        
         // Extracting the gradients as a function of position along the curve
         double[] knots = splines[0].getKnots();
 
@@ -132,11 +154,21 @@ public class CurvatureCalculator {
             double width = maxPos - minPos;
 
             double dx = (splines[0].value(maxPos) - splines[0].value(minPos)) / width;
-            double dy = (splines[1].value(maxPos) - splines[1].value(minPos)) / width;
-            double ddx = (splines[2].value(maxPos) - splines[2].value(minPos)) / (0.5 * width);
-            double ddy = (splines[3].value(maxPos) - splines[3].value(minPos)) / (0.5 * width);
+            double ddx = (splines[1].value(maxPos) - splines[1].value(minPos)) / width;
+            double dy = (splines[2].value(maxPos) - splines[2].value(minPos)) / width;
+            double ddy = (splines[3].value(maxPos) - splines[3].value(minPos)) / width;
 
-            double k = (dx * ddy - dy * ddx) / Math.pow((dx * dx + dy * dy), 3d / 2d);
+            double k;
+            if (is2D) {
+                k = (dx * ddy - dy * ddx) / Math.pow((dx * dx + dy * dy), 3d / 2d);
+            } else {
+                double dz = (splines[4].value(maxPos) - splines[4].value(minPos)) / width;
+                double ddz = (splines[5].value(maxPos) - splines[5].value(minPos)) / width;
+                double term1 = (ddz * dy - ddy * dz) * (ddz * dy - ddy * dz);
+                double term2 = (ddx * dz - ddz * dx) * (ddx * dz - ddz * dx);
+                double term3 = (ddy * dx - ddx * dy) * (ddy * dx - ddx * dy);
+                k = Math.sqrt(term1 + term2 + term3) / Math.pow((dx * dx + dy * dy + dz * dz), 3d / 2d);
+            }
 
             curvature.put(knots[i], k);
 
@@ -190,9 +222,9 @@ public class CurvatureCalculator {
             p2 = iterator.next();
 
             double x1 = splines[0].value(p1);
-            double y1 = splines[1].value(p1);
+            double y1 = splines[2].value(p1);
             double x2 = splines[0].value(p2);
-            double y2 = splines[1].value(p2);
+            double y2 = splines[2].value(p2);
 
             double k1 = Math.abs(curvature.get(p1));
             double k2 = Math.abs(curvature.get(p2));
@@ -258,22 +290,23 @@ public class CurvatureCalculator {
         this.fittingMethod = fittingMethod;
     }
 
-    public ArrayList<Point<Integer>> getSpline() {
+    public TreeMap<Point<Double>,Double> getSpline() {
         if (splines == null)
             calculateCurvature();
 
-        ArrayList<Point<Integer>> spline = new ArrayList<>();
+        TreeMap<Point<Double>,Double> spline = new TreeMap<>();
 
         double[] knots = splines[0].getKnots();
         int startIdx = isLoop ? NNeighbours : 0;
         int endIdx = isLoop ? knots.length - NNeighbours : knots.length;
         for (int i = startIdx; i < endIdx; i++) {
             double t = knots[i];
-        
-            int x = (int) Math.round(splines[0].value(t));
-            int y = (int) Math.round(splines[1].value(t));
 
-            spline.add(new Point<Integer>(x, y, 0));
+            double x = splines[0].value(t);
+            double y = splines[2].value(t);
+            double z = is2D ? 0d : splines[4].value(t);
+
+            spline.put(new Point<Double>(x, y, z),curvature.get(t));
 
         }
 
