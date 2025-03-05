@@ -172,7 +172,7 @@ public class ColourFactory {
                     H = 0.706f;
                     break;
                 case SingleColours.MAGENTA:
-                    H = 0.784f;
+                    H = 0.833f;
                     break;
             }
 
