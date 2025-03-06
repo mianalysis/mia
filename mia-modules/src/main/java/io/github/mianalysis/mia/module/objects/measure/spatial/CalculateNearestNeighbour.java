@@ -319,13 +319,18 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             double minDist = 0;
 
             switch (referenceMode) {
+                case ReferenceModes.CENTROID_2D:
+                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true, true);
+                    break;
                 default:
                 case ReferenceModes.CENTROID_3D:
-                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true);
+                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true, false);
                     break;
-
+                case ReferenceModes.SURFACE_2D:
+                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true, true, false, false);
+                    break;
                 case ReferenceModes.SURFACE_3D:
-                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true, false, false);
+                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true, false, false, false);
                     break;
             }
 
@@ -611,7 +616,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             }
 
             writeProgressStatus(++count, total, "objects");
-            
+
         }
 
         if (exportAllDistances) {
