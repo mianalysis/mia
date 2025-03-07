@@ -62,7 +62,6 @@ public class LineHoughDetection extends AbstractHoughDetection {
 
     public LineHoughDetection(Modules modules) {
         super("Line detection", modules);
-        deprecated = true; // This isn't ready for full-scale release
     }
 
     @Override
