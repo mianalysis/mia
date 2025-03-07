@@ -566,7 +566,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
                 break;
             case ThresholdingModes.IMAGE_MEASUREMENTS:
                 double threshold1 = image1.getMeasurement(imageMeasurementName1).getValue();
-                double threshold2 = image1.getMeasurement(imageMeasurementName2).getValue();
+                double threshold2 = image2.getMeasurement(imageMeasurementName2).getValue();
                 setManualThresholds(data, image1, threshold1, threshold2);
                 break;
             case ThresholdingModes.MANUAL:

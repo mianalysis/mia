@@ -66,6 +66,10 @@ public abstract class AbstractAccumulator {
         return parameters;
     }
 
+    public Indexer getIndexer() {
+        return indexer;
+    }
+
 
     // ABSTRACT METHODS
 

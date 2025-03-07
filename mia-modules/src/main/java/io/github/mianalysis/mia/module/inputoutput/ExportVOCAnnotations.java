@@ -125,6 +125,7 @@ public class ExportVOCAnnotations extends AbstractSaver {
 
         } catch (IOException | TransformerException | ParserConfigurationException e) {
             MIA.log.writeError(e);
+            return Status.FAIL;
         }
 
         return Status.PASS;
