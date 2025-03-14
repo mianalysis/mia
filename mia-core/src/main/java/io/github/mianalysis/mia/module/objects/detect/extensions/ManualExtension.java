@@ -12,31 +12,25 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.system.Status;
 
-public abstract class ManualExtension implements SciJavaPlugin {
-    protected Module module;
-    protected Parameters parameters = new Parameters();
+public interface ManualExtension extends SciJavaPlugin {
+    public void setModule(Module module);
+    
+    public Status initialiseBeforeImageShown(Workspace workspace);
 
-    public ManualExtension(Module module) {
-        this.module = module;
-        initialiseParameters();
-    }
+    public Status initialiseAfterImageShown(@Nullable ImagePlus displayIpl);
 
-    public abstract Status initialiseBeforeImageShown(Workspace workspace);
+    public Status onObjectAdded();
 
-    public abstract Status initialiseAfterImageShown(@Nullable ImagePlus displayIpl);
+    public Status onFinishAddingObjects();
 
-    public abstract Status onFinishAddingObjects();
+    public Parameters initialiseParameters();
 
-    protected abstract Parameters initialiseParameters();
+    public Parameters updateAndGetParameters();
 
-    public abstract Parameters updateAndGetParameters();
+    public boolean skipAutoAccept();
 
-    public abstract boolean skipAutoAccept();
+    public JPanel getControlPanel();
 
-    public abstract JPanel getControlPanel();
-
-    public Parameters getAllParameters() {
-        return parameters;
-    }
+    public Parameters getAllParameters();
 
 }

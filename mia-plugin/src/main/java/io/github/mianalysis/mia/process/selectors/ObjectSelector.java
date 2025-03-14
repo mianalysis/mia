@@ -76,6 +76,7 @@ import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.process.BinaryInterpolator;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.parametercontrols.WiderDropDownCombo;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Obj;
@@ -87,6 +88,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
+import weka.gui.EnvironmentField.WideComboBox;
 
 public class ObjectSelector implements ActionListener, KeyListener, MouseListener {
     private Objs outputObjects = null;
@@ -100,6 +102,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private JMenuBar menuBar;
     private JTextField objectNumberField;
     private JComboBox<String> autoAcceptMode;
+    private WiderDropDownCombo autoClassMode;
     private CustomListModel<ObjRoi> listModel = new CustomListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
@@ -243,6 +246,22 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
+    public String[] getAutoClassModes() {
+        if (classSelector == null)
+            return null;
+
+        String[] autoClassModes = new String[classSelector.getAllClasses().size() + 2];
+        autoClassModes[0] = "Do nothing";
+        autoClassModes[1] = "Select class";
+
+        int i = 2;
+        for (String className : classSelector.getAllClasses())
+            autoClassModes[i++] = "Apply " + className;
+
+        return autoClassModes;
+
+    }
+
     public void setControlPanelVisible(boolean visible) {
         frame.setVisible(visible);
     }
@@ -254,7 +273,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             displayIpl.getWindow().getCanvas().addMouseListener(this);
 
             boolean listenerExists = false;
-            for (KeyListener listener:displayIpl.getWindow().getCanvas().getKeyListeners())
+            for (KeyListener listener : displayIpl.getWindow().getCanvas().getKeyListeners())
                 if (listener == this) {
                     listenerExists = true;
                     break;
@@ -262,7 +281,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             if (!listenerExists)
                 displayIpl.getWindow().getCanvas().addKeyListener(this);
-            
+
         } else {
             displayIpl.hide();
         }
@@ -399,7 +418,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         }
 
         // Object number panel
-        JLabel objectNumberLabel = new JLabel("Existing object number");
+        JLabel objectNumberLabel = new JLabel("Existing object number: ");
         objectNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
         c.gridx = 0;
         c.gridy++;
@@ -414,9 +433,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         frame.add(objectNumberField, c);
 
         // Auto accept panel
-        JLabel autoAcceptLabel = new JLabel("When region drawn");
+        JLabel autoAcceptLabel = new JLabel("When region drawn: ");
         autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
-        c.gridx = gridWidth - 2;
+        c.gridx = gridWidth - (classSelector == null ? 2 : 3);
         c.anchor = GridBagConstraints.EAST;
         frame.add(autoAcceptLabel, c);
 
@@ -431,6 +450,21 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         c.anchor = GridBagConstraints.WEST;
         frame.add(autoAcceptMode, c);
+
+        if (classSelector != null) {
+            String[] autoClassModes = getAutoClassModes();
+            autoClassMode = new WiderDropDownCombo(autoClassModes);
+            autoClassMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.AutoClass", autoClassModes[1]));
+            autoClassMode.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Prefs.set("MIA.ObjectSelector.AutoClass", (String) autoAcceptMode.getSelectedItem());
+                }
+            });
+            c.gridx++;
+            c.anchor = GridBagConstraints.WEST;
+            frame.add(autoClassMode, c);
+        }
 
         // Extra tools panels
         for (JPanel extraPanel : extraPanels) {
@@ -775,15 +809,26 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         String assignedClass = null;
         if (classSelector != null) {
-            classSelector.setVisible(true);
+            switch ((String) autoClassMode.getSelectedItem()) {
+                case "Do nothing":
+                    break;
 
-            while (classSelector.isActive())
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
+                case "Select class":
+                    classSelector.setVisible(true);
 
-                }
-            assignedClass = classSelector.getLastSelectedClass();
+                    while (classSelector.isActive())
+                        try {
+                            Thread.sleep(100);
+                        } catch (Exception e) {
+
+                        }
+                    assignedClass = classSelector.getLastSelectedClass();
+                        break;
+                default:
+                        assignedClass = ((String) autoClassMode.getSelectedItem()).substring(6);
+                    break;
+            }
+
         }
 
         ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1, assignedClass);
