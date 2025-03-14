@@ -256,7 +256,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         int i = 2;
         for (String className : classSelector.getAllClasses())
-            autoClassModes[i++] = "Apply " + className;
+            autoClassModes[i++] = "Apply \"" + className + "\"";
 
         return autoClassModes;
 
@@ -823,9 +823,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
                         }
                     assignedClass = classSelector.getLastSelectedClass();
-                        break;
+                    break;
                 default:
-                        assignedClass = ((String) autoClassMode.getSelectedItem()).substring(6);
+                    String selectedClass = (String) autoClassMode.getSelectedItem();
+                    assignedClass = selectedClass.substring(7, selectedClass.length() - 1);
                     break;
             }
 
@@ -1152,6 +1153,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 overlayRoi.setStrokeColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
                 break;
 
+            case Roi.POINT:
+                ((PointRoi) overlayRoi).setSize(3);
+                overlayRoi.setStrokeColor(colour);
+                break;
+
             // Everything else is rendered as the normal fill or outlines
             default:
                 switch ((String) overlayMode.getSelectedItem()) {
@@ -1170,8 +1176,20 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
-            double[] centroid = roi.getContourCentroid();
             int fontSize = Integer.parseInt(labelFontSize.getText());
+
+            double[] centroid = roi.getContourCentroid();
+            if (roi instanceof PointRoi) {
+                Point[] points = ((PointRoi) roi).getContainedPoints();
+                centroid[0] = 0;
+                centroid[1] = 0;
+                for (Point point : points) {
+                    centroid[0] = +point.getX();
+                    centroid[1] = +point.getY();
+                }
+                centroid[0] = (centroid[0] / points.length) + fontSize*0.5;
+                centroid[1] = (centroid[1] / points.length) + fontSize*0.5;
+            }
 
             TextRoi text = new TextRoi(centroid[0], centroid[1], String.valueOf(ID),
                     new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
