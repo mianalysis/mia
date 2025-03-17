@@ -39,60 +39,77 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Run a single command on an image from the workspace.   This module only runs commands of the format "run([COMMAND], [ARGUMENTS])".  For example, the command "run("Subtract Background...", "rolling=50 stack");" would be specified with the "Command" parameter set to "Subtract Background..." and the "Parameters" parameter set to "rolling=50 stack".  For more advanced macro processing please use the "Run macro" module.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Run a single command on an image from the workspace. This module only runs
+ * commands of the format "run([COMMAND], [ARGUMENTS])". For example, the
+ * command "run("Subtract Background...", "rolling=50 stack");" would be
+ * specified with the "Command" parameter set to "Subtract Background..." and
+ * the "Parameters" parameter set to "rolling=50 stack". For more advanced macro
+ * processing please use the "Run macro" module.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunSingleCommand extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image from workspace to apply command to.  This image is duplicated prior to application of the command, so won't be updated by default.  To store any changes back onto this image, select the "Apply to input image" parameter.
-	*/
+    /**
+     * Image from workspace to apply command to. This image is duplicated prior to
+     * application of the command, so won't be updated by default. To store any
+     * changes back onto this image, select the "Apply to input image" parameter.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* When selected, the image returned by the command will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.
-	*/
+    /**
+     * When selected, the image returned by the command will be stored back into the
+     * MIA workspace at the same name as the input image. This will update the input
+     * image.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* When "Apply to input image" is not selected this will store the command output image into the MIA workspace with the name specified by this parameter.
-	*/
+    /**
+     * When "Apply to input image" is not selected this will store the command
+     * output image into the MIA workspace with the name specified by this
+     * parameter.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String COMMAND_SEPARATOR = "Command controls";
 
-	/**
-	* The command command to run.  This must be the exact name as given by the ImageJ command recorder.  Note: Only commands of the format "run([MACRO TITLE], [ARGUMENTS])" can be run by this module.  For more advanced command processing please use the "Run macro" module.
-	*/
+    /**
+     * The command command to run. This must be the exact name as given by the
+     * ImageJ command recorder. Note: Only commands of the format "run([MACRO
+     * TITLE], [ARGUMENTS])" can be run by this module. For more advanced command
+     * processing please use the "Run macro" module.
+     */
     public static final String COMMAND = "Command";
 
-	/**
-	* The options to pass to the command.
-	*/
+    /**
+     * The options to pass to the command.
+     */
     public static final String ARGUMENTS = "Parameters";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* When running a command which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for commands containing the "stack" argument.
-	*/
+    /**
+     * When running a command which operates on a single slice at a time,
+     * multithreading will create a new thread for each slice. This can provide a
+     * speed improvement when working on a computer with a multi-core CPU. Note:
+     * Multithreading is only available for commands containing the "stack"
+     * argument.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public RunSingleCommand(Modules modules) {
         super("Run single command", modules);
     }
-
 
     @Override
     public Category getCategory() {
@@ -106,7 +123,10 @@ public class RunSingleCommand extends Module {
 
     @Override
     public String getDescription() {
-        return "Run a single command on an image from the workspace.   This module only runs commands of the format \"run([COMMAND], [ARGUMENTS])\".  For example, the command \"run(\"Subtract Background...\", \"rolling=50 stack\");\" would be specified with the \""+COMMAND+"\" parameter set to \"Subtract Background...\" and the \""+ARGUMENTS+"\" parameter set to \"rolling=50 stack\".  For more advanced macro processing please use the \""+new RunMacro(null).getName()+"\" module.";
+        return "Run a single command on an image from the workspace.   This module only runs commands of the format \"run([COMMAND], [ARGUMENTS])\".  For example, the command \"run(\"Subtract Background...\", \"rolling=50 stack\");\" would be specified with the \""
+                + COMMAND + "\" parameter set to \"Subtract Background...\" and the \"" + ARGUMENTS
+                + "\" parameter set to \"rolling=50 stack\".  For more advanced macro processing please use the \""
+                + new RunMacro(null).getName() + "\" module.";
     }
 
     public void runCommandMultithreaded(ImagePlus inputImagePlus, String commandTitle, String arguments) {
@@ -134,49 +154,50 @@ public class RunSingleCommand extends Module {
         }
 
         inputImagePlus.updateChannelAndDraw();
-        
+
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String commandTitle = parameters.getValue(COMMAND,workspace);
-        String arguments = parameters.getValue(ARGUMENTS,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String commandTitle = parameters.getValue(COMMAND, workspace);
+        String arguments = parameters.getValue(ARGUMENTS, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
-        // Only multithread the operation if it's being conducted on a single slice at a time.
+        // Only multithread the operation if it's being conducted on a single slice at a
+        // time.
         if (!arguments.contains("stack"))
             multithread = false;
 
-        // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {
-            inputImagePlus = new Duplicator().run(inputImagePlus);
-        }
+        // Irrespective of whether the image is being applied to the input, we need 
+        // to duplicate it, else some commands don't work.
+        inputImagePlus = new Duplicator().run(inputImagePlus);
 
         if (multithread) {
             // If multithreading, remove the "stack" argument
-            arguments = arguments.replace("stack","");
+            arguments = arguments.replace("stack", "");
             runCommandMultithreaded(inputImagePlus, commandTitle, arguments);
         } else {
             IJ.run(inputImagePlus, commandTitle, arguments);
         }
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
+        if (applyToInput) {
+            inputImage.setImagePlus(inputImagePlus);
+            if (showOutput)
+                inputImage.show();
+        } else {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.show();
-        } else {
-            if (showOutput)
-                inputImage.show();
         }
 
         return Status.PASS;
@@ -201,13 +222,13 @@ public class RunSingleCommand extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -215,9 +236,8 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(COMMAND));
         returnedParameters.add(parameters.getParameter(ARGUMENTS));
 
-            returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
-            returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
-        
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
@@ -225,32 +245,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -259,17 +279,24 @@ return null;
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply command to.  This image is duplicated prior to application of the command, so won't be updated by default.  To store any changes back onto this image, select the \""+APPLY_TO_INPUT+"\" parameter.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to apply command to.  This image is duplicated prior to application of the command, so won't be updated by default.  To store any changes back onto this image, select the \""
+                        + APPLY_TO_INPUT + "\" parameter.");
 
-      parameters.get(APPLY_TO_INPUT).setDescription("When selected, the image returned by the command will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.");
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the image returned by the command will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.");
 
-      parameters.get(OUTPUT_IMAGE).setDescription("When \""+APPLY_TO_INPUT+"\" is not selected this will store the command output image into the MIA workspace with the name specified by this parameter.");
+        parameters.get(OUTPUT_IMAGE).setDescription("When \"" + APPLY_TO_INPUT
+                + "\" is not selected this will store the command output image into the MIA workspace with the name specified by this parameter.");
 
-      parameters.get(COMMAND).setDescription("The command command to run.  This must be the exact name as given by the ImageJ command recorder.  Note: Only commands of the format \"run([MACRO TITLE], [ARGUMENTS])\" can be run by this module.  For more advanced command processing please use the \""+new RunMacro(null).getName()+"\" module.");
+        parameters.get(COMMAND).setDescription(
+                "The command command to run.  This must be the exact name as given by the ImageJ command recorder.  Note: Only commands of the format \"run([MACRO TITLE], [ARGUMENTS])\" can be run by this module.  For more advanced command processing please use the \""
+                        + new RunMacro(null).getName() + "\" module.");
 
-      parameters.get(ARGUMENTS).setDescription("The options to pass to the command.");
+        parameters.get(ARGUMENTS).setDescription("The options to pass to the command.");
 
-      parameters.get(ENABLE_MULTITHREADING).setDescription("When running a command which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for commands containing the \"stack\" argument.");
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "When running a command which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for commands containing the \"stack\" argument.");
 
     }
 }

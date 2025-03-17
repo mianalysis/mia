@@ -53,7 +53,10 @@ import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
 
 @Plugin(type = ManualExtension.class, priority = Priority.LOW, visible = true)
-public class SAMJExtension extends ManualExtension implements MouseListener {
+public class SAMJExtension implements ManualExtension, MouseListener {
+    private Parameters parameters = new Parameters();
+    private Module module;
+    
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
     public static final String USE_SAM = "Enable Segment Anything";
     public static final String ENVIRONMENT_PATH_MODE = "Environment path mode";
@@ -94,7 +97,18 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     }
 
     public SAMJExtension(Module module) {
-        super(module);
+        setModule(module);
+        initialiseParameters();
+    }
+
+    @Override
+    public Parameters getAllParameters() {
+        return parameters;
+    }
+
+    @Override
+    public void setModule(Module module) {
+        this.module = module;
     }
 
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
@@ -235,6 +249,12 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         this.displayIpl = displayIpl;
         displayIpl.getCanvas().addMouseListener(this);
 
+        return Status.PASS;
+
+    }
+
+    @Override
+    public Status onObjectAdded() {
         return Status.PASS;
 
     }

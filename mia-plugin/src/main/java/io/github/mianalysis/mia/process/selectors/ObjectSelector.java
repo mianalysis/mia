@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -76,6 +78,7 @@ import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.process.BinaryInterpolator;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.parametercontrols.WiderDropDownCombo;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.Obj;
@@ -100,15 +103,18 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private JMenuBar menuBar;
     private JTextField objectNumberField;
     private JComboBox<String> autoAcceptMode;
+    private WiderDropDownCombo autoClassMode;
     private CustomListModel<ObjRoi> listModel = new CustomListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
     private JComboBox<String> overlayMode;
     private JPanel colourPanel;
     private JComboBox<String> colourMode;
+    private JPanel outlinePanel;
+    private JTextField outlineWidthField;
     private JCheckBox labelCheck;
     private JPanel fontPanel;
-    private JTextField labelFontSize;
+    private JTextField labelFontSizeField;
 
     private ImagePlus displayIpl;
     private Overlay overlay;
@@ -139,6 +145,14 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private static final String REMOVE = "Remove object(s) (F3) ";
     private static final String FINISH = "Finish adding objects (F4)";
     private static final String CHANGE_CLASS = "Change object class (F5)";
+
+    public interface ExistingObjectTypes {
+        String REGIONS = "Regions";
+        String SINGLE_POINTS = "Single points";
+
+        String[] ALL = new String[] { REGIONS, SINGLE_POINTS };
+
+    }
 
     public interface AutoAcceptModes {
         String DO_NOTHING = "Do nothing";
@@ -243,6 +257,22 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
+    public String[] getAutoClassModes() {
+        if (classSelector == null)
+            return null;
+
+        String[] autoClassModes = new String[classSelector.getAllClasses().size() + 2];
+        autoClassModes[0] = "Do nothing";
+        autoClassModes[1] = "Select class";
+
+        int i = 2;
+        for (String className : classSelector.getAllClasses())
+            autoClassModes[i++] = "Apply \"" + className + "\"";
+
+        return autoClassModes;
+
+    }
+
     public void setControlPanelVisible(boolean visible) {
         frame.setVisible(visible);
     }
@@ -254,7 +284,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             displayIpl.getWindow().getCanvas().addMouseListener(this);
 
             boolean listenerExists = false;
-            for (KeyListener listener:displayIpl.getWindow().getCanvas().getKeyListeners())
+            for (KeyListener listener : displayIpl.getWindow().getCanvas().getKeyListeners())
                 if (listener == this) {
                     listenerExists = true;
                     break;
@@ -262,7 +292,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             if (!listenerExists)
                 displayIpl.getWindow().getCanvas().addKeyListener(this);
-            
+
         } else {
             displayIpl.hide();
         }
@@ -399,7 +429,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         }
 
         // Object number panel
-        JLabel objectNumberLabel = new JLabel("Existing object number");
+        JLabel objectNumberLabel = new JLabel("Existing object number: ");
         objectNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
         c.gridx = 0;
         c.gridy++;
@@ -414,9 +444,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         frame.add(objectNumberField, c);
 
         // Auto accept panel
-        JLabel autoAcceptLabel = new JLabel("When region drawn");
+        JLabel autoAcceptLabel = new JLabel("When region drawn: ");
         autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
-        c.gridx = gridWidth - 2;
+        c.gridx = gridWidth - (classSelector == null ? 2 : 3);
         c.anchor = GridBagConstraints.EAST;
         frame.add(autoAcceptLabel, c);
 
@@ -431,6 +461,21 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         c.anchor = GridBagConstraints.WEST;
         frame.add(autoAcceptMode, c);
+
+        if (classSelector != null) {
+            String[] autoClassModes = getAutoClassModes();
+            autoClassMode = new WiderDropDownCombo(autoClassModes);
+            autoClassMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.AutoClass", autoClassModes[1]));
+            autoClassMode.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Prefs.set("MIA.ObjectSelector.AutoClass", (String) autoAcceptMode.getSelectedItem());
+                }
+            });
+            c.gridx++;
+            c.anchor = GridBagConstraints.WEST;
+            frame.add(autoClassMode, c);
+        }
 
         // Extra tools panels
         for (JPanel extraPanel : extraPanels) {
@@ -502,6 +547,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
                 displayIpl.setHideOverlay(!showOverlay);
                 Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+
+                boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
+                Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
+
                 labelCheck.setEnabled(showOverlay);
                 if (labelCheck.isSelected())
                     Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
@@ -548,6 +597,30 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         overlayPanel.add(colourPanel, c);
 
+        outlinePanel = new JPanel();
+        outlinePanel.add(new JLabel("Line width"));
+        outlineWidthField = new JTextField();
+        outlineWidthField.setText(Prefs.get("MIA.ObjectSelector.OutlineWidth", "1"));
+        outlineWidthField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                Prefs.set("MIA.ObjectSelector.OutlineWidth", (String) outlineWidthField.getText());
+
+                updateOverlay();
+            }
+
+        });
+        outlinePanel.add(outlineWidthField);
+
+        c.gridx++;
+        boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
+        Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
+        overlayPanel.add(outlinePanel, c);
+
         labelCheck = new JCheckBox("Show labels");
         labelCheck.setSelected(Prefs.get("MIA.ObjectSelector.ShowLabels", true));
         labelCheck.setEnabled(true);
@@ -567,9 +640,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         fontPanel.add(new JLabel("Font size"));
         int defaultSize = (int) Math
                 .round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
-        labelFontSize = new JTextField(String.valueOf(defaultSize));
-        labelFontSize.setEnabled(true);
-        labelFontSize.addFocusListener(new FocusListener() {
+        labelFontSizeField = new JTextField(String.valueOf(defaultSize));
+        labelFontSizeField.setEnabled(true);
+        labelFontSizeField.addFocusListener(new FocusListener() {
 
             @Override
             public void focusGained(FocusEvent e) {
@@ -581,7 +654,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             }
 
         });
-        fontPanel.add(labelFontSize);
+        fontPanel.add(labelFontSizeField);
         c.gridx++;
         overlayPanel.add(fontPanel, c);
 
@@ -746,7 +819,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         if (roi.getType() == Roi.POINT)
             switch (pointMode) {
                 case PointModes.INDIVIDUAL_OBJECTS:
-                    Point[] points = ((PointRoi) roi).getContainedPoints();
+                    Point[] points = roi.getContainedPoints();
                     for (Point point : points)
                         addSingleRoi(new PointRoi(new int[] { point.x }, new int[] { point.y }, 1));
                     break;
@@ -775,15 +848,27 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         String assignedClass = null;
         if (classSelector != null) {
-            classSelector.setVisible(true);
+            switch ((String) autoClassMode.getSelectedItem()) {
+                case "Do nothing":
+                    break;
 
-            while (classSelector.isActive())
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
+                case "Select class":
+                    classSelector.setVisible(true);
 
-                }
-            assignedClass = classSelector.getLastSelectedClass();
+                    while (classSelector.isActive())
+                        try {
+                            Thread.sleep(100);
+                        } catch (Exception e) {
+
+                        }
+                    assignedClass = classSelector.getLastSelectedClass();
+                    break;
+                default:
+                    String selectedClass = (String) autoClassMode.getSelectedItem();
+                    assignedClass = selectedClass.substring(7, selectedClass.length() - 1);
+                    break;
+            }
+
         }
 
         ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1, assignedClass);
@@ -1107,6 +1192,12 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 overlayRoi.setStrokeColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
                 break;
 
+            case Roi.POINT:
+                ((PointRoi) overlayRoi).setSize(3);
+                ((PointRoi) overlayRoi).setPointType(PointRoi.DOT);
+                overlayRoi.setStrokeColor(colour);
+                break;
+
             // Everything else is rendered as the normal fill or outlines
             default:
                 switch ((String) overlayMode.getSelectedItem()) {
@@ -1115,6 +1206,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                         break;
                     case OverlayModes.OUTLINES:
                         overlayRoi.setStrokeColor(colour);
+                        overlayRoi.setStrokeWidth(Integer.parseInt(outlineWidthField.getText()));
                         break;
                 }
                 break;
@@ -1125,11 +1217,24 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
+            int fontSize = Integer.parseInt(labelFontSizeField.getText());
+
             double[] centroid = roi.getContourCentroid();
-            int fontSize = Integer.parseInt(labelFontSize.getText());
+            if (roi instanceof PointRoi) {
+                Point[] points = roi.getContainedPoints();
+                centroid[0] = 0;
+                centroid[1] = 0;
+                for (Point point : points) {
+                    centroid[0] = +point.getX();
+                    centroid[1] = +point.getY();
+                }
+                centroid[0] = (centroid[0] / points.length) + fontSize * 0.5;
+                centroid[1] = (centroid[1] / points.length) + fontSize * 0.5;
+            }
 
             TextRoi text = new TextRoi(centroid[0], centroid[1], String.valueOf(ID),
                     new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
+            text.setStrokeColor(colour);
 
             // Setting stack location
             if (displayIpl.isHyperStack())
@@ -1245,7 +1350,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    public void addObjects(Objs inputObjects, @Nullable String metadataForClass) {
+    public void addObjects(Objs inputObjects, String existingObjectType, @Nullable String metadataForClass) {
         TreeSet<String> existingClasses = classSelector != null ? new TreeSet<>() : null;
 
         for (Obj inputObject : inputObjects.values()) {
@@ -1266,7 +1371,29 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             ArrayList<ObjRoi> currentRois = rois.get(ID);
             for (Entry<Integer, Roi> entry : inputObject.getRois().entrySet()) {
-                ObjRoi objRoi = new ObjRoi(ID, entry.getValue(), inputObject.getT(), entry.getKey(), assignedClass);
+                Roi roi;
+                switch (existingObjectType) {
+                    case ExistingObjectTypes.REGIONS:
+                    default:
+                        roi = entry.getValue();
+                        break;
+
+                    case ExistingObjectTypes.SINGLE_POINTS:
+                        Point[] points = entry.getValue().getContainedPoints();
+                        double[] centroid = new double[2];
+                        centroid[0] = 0;
+                        centroid[1] = 0;
+                        for (Point point : points) {
+                            centroid[0] = +point.getX();
+                            centroid[1] = +point.getY();
+                        }
+                        centroid[0] = (centroid[0] / points.length);
+                        centroid[1] = (centroid[1] / points.length);
+                        roi = new PointRoi(centroid[0], centroid[1]);
+                        break;
+                }
+
+                ObjRoi objRoi = new ObjRoi(ID, roi, inputObject.getT(), entry.getKey(), assignedClass);
                 currentRois.add(objRoi);
 
                 // Adding to the list of objects

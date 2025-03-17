@@ -51,7 +51,7 @@ public class PrepareDeepImageJ implements PlugIn {
                 return "/Users/sc13967/Applications/Fiji.app/models/";
             else
                 // return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
-                return "C:\\Users\\sc13967\\Desktop\\Fiji.app\\models\\";
+                return "C:\\Users\\sc13967\\Downloads\\fiji-win64\\Fiji.app\\models\\";
         else
             return IJ.getDirectory("imagej") + File.separator + "models" + File.separator;
     }
