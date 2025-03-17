@@ -360,17 +360,17 @@ public class ColourFactory {
 
         for (Obj object : objects.values()) {
             if (object == null || metadataName == null) {
-                hues.put(object.getID(), 0f);
+                hues.put(object.getID(), 0.167f);
                 continue;
             }
 
             ObjMetadata metadataItem = object.getMetadataItem(metadataName);
             if (metadataItem == null) {
-                hues.put(object.getID(), 0f);
+                hues.put(object.getID(), 0.167f);
                 continue;
             }
 
-            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode()*31).nextFloat());
+            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode()* 2000*31).nextFloat());
 
         }
 
