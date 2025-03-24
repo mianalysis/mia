@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -88,7 +90,6 @@ import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
-import weka.gui.EnvironmentField.WideComboBox;
 
 public class ObjectSelector implements ActionListener, KeyListener, MouseListener {
     private Objs outputObjects = null;
@@ -109,9 +110,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private JComboBox<String> overlayMode;
     private JPanel colourPanel;
     private JComboBox<String> colourMode;
+    private JPanel outlinePanel;
+    private JTextField outlineWidthField;
     private JCheckBox labelCheck;
     private JPanel fontPanel;
-    private JTextField labelFontSize;
+    private JTextField labelFontSizeField;
 
     private ImagePlus displayIpl;
     private Overlay overlay;
@@ -142,6 +145,14 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private static final String REMOVE = "Remove object(s) (F3) ";
     private static final String FINISH = "Finish adding objects (F4)";
     private static final String CHANGE_CLASS = "Change object class (F5)";
+
+    public interface ExistingObjectTypes {
+        String REGIONS = "Regions";
+        String SINGLE_POINTS = "Single points";
+
+        String[] ALL = new String[] { REGIONS, SINGLE_POINTS };
+
+    }
 
     public interface AutoAcceptModes {
         String DO_NOTHING = "Do nothing";
@@ -539,6 +550,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
                 displayIpl.setHideOverlay(!showOverlay);
                 Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+
+                boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
+                Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
+
                 labelCheck.setEnabled(showOverlay);
                 if (labelCheck.isSelected())
                     Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
@@ -587,6 +602,30 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         overlayPanel.add(colourPanel, c);
 
+        outlinePanel = new JPanel();
+        outlinePanel.add(new JLabel("Line width"));
+        outlineWidthField = new JTextField();
+        outlineWidthField.setText(Prefs.get("MIA.ObjectSelector.OutlineWidth", "1"));
+        outlineWidthField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                Prefs.set("MIA.ObjectSelector.OutlineWidth", (String) outlineWidthField.getText());
+
+                updateOverlay();
+            }
+
+        });
+        outlinePanel.add(outlineWidthField);
+
+        c.gridx++;
+        boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
+        Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
+        overlayPanel.add(outlinePanel, c);
+
         labelCheck = new JCheckBox("Show labels");
         labelCheck.setSelected(Prefs.get("MIA.ObjectSelector.ShowLabels", true));
         labelCheck.setEnabled(true);
@@ -608,9 +647,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         fontPanel.add(new JLabel("Font size"));
         int defaultSize = (int) Math
                 .round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
-        labelFontSize = new JTextField(String.valueOf(defaultSize));
-        labelFontSize.setEnabled(true);
-        labelFontSize.addFocusListener(new FocusListener() {
+        labelFontSizeField = new JTextField(String.valueOf(defaultSize));
+        labelFontSizeField.setEnabled(true);
+        labelFontSizeField.addFocusListener(new FocusListener() {
 
             @Override
             public void focusGained(FocusEvent e) {
@@ -622,7 +661,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             }
 
         });
-        fontPanel.add(labelFontSize);
+        fontPanel.add(labelFontSizeField);
         c.gridx++;
         overlayPanel.add(fontPanel, c);
 
@@ -787,7 +826,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         if (roi.getType() == Roi.POINT)
             switch (pointMode) {
                 case PointModes.INDIVIDUAL_OBJECTS:
-                    Point[] points = ((PointRoi) roi).getContainedPoints();
+                    Point[] points = roi.getContainedPoints();
                     for (Point point : points)
                         addSingleRoi(new PointRoi(new int[] { point.x }, new int[] { point.y }, 1));
                     break;
@@ -1163,6 +1202,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             case Roi.POINT:
                 ((PointRoi) overlayRoi).setSize(3);
+                ((PointRoi) overlayRoi).setPointType(PointRoi.DOT);
                 overlayRoi.setStrokeColor(colour);
                 break;
 
@@ -1174,6 +1214,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                         break;
                     case OverlayModes.OUTLINES:
                         overlayRoi.setStrokeColor(colour);
+                        overlayRoi.setStrokeWidth(Integer.parseInt(outlineWidthField.getText()));
                         break;
                 }
                 break;
@@ -1184,23 +1225,24 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
-            int fontSize = Integer.parseInt(labelFontSize.getText());
+            int fontSize = Integer.parseInt(labelFontSizeField.getText());
 
             double[] centroid = roi.getContourCentroid();
             if (roi instanceof PointRoi) {
-                Point[] points = ((PointRoi) roi).getContainedPoints();
+                Point[] points = roi.getContainedPoints();
                 centroid[0] = 0;
                 centroid[1] = 0;
                 for (Point point : points) {
                     centroid[0] = +point.getX();
                     centroid[1] = +point.getY();
                 }
-                centroid[0] = (centroid[0] / points.length) + fontSize*0.5;
-                centroid[1] = (centroid[1] / points.length) + fontSize*0.5;
+                centroid[0] = (centroid[0] / points.length) + fontSize * 0.5;
+                centroid[1] = (centroid[1] / points.length) + fontSize * 0.5;
             }
 
             TextRoi text = new TextRoi(centroid[0], centroid[1], String.valueOf(ID),
                     new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
+            text.setStrokeColor(colour);
 
             // Setting stack location
             if (displayIpl.isHyperStack())
@@ -1316,7 +1358,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    public void addObjects(Objs inputObjects, @Nullable String metadataForClass) {
+    public void addObjects(Objs inputObjects, String existingObjectType, @Nullable String metadataForClass) {
         TreeSet<String> existingClasses = classSelector != null ? new TreeSet<>() : null;
 
         for (Obj inputObject : inputObjects.values()) {
@@ -1337,7 +1379,29 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             ArrayList<ObjRoi> currentRois = rois.get(ID);
             for (Entry<Integer, Roi> entry : inputObject.getRois().entrySet()) {
-                ObjRoi objRoi = new ObjRoi(ID, entry.getValue(), inputObject.getT(), entry.getKey(), assignedClass);
+                Roi roi;
+                switch (existingObjectType) {
+                    case ExistingObjectTypes.REGIONS:
+                    default:
+                        roi = entry.getValue();
+                        break;
+
+                    case ExistingObjectTypes.SINGLE_POINTS:
+                        Point[] points = entry.getValue().getContainedPoints();
+                        double[] centroid = new double[2];
+                        centroid[0] = 0;
+                        centroid[1] = 0;
+                        for (Point point : points) {
+                            centroid[0] = +point.getX();
+                            centroid[1] = +point.getY();
+                        }
+                        centroid[0] = (centroid[0] / points.length);
+                        centroid[1] = (centroid[1] / points.length);
+                        roi = new PointRoi(centroid[0], centroid[1]);
+                        break;
+                }
+
+                ObjRoi objRoi = new ObjRoi(ID, roi, inputObject.getT(), entry.getKey(), assignedClass);
                 currentRois.add(objRoi);
 
                 // Adding to the list of objects

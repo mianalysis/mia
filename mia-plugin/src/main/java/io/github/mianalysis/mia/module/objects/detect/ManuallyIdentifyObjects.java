@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
@@ -22,7 +21,6 @@ import com.drew.lang.annotations.NotNull;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -97,7 +95,12 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     /**
     * 
     */
-    public static final String INPUT_SEPARATOR = "Image/object input";
+    public static final String IMAGE_INPUT_SEPARATOR = "Image input";
+
+    /**
+    * 
+    */
+    public static final String OBJECT_INPUT_SEPARATOR = "Object input";
 
     /**
      * Image onto which selections will be drawn. This will be displayed
@@ -114,6 +117,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      * 
      */
     public static final String INPUT_OBJECTS = "Input objects";
+
+    /**
+     * 
+     */
+    public static final String EXISTING_OBJECT_TYPE = "Existing object type";
 
     /**
      * 
@@ -234,6 +242,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      * Message to display in title of image.
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
+
+    public interface ExistingObjectTypes extends ObjectSelector.ExistingObjectTypes {};
 
     protected HashSet<ManualExtension> extensions = new HashSet<>();
     protected ObjectSelector objectSelector = null;
@@ -483,6 +493,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         boolean addExistingObjects = parameters.getValue(ADD_EXISTING_OBJECTS, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         boolean applyExistingClass = parameters.getValue(APPLY_EXISTING_CLASS, workspace);
+        String existingObjectType = parameters.getValue(EXISTING_OBJECT_TYPE, workspace);
         String metadataForClass = parameters.getValue(METADATA_FOR_CLASS, workspace);
         String type = parameters.getValue(VOLUME_TYPE, workspace);
         boolean outputTracks = parameters.getValue(OUTPUT_TRACKS, workspace);
@@ -545,7 +556,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 metadataForClass = null;
 
             if (inputObjects != null) {
-                objectSelector.addObjects(inputObjects, metadataForClass);
+                objectSelector.addObjects(inputObjects, existingObjectType, metadataForClass);
                 objectSelector.updateOverlay();
             }
         }
@@ -615,10 +626,13 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(IMAGE_INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(OBJECT_INPUT_SEPARATOR, this));
         parameters.add(new BooleanP(ADD_EXISTING_OBJECTS, this, false));
         parameters.add(new CustomInputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(EXISTING_OBJECT_TYPE, this, ExistingObjectTypes.REGIONS, ExistingObjectTypes.ALL));
         parameters.add(new BooleanP(ALLOW_MISSING_OBJECTS, this, false));
         parameters.add(new BooleanP(APPLY_EXISTING_CLASS, this, false));
         parameters.add(new CustomObjectMetadataP(METADATA_FOR_CLASS, this));
@@ -657,11 +671,14 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
-        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.get(IMAGE_INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_IMAGE));
+
+        returnedParameters.add(parameters.get(OBJECT_INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(ADD_EXISTING_OBJECTS));
         if ((boolean) parameters.getValue(ADD_EXISTING_OBJECTS, workspace)) {
             returnedParameters.add(parameters.get(INPUT_OBJECTS));
+            returnedParameters.add(parameters.get(EXISTING_OBJECT_TYPE));
             returnedParameters.add(parameters.get(ALLOW_MISSING_OBJECTS));
             boolean allowMissingObjects = parameters.getValue(ALLOW_MISSING_OBJECTS, workspace);
             ((CustomInputObjectsP) parameters.get(INPUT_OBJECTS)).setAllowMissingObjects(allowMissingObjects);

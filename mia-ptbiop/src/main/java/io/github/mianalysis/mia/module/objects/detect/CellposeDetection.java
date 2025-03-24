@@ -287,17 +287,17 @@ public class CellposeDetection extends Module {
         cellpose.setUseClustering(useClustering);
         cellpose.setAdditionalFlags(additionalFlags);
 
-        Objs outputObjects = null;
-        int count = 0;
-        if (dimensionMode.equals(DimensionModes.TWOD) && inputImage.getImagePlus().getNSlices() > 1) {
-            SpatCal spatCal = SpatCal.getFromImage(inputImage.getImagePlus());
-            int nFrames = inputImage.getImagePlus().getNFrames();
-            double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
-            outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval,
-                    TemporalUnit.getOMEUnit());
+        SpatCal spatCal = SpatCal.getFromImage(inputImage.getImagePlus());
+        int nFrames = inputImage.getImagePlus().getNFrames();
+        int nSlices = inputImage.getImagePlus().getNSlices();
+        double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
+        Objs outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
-            for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
-                for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
+        if (dimensionMode.equals(DimensionModes.TWOD)) {
+            int count = 0;
+            int total = nFrames * nSlices;
+            for (int z = 0; z < nSlices; z++) {
+                for (int t = 0; t < nFrames; t++) {
                     Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end",
                             String.valueOf(z + 1) + "-" + String.valueOf(z + 1),
                             String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
@@ -306,7 +306,8 @@ public class CellposeDetection extends Module {
                     cellpose.run();
 
                     Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                    Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+                    Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE,
+                            outputObjectsName);
 
                     for (Obj currOutputObject : currOutputObjects.values()) {
                         Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
@@ -315,15 +316,31 @@ public class CellposeDetection extends Module {
                         outputObject.translateCoords(0, 0, z);
                     }
 
-                    writeProgressStatus(++count, inputImage.getImagePlus().getStackSize(), "slices");
+                    writeProgressStatus(++count, total, "slices");
 
                 }
             }
         } else {
-            cellpose.setImagePlus(inputImage.getImagePlus());
-            cellpose.run();
-            Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-            outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
+            for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
+                Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end", "1-end",
+                        String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
+
+                cellpose.setImagePlus(currImage.getImagePlus());
+                cellpose.run();
+
+                Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE,
+                        outputObjectsName);
+
+                for (Obj currOutputObject : currOutputObjects.values()) {
+                    Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                    outputObject.setT(t);
+                    outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
+                }
+
+                writeProgressStatus((t + 1), nFrames, "frames");
+
+            }
         }
 
         workspace.addObjects(outputObjects);
@@ -528,7 +545,7 @@ public class CellposeDetection extends Module {
         Prefs.set(keyPrefix + "useFastMode", parameters.getValue(USE_FASTMODE, workspace).toString());
 
         Prefs.savePreferences();
-        
+
         return returnedParameters;
 
     }
@@ -544,8 +561,8 @@ public class CellposeDetection extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
