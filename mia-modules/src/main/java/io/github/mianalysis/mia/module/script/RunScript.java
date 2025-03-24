@@ -214,6 +214,11 @@ public class RunScript extends Module {
         super("Run script", modules);
     }
 
+    // This is just so other modules can extend this class
+    protected RunScript(String name, Modules modules) {
+        super(name, modules);
+    }
+
     @Override
     public Category getCategory() {
         return Categories.SCRIPT;
@@ -256,7 +261,7 @@ public class RunScript extends Module {
      * Some imports may have moved since the script was written. This method
      * replaces some commonly occurring ones.
      */
-    String redirectImports(String scriptText, String extension) {
+    public static String redirectImports(String scriptText, String extension) {
         HashMap<String, String> movedClasses = new HashMap<>();
 
         movedClasses.put("io.github.sjcross.sjcommon.exceptions.PointOutOfRangeException",
