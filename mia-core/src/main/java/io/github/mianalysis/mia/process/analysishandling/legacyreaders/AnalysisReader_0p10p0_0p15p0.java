@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.process.analysishandling.legacyreaders;
 
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
+        fileChooser.setPreferredSize(new Dimension(800,640));
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));

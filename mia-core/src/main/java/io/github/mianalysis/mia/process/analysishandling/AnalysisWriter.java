@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.process.analysishandling;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,7 +61,8 @@ public class AnalysisWriter {
     public static void saveModules(Modules modules)
             throws IOException, ParserConfigurationException, TransformerException {
         JFileChooser fileChooser = new JFileChooser(modules.getAnalysisFilename());
-        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setPreferredSize(new Dimension(800,640));
+        fileChooser.setMultiSelectionEnabled(false);        
         fileChooser.showDialog(null, "Save workflow");
 
         File file = fileChooser.getSelectedFile();

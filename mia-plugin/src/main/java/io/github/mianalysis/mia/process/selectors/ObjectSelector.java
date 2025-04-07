@@ -1280,6 +1280,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     String getSavePath() {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setPreferredSize(new Dimension(800,640));
         fileChooser.setDialogTitle("Save objects to file");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1340,6 +1341,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     String getLoadPath() {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setPreferredSize(new Dimension(800,640));
         fileChooser.setDialogTitle("Objects file to load");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
