@@ -72,8 +72,18 @@ public class IntegerP extends TextType {
         converted = insertWorkspaceValues(converted, workspace);
         converted = applyCalculation(converted);
 
-        return (T) (Integer) Integer.parseInt(converted);
-
+        try {
+            return (T) (Integer) Integer.parseInt(converted);
+        } catch (NumberFormatException e) {
+            // If this is accessed when the global variable wasn't defined (can occur when
+            // writing workflows to file), it returns the maximum possible value. This
+            // should allow the system to continue working but give a clearly unexpected
+            // value if actually used.
+            if (!GlobalVariables.variablesPresent(getRawStringValue(), module.getModules()))
+                return (T) (Integer) Integer.MAX_VALUE;
+            else
+                throw e;
+        }
     }
 
     @Override
