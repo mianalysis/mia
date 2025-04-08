@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.process.analysishandling;
 
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,6 +64,7 @@ public class AnalysisReader {
         // any file, as images are often in sub-directories).
         String previousPath = Prefs.get("MIA.PreviousWorkflowPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
+        fileChooser.setPreferredSize(new Dimension(800,640));
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.addChoosableFileFilter(allFilter);
