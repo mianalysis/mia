@@ -17,8 +17,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -57,6 +55,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -88,6 +87,8 @@ import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
@@ -125,7 +126,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private String volumeTypeString;
     private ClassSelector classSelector;
     private ArrayList<JPanel> extraPanels = new ArrayList<>();
-    private int gridWidth = 4;
+    private int gridWidth = 3;
     private String previousOverlayMode = OverlayModes.NONE;
     private static int x0 = Prefs.getInt("MIA.ObjectSelector.x0", 100);
     private static int y0 = Prefs.getInt("MIA.ObjectSelector.y0", 100);
@@ -141,10 +142,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     // GUI buttons
     private static final String ADD_NEW = "Add as new object (F1)";
-    private static final String ADD_EXISTING = "Add to existing object (F2)";
-    private static final String REMOVE = "Remove object(s) (F3) ";
-    private static final String FINISH = "Finish adding objects (F4)";
-    private static final String CHANGE_CLASS = "Change object class (F5)";
+    private static final String REMOVE = "Remove object(s) (F2) ";
+    private static final String FINISH = "Finish adding objects (F3)";
+    private static final String ADD_EXISTING = "Add to existing object (F4)";
+    private static final String REMOVE_EXISTING = "Remove from existing object (F5)";
+    private static final String CHANGE_CLASS = "Change object class (F6)";
 
     public interface ExistingObjectTypes {
         String REGIONS = "Regions";
@@ -158,8 +160,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         String DO_NOTHING = "Do nothing";
         String ADD_AS_NEW_OBJECT = "Add as new object";
         String ADD_TO_EXISTING_OBJECT = "Add to existing object";
+        String REMOVE_FROM_EXISTING_OBJECT = "Remove from existing object";
 
-        String[] ALL = new String[] { DO_NOTHING, ADD_AS_NEW_OBJECT, ADD_TO_EXISTING_OBJECT };
+        String[] ALL = new String[] { DO_NOTHING, ADD_AS_NEW_OBJECT, ADD_TO_EXISTING_OBJECT,
+                REMOVE_FROM_EXISTING_OBJECT };
 
     }
 
@@ -227,9 +231,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             boolean showControlOnCreation) {
         this.pointMode = pointMode;
         this.volumeTypeString = volumeTypeString;
-
-        if (classSelector != null)
-            gridWidth = 5;
 
         displayIpl = new Duplicator().run(inputIpl);
         displayIpl.setCalibration(null);
@@ -325,6 +326,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private void createControlPanel(String instructionText) {
         rois = new HashMap<>();
         maxID = 0;
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         frame = new JFrame();
 
@@ -369,6 +371,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 displayObjects(list.getSelectedValuesList());
+                List<ObjRoi> selection = list.getSelectedValuesList();
+                if (selection.size() > 0) {
+                    objectNumberField.setText(String.valueOf(list.getSelectedValuesList().get(0).getID()));
+                    objectNumberField.setForeground(Color.BLACK);
+                }
             }
         });
 
@@ -402,12 +409,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(newObjectButton, c);
 
-        JButton existingObjectButton = new JButton(ADD_EXISTING);
-        existingObjectButton.addActionListener(this);
-        existingObjectButton.setActionCommand(ADD_EXISTING);
-        c.gridx++;
-        frame.add(existingObjectButton, c);
-
         JButton removeObjectButton = new JButton(REMOVE);
         removeObjectButton.addActionListener(this);
         removeObjectButton.setActionCommand(REMOVE);
@@ -420,33 +421,59 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         frame.add(finishButton, c);
 
-        if (classSelector != null) {
-            JButton changeObjectClassButton = new JButton(CHANGE_CLASS);
-            changeObjectClassButton.addActionListener(this);
-            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
-            c.gridx++;
-            frame.add(changeObjectClassButton, c);
-        }
-
-        // Object number panel
-        JLabel objectNumberLabel = new JLabel("Existing object number: ");
-        objectNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
+        c.gridwidth = gridWidth;
         c.gridx = 0;
         c.gridy++;
+        frame.add(separator, c);
+
+        JButton addToExistingObjectButton = new JButton(ADD_EXISTING);
+        addToExistingObjectButton.addActionListener(this);
+        addToExistingObjectButton.setActionCommand(ADD_EXISTING);
+        c.gridy++;
+        c.gridx = 0;
         c.gridwidth = 1;
-        c.anchor = GridBagConstraints.EAST;
-        frame.add(objectNumberLabel, c);
+        frame.add(addToExistingObjectButton, c);
+
+        JButton removeFromExistingObjectButton = new JButton(REMOVE_EXISTING);
+        removeFromExistingObjectButton.addActionListener(this);
+        removeFromExistingObjectButton.setActionCommand(REMOVE_EXISTING);
+        c.gridx++;
+        frame.add(removeFromExistingObjectButton, c);
 
         objectNumberField = new JTextField();
+        objectNumberField.setText("Object ID");
+        objectNumberField.setForeground(Color.LIGHT_GRAY);
+        objectNumberField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                objectNumberField.setText("");
+                objectNumberField.setForeground(Color.BLACK);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
         c.gridx++;
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField, c);
 
+        separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
+        c.gridwidth = gridWidth;
+        c.gridx = 0;
+        c.gridy++;
+        frame.add(separator, c);
+
         // Auto accept panel
         JLabel autoAcceptLabel = new JLabel("When region drawn: ");
         autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
-        c.gridx = gridWidth - (classSelector == null ? 2 : 3);
+        c.gridy++;
+        c.gridx = 1;
+        c.gridwidth = 1;
         c.anchor = GridBagConstraints.EAST;
         frame.add(autoAcceptLabel, c);
 
@@ -464,6 +491,27 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         frame.add(autoAcceptMode, c);
 
         if (classSelector != null) {
+            separator = new JSeparator(JSeparator.HORIZONTAL);
+            separator.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
+            c.gridwidth = gridWidth;
+            c.gridx = 0;
+            c.gridy++;
+            frame.add(separator, c);
+
+            JButton changeObjectClassButton = new JButton(CHANGE_CLASS);
+            changeObjectClassButton.addActionListener(this);
+            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = 1;
+            frame.add(changeObjectClassButton, c);
+
+            autoAcceptLabel = new JLabel("When region drawn: ");
+            autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
+            c.gridx++;
+            c.anchor = GridBagConstraints.EAST;
+            frame.add(autoAcceptLabel, c);
+
             String[] autoClassModes = getAutoClassModes();
             autoClassMode = new WiderDropDownCombo(autoClassModes);
             autoClassMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.AutoClass", autoClassModes[1]));
@@ -477,6 +525,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             c.gridx++;
             c.anchor = GridBagConstraints.WEST;
             frame.add(autoClassMode, c);
+
         }
 
         // Extra tools panels
@@ -519,7 +568,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         displayIpl.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
 
-        frame.setMinimumSize(new Dimension(800, 480));
+        frame.setMinimumSize(new Dimension(800, 560));
         frame.setMaximumSize(new Dimension(800, Integer.MAX_VALUE));
         frame.pack();
         frame.setLocation(new Point(x0, y0));
@@ -591,8 +640,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                     Prefs.set("MIA.ObjectSelector.ColourModeNoClass", (String) colourMode.getSelectedItem());
                 else
                     Prefs.set("MIA.ObjectSelector.ColourModeWithClass", (String) colourMode.getSelectedItem());
-                
-                    Prefs.savePreferences();
+
+                Prefs.savePreferences();
 
                 updateOverlay();
             }
@@ -769,6 +818,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 addToExistingObject();
                 break;
 
+            case (REMOVE_EXISTING):
+                removeFromExistingObject();
+                break;
+
             case (CHANGE_CLASS):
                 new Thread(() -> {
                     changeObjectClass();
@@ -842,6 +895,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(maxID));
+        objectNumberField.setForeground(Color.BLACK);
 
         // Deselecting the current ROI. This can be re-enabled by selecting it from the
         // list.
@@ -935,6 +989,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             ObjRoi currentRoi = iterator.next();
             if (currentRoi.getT() == t && currentRoi.getZ() == z) {
                 currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
+                displayIpl.setRoi(currentRoi.getRoi());
                 updateOverlay();
                 return;
             }
@@ -949,6 +1004,46 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         addObjectToList(objRoi, ID);
         updateOverlay();
 
+    }
+
+    public void removeFromExistingObject() {
+        // If there are no existing objects, add as new object
+        if (rois.size() == 0 || objectNumberField.getText().equals("")) {
+            MIA.log.writeDebug("No ROI selected to remove region from");
+            return;
+        }
+
+        int ID = -1;
+        try {
+            ID = Integer.parseInt(objectNumberField.getText());
+        } catch (NumberFormatException e) {
+            MIA.log.writeDebug("No ROI selected to remove region from");
+            return;
+        }
+
+        // Getting points
+        Roi roi = displayIpl.getRoi();
+        if (roi == null) {
+            frame.setAlwaysOnTop(false);
+            IJ.error("Select a ROI first using the ImageJ ROI tools.");
+            frame.setAlwaysOnTop(true);
+            return;
+        }
+
+        // Adding the ROI to our current collection
+        ArrayList<ObjRoi> currentRois = rois.get(ID);
+        int t = displayIpl.getT() - 1;
+        int z = displayIpl.getZ() - 1;
+        ListIterator<ObjRoi> iterator = currentRois.listIterator();
+        while (iterator.hasNext()) {
+            ObjRoi currentRoi = iterator.next();
+            if (currentRoi.getT() == t && currentRoi.getZ() == z) {
+                currentRoi.setRoi(new ShapeRoi(currentRoi.getRoi()).not(new ShapeRoi(roi)));
+                updateOverlay();
+                displayIpl.setRoi(currentRoi.getRoi());
+                return;
+            }
+        }
     }
 
     public void changeObjectClass() {
@@ -1280,7 +1375,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     String getSavePath() {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setPreferredSize(new Dimension(800,640));
+        fileChooser.setPreferredSize(new Dimension(800, 640));
         fileChooser.setDialogTitle("Save objects to file");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1341,7 +1436,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     String getLoadPath() {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setPreferredSize(new Dimension(800,640));
+        fileChooser.setPreferredSize(new Dimension(800, 640));
         fileChooser.setDialogTitle("Objects file to load");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1507,18 +1602,22 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 return;
 
             case "F2":
-                addToExistingObject();
-                return;
-
-            case "F3":
                 removeObjects();
                 return;
 
-            case "F4":
+            case "F3":
                 processObjectsAndFinish();
                 return;
 
+            case "F4":
+                addToExistingObject();
+                return;
+
             case "F5":
+                removeFromExistingObject();
+                return;
+
+            case "F6":
                 if (classSelector != null)
                     changeObjectClass();
                 return;
@@ -1567,6 +1666,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 break;
             case AutoAcceptModes.ADD_TO_EXISTING_OBJECT:
                 addToExistingObject();
+                break;
+            case AutoAcceptModes.REMOVE_FROM_EXISTING_OBJECT:
+                removeFromExistingObject();
                 break;
         }
     }
