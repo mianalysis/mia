@@ -27,6 +27,55 @@ public class SpatialUnit {
         return selectedUnit;
     }
 
+    public static Unit<Length> getOMEUnit(String unit) {
+        switch (unit) {
+            default:
+                return null;
+                
+            case "um":
+            case "μm":
+            case "micron":
+            case "microns":
+                return UNITS.MICROMETER;
+                
+            case "mm":
+            case "millimeter":
+            case "millimeters":
+            case "millimetre":
+            case "millimetres":
+                return UNITS.MILLIMETER;
+                
+            case "cm":
+            case "centimeter":
+            case "centimeters":
+            case "centimetre":
+            case "centimetres":
+                return UNITS.CENTIMETER;
+                
+            case "nm":
+            case "nanometer":
+            case "nanometers":
+            case "nanometre":
+            case "nanometres":
+                return UNITS.NANOMETER;
+                
+            case "A":
+            case "Å":
+            case "ang":
+            case "angstrom":
+            case "angstroms":
+                return UNITS.ANGSTROM;
+                
+            case "m":
+            case "meter":
+            case "meters":
+            case "metre":
+            case "metres":
+                return UNITS.METER;
+            
+            }
+    }
+
     public static void setUnit(String units) {
         switch (units) {
             case AvailableUnits.METRE:
