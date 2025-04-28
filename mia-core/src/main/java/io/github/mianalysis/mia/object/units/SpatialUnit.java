@@ -34,6 +34,7 @@ public class SpatialUnit {
                 
             case "um":
             case "μm":
+            case "µm":
             case "micron":
             case "microns":
                 return UNITS.MICROMETER;
@@ -72,7 +73,6 @@ public class SpatialUnit {
             case "metre":
             case "metres":
                 return UNITS.METER;
-            
             }
     }
 
