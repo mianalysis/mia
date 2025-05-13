@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.object.image.renderer;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
@@ -56,6 +59,26 @@ public class ImagePlusRenderer implements ImageRenderer {
 
         dispIpl.repaintWindow();
         dispIpl.show();
+        dispIpl.getWindow().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                String keyText = e.getKeyText(e.getKeyCode());
+
+                switch (keyText) {
+                    case "F12":
+                        dispIpl.toggleOverlay();
+                        return;    
+                    }
+                }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
 
     }
 }

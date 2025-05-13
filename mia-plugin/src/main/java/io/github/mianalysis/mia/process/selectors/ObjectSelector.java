@@ -1621,6 +1621,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 if (classSelector != null)
                     changeObjectClass();
                 return;
+
+            case "F12":
+                displayIpl.toggleOverlay();
+                return;
         }
     }
 
