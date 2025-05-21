@@ -72,6 +72,11 @@ public class ApplySegmentAnything extends Module {
     /**
      * 
      */
+    public static final String INPUT_OBJECTS_MODE = "Input objects mode";
+
+    /**
+     * 
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     /**
@@ -113,6 +118,14 @@ public class ApplySegmentAnything extends Module {
      * 
      */
     public static final String INSTALL_IF_MISSING = "Install model if missing";
+
+    public interface InputObjectsModes {
+        String BOUNDING_BOX = "Bounding box";
+        String CENTROIDS = "Centroids";
+
+        String[] ALL = new String[] { BOUNDING_BOX, CENTROIDS };
+
+    }
 
     // protected AbstractSamJ samJ = null;
     protected SamEnvManagerAbstract envManager = null;
@@ -195,6 +208,24 @@ public class ApplySegmentAnything extends Module {
 
     }
 
+    public List<Mask> getPolygonsFromObjectBoundingBox(Obj inputObject, AbstractSamJ samJ) {
+        double[][] extents = inputObject.getExtents(true, false);
+        int[] boundingBox = new int[4];
+        boundingBox[0] = (int) Math.round(extents[0][0]);
+        boundingBox[1] = (int) Math.round(extents[1][0]);
+        boundingBox[2] = (int) Math.round(extents[0][1]);
+        boundingBox[3] = (int) Math.round(extents[1][1]);
+
+        try {
+            return samJ.processBox(boundingBox);
+        } catch (IOException | InterruptedException | RuntimeException e) {
+            MIA.log.writeError(e);
+        }
+
+        return null;
+
+    }
+
     public List<Mask> getPolygonsFromObjectCentroid(Obj inputObject, AbstractSamJ samJ) {
         ArrayList<int[]> pts = new ArrayList<>();
         pts.add(new int[] { (int) Math.round(inputObject.getXMean(true)),
@@ -216,6 +247,7 @@ public class ApplySegmentAnything extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String inputObjectMode = parameters.getValue(INPUT_OBJECTS_MODE, workspace);
         boolean limitObjectSize = parameters.getValue(LIMIT_OBJECT_SIZE, workspace);
         double maxObjectArea = parameters.getValue(MAXIMUM_AREA, workspace);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
@@ -237,7 +269,7 @@ public class ApplySegmentAnything extends Module {
 
         // if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
         AbstractSamJ samJ = initialiseSAMJ(environmentPath, installIfMissing);
-                
+
         try {
             samJ.setImage(inputImage.getImgPlus());
         } catch (IOException | RuntimeException | InterruptedException e) {
@@ -251,7 +283,17 @@ public class ApplySegmentAnything extends Module {
         int count = 0;
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
-            List<Mask> masks = getPolygonsFromObjectCentroid(inputObject, samJ);
+            List<Mask> masks = null;
+            switch (inputObjectMode) {
+                case InputObjectsModes.BOUNDING_BOX:
+                    masks = getPolygonsFromObjectBoundingBox(inputObject, samJ);
+                    break;
+
+                case InputObjectsModes.CENTROIDS:
+                    masks = getPolygonsFromObjectCentroid(inputObject, samJ);
+                    break;
+            }
+
             if (masks == null)
                 return Status.PASS;
 
@@ -267,13 +309,13 @@ public class ApplySegmentAnything extends Module {
                 } catch (PointOutOfRangeException e) {
                 }
 
-            // Checking this object has volume.  If not, removing it
+            // Checking this object has volume. If not, removing it
             if (outputObject.size() == 0)
                 outputObjects.remove(outputObject.getID());
 
             writeProgressStatus(++count, total, "objects");
 
-        }       
+        }
 
         samJ.close();
 
@@ -291,6 +333,7 @@ public class ApplySegmentAnything extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(INPUT_OBJECTS_MODE, this, InputObjectsModes.CENTROIDS, InputObjectsModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(OBJECT_SEPARATOR, this));
@@ -313,6 +356,7 @@ public class ApplySegmentAnything extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_MODE));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(OBJECT_SEPARATOR));
