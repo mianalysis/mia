@@ -1349,9 +1349,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             overlay.add(text);
 
         }
-
-        displayIpl.updateAndDraw();
-
     }
 
     void displayObjects(List<ObjRoi> objRois) {
