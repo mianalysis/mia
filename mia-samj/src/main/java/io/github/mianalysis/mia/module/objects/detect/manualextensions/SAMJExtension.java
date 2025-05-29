@@ -56,7 +56,7 @@ import net.imagej.patcher.LegacyInjector;
 public class SAMJExtension implements ManualExtension, MouseListener {
     private Parameters parameters = new Parameters();
     private Module module;
-    
+
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
     public static final String USE_SAM = "Enable Segment Anything";
     public static final String ENVIRONMENT_PATH_MODE = "Environment path mode";
@@ -112,8 +112,8 @@ public class SAMJExtension implements ManualExtension, MouseListener {
     }
 
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
-        AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 3000;
+        AbstractSamJ.MAX_ENCODED_AREA_RS = 10000;
+        AbstractSamJ.MAX_ENCODED_SIDE = AbstractSamJ.MAX_ENCODED_AREA_RS * 3;
 
         AbstractSamJ loadedSamJ = null;
         try {
@@ -205,7 +205,8 @@ public class SAMJExtension implements ManualExtension, MouseListener {
                 preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
 
                 // Creating a dummy workspace so we don't alter the real one
-                Workspace dummyWorkspace = new Workspaces().getNewWorkspace(nextWorkspace.getMetadata().getFile(), nextWorkspace.getMetadata().getSeriesNumber());
+                Workspace dummyWorkspace = new Workspaces().getNewWorkspace(nextWorkspace.getMetadata().getFile(),
+                        nextWorkspace.getMetadata().getSeriesNumber());
                 String finalEnvironmentPath = environmentPath;
                 Thread t = new Thread(() -> {
                     // Running modules up to this point

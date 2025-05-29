@@ -168,8 +168,8 @@ public class ApplySegmentAnything extends Module {
     }
 
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
-        AbstractSamJ.MAX_ENCODED_AREA_RS = 4000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 4000;
+        AbstractSamJ.MAX_ENCODED_AREA_RS = 10000;
+        AbstractSamJ.MAX_ENCODED_SIDE = AbstractSamJ.MAX_ENCODED_AREA_RS * 3;
 
         AbstractSamJ loadedSamJ = null;
         try {
