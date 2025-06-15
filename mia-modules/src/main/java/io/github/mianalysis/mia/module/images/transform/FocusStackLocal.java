@@ -167,8 +167,9 @@ public class FocusStackLocal extends Module {
         boolean is32bit = inputHeightImage.getImagePlus().getBitDepth() == 32;
         Image heightLimits = inputHeightImage.duplicate("HeightLimits");
         ImageMath.process(heightLimits, ImageMath.CalculationModes.MULTIPLY, 0);
+        ImageMath.process(heightLimits, ImageMath.CalculationModes.ADD, 1);
         ImageCalculator.process(inputHeightImage, heightLimits, ImageCalculator.CalculationMethods.MAX, ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, is32bit, false);
-        ImageMath.process(heightLimits, ImageMath.CalculationModes.ADD, inputImage.getNSlices());
+        ImageMath.process(heightLimits, ImageMath.CalculationModes.ADD, inputImage.getNSlices()-1);
         ImageCalculator.process(inputHeightImage, heightLimits, ImageCalculator.CalculationMethods.MIN, ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, is32bit, false);
 
         ImagePlus inputIpl = inputImage.getImagePlus();
