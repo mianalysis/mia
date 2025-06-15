@@ -10,11 +10,11 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -162,6 +162,14 @@ public class FocusStackLocal extends Module {
 
     public static Image focusStack(Image inputImage, String outputImageName, Image inputHeightImage) {
         String moduleName = new FocusStackLocal(null).getName();
+
+        // Ensuring height map is within range of stack dimensions
+        boolean is32bit = inputHeightImage.getImagePlus().getBitDepth() == 32;
+        Image heightLimits = inputHeightImage.duplicate("HeightLimits");
+        ImageMath.process(heightLimits, ImageMath.CalculationModes.MULTIPLY, 0);
+        ImageCalculator.process(inputHeightImage, heightLimits, ImageCalculator.CalculationMethods.MAX, ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, is32bit, false);
+        ImageMath.process(heightLimits, ImageMath.CalculationModes.ADD, inputImage.getNSlices());
+        ImageCalculator.process(inputHeightImage, heightLimits, ImageCalculator.CalculationMethods.MIN, ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1, null, is32bit, false);
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         ImageProcessor ipr = inputIpl.getProcessor();

@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module.objects.detect;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -14,6 +15,7 @@ import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
+import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
@@ -22,6 +24,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.manualextensions.SAMJExtension.EnvironmentPathModes;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -47,6 +50,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
+import net.imglib2.img.Img;
 
 /**
  * Created by Stephen Cross on 31/10/2024.
@@ -256,6 +260,7 @@ public class ApplySegmentAnything extends Module {
         boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
+
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         if (calibratedUnits)
@@ -270,11 +275,18 @@ public class ApplySegmentAnything extends Module {
         // if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
         AbstractSamJ samJ = initialiseSAMJ(environmentPath, installIfMissing);
 
-        try {
-            samJ.setImage(inputImage.getImgPlus());
-        } catch (IOException | RuntimeException | InterruptedException e) {
-            MIA.log.writeError(e);
-            return Status.FAIL;
+        // Gathering objects by timepoint and slice
+        HashMap<Integer, HashMap<Integer, ArrayList<Obj>>> inputObjectsBySliceAndTime = new HashMap<>();
+        for (Obj inputObject : inputObjects.values()) {
+            int t = inputObject.getT();
+            int z = (int) Math.round(inputObject.getZMean(true, false));
+
+            inputObjectsBySliceAndTime.putIfAbsent(t, new HashMap<Integer, ArrayList<Obj>>());
+            HashMap<Integer, ArrayList<Obj>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
+
+            inputObjectsBySlice.putIfAbsent(z, new ArrayList<Obj>());
+            inputObjectsBySlice.get(z).add(inputObject);
+
         }
 
         // Creating output objects
@@ -282,39 +294,56 @@ public class ApplySegmentAnything extends Module {
 
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
-            List<Mask> masks = null;
-            switch (inputObjectMode) {
-                case InputObjectsModes.BOUNDING_BOX:
-                    masks = getPolygonsFromObjectBoundingBox(inputObject, samJ);
-                    break;
+        for (int t : inputObjectsBySliceAndTime.keySet()) {
+            HashMap<Integer, ArrayList<Obj>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
+            for (int z : inputObjectsBySlice.keySet()) {
+                Img img = ExtractSubstack
+                        .extractSubstack(inputImage, "Substack", "1-end", String.valueOf(z + 1), String.valueOf(t + 1))
+                        .getImgPlus();
 
-                case InputObjectsModes.CENTROIDS:
-                    masks = getPolygonsFromObjectCentroid(inputObject, samJ);
-                    break;
-            }
-
-            if (masks == null)
-                return Status.PASS;
-
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
-            for (Mask mask : masks)
                 try {
-                    if (limitObjectSize && new PolygonRoi(mask.getContour(), PolygonRoi.FREEROI)
-                            .getStatistics().area > maxObjectArea) {
-                        continue;
-                    }
-
-                    outputObject.addPointsFromPolygon(mask.getContour(), 0);
-                } catch (PointOutOfRangeException e) {
+                    samJ.setImage(img);
+                } catch (IOException | RuntimeException | InterruptedException e) {
+                    MIA.log.writeError(e);
+                    return Status.FAIL;
                 }
 
-            // Checking this object has volume. If not, removing it
-            if (outputObject.size() == 0)
-                outputObjects.remove(outputObject.getID());
+                for (Obj inputObject : inputObjectsBySlice.get(z)) {
+                    List<Mask> masks = null;
+                    switch (inputObjectMode) {
+                        case InputObjectsModes.BOUNDING_BOX:
+                            masks = getPolygonsFromObjectBoundingBox(inputObject, samJ);
+                            break;
 
-            writeProgressStatus(++count, total, "objects");
+                        case InputObjectsModes.CENTROIDS:
+                            masks = getPolygonsFromObjectCentroid(inputObject, samJ);
+                            break;
+                    }
 
+                    if (masks == null)
+                        return Status.PASS;
+
+                    Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                    for (Mask mask : masks)
+                        try {
+                            if (limitObjectSize && new PolygonRoi(mask.getContour(), PolygonRoi.FREEROI)
+                                    .getStatistics().area > maxObjectArea) {
+                                continue;
+                            }
+
+                            outputObject.addPointsFromPolygon(mask.getContour(), z);
+                            outputObject.setT(t);
+                        } catch (PointOutOfRangeException e) {
+                        }
+
+                    // Checking this object has volume. If not, removing it
+                    if (outputObject.size() == 0)
+                        outputObjects.remove(outputObject.getID());
+
+                    writeProgressStatus(++count, total, "objects");
+
+                }
+            }
         }
 
         samJ.close();
