@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objects.detect;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -12,11 +13,13 @@ import org.scijava.plugin.Plugin;
 
 import ai.nets.samj.annotation.Mask;
 import ai.nets.samj.install.EfficientSamEnvManager;
+import ai.nets.samj.install.EfficientViTSamEnvManager;
+import ai.nets.samj.install.Sam2EnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
-import ij.ImagePlus;
 import ij.gui.PolygonRoi;
+import io.bioimage.modelrunner.apposed.appose.Mamba;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.AvailableModules;
@@ -48,6 +51,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.SAMJConsumer;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
 import net.imglib2.img.Img;
@@ -178,30 +182,47 @@ public class ApplySegmentAnything extends Module {
         AbstractSamJ loadedSamJ = null;
         try {
             if (envManager == null || !environmentPath.equals(prevEnvironmentPath)) {
-                long t1 = System.nanoTime();
-                envManager = EfficientSamEnvManager.create(environmentPath);
-                long t2 = System.nanoTime();
-                if (!envManager.checkEverythingInstalled())
-                    if (installIfMissing) {
-                        writeStatus("Installing SAM model");
-                        MIA.log.writeDebug("Installing SAM model to " + environmentPath);
-                        envManager.installEverything();
-                    } else {
-                        MIA.log.writeWarning("Model not available.  Please install manually or enable \""
-                                + INSTALL_IF_MISSING + "\" parameter.");
-                    }
-                long t3 = System.nanoTime();
-                MIA.log.writeDebug("Initialise manager: " + (t2 - t1) / 1E9 + " s");
-                MIA.log.writeDebug("Check installation: " + (t3 - t2) / 1E9 + " s");
+                SAMJConsumer samjConsumer = new SAMJConsumer();
+                
+                envManager = EfficientSamEnvManager.create(environmentPath,samjConsumer);
+
+                // Mamba installation via SAMJ throws an error (Consumer appears to be null when
+                // Mamba calls it), so doing this part manually
+                Mamba mamba = new Mamba(environmentPath);                
+                if (!mamba.checkMambaInstalled()) {
+                    writeStatus("Installing Mamba");
+                    new File(environmentPath).mkdirs();
+                    mamba.setConsoleOutputConsumer(samjConsumer);
+                    mamba.setErrorOutputConsumer(samjConsumer);
+                    mamba.installMicromamba();
+                }
+
+                if (!envManager.checkSAMDepsInstalled()) {
+                    writeStatus("Installing SAM dependencies");
+                    MIA.log.writeDebug("Installing SAM dependencies to " + environmentPath);
+                    envManager.installSAMDeps();
+                }
+
+                if (!envManager.checkModelWeightsInstalled()) {
+                    writeStatus("Installing SAM model");
+                    MIA.log.writeDebug("Installing SAM model weights to " + environmentPath);
+                    envManager.installModelWeigths();
+                }
+
+                // if (!envManager.checkMambaInstalled())
+                // if (installIfMissing) {
+                // writeStatus("Installing SAM model");
+                // MIA.log.writeDebug("Installing SAM model to " + environmentPath);
+                // envManager.installEverything();
+                // } else {
+                // MIA.log.writeWarning("Model not available. Please install manually or enable
+                // \""
+                // + INSTALL_IF_MISSING + "\" parameter.");
+                // }
                 prevEnvironmentPath = environmentPath;
             }
 
-            long t4 = System.nanoTime();
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
-
-            long t5 = System.nanoTime();
-
-            MIA.log.writeDebug("Initialise SAM: " + (t5 - t4) / 1E9 + " s");
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {
