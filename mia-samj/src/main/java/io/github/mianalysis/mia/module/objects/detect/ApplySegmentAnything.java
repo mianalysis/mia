@@ -18,6 +18,7 @@ import ai.nets.samj.install.Sam2EnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
+import ij.IJ;
 import ij.gui.PolygonRoi;
 import io.bioimage.modelrunner.apposed.appose.Mamba;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
@@ -52,6 +53,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.SAMJConsumer;
+import io.github.mianalysis.mia.process.SAMJUtils;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
 import net.imglib2.img.Img;
@@ -182,35 +184,8 @@ public class ApplySegmentAnything extends Module {
         AbstractSamJ loadedSamJ = null;
         try {
             if (envManager == null || !environmentPath.equals(prevEnvironmentPath)) {
-                SAMJConsumer samjConsumer = new SAMJConsumer();
-                
-                envManager = EfficientSamEnvManager.create(environmentPath,samjConsumer);
-
-                // Mamba installation via SAMJ throws an error (Consumer appears to be null when
-                // Mamba calls it), so doing this part manually
-                Mamba mamba = new Mamba(environmentPath);                
-                if (!mamba.checkMambaInstalled()) {
-                    writeStatus("Installing Mamba");
-                    new File(environmentPath).mkdirs();
-                    mamba.setConsoleOutputConsumer(samjConsumer);
-                    mamba.setErrorOutputConsumer(samjConsumer);
-                    mamba.installMicromamba();
-                }
-
-                if (!envManager.checkSAMDepsInstalled()) {
-                    writeStatus("Installing SAM dependencies");
-                    MIA.log.writeDebug("Installing SAM dependencies to " + environmentPath);
-                    envManager.installSAMDeps();
-                }
-
-                if (!envManager.checkModelWeightsInstalled()) {
-                    writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model weights to " + environmentPath);
-                    envManager.installModelWeigths();
-                }
-
+                envManager = SAMJUtils.installSAMJ(environmentPath);
                 prevEnvironmentPath = environmentPath;
-                
             }
 
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
@@ -280,7 +255,7 @@ public class ApplySegmentAnything extends Module {
 
         switch (envionmentPathMode) {
             case EnvironmentPathModes.DEFAULT:
-                environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+                environmentPath = SAMJUtils.getDefaultEnvironmentPath();
                 break;
         }
 

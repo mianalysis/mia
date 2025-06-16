@@ -32,6 +32,7 @@ import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
@@ -51,6 +52,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.SAMJConsumer;
+import io.github.mianalysis.mia.process.SAMJUtils;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
@@ -120,33 +122,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
 
         AbstractSamJ loadedSamJ = null;
         try {
-            SAMJConsumer samjConsumer = new SAMJConsumer();
-
-            SamEnvManagerAbstract envManager = EfficientSamEnvManager.create(environmentPath, samjConsumer);
-
-            // Mamba installation via SAMJ throws an error (Consumer appears to be null when
-            // Mamba calls it), so doing this part manually
-            Mamba mamba = new Mamba(environmentPath);
-            if (!mamba.checkMambaInstalled()) {
-                MIA.log.writeStatus("Installing Mamba");
-                new File(environmentPath).mkdirs();
-                mamba.setConsoleOutputConsumer(samjConsumer);
-                mamba.setErrorOutputConsumer(samjConsumer);
-                mamba.installMicromamba();
-            }
-
-            if (!envManager.checkSAMDepsInstalled()) {
-                MIA.log.writeStatus("Installing SAM dependencies");
-                MIA.log.writeDebug("Installing SAM dependencies to " + environmentPath);
-                envManager.installSAMDeps();
-            }
-
-            if (!envManager.checkModelWeightsInstalled()) {
-                MIA.log.writeStatus("Installing SAM model");
-                MIA.log.writeDebug("Installing SAM model weights to " + environmentPath);
-                envManager.installModelWeigths();
-            }
-
+            SamEnvManagerAbstract envManager = SAMJUtils.installSAMJ(environmentPath);
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
@@ -175,7 +151,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
 
         switch (envionmentPathMode) {
             case EnvironmentPathModes.DEFAULT:
-                environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+                environmentPath = SAMJUtils.getDefaultEnvironmentPath();
                 break;
         }
 
