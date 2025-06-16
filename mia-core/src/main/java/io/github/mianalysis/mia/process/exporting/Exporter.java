@@ -42,10 +42,11 @@ import org.w3c.dom.Document;
 
 import com.drew.lang.annotations.Nullable;
 
+import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
@@ -96,6 +97,7 @@ public class Exporter {
     // PUBLIC METHODS
 
     public void exportResults(Workspaces workspaces, Modules modules, String exportFilePath) throws IOException {
+        
         switch (exportMode) {
             case ALL_TOGETHER:
                 export(workspaces, modules, exportFilePath);
@@ -238,6 +240,14 @@ public class Exporter {
         row = sheet.createRow(rowIdx++);
         row.createCell(0).setCellValue("OS VERSION");
         row.createCell(1).setCellValue(SystemUtils.OS_VERSION);
+
+        row = sheet.createRow(rowIdx++);
+        row.createCell(0).setCellValue("AVAILABLE MEMORY (MB)");
+        row.createCell(1).setCellValue(IJ.maxMemory() / 1048576);
+
+        row = sheet.createRow(rowIdx++);
+        row.createCell(0).setCellValue("USED MEMORY (MB)");
+        row.createCell(1).setCellValue(IJ.currentMemory() / 1048576);
 
         row = sheet.createRow(rowIdx);
         row.createCell(0).setCellValue("DATE AND TIME COMPLETED");
@@ -820,7 +830,7 @@ public class Exporter {
             String objectName = availableObject.getObjectsName();
 
             // Check if this object has any associated measurements; if not, skip it
-            if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportMetadata(objectName))
+            if (!modules.objectsExportMeasurements(objectName) & !modules.objectsExportMetadata(objectName))
                 continue;
 
             // Creating relevant sheet prefixed with "OBJ"
@@ -912,7 +922,7 @@ public class Exporter {
             for (String objectName : workspace.getObjects().keySet()) {
                 Objs objects = workspace.getObjects(objectName);
 
-                if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportMetadata(objectName))
+                if (!modules.objectsExportMeasurements(objectName) & !modules.objectsExportMetadata(objectName))
                     continue;
 
                 if (objects.values().iterator().hasNext()) {

@@ -864,29 +864,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Checking if spatial units match those selected in InputControl
         String currUnit = cal.getUnit().toLowerCase();
-        Unit<Length> currUnitOME = null;
+        Unit<Length> currUnitOME = SpatialUnit.getOMEUnit(currUnit);
         Unit<Length> targetUnitOME = SpatialUnit.getOMEUnit();
-
-        if (currUnit.matches("um") || currUnit.matches("μm") || currUnit.contains("micron")
-                || currUnit.contains("micrometer") || currUnit.contains("micrometre")) {
-            currUnitOME = UNITS.MICROMETER;
-
-        } else if (currUnit.matches("mm") || currUnit.contains("millimeter") || currUnit.contains("millimetre")) {
-            currUnitOME = UNITS.MILLIMETER;
-
-        } else if (currUnit.matches("cm") || currUnit.contains("centimeter") || currUnit.contains("centimetre")) {
-            currUnitOME = UNITS.CENTIMETER;
-
-        } else if (currUnit.matches("nm") || currUnit.contains("nanometer") || currUnit.contains("nanometre")) {
-            currUnitOME = UNITS.NANOMETER;
-
-        } else if (currUnit.matches("A") || currUnit.matches("Å") || currUnit.contains("angstrom")) {
-            currUnitOME = UNITS.ANGSTROM;
-
-        } else if (currUnit.matches("m") || currUnit.contains("meter") || currUnit.contains("metre")) {
-            // THIS ONE HAS TO BE THE LAST ONE AS IT WILL PROBABLY MATCH
-            currUnitOME = UNITS.METER;
-        }
 
         if (currUnitOME == null) {
             if (path == null) {
@@ -911,28 +890,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Checking if spatial units match those selected in InputControl
         String currUnit = cal.getTimeUnit().toLowerCase();
-        Unit<Time> currUnitOME = null;
+        Unit<Time> currUnitOME = TemporalUnit.getOMEUnit(currUnit);
         Unit<Time> targetUnitOME = TemporalUnit.getOMEUnit();
-
-        if (currUnit.matches("ns") || currUnit.contains("nanosecond")) {
-            currUnitOME = UNITS.NANOSECOND;
-
-        } else if (currUnit.matches("ms") || currUnit.contains("millisecond")) {
-            currUnitOME = UNITS.MILLISECOND;
-
-        } else if (currUnit.matches("m") || currUnit.contains("min") || currUnit.contains("minute")) {
-            currUnitOME = UNITS.MINUTE;
-
-        } else if (currUnit.matches("h") || currUnit.contains("hour")) {
-            currUnitOME = UNITS.HOUR;
-
-        } else if (currUnit.matches("d") || currUnit.matches("day")) {
-            currUnitOME = UNITS.DAY;
-
-        } else if (currUnit.matches("s") || currUnit.contains("sec") || currUnit.contains("second")) {
-            // THIS ONE HAS TO BE THE LAST ONE AS IT WILL PROBABLY MATCH
-            currUnitOME = UNITS.SECOND;
-        }
 
         if (currUnitOME == null && ipl.getNFrames() != 1) {
             if (path == null) {
