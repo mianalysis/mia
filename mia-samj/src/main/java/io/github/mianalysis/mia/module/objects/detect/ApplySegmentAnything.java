@@ -209,17 +209,8 @@ public class ApplySegmentAnything extends Module {
                     envManager.installModelWeigths();
                 }
 
-                // if (!envManager.checkMambaInstalled())
-                // if (installIfMissing) {
-                // writeStatus("Installing SAM model");
-                // MIA.log.writeDebug("Installing SAM model to " + environmentPath);
-                // envManager.installEverything();
-                // } else {
-                // MIA.log.writeWarning("Model not available. Please install manually or enable
-                // \""
-                // + INSTALL_IF_MISSING + "\" parameter.");
-                // }
                 prevEnvironmentPath = environmentPath;
+                
             }
 
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
