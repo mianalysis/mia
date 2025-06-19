@@ -1,36 +1,46 @@
 package io.github.mianalysis.mia.module.images.transform.registration;
 
+import java.awt.Point;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Stack;
 import java.util.Vector;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import bunwarpj.Transformation;
+import bunwarpj.bUnwarpJ_;
 import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
 import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
+import ij.ImagePlus;
+import ij.gui.PointRoi;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
+import io.github.mianalysis.mia.module.images.transform.registration.AffineCentroids.CentroidParam;
+import io.github.mianalysis.mia.module.images.transform.registration.UnwarpAutomatic.AutomaticBUnwarpJParam;
+import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
-import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.AffineModel2D;
-import mpicbg.models.NotEnoughDataPointsException;
-import mpicbg.models.Point;
+import io.github.mianalysis.mia.thirdparty.bUnwarpJ_Mod;
 import mpicbg.models.PointMatch;
 
 /**
- * Apply slice-by-slice (2D) affine-based image registration to a
+ * Apply slice-by-slice (2D) B-spline unwarping-based image registration to a
  * multi-dimensional stack. Images can be aligned relative to the first frame in
  * the stack, the previous frame or a separate image in the workspace. The
  * registration transform can also be calculated from a separate stack to the
@@ -39,12 +49,13 @@ import mpicbg.models.PointMatch;
  * in Z) can be "linked" (all frames given the same registration) or
  * "independent" (each stack registered separately).<br>
  * <br>
- * This module uses centroids of previously-detected objects as the reference
- * points for image alignment
+ * This module uses the <a href="https://imagej.net/BUnwarpJ">BUnwarpJ</a>
+ * plugin to calculate and apply the necessary 2D transforms. Detailed
+ * information about how the BUnwarpJ process works can be found at
+ * <a href="https://imagej.net/BUnwarpJ">https://imagej.net/BUnwarpJ</a>.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class AffineCentroids extends AbstractAffineRegistration {
-
+public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
     /**
     * 
     */
@@ -70,25 +81,25 @@ public class AffineCentroids extends AbstractAffineRegistration {
      */
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public AffineCentroids(Modules modules) {
-        super("Affine (object centroids)", modules);
+    public UnwarpCentroids(Modules modules) {
+        super("Unwarp (centroids)", modules);
     }
 
     @Override
     public String getVersionNumber() {
-        return "1.0.1";
+        return "1.0.0";
     }
 
     @Override
     public String getDescription() {
-        return "Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
+        return "Apply slice-by-slice (2D) B-spline unwarping-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
 
-                + "<br><br>This module uses centroids of previously-detected objects as the reference points for image alignment";
+                + "<br><br>This module uses the <a href=\"https://imagej.net/BUnwarpJ\">BUnwarpJ</a> plugin to calculate and apply the necessary 2D transforms.  Detailed information about how the BUnwarpJ process works can be found at <a href=\"https://imagej.net/BUnwarpJ\">https://imagej.net/BUnwarpJ</a>.";
     }
 
     @Override
-    public CentroidParam createParameterSet() {
-        return new CentroidParam();
+    public CentroidBUnwarpJParam createParameterSet() {
+        return new CentroidBUnwarpJParam();
     }
 
     @Override
@@ -96,7 +107,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
         super.getParameters(param, workspace);
 
         // Setting up the parameters
-        CentroidParam centroidParam = (CentroidParam) param;
+        CentroidBUnwarpJParam centroidParam = (CentroidBUnwarpJParam) param;
         centroidParam.centroidObjects = (Objs) workspace.getObjects(parameters.getValue(INPUT_OBJECTS, workspace));
         centroidParam.maxSeparation = (float) (double) parameters.getValue(MAXIMUM_SEPARATION, workspace);
         centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON, workspace);
@@ -108,8 +119,9 @@ public class AffineCentroids extends AbstractAffineRegistration {
     }
 
     @Override
-    protected Object[] fitModel(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
-        CentroidParam p = (CentroidParam) param;
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+            boolean showDetectedPoints) {
+        CentroidBUnwarpJParam p = (CentroidBUnwarpJParam) param;
 
         String referenceMode = p.referenceMode;
         int numPrevFrames = p.numPrevFrames;
@@ -154,35 +166,43 @@ public class AffineCentroids extends AbstractAffineRegistration {
             return null;
         Map<Integer, Integer> assignment = linker.getResult();
 
-        Vector<PointMatch> candidates = new Vector<>();
+        Stack<Point> points1 = new Stack<>();
+        Stack<Point> points2 = new Stack<>();
         for (int ID1 : assignment.keySet()) {
             int ID2 = assignment.get(ID1);
-            Point point1 = new Point(
-                    new double[] { candidates1.get(ID1).getXMean(true), candidates1.get(ID1).getYMean(true) });
-            Point point2 = new Point(
-                    new double[] { candidates2.get(ID2).getXMean(true), candidates2.get(ID2).getYMean(true) });
-            candidates.add(new PointMatch(point2, point1));
+
+            // The following two are correct being this way round
+            points1.push(
+                    new Point((int) candidates2.get(ID2).getXMean(true), (int) candidates2.get(ID2).getYMean(true)));
+            points2.push(
+                    new Point((int) candidates1.get(ID1).getXMean(true), (int) candidates1.get(ID1).getYMean(true)));
+
         }
 
-        ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
-        AbstractAffineModel2D model = getModel(p.transformationMode);
+        ArrayList<Stack<Point>> points = new ArrayList<Stack<Point>>();
+        points.add(points1);
+        points.add(points2);
+
+        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(warpedIpr, referenceIpr, points.get(0),
+                points.get(1), p.bParam);
 
         try {
-            model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
-        } catch (NotEnoughDataPointsException e) {
-            if (candidates.size() == 1) {
-                MIA.log.writeWarning("Single pair detected, enforcing translation model");
-                double dx = candidates.get(0).getP2().getL()[0] - candidates.get(0).getP1().getL()[0];
-                double dy = candidates.get(0).getP2().getL()[1] - candidates.get(0).getP1().getL()[1];
-                model = new AffineModel2D();
-                ((AffineModel2D) model).set(1d, 0d, 0d, 1d, dx, dy);
-            } else {
-                return null;
-            }
+            File tempFile = File.createTempFile("unwarp", ".tmp");
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
+            bufferedWriter.close();
+
+            String tempPath = tempFile.getAbsolutePath();
+            transformation.saveDirectTransformation(tempPath);
+
+            BUnwarpJTransform transform = new BUnwarpJTransform();
+            transform.transformPath = tempPath;
+
+            return transform;
+
+        } catch (IOException e) {
+            MIA.log.writeError(e);
+            return null;
         }
-
-        return new Object[] { model, candidates };
-
     }
 
     @Override
@@ -211,6 +231,9 @@ public class AffineCentroids extends AbstractAffineRegistration {
         returnedParameters.add(parameters.getParameter(MAX_EPSILON));
         returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
 
+        // This approach can't show any points
+        returnedParameters.remove(SHOW_DETECTED_POINTS);
+
         return returnedParameters;
 
     }
@@ -234,10 +257,9 @@ public class AffineCentroids extends AbstractAffineRegistration {
         parameters.get(MIN_INLIER_RATIO).setDescription(
                 "\"The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.\".  "
                         + siteRef);
-
     }
 
-    public class CentroidParam extends AffineParam {
+    public class CentroidBUnwarpJParam extends BUnwarpJParam {
         // Fitting parameters
         float maxSeparation = 100f;
         float maxEpsilon = 25.0f;

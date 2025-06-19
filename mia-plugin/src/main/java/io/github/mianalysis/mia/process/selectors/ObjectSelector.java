@@ -57,6 +57,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -1213,12 +1214,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
         listModel.addElement(objRoi);
-
-        // Ensuring the scrollbar is visible if necessary and moving to the bottom
-        JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
-        scrollBar.setValue(scrollBar.getMaximum() - 1);
-        objectsScrollPane.revalidate();
-
+        list.setSelectedIndex(listModel.size()-1);
+        SwingUtilities.invokeLater(() -> list.ensureIndexIsVisible(listModel.size()-1));
     }
 
     public void updateOverlay() {
@@ -1352,9 +1349,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             overlay.add(text);
 
         }
-
-        displayIpl.updateAndDraw();
-
     }
 
     void displayObjects(List<ObjRoi> objRois) {
@@ -1644,6 +1638,21 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            int x = displayIpl.getCanvas().offScreenX(e.getX());
+            int y = displayIpl.getCanvas().offScreenY(e.getY());
+            int z = displayIpl.getZ()-1;
+            int t = displayIpl.getT()-1;
+
+            for (int idx=0;idx<listModel.size();idx++) {
+                ObjRoi roi = listModel.getElementAt(idx);
+                if (roi.getZ() == z && roi.getT() == t && roi.getRoi().contains(x, y)) {
+                    list.setSelectedIndex(idx);
+                    list.ensureIndexIsVisible(idx);
+                    return;
+                }
+            }
+        }
     }
 
     @Override

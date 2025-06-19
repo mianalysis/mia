@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -31,9 +32,11 @@ import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import io.bioimage.modelrunner.apposed.appose.Mamba;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
@@ -48,6 +51,8 @@ import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.SAMJConsumer;
+import io.github.mianalysis.mia.process.SAMJUtils;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
@@ -56,7 +61,7 @@ import net.imagej.patcher.LegacyInjector;
 public class SAMJExtension implements ManualExtension, MouseListener {
     private Parameters parameters = new Parameters();
     private Module module;
-    
+
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
     public static final String USE_SAM = "Enable Segment Anything";
     public static final String ENVIRONMENT_PATH_MODE = "Environment path mode";
@@ -112,24 +117,13 @@ public class SAMJExtension implements ManualExtension, MouseListener {
     }
 
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
-        AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 3000;
+        AbstractSamJ.MAX_ENCODED_AREA_RS = 10000;
+        AbstractSamJ.MAX_ENCODED_SIDE = AbstractSamJ.MAX_ENCODED_AREA_RS * 3;
 
         AbstractSamJ loadedSamJ = null;
         try {
-            SamEnvManagerAbstract manager = EfficientSamEnvManager.create(environmentPath);
-
-            if (!manager.checkEverythingInstalled())
-                if (installIfMissing) {
-                    module.writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model to " + environmentPath);
-                    manager.installEverything();
-                } else {
-                    MIA.log.writeWarning("Model not available.  Please install manually or enable \""
-                            + INSTALL_IF_MISSING + "\" parameter.");
-                }
-
-            loadedSamJ = EfficientSamJ.initializeSam(manager);
+            SamEnvManagerAbstract envManager = SAMJUtils.installSAMJ(environmentPath);
+            loadedSamJ = EfficientSamJ.initializeSam(envManager);
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {
@@ -157,7 +151,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
 
         switch (envionmentPathMode) {
             case EnvironmentPathModes.DEFAULT:
-                environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+                environmentPath = SAMJUtils.getDefaultEnvironmentPath();
                 break;
         }
 
@@ -205,7 +199,8 @@ public class SAMJExtension implements ManualExtension, MouseListener {
                 preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
 
                 // Creating a dummy workspace so we don't alter the real one
-                Workspace dummyWorkspace = new Workspaces().getNewWorkspace(nextWorkspace.getMetadata().getFile(), nextWorkspace.getMetadata().getSeriesNumber());
+                Workspace dummyWorkspace = new Workspaces().getNewWorkspace(nextWorkspace.getMetadata().getFile(),
+                        nextWorkspace.getMetadata().getSeriesNumber());
                 String finalEnvironmentPath = environmentPath;
                 Thread t = new Thread(() -> {
                     // Running modules up to this point

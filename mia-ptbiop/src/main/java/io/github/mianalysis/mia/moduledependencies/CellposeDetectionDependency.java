@@ -12,7 +12,7 @@ public class CellposeDetectionDependency extends Dependency {
 
     @Override
     public String getClassName() {
-        return "ch.epfl.biop.wrappers.cellpose.ij2commands.Cellpose_SegmentImgPlusOwnModelAdvanced";
+        return "ch.epfl.biop.wrappers.cellpose.ij2commands.Cellpose";
     }
 
     @Override
@@ -22,7 +22,7 @@ public class CellposeDetectionDependency extends Dependency {
 
     @Override
     public String getVersionThreshold() {
-        return "0.0.0";
+        return "0.11.3";
     }
 
     @Override

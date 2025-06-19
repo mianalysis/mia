@@ -4,13 +4,33 @@ import java.io.File;
 
 import ij.ImagePlus;
 
-public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
+public class CellposeWrapper extends Cellpose {
+    protected double cellProbThreshold = 0;
+    protected double flowThreshold = 0.4;
+    protected double stitchThreshold = 0;
+    protected double anisotropy = 1;
+    protected boolean useGPU = true;
+    protected boolean do3D = false;
+    protected String additionalFlags = "";
+    
+    public CellposeWrapper() {
+        this.additional_flags = "";
+    }
+
     public ImagePlus getLabels() {
         return this.cellpose_imp;
     }
 
     public void setImagePlus(ImagePlus ipl) {
         this.imp = ipl;
+    }
+
+    public void setEnvPath(File envPath) {
+        this.env_path = envPath;
+    }
+
+    public void setEnvType(String envType) {
+        this.env_type = envType;
     }
 
     public void setModel(String model) {
@@ -21,51 +41,52 @@ public class CellposeWrapper extends Cellpose_SegmentImgPlusOwnModelAdvanced{
         this.model_path = modelPath;
     }
 
-    public void setNucleiChannel(int nucleiChannel) {
-        this.nuclei_channel = nucleiChannel;
+    public void setUseGPU(boolean useGPU) {
+        this.useGPU = useGPU;
     }
 
-    public void setCytoChannel(int cytoChannel) {
-        this.cyto_channel = cytoChannel;
+    public void setDo3D(boolean do3D) {
+        this.do3D = do3D;
     }
 
-    public void setDimensionMode(String dimensionMode) {
-        this.dimensionMode = dimensionMode;
-    }
-
-    public void setDiameter(int diameter) {
-        this.diameter = diameter;
-    }
-
-    public void setCellProbabilityThreshold(double cellProbabilityThreshold) {
-        this.cellproba_threshold = cellProbabilityThreshold;
+    public void setDiameter(double diameter) {
+        this.diameter = (float) diameter;
     }
 
     public void setFlowThreshold(double flowThreshold) {
-        this.flow_threshold = flowThreshold;
+        this.flowThreshold = flowThreshold;
+
+    }
+
+    public void setCellProbabilityThreshold(double cellProbThreshold) {
+        this.cellProbThreshold = cellProbThreshold;
+    }
+
+    public void setStitchThreshold(double stitchThreshold) {
+        this.stitchThreshold = stitchThreshold;
     }
 
     public void setAnisotropy(double anisotropy) {
         this.anisotropy = anisotropy;
     }
 
-    public void setDiameterThreshold(double diameterThreshold) {
-        this.diam_threshold = diameterThreshold;
-    }
-
-    public void setStitchThreshold(double stitchThreshold) {
-        this.stitch_threshold = stitchThreshold;
-    }
-
-    public void setUseOmni(boolean useOmni) {
-        this.omni = useOmni;
-    }
-    
-    public void setUseClustering(boolean useClustering) {
-        this.cluster = useClustering;
-    }
-
     public void setAdditionalFlags(String additionalFlags) {
-        this.additional_flags = additionalFlags;
+        this.additionalFlags = additionalFlags;
+    }
+
+    public void compileAdditionalFlags() {
+        this.additional_flags = this.additional_flags + " --cellprob_threshold, " + cellProbThreshold+",";
+        this.additional_flags = this.additional_flags + " --flow_threshold, " + flowThreshold+",";
+        this.additional_flags = this.additional_flags + " --stitch_threshold, " + stitchThreshold+",";
+        this.additional_flags = this.additional_flags + " --anisotropy, " + anisotropy+",";
+
+        if (do3D)
+            this.additional_flags = this.additional_flags + " --do_3D,";
+
+        if (useGPU)
+            this.additional_flags = this.additional_flags + " --use_gpu,";
+
+        this.additional_flags = this.additional_flags + additionalFlags;
+
     }
 }

@@ -104,9 +104,9 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
         elastixRegister.fast_affine = p.fastAffine;
         elastixRegister.rigid = p.rigid;
         elastixRegister.spline = p.spline;
-        elastixRegister.splineGridSpacing = p.splineGridSpacing;
-        elastixRegister.fixedImage = new ImagePlus("Fixed", referenceIpr);
-        elastixRegister.movingImage = new ImagePlus("Moving", warpedIpr);
+        elastixRegister.spline_grid_spacing = p.splineGridSpacing;
+        elastixRegister.fixed_image = new ImagePlus("Fixed", referenceIpr);
+        elastixRegister.moving_image = new ImagePlus("Moving", warpedIpr);
         elastixRegister.nThreads = p.enableMultiThreading ? Prefs.getThreads() : 1;
 
         elastixRegister.run();
