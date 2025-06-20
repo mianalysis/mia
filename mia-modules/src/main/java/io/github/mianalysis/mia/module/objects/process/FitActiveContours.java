@@ -50,100 +50,148 @@ import io.github.mianalysis.mia.process.imagej.IntensityMinMax;
  */
 
 /**
-* Uses active contours to fit a 2D concave hull to specified objects.  The 2D perimeter of each input object is converted to a closed contour, the position of which is optimised in order to minimise various internal (contour) and external (image) energies.  Internal energies are elasticity and bending of the contour, which aim to minimise point-point separation and adjacent segment alignment, respectively.  External energies are provided by the image intensity along the path and are minimised when the contour sits in dark areas of the image.  Energies are iteratively optimised using a greedy algorithm which tests each point along the contour at all points within a specified search radius, taking the lowest energy point as the new location.  For more information on active contours, see Kass, M.; Witkin, A.; Terzopoulos, D., "Snakes: Active contour models",  <i>International Journal of Computer Vision</i>, 1988, <b>1</b>, 321.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Uses active contours to fit a 2D concave hull to specified objects. The 2D
+ * perimeter of each input object is converted to a closed contour, the position
+ * of which is optimised in order to minimise various internal (contour) and
+ * external (image) energies. Internal energies are elasticity and bending of
+ * the contour, which aim to minimise point-point separation and adjacent
+ * segment alignment, respectively. External energies are provided by the image
+ * intensity along the path and are minimised when the contour sits in dark
+ * areas of the image. Energies are iteratively optimised using a greedy
+ * algorithm which tests each point along the contour at all points within a
+ * specified search radius, taking the lowest energy point as the new location.
+ * For more information on active contours, see Kass, M.; Witkin, A.;
+ * Terzopoulos, D., "Snakes: Active contour models", <i>International Journal of
+ * Computer Vision</i>, 1988, <b>1</b>, 321.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitActiveContours extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String IMAGE_SEPARATOR = "Image input";
 
-	/**
-	* Image from the workspace to which the contours will be fit.  The intensity of this image will contribute to the external forces applied to the contour.  For example, the contour will attempt to minimise the intensity along the path of the contour.
-	*/
+    /**
+     * Image from the workspace to which the contours will be fit. The intensity of
+     * this image will contribute to the external forces applied to the contour. For
+     * example, the contour will attempt to minimise the intensity along the path of
+     * the contour.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OBJECTS_SEPARATOR = "Objects input/output";
 
-	/**
-	* Objects from the workspace to which active contours will be fit.  Active contours are fit in 2D to the object points from the first slice.  As such, input objects can be stored in 3D space, but only a single slice will be fit.
-	*/
+    /**
+     * Objects from the workspace to which active contours will be fit. Active
+     * contours are fit in 2D to the object points from the first slice. As such,
+     * input objects can be stored in 3D space, but only a single slice will be fit.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* When selected, the input objects will have their coordinates replaced with the coordinates from the fit contour.  Applied coordinates will be solid within the boundary of the associated contour.
-	*/
+    /**
+     * When selected, the input objects will have their coordinates replaced with
+     * the coordinates from the fit contour. Applied coordinates will be solid
+     * within the boundary of the associated contour.
+     */
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
 
-	/**
-	* If "Update input objects" is not selected, this is the name with which the output contour objects will be stored in the workspace.
-	*/
+    /**
+     * If "Update input objects" is not selected, this is the name with which the
+     * output contour objects will be stored in the workspace.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String ENERGY_SEPARATOR = "Energy terms";
 
-	/**
-	* Density of coordinates along the perimeter of the input object that will be used as control points in the contour.  Density is specified as a decimal in the range 0-1, where densities approaching 0 have fewer points and a density of 1 includes all points on the object perimeter.
-	*/
+    /**
+     * Density of coordinates along the perimeter of the input object that will be
+     * used as control points in the contour. Density is specified as a decimal in
+     * the range 0-1, where densities approaching 0 have fewer points and a density
+     * of 1 includes all points on the object perimeter.
+     */
     public static final String NODE_DENSITY = "Node density";
 
-	/**
-	* Weight assigned to the elastic energy of the contour.  The elastic energy grows with increasing separation between adjacent points along the contour.  During optimisation, the contour will attempt to minimise the elastic energy by reducing the separation between adjacent points (i.e. the contour will shrink).  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to shrink more readily.
-	*/
+    /**
+     * Weight assigned to the elastic energy of the contour. The elastic energy
+     * grows with increasing separation between adjacent points along the contour.
+     * During optimisation, the contour will attempt to minimise the elastic energy
+     * by reducing the separation between adjacent points (i.e. the contour will
+     * shrink). The greater the associated weight, the more this term will
+     * contribute to the overall energy of the contour. Larger weights will cause
+     * the contour to shrink more readily.
+     */
     public static final String ELASTIC_ENERGY = "Elastic energy contribution";
 
-	/**
-	* Weight assigned to the bending energy of the contour.  The bending energy grows as the angle between adjacent segments also increases.  During optimisation, the contour will attempt to minimise the bending energy by reducing small bends in the contour.  The lowest bending energy state for a contour is a perfect circle.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to become smoother.
-	*/
+    /**
+     * Weight assigned to the bending energy of the contour. The bending energy
+     * grows as the angle between adjacent segments also increases. During
+     * optimisation, the contour will attempt to minimise the bending energy by
+     * reducing small bends in the contour. The lowest bending energy state for a
+     * contour is a perfect circle. The greater the associated weight, the more this
+     * term will contribute to the overall energy of the contour. Larger weights
+     * will cause the contour to become smoother.
+     */
     public static final String BENDING_ENERGY = "Bending energy contribution";
 
-	/**
-	* Weight assigned to the external (image) energy of the contour.  The image path energy is equal to the intensity of the pixels along the path.  During optimisation, the contour will attempt to minimise the image path energy by sitting along low intensity lines in the image.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to stick to dark regions more readily, but may also cause it to get stuck on local minima in the image.
-	*/
+    /**
+     * Weight assigned to the external (image) energy of the contour. The image path
+     * energy is equal to the intensity of the pixels along the path. During
+     * optimisation, the contour will attempt to minimise the image path energy by
+     * sitting along low intensity lines in the image. The greater the associated
+     * weight, the more this term will contribute to the overall energy of the
+     * contour. Larger weights will cause the contour to stick to dark regions more
+     * readily, but may also cause it to get stuck on local minima in the image.
+     */
     public static final String IMAGE_PATH_ENERGY = "Image path energy contribution";
 
-	/**
-	* Weight assigned to the balloon energy of the contour.  The balloon energy pushes the contour outwards in at attempt to overcome the elastic energy-induced shrinkage.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to grow outwards faster.
-	*/
+    /**
+     * Weight assigned to the balloon energy of the contour. The balloon energy
+     * pushes the contour outwards in at attempt to overcome the elastic
+     * energy-induced shrinkage. The greater the associated weight, the more this
+     * term will contribute to the overall energy of the contour. Larger weights
+     * will cause the contour to grow outwards faster.
+     */
     public static final String BALLOON_ENERGY = "Balloon energy contribution";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OPTIMISATION_SEPARATOR = "Optimisation controls";
     public static final String SEARCH_RADIUS = "Search radius (px)";
 
-	/**
-	* The maximum number of optimisation iterations that will be completed.  If contour stability has not been reached by this number of iterations, the contour at this point will be exported.
-	*/
+    /**
+     * The maximum number of optimisation iterations that will be completed. If
+     * contour stability has not been reached by this number of iterations, the
+     * contour at this point will be exported.
+     */
     public static final String NUMBER_OF_ITERATIONS = "Maximum number of iterations";
 
-	/**
-	* When selected, optimisation of the contour can be terminated early if successive iterations don't yield sufficient motion (i.e. the contour has reached stability).  The threshold amount of motion is specified by "Motion threshold (px)".  Early termination of optimisation for stable contours will result in a speed increase for this module.
-	*/
+    /**
+     * When selected, optimisation of the contour can be terminated early if
+     * successive iterations don't yield sufficient motion (i.e. the contour has
+     * reached stability). The threshold amount of motion is specified by "Motion
+     * threshold (px)". Early termination of optimisation for stable contours will
+     * result in a speed increase for this module.
+     */
     public static final String USE_MOTION_THRESHOLD = "Use motion threshold";
     public static final String MOTION_THRESHOLD_PX = "Motion threshold (px)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous";
 
-	/**
-	* When selected, the contour evolution will be displayed on the input image in realtime.  This may be useful for optimising weight parameters.
-	*/
+    /**
+     * When selected, the contour evolution will be displayed on the input image in
+     * realtime. This may be useful for optimising weight parameters.
+     */
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
     public FitActiveContours(Modules modules) {
@@ -168,16 +216,16 @@ public class FitActiveContours extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting output image name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         // If there are no input objects, creating an empty collection
@@ -187,17 +235,17 @@ public class FitActiveContours extends Module {
         }
 
         // Getting parameters
-        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS,workspace);
-        double nodeDensity = parameters.getValue(NODE_DENSITY,workspace);
-        double elasticEnergy = parameters.getValue(ELASTIC_ENERGY,workspace);
-        double bendingEnergy = parameters.getValue(BENDING_ENERGY,workspace);
-        double pathEnergy = parameters.getValue(IMAGE_PATH_ENERGY,workspace);
-        double balloonEnergy = parameters.getValue(BALLOON_ENERGY,workspace);
-        int searchRadius = parameters.getValue(SEARCH_RADIUS,workspace);
-        int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS,workspace);
-        boolean useMotionThreshold = parameters.getValue(USE_MOTION_THRESHOLD,workspace);
-        double motionThreshold = parameters.getValue(MOTION_THRESHOLD_PX,workspace);
-        boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME,workspace);
+        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS, workspace);
+        double nodeDensity = parameters.getValue(NODE_DENSITY, workspace);
+        double elasticEnergy = parameters.getValue(ELASTIC_ENERGY, workspace);
+        double bendingEnergy = parameters.getValue(BENDING_ENERGY, workspace);
+        double pathEnergy = parameters.getValue(IMAGE_PATH_ENERGY, workspace);
+        double balloonEnergy = parameters.getValue(BALLOON_ENERGY, workspace);
+        int searchRadius = parameters.getValue(SEARCH_RADIUS, workspace);
+        int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS, workspace);
+        boolean useMotionThreshold = parameters.getValue(USE_MOTION_THRESHOLD, workspace);
+        double motionThreshold = parameters.getValue(MOTION_THRESHOLD_PX, workspace);
+        boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME, workspace);
 
         if (!useMotionThreshold)
             motionThreshold = 0;
@@ -220,7 +268,7 @@ public class FitActiveContours extends Module {
 
             // Getting the z-plane of the current object
             int z = inputObject.getCoordinateSet().iterator().next().getZ();
-            
+
             // Getting the Roi for the current object
             Polygon roi = inputObject.getRoi(z).getPolygon();
             int[] xCoords = roi.xpoints;
@@ -344,7 +392,7 @@ public class FitActiveContours extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(IMAGE_SEPARATOR));
@@ -354,7 +402,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS,workspace))
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(ENERGY_SEPARATOR));
@@ -369,7 +417,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(NUMBER_OF_ITERATIONS));
 
         returnedParameters.add(parameters.getParameter(USE_MOTION_THRESHOLD));
-        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD,workspace))
+        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD, workspace))
             returnedParameters.add(parameters.getParameter(MOTION_THRESHOLD_PX));
 
         returnedParameters.add(parameters.getParameter(MISCELLANEOUS_SEPARATOR));
@@ -381,32 +429,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -415,33 +463,49 @@ return null;
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("Image from the workspace to which the contours will be fit.  The intensity of this image will contribute to the external forces applied to the contour.  For example, the contour will attempt to minimise the intensity along the path of the contour.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from the workspace to which the contours will be fit.  The intensity of this image will contribute to the external forces applied to the contour.  For example, the contour will attempt to minimise the intensity along the path of the contour.");
 
-        parameters.get(INPUT_OBJECTS).setDescription("Objects from the workspace to which active contours will be fit.  Active contours are fit in 2D to the object points from the first slice.  As such, input objects can be stored in 3D space, but only a single slice will be fit.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from the workspace to which active contours will be fit.  Active contours are fit in 2D to the object points from the first slice.  As such, input objects can be stored in 3D space, but only a single slice will be fit.");
 
-        parameters.get(UPDATE_INPUT_OBJECTS).setDescription("When selected, the input objects will have their coordinates replaced with the coordinates from the fit contour.  Applied coordinates will be solid within the boundary of the associated contour.");
+        parameters.get(UPDATE_INPUT_OBJECTS).setDescription(
+                "When selected, the input objects will have their coordinates replaced with the coordinates from the fit contour.  Applied coordinates will be solid within the boundary of the associated contour.");
 
-        parameters.get(OUTPUT_OBJECTS).setDescription("If \""+UPDATE_INPUT_OBJECTS+"\" is not selected, this is the name with which the output contour objects will be stored in the workspace.");
+        parameters.get(OUTPUT_OBJECTS).setDescription("If \"" + UPDATE_INPUT_OBJECTS
+                + "\" is not selected, this is the name with which the output contour objects will be stored in the workspace.");
 
-        parameters.get(ELASTIC_ENERGY).setDescription("Weight assigned to the elastic energy of the contour.  The elastic energy grows with increasing separation between adjacent points along the contour.  During optimisation, the contour will attempt to minimise the elastic energy by reducing the separation between adjacent points (i.e. the contour will shrink).  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to shrink more readily.");
+        parameters.get(ELASTIC_ENERGY).setDescription(
+                "Weight assigned to the elastic energy of the contour.  The elastic energy grows with increasing separation between adjacent points along the contour.  During optimisation, the contour will attempt to minimise the elastic energy by reducing the separation between adjacent points (i.e. the contour will shrink).  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to shrink more readily.");
 
-        parameters.get(BENDING_ENERGY).setDescription("Weight assigned to the bending energy of the contour.  The bending energy grows as the angle between adjacent segments also increases.  During optimisation, the contour will attempt to minimise the bending energy by reducing small bends in the contour.  The lowest bending energy state for a contour is a perfect circle.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to become smoother.");
+        parameters.get(BENDING_ENERGY).setDescription(
+                "Weight assigned to the bending energy of the contour.  The bending energy grows as the angle between adjacent segments also increases.  During optimisation, the contour will attempt to minimise the bending energy by reducing small bends in the contour.  The lowest bending energy state for a contour is a perfect circle.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to become smoother.");
 
-        parameters.get(IMAGE_PATH_ENERGY).setDescription("Weight assigned to the external (image) energy of the contour.  The image path energy is equal to the intensity of the pixels along the path.  During optimisation, the contour will attempt to minimise the image path energy by sitting along low intensity lines in the image.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to stick to dark regions more readily, but may also cause it to get stuck on local minima in the image.");
+        parameters.get(IMAGE_PATH_ENERGY).setDescription(
+                "Weight assigned to the external (image) energy of the contour.  The image path energy is equal to the intensity of the pixels along the path.  During optimisation, the contour will attempt to minimise the image path energy by sitting along low intensity lines in the image.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to stick to dark regions more readily, but may also cause it to get stuck on local minima in the image.");
 
-        parameters.get(BALLOON_ENERGY).setDescription("Weight assigned to the balloon energy of the contour.  The balloon energy pushes the contour outwards in at attempt to overcome the elastic energy-induced shrinkage.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to grow outwards faster.");
+        parameters.get(BALLOON_ENERGY).setDescription(
+                "Weight assigned to the balloon energy of the contour.  The balloon energy pushes the contour outwards in at attempt to overcome the elastic energy-induced shrinkage.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to grow outwards faster.");
 
-        parameters.get(NODE_DENSITY).setDescription("Density of coordinates along the perimeter of the input object that will be used as control points in the contour.  Density is specified as a decimal in the range 0-1, where densities approaching 0 have fewer points and a density of 1 includes all points on the object perimeter.");
+        parameters.get(NODE_DENSITY).setDescription(
+                "Density of coordinates along the perimeter of the input object that will be used as control points in the contour.  Density is specified as a decimal in the range 0-1, where densities approaching 0 have fewer points and a density of 1 includes all points on the object perimeter.");
 
-        parameters.get(SEARCH_RADIUS).setDescription("On each optimisation iteration, each point along the contour will be tested at all local points within this search radius, with the lowest energy point taken as the new location.");
+        parameters.get(SEARCH_RADIUS).setDescription(
+                "On each optimisation iteration, each point along the contour will be tested at all local points within this search radius, with the lowest energy point taken as the new location.");
 
-        parameters.get(NUMBER_OF_ITERATIONS).setDescription("The maximum number of optimisation iterations that will be completed.  If contour stability has not been reached by this number of iterations, the contour at this point will be exported.");
+        parameters.get(NUMBER_OF_ITERATIONS).setDescription(
+                "The maximum number of optimisation iterations that will be completed.  If contour stability has not been reached by this number of iterations, the contour at this point will be exported.");
 
-        parameters.get(USE_MOTION_THRESHOLD).setDescription("When selected, optimisation of the contour can be terminated early if successive iterations don't yield sufficient motion (i.e. the contour has reached stability).  The threshold amount of motion is specified by \""+MOTION_THRESHOLD_PX+"\".  Early termination of optimisation for stable contours will result in a speed increase for this module.");
+        parameters.get(USE_MOTION_THRESHOLD).setDescription(
+                "When selected, optimisation of the contour can be terminated early if successive iterations don't yield sufficient motion (i.e. the contour has reached stability).  The threshold amount of motion is specified by \""
+                        + MOTION_THRESHOLD_PX
+                        + "\".  Early termination of optimisation for stable contours will result in a speed increase for this module.");
 
-        parameters.get(MOTION_THRESHOLD_PX).setDescription("If \""+USE_MOTION_THRESHOLD+"\" is selected, this is the average motion of contour points between successive optimisation iterations below which the contour will be assumed to have reached stability.  If stability is reached the optimisation routine is terminated.");
+        parameters.get(MOTION_THRESHOLD_PX).setDescription("If \"" + USE_MOTION_THRESHOLD
+                + "\" is selected, this is the average motion of contour points between successive optimisation iterations below which the contour will be assumed to have reached stability.  If stability is reached the optimisation routine is terminated.");
 
-        parameters.get(SHOW_CONTOURS_REALTIME).setDescription("When selected, the contour evolution will be displayed on the input image in realtime.  This may be useful for optimising weight parameters.");
+        parameters.get(SHOW_CONTOURS_REALTIME).setDescription(
+                "When selected, the contour evolution will be displayed on the input image in realtime.  This may be useful for optimising weight parameters.");
 
     }
 }
