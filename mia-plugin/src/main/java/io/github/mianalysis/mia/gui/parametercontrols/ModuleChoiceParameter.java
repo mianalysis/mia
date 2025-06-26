@@ -36,8 +36,11 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         Module[] choices = parameter.getModules();
         control = new WiderDropDownCombo(choices);
 
+        for (Module choice:choices)
+            if (choice.getModuleID().equals(parameter.getSelectedModuleID()))
+                control.setSelectedItem(choice);
+
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        control.setSelectedItem(parameter.getSelectedModuleID());
         control.addActionListener(this);
         control.setWide(true);
 

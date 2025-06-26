@@ -112,6 +112,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private JComboBox<String> overlayMode;
     private JPanel colourPanel;
     private JComboBox<String> colourMode;
+    private JPanel slicePanel;
+    private JComboBox<String> sliceMode;
     private JPanel outlinePanel;
     private JTextField outlineWidthField;
     private JCheckBox labelCheck;
@@ -174,6 +176,16 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         String OUTLINES = "Outlines";
 
         String[] ALL = new String[] { NONE, FILL, OUTLINES };
+
+    }
+
+    public interface SliceModes {
+        String CURRENT_ONLY = "Current only";
+        String ALL_FRAMES = "All frames";
+        String ALL_SLICES = "All slices";
+        String ALL_FRAMES_AND_SLICES = "All frames and slices";
+
+        String[] ALL = new String[] { CURRENT_ONLY, ALL_FRAMES, ALL_SLICES, ALL_FRAMES_AND_SLICES };
 
     }
 
@@ -600,6 +612,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
                 displayIpl.setHideOverlay(!showOverlay);
                 Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+                Arrays.stream(slicePanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
 
                 boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
                 Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
@@ -614,6 +627,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 }
             }
         });
+
+        boolean showOverlay = !Prefs.get("MIA.ObjectSelector.OverlayMode", OverlayModes.FILL).equals(OverlayModes.NONE);
 
         overlayPanel.add(new JLabel("Overlay"), c);
         c.gridx++;
@@ -633,7 +648,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             colourMode.setSelectedItem(
                     Prefs.get("MIA.ObjectSelector.ColourModeWithClass", ColourModesWithClass.BY_CLASS));
         }
-        colourMode.setEnabled(true);
         colourMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -648,6 +662,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             }
         });
         colourPanel.add(colourMode);
+        Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
 
         c.gridx++;
         overlayPanel.add(colourPanel, c);
@@ -673,12 +688,30 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         c.gridx++;
         boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
-        Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
+        Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOverlay && showOutlines));
         overlayPanel.add(outlinePanel, c);
+
+        slicePanel = new JPanel();
+        slicePanel.add(new JLabel("Slice mode"));
+        sliceMode = new JComboBox<>(SliceModes.ALL);
+        sliceMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.SliceMode", SliceModes.CURRENT_ONLY));
+        sliceMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Prefs.set("MIA.ObjectSelector.SliceMode", (String) sliceMode.getSelectedItem());
+                Prefs.savePreferences();
+                updateOverlay();
+            }
+        });
+        slicePanel.add(sliceMode);
+        Arrays.stream(slicePanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+
+        c.gridx++;
+        overlayPanel.add(slicePanel, c);
 
         labelCheck = new JCheckBox("Show labels");
         labelCheck.setSelected(Prefs.get("MIA.ObjectSelector.ShowLabels", true));
-        labelCheck.setEnabled(true);
+        labelCheck.setEnabled(showOverlay);
         labelCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -690,17 +723,15 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 updateOverlay();
             }
         });
-        c.gridx++;
+        c.gridx = 3;
+        c.gridy++;
         overlayPanel.add(labelCheck, c);
 
         fontPanel = new JPanel();
         fontPanel.add(new JLabel("Font size"));
-        int defaultSize = (int) Math
-                .round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
+        int defaultSize = (int) Math.round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
         labelFontSizeField = new JTextField(String.valueOf(defaultSize));
-        labelFontSizeField.setEnabled(true);
         labelFontSizeField.addFocusListener(new FocusListener() {
-
             @Override
             public void focusGained(FocusEvent e) {
             }
@@ -712,6 +743,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         });
         fontPanel.add(labelFontSizeField);
+        Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay && labelCheck.isSelected()));
         c.gridx++;
         overlayPanel.add(fontPanel, c);
 
@@ -1214,8 +1246,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
         listModel.addElement(objRoi);
-        list.setSelectedIndex(listModel.size()-1);
-        SwingUtilities.invokeLater(() -> list.ensureIndexIsVisible(listModel.size()-1));
+        list.setSelectedIndex(listModel.size() - 1);
+        SwingUtilities.invokeLater(() -> list.ensureIndexIsVisible(listModel.size() - 1));
     }
 
     public void updateOverlay() {
@@ -1240,10 +1272,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Adding overlay showing ROI and its ID number
         Roi overlayRoi = ObjRoi.duplicateRoi(roi);
-        if (displayIpl.isHyperStack())
-            overlayRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
-        else
-            overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+        setPosition(overlayRoi, objRoi);
 
         // Setting colour
         Color colour = null;
@@ -1337,10 +1366,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             text.setStrokeColor(colour);
 
             // Setting stack location
-            if (displayIpl.isHyperStack())
-                text.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
-            else
-                text.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+            setPosition(text, objRoi);
 
             // Ensuring text is in the centred
             text.setLocation(text.getXBase() - text.getFloatWidth() / 2 + 1,
@@ -1348,6 +1374,39 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             overlay.add(text);
 
+        }
+
+        displayIpl.updateAndDraw();
+
+    }
+
+    void setPosition(Roi overlayRoi, ObjRoi objRoi) {
+        switch ((String) sliceMode.getSelectedItem()) {
+            case SliceModes.CURRENT_ONLY:
+                if (displayIpl.isHyperStack())
+                    overlayRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
+                else
+                    overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+                break;
+            case SliceModes.ALL_FRAMES:
+                if (displayIpl.isHyperStack())
+                    overlayRoi.setPosition(1, objRoi.getZ() + 1, 0);
+                else if (objRoi.getZ() > objRoi.getT())
+                    overlayRoi.setPosition(objRoi.getZ() + 1);
+                else
+                    overlayRoi.setPosition(0);
+                break;
+            case SliceModes.ALL_SLICES:
+                if (displayIpl.isHyperStack())
+                    overlayRoi.setPosition(1, 0, objRoi.getT() + 1);
+                else if (objRoi.getT() > objRoi.getZ())
+                    overlayRoi.setPosition(objRoi.getT() + 1);
+                else
+                    overlayRoi.setPosition(0);
+                break;
+            case SliceModes.ALL_FRAMES_AND_SLICES:
+                overlayRoi.setPosition(0);
+                break;
         }
     }
 
@@ -1641,10 +1700,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         if (e.getClickCount() == 2) {
             int x = displayIpl.getCanvas().offScreenX(e.getX());
             int y = displayIpl.getCanvas().offScreenY(e.getY());
-            int z = displayIpl.getZ()-1;
-            int t = displayIpl.getT()-1;
+            int z = displayIpl.getZ() - 1;
+            int t = displayIpl.getT() - 1;
 
-            for (int idx=0;idx<listModel.size();idx++) {
+            for (int idx = 0; idx < listModel.size(); idx++) {
                 ObjRoi roi = listModel.getElementAt(idx);
                 if (roi.getZ() == z && roi.getT() == t && roi.getRoi().contains(x, y)) {
                     list.setSelectedIndex(idx);

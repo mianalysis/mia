@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -28,15 +27,12 @@ import org.scijava.plugin.Plugin;
 import com.drew.lang.annotations.Nullable;
 
 import ai.nets.samj.annotation.Mask;
-import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
-import io.bioimage.modelrunner.apposed.appose.Mamba;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
@@ -51,7 +47,6 @@ import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.SAMJConsumer;
 import io.github.mianalysis.mia.process.SAMJUtils;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
 import net.imagej.ImageJ;
@@ -170,15 +165,29 @@ public class SAMJExtension implements ManualExtension, MouseListener {
             } else {
                 // Initialise a new copy of SamJ
                 samJ = initialiseSAMJ(environmentPath, installIfMissing);
-                samJ.setImage(workspace.getImage(imageName).getImgPlus());
             }
-        } catch (IOException | RuntimeException e1) {
+        } catch (RuntimeException e1) {
             e1.printStackTrace();
             return Status.FAIL;
         } catch (InterruptedException e2) {
             // Don't throw an error in this case, as it's likely the sleep was interrupted
             // by the thread being manually stopped (e.g. "Stop" button on GUI)
             return Status.TERMINATE_SILENT;
+        }
+
+        try {
+            samJ.setImage(workspace.getImage(imageName).getImgPlus());
+        } catch (IOException | RuntimeException | InterruptedException e) {
+            // If it runs out of memory, close SAMJ and initialise a new one
+            MIA.log.writeDebug("Initialising new SAMJ");
+            samJ.close();
+            samJ = initialiseSAMJ(environmentPath, installIfMissing);
+            try {
+                samJ.setImage(workspace.getImage(imageName).getImgPlus());
+            } catch (IOException | RuntimeException | InterruptedException e1) {
+                MIA.log.writeError(e);
+                return Status.FAIL;
+            }
         }
 
         if (preinitialise) {

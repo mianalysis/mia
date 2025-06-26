@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.module.objects.detect;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -12,15 +11,10 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ai.nets.samj.annotation.Mask;
-import ai.nets.samj.install.EfficientSamEnvManager;
-import ai.nets.samj.install.EfficientViTSamEnvManager;
-import ai.nets.samj.install.Sam2EnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
-import ij.IJ;
 import ij.gui.PolygonRoi;
-import io.bioimage.modelrunner.apposed.appose.Mamba;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.AvailableModules;
@@ -52,7 +46,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.SAMJConsumer;
 import io.github.mianalysis.mia.process.SAMJUtils;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
@@ -291,8 +284,16 @@ public class ApplySegmentAnything extends Module {
                 try {
                     samJ.setImage(img);
                 } catch (IOException | RuntimeException | InterruptedException e) {
-                    MIA.log.writeError(e);
-                    return Status.FAIL;
+                    // If it runs out of memory, close SAMJ and initialise a new one
+                    MIA.log.writeDebug("Initialising new SAMJ");
+                    samJ.close();
+                    samJ = initialiseSAMJ(environmentPath, installIfMissing);
+                    try {
+                        samJ.setImage(img);
+                    } catch (IOException | RuntimeException | InterruptedException e1) {
+                        MIA.log.writeError(e);
+                        continue;
+                    }
                 }
 
                 for (Obj inputObject : inputObjectsBySlice.get(z)) {

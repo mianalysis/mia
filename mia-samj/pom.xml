@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.10</version>
+        <version>1.7.11</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-samj</artifactId>
-    <version>1.7.10</version>
+    <version>1.7.11</version>
     <packaging>jar</packaging>
     <name>mia-samj</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -159,11 +159,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
