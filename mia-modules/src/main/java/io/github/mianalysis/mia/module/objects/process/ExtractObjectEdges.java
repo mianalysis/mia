@@ -225,7 +225,7 @@ public class ExtractObjectEdges extends Module {
 
     public static Obj getRegion(Obj inputObject, Objs outputObjects, Image distImage, double edgeDistance, Mode mode) {
         ImagePlus distIpl = distImage.getImagePlus();
-
+        
         // Creating new edge object
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
         outputObject.setT(inputObject.getT());
