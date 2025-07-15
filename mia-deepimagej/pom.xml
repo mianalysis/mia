@@ -141,6 +141,7 @@
             <groupId>org.jetbrains.bio</groupId>
             <artifactId>npy</artifactId>
             <version>0.3.3</version>
+            <scope>${scp}</scope>
         </dependency>
         
         <!-- <dependency>
