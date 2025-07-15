@@ -10,6 +10,8 @@ import org.apache.commons.lang.WordUtils;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
@@ -91,6 +93,12 @@ public class SetLookupTable extends Module {
      */
     public static final String LOOKUP_TABLE = "Lookup table";
 
+    public static final String RED_COMPONENT = "Red component";
+
+    public static final String GREEN_COMPONENT = "Green component";
+
+    public static final String BLUE_COMPONENT = "Blue component";
+
     public static final String WAVELENGTH = "Wavelength (nm)";
 
     /**
@@ -107,8 +115,7 @@ public class SetLookupTable extends Module {
 
     public static final String INVERT_LUT = "Invert LUT";
 
-
-    TreeMap<String,String> imageJLUTs;
+    TreeMap<String, String> imageJLUTs;
     // TreeMap<String, String> allLUTs;
 
     public SetLookupTable(Modules modules) {
@@ -133,6 +140,7 @@ public class SetLookupTable extends Module {
     }
 
     public interface LookupTables {
+        String FROM_RGB = "From RGB";
         String FROM_WAVELENGTH = "From wavelength";
         String GREY = "Grey";
         String RED = "Red";
@@ -149,13 +157,13 @@ public class SetLookupTable extends Module {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { FROM_WAVELENGTH, GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE, ICE, JET,
-                PHYSICS, RANDOM, SPECTRUM,
-                THERMAL };
+        String[] ALL = new String[] { FROM_RGB, FROM_WAVELENGTH, GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE,
+                ICE, JET,
+                PHYSICS, RANDOM, SPECTRUM, THERMAL };
 
     }
 
-    public static LUT getLUT(String lookupTableName, double wavelengthNM) {
+    public static LUT getLUT(String lookupTableName, double wavelengthNM, @Nullable double[] rgbComponents) {
         switch (lookupTableName) {
             case LookupTables.GREY:
             default:
@@ -186,8 +194,14 @@ public class SetLookupTable extends Module {
                 return LUTs.Thermal();
             case LookupTables.RANDOM:
                 return LUTs.Random(true);
+            case LookupTables.FROM_RGB:
+                float r = (float) (rgbComponents[0]);
+                float g = (float) (rgbComponents[1]);
+                float b = (float) (rgbComponents[2]);
+                Color colour = new Color(r,g,b);
+                return LUT.createLutFromColor(colour);
             case LookupTables.FROM_WAVELENGTH:
-                Color colour = WavelengthToColorConverter.convert(wavelengthNM);
+                colour = WavelengthToColorConverter.convert(wavelengthNM);
                 return LUT.createLutFromColor(colour);
         }
     }
@@ -274,6 +288,9 @@ public class SetLookupTable extends Module {
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
         int channel = parameters.getValue(CHANNEL, workspace);
         String displayMode = parameters.getValue(DISPLAY_MODE, workspace);
+        double redComponent = parameters.getValue(RED_COMPONENT, workspace);
+        double greenComponent = parameters.getValue(GREEN_COMPONENT, workspace);
+        double blueComponent = parameters.getValue(BLUE_COMPONENT, workspace);
         double wavelengthNM = parameters.getValue(WAVELENGTH, workspace);
         boolean invertLUT = parameters.getValue(INVERT_LUT, workspace);
 
@@ -294,8 +311,9 @@ public class SetLookupTable extends Module {
                 if (imageJLUTs.keySet().contains(lookupTableName))
                     lut = LutLoader.openLut(IJ.getDir("luts") + lookupTableName + ".lut");
                 else
-                    lut = getLUT(lookupTableName, wavelengthNM);
-                
+                    lut = getLUT(lookupTableName, wavelengthNM,
+                            new double[] { redComponent, greenComponent, blueComponent });
+
                 switch (displayMode) {
                     case DisplayModes.SET_ZERO_TO_BLACK:
                         lut = setZeroToBlack(lut);
@@ -338,13 +356,16 @@ public class SetLookupTable extends Module {
 
         String[] lutFiles = new File(IJ.getDirectory("luts")).list();
         if (lutFiles != null)
-            Arrays.stream(lutFiles).forEach(v -> imageJLUTs.put(WordUtils.capitalize(v.replace(".lut", "")),v));
-        
+            Arrays.stream(lutFiles).forEach(v -> imageJLUTs.put(WordUtils.capitalize(v.replace(".lut", "")), v));
+
         allLUTs.addAll(imageJLUTs.keySet());
         Arrays.stream(LookupTables.ALL).forEach(v -> allLUTs.add(v));
 
         parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY,
                 allLUTs.toArray(new String[allLUTs.size()])));
+        parameters.add(new DoubleP(RED_COMPONENT, this, 1));
+        parameters.add(new DoubleP(GREEN_COMPONENT, this, 1));
+        parameters.add(new DoubleP(BLUE_COMPONENT, this, 1));
         parameters.add(new DoubleP(WAVELENGTH, this, 405));
         parameters.add(new ChoiceP(DISPLAY_MODE, this, DisplayModes.FULL_RANGE, DisplayModes.ALL));
         parameters.add(new BooleanP(INVERT_LUT, this, false));
@@ -367,8 +388,17 @@ public class SetLookupTable extends Module {
         switch ((String) parameters.getValue(CHANNEL_MODE, workspace)) {
             case ChannelModes.ALL_CHANNELS:
                 returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
-                if (((String) parameters.getValue(LOOKUP_TABLE, workspace)).equals(LookupTables.FROM_WAVELENGTH))
-                    returnedParameters.add(parameters.getParameter(WAVELENGTH));
+                switch ((String) parameters.getValue(LOOKUP_TABLE, workspace)) {
+                    case LookupTables.FROM_RGB:
+                        returnedParameters.add(parameters.getParameter(RED_COMPONENT));
+                        returnedParameters.add(parameters.getParameter(GREEN_COMPONENT));
+                        returnedParameters.add(parameters.getParameter(BLUE_COMPONENT));
+                        break;
+
+                    case LookupTables.FROM_WAVELENGTH:
+                        returnedParameters.add(parameters.getParameter(WAVELENGTH));
+                        break;
+                }
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
                 returnedParameters.add(parameters.getParameter(INVERT_LUT));
                 break;
