@@ -39,6 +39,7 @@ import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -609,10 +610,21 @@ public class CalculateNearestNeighbour extends AbstractSaver {
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
 
+                if (nearestNeighbour != null) {
+                    inputObject.addPartner(nearestNeighbour);
+                    nearestNeighbour.addPartner(inputObject);
+                }
+
             } else {
                 Obj nearestNeighbour = getNearestNeighbour(inputObject, neighbourObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
+
+                if (nearestNeighbour != null) {
+                    inputObject.addPartner(nearestNeighbour);
+                    nearestNeighbour.addPartner(inputObject);
+                }
+
             }
 
             writeProgressStatus(++count, total, "objects");
@@ -815,7 +827,26 @@ public class CalculateNearestNeighbour extends AbstractSaver {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+        Workspace workspace = null;
+        PartnerRefs returnedRefs = new PartnerRefs();
+
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);
+
+        String neighbourObjectsName = null;
+        switch (relationshipMode) {
+            case RelationshipModes.DIFFERENT_SET:
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS, workspace);
+                break;
+            case RelationshipModes.WITHIN_SAME_SET:
+                neighbourObjectsName = inputObjectsName;
+                break;
+        }
+
+        returnedRefs.add(new PartnerRef(inputObjectsName, neighbourObjectsName));
+
+        return returnedRefs;
+
     }
 
     @Override
