@@ -234,7 +234,6 @@ public class SingleClassCluster extends Module {
             for(DBIDIter it = cluster.getIDs().iter(); it.valid(); it.advance()) {
                 
                 // To get the vector use:
-                NumberVector v = relation.get(it);
                 int offset = ids.getOffset(it);
                 Obj pointObject = locations.get(offset).getObject();
                 outputObject.setT(pointObject.getT());

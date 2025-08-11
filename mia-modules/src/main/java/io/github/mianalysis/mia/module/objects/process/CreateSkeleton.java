@@ -647,12 +647,10 @@ public class CreateSkeleton extends Module {
                                 skeletonObjects, edgeObjects, junctionObjects, inputMode.equals(InputModes.OBJECTS));
 
                         // Creating loop objects
-                        if (exportLoops) {
+                        if (exportLoops)
                             createLoopObjects(loopObjects, edgeObjectsName, junctionObjectsName, loopObjectsName,
                                     skeletonObject);
-                            workspace.addObjects(loopObjects);
-                            applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
-                        }
+                        
                     }
 
                     if (exportLargestShortestPathFinal)
@@ -682,6 +680,9 @@ public class CreateSkeleton extends Module {
             MIA.log.writeError(t);
             return Status.FAIL;
         }
+
+        if (exportLoops)
+            applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
 
         if (showOutput) {
             switch (inputMode) {
