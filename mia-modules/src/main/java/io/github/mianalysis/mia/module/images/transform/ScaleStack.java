@@ -456,5 +456,6 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(Z_SCALE_FACTOR).setDescription("If \"" + Z_SCALE_MODE + "\" is set to \""
                 + ScaleModes.SCALE_FACTOR
                 + "\", the output image will have a number of slices equal to the input number of slices multiplied by this scale factor.  The applied number of slices will be rounded to the closest whole number");
+                
     }
 }
