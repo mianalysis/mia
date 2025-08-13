@@ -121,6 +121,12 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
+        <!--The following is for a single dependency that's not on Central-->
+        <repository>
+            <id>spring-libs-release</id>
+            <url>https://repo.spring.io/release</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -159,4 +165,5 @@
     </dependencies>
 
     
+
 </project>
