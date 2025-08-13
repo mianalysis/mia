@@ -123,17 +123,6 @@
         </repository>
     </repositories>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jetbrains.bio</groupId>
-                <artifactId>npy</artifactId>
-                <version>0.3.5</version>
-                <scope>${scp}</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>io.github.mianalysis</groupId>
