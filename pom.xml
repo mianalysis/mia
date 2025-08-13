@@ -12,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.7.12</version>
+    <version>1.7.13</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -137,6 +137,17 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jetbrains.bio</groupId>
+                <artifactId>npy</artifactId>
+                <version>0.3.5</version>
+                <scope>${scp}</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -306,10 +317,7 @@
             <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -->
             <!-- or for PowerShell -->
             <!-- mvn clean deploy -Dscp=provided [MINUS][MINUS]% -Dmaven.test.skip -->
-            <!-- CHECK GENERATED MIA JAR RUNS IN FIJI (sometimes it generates a larger jar which
-            fails to run - maybe when "target" isn't deleted first)-->
-            <!-- Release to Maven Central using following -->
-            <!-- mvn nexus-staging:release -->
+            <!-- Go to Maven Central website to finalise release -->
 
             <plugin>
                 <groupId>org.sonatype.central</groupId>

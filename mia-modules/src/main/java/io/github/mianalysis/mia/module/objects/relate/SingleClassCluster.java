@@ -11,13 +11,26 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.apache.commons.math3.ml.clustering.Cluster;
+// import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.Clusterable;
-import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import elki.clustering.dbscan.DBSCAN;
+import elki.data.Cluster;
+// import elki.data.Cluster;
+import elki.data.Clustering;
+import elki.data.NumberVector;
+import elki.data.model.Model;
+import elki.data.type.TypeUtil;
+import elki.database.Database;
+import elki.database.StaticArrayDatabase;
+import elki.database.ids.DBIDIter;
+import elki.database.ids.DBIDRange;
+import elki.database.relation.Relation;
+import elki.datasource.ArrayAdapterDatabaseConnection;
+import elki.distance.minkowski.EuclideanDistance;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -201,20 +214,51 @@ public class SingleClassCluster extends Module {
     }
 
     public static Objs runDBSCAN(Objs outputObjects, List<LocationWrapper> locations, double eps, int minPoints) {
-        DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
-        List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
+        double[][] data = new double[locations.size()][2];
+        for (int i = 0; i < locations.size(); i++)
+            data[i] = locations.get(i).getPoint();
 
-        // Assigning relationships between points and clusters
-        for (Cluster<LocationWrapper> cluster : clusters) {
+        Database db = new StaticArrayDatabase(new ArrayAdapterDatabaseConnection(data));
+        db.initialize();
+
+        DBSCAN<NumberVector> dbscan = new DBSCAN<>(EuclideanDistance.STATIC, eps,
+                minPoints);
+        Relation<NumberVector> relation = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
+        Clustering<Model> result = dbscan.run(relation);
+        DBIDRange ids = (DBIDRange) relation.getDBIDs();
+
+        for (Cluster<Model> cluster : result.getAllClusters()) {
+            if (cluster.isNoise())
+                continue;
+
             Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
-            for (LocationWrapper point : cluster.getPoints()) {
-                Obj pointObject = point.getObject();
+            for (DBIDIter it = cluster.getIDs().iter(); it.valid(); it.advance()) {
+
+                // To get the vector use:
+                int offset = ids.getOffset(it);
+                Obj pointObject = locations.get(offset).getObject();
                 outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
         }
+
+        // DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps,
+        // minPoints);
+        // List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
+
+        // // Assigning relationships between points and clusters
+        // for (Cluster<LocationWrapper> cluster : clusters) {
+        // Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+
+        // for (LocationWrapper point : cluster.getPoints()) {
+        // Obj pointObject = point.getObject();
+        // outputObject.setT(pointObject.getT());
+        // pointObject.addParent(outputObject);
+        // outputObject.addChild(pointObject);
+        // }
+        // }
 
         // Add single object cluster object for unclustered objects
         for (LocationWrapper wrapper : locations) {
@@ -249,7 +293,7 @@ public class SingleClassCluster extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.1.0";
+        return "1.2.0";
     }
 
     @Override
@@ -426,8 +470,8 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.12</version>
+        <version>1.7.13</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-deepimagej</artifactId>
-    <version>1.7.12</version>
+    <version>1.7.13</version>
     <packaging>jar</packaging>
     <name>mia-deepimagej</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -136,13 +136,6 @@
             <version>2.1.15</version>
             <scope>${scp}</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.bio</groupId>
-            <artifactId>npy</artifactId>
-            <version>0.3.3</version>
-            <scope>${scp}</scope>
-        </dependency>
         
         <!-- <dependency>
             <groupId>com.github.deepimagej</groupId>
@@ -159,4 +152,5 @@
     </dependencies>
 
     
+
 </project>
