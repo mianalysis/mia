@@ -6,14 +6,14 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.13</version>
+        <version>1.7.12</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-algorithms</artifactId>
-    <version>1.7.13</version>
+    <artifactId>mia-samj</artifactId>
+    <version>1.7.12</version>
     <packaging>jar</packaging>
-    <name>mia-algorithms</name>
+    <name>mia-samj</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -125,9 +125,64 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij1-patcher</artifactId>
+            <version>1.2.6</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-coordinates</artifactId>
+            <artifactId>mia-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-modules</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ai.nets</groupId>
+            <artifactId>samj</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
+            <scope>${scp}</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../mia-plugin/target/mia-dependencies</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>mia-samj-${project.version}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

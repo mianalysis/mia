@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.12</version>
+        <version>1.7.13</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.7.12</version>
+    <version>1.7.13</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -231,6 +231,21 @@
             <groupId>io.github.elki-project</groupId>
             <artifactId>elki</artifactId>
             <version>0.8.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>it.unimi.dsi</groupId>
+                    <artifactId>fastutil</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--The main fastutil that comes with elki is massive (around 22 MB), so 
+        we use this trimmed down version instead.  The fastutil import is removed
+        by maven-dependency-plugin in the mia-plugin pom-->
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil-core</artifactId>
+            <version>8.5.16</version>
         </dependency>
     </dependencies>
 </project>
