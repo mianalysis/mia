@@ -149,11 +149,16 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>ai.nets</groupId>
             <artifactId>samj</artifactId>
             <version>0.0.3-SNAPSHOT</version>
             <scope>${scp}</scope>
+        </dependency> -->
+        <dependency>
+            <groupId>com.github.segment-anything-models-java</groupId>
+            <artifactId>SAMJ</artifactId>
+            <version>main-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
