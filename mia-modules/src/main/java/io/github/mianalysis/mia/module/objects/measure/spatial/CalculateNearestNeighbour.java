@@ -610,20 +610,20 @@ public class CalculateNearestNeighbour extends AbstractSaver {
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
 
-                if (nearestNeighbour != null) {
+                // Adding directed relationship (i.e. while nearestNeighbour is the nearest neighbour for inputObject, 
+                // the reverse isn't necessarily true, so that relationship isn't assigned)
+                if (nearestNeighbour != null)
                     inputObject.addPartner(nearestNeighbour);
-                    nearestNeighbour.addPartner(inputObject);
-                }
 
             } else {
                 Obj nearestNeighbour = getNearestNeighbour(inputObject, neighbourObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
 
-                if (nearestNeighbour != null) {
+                // Adding directed relationship (i.e. while nearestNeighbour is the nearest neighbour for inputObject, 
+                // the reverse isn't necessarily true, so that relationship isn't assigned)
+                if (nearestNeighbour != null)
                     inputObject.addPartner(nearestNeighbour);
-                    nearestNeighbour.addPartner(inputObject);
-                }
 
             }
 
