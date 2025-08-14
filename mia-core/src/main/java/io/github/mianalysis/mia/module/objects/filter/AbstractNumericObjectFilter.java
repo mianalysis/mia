@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
 
 public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
@@ -26,7 +27,11 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     public static final String MEASUREMENT_SEPARATOR = "Measurement output";
     public static final String STORE_SUMMARY_RESULTS = "Store summary filter results";
+    public static final String USE_FIXED_SUMMARY_NAME = "Use fixed summary name";
+    public static final String SUMMARY_NAME = "Summary name";
     public static final String STORE_INDIVIDUAL_RESULTS = "Store individual filter results";
+    public static final String USE_FIXED_INDIVIDUAL_NAME = "Use fixed individual name";
+    public static final String INDIVIDUAL_NAME = "Individual name";
 
     public interface FilterMethods {
         String LESS_THAN = "Less than";
@@ -145,6 +150,9 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     public String getIndividualMeasurementName(String targetName, Workspace workspace) {
+        if ((Boolean) parameters.getValue(USE_FIXED_INDIVIDUAL_NAME, workspace))
+            return parameters.getValue(INDIVIDUAL_NAME, workspace);        
+
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
         double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
@@ -168,6 +176,9 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     public String getSummaryMeasurementName(String targetName, Workspace workspace) {
+        if ((Boolean) parameters.getValue(USE_FIXED_SUMMARY_NAME, workspace))
+            return parameters.getValue(SUMMARY_NAME, workspace);        
+        
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
@@ -244,7 +255,11 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
         parameters.add(new BooleanP(STORE_SUMMARY_RESULTS, this, false));
+        parameters.add(new BooleanP(USE_FIXED_SUMMARY_NAME, this, false));
+        parameters.add(new StringP(SUMMARY_NAME, this));
         parameters.add(new BooleanP(STORE_INDIVIDUAL_RESULTS, this, false));
+        parameters.add(new BooleanP(USE_FIXED_INDIVIDUAL_NAME, this, false));
+        parameters.add(new StringP(INDIVIDUAL_NAME, this));
 
     }
 
@@ -300,8 +315,20 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+
         returnedParameters.add(parameters.getParameter(STORE_SUMMARY_RESULTS));
+        if ((Boolean) parameters.getValue(STORE_SUMMARY_RESULTS, null)) {
+            returnedParameters.add(parameters.getParameter(USE_FIXED_SUMMARY_NAME));
+            if ((Boolean) parameters.getValue(USE_FIXED_SUMMARY_NAME, null))
+                returnedParameters.add(parameters.getParameter(SUMMARY_NAME));
+        }
+
         returnedParameters.add(parameters.getParameter(STORE_INDIVIDUAL_RESULTS));
+        if ((Boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS, null)) {
+            returnedParameters.add(parameters.getParameter(USE_FIXED_INDIVIDUAL_NAME));
+            if ((Boolean) parameters.getValue(USE_FIXED_INDIVIDUAL_NAME, null))
+                returnedParameters.add(parameters.getParameter(INDIVIDUAL_NAME));
+        }
 
         return returnedParameters;
 
