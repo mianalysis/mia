@@ -13,6 +13,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
@@ -149,16 +151,18 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         add(blankMenu);
         blankMenu.add(new MenuItem(MenuItem.SHOW_PONY));
 
-        KeyStroke saveModules = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+        int mask = SystemUtils.IS_OS_MAC ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+
+        KeyStroke saveModules = KeyStroke.getKeyStroke(KeyEvent.VK_S, mask);
         registerKeyboardAction(this, "Save", saveModules, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        KeyStroke newAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
+        KeyStroke newAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_N, mask);
         registerKeyboardAction(this, "New", newAnalysis, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        KeyStroke undoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK);
+        KeyStroke undoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Z, mask);
         registerKeyboardAction(this, "Undo", undoAction, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        KeyStroke redoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK);
+        KeyStroke redoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Y, mask);
         registerKeyboardAction(this, "Redo", redoAction, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
     }

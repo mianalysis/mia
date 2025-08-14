@@ -23,6 +23,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
@@ -86,10 +88,12 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
         registerKeyboardAction(this, DELETE, delete, JComponent.WHEN_FOCUSED);
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, false);
+        int mask = SystemUtils.IS_OS_MAC ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask, false);         
         registerKeyboardAction(this, COPY, copy, JComponent.WHEN_FOCUSED);
 
-        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK, false);
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask, false);
         registerKeyboardAction(this, PASTE, paste, JComponent.WHEN_FOCUSED);
 
         KeyStroke output = KeyStroke.getKeyStroke(KeyEvent.VK_O, 0);
