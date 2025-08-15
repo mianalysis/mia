@@ -147,12 +147,18 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         logMenu.add(menuLogCheckbox);
 
         add(Box.createHorizontalGlue());
-        
+
         add(blankMenu);
         blankMenu.add(new MenuItem(MenuItem.SHOW_PONY));
 
-        int mask = SystemUtils.IS_OS_MAC ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+        // CTRL masking always works, but Mac also gets the command button shortcuts
+        addKeyboardShortcuts(InputEvent.CTRL_DOWN_MASK);
+        if (SystemUtils.IS_OS_MAC)
+            addKeyboardShortcuts(InputEvent.META_DOWN_MASK);
 
+    }
+
+    private void addKeyboardShortcuts(int mask) {
         KeyStroke saveModules = KeyStroke.getKeyStroke(KeyEvent.VK_S, mask);
         registerKeyboardAction(this, "Save", saveModules, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
