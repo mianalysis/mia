@@ -26,6 +26,7 @@ public class InputControlLostFound extends LostAndFoundItem {
     public HashMap<String, String> getPreviousParameterNames() {
         HashMap<String,String> parameterNames = new HashMap<String,String>();
         parameterNames.put("Spatial units", InputControl.SPATIAL_UNIT);
+        parameterNames.put("Ignore case", "");
         
         return parameterNames;
 

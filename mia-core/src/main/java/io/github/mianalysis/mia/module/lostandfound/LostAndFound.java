@@ -3,7 +3,6 @@ package io.github.mianalysis.mia.module.lostandfound;
 import java.util.HashMap;
 import java.util.List;
 
-import org.scijava.InstantiableException;
 import org.scijava.plugin.PluginInfo;
 
 import io.github.mianalysis.mia.MIA;

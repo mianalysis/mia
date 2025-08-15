@@ -89,9 +89,9 @@ public class SwingParameterControlFactory extends ParameterControlFactory {
             case NORMAL:
             default:
                 if (isDark)
-                    return Color.BLACK;
-                else
                     return Color.WHITE;
+                else
+                    return Color.BLACK;
             case MESSAGE:
                 return Colours.getDarkBlue(isDark);
             case WARNING:

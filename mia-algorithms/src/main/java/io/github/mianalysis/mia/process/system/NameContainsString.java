@@ -11,29 +11,38 @@ import org.apache.commons.io.FilenameUtils;
 public class NameContainsString implements FileCondition {
     private String[] testStr;
     private Mode mode;
+    private boolean ignoreCase = false;
 
     public NameContainsString(String testStr) {
         this.testStr = new String[] { testStr };
         this.mode = Mode.INC_PARTIAL;
-
     }
 
     public NameContainsString(String testStr, Mode mode) {
         this.testStr = new String[] { testStr };
         this.mode = mode;
+    }
 
+    public NameContainsString(String testStr, Mode mode, boolean ignoreCase) {
+        this.testStr = new String[] { testStr };
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public NameContainsString(String[] testStr) {
         this.testStr = testStr;
         this.mode = Mode.INC_PARTIAL;
-
     }
 
     public NameContainsString(String[] testStr, Mode mode) {
         this.testStr = testStr;
         this.mode = mode;
+    }
 
+    public NameContainsString(String[] testStr, Mode mode, boolean ignoreCase) {
+        this.testStr = testStr;
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public boolean test(String string, boolean ignoreCase) {
@@ -84,11 +93,23 @@ public class NameContainsString implements FileCondition {
 
     }
 
+    public boolean test(File file) {
+        return test(file, ignoreCase);
+    }
+
     public String[] getTestStr() {
         return testStr;
     }
 
     public Mode getMode() {
         return mode;
+    }
+
+    public void setIgnoreCase(boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+    }
+
+    public boolean getIgnoreCase() {
+        return ignoreCase;
     }
 }
