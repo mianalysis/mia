@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -16,6 +17,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+
+import org.apache.commons.lang3.SystemUtils;
 
 import com.drew.lang.annotations.Nullable;
 
@@ -89,11 +92,20 @@ public class GUI {
         ProgressBar.setActive(new SwingProgressBar());
 
         // Creating main Frame
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
         frameHeight = Math.max(frameHeight, minimumFrameHeight);
+
+        // Enable native fullscreen on macOS
+        if (SystemUtils.IS_OS_MAC) {
+            frame.setUndecorated(true);
+            frame.setSize(screenSize);
+            frame.setLocation(0, 0);
+        } else {
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
 
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
@@ -176,7 +188,8 @@ public class GUI {
 
         // create the font to use. Specify the size!
         try {
-            defaultFont = Font.createFont(Font.TRUETYPE_FONT, GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
+            defaultFont = Font.createFont(Font.TRUETYPE_FONT,
+                    GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(defaultFont);
             return defaultFont;
         } catch (FontFormatException | IOException e) {
