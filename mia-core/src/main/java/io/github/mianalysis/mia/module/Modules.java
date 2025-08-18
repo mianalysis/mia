@@ -549,6 +549,9 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         if (prevModule == module)
                             add = true;
                     }
+
+                    if (add)
+                        availableObjectsStore.get(outputControl).addAll(addedObjects);
                 }
 
                 // Removing images
@@ -568,6 +571,11 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         if (prevModule == module)
                             remove = true;
                     }
+
+                    if (remove)
+                            availableObjectsStore.get(outputControl)
+                                    .removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
+
                 }
             }
 
@@ -575,7 +583,10 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         }
 
-        return availableObjectsStore.get(cutoffModule);
+        if (cutoffModule == null)
+            return availableObjectsStore.get(outputControl);
+        else
+            return availableObjectsStore.get(cutoffModule);
 
     }
 
@@ -643,6 +654,10 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         if (prevModule == module)
                             add = true;
                     }
+
+                    if (add)
+                        availableImageStore.get(outputControl).addAll(addedImages);
+
                 }
 
                 // Removing images
@@ -662,6 +677,11 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         if (prevModule == module)
                             remove = true;
                     }
+
+                    if (remove)
+                        availableImageStore.get(outputControl)
+                                .removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+
                 }
 
                 LinkedHashSet<RemovableInputImageP> removableImages = module
@@ -680,6 +700,11 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         if (prevModule == module)
                             remove = true;
                     }
+
+                    if (remove)
+                        availableImageStore.get(outputControl)
+                                .removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+
                 }
             }
 
@@ -687,7 +712,10 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         }
 
-        return availableImageStore.get(cutoffModule);
+        if (cutoffModule == null)
+            return availableImageStore.get(outputControl);
+        else
+            return availableImageStore.get(cutoffModule);
 
     }
 

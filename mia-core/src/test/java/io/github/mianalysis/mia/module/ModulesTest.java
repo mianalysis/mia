@@ -24,12 +24,10 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-
 
 public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
@@ -60,6 +58,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
 
         LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null);
 
+        System.err.println("OUTPUT.    " + availableImages);
         assertEquals(1, availableImages.size());
 
     }
@@ -206,8 +205,10 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         assertEquals(9, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureObjectShape.Measurements.PROJ_DIA_PX,
-                SpatialUnit.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL), MeasureObjectShape.Measurements.VOLUME_PX,
-                SpatialUnit.replace(MeasureObjectShape.Measurements.VOLUME_CAL), MeasureObjectShape.Measurements.BASE_AREA_PX,
+                SpatialUnit.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
+                MeasureObjectShape.Measurements.VOLUME_PX,
+                SpatialUnit.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
+                MeasureObjectShape.Measurements.BASE_AREA_PX,
                 SpatialUnit.replace(MeasureObjectShape.Measurements.BASE_AREA_CAL),
                 MeasureObjectShape.Measurements.HEIGHT_SLICE,
                 SpatialUnit.replace(MeasureObjectShape.Measurements.HEIGHT_CAL) };
