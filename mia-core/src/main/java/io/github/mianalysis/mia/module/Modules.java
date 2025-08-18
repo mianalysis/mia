@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 import io.github.mianalysis.mia.MIA;
@@ -49,6 +50,12 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
     private String analysisFilename = "";
+
+    protected int storedAvailableImagesHash = 0;
+    HashMap<Module, LinkedHashSet<OutputImageP>> availableImageStore = new HashMap<>();
+
+    protected int storedAvailableObjectsHash = 0;
+    HashMap<Module, LinkedHashSet<OutputObjectsP>> availableObjectsStore = new HashMap<>();
 
     public boolean execute(Workspace workspace) {
         return execute(workspace, true);
@@ -136,10 +143,11 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             DecimalFormat df3 = new DecimalFormat("0.000");
 
             double t2 = System.currentTimeMillis();
-            double elapsed = (t2-t1)/1000;
+            double elapsed = (t2 - t1) / 1000;
 
             String memoryMessage = df1.format(usedMemory * 1E-6) + "/" + df1.format(totalMemory * 1E-6) + " MB"
-                    + ", ANALYSIS COMPLETE , ELAPSED: "+df3.format(elapsed)+" s, DATE/TIME: " + dateTime + ", FILE: \""
+                    + ", ANALYSIS COMPLETE , ELAPSED: " + df3.format(elapsed) + " s, DATE/TIME: " + dateTime
+                    + ", FILE: \""
                     + workspace.getMetadata().getFile() + "\"";
 
             MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
@@ -496,33 +504,78 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
+    public int getModulesHash() {
+        int finalHash = 0;
+
+        for (Parameter parameter : inputControl.getAllParameters().values())
+            finalHash = finalHash + parameter.getRawStringValue().hashCode();
+
+        for (Parameter parameter : outputControl.getAllParameters().values())
+            finalHash = finalHash + parameter.getRawStringValue().hashCode();
+
+        for (Module module : values())
+            if (module.isRunnable() && module.isReachable() && module.isEnabled())
+                for (Parameter parameter : module.getAllParameters().values())
+                    finalHash = finalHash + parameter.getRawStringValue().hashCode();
+
+        return finalHash;
+
+    }
+
     public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,
             Class<T> objectClass, boolean ignoreRemoved) {
-        LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
+        int currentHash = getModulesHash();
 
-        for (Module module : this) {
-            if (module == cutoffModule)
-                break;
+        if (currentHash != storedAvailableObjectsHash) {
+            // Clearing the existing store
+            availableObjectsStore = new HashMap<>();
+            availableObjectsStore.put(inputControl, new LinkedHashSet<>());
+            availableObjectsStore.put(outputControl, new LinkedHashSet<>());
 
-            // Get the added and removed objects
-            LinkedHashSet<T> addedObjects = module.getParametersMatchingType(objectClass);
-            LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
+            for (Module prevModule : values())
+                availableObjectsStore.put(prevModule, new LinkedHashSet<>());
 
-            // Adding new objects
-            if (addedObjects != null)
-                objects.addAll(addedObjects);
+            for (Module module : values()) {
+                // Get the added and removed images
+                LinkedHashSet<T> addedObjects = module.getParametersMatchingType(objectClass);
 
-            // Removing objects
-            if (!ignoreRemoved || removedObjects == null)
-                continue;
+                // Adding new images
+                if (addedObjects != null) {
+                    boolean add = false;
+                    for (Module prevModule : values()) {
+                        if (add)
+                            availableObjectsStore.get(prevModule).addAll(addedObjects);
 
-            for (Parameter removedObject : removedObjects) {
-                String removeObjectName = removedObject.getRawStringValue();
-                objects.removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
+                        if (prevModule == module)
+                            add = true;
+                    }
+                }
+
+                // Removing images
+                LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
+                if (!ignoreRemoved || removedObjects == null)
+                    continue;
+
+                for (Parameter removedObject : removedObjects) {
+                    String removeObjectName = removedObject.getRawStringValue();
+
+                    boolean remove = false;
+                    for (Module prevModule : values()) {
+                        if (remove)
+                            availableObjectsStore.get(prevModule)
+                                    .removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
+
+                        if (prevModule == module)
+                            remove = true;
+                    }
+                }
             }
+
+            storedAvailableObjectsHash = currentHash;
+
         }
 
-        return objects;
+        return availableObjectsStore.get(cutoffModule);
 
     }
 
@@ -565,41 +618,76 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     }
 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
-        LinkedHashSet<OutputImageP> images = new LinkedHashSet<>();
+        int currentHash = getModulesHash();
 
-        for (Module module : this) {
-            if (module == cutoffModule)
-                break;
+        if (currentHash != storedAvailableImagesHash) {
+            // Clearing the existing store
+            availableImageStore = new HashMap<>();
+            availableImageStore.put(inputControl, new LinkedHashSet<>());
+            availableImageStore.put(outputControl, new LinkedHashSet<>());
 
-            // Get the added and removed images
-            LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
-            LinkedHashSet<RemovedImageP> removedImages = module.getParametersMatchingType(RemovedImageP.class);
-            LinkedHashSet<RemovableInputImageP> removableImages = module
-                    .getParametersMatchingType(RemovableInputImageP.class);
+            for (Module prevModule : values())
+                availableImageStore.put(prevModule, new LinkedHashSet<>());
 
-            // Adding new images
-            if (addedImages != null)
-                images.addAll(addedImages);
+            for (Module module : values()) {
+                // Get the added and removed images
+                LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
 
-            // Removing images
-            if (!ignoreRemoved || removedImages == null)
-                continue;
+                // Adding new images
+                if (addedImages != null) {
+                    boolean add = false;
+                    for (Module prevModule : values()) {
+                        if (add)
+                            availableImageStore.get(prevModule).addAll(addedImages);
 
-            for (Parameter removedImage : removedImages) {
-                String removeImageName = removedImage.getRawStringValue();
-                images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
-            }
+                        if (prevModule == module)
+                            add = true;
+                    }
+                }
 
-            for (RemovableInputImageP removeableImage : removableImages) {
-                if (!removeableImage.isRemoveInputImages())
+                // Removing images
+                LinkedHashSet<RemovedImageP> removedImages = module.getParametersMatchingType(RemovedImageP.class);
+                if (!ignoreRemoved || removedImages == null)
                     continue;
 
-                String removeImageName = removeableImage.getRawStringValue();
-                images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+                for (Parameter removedImage : removedImages) {
+                    String removeImageName = removedImage.getRawStringValue();
+
+                    boolean remove = false;
+                    for (Module prevModule : values()) {
+                        if (remove)
+                            availableImageStore.get(prevModule)
+                                    .removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+
+                        if (prevModule == module)
+                            remove = true;
+                    }
+                }
+
+                LinkedHashSet<RemovableInputImageP> removableImages = module
+                        .getParametersMatchingType(RemovableInputImageP.class);
+                for (RemovableInputImageP removeableImage : removableImages) {
+                    if (!removeableImage.isRemoveInputImages())
+                        continue;
+
+                    String removeImageName = removeableImage.getRawStringValue();
+                    boolean remove = false;
+                    for (Module prevModule : values()) {
+                        if (remove)
+                            availableImageStore.get(prevModule)
+                                    .removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+
+                        if (prevModule == module)
+                            remove = true;
+                    }
+                }
             }
+
+            storedAvailableImagesHash = currentHash;
+
         }
 
-        return images;
+        return availableImageStore.get(cutoffModule);
 
     }
 
@@ -724,7 +812,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         for (Module module : values())
             copyModules.add(module.duplicate(copyModules, copyIDs));
-        
+
         return copyModules;
 
     }
