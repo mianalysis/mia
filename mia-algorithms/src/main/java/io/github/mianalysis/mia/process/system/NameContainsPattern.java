@@ -12,29 +12,38 @@ import org.apache.commons.io.FilenameUtils;
 public class NameContainsPattern implements FileCondition {   
     private Pattern[] patterns;
     private Mode mode;
+    private boolean ignoreCase = false;
 
     public NameContainsPattern(Pattern pattern) {
         this.patterns = new Pattern[] { pattern };
         this.mode = Mode.INC_PARTIAL;
-
     }
 
     public NameContainsPattern(Pattern pattern, Mode mode) {
         this.patterns = new Pattern[] { pattern };
         this.mode = mode;
+    }
 
+    public NameContainsPattern(Pattern pattern, Mode mode, boolean ignoreCase) {
+        this.patterns = new Pattern[] { pattern };
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public NameContainsPattern(Pattern[] pattern) {
         this.patterns = pattern;
         this.mode = Mode.INC_PARTIAL;
-
     }
 
     public NameContainsPattern(Pattern[] pattern, Mode mode) {
         this.patterns = pattern;
         this.mode = mode;
+    }
 
+    public NameContainsPattern(Pattern[] pattern, Mode mode, boolean ignoreCase) {
+        this.patterns = pattern;
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public boolean test(File file, boolean ignoreCase) {
@@ -80,11 +89,23 @@ public class NameContainsPattern implements FileCondition {
 
     }
 
+    public boolean test(File file) {
+        return test(file, ignoreCase);
+    }
+
     public Pattern[] getPattern() {
         return patterns;
     }
 
     public Mode getMode() {
         return mode;
+    }
+
+    public void setIgnoreCase(boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+    }
+
+    public boolean getIgnoreCase() {
+        return ignoreCase;
     }
 }

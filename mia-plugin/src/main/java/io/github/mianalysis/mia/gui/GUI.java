@@ -91,7 +91,7 @@ public class GUI {
         // Creating main Frame
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
-        // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
         frameHeight = Math.max(frameHeight, minimumFrameHeight);
 

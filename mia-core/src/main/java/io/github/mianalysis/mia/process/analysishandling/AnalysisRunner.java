@@ -56,7 +56,9 @@ public class AnalysisRunner {
 
         LinkedHashSet<Job> jobs = getJobs(modules);
         if (jobs.size() == 0) {
-            MIA.log.writeWarning("No valid images found at specified path");
+            String message = "No valid images found at specified path";
+            MIA.log.writeWarning(message);
+            MIA.log.writeStatus(message);
             return;
         }
 
@@ -147,7 +149,6 @@ public class AnalysisRunner {
             return new LinkedHashSet<>();
 
         FileCrawler fileCrawler = new FileCrawler(inputFile);
-        fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE, null));
         inputControl.addFilenameFilters(fileCrawler);
 
         boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER, null);

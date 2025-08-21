@@ -9,29 +9,38 @@ import java.io.File;
 public class ParentContainsString implements FileCondition {
     private String[] testStrs;
     private Mode mode;
+    private boolean ignoreCase = false;
 
     public ParentContainsString(String testStr) {
         this.testStrs = new String[] { testStr };
         this.mode = Mode.INC_PARTIAL;
-
     }
 
     public ParentContainsString(String testStr, Mode mode) {
         this.testStrs = new String[] { testStr };
         this.mode = mode;
+    }
 
+    public ParentContainsString(String testStr, Mode mode, boolean ignoreCase) {
+        this.testStrs = new String[] { testStr };
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public ParentContainsString(String[] testStr) {
         this.testStrs = testStr;
         this.mode = Mode.INC_PARTIAL;
-
     }
 
     public ParentContainsString(String[] testStr, Mode mode) {
         this.testStrs = testStr;
         this.mode = mode;
+    }
 
+    public ParentContainsString(String[] testStr, Mode mode, boolean ignoreCase) {
+        this.testStrs = testStr;
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public boolean test(File file, boolean ignoreCase) {
@@ -74,5 +83,17 @@ public class ParentContainsString implements FileCondition {
             case EXC_PARTIAL:
                 return true;
         }
+    }
+
+    public boolean test(File file) {
+        return test(file, ignoreCase);
+    }
+
+    public void setIgnoreCase(boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+    }
+
+    public boolean getIgnoreCase() {
+        return ignoreCase;
     }
 }
