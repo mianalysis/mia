@@ -513,10 +513,12 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
         for (Parameter parameter : outputControl.getAllParameters().values())
             finalHash = finalHash + parameter.getRawStringValue().hashCode();
 
-        for (Module module : values())
+        for (Module module : values()) {
+            finalHash = finalHash + (module.isEnabled() ? 1 : 0);
             if (module.isRunnable() && module.isReachable() && module.isEnabled())
                 for (Parameter parameter : module.getAllParameters().values())
                     finalHash = finalHash + parameter.getRawStringValue().hashCode();
+        }
 
         return finalHash;
 
@@ -532,8 +534,8 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             availableObjectsStore.put(inputControl, new LinkedHashSet<>());
             availableObjectsStore.put(outputControl, new LinkedHashSet<>());
 
-            for (Module prevModule : values())
-                availableObjectsStore.put(prevModule, new LinkedHashSet<>());
+            for (Module module : values())
+                availableObjectsStore.put(module, new LinkedHashSet<>());
 
             for (Module module : values()) {
                 // Get the added and removed images
@@ -554,7 +556,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                         availableObjectsStore.get(outputControl).addAll(addedObjects);
                 }
 
-                // Removing images
+                // Removing objects
                 LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
                 if (!ignoreRemoved || removedObjects == null)
                     continue;
@@ -587,7 +589,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             return availableObjectsStore.get(outputControl);
         else
             return availableObjectsStore.get(cutoffModule);
-
+        
     }
 
     public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,

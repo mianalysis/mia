@@ -303,8 +303,11 @@ public class Obj extends Volume implements MeasurementProvider {
 
     public void removeChild(Obj child) {
         String childName = child.getName();
-        children.get(childName).values().remove(child);
+        Objs selectedChildren = children.get(childName);
+        if (selectedChildren == null)
+            return;
 
+        selectedChildren.values().remove(child);
     }
 
     public LinkedHashMap<String, Objs> getPartners() {
@@ -506,11 +509,6 @@ public class Obj extends Volume implements MeasurementProvider {
 
     public void addPointsFromShape(Shape polygon, int z) throws PointOutOfRangeException {
         // Determining xy limits
-        // int minX = Arrays.stream(polygon.xpoints).min().getAsInt();
-        // int maxX = Arrays.stream(polygon.xpoints).max().getAsInt();
-        // int minY = Arrays.stream(polygon.ypoints).min().getAsInt();
-        // int maxY = Arrays.stream(polygon.ypoints).max().getAsInt();
-
         Rectangle bounds = polygon.getBounds();
         int minX = bounds.x;
         int maxX = minX + bounds.width;
