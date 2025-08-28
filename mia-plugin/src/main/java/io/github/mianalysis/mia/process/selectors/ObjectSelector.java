@@ -496,7 +496,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void actionPerformed(ActionEvent e) {
                 Prefs.set("MIA.ObjectSelector.AutoAccept", (String) autoAcceptMode.getSelectedItem());
-                Prefs.savePreferences();
             }
         });
         c.gridx++;
@@ -532,7 +531,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Prefs.set("MIA.ObjectSelector.AutoClass", (String) autoClassMode.getSelectedItem());
-                    Prefs.savePreferences();
                 }
             });
             c.gridx++;
@@ -606,7 +604,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void actionPerformed(ActionEvent e) {
                 Prefs.set("MIA.ObjectSelector.OverlayMode", (String) overlayMode.getSelectedItem());
-                Prefs.savePreferences();
 
                 boolean showOverlay = !overlayMode.getSelectedItem().equals(OverlayModes.NONE);
 
@@ -656,8 +653,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 else
                     Prefs.set("MIA.ObjectSelector.ColourModeWithClass", (String) colourMode.getSelectedItem());
 
-                Prefs.savePreferences();
-
                 updateOverlay();
             }
         });
@@ -699,7 +694,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void actionPerformed(ActionEvent e) {
                 Prefs.set("MIA.ObjectSelector.SliceMode", (String) sliceMode.getSelectedItem());
-                Prefs.savePreferences();
                 updateOverlay();
             }
         });
@@ -716,7 +710,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void actionPerformed(ActionEvent e) {
                 Prefs.set("MIA.ObjectSelector.ShowLabels", labelCheck.isSelected());
-                Prefs.savePreferences();
 
                 Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(labelCheck.isSelected()));
 
