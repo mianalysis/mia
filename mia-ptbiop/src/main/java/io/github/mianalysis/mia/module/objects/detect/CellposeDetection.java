@@ -326,18 +326,18 @@ public class CellposeDetection extends Module {
         returnedParameters.add(parameters.getParameter(ADDITIONAL_FLAGS));
         returnedParameters.add(parameters.getParameter(FLAGS_MESSAGE));
 
-        // Updating default parameters
-        Prefs.set("MIA.Cellpose.EnvDirPath", parameters.getValue(CELLPOSE_PATH, workspace));
-        switch ((String) parameters.getValue(ENVIRONMENT_TYPE, workspace)) {
-            case EnvironmentTypes.CONDA:
-                Prefs.set("MIA.Cellpose.EnvType", "conda");
-                break;
-            case EnvironmentTypes.VENV:
-                Prefs.set("MIA.Cellpose.EnvType", "venv");
-                break;
-        }
+        // // Updating default parameters
+        // Prefs.set("MIA.Cellpose.EnvDirPath", parameters.getValue(CELLPOSE_PATH, workspace));
+        // switch ((String) parameters.getValue(ENVIRONMENT_TYPE, workspace)) {
+        //     case EnvironmentTypes.CONDA:
+        //         Prefs.set("MIA.Cellpose.EnvType", "conda");
+        //         break;
+        //     case EnvironmentTypes.VENV:
+        //         Prefs.set("MIA.Cellpose.EnvType", "venv");
+        //         break;
+        // }
 
-        Prefs.savePreferences();
+        // Prefs.savePreferences();
 
         return returnedParameters;
 
