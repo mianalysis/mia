@@ -114,7 +114,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/service/rest/repository/browse/public/</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.github.deepimagej</groupId>
             <artifactId>deepimagej-plugin</artifactId>
-            <version>2.1.15</version>
+            <version>2.1.16</version>
             <scope>${scp}</scope>
         </dependency>
         
