@@ -176,7 +176,7 @@
   <repositories>
     <repository>
       <id>scijava.public</id>
-      <url>https://maven.scijava.org/content/groups/public/</url>
+      <url>https://maven.scijava.org/service/rest/repository/browse/public/</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
