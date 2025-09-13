@@ -159,6 +159,8 @@ public class SaveObjectsAsROIs extends AbstractSaver {
                     String label = "ID" + String.valueOf(oid) + "_TR" + String.valueOf(tid) + "_T"
                             + (inputObject.getT() + 1) + "_Z" + (z + 1) + classStr + ".roi";
 
+                    roi.setName(label);
+
                     if (inputObjects.getNFrames() > 1 && inputObjects.getNSlices() > 1)
                         roi.setPosition(1, z + 1, inputObject.getT() + 1);
                     else if (inputObjects.getNFrames() > 1 && inputObjects.getNSlices() == 1)

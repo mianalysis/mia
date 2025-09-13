@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -33,6 +34,7 @@ public abstract class AbstractOverlay extends Module {
     public static final String MINIMUM_VALUE = "Minimum value";
     public static final String RANGE_MAXIMUM_MODE = "Range maximum mode";
     public static final String MAXIMUM_VALUE = "Maximum value";
+    public static final String HIDE_OBJECTS_MISSING_VALUE = "Hide objects missing value";
 
     public AbstractOverlay(String name, Modules modules) {
         super(name, modules);
@@ -70,6 +72,7 @@ public abstract class AbstractOverlay extends Module {
         String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE, workspace);
         double maxValue = parameters.getValue(MAXIMUM_VALUE, workspace);
         double opacity = parameters.getValue(OPACITY, workspace);
+        boolean hideObjectsMissingValue = parameters.getValue(HIDE_OBJECTS_MISSING_VALUE, workspace);
 
         double[] range = new double[] { Double.NaN, Double.NaN };
         if (rangeMinMode.equals(RangeModes.MANUAL))
@@ -113,7 +116,14 @@ public abstract class AbstractOverlay extends Module {
                 break;
         }
 
-        return ColourFactory.getColours(values, colourMap, opacity);
+        HashMap<Integer, Color> colours = ColourFactory.getColours(values, colourMap, opacity);
+
+        if (hideObjectsMissingValue)
+            for (int key : values.keySet())
+                if (values.get(key) == -1f)
+                    colours.put(key, new Color(0, 0, 0, 0));
+
+        return colours;
 
     }
 
@@ -133,6 +143,7 @@ public abstract class AbstractOverlay extends Module {
         parameters.add(new DoubleP(MINIMUM_VALUE, this, 0d));
         parameters.add(new ChoiceP(RANGE_MAXIMUM_MODE, this, RangeModes.AUTOMATIC, RangeModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_VALUE, this, 1d));
+        parameters.add(new BooleanP(HIDE_OBJECTS_MISSING_VALUE, this, false));
 
     }
 
@@ -147,6 +158,7 @@ public abstract class AbstractOverlay extends Module {
                 ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR))
                         .setParentObjectsName(inputObjectsName);
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                returnedParameters.add(parameters.getParameter(HIDE_OBJECTS_MISSING_VALUE));
                 break;
 
             case ColourModes.ID:
@@ -164,6 +176,7 @@ public abstract class AbstractOverlay extends Module {
                     colourMeasurement.setObjectName(inputObjectsName);
                 }
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                returnedParameters.add(parameters.getParameter(HIDE_OBJECTS_MISSING_VALUE));
                 break;
 
             case ColourModes.OBJ_METADATA_ITEM:
@@ -173,6 +186,7 @@ public abstract class AbstractOverlay extends Module {
                     colourMetadataItem.setObjectName(inputObjectsName);
                 }
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                returnedParameters.add(parameters.getParameter(HIDE_OBJECTS_MISSING_VALUE));
                 break;
 
             case ColourModes.PARENT_ID:
@@ -180,6 +194,7 @@ public abstract class AbstractOverlay extends Module {
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
                         .setChildObjectsName(inputObjectsName);
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                returnedParameters.add(parameters.getParameter(HIDE_OBJECTS_MISSING_VALUE));
                 break;
 
             case ColourModes.PARENT_MEASUREMENT_VALUE:
@@ -192,6 +207,7 @@ public abstract class AbstractOverlay extends Module {
                 colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR, null));
 
                 returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                returnedParameters.add(parameters.getParameter(HIDE_OBJECTS_MISSING_VALUE));
 
                 break;
 

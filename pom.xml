@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>39.0.0</version>
+        <version>42.0.0</version>
         <relativePath />
     </parent>
 
@@ -123,6 +123,7 @@
         <module>mia-plugin</module>
         <module>mia-ptbiop</module>
         <module>mia-samj</module>
+        <module>mia-snt</module>
         <module>mia-stardist</module>
     </modules>
 

@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TracePaths",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.objects.detect.TracePaths",
+            "projectName": "mia-snt"
+        },
+        {
+            "type": "java",
             "name": "ApplySegmentAnything",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.objects.detect.ApplySegmentAnything",

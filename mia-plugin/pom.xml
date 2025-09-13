@@ -163,6 +163,12 @@
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-snt</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-stardist</artifactId>
             <version>${project.version}</version>
         </dependency>

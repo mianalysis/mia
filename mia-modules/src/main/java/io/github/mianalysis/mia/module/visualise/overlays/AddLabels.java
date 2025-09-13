@@ -286,6 +286,10 @@ public class AddLabels extends AbstractOverlay {
         super("Add labels", modules);
     }
 
+    public AddLabels(String moduleName, Modules modules) {
+        super(moduleName, modules);
+    }
+
     public interface LabelModes extends LabelFactory.LabelModes {
     }
 
@@ -306,6 +310,32 @@ public class AddLabels extends AbstractOverlay {
         int z = (int) Math.round(zMean + 1);
 
         return new double[] { xMean, yMean, z };
+
+    }
+
+    public static double[] getLocation(Obj object, String labelPosition, int xOffset, int yOffset,
+            @Nullable int[] positions, @Nullable String[] measurementNames) {
+        double[] location;
+        switch (labelPosition) {
+            case LabelPositions.CENTRE:
+            default:
+                location = getMeanObjectLocation(object);
+                break;
+            case LabelPositions.FIXED_VALUE:
+                location = new double[] { positions[0], positions[1], positions[2] };
+                break;
+            case LabelPositions.INSIDE:
+                location = getInsideObjectLocation(object);
+                break;
+            case LabelPositions.OBJECT_MEASUREMENT:
+                location = getMeasurementObjectLocation(object, measurementNames);
+                break;
+        }
+
+        location[0] = location[0] + xOffset;
+        location[1] = location[1] + yOffset;
+
+        return location;
 
     }
 
@@ -392,25 +422,7 @@ public class AddLabels extends AbstractOverlay {
                     Color colour = colours.get(object.getID());
                     String label = labels == null ? "" : labels.get(object.getID());
 
-                    double[] location;
-                    switch (labelPosition) {
-                        case LabelPositions.CENTRE:
-                        default:
-                            location = getMeanObjectLocation(object);
-                            break;
-                        case LabelPositions.FIXED_VALUE:
-                            location = new double[] { positions[0], positions[1], positions[2] };
-                            break;
-                        case LabelPositions.INSIDE:
-                            location = getInsideObjectLocation(object);
-                            break;
-                        case LabelPositions.OBJECT_MEASUREMENT:
-                            location = getMeasurementObjectLocation(object, measurementNames);
-                            break;
-                    }
-
-                    location[0] = location[0] + xOffset;
-                    location[1] = location[1] + yOffset;
+                    double[] location = getLocation(object, labelPosition, xOffset, yOffset, positions, measurementNames);
 
                     for (int t = t1; t <= t2; t++) {
                         if (renderInAllSlices) {
@@ -708,7 +720,7 @@ public class AddLabels extends AbstractOverlay {
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
             returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
         }
-        
+
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         returnedParameters.add(parameters.getParameter(X_OFFSET));
         returnedParameters.add(parameters.getParameter(Y_OFFSET));
