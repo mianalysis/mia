@@ -8,10 +8,12 @@ import org.scijava.vecmath.Point3f;
 
 import ij.measure.Calibration;
 import ij.process.ImageStatistics;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -40,6 +42,7 @@ import sc.fiji.snt.SNT.SearchImageType;
 import sc.fiji.snt.tracing.BiSearch;
 import sc.fiji.snt.tracing.cost.Cost;
 import sc.fiji.snt.tracing.cost.Reciprocal;
+import sc.fiji.snt.tracing.heuristic.Dijkstra;
 import sc.fiji.snt.tracing.heuristic.Euclidean;
 import sc.fiji.snt.tracing.heuristic.Heuristic;
 
@@ -103,28 +106,35 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
         Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
-        RandomAccessibleInterval<T> rai = inputImage.getImgPlus();
-        Calibration calibration = inputImage.getImagePlus().getCalibration();
+        // Calibration calibration = inputImage.getImagePlus().getCalibration();
+        Calibration calibration = new Calibration();
         ImageStatistics imageStatistics = inputImage.getImagePlus().getStatistics();
         Cost costFunction = new Reciprocal(imageStatistics.min, imageStatistics.max);
-        Heuristic heuristic = new Euclidean(calibration);
+        Heuristic heuristic = new Dijkstra();
 
         for (Obj inputObject : inputObjects.values()) {
+            RandomAccessibleInterval<T> rai = ExtractSubstack
+                    .extractSubstack(inputImage, "Timepoint", "1-end", "1-end", String.valueOf(inputObject.getT() + 1))
+                    .getImgPlus();
+
+            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+
             ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
-            if (longestPath.size() == 0) {
+
+            if (longestPath.size() <= 1) {
                 Objs tempObjs = new Objs("Temp", inputObjects);
                 Obj tempObj = inputObject.duplicate(tempObjs, false, false, false);
-                while (longestPath.size() == 0 && tempObj.size() > 0) {
+                while (longestPath.size() <= 1 && tempObj.size() > 0) {
                     tempObj.getCoordinateSet().remove(tempObj.getCoordinateIterator().next());
                     longestPath = CreateSkeleton.getLargestShortestPath(tempObj);
                 }
             }
 
             int nNodes = (int) Math.ceil(longestPath.size() / nodeInterval);
-            for (int i = 0; i < nNodes ; i++) {
+            for (int i = 0; i < nNodes; i++) {
                 int startIdx = i * nodeInterval;
                 int endIdx = i;
-                if (i < nNodes-1)
+                if (i < nNodes - 1)
                     endIdx = Math.min((i + 1) * nodeInterval, longestPath.size() - 1);
 
                 Point<Integer> startPt = longestPath.get(startIdx);
@@ -134,7 +144,6 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
                         endPt.z, Integer.MAX_VALUE, 1000, SearchImageType.ARRAY, costFunction, heuristic);
 
                 biSearch.run();
-                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
                 for (Point3f point : biSearch.getResult().getPoint3fList()) {
                     try {
                         outputObject.add((int) point.x, (int) point.y, (int) point.z);
@@ -142,6 +151,11 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
                     }
                 }
             }
+
+            outputObject.setT(inputObject.getT());
+            inputObject.addChild(outputObject);
+            outputObject.addParent(inputObject);
+
         }
 
         workspace.addObjects(outputObjects);
@@ -192,7 +206,15 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+        Workspace workspace = null;
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
+
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
+
+        return returnedRelationships;
+
     }
 
     @Override
