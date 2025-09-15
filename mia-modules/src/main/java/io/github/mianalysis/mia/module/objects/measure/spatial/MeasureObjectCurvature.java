@@ -290,7 +290,7 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    static boolean checkForLoop(ArrayList<Point<Integer>> longestPath) {
+    public static boolean checkForLoop(ArrayList<Point<Integer>> longestPath) {
         if (longestPath.size() < 2)
             return false;
 

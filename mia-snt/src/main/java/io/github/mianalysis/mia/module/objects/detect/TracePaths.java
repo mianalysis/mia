@@ -8,7 +8,6 @@ import org.scijava.vecmath.Point3f;
 
 import ij.measure.Calibration;
 import ij.process.ImageStatistics;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -35,6 +34,8 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import sc.fiji.snt.SNT.SearchImageType;
 import sc.fiji.snt.tracing.BiSearch;
 import sc.fiji.snt.tracing.cost.Cost;
@@ -46,7 +47,7 @@ import sc.fiji.snt.tracing.heuristic.Heuristic;
  * Created by Stephen Cross on 31/10/2024.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class TracePaths extends Module {
+public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
 
     /**
     * 
@@ -98,38 +99,53 @@ public class TracePaths extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         int nodeInterval = parameters.getValue(NODE_INTERVAL, workspace);
 
-        Image inputImage = workspace.getImages().get(inputImageName);
+        Image<T> inputImage = workspace.getImages().get(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
-        
-        RandomAccessibleInterval rai = inputImage.getImgPlus();
+        RandomAccessibleInterval<T> rai = inputImage.getImgPlus();
         Calibration calibration = inputImage.getImagePlus().getCalibration();
         ImageStatistics imageStatistics = inputImage.getImagePlus().getStatistics();
         Cost costFunction = new Reciprocal(imageStatistics.min, imageStatistics.max);
         Heuristic heuristic = new Euclidean(calibration);
-        
+
         for (Obj inputObject : inputObjects.values()) {
             ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
+            if (longestPath.size() == 0) {
+                Objs tempObjs = new Objs("Temp", inputObjects);
+                Obj tempObj = inputObject.duplicate(tempObjs, false, false, false);
+                while (longestPath.size() == 0 && tempObj.size() > 0) {
+                    tempObj.getCoordinateSet().remove(tempObj.getCoordinateIterator().next());
+                    longestPath = CreateSkeleton.getLargestShortestPath(tempObj);
+                }
+            }
 
-            Point<Integer> startPt = longestPath.get(0);
-            Point<Integer> endPt = longestPath.get(nodeInterval);
+            int nNodes = (int) Math.ceil(longestPath.size() / nodeInterval);
+            for (int i = 0; i < nNodes ; i++) {
+                int startIdx = i * nodeInterval;
+                int endIdx = i;
+                if (i < nNodes-1)
+                    endIdx = Math.min((i + 1) * nodeInterval, longestPath.size() - 1);
 
-            BiSearch biSearch = new BiSearch(rai, calibration, startPt.x, startPt.y, startPt.z, endPt.x, endPt.y,
-                    endPt.z, Integer.MAX_VALUE, 1000, SearchImageType.ARRAY, costFunction, heuristic);
-            
-            biSearch.run();
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
-            for (Point3f point:biSearch.getResult().getPoint3fList()) {
-                try {
-                    outputObject.add((int) point.x,(int) point.y,(int) point.z);
-                } catch (PointOutOfRangeException e) {
+                Point<Integer> startPt = longestPath.get(startIdx);
+                Point<Integer> endPt = longestPath.get(endIdx);
+
+                BiSearch biSearch = new BiSearch(rai, calibration, startPt.x, startPt.y, startPt.z, endPt.x, endPt.y,
+                        endPt.z, Integer.MAX_VALUE, 1000, SearchImageType.ARRAY, costFunction, heuristic);
+
+                biSearch.run();
+                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+                for (Point3f point : biSearch.getResult().getPoint3fList()) {
+                    try {
+                        outputObject.add((int) point.x, (int) point.y, (int) point.z);
+                    } catch (PointOutOfRangeException e) {
+                    }
                 }
             }
         }
 
         workspace.addObjects(outputObjects);
-        
+
         if (showOutput)
             outputObjects.convertToImageIDColours().show(false);
 
