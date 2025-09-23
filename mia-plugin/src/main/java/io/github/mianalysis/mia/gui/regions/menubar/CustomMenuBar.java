@@ -41,6 +41,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuItem loadWorkflow = new MenuItem(MenuItem.LOAD_WORKFLOW);
     private static MenuItem saveWorkflow = new MenuItem(MenuItem.SAVE_WORKFLOW);
     private static MenuItem saveWorkflowAs = new MenuItem(MenuItem.SAVE_WORKFLOW_AS);
+    private static MenuItem exportTestWorkspace = new MenuItem(MenuItem.EXPORT_TEST_WORKSPACE);
 
     private static MenuItem resetAnalysis = new MenuItem(MenuItem.RESET_ANALYSIS);
     private static MenuItem enableAllModules = new MenuItem(MenuItem.ENABLE_ALL);
@@ -64,6 +65,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(loadWorkflow);
         fileMenu.add(saveWorkflow);
         fileMenu.add(saveWorkflowAs);
+        fileMenu.addSeparator();
+        fileMenu.add(exportTestWorkspace);
 
         // Creating the edit menu
         editMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
@@ -175,7 +178,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
     public void update() {
         newWorkflow.setVisible(!GUI.isProcessingGUI());
-
+        exportTestWorkspace.setVisible(!GUI.isProcessingGUI());
+        
         editMenu.setVisible(!GUI.isProcessingGUI());
         blankMenu.setVisible(!GUI.isProcessingGUI());
 
