@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 
 import io.github.mianalysis.mia.MIA;
@@ -37,11 +37,17 @@ public class MessageArea extends ParameterControl {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
+        String wrappedHtml = "<html><head><style>"
+                + "body{width:0px;}"
+                + "</style></head><body>"
+                + parameter.getRawStringValue()
+                + "</body></html>";
+
         textPane = new JTextPane();
         textPane.setEditable(false);
         textPane.setBackground(null);
         textPane.setContentType("text/html");
-        textPane.setText(parameter.getRawStringValue());
+        textPane.setText(wrappedHtml);
         textPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         textPane.setForeground(SwingParameterControlFactory.getColor(parameter.getState(), isDark));
         textPane.setAlignmentX(JComponent.LEFT_ALIGNMENT);
@@ -56,8 +62,13 @@ public class MessageArea extends ParameterControl {
             }
         });
 
+        // Updating the textPane size to its contents whilst aware of available space
+        SwingUtilities.invokeLater(() -> {
+            control.revalidate();
+        });
+
         JScrollPane objectsScrollPane = new JScrollPane(textPane);
-        objectsScrollPane.setPreferredSize(new Dimension(0, controlHeight));
+        // objectsScrollPane.setPreferredSize(new Dimension(0, controlHeight));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
