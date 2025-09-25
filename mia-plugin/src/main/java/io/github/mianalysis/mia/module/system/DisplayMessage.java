@@ -14,7 +14,6 @@ import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -108,7 +107,7 @@ public class DisplayMessage extends AbstractSaver {
         }
 
         MessageP messageP = (MessageP) parameters.get(MESSAGE_PREVIEW);
-        messageP.setState(state);        
+        messageP.setState(state);
         messageP.setValue(parameters.getValue(MESSAGE_TEXT, null));
 
         return parameters;
