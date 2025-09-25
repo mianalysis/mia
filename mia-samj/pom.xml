@@ -158,7 +158,7 @@
         <dependency>
             <groupId>com.github.segment-anything-models-java</groupId>
             <artifactId>SAMJ</artifactId>
-            <version>main-SNAPSHOT</version>
+            <version>c6de55ac7f</version>
         </dependency>
     </dependencies>
 
