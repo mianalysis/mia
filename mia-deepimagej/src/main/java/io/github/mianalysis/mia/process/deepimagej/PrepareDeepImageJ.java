@@ -1,10 +1,8 @@
 package io.github.mianalysis.mia.process.deepimagej;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -204,43 +202,6 @@ public class PrepareDeepImageJ implements PlugIn {
 
                 return ArrayOperations.optimalPatch(ipl, haloVals, dim, step, min, dp.params.allowPatching);
 
-            }
-        }
-
-        return "";
-
-    }
-
-    public static String getOutputDimensions(String modelName) {
-        for (DeepImageJ dp : dps.values()) {
-            if (dp.getName().equals(modelName)) {
-                // Get basic specifications for the input from the yaml
-                MIA.log.writeDebug(dp.params.outputList.size());
-                List<DijTensor> tensor = dp.params.totalOutputList;
-                MIA.log.writeDebug("Num "+tensor.size());
-                // MIA.log.writeDebug(tensor.auxForm);
-                // MIA.log.writeDebug(tensor.dataType);
-                // MIA.log.writeDebug(tensor.exampleInput);
-                // MIA.log.writeDebug(tensor.form);
-                // MIA.log.writeDebug(tensor.outputTestSize);
-                MIA.log.writeDebug("SHAPE "+Arrays.toString(tensor.get(0).tensor_shape));
-                // // Minimum size if it is not fixed, 0s if it is
-                // int[] tensorMin = dp.params.inputList.get(0).minimum_size;
-                // // Step if the size is not fixed, 0s if it is
-                // int[] tensorStep = dp.params.inputList.get(0).step;
-                // float[] haloSize = ArrayOperations.findTotalPadding(dp.params.inputList.get(0), dp.params.outputList,
-                //         dp.params.pyramidalNetwork);
-                // // Get the minimum tile size given by the yaml without batch
-                // int[] min = DijTensor.getWorkingDimValues(tensorForm, tensorMin);
-                // // Get the step given by the yaml without batch
-                // int[] step = DijTensor.getWorkingDimValues(tensorForm, tensorStep);
-                // // Get the halo given by the yaml without batch
-                // float[] haloVals = DijTensor.getWorkingDimValues(tensorForm, haloSize);
-                // // Get the axes given by the yaml without batch
-                // String[] dim = DijTensor.getWorkingDims(tensorForm);
-
-                // return ArrayOperations.optimalPatch(ipl, haloVals, dim, step, min, dp.params.allowPatching);
-return null;
             }
         }
 
