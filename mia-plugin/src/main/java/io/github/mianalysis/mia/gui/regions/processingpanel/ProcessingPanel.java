@@ -103,7 +103,7 @@ public class ProcessingPanel extends AbstractPanel {
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         add(progressBarPanel,c);
-
+        
         revalidate();
         repaint();
 

@@ -114,12 +114,11 @@ public class ColourFactory {
             // Default hue value in case none is assigned
             float H = 0f;
 
-            if (object.getParent(parentObjectsName) == null) {
+            if (object.getParent(parentObjectsName) == null)
                 H = -1f;
-            } else {
+            else
                 H = (float) object.getParent(parentObjectsName).getID();
-            }
-
+            
             if (normalised & object.getParent(parentObjectsName) != null)
                 H = (H * 1048576 % 255) / 255;
 
@@ -236,7 +235,7 @@ public class ColourFactory {
 
             Objs childObjects = object.getChildren(childObjectsName);
             if (childObjects == null) {
-                hues.put(ID, H);
+                hues.put(ID, -1f);
                 continue;
             }
             H = (float) object.getChildren(childObjectsName).size();
@@ -285,7 +284,7 @@ public class ColourFactory {
 
             Objs partnerObjects = object.getPartners(partnerObjectsName);
             if (partnerObjects == null) {
-                hues.put(ID, H);
+                hues.put(ID, -1f);
                 continue;
             }
             H = (float) object.getPartners(partnerObjectsName).size();
@@ -334,7 +333,7 @@ public class ColourFactory {
 
             Measurement measurement = object.getMeasurement(measurementName);
             if (measurement == null) {
-                hues.put(ID, H);
+                hues.put(ID, -1f);
                 continue;
             }
             H = (float) object.getMeasurement(measurementName).getValue();
@@ -359,14 +358,14 @@ public class ColourFactory {
             return hues;
 
         for (Obj object : objects.values()) {
-            if (object == null || metadataName == null) {
-                hues.put(object.getID(), 0.167f);
+            if (metadataName == null) {
+                hues.put(object.getID(), -1f);
                 continue;
             }
 
             ObjMetadata metadataItem = object.getMetadataItem(metadataName);
-            if (metadataItem == null) {
-                hues.put(object.getID(), 0.167f);
+            if (metadataItem == null || metadataItem.getValue().equals("")) {
+                hues.put(object.getID(), -1f);
                 continue;
             }
 
@@ -411,7 +410,7 @@ public class ColourFactory {
 
             Obj parentObj = object.getParent(parentObjectsName);
             if (parentObj == null) {
-                hues.put(ID, H);
+                hues.put(ID, -1f);
                 continue;
             }
             if (parentObj.getMeasurement(measurementName) == null) {

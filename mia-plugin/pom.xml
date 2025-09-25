@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.15</version>
+        <version>1.7.16</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-plugin</artifactId>
-    <version>1.7.15</version>
+    <version>1.7.16</version>
     <packaging>jar</packaging>
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -115,7 +115,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -163,6 +163,12 @@
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-snt</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-stardist</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -170,7 +176,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.5.1</version>
+            <version>3.6.1</version>
             <scope>${scp}</scope>
         </dependency>
 

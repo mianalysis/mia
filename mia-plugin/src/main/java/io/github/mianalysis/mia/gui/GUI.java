@@ -127,6 +127,8 @@ public class GUI {
 
         // Final bits for listeners
         frame.pack();
+        frame.validate();
+        frame.repaint();
         frame.setVisible(true);
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2,
                 (screenSize.height - frameHeight) / 2);

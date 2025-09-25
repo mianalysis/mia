@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.process.DependencyValidator;
 @Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>Enable MIA Extensions", visible = true)
 public class EnableExtensions implements Command {
     @Override
-    public void run() {
+    public void run() { 
         // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())
             return;

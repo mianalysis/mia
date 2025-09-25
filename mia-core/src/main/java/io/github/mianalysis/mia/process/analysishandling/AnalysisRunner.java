@@ -232,7 +232,7 @@ public class AnalysisRunner {
 
     }
 
-    Exporter initialiseExporter(OutputControl outputControl) {
+    public static Exporter initialiseExporter(OutputControl outputControl) {
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE, null);
         String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING,
                 null);

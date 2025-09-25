@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.15</version>
+        <version>1.7.16</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-macros</artifactId>
-    <version>1.7.15</version>
+    <version>1.7.16</version>
     <packaging>jar</packaging>
     <name>mia-macros</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -114,7 +114,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>

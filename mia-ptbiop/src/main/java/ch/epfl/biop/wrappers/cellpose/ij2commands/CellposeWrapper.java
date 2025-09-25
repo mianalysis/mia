@@ -2,7 +2,10 @@ package ch.epfl.biop.wrappers.cellpose.ij2commands;
 
 import java.io.File;
 
+import org.scijava.log.LogService;
+
 import ij.ImagePlus;
+import io.github.mianalysis.mia.MIA;
 
 public class CellposeWrapper extends Cellpose {
     protected double cellProbThreshold = 0;
@@ -15,6 +18,7 @@ public class CellposeWrapper extends Cellpose {
     
     public CellposeWrapper() {
         this.additional_flags = "";
+        this.ls = MIA.getPluginService().getContext().getService(LogService.class);
     }
 
     public ImagePlus getLabels() {

@@ -86,7 +86,6 @@ public class CellposeDetection extends Module {
 
     public static final String FLAGS_MESSAGE = "Flags message";
 
-
     public interface EnvironmentTypes {
         String CONDA = "Conda";
         String VENV = "Venv";
@@ -278,8 +277,10 @@ public class CellposeDetection extends Module {
         parameters.add(new ChoiceP(MODEL_MODE, this, ModelModes.INCLUDED, ModelModes.ALL));
         parameters.add(new FilePathP(CUSTOM_MODEL_PATH, this));
         parameters.add(new StringP(MODEL, this, "cpsam"));
-        parameters.add(new MessageP(MODEL_MESSAGE, this, "Available models will depend on the version of Cellpose installed, but examples are \"cyto\", \"cyto2\", \"cyto3\", \"cpsam\", \"nuclei\" and \"bact\".", ParameterState.MESSAGE));
-        
+        parameters.add(new MessageP(MODEL_MESSAGE, this,
+                "Available models will depend on the version of Cellpose installed, but examples are \"cyto\", \"cyto2\", \"cyto3\", \"cpsam\", \"nuclei\" and \"bact\".",
+                ParameterState.MESSAGE));
+
         parameters.add(new SeparatorP(SEGMENTATION_SEPARATOR, this));
         parameters.add(new ChoiceP(DIMENSION_MODE, this, DimensionModes.TWOD, DimensionModes.ALL));
         parameters.add(new IntegerP(DIAMETER, this, 30));
@@ -288,7 +289,9 @@ public class CellposeDetection extends Module {
         parameters.add(new DoubleP(ANISOTROPY, this, 1.0));
         parameters.add(new DoubleP(STITCH_THRESHOLD, this, -1d));
         parameters.add(new StringP(ADDITIONAL_FLAGS, this));
-        parameters.add(new MessageP(FLAGS_MESSAGE, this, "<html>All flags are listed at <a href=\"https://cellpose.readthedocs.io/en/latest/cli.html\">https://cellpose.readthedocs.io/en/latest/cli.html</a></html>", ParameterState.MESSAGE));
+        parameters.add(new MessageP(FLAGS_MESSAGE, this,
+                "<html>All flags are listed at <a href=\"https://cellpose.readthedocs.io/en/latest/cli.html\">https://cellpose.readthedocs.io/en/latest/cli.html</a></html>",
+                ParameterState.MESSAGE));
 
     }
 
@@ -309,12 +312,14 @@ public class CellposeDetection extends Module {
         returnedParameters.add(parameters.getParameter(MODEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MODEL_MODE));
         switch ((String) parameters.getValue(MODEL_MODE, workspace)) {
+            case ModelModes.INCLUDED:
+                returnedParameters.add(parameters.getParameter(MODEL));
+                returnedParameters.add(parameters.getParameter(MODEL_MESSAGE));
+                break;
             case ModelModes.CUSTOM:
                 returnedParameters.add(parameters.getParameter(CUSTOM_MODEL_PATH));
                 break;
         }
-        returnedParameters.add(parameters.getParameter(MODEL));
-        returnedParameters.add(parameters.getParameter(MODEL_MESSAGE));
 
         returnedParameters.add(parameters.getParameter(SEGMENTATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DIMENSION_MODE));
@@ -325,19 +330,6 @@ public class CellposeDetection extends Module {
         returnedParameters.add(parameters.getParameter(STITCH_THRESHOLD));
         returnedParameters.add(parameters.getParameter(ADDITIONAL_FLAGS));
         returnedParameters.add(parameters.getParameter(FLAGS_MESSAGE));
-
-        // Updating default parameters
-        Prefs.set("MIA.Cellpose.EnvDirPath", parameters.getValue(CELLPOSE_PATH, workspace));
-        switch ((String) parameters.getValue(ENVIRONMENT_TYPE, workspace)) {
-            case EnvironmentTypes.CONDA:
-                Prefs.set("MIA.Cellpose.EnvType", "conda");
-                break;
-            case EnvironmentTypes.VENV:
-                Prefs.set("MIA.Cellpose.EnvType", "venv");
-                break;
-        }
-
-        Prefs.savePreferences();
 
         return returnedParameters;
 

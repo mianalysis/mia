@@ -57,8 +57,6 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         modules.add(removeImage);
 
         LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null);
-
-        System.err.println("OUTPUT.    " + availableImages);
         assertEquals(1, availableImages.size());
 
     }

@@ -1,14 +1,18 @@
 package io.github.mianalysis.mia.module.images.process;
 
+import java.util.Arrays;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
+import deepimagej.tools.DijTensor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.plugin.RGBStackConverter;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -56,8 +60,9 @@ public class ApplyDeepImageJModel extends Module {
     public static final String INPUT_IMAGE = "Input image";
 
     /**
-	* Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model.
-	*/
+     * Converts a composite image to RGB format. This should be set to match the
+     * image-type used for generation of the model.
+     */
     public static final String CONVERT_TO_RGB = "Convert to RGB";
 
     /**
@@ -89,13 +94,11 @@ public class ApplyDeepImageJModel extends Module {
     * 
     */
     public static final String PATCH_SIZE = "Patch size";
-    
+
     /**
     * 
     */
     public static final String AXES_ORDER = "Axes order";
-
-
 
     private String currModelName = "";
 
@@ -130,7 +133,7 @@ public class ApplyDeepImageJModel extends Module {
     public Status process(Workspace workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB,workspace);
+        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String modelName = parameters.getValue(MODEL, workspace);
         // String preprocessing = parameters.getValue(PREPROCESSING, workspace);
@@ -151,6 +154,7 @@ public class ApplyDeepImageJModel extends Module {
         // Running deep learning model
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
         String outputType = model.params.outputList.get(0).tensorType;
+        MIA.log.writeDebug(model);
 
         // Updating pre and post processing options
         boolean usePreprocessing = true;
@@ -165,6 +169,8 @@ public class ApplyDeepImageJModel extends Module {
         ImageStack inputIst = inputIpl.getStack();
         ImagePlus outputIpl = null;
         ImageStack outputIst = null;
+
+        // PrepareDeepImageJ.getOutputDimensions(modelName, outputIpl);
 
         int count = 0;
         for (int z = 0; z < inputIpl.getNSlices(); z++) {
@@ -212,10 +218,19 @@ public class ApplyDeepImageJModel extends Module {
                     }
                 } else if (outputType.equals("list")) {
                     float[] modelOutputArray = (float[]) modelOutput;
-                    inputImage.addMeasurement(
-                            new Measurement(Measurements.CLASSIFICATION_CLASS, (int) Math.round(modelOutputArray[0])));
-                    inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_PROBABILITY,
-                            (int) Math.round(modelOutputArray[1])));
+                    int classificationClass = 0;
+
+                    if (model.params.outputList.get(0).recommended_patch[1] == 1) {
+                        // Binary classification
+                        classificationClass = (int) Math.round(1-modelOutputArray[1]);
+                    } else {
+                        // Categorical classification
+                        classificationClass = (int) Math.round(modelOutputArray[0]);
+                    }
+
+                    inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_CLASS, classificationClass));
+                    inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_PROBABILITY, modelOutputArray[1]));
+
                 }
 
                 writeProgressStatus(++count, inputIst.size(), "slices");
@@ -295,6 +310,8 @@ public class ApplyDeepImageJModel extends Module {
         ((MessageP) parameters.get(AXES_ORDER))
                 .setValue("Selected model requires input image axes to be in the order: "
                         + PrepareDeepImageJ.getAxes(modelName));
+
+        // PrepareDeepImageJ.getOutputDimensions(modelName);
 
         currModelName = modelName;
 
