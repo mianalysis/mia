@@ -17,10 +17,10 @@ public class Mod_Elastix_Register extends Elastix_Register {
 		boolean multiChannelRegistration = false;
 		int nChannels = 1;
 
-		if ((movingImage.getNChannels()>1)||(fixedImage.getNChannels()>1)) {
-			if (fixedImage.getNChannels()==movingImage.getNChannels()) {
+		if ((moving_image.getNChannels()>1)||(fixed_image.getNChannels()>1)) {
+			if (fixed_image.getNChannels()==moving_image.getNChannels()) {
 				multiChannelRegistration = true;
-				nChannels = fixedImage.getNChannels();
+				nChannels = fixed_image.getNChannels();
 			} else {
 				System.out.println("Can't perform multichannel registration because the number of channel is not identical between moving and fixed image");
 			}
@@ -29,8 +29,8 @@ public class Mod_Elastix_Register extends Elastix_Register {
 
 		rh = new Mod_RegisterHelper();
 		((Mod_RegisterHelper) rh).setNThreads(nThreads);
-		rh.setMovingImage(movingImage);
-		rh.setFixedImage(fixedImage);
+		rh.setMovingImage(moving_image);
+		rh.setFixedImage(fixed_image);
 		if (rigid) {
 			RegistrationParameters[] rps = new RegistrationParameters[nChannels];
 			for (int iCh = 0;iCh<nChannels;iCh++) {
@@ -62,7 +62,7 @@ public class Mod_Elastix_Register extends Elastix_Register {
 			}
 			RegistrationParameters rp = RegistrationParameters.combineRegistrationParameters(rps);
 			//if (multiChannelRegistration) rp = RegistrationParameters.useAlphaMutualInformation(rp,nChannels);
-			rp.FinalGridSpacingInVoxels = splineGridSpacing;
+			rp.FinalGridSpacingInVoxels = spline_grid_spacing;
 			rh.addTransform(rp);
 		}
 		try {

@@ -43,6 +43,7 @@ import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 import io.github.mianalysis.mia.process.system.ExtensionMatchesString;
 import io.github.mianalysis.mia.process.system.FileCondition;
+import io.github.mianalysis.mia.process.system.FileCondition.Mode;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 import io.github.mianalysis.mia.process.system.NameContainsString;
 import io.github.mianalysis.mia.process.system.ParentContainsString;
@@ -138,10 +139,6 @@ public class InputControl extends Module {
 	*/
     public static final String FILTER_SEPARATOR = "File/folder filters";
 
-	/**
-	* 
-	*/
-    public static final String IGNORE_CASE = "Ignore case";
 
 	/**
 	* Add another filename filter.  All images to be processed will pass all filters.
@@ -150,6 +147,7 @@ public class InputControl extends Module {
     public static final String FILTER_SOURCE = "Filter source";
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
+    public static final String IGNORE_CASE = "Ignore case";
 
 
 	/**
@@ -231,13 +229,14 @@ public class InputControl extends Module {
             String filterSource = collection.getValue(FILTER_SOURCE, null);
             String filterValue = collection.getValue(FILTER_VALUE, null);
             String filterType = collection.getValue(FILTER_TYPE, null);
+            boolean ignoreCase = collection.getValue(IGNORE_CASE, null);
 
             switch (filterSource) {
                 case FilterSources.EXTENSION:
                 case FilterSources.FILENAME:
                 case FilterSources.FILEPATH:
                     String[] filterValues = filterValue.split(",");
-                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValues, filterSource));
+                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValues, filterSource, ignoreCase));
                     break;
             }
         }
@@ -248,32 +247,32 @@ public class InputControl extends Module {
 
     }
 
-    private static FileCondition getFilenameFilter(String filterType, String[] filterValues, String filterSource) {
-        FileCondition.Mode fileCondition;
+    private static FileCondition getFilenameFilter(String filterType, String[] filterValues, String filterSource, boolean ignoreCase) {
+        Mode mode;
         switch (filterType) {
             case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
             default:
-                fileCondition = FileCondition.Mode.INC_PARTIAL;
+                mode = FileCondition.Mode.INC_PARTIAL;
                 break;
             case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                fileCondition = FileCondition.Mode.INC_COMPLETE;
+                mode = FileCondition.Mode.INC_COMPLETE;
                 break;
             case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                fileCondition = FileCondition.Mode.EXC_PARTIAL;
+                mode = FileCondition.Mode.EXC_PARTIAL;
                 break;
             case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                fileCondition = FileCondition.Mode.EXC_COMPLETE;
+                mode = FileCondition.Mode.EXC_COMPLETE;
                 break;
         }
 
         switch (filterSource) {
             case FilterSources.EXTENSION:
-                return new ExtensionMatchesString(filterValues, fileCondition);
+                return new ExtensionMatchesString(filterValues, mode, ignoreCase);
             case FilterSources.FILENAME:
             default:
-                return new NameContainsString(filterValues, fileCondition);
+                return new NameContainsString(filterValues, mode, ignoreCase);
             case FilterSources.FILEPATH:
-                return new ParentContainsString(filterValues, fileCondition);
+                return new ParentContainsString(filterValues, mode, ignoreCase);
         }
     }
 
@@ -339,22 +338,22 @@ public class InputControl extends Module {
             String filterSource = collection.getValue(FILTER_SOURCE, null);
             String filterValue = collection.getValue(FILTER_VALUE, null);
             String filterType = collection.getValue(FILTER_TYPE, null);
+            boolean ignoreCase = collection.getValue(IGNORE_CASE, null);
 
             switch (filterSource) {
                 case FilterSources.SERIESNAME:
                     String[] filterValues = filterValue.split(",");
-                    filters.add(getFilenameFilter(filterType, filterValues, filterSource));
+                    filters.add(getFilenameFilter(filterType, filterValues, filterSource, ignoreCase));
                     break;
             }
         }
 
-        boolean ignoreCase = parameters.getValue(IGNORE_CASE, null);
         for (int seriesNumber = 0; seriesNumber < reader.getSeriesCount(); seriesNumber++) {
             String name = meta.getImageName(seriesNumber);
 
             boolean pass = true;
             for (FileCondition filter : filters) {
-                if (name != null & !filter.test(new File(name), ignoreCase)) {
+                if (name != null & !filter.test(new File(name))) {
                     pass = false;
                     break;
                 }
@@ -473,11 +472,11 @@ public class InputControl extends Module {
                 .add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
-        parameters.add(new BooleanP(IGNORE_CASE, this, false));
         Parameters collection = new Parameters();
         collection.add(new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL));
         collection.add(new StringP(FILTER_VALUE, this));
         collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL));
+        collection.add(new BooleanP(IGNORE_CASE, this, false));
         parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
@@ -521,7 +520,6 @@ public class InputControl extends Module {
         TemporalUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.TEMPORAL_UNIT)).getValue(workspace));
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(IGNORE_CASE));
         returnedParameters.add(parameters.getParameter(ADD_FILTER));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

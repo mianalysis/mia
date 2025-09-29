@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>40.0.0</version>
+        <version>42.0.0</version>
         <relativePath />
     </parent>
 
@@ -123,13 +123,14 @@
         <module>mia-plugin</module>
         <module>mia-ptbiop</module>
         <module>mia-samj</module>
+        <module>mia-snt</module>
         <module>mia-stardist</module>
     </modules>
 
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -137,6 +138,17 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jetbrains.bio</groupId>
+                <artifactId>npy</artifactId>
+                <version>0.3.5</version>
+                <scope>${scp}</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -271,11 +283,11 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
+            <id>mavencentral</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>ossrh</id>
+            <id>mavencentral</id>
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
@@ -306,20 +318,15 @@
             <!-- mvn clean deploy -Dscp=provided -Dmaven.test.skip -->
             <!-- or for PowerShell -->
             <!-- mvn clean deploy -Dscp=provided [MINUS][MINUS]% -Dmaven.test.skip -->
-            <!-- CHECK GENERATED MIA JAR RUNS IN FIJI (sometimes it generates a larger jar which
-            fails to run - maybe when "target" isn't deleted first)-->
-            <!-- Release to Maven Central using following -->
-            <!-- mvn nexus-staging:release -->
+            <!-- Go to Maven Central website to finalise release -->
 
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    <publishingServerId>central</publishingServerId>
                 </configuration>
             </plugin>
 

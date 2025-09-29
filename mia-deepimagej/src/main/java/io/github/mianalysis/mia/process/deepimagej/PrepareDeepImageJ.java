@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.process.deepimagej;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +36,7 @@ import io.github.mianalysis.mia.MIA;
  * deepimagej/DeepImageJ.java (accessed 2022-12-07)
  */
 public class PrepareDeepImageJ implements PlugIn {
-    private static HashMap<String, DeepImageJ> dps = list(getModelsPath());
+    private static TreeMap<String, DeepImageJ> dps = list(getModelsPath());
 
     public interface Formats {
         String PYTORCH = "Pytorch";
@@ -51,7 +52,7 @@ public class PrepareDeepImageJ implements PlugIn {
                 return "/Users/sc13967/Applications/Fiji.app/models/";
             else
                 // return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
-                return "C:\\Users\\sc13967\\Desktop\\Fiji.app\\models\\";
+                return "C:\\Users\\sc13967\\Programs\\Fiji.app (DeepImageJ)\\models\\";
         else
             return IJ.getDirectory("imagej") + File.separator + "models" + File.separator;
     }
@@ -64,8 +65,8 @@ public class PrepareDeepImageJ implements PlugIn {
         new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", false, false, "400,400,1");
     }
 
-    public static HashMap<String, DeepImageJ> list(String modelDir) {
-        HashMap<String, DeepImageJ> list = new HashMap<String, DeepImageJ>();
+    public static TreeMap<String, DeepImageJ> list(String modelDir) {
+        TreeMap<String, DeepImageJ> list = new TreeMap<String, DeepImageJ>();
         File[] dirs = new File(modelDir).listFiles();
         if (dirs == null) {
             System.err.println("No models found at: " + System.lineSeparator() + " - " + modelDir);

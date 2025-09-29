@@ -53,9 +53,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -77,6 +78,7 @@ import ij.plugin.Duplicator;
 import ij.process.BinaryInterpolator;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.parametercontrols.WiderDropDownCombo;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.ObjMetadata;
@@ -86,6 +88,9 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
@@ -102,15 +107,20 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private JMenuBar menuBar;
     private JTextField objectNumberField;
     private JComboBox<String> autoAcceptMode;
+    private WiderDropDownCombo autoClassMode;
     private CustomListModel<ObjRoi> listModel = new CustomListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
     private JComboBox<String> overlayMode;
     private JPanel colourPanel;
     private JComboBox<String> colourMode;
+    private JPanel slicePanel;
+    private JComboBox<String> sliceMode;
+    private JPanel outlinePanel;
+    private JTextField outlineWidthField;
     private JCheckBox labelCheck;
     private JPanel fontPanel;
-    private JTextField labelFontSize;
+    private JTextField labelFontSizeField;
 
     private ImagePlus displayIpl;
     private Overlay overlay;
@@ -121,7 +131,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private String volumeTypeString;
     private ClassSelector classSelector;
     private ArrayList<JPanel> extraPanels = new ArrayList<>();
-    private int gridWidth = 4;
+    private int gridWidth = 3;
     private String previousOverlayMode = OverlayModes.NONE;
     private static int x0 = Prefs.getInt("MIA.ObjectSelector.x0", 100);
     private static int y0 = Prefs.getInt("MIA.ObjectSelector.y0", 100);
@@ -137,17 +147,28 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     // GUI buttons
     private static final String ADD_NEW = "Add as new object (F1)";
-    private static final String ADD_EXISTING = "Add to existing object (F2)";
-    private static final String REMOVE = "Remove object(s) (F3) ";
-    private static final String FINISH = "Finish adding objects (F4)";
-    private static final String CHANGE_CLASS = "Change object class (F5)";
+    private static final String REMOVE = "Remove object(s) (F2) ";
+    private static final String FINISH = "Finish adding objects (F3)";
+    private static final String ADD_EXISTING = "Add to existing object (F4)";
+    private static final String REMOVE_EXISTING = "Remove from existing object (F5)";
+    private static final String CHANGE_CLASS = "Change object class (F6)";
+
+    public interface ExistingObjectTypes {
+        String REGIONS = "Regions";
+        String SINGLE_POINTS = "Single points";
+
+        String[] ALL = new String[] { REGIONS, SINGLE_POINTS };
+
+    }
 
     public interface AutoAcceptModes {
         String DO_NOTHING = "Do nothing";
         String ADD_AS_NEW_OBJECT = "Add as new object";
         String ADD_TO_EXISTING_OBJECT = "Add to existing object";
+        String REMOVE_FROM_EXISTING_OBJECT = "Remove from existing object";
 
-        String[] ALL = new String[] { DO_NOTHING, ADD_AS_NEW_OBJECT, ADD_TO_EXISTING_OBJECT };
+        String[] ALL = new String[] { DO_NOTHING, ADD_AS_NEW_OBJECT, ADD_TO_EXISTING_OBJECT,
+                REMOVE_FROM_EXISTING_OBJECT };
 
     }
 
@@ -157,6 +178,16 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         String OUTLINES = "Outlines";
 
         String[] ALL = new String[] { NONE, FILL, OUTLINES };
+
+    }
+
+    public interface SliceModes {
+        String CURRENT_ONLY = "Current only";
+        String ALL_FRAMES = "All frames";
+        String ALL_SLICES = "All slices";
+        String ALL_FRAMES_AND_SLICES = "All frames and slices";
+
+        String[] ALL = new String[] { CURRENT_ONLY, ALL_FRAMES, ALL_SLICES, ALL_FRAMES_AND_SLICES };
 
     }
 
@@ -216,9 +247,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         this.pointMode = pointMode;
         this.volumeTypeString = volumeTypeString;
 
-        if (classSelector != null)
-            gridWidth = 5;
-
         displayIpl = new Duplicator().run(inputIpl);
         displayIpl.setCalibration(null);
         displayIpl.setTitle(messageOnImage);
@@ -245,6 +273,22 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
+    public String[] getAutoClassModes() {
+        if (classSelector == null)
+            return null;
+
+        String[] autoClassModes = new String[classSelector.getAllClasses().size() + 2];
+        autoClassModes[0] = "Do nothing";
+        autoClassModes[1] = "Select class";
+
+        int i = 2;
+        for (String className : classSelector.getAllClasses())
+            autoClassModes[i++] = "Apply \"" + className + "\"";
+
+        return autoClassModes;
+
+    }
+
     public void setControlPanelVisible(boolean visible) {
         frame.setVisible(visible);
     }
@@ -256,7 +300,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             displayIpl.getWindow().getCanvas().addMouseListener(this);
 
             boolean listenerExists = false;
-            for (KeyListener listener:displayIpl.getWindow().getCanvas().getKeyListeners())
+            for (KeyListener listener : displayIpl.getWindow().getCanvas().getKeyListeners())
                 if (listener == this) {
                     listenerExists = true;
                     break;
@@ -264,7 +308,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             if (!listenerExists)
                 displayIpl.getWindow().getCanvas().addKeyListener(this);
-            
+
         } else {
             displayIpl.hide();
         }
@@ -297,6 +341,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private void createControlPanel(String instructionText) {
         rois = new HashMap<>();
         maxID = 0;
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         frame = new JFrame();
 
@@ -341,6 +386,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 displayObjects(list.getSelectedValuesList());
+                List<ObjRoi> selection = list.getSelectedValuesList();
+                if (selection.size() > 0) {
+                    objectNumberField.setText(String.valueOf(list.getSelectedValuesList().get(0).getID()));
+                    objectNumberField.setForeground(Color.BLACK);
+                }
             }
         });
 
@@ -374,12 +424,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(newObjectButton, c);
 
-        JButton existingObjectButton = new JButton(ADD_EXISTING);
-        existingObjectButton.addActionListener(this);
-        existingObjectButton.setActionCommand(ADD_EXISTING);
-        c.gridx++;
-        frame.add(existingObjectButton, c);
-
         JButton removeObjectButton = new JButton(REMOVE);
         removeObjectButton.addActionListener(this);
         removeObjectButton.setActionCommand(REMOVE);
@@ -392,33 +436,59 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         frame.add(finishButton, c);
 
-        if (classSelector != null) {
-            JButton changeObjectClassButton = new JButton(CHANGE_CLASS);
-            changeObjectClassButton.addActionListener(this);
-            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
-            c.gridx++;
-            frame.add(changeObjectClassButton, c);
-        }
-
-        // Object number panel
-        JLabel objectNumberLabel = new JLabel("Existing object number");
-        objectNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
+        c.gridwidth = gridWidth;
         c.gridx = 0;
         c.gridy++;
+        frame.add(separator, c);
+
+        JButton addToExistingObjectButton = new JButton(ADD_EXISTING);
+        addToExistingObjectButton.addActionListener(this);
+        addToExistingObjectButton.setActionCommand(ADD_EXISTING);
+        c.gridy++;
+        c.gridx = 0;
         c.gridwidth = 1;
-        c.anchor = GridBagConstraints.EAST;
-        frame.add(objectNumberLabel, c);
+        frame.add(addToExistingObjectButton, c);
+
+        JButton removeFromExistingObjectButton = new JButton(REMOVE_EXISTING);
+        removeFromExistingObjectButton.addActionListener(this);
+        removeFromExistingObjectButton.setActionCommand(REMOVE_EXISTING);
+        c.gridx++;
+        frame.add(removeFromExistingObjectButton, c);
 
         objectNumberField = new JTextField();
+        objectNumberField.setText("Object ID");
+        objectNumberField.setForeground(Color.LIGHT_GRAY);
+        objectNumberField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                objectNumberField.setText("");
+                objectNumberField.setForeground(Color.BLACK);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
         c.gridx++;
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField, c);
 
+        separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
+        c.gridwidth = gridWidth;
+        c.gridx = 0;
+        c.gridy++;
+        frame.add(separator, c);
+
         // Auto accept panel
-        JLabel autoAcceptLabel = new JLabel("When region drawn");
+        JLabel autoAcceptLabel = new JLabel("When region drawn: ");
         autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
-        c.gridx = gridWidth - 2;
+        c.gridy++;
+        c.gridx = 1;
+        c.gridwidth = 1;
         c.anchor = GridBagConstraints.EAST;
         frame.add(autoAcceptLabel, c);
 
@@ -433,6 +503,43 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         c.gridx++;
         c.anchor = GridBagConstraints.WEST;
         frame.add(autoAcceptMode, c);
+
+        if (classSelector != null) {
+            separator = new JSeparator(JSeparator.HORIZONTAL);
+            separator.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(isDark)));
+            c.gridwidth = gridWidth;
+            c.gridx = 0;
+            c.gridy++;
+            frame.add(separator, c);
+
+            JButton changeObjectClassButton = new JButton(CHANGE_CLASS);
+            changeObjectClassButton.addActionListener(this);
+            changeObjectClassButton.setActionCommand(CHANGE_CLASS);
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = 1;
+            frame.add(changeObjectClassButton, c);
+
+            autoAcceptLabel = new JLabel("When region drawn: ");
+            autoAcceptLabel.setHorizontalAlignment(JLabel.RIGHT);
+            c.gridx++;
+            c.anchor = GridBagConstraints.EAST;
+            frame.add(autoAcceptLabel, c);
+
+            String[] autoClassModes = getAutoClassModes();
+            autoClassMode = new WiderDropDownCombo(autoClassModes);
+            autoClassMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.AutoClass", autoClassModes[1]));
+            autoClassMode.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Prefs.set("MIA.ObjectSelector.AutoClass", (String) autoClassMode.getSelectedItem());
+                }
+            });
+            c.gridx++;
+            c.anchor = GridBagConstraints.WEST;
+            frame.add(autoClassMode, c);
+
+        }
 
         // Extra tools panels
         for (JPanel extraPanel : extraPanels) {
@@ -474,7 +581,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         displayIpl.setHideOverlay(!overlayMode.equals(OverlayModes.NONE));
 
-        frame.setMinimumSize(new Dimension(800, 480));
+        frame.setMinimumSize(new Dimension(800, 560));
         frame.setMaximumSize(new Dimension(800, Integer.MAX_VALUE));
         frame.pack();
         frame.setLocation(new Point(x0, y0));
@@ -504,6 +611,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
                 displayIpl.setHideOverlay(!showOverlay);
                 Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+                Arrays.stream(slicePanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+
+                boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
+                Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOutlines));
+
                 labelCheck.setEnabled(showOverlay);
                 if (labelCheck.isSelected())
                     Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
@@ -514,6 +626,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 }
             }
         });
+
+        boolean showOverlay = !Prefs.get("MIA.ObjectSelector.OverlayMode", OverlayModes.FILL).equals(OverlayModes.NONE);
 
         overlayPanel.add(new JLabel("Overlay"), c);
         c.gridx++;
@@ -533,7 +647,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             colourMode.setSelectedItem(
                     Prefs.get("MIA.ObjectSelector.ColourModeWithClass", ColourModesWithClass.BY_CLASS));
         }
-        colourMode.setEnabled(true);
         colourMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -546,33 +659,74 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             }
         });
         colourPanel.add(colourMode);
+        Arrays.stream(colourPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
 
         c.gridx++;
         overlayPanel.add(colourPanel, c);
 
+        outlinePanel = new JPanel();
+        outlinePanel.add(new JLabel("Line width"));
+        outlineWidthField = new JTextField();
+        outlineWidthField.setText(Prefs.get("MIA.ObjectSelector.OutlineWidth", "1"));
+        outlineWidthField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                Prefs.set("MIA.ObjectSelector.OutlineWidth", (String) outlineWidthField.getText());
+
+                updateOverlay();
+            }
+
+        });
+        outlinePanel.add(outlineWidthField);
+
+        c.gridx++;
+        boolean showOutlines = overlayMode.getSelectedItem().equals(OverlayModes.OUTLINES);
+        Arrays.stream(outlinePanel.getComponents()).forEach(v -> v.setEnabled(showOverlay && showOutlines));
+        overlayPanel.add(outlinePanel, c);
+
+        slicePanel = new JPanel();
+        slicePanel.add(new JLabel("Slice mode"));
+        sliceMode = new JComboBox<>(SliceModes.ALL);
+        sliceMode.setSelectedItem(Prefs.get("MIA.ObjectSelector.SliceMode", SliceModes.CURRENT_ONLY));
+        sliceMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Prefs.set("MIA.ObjectSelector.SliceMode", (String) sliceMode.getSelectedItem());
+                updateOverlay();
+            }
+        });
+        slicePanel.add(sliceMode);
+        Arrays.stream(slicePanel.getComponents()).forEach(v -> v.setEnabled(showOverlay));
+
+        c.gridx++;
+        overlayPanel.add(slicePanel, c);
+
         labelCheck = new JCheckBox("Show labels");
         labelCheck.setSelected(Prefs.get("MIA.ObjectSelector.ShowLabels", true));
-        labelCheck.setEnabled(true);
+        labelCheck.setEnabled(showOverlay);
         labelCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Prefs.set("MIA.ObjectSelector.ShowLabels", labelCheck.isSelected());
+
                 Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(labelCheck.isSelected()));
 
                 updateOverlay();
             }
         });
-        c.gridx++;
+        c.gridx = 3;
+        c.gridy++;
         overlayPanel.add(labelCheck, c);
 
         fontPanel = new JPanel();
         fontPanel.add(new JLabel("Font size"));
-        int defaultSize = (int) Math
-                .round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
-        labelFontSize = new JTextField(String.valueOf(defaultSize));
-        labelFontSize.setEnabled(true);
-        labelFontSize.addFocusListener(new FocusListener() {
-
+        int defaultSize = (int) Math.round(Math.max(12, Math.max(displayIpl.getWidth(), displayIpl.getHeight()) / 50));
+        labelFontSizeField = new JTextField(String.valueOf(defaultSize));
+        labelFontSizeField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
             }
@@ -583,7 +737,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             }
 
         });
-        fontPanel.add(labelFontSize);
+        fontPanel.add(labelFontSizeField);
+        Arrays.stream(fontPanel.getComponents()).forEach(v -> v.setEnabled(showOverlay && labelCheck.isSelected()));
         c.gridx++;
         overlayPanel.add(fontPanel, c);
 
@@ -691,6 +846,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 addToExistingObject();
                 break;
 
+            case (REMOVE_EXISTING):
+                removeFromExistingObject();
+                break;
+
             case (CHANGE_CLASS):
                 new Thread(() -> {
                     changeObjectClass();
@@ -748,7 +907,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         if (roi.getType() == Roi.POINT)
             switch (pointMode) {
                 case PointModes.INDIVIDUAL_OBJECTS:
-                    Point[] points = ((PointRoi) roi).getContainedPoints();
+                    Point[] points = roi.getContainedPoints();
                     for (Point point : points)
                         addSingleRoi(new PointRoi(new int[] { point.x }, new int[] { point.y }, 1));
                     break;
@@ -764,6 +923,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(maxID));
+        objectNumberField.setForeground(Color.BLACK);
 
         // Deselecting the current ROI. This can be re-enabled by selecting it from the
         // list.
@@ -777,15 +937,27 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         String assignedClass = null;
         if (classSelector != null) {
-            classSelector.setVisible(true);
+            switch ((String) autoClassMode.getSelectedItem()) {
+                case "Do nothing":
+                    break;
 
-            while (classSelector.isActive())
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
+                case "Select class":
+                    classSelector.setVisible(true);
 
-                }
-            assignedClass = classSelector.getLastSelectedClass();
+                    while (classSelector.isActive())
+                        try {
+                            Thread.sleep(100);
+                        } catch (Exception e) {
+
+                        }
+                    assignedClass = classSelector.getLastSelectedClass();
+                    break;
+                default:
+                    String selectedClass = (String) autoClassMode.getSelectedItem();
+                    assignedClass = selectedClass.substring(7, selectedClass.length() - 1);
+                    break;
+            }
+
         }
 
         ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1, assignedClass);
@@ -845,6 +1017,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             ObjRoi currentRoi = iterator.next();
             if (currentRoi.getT() == t && currentRoi.getZ() == z) {
                 currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
+                displayIpl.setRoi(currentRoi.getRoi());
                 updateOverlay();
                 return;
             }
@@ -859,6 +1032,46 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         addObjectToList(objRoi, ID);
         updateOverlay();
 
+    }
+
+    public void removeFromExistingObject() {
+        // If there are no existing objects, add as new object
+        if (rois.size() == 0 || objectNumberField.getText().equals("")) {
+            MIA.log.writeDebug("No ROI selected to remove region from");
+            return;
+        }
+
+        int ID = -1;
+        try {
+            ID = Integer.parseInt(objectNumberField.getText());
+        } catch (NumberFormatException e) {
+            MIA.log.writeDebug("No ROI selected to remove region from");
+            return;
+        }
+
+        // Getting points
+        Roi roi = displayIpl.getRoi();
+        if (roi == null) {
+            frame.setAlwaysOnTop(false);
+            IJ.error("Select a ROI first using the ImageJ ROI tools.");
+            frame.setAlwaysOnTop(true);
+            return;
+        }
+
+        // Adding the ROI to our current collection
+        ArrayList<ObjRoi> currentRois = rois.get(ID);
+        int t = displayIpl.getT() - 1;
+        int z = displayIpl.getZ() - 1;
+        ListIterator<ObjRoi> iterator = currentRois.listIterator();
+        while (iterator.hasNext()) {
+            ObjRoi currentRoi = iterator.next();
+            if (currentRoi.getT() == t && currentRoi.getZ() == z) {
+                currentRoi.setRoi(new ShapeRoi(currentRoi.getRoi()).not(new ShapeRoi(roi)));
+                updateOverlay();
+                displayIpl.setRoi(currentRoi.getRoi());
+                return;
+            }
+        }
     }
 
     public void changeObjectClass() {
@@ -911,6 +1124,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         y0 = (int) Math.round(location.getY());
         Prefs.set("MIA.ObjectSelector.x0", x0);
         Prefs.set("MIA.ObjectSelector.y0", y0);
+        Prefs.savePreferences();
 
         // If the frame isn't already closed, hide it while we finish processing the
         // objects
@@ -1026,12 +1240,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
         listModel.addElement(objRoi);
-
-        // Ensuring the scrollbar is visible if necessary and moving to the bottom
-        JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
-        scrollBar.setValue(scrollBar.getMaximum() - 1);
-        objectsScrollPane.revalidate();
-
+        list.setSelectedIndex(listModel.size() - 1);
+        SwingUtilities.invokeLater(() -> list.ensureIndexIsVisible(listModel.size() - 1));
     }
 
     public void updateOverlay() {
@@ -1056,10 +1266,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Adding overlay showing ROI and its ID number
         Roi overlayRoi = ObjRoi.duplicateRoi(roi);
-        if (displayIpl.isHyperStack())
-            overlayRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
-        else
-            overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+        setPosition(overlayRoi, objRoi);
 
         // Setting colour
         Color colour = null;
@@ -1108,6 +1315,12 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 overlayRoi.setStrokeColor(new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), 64));
                 break;
 
+            case Roi.POINT:
+                ((PointRoi) overlayRoi).setSize(3);
+                ((PointRoi) overlayRoi).setPointType(PointRoi.DOT);
+                overlayRoi.setStrokeColor(colour);
+                break;
+
             // Everything else is rendered as the normal fill or outlines
             default:
                 switch ((String) overlayMode.getSelectedItem()) {
@@ -1116,6 +1329,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                         break;
                     case OverlayModes.OUTLINES:
                         overlayRoi.setStrokeColor(colour);
+                        overlayRoi.setStrokeWidth(Integer.parseInt(outlineWidthField.getText()));
                         break;
                 }
                 break;
@@ -1126,17 +1340,27 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
+            int fontSize = Integer.parseInt(labelFontSizeField.getText());
+
             double[] centroid = roi.getContourCentroid();
-            int fontSize = Integer.parseInt(labelFontSize.getText());
+            if (roi instanceof PointRoi) {
+                Point[] points = roi.getContainedPoints();
+                centroid[0] = 0;
+                centroid[1] = 0;
+                for (Point point : points) {
+                    centroid[0] = +point.getX();
+                    centroid[1] = +point.getY();
+                }
+                centroid[0] = (centroid[0] / points.length) + fontSize * 0.5;
+                centroid[1] = (centroid[1] / points.length) + fontSize * 0.5;
+            }
 
             TextRoi text = new TextRoi(centroid[0], centroid[1], String.valueOf(ID),
                     new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
+            text.setStrokeColor(colour);
 
             // Setting stack location
-            if (displayIpl.isHyperStack())
-                text.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
-            else
-                text.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+            setPosition(text, objRoi);
 
             // Ensuring text is in the centred
             text.setLocation(text.getXBase() - text.getFloatWidth() / 2 + 1,
@@ -1148,6 +1372,36 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         displayIpl.updateAndDraw();
 
+    }
+
+    void setPosition(Roi overlayRoi, ObjRoi objRoi) {
+        switch ((String) sliceMode.getSelectedItem()) {
+            case SliceModes.CURRENT_ONLY:
+                if (displayIpl.isHyperStack())
+                    overlayRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
+                else
+                    overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+                break;
+            case SliceModes.ALL_FRAMES:
+                if (displayIpl.isHyperStack())
+                    overlayRoi.setPosition(1, objRoi.getZ() + 1, 0);
+                else if (objRoi.getZ() > objRoi.getT())
+                    overlayRoi.setPosition(objRoi.getZ() + 1);
+                else
+                    overlayRoi.setPosition(0);
+                break;
+            case SliceModes.ALL_SLICES:
+                if (displayIpl.isHyperStack())
+                    overlayRoi.setPosition(1, 0, objRoi.getT() + 1);
+                else if (objRoi.getT() > objRoi.getZ())
+                    overlayRoi.setPosition(objRoi.getT() + 1);
+                else
+                    overlayRoi.setPosition(0);
+                break;
+            case SliceModes.ALL_FRAMES_AND_SLICES:
+                overlayRoi.setPosition(0);
+                break;
+        }
     }
 
     void displayObjects(List<ObjRoi> objRois) {
@@ -1168,6 +1422,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     String getSavePath() {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setPreferredSize(new Dimension(800, 640));
         fileChooser.setDialogTitle("Save objects to file");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1228,6 +1483,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     String getLoadPath() {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setPreferredSize(new Dimension(800, 640));
         fileChooser.setDialogTitle("Objects file to load");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1246,7 +1502,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    public void addObjects(Objs inputObjects, @Nullable String metadataForClass) {
+    public void addObjects(Objs inputObjects, String existingObjectType, @Nullable String metadataForClass) {
         TreeSet<String> existingClasses = classSelector != null ? new TreeSet<>() : null;
 
         for (Obj inputObject : inputObjects.values()) {
@@ -1267,7 +1523,29 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             ArrayList<ObjRoi> currentRois = rois.get(ID);
             for (Entry<Integer, Roi> entry : inputObject.getRois().entrySet()) {
-                ObjRoi objRoi = new ObjRoi(ID, entry.getValue(), inputObject.getT(), entry.getKey(), assignedClass);
+                Roi roi;
+                switch (existingObjectType) {
+                    case ExistingObjectTypes.REGIONS:
+                    default:
+                        roi = entry.getValue();
+                        break;
+
+                    case ExistingObjectTypes.SINGLE_POINTS:
+                        Point[] points = entry.getValue().getContainedPoints();
+                        double[] centroid = new double[2];
+                        centroid[0] = 0;
+                        centroid[1] = 0;
+                        for (Point point : points) {
+                            centroid[0] = +point.getX();
+                            centroid[1] = +point.getY();
+                        }
+                        centroid[0] = (centroid[0] / points.length);
+                        centroid[1] = (centroid[1] / points.length);
+                        roi = new PointRoi(centroid[0], centroid[1]);
+                        break;
+                }
+
+                ObjRoi objRoi = new ObjRoi(ID, roi, inputObject.getT(), entry.getKey(), assignedClass);
                 currentRois.add(objRoi);
 
                 // Adding to the list of objects
@@ -1371,20 +1649,28 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 return;
 
             case "F2":
-                addToExistingObject();
-                return;
-
-            case "F3":
                 removeObjects();
                 return;
 
-            case "F4":
+            case "F3":
                 processObjectsAndFinish();
                 return;
 
+            case "F4":
+                addToExistingObject();
+                return;
+
             case "F5":
+                removeFromExistingObject();
+                return;
+
+            case "F6":
                 if (classSelector != null)
                     changeObjectClass();
+                return;
+
+            case "F12":
+                displayIpl.toggleOverlay();
                 return;
         }
     }
@@ -1405,6 +1691,21 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            int x = displayIpl.getCanvas().offScreenX(e.getX());
+            int y = displayIpl.getCanvas().offScreenY(e.getY());
+            int z = displayIpl.getZ() - 1;
+            int t = displayIpl.getT() - 1;
+
+            for (int idx = 0; idx < listModel.size(); idx++) {
+                ObjRoi roi = listModel.getElementAt(idx);
+                if (roi.getZ() == z && roi.getT() == t && roi.getRoi().contains(x, y)) {
+                    list.setSelectedIndex(idx);
+                    list.ensureIndexIsVisible(idx);
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -1431,6 +1732,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 break;
             case AutoAcceptModes.ADD_TO_EXISTING_OBJECT:
                 addToExistingObject();
+                break;
+            case AutoAcceptModes.REMOVE_FROM_EXISTING_OBJECT:
+                removeFromExistingObject();
                 break;
         }
     }

@@ -20,7 +20,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -195,7 +194,7 @@ public class PlotMeasurementTimeseries extends Module {
         String yLabel = parameters.getValue(Y_LABEL, workspace);
 
         ImagePlus ipl = null;
-
+                
         // Iterating over each track, creating the plot
         int count = 0;
         Objs trackObjects = workspace.getObjects(inputTracksName);
@@ -249,6 +248,10 @@ public class PlotMeasurementTimeseries extends Module {
 
         }
 
+        // If no plot were created, create an empty image, so subsequent modules don't fail
+        if (ipl == null)
+            ipl = new Plot(inputTracksName + " (ID 0)", "Frame", yLabel).getImagePlus();
+        
         ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
         workspace.addImage(outputImage);
 

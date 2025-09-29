@@ -16,6 +16,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -157,6 +158,8 @@ public class SaveObjectsAsROIs extends AbstractSaver {
 
                     String label = "ID" + String.valueOf(oid) + "_TR" + String.valueOf(tid) + "_T"
                             + (inputObject.getT() + 1) + "_Z" + (z + 1) + classStr + ".roi";
+
+                    roi.setName(label);
 
                     if (inputObjects.getNFrames() > 1 && inputObjects.getNSlices() > 1)
                         roi.setPosition(1, z + 1, inputObject.getT() + 1);

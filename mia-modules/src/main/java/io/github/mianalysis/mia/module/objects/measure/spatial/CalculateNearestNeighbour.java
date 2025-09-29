@@ -40,6 +40,7 @@ import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -320,13 +321,18 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             double minDist = 0;
 
             switch (referenceMode) {
+                case ReferenceModes.CENTROID_2D:
+                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true, true);
+                    break;
                 default:
                 case ReferenceModes.CENTROID_3D:
-                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true);
+                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true, false);
                     break;
-
+                case ReferenceModes.SURFACE_2D:
+                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true, true, false, false);
+                    break;
                 case ReferenceModes.SURFACE_3D:
-                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true, false, false);
+                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true, false, false, false);
                     break;
             }
 
@@ -605,14 +611,25 @@ public class CalculateNearestNeighbour extends AbstractSaver {
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
 
+                // Adding directed relationship (i.e. while nearestNeighbour is the nearest neighbour for inputObject, 
+                // the reverse isn't necessarily true, so that relationship isn't assigned)
+                if (nearestNeighbour != null)
+                    inputObject.addPartner(nearestNeighbour);
+
             } else {
                 Obj nearestNeighbour = getNearestNeighbour(inputObject, neighbourObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
+
+                // Adding directed relationship (i.e. while nearestNeighbour is the nearest neighbour for inputObject, 
+                // the reverse isn't necessarily true, so that relationship isn't assigned)
+                if (nearestNeighbour != null)
+                    inputObject.addPartner(nearestNeighbour);
+
             }
 
             writeProgressStatus(++count, total, "objects");
-            
+
         }
 
         if (exportAllDistances) {
@@ -811,7 +828,26 @@ public class CalculateNearestNeighbour extends AbstractSaver {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+        Workspace workspace = null;
+        PartnerRefs returnedRefs = new PartnerRefs();
+
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);
+
+        String neighbourObjectsName = null;
+        switch (relationshipMode) {
+            case RelationshipModes.DIFFERENT_SET:
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS, workspace);
+                break;
+            case RelationshipModes.WITHIN_SAME_SET:
+                neighbourObjectsName = inputObjectsName;
+                break;
+        }
+
+        returnedRefs.add(new PartnerRef(inputObjectsName, neighbourObjectsName));
+
+        return returnedRefs;
+
     }
 
     @Override

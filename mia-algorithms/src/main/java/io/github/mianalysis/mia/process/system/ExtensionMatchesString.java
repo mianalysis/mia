@@ -11,6 +11,7 @@ import org.apache.commons.io.FilenameUtils;
 public class ExtensionMatchesString implements FileCondition {
     private String[] exts;
     private Mode mode;
+    private boolean ignoreCase = false;
 
     public ExtensionMatchesString(String ext) {
         this.exts = new String[] { ext };
@@ -22,6 +23,12 @@ public class ExtensionMatchesString implements FileCondition {
         this.mode = mode;
     }
 
+    public ExtensionMatchesString(String ext, Mode mode, boolean ignoreCase) {
+        this.exts = new String[] { ext };
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
+    }
+
     public ExtensionMatchesString(String[] exts) {
         this.exts = exts;
         this.mode = Mode.INC_PARTIAL;
@@ -30,6 +37,12 @@ public class ExtensionMatchesString implements FileCondition {
     public ExtensionMatchesString(String[] exts, Mode mode) {
         this.exts = exts;
         this.mode = mode;
+    }
+
+    public ExtensionMatchesString(String[] exts, Mode mode, boolean ignoreCase) {
+        this.exts = exts;
+        this.mode = mode;
+        this.ignoreCase = ignoreCase;
     }
 
     public boolean test(File file, boolean ignoreCase) {
@@ -73,6 +86,10 @@ public class ExtensionMatchesString implements FileCondition {
                 return true;
         }
     }
+    
+    public boolean test(File file) {
+        return test(file, ignoreCase);
+    }
 
     public String[] getExts() {
         return exts;
@@ -80,5 +97,13 @@ public class ExtensionMatchesString implements FileCondition {
 
     public Mode getMode() {
         return mode;
+    }
+
+    public void setIgnoreCase(boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+    }
+
+    public boolean getIgnoreCase() {
+        return ignoreCase;
     }
 }

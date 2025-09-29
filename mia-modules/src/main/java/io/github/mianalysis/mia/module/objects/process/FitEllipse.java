@@ -45,67 +45,102 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
  */
 
 /**
-* Fit ellipses to all objects in a collection using ImageJ's built-in ellipse fitter.  For 3D objects, a 2D projection in the XY plane is used for fitting.  Fit ellipses can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipse coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.
-*/
+ * Fit ellipses to all objects in a collection using ImageJ's built-in ellipse
+ * fitter. For 3D objects, a 2D projection in the XY plane is used for fitting.
+ * Fit ellipses can be stored either as new objects, or replacing the input
+ * object coordinates.<br>
+ * <br>
+ * Note: If updating input objects with ellipse coordinates, measurements
+ * associated with the input object (e.g. spatial measurements) will still be
+ * available, but may no longer be valid.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitEllipse extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* Objects from workspace to which ellipses will be fit.  Objects stored in 3D will be projected into the XY 2D plane (using the "Project objects" module) prior to fitting.  If a projected object is used, any output measurements and relationships are still applied to the input object (the projected object is discarded after use).  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipses are also stored as objects.
-	*/
+    /**
+     * Objects from workspace to which ellipses will be fit. Objects stored in 3D
+     * will be projected into the XY 2D plane (using the "Project objects" module)
+     * prior to fitting. If a projected object is used, any output measurements and
+     * relationships are still applied to the input object (the projected object is
+     * discarded after use). Measurements made by this module are associated with
+     * these input objects, irrespective of whether the fit ellipses are also stored
+     * as objects.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FITTING_SEPARATOR = "Ellipse fitting";
 
-	/**
-	* Controls which object coordinates are used for ellipse fitting:<br><ul><li>"Fit to whole" All coordinates for the input object are passed to the ellipse fitter.</li><li>"Fit to surface" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>
-	*/
+    /**
+     * Controls which object coordinates are used for ellipse fitting:<br>
+     * <ul>
+     * <li>"Fit to whole" All coordinates for the input object are passed to the
+     * ellipse fitter.</li>
+     * <li>"Fit to surface" (default) Only surface coordinates of the input object
+     * are passed to the ellipse fitter. Surface coordinates are calculated using
+     * 4-way connectivity.</li>
+     * </ul>
+     */
     public static final String FITTING_MODE = "Fitting mode";
 
-	/**
-	* When selected, all axes of the the fit ellipses must be shorter than the length specified by "Maximum axis length".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.
-	*/
+    /**
+     * When selected, all axes of the the fit ellipses must be shorter than the
+     * length specified by "Maximum axis length". This helps filter out mis-fit
+     * ellipses and prevents unnecessary, massive memory use when storing ellipses.
+     */
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
 
-	/**
-	* Maximum length of any fit ellipse axis as measured in pixel units.  This is onyl used if "Limit axis length" is selected.
-	*/
+    /**
+     * Maximum length of any fit ellipse axis as measured in pixel units. This is
+     * onyl used if "Limit axis length" is selected.
+     */
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Object output";
 
-	/**
-	* Controls whether the fit ellipse is stored as an object in the workspace:<br><ul><li>"Create new objects" Fit ellipses are stored as new objects in the workspace (name specified by "Output objects").  Ellipses are "solid" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipse objects are children of the input objects to which they were fit.  If outputting ellipse objects, any measurements are still only applied to the corresponding input objects.</li><li>"Do not store" (default) The ellipse coordinates are not stored.</li><li>"Update input objects" The coordinates of the input object are removed and replaced with the fit ellipse coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul>
-	*/
+    /**
+     * Controls whether the fit ellipse is stored as an object in the workspace:<br>
+     * <ul>
+     * <li>"Create new objects" Fit ellipses are stored as new objects in the
+     * workspace (name specified by "Output objects"). Ellipses are "solid" objects,
+     * irrespective of whether they were only fit to input object surface
+     * coordinates. Ellipse objects are children of the input objects to which they
+     * were fit. If outputting ellipse objects, any measurements are still only
+     * applied to the corresponding input objects.</li>
+     * <li>"Do not store" (default) The ellipse coordinates are not stored.</li>
+     * <li>"Update input objects" The coordinates of the input object are removed
+     * and replaced with the fit ellipse coordinates. Note: Measurements associated
+     * with the input object (e.g. spatial measurements) will still be available,
+     * but may no longer be valid.</li>
+     * </ul>
+     */
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
 
-	/**
-	* Name assigned to output ellipse objects if "Object output mode" is in "Create new objects" mode.
-	*/
+    /**
+     * Name assigned to output ellipse objects if "Object output mode" is in "Create
+     * new objects" mode.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple input objects simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public FitEllipse(Modules modules) {
@@ -257,16 +292,16 @@ public class FitEllipse extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
-        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        String fittingMode = parameters.getValue(FITTING_MODE,workspace);
-        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH,workspace);
-        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH,workspace) : Double.MAX_VALUE;
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String fittingMode = parameters.getValue(FITTING_MODE, workspace);
+        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH, workspace);
+        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH, workspace) : Double.MAX_VALUE;
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
         Objs outputObjects = null;
@@ -311,7 +346,7 @@ public class FitEllipse extends Module {
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE))
-                outputObjects.convertToImageIDColours().show(false);            
+                outputObjects.convertToImageIDColours().show(false);
         }
 
         return Status.PASS;
@@ -341,7 +376,7 @@ public class FitEllipse extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -350,12 +385,12 @@ WorkspaceI workspace = null;
         returnedParameters.add(parameters.getParameter(FITTING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FITTING_MODE));
         returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
-        if ((boolean) parameters.getValue(LIMIT_AXIS_LENGTH,workspace))
+        if ((boolean) parameters.getValue(LIMIT_AXIS_LENGTH, workspace))
             returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE,workspace)) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                 break;
@@ -370,14 +405,14 @@ WorkspaceI workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-WorkspaceI workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_PX);
         reference.setObjectsName(inputObjectsName);
@@ -462,24 +497,24 @@ WorkspaceI workspace = null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-WorkspaceI workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE,workspace)) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE, workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
                 returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
 
                 break;
@@ -491,7 +526,7 @@ WorkspaceI workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

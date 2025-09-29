@@ -56,6 +56,7 @@ public class TextParameter extends ParameterControl implements CaretReporter, Fo
 
         GUI.updateParameters(true, parameter.getModule());
         GUI.updateModuleStates(true, parameter.getModule());
+        
         updateControl();
 
     }

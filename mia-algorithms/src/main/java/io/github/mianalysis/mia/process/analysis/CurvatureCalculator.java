@@ -235,7 +235,7 @@ public class CurvatureCalculator {
             Line line = new Line(x1, y1, x2, y2);
             line.setStrokeWidth(lineWidth);
             line.setStrokeColor(color);
-            line.setPosition(position[2]);
+            line.setPosition(position[0], position[1], position[2]);
             ovl.addElement(line);
 
         }

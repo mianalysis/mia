@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
+import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
@@ -99,8 +100,8 @@ public class GUI {
         // Creating main Frame
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
-        // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frameHeight = Math.min(frameHeight, screenSize.height - 50);
+        
+        frameHeight = Math.min(frameHeight, (int) Math.floor(screenSize.height*0.8));
         frameHeight = Math.max(frameHeight, minimumFrameHeight);
 
         // Detecting modules
@@ -111,7 +112,10 @@ public class GUI {
         editingPanel = new EditingPanel();
 
         // Adding a new ImageLoader module to the empty analysis
-        modules.add(new ImageLoader<>(getModules()));
+        GUISeparator guiSeparator = new GUISeparator(modules);
+        guiSeparator.setNickname("File loading");
+        modules.add(guiSeparator);
+        modules.add(new ImageLoader<>(modules));
 
         // Determining which panel should be shown
         if (MIA.isDebug())
@@ -150,6 +154,8 @@ public class GUI {
 
         // Final bits for listeners
         frame.pack();
+        frame.validate();
+        frame.repaint();
         frame.setVisible(true);
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2,
                 (screenSize.height - frameHeight) / 2);
@@ -197,8 +203,9 @@ public class GUI {
         if (defaultFont != null)
             return defaultFont;
 
-        // create the font to use. Specify the size!
         try {
+            System.out.println(GUI.class);
+            System.out.println(GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
             defaultFont = Font.createFont(Font.TRUETYPE_FONT, GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(defaultFont);
             return defaultFont;

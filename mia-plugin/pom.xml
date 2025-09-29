@@ -161,31 +161,45 @@
 			<version>${project.version}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-snt</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 		<dependency>
 			<groupId>io.github.mianalysis</groupId>
 			<artifactId>mia-stardist</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.formdev</groupId>
-			<artifactId>flatlaf</artifactId>
-			<version>3.5.4</version>
-			<scope>${scp}</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.6.1</version>
+            <scope>${scp}</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.imagej</groupId>
-			<artifactId>ij1-patcher</artifactId>
-			<version>1.2.6</version>
-			<scope>${scp}</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij1-patcher</artifactId>
+            <version>1.2.6</version>
+            <scope>${scp}</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>bUnwarpJ_</artifactId>
-			<scope>${scp}</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>imagej-legacy</artifactId>
+            <version>1.2.2</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>bUnwarpJ_</artifactId>
+            <version>2.6.13</version>
+            <scope>${scp}</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>mpicbg</groupId>
@@ -201,60 +215,62 @@
 			<scope>${scp}</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>5.2.3</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.4.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml-lite</artifactId>
-			<version>5.2.3</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-lite</artifactId>
+            <version>5.4.0</version>
+        </dependency>
 
-		<!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or
-        later -->
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>5.2.3</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
 		<dependency>
 			<groupId>com.github.weisj</groupId>
 			<artifactId>jsvg</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.5.0</version>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -315,9 +331,9 @@
 							<excludeScope>provided</excludeScope>
 							<includeScope>runtime</includeScope>
 
-							<excludeArtifactIds>
-								commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,slf4j-api,xml-apis
-							</excludeArtifactIds>
+                            <excludeArtifactIds>
+                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,fastutil,slf4j-api,xml-apis
+                            </excludeArtifactIds>
 
 							<outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>

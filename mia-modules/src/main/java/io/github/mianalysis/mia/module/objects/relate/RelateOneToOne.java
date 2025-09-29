@@ -456,8 +456,12 @@ public class RelateOneToOne extends Module {
         // Assigning missing links
         addMissingLinks(inputObjects1, inputObjects2);
 
-        if (createClusterObjects)
+        if (createClusterObjects) {
+            if (outputObjects == null)
+                outputObjects = new Objs(outputObjectsName, inputObjects1);
+
             workspace.addObjects(outputObjects);
+        }
 
         if (showOutput) {
             inputObjects1.showMeasurements(this, modules);

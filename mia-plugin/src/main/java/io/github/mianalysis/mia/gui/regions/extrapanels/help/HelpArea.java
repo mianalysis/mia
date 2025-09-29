@@ -52,18 +52,20 @@ public class HelpArea extends JTextPane {
 
         sb.append("<br>");
 
-        ObjMeasurementRefs objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
-        if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
-            sb.append("<font face=\"sans-serif\" size=\"3\"><b>OBJECT MEASUREMENTS</b><br>")
-                    .append("The following measurements are currently calculated by this module.<br><br></font>");
+        // Only evaluate if module can be run
+        if (module.isRunnable()) {
+            ObjMeasurementRefs objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
+            if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
+                sb.append("<font face=\"sans-serif\" size=\"3\"><b>OBJECT MEASUREMENTS</b><br>")
+                        .append("The following measurements are currently calculated by this module.<br><br></font>");
 
-            for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
-                sb.append("<font face=\"sans-serif\" size=\"3\"><i>").append(measurementRef.getFinalName())
-                        .append("</i></font>:<div style=\"margin-left:10px\"><font face=\"sans-serif\" size=\"3\">")
-                        .append(measurementRef.getDescription()).append("</font></div><br>");
+                for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
+                    sb.append("<font face=\"sans-serif\" size=\"3\"><i>").append(measurementRef.getFinalName())
+                            .append("</i></font>:<div style=\"margin-left:10px\"><font face=\"sans-serif\" size=\"3\">")
+                            .append(measurementRef.getDescription()).append("</font></div><br>");
+                }
+                sb.append("<br>");
             }
-            sb.append("<br>");
-
         }
 
         ImageMeasurementRefs imageMeasRefs = module.updateAndGetImageMeasurementRefs();

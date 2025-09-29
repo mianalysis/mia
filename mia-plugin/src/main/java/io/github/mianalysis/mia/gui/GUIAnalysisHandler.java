@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
+import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
@@ -38,6 +39,9 @@ public class GUIAnalysisHandler {
         }
 
         Modules modules = new Modules();
+        GUISeparator guiSeparator = new GUISeparator(modules);
+        guiSeparator.setNickname("File loading");
+        modules.add(guiSeparator);
         modules.add(new ImageLoader<>(modules));
 
         GUI.setModules(modules);

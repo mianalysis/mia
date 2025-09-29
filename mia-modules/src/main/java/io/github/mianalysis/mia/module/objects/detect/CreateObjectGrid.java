@@ -7,12 +7,12 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -83,7 +83,7 @@ public class CreateObjectGrid extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -91,7 +91,7 @@ public class CreateObjectGrid extends Module {
         int cellH = parameters.getValue(CELL_HEIGHT, workspace);
 
         // Creating output objects
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
         Objs outputObjects = new Objs(outputObjectsName, inputImage.getImagePlus());
 
         double imageW = inputImage.getWidth();
@@ -101,7 +101,7 @@ public class CreateObjectGrid extends Module {
 
         for (int idxX = 0; idxX < nCols; idxX++) {
             for (int idxY = 0; idxY < nRows; idxY++) {
-                Obj outputObj = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                Obj outputObj = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                 for (int x = 0; x < cellW; x++) {
                     for (int y = 0; y < cellH; y++) {
                         try {
@@ -124,7 +124,7 @@ public class CreateObjectGrid extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));

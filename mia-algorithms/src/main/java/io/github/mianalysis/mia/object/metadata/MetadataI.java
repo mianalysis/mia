@@ -173,6 +173,8 @@ public interface MetadataI {
 
     public Object get(Object key);
 
+    public Object remove(Object key);
+
     public Object clone();
 
 }

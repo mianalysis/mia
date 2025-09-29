@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module.objects.detect;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -10,7 +11,6 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ai.nets.samj.annotation.Mask;
-import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
@@ -22,13 +22,14 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.manualextensions.SAMJExtension.EnvironmentPathModes;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -45,8 +46,10 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.SAMJUtils;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
+import net.imglib2.img.Img;
 
 /**
  * Created by Stephen Cross on 31/10/2024.
@@ -68,6 +71,11 @@ public class ApplySegmentAnything extends Module {
      * 
      */
     public static final String INPUT_OBJECTS = "Input objects (centroids)";
+
+    /**
+     * 
+     */
+    public static final String INPUT_OBJECTS_MODE = "Input objects mode";
 
     /**
      * 
@@ -114,6 +122,14 @@ public class ApplySegmentAnything extends Module {
      */
     public static final String INSTALL_IF_MISSING = "Install model if missing";
 
+    public interface InputObjectsModes {
+        String BOUNDING_BOX = "Bounding box";
+        String CENTROIDS = "Centroids";
+
+        String[] ALL = new String[] { BOUNDING_BOX, CENTROIDS };
+
+    }
+
     // protected AbstractSamJ samJ = null;
     protected SamEnvManagerAbstract envManager = null;
     protected String prevEnvironmentPath = "";
@@ -155,36 +171,17 @@ public class ApplySegmentAnything extends Module {
     }
 
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
-        AbstractSamJ.MAX_ENCODED_AREA_RS = 4000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 4000;
+        AbstractSamJ.MAX_ENCODED_AREA_RS = 10000;
+        AbstractSamJ.MAX_ENCODED_SIDE = AbstractSamJ.MAX_ENCODED_AREA_RS * 3;
 
         AbstractSamJ loadedSamJ = null;
         try {
             if (envManager == null || !environmentPath.equals(prevEnvironmentPath)) {
-                long t1 = System.nanoTime();
-                envManager = EfficientSamEnvManager.create(environmentPath);
-                long t2 = System.nanoTime();
-                if (!envManager.checkEverythingInstalled())
-                    if (installIfMissing) {
-                        writeStatus("Installing SAM model");
-                        MIA.log.writeDebug("Installing SAM model to " + environmentPath);
-                        envManager.installEverything();
-                    } else {
-                        MIA.log.writeWarning("Model not available.  Please install manually or enable \""
-                                + INSTALL_IF_MISSING + "\" parameter.");
-                    }
-                long t3 = System.nanoTime();
-                MIA.log.writeDebug("Initialise manager: " + (t2 - t1) / 1E9 + " s");
-                MIA.log.writeDebug("Check installation: " + (t3 - t2) / 1E9 + " s");
+                envManager = SAMJUtils.installSAMJ(environmentPath);
                 prevEnvironmentPath = environmentPath;
             }
 
-            long t4 = System.nanoTime();
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
-
-            long t5 = System.nanoTime();
-
-            MIA.log.writeDebug("Initialise SAM: " + (t5 - t4) / 1E9 + " s");
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {
@@ -192,6 +189,24 @@ public class ApplySegmentAnything extends Module {
         }
 
         return loadedSamJ;
+
+    }
+
+    public List<Mask> getPolygonsFromObjectBoundingBox(Obj inputObject, AbstractSamJ samJ) {
+        double[][] extents = inputObject.getExtents(true, false);
+        int[] boundingBox = new int[4];
+        boundingBox[0] = (int) Math.round(extents[0][0]);
+        boundingBox[1] = (int) Math.round(extents[1][0]);
+        boundingBox[2] = (int) Math.round(extents[0][1]);
+        boundingBox[3] = (int) Math.round(extents[1][1]);
+
+        try {
+            return samJ.processBox(boundingBox);
+        } catch (IOException | InterruptedException | RuntimeException e) {
+            MIA.log.writeError(e);
+        }
+
+        return null;
 
     }
 
@@ -211,11 +226,12 @@ public class ApplySegmentAnything extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String inputObjectMode = parameters.getValue(INPUT_OBJECTS_MODE, workspace);
         boolean limitObjectSize = parameters.getValue(LIMIT_OBJECT_SIZE, workspace);
         double maxObjectArea = parameters.getValue(MAXIMUM_AREA, workspace);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
@@ -223,7 +239,8 @@ public class ApplySegmentAnything extends Module {
         String environmentPath = parameters.getValue(ENVIRONMENT_PATH, workspace) + "/";
         boolean installIfMissing = parameters.getValue(INSTALL_IF_MISSING, workspace);
 
-        Image inputImage = workspace.getImages().get(inputImageName);
+        ImageI inputImage = workspace.getImages().get(inputImageName);
+
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         if (calibratedUnits)
@@ -231,18 +248,25 @@ public class ApplySegmentAnything extends Module {
 
         switch (envionmentPathMode) {
             case EnvironmentPathModes.DEFAULT:
-                environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+                environmentPath = SAMJUtils.getDefaultEnvironmentPath();
                 break;
         }
 
         // if (samJ == null | !environmentPath.equals(prevEnvironmentPath))
         AbstractSamJ samJ = initialiseSAMJ(environmentPath, installIfMissing);
-                
-        try {
-            samJ.setImage(inputImage.getImgPlus());
-        } catch (IOException | RuntimeException | InterruptedException e) {
-            MIA.log.writeError(e);
-            return Status.FAIL;
+
+        // Gathering objects by timepoint and slice
+        HashMap<Integer, HashMap<Integer, ArrayList<Obj>>> inputObjectsBySliceAndTime = new HashMap<>();
+        for (Obj inputObject : inputObjects.values()) {
+            int t = inputObject.getT();
+            int z = (int) Math.round(inputObject.getZMean(true, false));
+
+            inputObjectsBySliceAndTime.putIfAbsent(t, new HashMap<Integer, ArrayList<Obj>>());
+            HashMap<Integer, ArrayList<Obj>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
+
+            inputObjectsBySlice.putIfAbsent(z, new ArrayList<Obj>());
+            inputObjectsBySlice.get(z).add(inputObject);
+
         }
 
         // Creating output objects
@@ -250,30 +274,65 @@ public class ApplySegmentAnything extends Module {
 
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
-            List<Mask> masks = getPolygonsFromObjectCentroid(inputObject, samJ);
-            if (masks == null)
-                return Status.PASS;
+        for (int t : inputObjectsBySliceAndTime.keySet()) {
+            HashMap<Integer, ArrayList<Obj>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
+            for (int z : inputObjectsBySlice.keySet()) {
+                Img img = ExtractSubstack
+                        .extractSubstack(inputImage, "Substack", "1-end", String.valueOf(z + 1), String.valueOf(t + 1))
+                        .getImgPlus();
 
-            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
-            for (Mask mask : masks)
                 try {
-                    if (limitObjectSize && new PolygonRoi(mask.getContour(), PolygonRoi.FREEROI)
-                            .getStatistics().area > maxObjectArea) {
+                    samJ.setImage(img);
+                } catch (IOException | RuntimeException | InterruptedException e) {
+                    // If it runs out of memory, close SAMJ and initialise a new one
+                    MIA.log.writeDebug("Initialising new SAMJ");
+                    samJ.close();
+                    samJ = initialiseSAMJ(environmentPath, installIfMissing);
+                    try {
+                        samJ.setImage(img);
+                    } catch (IOException | RuntimeException | InterruptedException e1) {
+                        MIA.log.writeError(e);
                         continue;
                     }
-
-                    outputObject.addPointsFromPolygon(mask.getContour(), 0);
-                } catch (PointOutOfRangeException e) {
                 }
 
-            // Checking this object has volume.  If not, removing it
-            if (outputObject.size() == 0)
-                outputObjects.remove(outputObject.getID());
+                for (Obj inputObject : inputObjectsBySlice.get(z)) {
+                    List<Mask> masks = null;
+                    switch (inputObjectMode) {
+                        case InputObjectsModes.BOUNDING_BOX:
+                            masks = getPolygonsFromObjectBoundingBox(inputObject, samJ);
+                            break;
 
-            writeProgressStatus(++count, total, "objects");
+                        case InputObjectsModes.CENTROIDS:
+                            masks = getPolygonsFromObjectCentroid(inputObject, samJ);
+                            break;
+                    }
 
-        }       
+                    if (masks == null)
+                        return Status.PASS;
+
+                    Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                    for (Mask mask : masks)
+                        try {
+                            if (limitObjectSize && new PolygonRoi(mask.getContour(), PolygonRoi.FREEROI)
+                                    .getStatistics().area > maxObjectArea) {
+                                continue;
+                            }
+
+                            outputObject.addPointsFromPolygon(mask.getContour(), z);
+                            outputObject.setT(t);
+                        } catch (PointOutOfRangeException e) {
+                        }
+
+                    // Checking this object has volume. If not, removing it
+                    if (outputObject.size() == 0)
+                        outputObjects.remove(outputObject.getID());
+
+                    writeProgressStatus(++count, total, "objects");
+
+                }
+            }
+        }
 
         samJ.close();
 
@@ -287,10 +346,11 @@ public class ApplySegmentAnything extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(INPUT_OBJECTS_MODE, this, InputObjectsModes.CENTROIDS, InputObjectsModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(OBJECT_SEPARATOR, this));
@@ -313,6 +373,7 @@ public class ApplySegmentAnything extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_MODE));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(OBJECT_SEPARATOR));

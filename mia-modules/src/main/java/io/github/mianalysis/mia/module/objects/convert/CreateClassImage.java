@@ -15,11 +15,13 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -93,7 +95,7 @@ public class CreateClassImage extends Module {
         return "Creates a class image for the specific objects.  For each object, the index of that class is assigned to all pixels.";
     }
 
-    static LinkedHashMap<Objs, Integer> getAvailableObjects(Workspace workspace,
+    static LinkedHashMap<Objs, Integer> getAvailableObjects(WorkspaceI workspace,
             LinkedHashMap<Integer, Parameters> collections) {
         LinkedHashMap<Objs, Integer> available = new LinkedHashMap<>();
 
@@ -112,7 +114,7 @@ public class CreateClassImage extends Module {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
@@ -121,7 +123,7 @@ public class CreateClassImage extends Module {
         LinkedHashMap<Objs, Integer> inputObjects = getAvailableObjects(workspace, collections);
 
         // Adding first objects to image
-        Image outputImage = null;
+        ImageI outputImage = null;
         for (Objs currInputObjects:inputObjects.keySet()) {
             int classIndex = inputObjects.get(currInputObjects);
 
@@ -145,7 +147,7 @@ public class CreateClassImage extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
@@ -269,5 +271,4 @@ public class CreateClassImage extends Module {
             this.allowMissingObjects = allowMissingObjects;
         }
     }
-
 }

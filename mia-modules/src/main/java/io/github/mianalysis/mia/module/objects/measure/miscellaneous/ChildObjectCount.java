@@ -12,6 +12,8 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.measurements.ChildCountMeasurement;
+import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -30,25 +32,37 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Calculates the number of children from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Calculates the number of children from a specific class. Measurements are
+ * assigned to all objects in the input collection. Unlike normal measurements,
+ * this value can optionally be evaluated at the time of use, so should always
+ * be
+ * up to date.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ChildObjectCount extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* For each object in this collection the number of associated child objects (from the collection specified by "Child objects") will be calculated.  The count is stored as a measurement associated with each input object.  The measurement is evaluated at the time of access (unlike "normal" measurements which have fixed values), so should always be correct.
-	*/
+    /**
+     * For each object in this collection the number of associated child objects
+     * (from the collection specified by "Child objects") will be calculated. The
+     * count is stored as a measurement associated with each input object. The
+     * measurement is evaluated at the time of access (unlike "normal" measurements
+     * which have fixed values), so should always be correct.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Child objects to be counted.
-	*/
+    /**
+     * Child objects to be counted.
+     */
     public static final String CHILD_OBJECTS = "Child objects";
+
+    public static final String COUNT_SEPARATOR = "Count controls";
+
+    public static final String LIVE_MEASUREMENT = "Live measurement";
 
     public ChildObjectCount(Modules modules) {
         super("Child object count", modules);
@@ -57,7 +71,6 @@ public class ChildObjectCount extends Module {
     public static String getFullName(String childObjectsName) {
         return "COUNT // " + childObjectsName;
     }
-
 
     @Override
     public Category getCategory() {
@@ -71,14 +84,16 @@ public class ChildObjectCount extends Module {
 
     @Override
     public String getDescription() {
-        return "Calculates the number of children from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.";
+        return "Calculates the number of children from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value can optionally be evaluated at the time of use, so should always be up to date.";
     }
 
     @Override
+
     public Status process(WorkspaceI workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+        boolean liveMeasurement = parameters.getValue(LIVE_MEASUREMENT, workspace);
 
         Objs objects = workspace.getObjects(objectName);
         String measurementName = getFullName(childObjectsName);
@@ -87,7 +102,13 @@ public class ChildObjectCount extends Module {
             return Status.PASS;
 
         for (Obj obj : objects.values())
-            obj.addMeasurement(new ChildCountMeasurement(measurementName, obj, childObjectsName));
+            if (liveMeasurement)
+                obj.addMeasurement(new ChildCountMeasurement(measurementName, obj, childObjectsName));
+            else {
+                Objs children = obj.getChildren(childObjectsName);
+                int count = children == null ? 0 : children.size();
+                obj.addMeasurement(new Measurement(measurementName, count));
+            }
 
         if (showOutput)
             objects.showMeasurements(this, modules);
@@ -102,14 +123,17 @@ public class ChildObjectCount extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
 
+        parameters.add(new SeparatorP(COUNT_SEPARATOR, this));
+        parameters.add(new BooleanP(LIVE_MEASUREMENT, this, true));
+
         addParameterDescriptions();
-        
+
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        WorkspaceI workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ChildObjectsP) parameters.get(CHILD_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         return parameters;
@@ -118,22 +142,22 @@ WorkspaceI workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-WorkspaceI workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
 
         String measurementName = getFullName(childObjectsName);
 
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
         ref.setObjectsName(inputObjectsName);
-        ref.setDescription("Number of \""+childObjectsName+"\" child objects associated with this object.");
+        ref.setDescription("Number of \"" + childObjectsName + "\" child objects associated with this object.");
         returnedRefs.add(ref);
 
         return returnedRefs;
@@ -141,23 +165,23 @@ WorkspaceI workspace = null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -169,9 +193,16 @@ return null;
         parameters.get(INPUT_OBJECTS).setDescription(
                 "For each object in this collection the number of associated child objects (from the collection specified by \""
                         + CHILD_OBJECTS
-                        + "\") will be calculated.  The count is stored as a measurement associated with each input object.  The measurement is evaluated at the time of access (unlike \"normal\" measurements which have fixed values), so should always be correct.");
+                        + "\") will be calculated.  The count is stored as a measurement associated with each input object.  "
+                        + "Depending on the \"" + LIVE_MEASUREMENT
+                        + "\" parameters, the measurement can be evaluated at the time of access "
+                        + "(unlike \"normal\" measurements which have fixed values), so should always be correct.");
 
         parameters.get(CHILD_OBJECTS).setDescription("Child objects to be counted.");
+
+        parameters.get(LIVE_MEASUREMENT)
+                .setDescription("When selected, the child object count will be evaluated at the time of access, "
+                        + "so will always be up to date.  When not selected it is fixed at the time of evaluation.");
 
     }
 }

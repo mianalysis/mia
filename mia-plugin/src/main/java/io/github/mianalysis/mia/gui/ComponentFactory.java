@@ -102,6 +102,16 @@ public class ComponentFactory {
             c.insets = new Insets(10, 3, 10, 10);
             paramPanel.add(parameterComponent, c);
 
+            if (editable) {
+                c.insets = new Insets(2, 5, 0, 5);
+                c.gridx++;
+                c.weightx = 0;
+                c.anchor = GridBagConstraints.EAST;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+                paramPanel.add(visibleCheck, c);
+            }
+
         } else if (parameter instanceof SeparatorP) {
             Parameter firstParameter = module.updateAndGetParameters().values().iterator().next();
             // Add an extra space above a separator, unless it's the first parameter. We

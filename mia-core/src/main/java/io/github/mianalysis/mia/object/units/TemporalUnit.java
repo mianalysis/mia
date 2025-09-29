@@ -27,6 +27,48 @@ public class TemporalUnit {
         return selectedUnit;
     }
 
+    public static Unit<Time> getOMEUnit(String unit) {
+        switch (unit) {
+            default:
+                return null;
+
+            case "ns":
+            case "nanosecond":
+            case "nanoseconds":
+                return UNITS.NANOSECOND;
+
+            case "ms":
+            case "millisecond":
+            case "milliseconds":
+                return UNITS.MILLISECOND;
+
+            case "m":
+            case "min":
+            case "mins":
+            case "minute":
+            case "minutes":
+                return UNITS.MINUTE;
+
+            case "h":
+            case "hour":
+            case "hours":
+            return UNITS.HOUR;
+
+            case "d":
+            case "day":
+            case "days":
+                return UNITS.DAY;
+
+            case "s":
+            case "sec":
+            case "secs":
+            case "second":
+            case "seconds":
+                return UNITS.SECOND;
+
+        }
+    }
+
     public static void setUnit(String units) {
         switch (units) {
             case AvailableUnits.NANOSECOND:

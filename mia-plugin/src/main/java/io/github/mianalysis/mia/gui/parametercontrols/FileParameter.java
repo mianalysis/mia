@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -59,6 +60,7 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
 
         String previousPath = Prefs.get("MIA.PreviousPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
+        fileChooser.setPreferredSize(new Dimension(800,640));
         fileChooser.setDialogTitle("Select file");
         fileChooser.setMultiSelectionEnabled(false);
 

@@ -19,11 +19,14 @@ public class ImageTiler {
 
     public static ImagePlus tile(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xOverlapPx, int yOverlapPx,
             String tileAxis) {
+        inputIpl = inputIpl.duplicate();
         String title = "Tiled_" + inputIpl.getTitle();
 
-        int coreTileWidth = (int) Math.round(Math.ceil((double) (inputIpl.getWidth()-xOverlapPx) / (double) xNumTiles));
+        int coreTileWidth = (int) Math
+                .round(Math.round((double) (inputIpl.getWidth() - xOverlapPx) / (double) xNumTiles));
         int tileWidth = coreTileWidth + xOverlapPx;
-        int coreTileHeight = (int) Math.round(Math.ceil((double) (inputIpl.getHeight()-yOverlapPx) / (double) yNumTiles));
+        int coreTileHeight = (int) Math
+                .round(Math.round((double) (inputIpl.getHeight() - yOverlapPx) / (double) yNumTiles));
         int tileHeight = coreTileHeight + yOverlapPx;
 
         int nChannels = inputIpl.getNChannels();
@@ -89,7 +92,8 @@ public class ImageTiler {
 
     public static ImagePlus stitch(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xOverlapPx, int yOverlapPx,
             int outputWidth, int outputHeight,
-        String tileAxis) {
+            String tileAxis) {
+        inputIpl = inputIpl.duplicate();
         String title = "Stitched_" + inputIpl.getTitle();
 
         int tileWidth = inputIpl.getWidth();
@@ -123,8 +127,8 @@ public class ImageTiler {
         ImagePlus outputIpl = IJ.createHyperStack(title, outputWidth, outputHeight, nChannels, nSlices, nFrames,
                 32);
 
-        // Converting to 32 bit for this operation to get better results        
-        IJ.run(inputIpl,"32-bit",null);
+        // Converting to 32 bit for this operation to get better results
+        IJ.run(inputIpl, "32-bit", null);
 
         ImageStack inputIst = inputIpl.getStack();
         ImageStack outputIst = outputIpl.getStack();
@@ -157,22 +161,22 @@ public class ImageTiler {
                                     float multiplier = 1;
 
                                     if (xx < xOverlapPx && x != 0)
-                                        multiplier *= (1 - (xOverlapPx - xx) / (float) xOverlapPx);                                        
-                                    
+                                        multiplier *= (1 - (xOverlapPx - xx) / (float) xOverlapPx);
+
                                     if (xx >= coreTileWidth && x != xNumTiles - 1)
-                                        multiplier *= (tileWidth - xx) / (float) xOverlapPx;                                 
+                                        multiplier *= (tileWidth - xx) / (float) xOverlapPx;
 
                                     if (yy < yOverlapPx && y != 0)
                                         multiplier *= (1 - (yOverlapPx - yy) / (float) yOverlapPx);
-                                    
 
                                     if (yy >= coreTileHeight && y != yNumTiles - 1)
                                         multiplier *= (tileHeight - yy) / (float) yOverlapPx;
-                                   
-                                    outputIpr.setf(xx + x0, yy + y0, outputIpr.getf(xx+x0,yy+y0) + inputIpr.getf(xx, yy) * multiplier);
-                            
+
+                                    outputIpr.setf(xx + x0, yy + y0,
+                                            outputIpr.getf(xx + x0, yy + y0) + inputIpr.getf(xx, yy) * multiplier);
+
                                 }
-                            }  
+                            }
                         }
                     }
                 }
@@ -182,13 +186,14 @@ public class ImageTiler {
 
         switch (bitDepth) {
             case 8:
-                inputIpl.setDisplayRange(0,255);
+                outputIpl.setDisplayRange(0, 255);
+                IJ.run(outputIpl, "8-bit", null);
                 break;
             case 16:
-                inputIpl.setDisplayRange(0,65535);
+                outputIpl.setDisplayRange(0, 65535);
+                IJ.run(outputIpl, "16-bit", null);
                 break;
         }
-        IJ.run(inputIpl,"8-bit",null);
 
         return outputIpl;
 

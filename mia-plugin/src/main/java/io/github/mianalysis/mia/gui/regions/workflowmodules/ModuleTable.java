@@ -21,6 +21,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
@@ -85,11 +87,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
         registerKeyboardAction(this, DELETE, delete, JComponent.WHEN_FOCUSED);
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, false);
-        registerKeyboardAction(this, COPY, copy, JComponent.WHEN_FOCUSED);
-
-        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK, false);
-        registerKeyboardAction(this, PASTE, paste, JComponent.WHEN_FOCUSED);
+        // CTRL masking always works, but Mac also gets the command button shortcuts
+        addKeyboardShortcuts(InputEvent.CTRL_DOWN_MASK);
+        if (SystemUtils.IS_OS_MAC)
+            addKeyboardShortcuts(InputEvent.META_DOWN_MASK);
 
         KeyStroke output = KeyStroke.getKeyStroke(KeyEvent.VK_O, 0);
         registerKeyboardAction(this, OUTPUT, output, JComponent.WHEN_FOCUSED);
@@ -111,6 +112,14 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
                 }
             }
         }
+    }
+
+    private void addKeyboardShortcuts(int mask) {
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask, false);
+        registerKeyboardAction(this, COPY, copy, JComponent.WHEN_FOCUSED);
+
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask, false);
+        registerKeyboardAction(this, PASTE, paste, JComponent.WHEN_FOCUSED);
     }
 
     public void updateStates() {

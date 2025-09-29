@@ -118,7 +118,7 @@ public class CombineObjectSets extends Module {
     public static void addObjects(Objs targetObjects, Objs sourceObjects) {
         // Ensuring new objects are added to end of collection
         targetObjects.recalculateMaxID();
-        
+
         for (Obj obj : sourceObjects.values()) {
 
             Obj newObj = targetObjects.createAndAddNewObject(obj.getCoordinateSetFactory());
@@ -265,6 +265,8 @@ public class CombineObjectSets extends Module {
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         if ((boolean) parameters.getValue(ALLOW_MISSING_OBJECTS, null)) {
+            // Since we can't guarantee input objects 1 or 2 will be present, we must
+            // combine to a new object set
             returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
         } else {
             returnedParameters.add(parameters.get(OUTPUT_MODE));
@@ -336,32 +338,39 @@ public class CombineObjectSets extends Module {
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
         WorkspaceI workspace = null;
-        // Where necessary, redirect relationships
-        ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        if (((String) parameters.getValue(OUTPUT_MODE, workspace)).equals(OutputModes.CREATE_NEW)
+                || (boolean) parameters.getValue(ALLOW_MISSING_OBJECTS, workspace)) {
+            // Where necessary, redirect relationships
+            ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        ParentChildRefs currentRefs = modules.getParentChildRefs(this);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS_1, workspace);
-        String[] childNames = currentRefs.getChildNames(inputObjectsName, true);
-        for (String childName : childNames)
-            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, childName));
+            ParentChildRefs currentRefs = modules.getParentChildRefs(this);
 
-        String[] parentNames = currentRefs.getParentNames(inputObjectsName, true);
-        for (String parentName : parentNames)
-            returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS_1, workspace);
+            String[] childNames = currentRefs.getChildNames(inputObjectsName, true);
+            for (String childName : childNames)
+                returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, childName));
 
-        inputObjectsName = parameters.getValue(INPUT_OBJECTS_2, workspace);
-        childNames = currentRefs.getChildNames(inputObjectsName, true);
-        for (String childName : childNames)
-            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, childName));
+            String[] parentNames = currentRefs.getParentNames(inputObjectsName, true);
+            for (String parentName : parentNames)
+                returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
 
-        parentNames = currentRefs.getParentNames(inputObjectsName, true);
-        for (String parentName : parentNames)
-            returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
+            inputObjectsName = parameters.getValue(INPUT_OBJECTS_2, workspace);
+            childNames = currentRefs.getChildNames(inputObjectsName, true);
+            for (String childName : childNames)
+                returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, childName));
 
-        return returnedRefs;
+            parentNames = currentRefs.getParentNames(inputObjectsName, true);
+            for (String parentName : parentNames)
+                returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
+
+            return returnedRefs;
+            
+        }
+
+        return null;
 
     }
 
@@ -412,7 +421,8 @@ public class CombineObjectSets extends Module {
 
         @Override
         public <T extends Parameter> T duplicate(Module newModule) {
-            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(), getDescription());
+            CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(),
+                    getDescription());
 
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());

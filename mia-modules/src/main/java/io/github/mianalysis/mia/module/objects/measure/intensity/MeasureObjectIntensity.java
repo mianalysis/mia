@@ -2,8 +2,6 @@
 
 package io.github.mianalysis.mia.module.objects.measure.intensity;
 
-import java.util.ArrayList;
-
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;

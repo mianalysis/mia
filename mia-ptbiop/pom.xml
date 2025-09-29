@@ -114,7 +114,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -139,7 +139,7 @@
         <dependency>
             <groupId>ch.epfl.biop</groupId>
             <artifactId>ijl-utilities-wrappers</artifactId>
-            <version>0.9.4</version>
+            <version>0.11.5</version>
             <scope>${scp}</scope>
         </dependency>
     </dependencies>    

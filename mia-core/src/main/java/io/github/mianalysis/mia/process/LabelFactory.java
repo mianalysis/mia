@@ -125,7 +125,8 @@ public class LabelFactory {
 
         for (Obj object : objects.values()) {
             ObjMetadata metadataItem = object.getMetadataItem(metadataName);
-            IDs.put(object.getID(), metadataItem.getValue());
+            if (metadataItem != null)
+                IDs.put(object.getID(), metadataItem.getValue());
         }
 
         return IDs;

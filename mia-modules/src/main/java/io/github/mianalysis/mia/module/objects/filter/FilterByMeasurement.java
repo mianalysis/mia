@@ -175,10 +175,15 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             String measurementName = getIndividualMeasurementName(measName, workspace);
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-            returnedRefs.add(new ObjMeasurementRef(measurementName, inputObjectsName));
+            ObjMeasurementRef returnedRef = objectMeasurementRefs.getOrPut(measurementName);
+            returnedRef.setObjectsName(inputObjectsName);
+            returnedRefs.add(returnedRef);
+
             if (parameters.getValue(FILTER_METHOD, workspace).equals(FilterModes.MOVE_FILTERED)) {
                 String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
-                returnedRefs.add(new ObjMeasurementRef(measurementName, outputObjectsName));
+                returnedRef = objectMeasurementRefs.getOrPut(measurementName);
+                returnedRef.setObjectsName(outputObjectsName);
+                returnedRefs.add(returnedRef);
             }
         }
 

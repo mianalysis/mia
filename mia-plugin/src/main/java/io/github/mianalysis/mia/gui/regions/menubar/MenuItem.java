@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.gui.regions.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JMenuItem;
@@ -12,7 +13,12 @@ import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.documentation.DocumentationPanel;
 import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependency;
+import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
+import io.github.mianalysis.mia.process.exporting.Exporter;
 
 /**
  * Created by stephen on 28/07/2017.
@@ -26,6 +32,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String LOAD_WORKFLOW = "Load workflow";
     public static final String SAVE_WORKFLOW = "Save workflow";
     public static final String SAVE_WORKFLOW_AS = "Save workflow as...";
+    public static final String EXPORT_TEST_WORKSPACE = "Export test workspace";
     public static final String UNDO = "Undo";
     public static final String REDO = "Redo";
     public static final String COPY = "Copy";
@@ -74,6 +81,19 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
             case SAVE_WORKFLOW_AS:
                 GUIAnalysisHandler.saveModulesAs();
+                break;
+
+            case EXPORT_TEST_WORKSPACE:
+                WorkspaceI workspace = GUI.getTestWorkspace();
+                Modules modules = GUI.getModules();
+                OutputControl outputControl = modules.getOutputControl();
+                Exporter exporter = AnalysisRunner.initialiseExporter(outputControl);
+                String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
+                try {
+                    exporter.exportResults(workspace, modules, name);
+                } catch (IOException e1) {
+                    MIA.log.writeError(e1);
+                }
                 break;
 
             case UNDO:

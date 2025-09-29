@@ -34,17 +34,43 @@ import io.github.mianalysis.mia.thirdparty.bUnwarpJ_Mod;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-
 /**
-* Apply 2D B-spline unwarping transforms to align images from the workspace to other images from the workspace using manually-selected reference points.  When the module runs, the input and reference images are displayed. The user then selects matching points on each image and clicks "Add pair(s)". Points must be added in the same order on each image (ID numbers next to each point provide a reference). Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking "Remove pair". Finally, the alignment is accepted by clicking "Finish adding pairs", at which point the images are closed and the transform is applied.  If multiple slices/timepoints are to be aligned, the next image pair will immediately be displayed and the processes is repeated.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name.Alignments are calculated using the <a href="https://imagej.net/BUnwarpJ">BUnwarpJ</a> image transformation library.
-*/
+ * Apply 2D B-spline unwarping transforms to align images from the workspace to
+ * other images from the workspace using manually-selected reference points.
+ * When the module runs, the input and reference images are displayed. The user
+ * then selects matching points on each image and clicks "Add pair(s)". Points
+ * must be added in the same order on each image (ID numbers next to each point
+ * provide a reference). Points are shown in the control window and can be
+ * deleted by highlighting the relevant entry and clicking "Remove pair".
+ * Finally, the alignment is accepted by clicking "Finish adding pairs", at
+ * which point the images are closed and the transform is applied. If multiple
+ * slices/timepoints are to be aligned, the next image pair will immediately be
+ * displayed and the processes is repeated. The transformed input image can
+ * either overwrite the input image in the workspace, or be saved to the
+ * workspace with a new name.Alignments are calculated using the
+ * <a href="https://imagej.net/BUnwarpJ">BUnwarpJ</a> image transformation
+ * library.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends AbstractBUnwarpJRegistration
         implements Interactable {
 
-	/**
-	* The source for points to be used in calculation of image registration:<br><ul><li>"Pre-selected points" Points have been previously-selected on the input images as multi-point ROIs.  These points are passed directly into the registration calculation.  This negates the need for user-interaction at runtime.</li><li>"Select at runtime" Points must be manually-selected by the user at analysis runtime.  The two images to be aligned are displayed and a dialog box opens to allow selection of point pairs.  Point pairs must be added in the same order on each image.  For images where multiple slices/timepoints need to be registered, image pairs will be opened sequentially, with the point selections from the previous slice/timepoint being pre-selected for convenience.</li></ul>
-	*/
+    /**
+     * The source for points to be used in calculation of image registration:<br>
+     * <ul>
+     * <li>"Pre-selected points" Points have been previously-selected on the input
+     * images as multi-point ROIs. These points are passed directly into the
+     * registration calculation. This negates the need for user-interaction at
+     * runtime.</li>
+     * <li>"Select at runtime" Points must be manually-selected by the user at
+     * analysis runtime. The two images to be aligned are displayed and a dialog box
+     * opens to allow selection of point pairs. Point pairs must be added in the
+     * same order on each image. For images where multiple slices/timepoints need to
+     * be registered, image pairs will be opened sequentially, with the point
+     * selections from the previous slice/timepoint being pre-selected for
+     * convenience.</li>
+     * </ul>
+     */
     public static final String POINT_SELECTION_MODE = "Point selection mode";
 
     public interface PointSelectionModes {
@@ -83,7 +109,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
         // Setting up the parameters
         ManualBUnwarpJParam manualParam = (ManualBUnwarpJParam) param;
-        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE,workspace);
+        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE, workspace);
 
         // In test points mode we don't want to update the ROIs, so the workspace is set
         // to null
@@ -91,26 +117,26 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             return;
 
         // Getting any ROI attached to the warped image
-        switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
+        switch ((String) parameters.getValue(CALCULATION_SOURCE, workspace)) {
             case CalculationSources.EXTERNAL:
-                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
+                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE, workspace);
                 manualParam.warpedRoi = workspace.getImage(externalSourceName).getImagePlus().getRoi();
                 break;
             case CalculationSources.INTERNAL:
-                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+                String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
                 manualParam.warpedRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
         }
 
         // Getting any ROI attached to the reference image
-        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.FIRST_FRAME:
             case ReferenceModes.PREVIOUS_N_FRAMES:
-                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+                String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
                 manualParam.referenceRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
             case ReferenceModes.SPECIFIC_IMAGE:
-                String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
+                String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
                 manualParam.referenceRoi = workspace.getImage(referenceImageName).getImagePlus().getRoi();
                 break;
         }
@@ -216,8 +242,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ManualBUnwarpJParam params = new ManualBUnwarpJParam();
         getParameters(params, null);
 
-        String fillMode = parameters.getValue(FILL_MODE,null);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,null);
+        String fillMode = parameters.getValue(FILL_MODE, null);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, null);
 
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
         ImagePlus ipl1 = ((ImagePlus) objects[1]).duplicate();
@@ -271,7 +297,6 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

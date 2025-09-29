@@ -17,33 +17,28 @@ public class MessageP extends TextAreaP {
     public MessageP(String name, Module module, ParameterState state) {
         super(name, module, false);
         this.state = state;
-        setExported(false);
     }
 
     public MessageP(String name, Module module, ParameterState state, int controlHeight) {
         super(name, module, false);
         this.state = state;
         this.controlHeight = controlHeight;
-        setExported(false);
     }
 
     public MessageP(String name, Module module, @NotNull String value, ParameterState state) {
         super(name, module, value, false);
         this.state = state;
-        setExported(false);
     }
 
     public MessageP(String name, Module module, @NotNull String value, ParameterState state, int controlHeight) {
         super(name, module, value, false);
         this.state = state;
         this.controlHeight = controlHeight;
-        setExported(false);
     }
 
     public MessageP(String name, Module module, @NotNull String value, ParameterState state, String description) {
         super(name, module, value, false, description);
         this.state = state;
-        setExported(false);
     }
 
     public ParameterState getState() {

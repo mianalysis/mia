@@ -12,6 +12,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
@@ -38,6 +40,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuItem loadWorkflow = new MenuItem(MenuItem.LOAD_WORKFLOW);
     private static MenuItem saveWorkflow = new MenuItem(MenuItem.SAVE_WORKFLOW);
     private static MenuItem saveWorkflowAs = new MenuItem(MenuItem.SAVE_WORKFLOW_AS);
+    private static MenuItem exportTestWorkspace = new MenuItem(MenuItem.EXPORT_TEST_WORKSPACE);
 
     private static MenuItem resetAnalysis = new MenuItem(MenuItem.RESET_ANALYSIS);
     private static MenuItem enableAllModules = new MenuItem(MenuItem.ENABLE_ALL);
@@ -59,6 +62,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(loadWorkflow);
         fileMenu.add(saveWorkflow);
         fileMenu.add(saveWorkflowAs);
+        fileMenu.addSeparator();
+        fileMenu.add(exportTestWorkspace);
 
         // Creating the edit menu
         editMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
@@ -134,27 +139,36 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         logMenu.add(menuLogCheckbox);
 
         add(Box.createHorizontalGlue());
-        
+
         add(blankMenu);
         blankMenu.add(new MenuItem(MenuItem.SHOW_PONY));
 
-        KeyStroke saveModules = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+        // CTRL masking always works, but Mac also gets the command button shortcuts
+        addKeyboardShortcuts(InputEvent.CTRL_DOWN_MASK);
+        if (SystemUtils.IS_OS_MAC)
+            addKeyboardShortcuts(InputEvent.META_DOWN_MASK);
+
+    }
+
+    private void addKeyboardShortcuts(int mask) {
+        KeyStroke saveModules = KeyStroke.getKeyStroke(KeyEvent.VK_S, mask);
         registerKeyboardAction(this, "Save", saveModules, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        KeyStroke newAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
+        KeyStroke newAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_N, mask);
         registerKeyboardAction(this, "New", newAnalysis, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        KeyStroke undoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK);
+        KeyStroke undoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Z, mask);
         registerKeyboardAction(this, "Undo", undoAction, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        KeyStroke redoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK);
+        KeyStroke redoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Y, mask);
         registerKeyboardAction(this, "Redo", redoAction, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
     }
 
     public void update() {
         newWorkflow.setVisible(!GUI.isProcessingGUI());
-
+        exportTestWorkspace.setVisible(!GUI.isProcessingGUI());
+        
         editMenu.setVisible(!GUI.isProcessingGUI());
         blankMenu.setVisible(!GUI.isProcessingGUI());
 

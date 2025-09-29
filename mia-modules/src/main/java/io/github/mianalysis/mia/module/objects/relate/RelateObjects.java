@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objects.relate;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.scijava.Priority;
@@ -9,12 +10,14 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -33,6 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
+import io.github.mianalysis.mia.process.ColourFactory;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -241,7 +245,8 @@ public class RelateObjects extends Module {
      * Iterates over each testObject, calculating getting the smallest distance to a
      * parentObject. If this is smaller than linkingDistance the link is assigned.
      */
-    public void proximity(Objs parentObjects, Objs childObjects, WorkspaceI workspace, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+    public void proximity(Objs parentObjects, Objs childObjects, WorkspaceI workspace, boolean ignoreEdgesXY,
+            boolean ignoreEdgesZ) {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE, workspace);
@@ -622,6 +627,22 @@ public class RelateObjects extends Module {
             Objs relatedObjects = mergeRelatedObjects(parentObjects, childObjects, relatedObjectsName);
             if (relatedObjects != null)
                 workspace.addObjects(relatedObjects);
+
+        }
+
+        if (showOutput) {
+            int maxID = 0;
+            for (int ID : parentObjects.keySet())
+                maxID = Math.max(ID, maxID);
+
+            ImageI parentImage = parentObjects.convertToImageIDColours();
+            SetDisplayRange.setDisplayRangeManual(parentImage, new double[] { 0, maxID });
+            parentImage.show(false);
+
+            HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
+            ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
+            SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
+            childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR);
 
         }
 

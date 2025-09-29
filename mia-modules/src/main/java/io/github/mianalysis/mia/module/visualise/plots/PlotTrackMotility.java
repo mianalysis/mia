@@ -185,6 +185,10 @@ public class PlotTrackMotility extends AbstractOverlay {
 
         }
 
+        // If no tracks exist, create a blank plot, so subsequent modules don't crash
+        if (ipl == null)
+            ipl = new Plot(trackObjects.getName() + " (ID 0)", "x-position (px)", "y-position (px)").getImagePlus();
+        
         return ImageFactory.createImage(outputImageName, ipl);
 
     }

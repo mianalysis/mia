@@ -1,6 +1,7 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
-import java.awt.Dimension;
+import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -8,7 +9,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.HyperlinkEvent;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
@@ -18,7 +21,7 @@ import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class MessageArea extends ParameterControl {
     protected JPanel control;
-    protected JTextArea textArea;
+    protected JTextPane textPane;
 
     public MessageArea(MessageP parameter, int controlHeight) {
         super(parameter);
@@ -36,20 +39,38 @@ public class MessageArea extends ParameterControl {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setBackground(null);
-        textArea.setText(parameter.getRawStringValue());
-        textArea.setFont(GUI.getDefaultFont().deriveFont(14f));
-        textArea.setForeground(SwingParameterControlFactory.getColor(parameter.getState(),isDark));
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setOpaque(false);
-        textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        textArea.setBorder(BorderFactory.createEmptyBorder());
+        String wrappedHtml = "<html><head><style>"
+                + "body{width:0px;}"
+                + "</style></head><body>"
+                + parameter.getRawStringValue()
+                + "</body></html>";
 
-        JScrollPane objectsScrollPane = new JScrollPane(textArea);
-        objectsScrollPane.setPreferredSize(new Dimension(0,controlHeight));
+        textPane = new JTextPane();
+        textPane.setEditable(false);
+        textPane.setBackground(null);
+        textPane.setContentType("text/html");
+        textPane.setText(wrappedHtml);
+        textPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        textPane.setForeground(SwingParameterControlFactory.getColor(parameter.getState(), isDark));
+        textPane.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        textPane.setBorder(BorderFactory.createEmptyBorder());
+        textPane.addHyperlinkListener(e -> {
+            if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+                try {
+                    Desktop.getDesktop().browse(e.getURL().toURI());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        // Updating the textPane size to its contents whilst aware of available space
+        SwingUtilities.invokeLater(() -> {
+            control.revalidate();
+        });
+
+        JScrollPane objectsScrollPane = new JScrollPane(textPane);
+        // objectsScrollPane.setPreferredSize(new Dimension(0, controlHeight));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
@@ -70,6 +91,6 @@ public class MessageArea extends ParameterControl {
 
     @Override
     public void updateControl() {
-        textArea.setText(parameter.getRawStringValue());
+        textPane.setText(parameter.getRawStringValue());
     }
 }

@@ -60,10 +60,6 @@ public class FilePathP extends FileFolderType {
         // Checking the file exists
         String converted = GlobalVariables.convertString(path, module.getModules());
 
-        // Check file exists
-        if (!new File(converted).exists())
-            return false;
-
         // Finally, check file is a file (not a folder)
         return new File(converted).isFile();
 

@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
+import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
@@ -358,6 +359,9 @@ public class TrackEditor extends Module {
         }
 
         addSingleTimepointTracks(trackIDs, spotObjects, trackObjects, inputTrackObjectsName);
+
+        if (showOutput)
+            TrackObjects.showObjects(spotObjects, inputTrackObjectsName);
 
         return Status.PASS;
 

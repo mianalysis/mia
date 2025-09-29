@@ -114,7 +114,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -226,5 +226,32 @@
             <version>5.9</version>
             <scope>${scp}</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.elki-project</groupId>
+            <artifactId>elki</artifactId>
+            <version>0.8.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>it.unimi.dsi</groupId>
+                    <artifactId>fastutil</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--The main fastutil that comes with elki is massive (around 22 MB), so 
+        we use this trimmed down version instead.  The fastutil import is removed
+        by maven-dependency-plugin in the mia-plugin pom-->
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil-core</artifactId>
+            <version>8.5.16</version>
+        </dependency>
+
+        <!-- <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>1.20.0</version>
+        </dependency> -->
     </dependencies>
 </project>

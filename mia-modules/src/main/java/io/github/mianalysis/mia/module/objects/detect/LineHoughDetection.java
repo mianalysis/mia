@@ -15,14 +15,15 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
+import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
-import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -62,7 +63,6 @@ public class LineHoughDetection extends AbstractHoughDetection {
 
     public LineHoughDetection(Modules modules) {
         super("Line detection", modules);
-        deprecated = true; // This isn't ready for full-scale release
     }
 
     @Override
@@ -82,7 +82,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
-    public Status process(Workspace workspace) {
+    public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -102,7 +102,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
         int labelSize = parameters.getValue(LABEL_SIZE, workspace);
 
         // Getting image
-        Image inputImage = workspace.getImage(inputImageName);
+        ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Storing the image calibration
@@ -146,7 +146,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
                         ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
                         if (outputTransformImage) {
-                            Image outputImage = ImageFactory.createImage(outputImageName, showIpl);
+                            ImageI outputImage = ImageFactory.createImage(outputImageName, showIpl);
                             workspace.addImage(outputImage);
                         }
                         if (showOutput && showTransformImage) {
@@ -169,7 +169,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
                     }
                     for (double[] line : lines) {
                         // Initialising the object
-                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+                        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
 
                         // Getting rectangle parameters
                         int r = (int) Math.round(line[0]) * samplingRate;
@@ -217,7 +217,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
@@ -244,7 +244,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        
+
         Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = super.updateAndGetObjectMeasurementRefs();
 

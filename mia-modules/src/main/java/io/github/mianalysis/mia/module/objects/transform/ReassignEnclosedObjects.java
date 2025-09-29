@@ -133,6 +133,10 @@ public class ReassignEnclosedObjects extends Module {
             return Status.FAIL;
         }
 
+            // Showing objects
+        if (showOutput)
+            inputObjects.convertToImageIDColours().show(false);
+
         return Status.PASS;
 
     }

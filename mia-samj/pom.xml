@@ -114,7 +114,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -149,11 +149,16 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>ai.nets</groupId>
             <artifactId>samj</artifactId>
             <version>0.0.3-SNAPSHOT</version>
             <scope>${scp}</scope>
+        </dependency> -->
+        <dependency>
+            <groupId>com.github.segment-anything-models-java</groupId>
+            <artifactId>SAMJ</artifactId>
+            <version>c6de55ac7f</version>
         </dependency>
     </dependencies>
 

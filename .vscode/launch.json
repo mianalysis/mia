@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ApplyDeepImageJModel",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.images.process.ApplyDeepImageJModel",
+            "projectName": "mia-deepimagej"
+        },
+        {
+            "type": "java",
+            "name": "TracePaths",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.objects.detect.TracePaths",
+            "projectName": "mia-snt"
+        },
+        {
+            "type": "java",
             "name": "ApplySegmentAnything",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.objects.detect.ApplySegmentAnything",

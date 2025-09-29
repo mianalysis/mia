@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.UIManager;

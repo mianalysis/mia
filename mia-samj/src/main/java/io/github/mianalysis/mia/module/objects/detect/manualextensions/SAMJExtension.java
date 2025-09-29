@@ -27,7 +27,6 @@ import org.scijava.plugin.Plugin;
 import com.drew.lang.annotations.Nullable;
 
 import ai.nets.samj.annotation.Mask;
-import ai.nets.samj.install.EfficientSamEnvManager;
 import ai.nets.samj.install.SamEnvManagerAbstract;
 import ai.nets.samj.models.AbstractSamJ;
 import ai.nets.samj.models.EfficientSamJ;
@@ -48,12 +47,16 @@ import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.SAMJUtils;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
 import net.imagej.ImageJ;
 import net.imagej.patcher.LegacyInjector;
 
 @Plugin(type = ManualExtension.class, priority = Priority.LOW, visible = true)
-public class SAMJExtension extends ManualExtension implements MouseListener {
+public class SAMJExtension implements ManualExtension, MouseListener {
+    private Parameters parameters = new Parameters();
+    private Module module;
+
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
     public static final String USE_SAM = "Enable Segment Anything";
     public static final String ENVIRONMENT_PATH_MODE = "Environment path mode";
@@ -94,28 +97,28 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
     }
 
     public SAMJExtension(Module module) {
-        super(module);
+        setModule(module);
+        initialiseParameters();
+    }
+
+    @Override
+    public Parameters getAllParameters() {
+        return parameters;
+    }
+
+    @Override
+    public void setModule(Module module) {
+        this.module = module;
     }
 
     public AbstractSamJ initialiseSAMJ(String environmentPath, boolean installIfMissing) {
-        AbstractSamJ.MAX_ENCODED_AREA_RS = 3000;
-        AbstractSamJ.MAX_ENCODED_SIDE = 3000;
+        AbstractSamJ.MAX_ENCODED_AREA_RS = 10000;
+        AbstractSamJ.MAX_ENCODED_SIDE = AbstractSamJ.MAX_ENCODED_AREA_RS * 3;
 
         AbstractSamJ loadedSamJ = null;
         try {
-            SamEnvManagerAbstract manager = EfficientSamEnvManager.create(environmentPath);
-
-            if (!manager.checkEverythingInstalled())
-                if (installIfMissing) {
-                    module.writeStatus("Installing SAM model");
-                    MIA.log.writeDebug("Installing SAM model to " + environmentPath);
-                    manager.installEverything();
-                } else {
-                    MIA.log.writeWarning("Model not available.  Please install manually or enable \""
-                            + INSTALL_IF_MISSING + "\" parameter.");
-                }
-
-            loadedSamJ = EfficientSamJ.initializeSam(manager);
+            SamEnvManagerAbstract envManager = SAMJUtils.installSAMJ(environmentPath);
+            loadedSamJ = EfficientSamJ.initializeSam(envManager);
 
         } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
                 | MambaInstallException e) {
@@ -143,7 +146,7 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
 
         switch (envionmentPathMode) {
             case EnvironmentPathModes.DEFAULT:
-                environmentPath = SamEnvManagerAbstract.DEFAULT_DIR;
+                environmentPath = SAMJUtils.getDefaultEnvironmentPath();
                 break;
         }
 
@@ -162,15 +165,29 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
             } else {
                 // Initialise a new copy of SamJ
                 samJ = initialiseSAMJ(environmentPath, installIfMissing);
-                samJ.setImage(workspace.getImage(imageName).getImgPlus());
             }
-        } catch (IOException | RuntimeException e1) {
+        } catch (RuntimeException e1) {
             e1.printStackTrace();
             return Status.FAIL;
         } catch (InterruptedException e2) {
             // Don't throw an error in this case, as it's likely the sleep was interrupted
             // by the thread being manually stopped (e.g. "Stop" button on GUI)
             return Status.TERMINATE_SILENT;
+        }
+
+        try {
+            samJ.setImage(workspace.getImage(imageName).getImgPlus());
+        } catch (IOException | RuntimeException | InterruptedException e) {
+            // If it runs out of memory, close SAMJ and initialise a new one
+            MIA.log.writeDebug("Initialising new SAMJ");
+            samJ.close();
+            samJ = initialiseSAMJ(environmentPath, installIfMissing);
+            try {
+                samJ.setImage(workspace.getImage(imageName).getImgPlus());
+            } catch (IOException | RuntimeException | InterruptedException e1) {
+                MIA.log.writeError(e);
+                return Status.FAIL;
+            }
         }
 
         if (preinitialise) {
@@ -191,7 +208,8 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
                 preinitPath = nextWorkspace.getMetadata().getFile().getAbsolutePath();
 
                 // Creating a dummy workspace so we don't alter the real one
-                WorkspaceI dummyWorkspace = new WorkspacesI().getNewWorkspace(nextWorkspace.getMetadata().getFile(), nextWorkspace.getMetadata().getSeriesNumber());
+                WorkspaceI dummyWorkspace = new Workspaces().getNewWorkspace(nextWorkspace.getMetadata().getFile(),
+                        nextWorkspace.getMetadata().getSeriesNumber());
                 String finalEnvironmentPath = environmentPath;
                 
                 Thread t = new Thread(() -> {
@@ -236,6 +254,12 @@ public class SAMJExtension extends ManualExtension implements MouseListener {
         this.displayIpl = displayIpl;
         displayIpl.getCanvas().addMouseListener(this);
 
+        return Status.PASS;
+
+    }
+
+    @Override
+    public Status onObjectAdded() {
         return Status.PASS;
 
     }
