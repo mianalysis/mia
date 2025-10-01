@@ -220,17 +220,24 @@ public class ApplyDeepImageJModel extends Module {
                 } else if (outputType.equals("list")) {
                     float[] modelOutputArray = (float[]) modelOutput;
                     int classificationClass = 0;
+                    double classificationProbability = 0;
 
                     if (model.params.outputList.get(0).recommended_patch[1] == 1) {
                         // Binary classification
-                        classificationClass = (int) Math.round(1-modelOutputArray[1]);
+                        classificationClass = (int) Math.round(modelOutputArray[1]);
+                        if (classificationClass == 0)
+                            classificationProbability = modelOutputArray[1];
+                        else
+                            classificationProbability = 1 - modelOutputArray[1];
+
                     } else {
                         // Categorical classification
                         classificationClass = (int) Math.round(modelOutputArray[0]);
                     }
 
                     inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_CLASS, classificationClass));
-                    inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_PROBABILITY, modelOutputArray[1]));
+                    inputImage.addMeasurement(
+                            new Measurement(Measurements.CLASSIFICATION_PROBABILITY, classificationProbability));
 
                 }
 
