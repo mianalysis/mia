@@ -297,6 +297,10 @@ public class Metadata extends LinkedHashMap<String,Object> implements MetadataI 
 
     }
 
+    public Object remove(String key) {
+        return super.remove(key);        
+    }
+
     @Override
     public boolean hasKey(String key) {
         return containsKey(key);

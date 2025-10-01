@@ -20,7 +20,7 @@ public class DefaultObj extends DefaultVolume implements Obj {
      */
     private int ID;
 
-    private int T;
+    private int T = 0;
 
     private Objs objCollection;
 
