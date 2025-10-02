@@ -2,7 +2,7 @@
 
 package io.github.mianalysis.mia.module.objects.process;
 
-
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.scijava.Priority;
@@ -14,6 +14,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -54,100 +55,129 @@ import io.github.mianalysis.mia.process.math.GaussianDistribution2D;
  */
 
 /**
-* Gaussian spot fitting.  Can take objects as estimated locations.
-***Only works in 2D***
-***Only works for refinement of existing spots***
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Gaussian spot fitting. Can take objects as estimated locations.
+ *** Only works in 2D***
+ *** Only works for refinement of existing spots***
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitGaussian2D extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image/objects input";
 
-	/**
-	* Image from the workspace to which the 2D Gaussian profiles will be fit.
-	*/
+    /**
+     * Image from the workspace to which the 2D Gaussian profiles will be fit.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Objects for which 2D Gaussians will be fit.  A single Gaussian will be calculated for each object, with the centroid of the input object used as the starting estimate for the Gaussian centroid.  Fit parameters will be stored as measurements associated with the relevant input objects.
-	*/
+    /**
+     * Objects for which 2D Gaussians will be fit. A single Gaussian will be
+     * calculated for each object, with the centroid of the input object used as the
+     * starting estimate for the Gaussian centroid. Fit parameters will be stored as
+     * measurements associated with the relevant input objects.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FITTING_SEPARATOR = "Fitting controls";
 
-	/**
-	* Controls how the initial estimate of Gaussian sigma will be calculated.  Note: The initial radius value can also influence the range of accepted sigma values (see "Limit sigma range" parameter).<br><ul><li>"Fixed value" The same initial sigma value is applied to the fitting of all objects.  This value is provided by the "Sigma" parameter.</li><li>"Measurement" A different sigma value is applied to the fitting of each object.  This value is provided by the measurement (specified by "Sigma measurement") associated with the object being fit.</li></ul>
-	*/
+    /**
+     * Controls how the initial estimate of Gaussian sigma will be calculated. Note:
+     * The initial radius value can also influence the range of accepted sigma
+     * values (see "Limit sigma range" parameter).<br>
+     * <ul>
+     * <li>"Fixed value" The same initial sigma value is applied to the fitting of
+     * all objects. This value is provided by the "Sigma" parameter.</li>
+     * <li>"Measurement" A different sigma value is applied to the fitting of each
+     * object. This value is provided by the measurement (specified by "Sigma
+     * measurement") associated with the object being fit.</li>
+     * </ul>
+     */
     public static final String SIGMA_MODE = "Method to estimate sigma";
 
-	/**
-	* If "Method to estimate sigma" is set to "Fixed value", this is the initial sigma value that will be used in the fitting of all objects.
-	*/
+    /**
+     * If "Method to estimate sigma" is set to "Fixed value", this is the initial
+     * sigma value that will be used in the fitting of all objects.
+     */
     public static final String SIGMA = "Sigma";
 
-	/**
-	* If "Method to estimate sigma" is set to "Measurement", this is the measurement that will provide the intial sigma value used in the fitting of each object.
-	*/
+    /**
+     * If "Method to estimate sigma" is set to "Measurement", this is the
+     * measurement that will provide the intial sigma value used in the fitting of
+     * each object.
+     */
     public static final String SIGMA_MEASUREMENT = "Sigma measurement";
 
-	/**
-	* If using object-associated measurements as the intial estimate of sigma, these measurements can be systematically increased or decreased with this multiplier.  Values less than 1 will reduce the sigma estimate, while values greater than 1 will increase it.  To use the default sigma value, set this to 1.
-	*/
+    /**
+     * If using object-associated measurements as the intial estimate of sigma,
+     * these measurements can be systematically increased or decreased with this
+     * multiplier. Values less than 1 will reduce the sigma estimate, while values
+     * greater than 1 will increase it. To use the default sigma value, set this to
+     * 1.
+     */
     public static final String MEASUREMENT_MULTIPLIER = "Measurement multiplier";
 
-	/**
-	* When selected, the final sigma value must lie within a specific range.  This range is controlled by the "Minimum sigma (multiplier)" and "Maximum sigma (multiplier)" parameters.
-	*/
+    /**
+     * When selected, the final sigma value must lie within a specific range. This
+     * range is controlled by the "Minimum sigma (multiplier)" and "Maximum sigma
+     * (multiplier)" parameters.
+     */
     public static final String LIMIT_SIGMA_RANGE = "Limit sigma range";
     public static final String MIN_SIGMA = "Minimum sigma (multiplier)";
     public static final String MAX_SIGMA = "Maximum sigma (multiplier)";
 
-	/**
-	* When selected, the size of the cropped image region, to which the 2D Gaussian is fit, is controlled by the "Window size" parameter.  Otherwise, the window size is automatically selected as 4 times the initial estimate of sigma, plus 1.
-	*/
+    /**
+     * When selected, the size of the cropped image region, to which the 2D Gaussian
+     * is fit, is controlled by the "Window size" parameter. Otherwise, the window
+     * size is automatically selected as 4 times the initial estimate of sigma, plus
+     * 1.
+     */
     public static final String FIXED_FITTING_WINDOW = "Fixed fitting window";
 
-	/**
-	* If using a fixed fitting window ("Fixed fitting window" parameter selected), this is the size of the image crop (centered on the object being fit) that will be used.
-	*/
+    /**
+     * If using a fixed fitting window ("Fixed fitting window" parameter selected),
+     * this is the size of the image crop (centered on the object being fit) that
+     * will be used.
+     */
     public static final String WINDOW_SIZE = "Window size";
 
-	/**
-	* The maximum number of iterations the fitting algorithm can use.
-	*/
+    /**
+     * The maximum number of iterations the fitting algorithm can use.
+     */
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Output controls";
 
-	/**
-	* If selected, any objects for which fits can't be determined (fitter runs out of evaluations before completing) will be removed from the input object set.
-	*/
+    /**
+     * If selected, any objects for which fits can't be determined (fitter runs out
+     * of evaluations before completing) will be removed from the input object set.
+     */
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
 
-	/**
-	* If selected, the coordinates of the input objects will be updated to be circles.  The output circles will be centred on the best-fit location and have radii equal to the x-axis sigma value.
-	*/
+    /**
+     * If selected, the coordinates of the input objects will be updated to be
+     * circles. The output circles will be centred on the best-fit location and have
+     * radii equal to the x-axis sigma value.
+     */
     public static final String APPLY_VOLUME = "Apply volume";
 
-	/**
-	* If selected, an image containing all calculated Gaussian fits will be added to the workspace.
-	*/
+    /**
+     * If selected, an image containing all calculated Gaussian fits will be added
+     * to the workspace.
+     */
     public static final String CREATE_GAUSSIAN_IMAGE = "Create Gaussian image";
 
-	/**
-	* If "Create Gaussian image" is selected, this is the name of the output Gaussian profile image that will be added to the workspace.
-	*/
+    /**
+     * If "Create Gaussian image" is selected, this is the name of the output
+     * Gaussian profile image that will be added to the workspace.
+     */
     public static final String GAUSSIAN_IMAGE = "Gaussian image name";
 
     public FitGaussian2D(Modules modules) {
@@ -315,7 +345,8 @@ public class FitGaussian2D extends Module {
 
         // Create blank image
         Obj firstObject = objects.getFirst();
-        ImagePlus ipl = IJ.createImage(outputImageName, firstObject.getWidth(), firstObject.getHeight(), 1, 32);
+        ImagePlus ipl = IJ.createHyperStack(outputImageName, firstObject.getWidth(), firstObject.getHeight(), 1,
+                objects.getNSlices(), objects.getNFrames(), 32);
         Image image = ImageFactory.createImage(outputImageName, ipl);
 
         // Get the image for the first object. Not adding the background to any object,
@@ -371,7 +402,9 @@ public class FitGaussian2D extends Module {
         int maxY = (int) Math.round(Math.min(y0 + 4 * sy, obj.getHeight()));
 
         // Iterate over all pixels, evaluating the Gaussian
-        ImageProcessor ipr = inputImage.getImagePlus().getProcessor();
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        inputIpl.setPosition(1, (int) Math.round(obj.getZMean(true, false) + 1), obj.getT() + 1);
+        ImageProcessor ipr = inputIpl.getProcessor();
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
                 float inputVal = ipr.getf(x, y);
@@ -400,27 +433,27 @@ public class FitGaussian2D extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting input objects to refine (if selected by used)
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
-        String sigmaMode = parameters.getValue(SIGMA_MODE,workspace);
-        boolean limitSigma = parameters.getValue(LIMIT_SIGMA_RANGE,workspace);
-        double minSigma = parameters.getValue(MIN_SIGMA,workspace);
-        double maxSigma = parameters.getValue(MAX_SIGMA,workspace);
-        boolean fixedFittingWindow = parameters.getValue(FIXED_FITTING_WINDOW,workspace);
-        int windowWidth = parameters.getValue(WINDOW_SIZE,workspace);
-        int maxEvaluations = parameters.getValue(MAX_EVALUATIONS,workspace);
-        boolean removeUnfit = parameters.getValue(REMOVE_UNFIT,workspace);
-        boolean applyVolume = parameters.getValue(APPLY_VOLUME,workspace);
-        boolean createGaussianImage = parameters.getValue(CREATE_GAUSSIAN_IMAGE,workspace);
-        String gaussianImageName = parameters.getValue(GAUSSIAN_IMAGE,workspace);
+        String sigmaMode = parameters.getValue(SIGMA_MODE, workspace);
+        boolean limitSigma = parameters.getValue(LIMIT_SIGMA_RANGE, workspace);
+        double minSigma = parameters.getValue(MIN_SIGMA, workspace);
+        double maxSigma = parameters.getValue(MAX_SIGMA, workspace);
+        boolean fixedFittingWindow = parameters.getValue(FIXED_FITTING_WINDOW, workspace);
+        int windowWidth = parameters.getValue(WINDOW_SIZE, workspace);
+        int maxEvaluations = parameters.getValue(MAX_EVALUATIONS, workspace);
+        boolean removeUnfit = parameters.getValue(REMOVE_UNFIT, workspace);
+        boolean applyVolume = parameters.getValue(APPLY_VOLUME, workspace);
+        boolean createGaussianImage = parameters.getValue(CREATE_GAUSSIAN_IMAGE, workspace);
+        String gaussianImageName = parameters.getValue(GAUSSIAN_IMAGE, workspace);
 
         // Running through each object, doing the fitting
         int count = 0;
@@ -440,19 +473,20 @@ public class FitGaussian2D extends Module {
             switch (sigmaMode) {
                 case SigmaModes.FIXED_VALUE:
                 default:
-                    sigma = (int) Math.ceil(parameters.getValue(SIGMA,workspace));
+                    sigma = (int) Math.ceil(parameters.getValue(SIGMA, workspace));
                     break;
                 case SigmaModes.MEASUREMENT:
-                    double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER,workspace);
-                    sigma = (int) Math.ceil(inputObject.getMeasurement(parameters.getValue(SIGMA_MEASUREMENT,workspace)).getValue()
-                            * multiplier);
+                    double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER, workspace);
+                    sigma = (int) Math.ceil(
+                            inputObject.getMeasurement(parameters.getValue(SIGMA_MEASUREMENT, workspace)).getValue()
+                                    * multiplier);
                     break;
             }
 
             // Ensuring the window width is odd, then getting the half width
             if (windowWidth % 2 != 0)
                 windowWidth--;
-            int halfW = fixedFittingWindow ? windowWidth / 2 : 2*sigma;
+            int halfW = fixedFittingWindow ? windowWidth / 2 : 2 * sigma;
 
             // Getting the local image region
             if (x - halfW < 0 || x + halfW + 1 > inputImagePlus.getWidth() || y - halfW < 0
@@ -466,7 +500,8 @@ public class FitGaussian2D extends Module {
 
             // Cropping image
             inputImagePlus.setPosition(1, z + 1, t + 1);
-            Image preCropImage = ImageFactory.createImage("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
+            Image preCropImage = ImageFactory.createImage("PreCrop",
+                    new ImagePlus("Slice", inputImagePlus.getProcessor()));
             ImageProcessor iprCrop = CropImage
                     .cropImage(preCropImage, "Crop", x - halfW, y - halfW, halfW * 2 + 1, halfW * 2 + 1).getImagePlus()
                     .getProcessor();
@@ -479,7 +514,8 @@ public class FitGaussian2D extends Module {
 
             // If the centroid has moved more than the width of the window, removing this
             // localisation
-            if (pOut != null && (pOut[0] <= 1 || pOut[0] >= sigma * 2 || pOut[1] <= 1 || pOut[1] >= sigma * 2)) {
+            if (pOut != null
+                    && (pOut[0] < 0 || pOut[0] > iprCrop.getWidth() || pOut[1] < 0 || pOut[1] > iprCrop.getHeight())) {
                 pOut = null;
             }
 
@@ -560,7 +596,7 @@ public class FitGaussian2D extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -569,23 +605,23 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(FITTING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SIGMA_MODE));
-        if (parameters.getValue(SIGMA_MODE,workspace).equals(SigmaModes.FIXED_VALUE)) {
+        if (parameters.getValue(SIGMA_MODE, workspace).equals(SigmaModes.FIXED_VALUE)) {
             returnedParameters.add(parameters.getParameter(SIGMA));
-        } else if (parameters.getValue(SIGMA_MODE,workspace).equals(SigmaModes.MEASUREMENT)) {
+        } else if (parameters.getValue(SIGMA_MODE, workspace).equals(SigmaModes.MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(SIGMA_MEASUREMENT));
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
             ((ObjectMeasurementP) parameters.getParameter(SIGMA_MEASUREMENT)).setObjectName(inputObjectsName);
             returnedParameters.add(parameters.getParameter(MEASUREMENT_MULTIPLIER));
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_SIGMA_RANGE));
-        if ((boolean) parameters.getValue(LIMIT_SIGMA_RANGE,workspace)) {
+        if ((boolean) parameters.getValue(LIMIT_SIGMA_RANGE, workspace)) {
             returnedParameters.add(parameters.getParameter(MIN_SIGMA));
             returnedParameters.add(parameters.getParameter(MAX_SIGMA));
         }
 
         returnedParameters.add(parameters.getParameter(FIXED_FITTING_WINDOW));
-        if ((boolean) parameters.getValue(FIXED_FITTING_WINDOW,workspace))
+        if ((boolean) parameters.getValue(FIXED_FITTING_WINDOW, workspace))
             returnedParameters.add(parameters.getParameter(WINDOW_SIZE));
 
         returnedParameters.add(parameters.getParameter(MAX_EVALUATIONS));
@@ -595,7 +631,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 
         returnedParameters.add(parameters.getParameter(CREATE_GAUSSIAN_IMAGE));
-        if ((boolean) parameters.getValue(CREATE_GAUSSIAN_IMAGE,workspace))
+        if ((boolean) parameters.getValue(CREATE_GAUSSIAN_IMAGE, workspace))
             returnedParameters.add(parameters.getParameter(GAUSSIAN_IMAGE));
 
         return returnedParameters;
@@ -604,14 +640,14 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
         reference.setObjectsName(inputObjectsName);
@@ -686,23 +722,23 @@ Workspace workspace = null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -736,27 +772,45 @@ return null;
                 + SigmaModes.MEASUREMENT
                 + "\", this is the measurement that will provide the intial sigma value used in the fitting of each object.");
 
-        parameters.get(MEASUREMENT_MULTIPLIER).setDescription("If using object-associated measurements as the intial estimate of sigma, these measurements can be systematically increased or decreased with this multiplier.  Values less than 1 will reduce the sigma estimate, while values greater than 1 will increase it.  To use the default sigma value, set this to 1.");
+        parameters.get(MEASUREMENT_MULTIPLIER).setDescription(
+                "If using object-associated measurements as the intial estimate of sigma, these measurements can be systematically increased or decreased with this multiplier.  Values less than 1 will reduce the sigma estimate, while values greater than 1 will increase it.  To use the default sigma value, set this to 1.");
 
-        parameters.get(LIMIT_SIGMA_RANGE).setDescription("When selected, the final sigma value must lie within a specific range.  This range is controlled by the \""+MIN_SIGMA+"\" and \""+MAX_SIGMA+"\" parameters.");
+        parameters.get(LIMIT_SIGMA_RANGE).setDescription(
+                "When selected, the final sigma value must lie within a specific range.  This range is controlled by the \""
+                        + MIN_SIGMA + "\" and \"" + MAX_SIGMA + "\" parameters.");
 
-        parameters.get(MIN_SIGMA).setDescription("If limiting the final sigma range (\""+LIMIT_SIGMA_RANGE+"\" parameter selected), this value controls the minimum allowed sigma value.  The minimum range is specified as a multiplier of the input sigma estimate.  For example, an estimate sigma value of 4 with a \""+MIN_SIGMA+"\" multiplier of 0.5 forces the predicted sigma to have a value of at least 2.  Variable sigma ranges allow measurement-based sigma estimates to have appropriate limits.");
+        parameters.get(MIN_SIGMA).setDescription("If limiting the final sigma range (\"" + LIMIT_SIGMA_RANGE
+                + "\" parameter selected), this value controls the minimum allowed sigma value.  The minimum range is specified as a multiplier of the input sigma estimate.  For example, an estimate sigma value of 4 with a \""
+                + MIN_SIGMA
+                + "\" multiplier of 0.5 forces the predicted sigma to have a value of at least 2.  Variable sigma ranges allow measurement-based sigma estimates to have appropriate limits.");
 
-        parameters.get(MAX_SIGMA).setDescription("If limiting the final sigma range (\""+LIMIT_SIGMA_RANGE+"\" parameter selected), this value controls the maximum allowed sigma value.  The maximum range is specified as a multiplier of the input sigma estimate.  For example, an estimate sigma value of 4 with a \""+MAX_SIGMA+"\" multiplier of 3 forces the predicted sigma to have a value of at most 12.  Variable sigma ranges allow measurement-based sigma estimates to have appropriate limits.");
+        parameters.get(MAX_SIGMA).setDescription("If limiting the final sigma range (\"" + LIMIT_SIGMA_RANGE
+                + "\" parameter selected), this value controls the maximum allowed sigma value.  The maximum range is specified as a multiplier of the input sigma estimate.  For example, an estimate sigma value of 4 with a \""
+                + MAX_SIGMA
+                + "\" multiplier of 3 forces the predicted sigma to have a value of at most 12.  Variable sigma ranges allow measurement-based sigma estimates to have appropriate limits.");
 
-        parameters.get(FIXED_FITTING_WINDOW).setDescription("When selected, the size of the cropped image region, to which the 2D Gaussian is fit, is controlled by the \""+WINDOW_SIZE+"\" parameter.  Otherwise, the window size is automatically selected as 4 times the initial estimate of sigma, plus 1.");
+        parameters.get(FIXED_FITTING_WINDOW).setDescription(
+                "When selected, the size of the cropped image region, to which the 2D Gaussian is fit, is controlled by the \""
+                        + WINDOW_SIZE
+                        + "\" parameter.  Otherwise, the window size is automatically selected as 4 times the initial estimate of sigma, plus 1.");
 
-        parameters.get(WINDOW_SIZE).setDescription("If using a fixed fitting window (\""+FIXED_FITTING_WINDOW+"\" parameter selected), this is the size of the image crop (centered on the object being fit) that will be used.");
+        parameters.get(WINDOW_SIZE).setDescription("If using a fixed fitting window (\"" + FIXED_FITTING_WINDOW
+                + "\" parameter selected), this is the size of the image crop (centered on the object being fit) that will be used.");
 
-        parameters.get(MAX_EVALUATIONS).setDescription("The maximum number of iterations the fitting algorithm can use.");
+        parameters.get(MAX_EVALUATIONS)
+                .setDescription("The maximum number of iterations the fitting algorithm can use.");
 
-        parameters.get(REMOVE_UNFIT).setDescription("If selected, any objects for which fits can't be determined (fitter runs out of evaluations before completing) will be removed from the input object set.");
+        parameters.get(REMOVE_UNFIT).setDescription(
+                "If selected, any objects for which fits can't be determined (fitter runs out of evaluations before completing) will be removed from the input object set.");
 
-        parameters.get(APPLY_VOLUME).setDescription("If selected, the coordinates of the input objects will be updated to be circles.  The output circles will be centred on the best-fit location and have radii equal to the x-axis sigma value.");
+        parameters.get(APPLY_VOLUME).setDescription(
+                "If selected, the coordinates of the input objects will be updated to be circles.  The output circles will be centred on the best-fit location and have radii equal to the x-axis sigma value.");
 
-        parameters.get(CREATE_GAUSSIAN_IMAGE).setDescription("If selected, an image containing all calculated Gaussian fits will be added to the workspace.");
+        parameters.get(CREATE_GAUSSIAN_IMAGE).setDescription(
+                "If selected, an image containing all calculated Gaussian fits will be added to the workspace.");
 
-        parameters.get(GAUSSIAN_IMAGE).setDescription("If \""+CREATE_GAUSSIAN_IMAGE+"\" is selected, this is the name of the output Gaussian profile image that will be added to the workspace.");
+        parameters.get(GAUSSIAN_IMAGE).setDescription("If \"" + CREATE_GAUSSIAN_IMAGE
+                + "\" is selected, this is the name of the output Gaussian profile image that will be added to the workspace.");
 
     }
 }
