@@ -52,7 +52,7 @@ public class RemoveObjectsTest extends ModuleTest {
         removeObjects.execute(workspace);
 
         // Checking the objects have been removed
-        assertEquals(0,workspace.getObjects().size());
+        assertEquals(0,workspace.getAllObjects().size());
 
     }
 
@@ -86,7 +86,7 @@ public class RemoveObjectsTest extends ModuleTest {
         removeObjects.execute(workspace);
 
         // Checking the objects have been removed
-        assertEquals(1,workspace.getObjects().size());
+        assertEquals(1,workspace.getAllObjects().size());
 
     }
 }

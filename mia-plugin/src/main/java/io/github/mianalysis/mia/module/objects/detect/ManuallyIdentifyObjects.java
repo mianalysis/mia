@@ -619,7 +619,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             if (outputTracks)
                 TrackObjects.showObjects(outputObjects, outputTrackObjectsName);
             else
-                outputObjects.convertToImageIDColours().show(false);
+                outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

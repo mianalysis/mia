@@ -695,7 +695,7 @@ public class Exporter {
         }
 
         // Adding object measurements
-        HashMap<String, Objs> objSets = workspace.getObjects();
+        HashMap<String, Objs> objSets = workspace.getAllObjects();
         for (Objs objCollection : objSets.values()) {
             String objSetName = objCollection.getName();
             double val;
@@ -920,7 +920,7 @@ public class Exporter {
 
         // Running through each Workspace, adding rows
         for (WorkspaceI workspace : workspaces) {
-            for (String objectName : workspace.getObjects().keySet()) {
+            for (String objectName : workspace.getAllObjects().keySet()) {
                 Objs objects = workspace.getObjects(objectName);
 
                 if (!modules.objectsExportMeasurements(objectName) & !modules.objectsExportMetadata(objectName))

@@ -140,7 +140,7 @@ public class WhiteBalanceCorrection extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) workspace.addImage(inputImage);
-        if (showOutput) inputImage.show();
+        if (showOutput) inputImage.showAsIs();
 
         return Status.PASS;
 

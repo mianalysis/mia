@@ -29,7 +29,7 @@ public class OctreeCoordinates extends Octree implements CoordinateSetI {
     }
 
     @Override
-    public void finalise(int z) {
+    public void finaliseSlice(int z) {
         // No need to implement this, as Octree works on all slices simultaneously
     }
     

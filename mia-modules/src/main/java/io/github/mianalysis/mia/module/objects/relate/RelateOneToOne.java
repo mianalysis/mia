@@ -220,7 +220,7 @@ public class RelateOneToOne extends Module {
                     continue;
 
                 // Calculating the separation between the two objects
-                double overlap = object1.getCentroidSeparation(object2, true);
+                double overlap = object1.getCentroidSeparation(object2, true, false);
 
                 // Only add if within the linking limit. Adds 0.1 as 0 scores potentially cause
                 // problems with the link optimisation

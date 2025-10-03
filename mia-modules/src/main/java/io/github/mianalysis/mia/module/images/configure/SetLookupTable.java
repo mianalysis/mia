@@ -336,7 +336,7 @@ public class SetLookupTable extends Module {
         inputImage.getImagePlus().updateChannelAndDraw();
 
         if (showOutput)
-            inputImage.show(inputImageName, null, false, ImageI.DisplayModes.COMPOSITE);
+            inputImage.show(inputImageName, null, false, ImageI.DisplayModes.COMPOSITE, null);
 
         return Status.PASS;
 

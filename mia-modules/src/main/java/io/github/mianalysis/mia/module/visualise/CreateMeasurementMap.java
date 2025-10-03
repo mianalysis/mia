@@ -413,7 +413,7 @@ public class CreateMeasurementMap extends Module {
 
         workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

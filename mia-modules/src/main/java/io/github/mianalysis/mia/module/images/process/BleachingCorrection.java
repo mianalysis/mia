@@ -169,13 +169,13 @@ public class BleachingCorrection extends Module {
             inputImagePlus.updateChannelAndDraw();
             inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
-                inputImage.show();
+                inputImage.showAsIs();
 
         } else {
             ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
 
         }
 

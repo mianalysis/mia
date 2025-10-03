@@ -259,12 +259,12 @@ public class LocalAutoThreshold extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
             inputImage.setImagePlus(inputImagePlus);
-            if (showOutput) inputImage.show();
+            if (showOutput) inputImage.showAsIs();
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
             ImageI outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.show();
+            if (showOutput) outputImage.showAsIs();
         }
 
         return Status.PASS;

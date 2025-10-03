@@ -34,7 +34,7 @@ public class SurfaceSeparationCalculator {
         Point<Integer> p1 = null;
         Point<Integer> p2 = null;
 
-        Iterator<Point<Integer>> iterator2 = v2.getSurface().getCoordinateIterator();
+        Iterator<Point<Integer>> iterator2 = v2.getSurface(false,false).getCoordinateIterator();
 
         // If one or both of the volumes are 2D, only calculate separation in XY
         boolean only2D = v1.is2D() || v2.is2D() || force2D;
@@ -50,7 +50,7 @@ public class SurfaceSeparationCalculator {
 
             boolean isInside = false;
 
-            Iterator<Point<Integer>> iterator1 = v1.getSurface().getCoordinateIterator();
+            Iterator<Point<Integer>> iterator1 = v1.getSurface(false,false).getCoordinateIterator();
             while (iterator1.hasNext()) {
                 Point<Integer> pp1 = iterator1.next();
 

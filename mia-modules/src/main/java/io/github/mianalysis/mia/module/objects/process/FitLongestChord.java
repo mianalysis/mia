@@ -112,7 +112,7 @@ public class FitLongestChord extends Module {
             boolean storeEndPoints) {
         double dppXY = object.getDppXY();
 
-        CoordinateSetI surface = object.getSurface().getCoordinateSet();
+        CoordinateSetI surface = object.getSurface(false,false).getCoordinateSet();
 
         LongestChordCalculator calculator = new LongestChordCalculator(surface, object.getDppXY(),
                 object.getDppZ());

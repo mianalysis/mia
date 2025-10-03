@@ -235,7 +235,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         }
 
         if (showOutput)
-            mergedImage.show();
+            mergedImage.showAsIs();
 
         return Status.PASS;
 

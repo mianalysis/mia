@@ -241,12 +241,12 @@ public class RunMacro extends AbstractMacroRunner {
             if (applyToInput && inputImage != null) {
                 inputImage.setImagePlus(inputImagePlus);
                 if (showOutput)
-                    inputImage.show();
+                    inputImage.showAsIs();
             } else {
                 ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
                 workspace.addImage(outputImage);
                 if (showOutput)
-                    outputImage.show();
+                    outputImage.showAsIs();
             }
         }
 

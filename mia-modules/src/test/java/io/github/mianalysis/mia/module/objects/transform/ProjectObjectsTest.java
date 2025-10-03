@@ -58,7 +58,7 @@ public class ProjectObjectsTest extends ModuleTest {
         projectObjects.execute(workspace);
 
         // Testing there are now 2 sets of objects in the workspace and they have the expected names
-        assertEquals(2,workspace.getObjects().size());
+        assertEquals(2,workspace.getAllObjects().size());
         assertNotNull(workspace.getObjects(inputObjectsName));
         assertNotNull(workspace.getObjects(outputObjectsName));
 

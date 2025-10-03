@@ -319,7 +319,7 @@ public class RelateManyToMany extends Module {
             return false;
 
         // Calculating the separation between the two objects
-        double overlap = object1.getCentroidSeparation(object2, true);
+        double overlap = object1.getCentroidSeparation(object2, true, false);
 
         // Test if this point is within linking distance
         return overlap <= maxSeparation;
@@ -360,7 +360,7 @@ public class RelateManyToMany extends Module {
             return false;
 
         // Calculating the separation between the two objects
-        double overlap = object1.getSurfaceSeparation(object2, true, ignoreEdgesXY, ignoreEdgesZ);
+        double overlap = object1.getSurfaceSeparation(object2, true, false,ignoreEdgesXY, ignoreEdgesZ);
 
         // If accepting all inside, any negative distances are automatically accepted
         if (acceptAllInside & overlap < 0)

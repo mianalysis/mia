@@ -256,7 +256,7 @@ public class PlotMeasurementTimeseries extends Module {
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

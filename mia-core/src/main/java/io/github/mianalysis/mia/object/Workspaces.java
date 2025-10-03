@@ -69,7 +69,7 @@ public class Workspaces extends LinkedHashSet<WorkspaceI> {
 
             // Adding all objects to the current workspace (there can only be one image for each name, so it makes no
             // sense to do any images)
-            LinkedHashMap<String,Objs> currObjects = currWorkspace.getObjects();
+            LinkedHashMap<String,Objs> currObjects = currWorkspace.getAllObjects();
             for (String objName:currObjects.keySet()) {
                 // If there are no current objects, skip this
                 Objs currObjectSet = currObjects.get(objName);

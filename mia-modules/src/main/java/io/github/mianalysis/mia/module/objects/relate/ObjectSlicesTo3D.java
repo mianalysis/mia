@@ -135,7 +135,7 @@ public class ObjectSlicesTo3D extends Module {
                         Obj currObj = candidates2.get(curr);
 
                         // Calculating main spatial cost
-                        double spatialCost = prevObj.getCentroidSeparation(currObj, true);
+                        double spatialCost = prevObj.getCentroidSeparation(currObj, true, false);
                         boolean linkValid = spatialCost < linkingDistance;
 
                         if (linkValid) {
@@ -215,7 +215,7 @@ public class ObjectSlicesTo3D extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().show(false);
+            outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

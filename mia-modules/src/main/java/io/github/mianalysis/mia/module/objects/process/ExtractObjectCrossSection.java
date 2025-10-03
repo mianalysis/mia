@@ -153,7 +153,7 @@ public class ExtractObjectCrossSection extends Module {
             for (Point<Integer> point : slice.getCoordinateSet()) {
                 point.setZ(idx);
                 try {
-                    outputObject.add(point);
+                    outputObject.addPoint(point);
                 } catch (PointOutOfRangeException e) {
                 }
             }
@@ -207,7 +207,7 @@ public class ExtractObjectCrossSection extends Module {
         }
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().show(false);
+            outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

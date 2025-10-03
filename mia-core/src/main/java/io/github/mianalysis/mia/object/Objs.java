@@ -233,7 +233,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         for (Obj obj : values())
             for (Point<Integer> point : obj.getCoordinateSet())
                 try {
-                    newObj.add(point.duplicate());
+                    newObj.addPoint(point.duplicate());
                 } catch (PointOutOfRangeException e) {
                     // This shouldn't occur, as the points are from a collection with the same
                     // dimensions
@@ -612,7 +612,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     public void removePartners(String partnerObjectsName) {
         for (Obj obj : values())
-            obj.removePartner(partnerObjectsName);
+            obj.removePartners(partnerObjectsName);
     }
 
     public boolean containsPoint(Point<Integer> point) {

@@ -590,6 +590,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         IFormatReader reader = MIA.getPreferences()
                 .getReader(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
+        
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         reader.setId(path);
@@ -1569,7 +1570,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         // If a crop was drawn, recording these coordinates as an image measurement
         switch (cropMode) {

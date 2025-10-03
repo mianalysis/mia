@@ -69,11 +69,6 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     @Override
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName) {
-        return convertImageToObjects(factory, outputObjectsName, false, true);
-    }
-
-    @Override
     public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
         return convertImageToObjects(factory, outputObjectsName, singleObject, true);
     }
@@ -141,7 +136,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                     // Finalising the object store for this slice (this only does something for
                     // Quadtrees)
                     for (Obj obj : outputObjects.values())
-                        obj.finalise(z);
+                        obj.finaliseSlice(z);
 
                 }
             }
@@ -199,14 +194,13 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         }
     }
 
-    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode) {
+    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode, @Nullable Overlay overlay) {
         // Show using this overlay
-        Overlay overlay = imagePlus.getOverlay() == null ? null : imagePlus.getOverlay().duplicate();
-        show(title, lut, normalise, displayMode, overlay);
-    }
+        if (overlay == null)
+            overlay = imagePlus.getOverlay() == null ? null : imagePlus.getOverlay().duplicate();
 
-    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode, Overlay overlay) {
         getRenderer().render(this, title, lut, normalise, displayMode, overlay);
+
     }
 
     public ImagePlusImage duplicate(String outputImageName) {

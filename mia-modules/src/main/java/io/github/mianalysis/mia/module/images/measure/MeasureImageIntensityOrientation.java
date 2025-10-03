@@ -442,7 +442,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
             workspace.addImage(oriImage);
 
             if (showOutput)
-                oriImage.show();
+                oriImage.showAsIs();
         }
 
         if (saveHistogram) {

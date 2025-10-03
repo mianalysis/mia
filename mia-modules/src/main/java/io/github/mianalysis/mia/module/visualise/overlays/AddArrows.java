@@ -334,7 +334,7 @@ public class AddArrows extends AbstractOverlay {
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

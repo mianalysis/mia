@@ -222,7 +222,7 @@ public class PlotMeasurementsScatter extends Module {
             if (showInteractive)
                 plot.show();
             else
-                outputImage.show();
+                outputImage.showAsIs();
 
         return Status.PASS;
 

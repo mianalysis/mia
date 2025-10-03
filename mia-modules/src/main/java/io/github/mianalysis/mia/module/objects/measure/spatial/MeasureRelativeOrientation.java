@@ -392,7 +392,7 @@ public class MeasureRelativeOrientation extends Module {
         xyOrientation = Math.toRadians(xyOrientation);
         if (xyOrientation == -Math.PI)
             xyOrientation = Math.PI;
-        double angleToReference = object.calculateAngle2D(referencePoint);
+        double angleToReference = object.calculateAngleToPoint2D(referencePoint);
 
         double angle = xyOrientation - angleToReference;
         angle = Math.abs((angle + Math.PI) % (2 * Math.PI) - Math.PI);

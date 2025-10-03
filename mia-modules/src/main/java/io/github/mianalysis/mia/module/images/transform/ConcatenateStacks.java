@@ -400,7 +400,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         if (axisMode.equals(AxisModes.CHANNEL))
             convertToColour(outputImage, inputImages);
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
         workspace.addImage(outputImage);
 
         return Status.PASS;

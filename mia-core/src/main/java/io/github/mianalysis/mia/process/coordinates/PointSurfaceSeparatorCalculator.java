@@ -28,7 +28,7 @@ public class PointSurfaceSeparatorCalculator {
         // If the volume is 2D, only calculate separation in XY
         boolean only2D = v1.is2D();
 
-        Iterator<Point<Integer>> iterator1 = v1.getSurface().getCoordinateIterator();
+        Iterator<Point<Integer>> iterator1 = v1.getSurface(false,false).getCoordinateIterator();
         while (iterator1.hasNext()) {
             Point<Integer> pp1 = iterator1.next();
 

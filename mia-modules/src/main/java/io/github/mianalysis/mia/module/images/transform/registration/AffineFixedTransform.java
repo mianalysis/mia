@@ -224,7 +224,7 @@ public class AffineFixedTransform extends Module {
         }
 
         if (showOutput)
-            inputImage.show();
+            inputImage.showAsIs();
 
         // Dealing with module outputs
         if (!applyToInput)

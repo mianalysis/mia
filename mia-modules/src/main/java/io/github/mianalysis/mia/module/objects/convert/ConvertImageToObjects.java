@@ -138,7 +138,7 @@ public class ConvertImageToObjects extends Module {
 
         Objs objects = null;
         try {
-            objects = inputImage.convertImageToObjects(CoordinateSetFactories.getFactory(type), outputObjectsName);
+            objects = inputImage.convertImageToObjects(CoordinateSetFactories.getFactory(type), outputObjectsName, false);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }
@@ -150,7 +150,7 @@ public class ConvertImageToObjects extends Module {
             if (createParents)
                 TrackObjects.showObjects(objects, parentObjectsName);
             else
-                objects.convertToImageIDColours().show(false);
+                objects.convertToImageIDColours().showWithNormalisation(false);
 
         workspace.addObjects(objects);
 

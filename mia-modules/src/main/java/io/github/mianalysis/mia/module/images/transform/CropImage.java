@@ -239,13 +239,13 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         if (applyToInput) {
             inputImage.setImagePlus(outputImage.getImagePlus());
             if (showOutput)
-                inputImage.show();
+                inputImage.showAsIs();
 
         } else {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
         }
 
         return Status.PASS;

@@ -664,7 +664,7 @@ public class AddContourLines extends Module {
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

@@ -255,7 +255,7 @@ public class ApplyDeepImageJModel extends Module {
             workspace.addImage(outputImage);
 
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
         } else if (outputType.equals("list")) {
             if (showOutput)
                 inputImage.showMeasurements(this);

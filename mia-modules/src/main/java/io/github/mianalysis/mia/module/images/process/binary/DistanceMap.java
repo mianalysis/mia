@@ -307,7 +307,7 @@ public class DistanceMap extends Module {
         writeStatus("Adding image (" + outputImageName + ") to workspace");
         workspace.addImage(distanceMap);
         if (showOutput)
-            distanceMap.show();
+            distanceMap.showAsIs();
 
         return Status.PASS;
 

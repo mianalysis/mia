@@ -32,7 +32,7 @@ public class MIA_ListObjectsInWorkspace extends MacroOperation {
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        HashMap<String,Objs> allObj = workspace.getObjects();
+        HashMap<String,Objs> allObj = workspace.getAllObjects();
         for (String objName:allObj.keySet()) {
             if (row != 0) rt.incrementCounter();
 

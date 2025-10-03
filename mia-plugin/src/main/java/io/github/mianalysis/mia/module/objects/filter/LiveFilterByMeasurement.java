@@ -267,7 +267,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().show(false);
+            inputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

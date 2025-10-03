@@ -30,7 +30,7 @@ public class PointCoordinates extends HashSet<Point<Integer>> implements Coordin
     public void finalise() {}
 
     @Override
-    public void finalise(int z) {}
+    public void finaliseSlice(int z) {}
 
     @Override
     public CoordinateSetI duplicate() {

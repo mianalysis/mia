@@ -13,7 +13,7 @@ public interface CoordinateSetI extends Set<Point<Integer>> {
 
     public void finalise();
 
-    public void finalise(int z);
+    public void finaliseSlice(int z);
 
     public long getNumberOfElements();
 

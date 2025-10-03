@@ -276,11 +276,11 @@ public class ImageTypeConverter extends Module {
             ImageI outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             setLUTs(outputImage,luts);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.show();
+            if (showOutput) outputImage.showAsIs();
 
         } else {
             setLUTs(inputImage,luts);
-            if (showOutput) inputImage.show();
+            if (showOutput) inputImage.showAsIs();
 
         }
 

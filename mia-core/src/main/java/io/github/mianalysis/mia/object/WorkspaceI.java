@@ -10,7 +10,7 @@ import io.github.mianalysis.mia.object.system.Status;
 
 public interface WorkspaceI {
     public default void addObjects(Objs object) {
-        getObjects().put(object.getName(), object);
+        getAllObjects().put(object.getName(), object);
     }
 
     public default ImageI getImage(String name) {
@@ -52,9 +52,9 @@ public interface WorkspaceI {
 
     // GETTERS AND SETTERS
 
-    public LinkedHashMap<String, Objs> getObjects();
+    public LinkedHashMap<String, Objs> getAllObjects();
 
-    public void setObjects(LinkedHashMap<String, Objs> objects);
+    public void setAllObjects(LinkedHashMap<String, Objs> objects);
 
     public LinkedHashMap<String, ImageI> getImages();
 

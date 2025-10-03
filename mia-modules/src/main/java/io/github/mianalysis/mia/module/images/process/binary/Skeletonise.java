@@ -157,7 +157,7 @@ public class Skeletonise extends Module {
         }
 
         if (showOutput)
-            inputImage.show();
+            inputImage.showAsIs();
 
         return Status.PASS;
 

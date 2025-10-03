@@ -207,7 +207,7 @@ public class CellposeDetection extends Module {
                     cellpose.run();
 
                     ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                    Objs currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName);
+                    Objs currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
 
                     for (Obj currOutputObject : currOutputObjects.values()) {
                         Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
@@ -231,7 +231,7 @@ public class CellposeDetection extends Module {
 
                 ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
                 Objs currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(),
-                        outputObjectsName);
+                        outputObjectsName, false);
 
                 for (Obj currOutputObject : currOutputObjects.values()) {
                     Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
@@ -247,7 +247,7 @@ public class CellposeDetection extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().show(false);
+            outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

@@ -67,7 +67,7 @@ public class EllipseCalculator {
         Roi roi = volume.getRoi(0);
 
         if (fitSurface)
-            volume = volume.getSurface();
+            volume = volume.getSurface(false,false);
 
         ImageProcessor ipr = new ByteProcessor(volume.getWidth(), volume.getHeight());
         for (Point<Integer> pt:volume.getCoordinateSet())

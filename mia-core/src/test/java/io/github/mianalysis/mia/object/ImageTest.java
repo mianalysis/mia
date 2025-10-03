@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
+import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import net.imagej.ImgPlus;
@@ -95,7 +96,7 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        Objs actualObjects = image.convertImageToObjects(testObjectsName);
+        Objs actualObjects = image.convertImageToObjects(new PointListFactory(), testObjectsName, false);
 
         // Checking objects have been assigned
         assertNotNull(actualObjects);
@@ -137,7 +138,7 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        Objs actualObjects = image.convertImageToObjects(testObjectsName);
+        Objs actualObjects = image.convertImageToObjects(new PointListFactory(), testObjectsName, false);
 
         // Checking objects have been assigned
         assertNotNull(actualObjects);

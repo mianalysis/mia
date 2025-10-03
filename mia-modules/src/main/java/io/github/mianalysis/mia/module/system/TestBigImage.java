@@ -97,7 +97,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         workspace.addImage(image);
 
         if (showOutput)
-            image.show();
+            image.showAsIs();
 
         return Status.PASS;
 

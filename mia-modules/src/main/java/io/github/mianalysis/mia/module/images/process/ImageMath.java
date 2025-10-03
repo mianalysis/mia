@@ -226,12 +226,12 @@ public class ImageMath extends Module {
             // Reapplying the image in case it was an ImgLib2
             inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
-                inputImage.show();
+                inputImage.showAsIs();
         } else {
             ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
         }
 
         return Status.PASS;

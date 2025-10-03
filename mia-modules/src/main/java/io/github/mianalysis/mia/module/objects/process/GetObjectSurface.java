@@ -46,7 +46,7 @@ public class GetObjectSurface extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public static Obj getSurface(Obj inputObject, Objs outputObjects, boolean assignRelationships) {
-        Volume outputVolume = inputObject.getSurface();
+        Volume outputVolume = inputObject.getSurface(false,false);
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
 
@@ -96,7 +96,7 @@ public class GetObjectSurface extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().show(false);
+            outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

@@ -141,7 +141,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
         }
 
-        ImageI objectImage = inputObject.getAsTightImage("Temp", borderWidths);
+        ImageI objectImage = inputObject.getAsTightImageWithBorders("Temp", borderWidths);
 
         Prefs.blackBackground = false;
 
@@ -172,7 +172,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), "NewObjects");
+        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), "NewObjects", false);
 
         // During object shrinking it's possible the object will disappear entirely
         if (outputObjects.size() == 0)
@@ -317,9 +317,9 @@ public class ExpandShrinkObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageIDColours().show(false);
+                inputObjects.convertToImageIDColours().showWithNormalisation(false);
             else
-                outputObjects.convertToImageIDColours().show(false);
+                outputObjects.convertToImageIDColours().showWithNormalisation(false);
         }
 
         return Status.PASS;

@@ -228,11 +228,11 @@ public class DilateErode extends Module {
             workspace.addImage(outputImage);
 
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
 
         } else {
             if (showOutput)
-                inputImage.show();
+                inputImage.showAsIs();
 
         }
 

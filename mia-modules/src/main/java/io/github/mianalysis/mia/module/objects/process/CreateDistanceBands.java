@@ -214,12 +214,12 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             switch (relativeMode) {
                 default:
                 case RelativeModes.OBJECT_CENTROID:
-                    Point<Double> centroidPoint = inputObject.getMeanCentroid();
+                    Point<Double> centroidPoint = inputObject.getMeanCentroid(true, false);
 
                     Volume centroidVolume = VolumeFactories.getDefaultFactory().createVolume(inputObject.getCoordinateSetFactory(),
                             inputObject.getSpatialCalibration());
 
-                    centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
+                    centroidVolume.addPoint(new Point<>((int) Math.round(centroidPoint.x),
                             (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
 
                     return centroidVolume;
@@ -232,9 +232,9 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                     if (parentObject == null)
                         return null;
 
-                    centroidPoint = parentObject.getMeanCentroid();
+                    centroidPoint = parentObject.getMeanCentroid(true, false);
                     centroidVolume = VolumeFactories.getDefaultFactory().createVolume(parentObject.getCoordinateSetFactory(), parentObject.getSpatialCalibration());
-                    centroidVolume.add(new Point<>((int) Math.round(centroidPoint.x),
+                    centroidVolume.addPoint(new Point<>((int) Math.round(centroidPoint.x),
                             (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
 
                     return centroidVolume;
@@ -432,9 +432,9 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);
 
             // Creating binary image for distance transform
-            ImageI<T> inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
+            ImageI<T> inputImage = referenceObject.getAsTightImageWithBorders("Binary", referenceBorderWidths);
             InvertIntensity.process(inputImage);
-            ImageI<T> maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
+            ImageI<T> maskImage = inputObject.getAsTightImageWithBorders("Mask", inputBorderWidths);
 
             Objs tempBandObjects;
             switch (bandMode) {
@@ -484,7 +484,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
         // Showing objects
         if (showOutput)
-            bandObjects.convertToImageIDColours().show(false);
+            bandObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

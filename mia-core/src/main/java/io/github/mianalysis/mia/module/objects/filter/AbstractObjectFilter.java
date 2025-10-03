@@ -46,9 +46,9 @@ public abstract class AbstractObjectFilter extends Module {
 
     protected static void processRemoval(Obj inputObject, @Nullable Objs outputObjects, Iterator<Obj> iterator) {
         // Getting existing relationships
-        LinkedHashMap<String, Objs> children = inputObject.getChildren();
+        LinkedHashMap<String, Objs> children = inputObject.getAllChildren();
         LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
-        LinkedHashMap<String, Objs> partners = inputObject.getPartners();
+        LinkedHashMap<String, Objs> partners = inputObject.getAllPartners();
 
         // Removing existing relationships
         inputObject.removeRelationships();

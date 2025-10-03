@@ -43,10 +43,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public void setRenderer(ImageRenderer imageRenderer);
 
-    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode);
-
-    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode,
-            Overlay overlay);
+    public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode, @Nullable Overlay overlay);
 
     public long getWidth();
 
@@ -99,12 +96,6 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
         UseGlobalImageRenderer.useGlobalImageRenderer = state;
     }
 
-    public Objs convertImageToObjects(String outputObjectsName);
-
-    public Objs convertImageToObjects(String outputObjectsName, boolean singleObject);
-
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName);
-
     public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject);
 
     public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground);
@@ -112,34 +103,6 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
     public void addMeasurement(Measurement measurement);
 
     public Measurement getMeasurement(String name);
-
-    public default void show(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, DisplayModes.COLOUR, overlay);
-    }
-
-    public default void show(String title, LUT lut) {
-        show(title, lut, true, DisplayModes.COLOUR);
-    }
-
-    public default void show(String title) {
-        show(title, null);
-    }
-
-    public default void show(LUT lut) {
-        show(getName(), lut);
-    }
-
-    public default void show() {
-        show(getName(), null);
-    }
-
-    public default void show(Overlay overlay) {
-        show(getName(), null, overlay);
-    }
-
-    public default void show(boolean normalise) {
-        show(getName(), null, normalise, DisplayModes.COLOUR);
-    }
 
     /**
      * Displays measurement values from a specific Module
@@ -198,6 +161,26 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
         // Displaying the results table
         rt.show("All measurements for \"" + getName() + "\"");
 
+    }
+
+    public default void showWithTitle(String title) {
+        show(title, null, true, DisplayModes.COLOUR, null);
+    }
+
+    public default void showWithLUT(LUT lut) {
+        show(getName(), lut, true, DisplayModes.COLOUR, null);
+    }
+
+    public default void showAsIs() {
+        show(getName(), null, true, DisplayModes.COLOUR, null);
+    }
+
+    public default void showWithOverlay(Overlay overlay) {
+        show(getName(), null, true, DisplayModes.COLOUR, overlay);
+    }
+
+    public default void showWithNormalisation(boolean normalise) {
+        show(getName(), null, normalise, DisplayModes.COLOUR, null);
     }
 
     // GETTERS AND SETTERS

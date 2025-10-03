@@ -379,7 +379,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     int[] getBestFocusManual(ImageI refImage) {
         if (refImage != null) {
             String uniqueName = WindowManager.getUniqueName("Select timepoints");
-            refImage.show(uniqueName);            
+            refImage.showWithTitle(uniqueName);            
             displayImagePlus = WindowManager.getImage(uniqueName);
             displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         }
@@ -704,7 +704,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
                 workspace.addImage(outputImage);
 
                 if (showOutput)
-                    outputImage.show();
+                    outputImage.showAsIs();
             }
 
             return Status.PASS;
@@ -784,7 +784,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             workspace.addImage(outputImage);
 
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
         }
 
         return Status.PASS;

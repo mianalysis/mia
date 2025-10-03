@@ -353,7 +353,7 @@ public class FitCircle extends Module {
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE))
-                outputObjects.convertToImageIDColours().show(false);
+                outputObjects.convertToImageIDColours().showWithNormalisation(false);
         }
 
         return Status.PASS;

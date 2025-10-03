@@ -31,7 +31,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         // Getting track and reassigning associations
         Obj trackObject = inputObject.getParent(trackObjectsName);
         trackObject.removeChild(inputObject);
-        inputObject.removeParent(trackObject);
+        inputObject.removeParent(trackObject.getName());
         trackObject.addChild(trackSegmentObject);
         trackSegmentObject.addParent(trackObject);
 
@@ -120,7 +120,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         for (Obj inputObj : inputObjects.values()) {
             inputObj.removeParent(trackObjectsName);
             inputObj.removeParent(trackSegmentObjectsName);
-            inputObj.removePartner(inputObjectsName);
+            inputObj.removePartners(inputObjectsName);
         }
 
         SpotCollection spotCollection = createSpotCollection(inputObjects, true);

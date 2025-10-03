@@ -140,7 +140,7 @@ public class ShowImage extends Module {
         ImageI image = workspace.getImage(imageName);
 
         if (showOutput)
-            image.show(title, null, normalisation, channelMode);
+            image.show(title, null, normalisation, channelMode, null);
 
         return Status.PASS;
 

@@ -307,7 +307,7 @@ public class PlotTrackMotility extends AbstractOverlay {
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

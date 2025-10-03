@@ -155,10 +155,10 @@ public class FillHoles extends Module {
             writeStatus("Adding image ("+outputImageName+") to workspace");
             ImageI outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.show();
+            if (showOutput) outputImage.showAsIs();
 
         } else {
-            if (showOutput) inputImage.show();
+            if (showOutput) inputImage.showAsIs();
 
         }
 

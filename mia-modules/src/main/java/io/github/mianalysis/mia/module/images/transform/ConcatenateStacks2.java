@@ -344,7 +344,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
             convertToColour(outputImage, inputImages);
 
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         workspace.addImage(outputImage);
 

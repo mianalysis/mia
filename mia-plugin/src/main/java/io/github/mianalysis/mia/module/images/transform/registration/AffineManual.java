@@ -219,7 +219,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         images.add(image1);
         images.add(image2);
         ConcatenateStacks2.process(images, ConcatenateStacks2.AxisModes.CHANNEL, "Registration comparison")
-                .show();
+                .showAsIs();
 
     }
 

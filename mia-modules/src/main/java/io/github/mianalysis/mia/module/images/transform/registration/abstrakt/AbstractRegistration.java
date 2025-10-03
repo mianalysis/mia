@@ -564,9 +564,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         if (showOutput) {
             if (referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE)) {
-                createOverlay(inputImage, reference).show();
+                createOverlay(inputImage, reference).showAsIs();
             } else {
-                inputImage.show();
+                inputImage.showAsIs();
             }
         }
 

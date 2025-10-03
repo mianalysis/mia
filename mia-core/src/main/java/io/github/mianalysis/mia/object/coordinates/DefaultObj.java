@@ -87,32 +87,32 @@ public class DefaultObj extends DefaultVolume implements Obj {
     }
 
     @Override
-    public LinkedHashMap<String, Obj> getParents() {
+    public LinkedHashMap<String, Obj> getAllParents() {
         return parents;
     }
 
     @Override
-    public void setParents(LinkedHashMap<String, Obj> parents) {
+    public void setAllParents(LinkedHashMap<String, Obj> parents) {
         this.parents = parents;
     }
 
     @Override
-    public LinkedHashMap<String, Objs> getChildren() {
+    public LinkedHashMap<String, Objs> getAllChildren() {
         return children;
     }
 
     @Override
-    public void setChildren(LinkedHashMap<String, Objs> children) {
+    public void setAllChildren(LinkedHashMap<String, Objs> children) {
         this.children = children;
     }
 
     @Override
-    public LinkedHashMap<String, Objs> getPartners() {
+    public LinkedHashMap<String, Objs> getAllPartners() {
         return partners;
     }
 
     @Override
-    public void setPartners(LinkedHashMap<String, Objs> partners) {
+    public void setAllPartners(LinkedHashMap<String, Objs> partners) {
         this.partners = partners;
     }
 

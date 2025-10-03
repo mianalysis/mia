@@ -245,7 +245,7 @@ public class ExtendedMinima extends Module {
         }
 
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

@@ -302,7 +302,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
         // If necessary, adding output image to workspace.  This also allows us to show it.
         if (addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) outputImage.show();
+        if (showOutput) outputImage.showAsIs();
 
         return Status.PASS;
 

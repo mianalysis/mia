@@ -281,7 +281,7 @@ public class TrackObjects extends Module {
                 double spatialCost = 0;
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        double separation = prevObj.getCentroidSeparation(currObj, true);
+                        double separation = prevObj.getCentroidSeparation(currObj, true, false);
                         spatialCost = separation > maxDist ? Double.MAX_VALUE : separation;
                         break;
                     case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -503,7 +503,7 @@ public class TrackObjects extends Module {
     }
 
     public static boolean testSeparationValidity(Obj prevObj, Obj currObj, double maxDist) {
-        double dist = prevObj.getCentroidSeparation(currObj, true);
+        double dist = prevObj.getCentroidSeparation(currObj, true, false);
         return dist <= maxDist;
     }
 

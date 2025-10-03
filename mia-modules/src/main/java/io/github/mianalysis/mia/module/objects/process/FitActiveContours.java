@@ -348,9 +348,9 @@ public class FitActiveContours extends Module {
 
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageIDColours().show(false);
+                inputObjects.convertToImageIDColours().showWithNormalisation(false);
             else
-                outputObjects.convertToImageIDColours().show(false);
+                outputObjects.convertToImageIDColours().showWithNormalisation(false);
         }
 
         // If selected, adding new Objs to the Workspace

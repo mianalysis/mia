@@ -749,11 +749,11 @@ public class MeasureObjectCurvature extends Module {
             workspace.addImage(ImageFactory.createImage(outputImageName, inputIpl));
 
         if (showOutput && drawSpline)
-            ImageFactory.createImage("Spline", inputIpl).show();
+            ImageFactory.createImage("Spline", inputIpl).showAsIs();
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
         if (showOutput & !objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects.convertToImageIDColours().show(false);
+            outputObjects.convertToImageIDColours().showWithNormalisation(false);
         }
 
         return Status.PASS;

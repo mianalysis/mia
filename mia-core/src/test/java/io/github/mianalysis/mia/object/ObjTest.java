@@ -325,7 +325,7 @@ public class ObjTest {
         Obj obj3 = parents.createAndAddNewObject(factory, 2);
         Obj obj4 = parents.createAndAddNewObject(factory, 32);
 
-        assertEquals(0, obj1.getChildren().size());
+        assertEquals(0, obj1.getAllChildren().size());
 
         // Creating a new collection of child objects
         Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
@@ -337,7 +337,7 @@ public class ObjTest {
         obj1.addChildren(children);
 
         // Checking the children of the object
-        assertEquals(1, obj1.getChildren().size());
+        assertEquals(1, obj1.getAllChildren().size());
         assertNotNull(obj1.getChildren(childObjectsName));
         assertEquals(0, obj1.getChildren("not children").size());
         assertEquals(3, obj1.getChildren(childObjectsName).size());

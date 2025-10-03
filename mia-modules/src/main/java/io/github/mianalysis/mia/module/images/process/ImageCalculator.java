@@ -468,19 +468,19 @@ public class ImageCalculator extends Module {
                 ImageI outputImage = ImageFactory.createImage(outputImageName, newIpl);
                 workspace.addImage(outputImage);
                 if (showOutput)
-                    outputImage.show();
+                    outputImage.showAsIs();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
                 inputImage1.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
-                    inputImage1.show();
+                    inputImage1.showAsIs();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
                 inputImage2.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
-                    inputImage2.show();
+                    inputImage2.showAsIs();
                 break;
         }
 

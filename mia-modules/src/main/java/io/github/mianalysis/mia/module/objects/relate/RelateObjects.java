@@ -17,8 +17,8 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -267,7 +267,7 @@ public class RelateObjects extends Module {
                 // Calculating the object spacing
                 switch (referenceMode) {
                     case ReferenceModes.CENTROID:
-                        double dist = childObject.getCentroidSeparation(parentObject, true);
+                        double dist = childObject.getCentroidSeparation(parentObject, true, false);
 
                         if (dist < minDist) {
                             if (limitLinking && dist > linkingDistance)
@@ -279,7 +279,7 @@ public class RelateObjects extends Module {
                         break;
 
                     case ReferenceModes.SURFACE:
-                        dist = childObject.getSurfaceSeparation(parentObject, true, ignoreEdgesXY, ignoreEdgesZ);
+                        dist = childObject.getSurfaceSeparation(parentObject, true, false, ignoreEdgesXY, ignoreEdgesZ);
 
                         if (Math.abs(dist) < Math.abs(minDist)) {
                             if (limitLinking && Math.abs(dist) > linkingDistance)
@@ -296,7 +296,8 @@ public class RelateObjects extends Module {
                         double childZCentSlice = childObject.getZMean(true, false);
 
                         Point<Double> currentPoint = new Point<>(childXCent, childYCent, childZCentSlice);
-                        dist = parentObject.getPointSurfaceSeparation(currentPoint, true, ignoreEdgesXY, ignoreEdgesZ);
+                        dist = parentObject.getPointSurfaceSeparation(currentPoint, true, false, ignoreEdgesXY,
+                                ignoreEdgesZ);
 
                         if (Math.abs(dist) < Math.abs(minDist)) {
                             if (limitLinking && Math.abs(dist) > linkingDistance)
@@ -358,7 +359,8 @@ public class RelateObjects extends Module {
 
     }
 
-    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink, WorkspaceI workspace) {
+    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink,
+            WorkspaceI workspace) {
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
 
         if (minLink != null) {
@@ -637,12 +639,12 @@ public class RelateObjects extends Module {
 
             ImageI parentImage = parentObjects.convertToImageIDColours();
             SetDisplayRange.setDisplayRangeManual(parentImage, new double[] { 0, maxID });
-            parentImage.show(false);
+            parentImage.showWithNormalisation(false);
 
             HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
             ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
             SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
-            childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR);
+            childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR, null);
 
         }
 

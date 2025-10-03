@@ -305,11 +305,11 @@ public class SetDisplayRange extends Module {
             ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show(outputImageName, null, false, ImageI.DisplayModes.COMPOSITE);
+                outputImage.show(outputImageName, null, false, ImageI.DisplayModes.COMPOSITE, null);
 
         } else {
             if (showOutput)
-                inputImage.show(inputImageName, null, false, ImageI.DisplayModes.COMPOSITE);
+                inputImage.show(inputImageName, null, false, ImageI.DisplayModes.COMPOSITE, null);
 
         }
 

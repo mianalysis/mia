@@ -293,10 +293,10 @@ public class MeasureObjectShape extends Module {
                     double dppXY = inputObject.getDppXY();
                     inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
 
-                    double heightSlice = inputObject.getHeight(true, false);
+                    double heightSlice = inputObject.getVolumeHeight(true, false);
                     inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_SLICE, heightSlice));
 
-                    double heightCal = inputObject.getHeight(false, false);
+                    double heightCal = inputObject.getVolumeHeight(false, false);
                     inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_CAL, heightCal));
                 }
 

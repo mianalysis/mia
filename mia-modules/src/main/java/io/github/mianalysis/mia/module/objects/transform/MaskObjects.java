@@ -221,7 +221,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
             if (value != 0) {
                 try {
-                    maskObject.add(point);
+                    maskObject.addPoint(point);
                 } catch (PointOutOfRangeException e) {
                 }
             }
@@ -296,12 +296,12 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
             case OutputModes.CREATE_NEW_OBJECT:
                 workspace.addObjects(outputObjects);
                 if (showOutput)
-                    outputObjects.convertToImageIDColours().show(false);
+                    outputObjects.convertToImageIDColours().showWithNormalisation(false);
                 break;
 
             case OutputModes.UPDATE_INPUT:
                 if (showOutput)
-                    inputObjects.convertToImageIDColours().show(false);
+                    inputObjects.convertToImageIDColours().showWithNormalisation(false);
                 break;
         }
 

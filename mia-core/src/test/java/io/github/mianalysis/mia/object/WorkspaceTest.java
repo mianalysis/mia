@@ -35,7 +35,7 @@ public class WorkspaceTest {
         // Creating a new workspace and checking it is empty
         Workspaces workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
-        assertEquals(0, workspace.getObjects().size());
+        assertEquals(0, workspace.getAllObjects().size());
         
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
@@ -46,7 +46,7 @@ public class WorkspaceTest {
         workspace.addObjects(objects);
 
         // Checking the workspace behaved as expected
-        assertEquals(1,workspace.getObjects().size());
+        assertEquals(1,workspace.getAllObjects().size());
         assertNotNull(workspace.getObjects("Obj"));
         assertNull(workspace.getObjects("Neww obj"));
         assertEquals(1,workspace.getObjects("Obj").size());
@@ -166,7 +166,7 @@ public class WorkspaceTest {
         workspace.addObjects(otherObjects);
 
         // Checking current state of the workspace
-        assertEquals(2,workspace.getObjects().size());
+        assertEquals(2,workspace.getAllObjects().size());
         assertEquals(1,workspace.getObjects("Obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjects("Obj").getFirst().size());
         assertTrue(workspace.getObjects("Obj").getFirst().getSurfaceXCoords().size() != 0);
@@ -178,7 +178,7 @@ public class WorkspaceTest {
         workspace.clearAllObjects(true);
 
         // Checking post-clear state of the workspace
-        assertEquals(2,workspace.getObjects().size());
+        assertEquals(2,workspace.getAllObjects().size());
         assertEquals(1,workspace.getObjects("Obj").getFirst().getMeasurements().size());
         assertEquals(0,workspace.getObjects("Obj").getFirst().size());
         assertTrue(workspace.getObjects("Obj").getFirst().getSurfaceXCoords().size() == 0);
@@ -233,19 +233,19 @@ public class WorkspaceTest {
         workspace.addObjects(otherObjects);
 
         // Checking current state of the workspace
-        assertEquals(2,workspace.getObjects().size());
+        assertEquals(2,workspace.getAllObjects().size());
         assertEquals(1,workspace.getObjects("Obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjects("Obj").getFirst().size());
-        assertTrue(workspace.getObjects("Obj").getFirst().getSurface().size() != 0);
+        assertTrue(workspace.getObjects("Obj").getFirst().getSurface(false,false).size() != 0);
         assertEquals(1,workspace.getObjects("Other obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjects("Other obj").getFirst().size());
-        assertTrue(workspace.getObjects("Other obj").getFirst().getSurface().size() != 0);
+        assertTrue(workspace.getObjects("Other obj").getFirst().getSurface(false,false).size() != 0);
 
         // Clearing objects
         workspace.clearAllObjects(false);
 
         // Checking post-clear state of the workspace
-        assertEquals(0,workspace.getObjects().size());
+        assertEquals(0,workspace.getAllObjects().size());
         assertNull(workspace.getObjects("Obj"));
         assertNull(workspace.getObjects("Other obj"));
 
@@ -284,13 +284,13 @@ public class WorkspaceTest {
         HashMap<Integer, WorkspaceI> singleTimepoints = workspace.getSingleTimepointWorkspaces();
 
         assertEquals(3,singleTimepoints.size());
-        assertEquals(2, singleTimepoints.get(0).getObjects().size());
+        assertEquals(2, singleTimepoints.get(0).getAllObjects().size());
         assertEquals(1,singleTimepoints.get(0).getObjects("Obj").size());
         assertEquals(1,singleTimepoints.get(0).getObjects("Other obj").size());
-        assertEquals(1,singleTimepoints.get(1).getObjects().size());
+        assertEquals(1,singleTimepoints.get(1).getAllObjects().size());
         assertEquals(1,singleTimepoints.get(1).getObjects("Obj").size());
         assertNull(singleTimepoints.get(1).getObjects("Other obj"));
-        assertEquals(1,singleTimepoints.get(2).getObjects().size());
+        assertEquals(1,singleTimepoints.get(2).getAllObjects().size());
         assertNull(singleTimepoints.get(2).getObjects("Obj"));
         assertEquals(1,singleTimepoints.get(2).getObjects("Other obj").size());
 

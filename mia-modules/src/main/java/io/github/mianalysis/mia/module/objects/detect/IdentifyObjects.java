@@ -504,7 +504,7 @@ public class IdentifyObjects extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().show(false);
+            outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
         return Status.PASS;
 

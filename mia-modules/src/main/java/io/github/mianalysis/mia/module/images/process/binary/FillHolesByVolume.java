@@ -342,11 +342,11 @@ public class FillHolesByVolume extends Module {
             ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.show();
+                outputImage.showAsIs();
 
         } else {
             if (showOutput)
-                inputImage.show();
+                inputImage.showAsIs();
 
         }
 

@@ -77,7 +77,7 @@ public class QuadtreeCoordinates implements CoordinateSetI {
     }
 
     @Override
-    public void finalise(int z) {
+    public void finaliseSlice(int z) {
         if (quadTrees.containsKey(z))
             quadTrees.get(z).optimise();
     }

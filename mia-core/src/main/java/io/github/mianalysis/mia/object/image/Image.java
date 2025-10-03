@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.object.image;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import io.github.mianalysis.mia.object.Objs;
@@ -18,19 +17,6 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Im
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
     // PUBLIC METHODS
-
-
-    public Objs convertImageToObjects(String outputObjectsName) {
-        return convertImageToObjects(new PointListFactory(), outputObjectsName, false);
-    }
-        
-    public Objs convertImageToObjects(String outputObjectsName, boolean singleObject) {
-        return convertImageToObjects(new PointListFactory(), outputObjectsName, singleObject);
-    }
-
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName) {
-        return convertImageToObjects(factory, outputObjectsName, false);
-    }
 
     public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
         return convertImageToObjects(factory, outputObjectsName, singleObject);

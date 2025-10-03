@@ -27,13 +27,13 @@ import net.imglib2.type.numeric.RealType;
 public interface Obj extends MeasurementProvider, Volume {
     public default LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
         if (!useFullHierarchy)
-            return getParents();
+            return getAllParents();
 
         // Adding each parent and then the parent of that
-        LinkedHashMap<String, Obj> parentHierarchy = new LinkedHashMap<>(getParents());
+        LinkedHashMap<String, Obj> parentHierarchy = new LinkedHashMap<>(getAllParents());
 
         // Going through each parent, adding the parents of that.
-        for (Obj parent : getParents().values()) {
+        for (Obj parent : getAllParents().values()) {
             if (parent == null)
                 continue;
 
@@ -54,7 +54,7 @@ public interface Obj extends MeasurementProvider, Volume {
         String[] elements = name.split(" // ");
 
         // Getting the first parent
-        Obj parent = getParents().get(elements[0]);
+        Obj parent = getAllParents().get(elements[0]);
 
         // If the first parent was the only one listed, returning this
         if (elements.length == 1)
@@ -77,19 +77,11 @@ public interface Obj extends MeasurementProvider, Volume {
     }
 
     public default void addParent(Obj parent) {
-        getParents().put(parent.getName(), parent);
-    }
-
-    public default void addParent(String name, Obj parent) {
-        getParents().put(name, parent);
+        getAllParents().put(parent.getName(), parent);
     }
 
     public default void removeParent(String name) {
-        getParents().remove(name);
-    }
-
-    public default void removeParent(Obj parent) {
-        getParents().remove(parent.getName());
+        getAllParents().remove(name);
     }
 
     public default Objs getChildren(String name) {
@@ -97,7 +89,7 @@ public interface Obj extends MeasurementProvider, Volume {
         String[] elements = name.split(" // ");
 
         // Getting the first set of children
-        Objs allChildren = getChildren().get(elements[0]);
+        Objs allChildren = getAllChildren().get(elements[0]);
         if (allChildren == null)
             return new Objs(elements[0], getObjectCollection());
 
@@ -128,54 +120,50 @@ public interface Obj extends MeasurementProvider, Volume {
     }
 
     public default void addChildren(Objs childSet) {
-        getChildren().put(childSet.getName(), childSet);
+        getAllChildren().put(childSet.getName(), childSet);
     }
 
     public default void removeChildren(String name) {
-        getChildren().remove(name);
+        getAllChildren().remove(name);
     }
 
     public default void addChild(Obj child) {
         String childName = child.getName();
 
-        getChildren().computeIfAbsent(childName, k -> new Objs(childName, child.getObjectCollection()));
-        getChildren().get(childName).add(child);
+        getAllChildren().computeIfAbsent(childName, k -> new Objs(childName, child.getObjectCollection()));
+        getAllChildren().get(childName).add(child);
 
     }
 
     public default void removeChild(Obj child) {
         String childName = child.getName();
-        getChildren().get(childName).values().remove(child);
+        getAllChildren().get(childName).values().remove(child);
 
     }
 
     public default Objs getPartners(String name) {
-        return getPartners().get(name);
+        return getAllPartners().get(name);
     }
 
     public default void addPartners(Objs partnerSet) {
-        getPartners().put(partnerSet.getName(), partnerSet);
-    }
-
-    public default void removePartners(String name) {
-        getPartners().remove(name);
+        getAllPartners().put(partnerSet.getName(), partnerSet);
     }
 
     public default void addPartner(Obj partner) {
         String partnerName = partner.getName();
 
-        getPartners().computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getObjectCollection()));
-        getPartners().get(partnerName).add(partner);
+        getAllPartners().computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getObjectCollection()));
+        getAllPartners().get(partnerName).add(partner);
     }
 
     public default void removePartner(Obj partner) {
         String partnerName = partner.getName();
-        getPartners().get(partnerName).values().remove(partner);
+        getAllPartners().get(partnerName).values().remove(partner);
 
     }
 
-    public default void removePartner(String name) {
-        getPartners().remove(name);
+    public default void removePartners(String name) {
+        getAllPartners().remove(name);
     }
 
     /**
@@ -401,17 +389,17 @@ public interface Obj extends MeasurementProvider, Volume {
 
     public Obj setT(int t);
 
-    public LinkedHashMap<String, Obj> getParents();
+    public LinkedHashMap<String, Obj> getAllParents();
 
-    public void setParents(LinkedHashMap<String, Obj> parents);
+    public void setAllParents(LinkedHashMap<String, Obj> parents);
 
-    public LinkedHashMap<String, Objs> getChildren();
+    public LinkedHashMap<String, Objs> getAllChildren();
 
-    public void setChildren(LinkedHashMap<String, Objs> children);
+    public void setAllChildren(LinkedHashMap<String, Objs> children);
 
-    public LinkedHashMap<String, Objs> getPartners();
+    public LinkedHashMap<String, Objs> getAllPartners();
 
-    public void setPartners(LinkedHashMap<String, Objs> partners);
+    public void setAllPartners(LinkedHashMap<String, Objs> partners);
 
     public void removeRelationships();
     

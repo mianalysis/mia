@@ -347,7 +347,7 @@ public class CreateSkeleton extends Module {
         // Creating a binary image of all the points with a 1px border, so we can remove
         // objects on the image edge still
         int[][] borders = new int[][] { { 1, 1 }, { 1, 1 }, { 0, 0 } };
-        ImageI binaryImage = tempObject.getAsTightImage("outputName", borders);
+        ImageI binaryImage = tempObject.getAsTightImageWithBorders("outputName", borders);
 
         // Converting binary image to loop objects
         Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false,
@@ -496,7 +496,7 @@ public class CreateSkeleton extends Module {
         // Linking junctions and loops with surfaces separated by 1px or less
         for (Obj loopObject : loopObjects.values()) {
             for (Obj junctionObject : junctionObjects.values()) {
-                if (loopObject.getSurfaceSeparation(junctionObject, true,false,false) <= 1) {
+                if (loopObject.getSurfaceSeparation(junctionObject, true, false, false, false) <= 1) {
                     loopObject.addPartner(junctionObject);
                     junctionObject.addPartner(loopObject);
                 }
@@ -651,7 +651,7 @@ public class CreateSkeleton extends Module {
                         if (exportLoops)
                             createLoopObjects(loopObjects, edgeObjectsName, junctionObjectsName, loopObjectsName,
                                     skeletonObject);
-                        
+
                     }
 
                     if (exportLargestShortestPathFinal)
@@ -689,14 +689,14 @@ public class CreateSkeleton extends Module {
             switch (inputMode) {
                 case InputModes.IMAGE:
                     edgeObjects.showMeasurements(this, modules);
-                    skeletonObjects.convertToImageIDColours().show(false);
+                    skeletonObjects.convertToImageIDColours().showWithNormalisation(false);
                     break;
 
                 case InputModes.OBJECTS:
                     inputObjects.showMeasurements(this, modules);
                     if (addToWorkspace) {
                         edgeObjects.showMeasurements(this, modules);
-                        skeletonObjects.convertToImageIDColours().show(false);
+                        skeletonObjects.convertToImageIDColours().showWithNormalisation(false);
                     }
                     break;
             }
@@ -820,8 +820,8 @@ public class CreateSkeleton extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

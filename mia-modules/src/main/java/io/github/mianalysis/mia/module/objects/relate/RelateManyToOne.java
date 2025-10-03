@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -276,7 +275,7 @@ public class RelateManyToOne extends Module {
 
         // Ensuring all parent objects have a calculated centroid
         for (Obj parent : parentObjects.values())
-            parent.getMeanCentroid();
+            parent.getMeanCentroid(true, false);
 
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
@@ -291,7 +290,7 @@ public class RelateManyToOne extends Module {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
-                    double dist = childObject.getCentroidSeparation(parentObject, true);
+                    double dist = childObject.getCentroidSeparation(parentObject, true, false);
 
                     if (dist < minDist && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
                         minDist = dist;
@@ -355,7 +354,8 @@ public class RelateManyToOne extends Module {
                         continue;
 
                     // Calculating the object spacing
-                    double dist = childObject.getSurfaceSeparation(parentObject, true, ignoreEdgesXY, ignoreEdgesZ);
+                    double dist = childObject.getSurfaceSeparation(parentObject, true, false, ignoreEdgesXY,
+                            ignoreEdgesZ);
 
                     if (Math.abs(dist) < Math.abs(minDist)
                             && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
@@ -440,7 +440,7 @@ public class RelateManyToOne extends Module {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
-                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true, ignoreEdgesXY,
+                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true, false, ignoreEdgesXY,
                             ignoreEdgesZ);
 
                     if (Math.abs(dist) < Math.abs(minDist)
@@ -740,12 +740,12 @@ public class RelateManyToOne extends Module {
 
                 ImageI parentImage = parentObjects.convertToImageIDColours();
                 SetDisplayRange.setDisplayRangeManual(parentImage, new double[] { 0, maxID });
-                parentImage.show(false);
+                parentImage.showWithNormalisation(false);
 
                 HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
                 ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
                 SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
-                childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR);
+                childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR, null);
 
             }
 

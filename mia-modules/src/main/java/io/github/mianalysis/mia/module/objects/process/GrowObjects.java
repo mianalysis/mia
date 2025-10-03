@@ -185,7 +185,7 @@ public class GrowObjects extends Module {
             ImageI segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
 
             // Get objects and create new object collection
-            Objs segmentedObjects = segmentedImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName);
+            Objs segmentedObjects = segmentedImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
 
             // Update timepoint, set relationships, (optionally) apply mask and add objects
             // to output collection
@@ -293,11 +293,11 @@ public class GrowObjects extends Module {
 
         if (outputObjects == null) {
             if (showOutput)
-                inputObjects.convertToImageIDColours().show(false);
+                inputObjects.convertToImageIDColours().showWithNormalisation(false);
         } else {
             workspace.addObjects(outputObjects);
             if (showOutput)
-                outputObjects.convertToImageIDColours().show(false);
+                outputObjects.convertToImageIDColours().showWithNormalisation(false);
         }
 
         return Status.PASS;

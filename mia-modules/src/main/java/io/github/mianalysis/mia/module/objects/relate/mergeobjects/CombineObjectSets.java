@@ -127,20 +127,20 @@ public class CombineObjectSets extends Module {
 
             // Transferring parents
             LinkedHashMap<String, Obj> parents = obj.getParents(false);
-            newObj.setParents(parents);
+            newObj.setAllParents(parents);
             for (Obj parent : parents.values())
                 parent.addChild(newObj);
 
             // Transferring children
-            LinkedHashMap<String, Objs> children = obj.getChildren();
-            newObj.setChildren(children);
+            LinkedHashMap<String, Objs> children = obj.getAllChildren();
+            newObj.setAllChildren(children);
             for (Objs childSet : children.values())
                 for (Obj child : childSet.values())
                     child.addParent(newObj);
 
             // Transferring partners
-            LinkedHashMap<String, Objs> partners = obj.getPartners();
-            newObj.setPartners(partners);
+            LinkedHashMap<String, Objs> partners = obj.getAllPartners();
+            newObj.setAllPartners(partners);
             for (Objs partnerSet : partners.values())
                 for (Obj partner : partnerSet.values())
                     partner.addPartner(newObj);
@@ -194,7 +194,7 @@ public class CombineObjectSets extends Module {
                 addObjects(inputObjects1, inputObjects2);
 
                 if (showOutput)
-                    inputObjects1.convertToImageIDColours().show(false);
+                    inputObjects1.convertToImageIDColours().showWithNormalisation(false);
 
                 break;
 
@@ -202,7 +202,7 @@ public class CombineObjectSets extends Module {
                 addObjects(inputObjects2, inputObjects1);
 
                 if (showOutput)
-                    inputObjects2.convertToImageIDColours().show(false);
+                    inputObjects2.convertToImageIDColours().showWithNormalisation(false);
 
                 break;
 
@@ -225,7 +225,7 @@ public class CombineObjectSets extends Module {
                 workspace.addObjects(outputObjects);
 
                 if (showOutput)
-                    outputObjects.convertToImageIDColours().show(false);
+                    outputObjects.convertToImageIDColours().showWithNormalisation(false);
 
                 break;
         }

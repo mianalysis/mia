@@ -83,7 +83,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -139,7 +139,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -195,7 +195,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -251,7 +251,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -306,7 +306,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -361,7 +361,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -416,7 +416,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -472,7 +472,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -528,7 +528,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -595,7 +595,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -649,7 +649,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -703,7 +703,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -758,7 +758,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -813,7 +813,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -868,7 +868,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -924,7 +924,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -980,7 +980,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1036,7 +1036,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1092,7 +1092,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1148,7 +1148,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1204,7 +1204,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1259,7 +1259,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1314,7 +1314,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1369,7 +1369,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1424,7 +1424,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1482,7 +1482,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1540,7 +1540,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1598,7 +1598,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1653,7 +1653,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1708,7 +1708,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1763,7 +1763,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1818,7 +1818,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1873,7 +1873,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1928,7 +1928,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -1986,7 +1986,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2044,7 +2044,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2102,7 +2102,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2157,7 +2157,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2212,7 +2212,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2267,7 +2267,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2322,7 +2322,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2377,7 +2377,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2432,7 +2432,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2488,7 +2488,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2544,7 +2544,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2605,7 +2605,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2659,7 +2659,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2713,7 +2713,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2768,7 +2768,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2823,7 +2823,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2878,7 +2878,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2934,7 +2934,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -2990,7 +2990,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3046,7 +3046,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3102,7 +3102,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3157,7 +3157,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3212,7 +3212,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3267,7 +3267,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3322,7 +3322,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3377,7 +3377,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3432,7 +3432,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3490,7 +3490,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3548,7 +3548,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3606,7 +3606,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3661,7 +3661,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3716,7 +3716,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3771,7 +3771,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3826,7 +3826,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3881,7 +3881,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3936,7 +3936,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -3994,7 +3994,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");
@@ -4052,7 +4052,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
-        assertEquals(1, workspace.getObjects().size());
+        assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
         Objs actualObjects = workspace.getObjects("Test_output_objects");

@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.drew.lang.annotations.Nullable;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
@@ -29,11 +27,6 @@ public interface Volume {
         setCoordinateSet(factory.createCoordinateSet());
     }
 
-    public default void initialise(CoordinateSetFactoryI factory, int width, int height, int nSlices, double dppXY,
-            double dppZ, String units) {
-        initialise(factory, new SpatCal(dppXY, dppZ, units, width, height, nSlices));
-    }
-
     public default Iterator<Point<Integer>> getCoordinateIterator() {
         return getCoordinateSet().iterator();
     }
@@ -50,7 +43,7 @@ public interface Volume {
 
     }
 
-    public default void add(Point<Integer> point) throws PointOutOfRangeException {
+    public default void addPoint(Point<Integer> point) throws PointOutOfRangeException {
         add(point.x, point.y, point.z);
 
     }
@@ -112,8 +105,8 @@ public interface Volume {
         getCoordinateSet().finalise();
     }
 
-    public default void finalise(int z) {
-        getCoordinateSet().finalise(z);
+    public default void finaliseSlice(int z) {
+        getCoordinateSet().finaliseSlice(z);
     }
 
     @Deprecated
@@ -147,10 +140,6 @@ public interface Volume {
         return getSpatialCalibration().getNSlices();
     }
 
-    public default Volume getSurface() {
-        return getSurface(false, false);
-    }
-
     public default double getProjectedArea(boolean pixelDistances) {
         int size = getProjected().size();
         return pixelDistances ? size : size * getSpatialCalibration().dppXY * getSpatialCalibration().dppXY;
@@ -164,11 +153,6 @@ public interface Volume {
     public default void setPoints(TreeSet<Point<Integer>> points) throws PointOutOfRangeException {
         for (Point<Integer> point : points)
             add(point.getX(),point.getY(),point.getZ());
-    }
-
-    public default Point<Double> getMeanCentroid() {
-        return getMeanCentroid(true, false);
-
     }
 
     /**
@@ -211,12 +195,6 @@ public interface Volume {
         SpatCal spatCal = getSpatialCalibration();
 
         return z * spatCal.dppZ / spatCal.dppXY;
-    }
-
-    public default double getXYScaledZ(Point<Integer> point) {
-        SpatCal spatCal = getSpatialCalibration();
-
-        return point.getZ() * spatCal.dppZ / spatCal.dppXY;
     }
 
     public default double getCalibratedZ(Point<Integer> point, boolean matchXY) {
@@ -295,11 +273,11 @@ public interface Volume {
     public default ImageI getAsTightImage(String imageName) {
         int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
 
-        return getAsTightImage(imageName, borderWidths);
+        return getAsTightImageWithBorders(imageName, borderWidths);
 
     }
 
-    public default ImageI getAsTightImage(String imageName, @Nullable int[][] borderWidths) {
+    public default ImageI getAsTightImageWithBorders(String imageName, int[][] borderWidths) {
         if (borderWidths == null)
             return getAsImage(imageName, 0, 1);
 
@@ -395,28 +373,28 @@ public interface Volume {
 
     @Deprecated
     public default ArrayList<Integer> getSurfaceXCoords() {
-        return getSurface().getPoints().stream().map(Point::getX).collect(Collectors.toCollection(ArrayList::new));
+        return getSurface(false,false).getPoints().stream().map(Point::getX).collect(Collectors.toCollection(ArrayList::new));
 
     }
 
     @Deprecated
     public default ArrayList<Integer> getSurfaceYCoords() {
-        return getSurface().getPoints().stream().map(Point::getY).collect(Collectors.toCollection(ArrayList::new));
+        return getSurface(false,false).getPoints().stream().map(Point::getY).collect(Collectors.toCollection(ArrayList::new));
 
     }
 
     @Deprecated
     public default ArrayList<Integer> getSurfaceZCoords() {
-        return getSurface().getPoints().stream().map(Point::getZ).collect(Collectors.toCollection(ArrayList::new));
+        return getSurface(false,false).getPoints().stream().map(Point::getZ).collect(Collectors.toCollection(ArrayList::new));
 
     }
 
     @Deprecated
     public default double[] getSurfaceX(boolean pixelDistances) {
         if (pixelDistances)
-            return getSurface().getPoints().stream().map(Point::getX).mapToDouble(Integer::doubleValue).toArray();
+            return getSurface(false,false).getPoints().stream().map(Point::getX).mapToDouble(Integer::doubleValue).toArray();
         else
-            return getSurface().getPoints().stream().map(Point::getX).mapToDouble(Integer::doubleValue)
+            return getSurface(false,false).getPoints().stream().map(Point::getX).mapToDouble(Integer::doubleValue)
                     .map(v -> v * getSpatialCalibration().dppXY).toArray();
 
     }
@@ -424,9 +402,9 @@ public interface Volume {
     @Deprecated
     public default double[] getSurfaceY(boolean pixelDistances) {
         if (pixelDistances)
-            return getSurface().getPoints().stream().map(Point::getY).mapToDouble(Integer::doubleValue).toArray();
+            return getSurface(false,false).getPoints().stream().map(Point::getY).mapToDouble(Integer::doubleValue).toArray();
         else
-            return getSurface().getPoints().stream().map(Point::getY).mapToDouble(Integer::doubleValue)
+            return getSurface(false,false).getPoints().stream().map(Point::getY).mapToDouble(Integer::doubleValue)
                     .map(v -> v * getSpatialCalibration().dppXY).toArray();
     }
 
@@ -436,14 +414,14 @@ public interface Volume {
 
         if (pixelDistances)
             if (matchXY)
-                return getSurface().getPoints().stream().map(Point::getZ).mapToDouble(Integer::doubleValue)
+                return getSurface(false,false).getPoints().stream().map(Point::getZ).mapToDouble(Integer::doubleValue)
                         .map(v -> v * spatCal.dppZ / spatCal.dppXY).toArray();
 
             else
-                return getSurface().getPoints().stream().map(Point::getZ).mapToDouble(Integer::doubleValue).toArray();
+                return getSurface(false,false).getPoints().stream().map(Point::getZ).mapToDouble(Integer::doubleValue).toArray();
 
         else
-            return getSurface().getPoints().stream().map(Point::getZ).mapToDouble(Integer::doubleValue)
+            return getSurface(false,false).getPoints().stream().map(Point::getZ).mapToDouble(Integer::doubleValue)
                     .map(v -> v * spatCal.dppZ).toArray();
 
     }
@@ -463,7 +441,7 @@ public interface Volume {
 
     }
 
-    public default double getHeight(boolean pixelDistances, boolean matchXY) {
+    public default double getVolumeHeight(boolean pixelDistances, boolean matchXY) {
         double minZ = Double.MAX_VALUE;
         double maxZ = Double.MIN_VALUE;
 
@@ -508,7 +486,7 @@ public interface Volume {
 
     }
 
-    public default double calculateAngle2D(Point<Double> point) {
+    public default double calculateAngleToPoint2D(Point<Double> point) {
         Point<Double> p1 = new Point<>(getXMean(true), getYMean(true), 0d);
 
         return p1.calculateAngle2D(point);
@@ -523,18 +501,11 @@ public interface Volume {
             Volume volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
             volume2.add(point2.getX(), point2.getY(), point2.getZ());
 
-            return volume1.getCentroidSeparation(volume2, pixelDistances);
+            return volume1.getCentroidSeparation(volume2, pixelDistances, false);
 
         } catch (IntegerOverflowException | PointOutOfRangeException e) {
             return Double.NaN;
         }
-    }
-
-    public default double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean ignoreEdgesXY,
-            boolean ignoreEdgesZ) {
-        SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, false, ignoreEdgesXY,
-                ignoreEdgesZ);
-        return calculator.getMinDist(pixelDistances);
     }
 
     public default double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean force2D, boolean ignoreEdgesXY,
@@ -542,10 +513,6 @@ public interface Volume {
         SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, force2D, ignoreEdgesXY,
                 ignoreEdgesZ);
         return calculator.getMinDist(pixelDistances);
-    }
-    public default double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances, boolean ignoreEdgesXY,
-            boolean ignoreEdgesZ) {
-        return getPointSurfaceSeparation(point, pixelDistances, false, ignoreEdgesXY, ignoreEdgesZ);
     }
 
     public default double getPointSurfaceSeparation(Point<Double> point, boolean pixelDistances, boolean force2D,
@@ -558,10 +525,6 @@ public interface Volume {
                 ignoreEdgesZ);
                 
         return calculator.getMinDist(pixelDistances);
-    }
-
-    public default double getCentroidSeparation(Volume volume2, boolean pixelDistances) {
-        return getCentroidSeparation(volume2, pixelDistances, false);
     }
 
     public default double getCentroidSeparation(Volume volume2, boolean pixelDistances, boolean force2D) {
@@ -590,11 +553,11 @@ public interface Volume {
             if (size() < volume2.size()) {
                 for (Point<Integer> p1 : getCoordinateSet())
                     if (volume2.contains(p1))
-                        overlapping.add(p1);
+                        overlapping.addPoint(p1);
             } else {
                 for (Point<Integer> p2 : volume2.getCoordinateSet())
                     if (contains(p2))
-                        overlapping.add(p2);
+                        overlapping.addPoint(p2);
             }
         } catch (IntegerOverflowException | PointOutOfRangeException e) {
             // These points are a subset of the input Volume objects, so if they don't

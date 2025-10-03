@@ -202,11 +202,11 @@ public class Workspace implements WorkspaceI {
 
     // GETTERS AND SETTERS
 
-    public LinkedHashMap<String, Objs> getObjects() {
+    public LinkedHashMap<String, Objs> getAllObjects() {
         return objects;
     }
 
-    public void setObjects(LinkedHashMap<String, Objs> objects) {
+    public void setAllObjects(LinkedHashMap<String, Objs> objects) {
         this.objects = objects;
     }
 

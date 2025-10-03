@@ -636,7 +636,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         images.add(reference);
         images.add(dupImage);
         ConcatenateStacks2.process(images, ConcatenateStacks2.AxisModes.CHANNEL, "Registration comparison")
-                .show();
+                .showAsIs();
 
     }
 
@@ -729,9 +729,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
                 if (showOutput) {
                     if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
-                        createOverlay(inputImage, reference).show();
+                        createOverlay(inputImage, reference).showAsIs();
                     } else {
-                        inputImage.show();
+                        inputImage.showAsIs();
                     }
                 }
 
@@ -742,7 +742,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                 processManual(inputImage, transformationMode, multithread, fillMode, reference);
 
                 if (showOutput)
-                    inputImage.show();
+                    inputImage.showAsIs();
 
                 break;
         }

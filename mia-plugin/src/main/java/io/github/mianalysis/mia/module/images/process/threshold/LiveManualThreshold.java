@@ -222,7 +222,7 @@ public class LiveManualThreshold extends Module {
             inputImage.addMeasurement(new Measurement("THRESHOLD", thresholdValue));
 
             if (showOutput) {
-                inputImage.show();
+                inputImage.showAsIs();
                 inputImage.showMeasurements(this);
             }
 
@@ -234,7 +234,7 @@ public class LiveManualThreshold extends Module {
             outputImage.addMeasurement(new Measurement("THRESHOLD", thresholdValue));
 
             if (showOutput) {
-                outputImage.show();
+                outputImage.showAsIs();
                 outputImage.showMeasurements(this);
             }
         }

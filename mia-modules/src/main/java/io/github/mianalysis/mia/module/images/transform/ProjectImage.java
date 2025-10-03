@@ -436,7 +436,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

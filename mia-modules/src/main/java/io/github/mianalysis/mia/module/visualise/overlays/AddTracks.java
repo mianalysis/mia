@@ -340,7 +340,7 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.show();
+            outputImage.showAsIs();
 
         return Status.PASS;
 

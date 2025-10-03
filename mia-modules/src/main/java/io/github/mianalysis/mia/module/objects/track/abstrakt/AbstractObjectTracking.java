@@ -221,7 +221,7 @@ public abstract class AbstractObjectTracking extends Module {
         // generateModuleList before)
         for (Obj inputObj : inputObjects.values()) {
             inputObj.removeParent(trackObjectsName);
-            inputObj.removePartner(inputObjectsName);
+            inputObj.removePartners(inputObjectsName);
         }
 
         SpotCollection spotCollection = createSpotCollection(inputObjects, true);

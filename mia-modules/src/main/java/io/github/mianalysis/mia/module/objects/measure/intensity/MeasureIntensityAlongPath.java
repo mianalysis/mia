@@ -168,7 +168,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
                     MIA.log.writeError(e);
                 }
 
-                distance += volume1.getCentroidSeparation(volume2, true);
+                distance += volume1.getCentroidSeparation(volume2, true, false);
             }
 
             profile.put(distance, intensity);
