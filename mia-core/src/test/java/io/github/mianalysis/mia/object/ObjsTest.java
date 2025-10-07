@@ -67,16 +67,16 @@ public class ObjsTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         Obj obj = collection.createAndAddNewObject(factory, 0);
-        obj.add(3, 1, 6);
-        obj.add(2, 2, 8);
+        obj.addCoord(3, 1, 6);
+        obj.addCoord(2, 2, 8);
 
         obj = collection.createAndAddNewObject(factory, 1);
-        obj.add(3, 2, 2);
-        obj.add(2, 2, 9);
+        obj.addCoord(3, 2, 2);
+        obj.addCoord(2, 2, 9);
 
         obj = collection.createAndAddNewObject(factory, 2);
-        obj.add(4, 1, 2);
-        obj.add(6, 2, 10);
+        obj.addCoord(4, 1, 2);
+        obj.addCoord(6, 2, 10);
 
         // Getting expected spatial limits
         int[][] expected = new int[][] { { 0, 9 }, { 0, 2 }, { 0, 11 } };
@@ -186,32 +186,32 @@ public class ObjsTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         Obj obj1 = collection.createAndAddNewObject(factory, 1);
-        obj1.add(3, 2, 2);
-        obj1.add(2, 2, 9);
+        obj1.addCoord(3, 2, 2);
+        obj1.addCoord(2, 2, 9);
 
         Obj obj2 = collection.createAndAddNewObject(factory, 0);
-        obj2.add(3, 2, 2);
-        obj2.add(2, 2, 9);
-        obj2.add(3, 1, 6);
-        obj2.add(2, 2, 8);
+        obj2.addCoord(3, 2, 2);
+        obj2.addCoord(2, 2, 9);
+        obj2.addCoord(3, 1, 6);
+        obj2.addCoord(2, 2, 8);
 
         Obj obj3 = collection.createAndAddNewObject(factory, 2);
-        obj3.add(4, 1, 2);
-        obj3.add(6, 2, 10);
+        obj3.addCoord(4, 1, 2);
+        obj3.addCoord(6, 2, 10);
 
         Obj oj4 = collection.createAndAddNewObject(factory, 2);
-        oj4.add(4, 1, 2);
-        oj4.add(6, 2, 10);
-        oj4.add(3, 2, 2);
-        oj4.add(2, 2, 9);
+        oj4.addCoord(4, 1, 2);
+        oj4.addCoord(6, 2, 10);
+        oj4.addCoord(3, 2, 2);
+        oj4.addCoord(2, 2, 9);
 
         // Creating a test object with the same coordinates as one of the other objects
         Objs testObjects = new Objs("Test", calibration, 1, 0.02, UNITS.SECOND);
         Obj testObj = testObjects.createAndAddNewObject(factory, 5);
-        testObj.add(3, 1, 6);
-        testObj.add(2, 2, 8);
-        testObj.add(3, 2, 2);
-        testObj.add(2, 2, 9);
+        testObj.addCoord(3, 1, 6);
+        testObj.addCoord(2, 2, 8);
+        testObj.addCoord(3, 2, 2);
+        testObj.addCoord(2, 2, 9);
 
         Obj actual = collection.getByEqualsIgnoreNameAndID(testObj);
 

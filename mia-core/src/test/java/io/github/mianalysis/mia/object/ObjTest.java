@@ -403,14 +403,14 @@ public class ObjTest {
         Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 4);
-        obj2.add(3, 5, 1);
+        obj2.addCoord(1, 3, 4);
+        obj2.addCoord(3, 5, 1);
 
         assertEquals(obj1.hashCode(), obj2.hashCode());
 
@@ -426,14 +426,14 @@ public class ObjTest {
         Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(3, 5, 1);
-        obj2.add(1, 3, 4);
+        obj2.addCoord(3, 5, 1);
+        obj2.addCoord(1, 3, 4);
 
         assertEquals(obj1.hashCode(), obj2.hashCode());
 
@@ -449,14 +449,14 @@ public class ObjTest {
         Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 4);
-        obj2.add(3, 5, 1);
+        obj2.addCoord(1, 3, 4);
+        obj2.addCoord(3, 5, 1);
 
         assertEquals(obj1.hashCode(), obj2.hashCode());
 
@@ -472,13 +472,13 @@ public class ObjTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 1, 1);
-        obj1.add(2, 1, 1);
+        obj1.addCoord(1, 1, 1);
+        obj1.addCoord(2, 1, 1);
 
         Obj obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(2);
-        obj2.add(1, 1, 1);
-        obj2.add(1, 2, 1);
+        obj2.addCoord(1, 1, 1);
+        obj2.addCoord(1, 2, 1);
 
         assertNotEquals(obj1.hashCode(), obj2.hashCode());
 
@@ -494,13 +494,13 @@ public class ObjTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Obj obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 3);
-        obj2.add(3, 5, 1);
+        obj2.addCoord(1, 3, 3);
+        obj2.addCoord(3, 5, 1);
 
         assertNotEquals(obj1.hashCode(), obj2.hashCode());
 
@@ -516,12 +516,12 @@ public class ObjTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Obj obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 4);
+        obj2.addCoord(1, 3, 4);
 
         assertNotEquals(obj1.hashCode(), obj2.hashCode());
 
@@ -536,14 +536,14 @@ public class ObjTest {
         Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 4);
-        obj2.add(3, 5, 1);
+        obj2.addCoord(1, 3, 4);
+        obj2.addCoord(3, 5, 1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -560,14 +560,14 @@ public class ObjTest {
         Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(3, 5, 1);
-        obj2.add(1, 3, 4);
+        obj2.addCoord(3, 5, 1);
+        obj2.addCoord(1, 3, 4);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -584,14 +584,14 @@ public class ObjTest {
         Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 4);
-        obj2.add(3, 5, 1);
+        obj2.addCoord(1, 3, 4);
+        obj2.addCoord(3, 5, 1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -608,13 +608,13 @@ public class ObjTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 1, 1);
-        obj1.add(2, 1, 1);
+        obj1.addCoord(1, 1, 1);
+        obj1.addCoord(2, 1, 1);
 
         Obj obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(2);
-        obj2.add(1, 1, 1);
-        obj2.add(1, 2, 1);
+        obj2.addCoord(1, 1, 1);
+        obj2.addCoord(1, 2, 1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
@@ -631,13 +631,13 @@ public class ObjTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Obj obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 3);
-        obj2.add(3, 5, 1);
+        obj2.addCoord(1, 3, 3);
+        obj2.addCoord(3, 5, 1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
@@ -654,12 +654,12 @@ public class ObjTest {
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
-        obj1.add(1, 3, 4);
-        obj1.add(3, 5, 1);
+        obj1.addCoord(1, 3, 4);
+        obj1.addCoord(3, 5, 1);
 
         Obj obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
-        obj2.add(1, 3, 4);
+        obj2.addCoord(1, 3, 4);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));

@@ -1177,7 +1177,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                     int y = (int) Math.round(point.getY());
                     if (x >= 0 && x < displayIpl.getWidth() && y >= 0 && y < displayIpl.getHeight()) {
                         try {
-                            outputObject.add(x, y, z);
+                            outputObject.addCoord(x, y, z);
                         } catch (PointOutOfRangeException e) {
                         }
                     }
@@ -1229,7 +1229,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                     int y = (int) Math.round(point.getY());
                     if (x >= 0 && x < displayIpl.getWidth() && y >= 0 && y < displayIpl.getHeight()) {
                         try {
-                            outputObject.add(x, y, z);
+                            outputObject.addCoord(x, y, z);
                         } catch (PointOutOfRangeException e) {
                         }
                     }

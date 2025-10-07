@@ -52,7 +52,7 @@ public class Tracks3D {
             spotID = spotID + (t * 65536);
             Obj spotObject = spotObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType), spotID);
             try {
-                spotObject.add(x, y, z);
+                spotObject.addCoord(x, y, z);
             } catch (PointOutOfRangeException e) {
             }
             spotObject.setT(t);

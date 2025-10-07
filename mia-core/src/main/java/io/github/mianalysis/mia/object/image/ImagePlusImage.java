@@ -126,8 +126,11 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                                         k -> ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
                                                 .setT(finalT));
                                 try {
-                                    outputObjects.get(outID).add(x, y, z);
+                                    outputObjects.get(outID).addCoord(x, y, z);
                                 } catch (PointOutOfRangeException e) {
+                                } catch (Exception e) {
+                                    MIA.log.writeError(e);
+                                    return outputObjects;
                                 }
                             }
                         }

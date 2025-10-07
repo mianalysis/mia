@@ -185,7 +185,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
                         for (Point point : roi.getContainedPoints()) {
                             try {
                                 try {
-                                    outputObject.add(point.x, point.y, z);
+                                    outputObject.addCoord(point.x, point.y, z);
                                 } catch (PointOutOfRangeException e) {
                                 }
                             } catch (IntegerOverflowException e) {

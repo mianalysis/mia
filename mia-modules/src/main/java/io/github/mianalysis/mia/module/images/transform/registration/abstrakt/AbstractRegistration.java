@@ -265,7 +265,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (PointPair pair : pairs) {
             Obj obj = oc.createAndAddNewObject(new PointListFactory());
             try {
-                obj.add((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()),
+                obj.addCoord((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()),
                         0);
             } catch (PointOutOfRangeException e) {
             }
@@ -277,7 +277,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (PointPair pair : pairs) {
             Obj obj = oc.createAndAddNewObject(new PointListFactory());
             try {
-                obj.add((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()),
+                obj.addCoord((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()),
                         1);
             } catch (PointOutOfRangeException e) {
             }

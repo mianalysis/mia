@@ -139,29 +139,29 @@ public class WorkspaceTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(factory,0);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         
         obj = objects.createAndAddNewObject(factory,1);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(objects);
 
         Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
         obj = otherObjects.createAndAddNewObject(factory,0);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         
         obj = otherObjects.createAndAddNewObject(factory,1);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(otherObjects);
 
@@ -206,29 +206,29 @@ public class WorkspaceTest {
 
         Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(factory,0);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
 
         obj = objects.createAndAddNewObject(factory,1);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(objects);
 
         Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
         obj = otherObjects.createAndAddNewObject(factory,0);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
 
         obj = otherObjects.createAndAddNewObject(factory,1);
-        obj.add(12,5,2);
-        obj.add(12,5,3);
-        obj.add(12,6,2);
+        obj.addCoord(12,5,2);
+        obj.addCoord(12,5,3);
+        obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(otherObjects);
 

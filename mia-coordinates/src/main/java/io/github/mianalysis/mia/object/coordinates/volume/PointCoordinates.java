@@ -15,7 +15,7 @@ public class PointCoordinates extends HashSet<Point<Integer>> implements Coordin
     }
 
     @Override
-    public boolean add(int x, int y, int z) {
+    public boolean addCoord(int x, int y, int z) {
         if (size() == Integer.MAX_VALUE) return false; //throw new IntegerOverflowException("Object too large (Integer overflow).");
         add(new Point<>(x,y,z));
         return true;
@@ -37,7 +37,7 @@ public class PointCoordinates extends HashSet<Point<Integer>> implements Coordin
         PointCoordinates newCoordinates = new PointCoordinates();
 
         for (Point<Integer> point:this) 
-            newCoordinates.add(point.getX(),point.getY(),point.getZ());
+            newCoordinates.addCoord(point.getX(),point.getY(),point.getZ());
 
         return newCoordinates;
 
@@ -51,7 +51,7 @@ public class PointCoordinates extends HashSet<Point<Integer>> implements Coordin
         CoordinateSetI projectedCoordinates = new PointCoordinates();
 
         for (Point<Integer> point : this)
-            projectedCoordinates.add(point.x, point.y, 0);
+            projectedCoordinates.addCoord(point.x, point.y, 0);
 
         return projectedCoordinates;
 

@@ -230,7 +230,7 @@ public class SpotDetection extends Module {
         for (Spot spot : spots.iterable(false)) {
             Obj spotObject = spotObjects.createAndAddNewObject(new PointListFactory(), spot.ID());
             try {
-                spotObject.add((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
+                spotObject.addCoord((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
                         (int) spot.getDoublePosition(2));
             } catch (PointOutOfRangeException e) {
                 MIA.log.writeError(e);

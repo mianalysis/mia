@@ -235,7 +235,7 @@ public class GetLocalObjectRegion extends Module {
         if (radius == 0) {
             // The output object is a single point
             try {
-                outputObject.add(centroid[0], centroid[1], centroid[2]);
+                outputObject.addCoord(centroid[0], centroid[1], centroid[2]);
             } catch (PointOutOfRangeException e) {
             }
         } else {
@@ -255,7 +255,7 @@ public class GetLocalObjectRegion extends Module {
                     if (inputObject.is2D()) {
                         if (Math.sqrt(xx * xx + yy * yy) < radius)
                             try {
-                                outputObject.add(x, y, 0);
+                                outputObject.addCoord(x, y, 0);
                             } catch (PointOutOfRangeException e) {
                             }
                     } else {
@@ -263,7 +263,7 @@ public class GetLocalObjectRegion extends Module {
                             double zz = (centroid[2] - z) / xy_z_ratio;
                             if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius)
                                 try {
-                                    outputObject.add(x, y, z);
+                                    outputObject.addCoord(x, y, z);
                                 } catch (PointOutOfRangeException e) {
                                 }
                         }

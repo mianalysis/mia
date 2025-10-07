@@ -31,7 +31,7 @@ public interface Volume {
         return getCoordinateSet().iterator();
     }
 
-    public default void add(int x, int y, int z) throws PointOutOfRangeException {
+    public default void addCoord(int x, int y, int z) throws PointOutOfRangeException {
         if (x < 0 || x >= getWidth())
             throw new PointOutOfRangeException("Coordinate out of bounds! (x: " + x + ")");
         if (y < 0 || y >= getHeight())
@@ -39,19 +39,19 @@ public interface Volume {
         if (z < 0 || z >= getNSlices())
             throw new PointOutOfRangeException("Coordinate out of bounds! (z: " + z + ")");
 
-        getCoordinateSet().add(x, y, z);
+        getCoordinateSet().addCoord(x, y, z);
 
     }
 
     public default void addPoint(Point<Integer> point) throws PointOutOfRangeException {
-        add(point.x, point.y, point.z);
+        addCoord(point.x, point.y, point.z);
 
     }
 
     public default void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
         for (java.awt.Point point : roi.getContainedPoints()) {
             try {
-                add((int) point.getX(), (int) point.getY(), z);
+                addCoord((int) point.getX(), (int) point.getY(), z);
             } catch (PointOutOfRangeException e) {
             }
         }
@@ -78,7 +78,7 @@ public interface Volume {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 if (polygon.contains(x, y))
-                    add(x, y, z);
+                    addCoord(x, y, z);
             }
         }
     }
@@ -89,7 +89,7 @@ public interface Volume {
         // CoordinateSet newCoordinateSet = coordinateSet.createEmptyCoordinateSet();
         for (Point<Integer> point : getCoordinateSet()) {
             try {
-                newVol.add(point.getX() + xOffs, point.getY() + yOffs, point.getZ() + zOffs);
+                newVol.addCoord(point.getX() + xOffs, point.getY() + yOffs, point.getZ() + zOffs);
             } catch (PointOutOfRangeException e) {
                 // Do nothing
             }
@@ -152,7 +152,7 @@ public interface Volume {
 
     public default void setPoints(TreeSet<Point<Integer>> points) throws PointOutOfRangeException {
         for (Point<Integer> point : points)
-            add(point.getX(),point.getY(),point.getZ());
+            addCoord(point.getX(),point.getY(),point.getZ());
     }
 
     /**
@@ -496,10 +496,10 @@ public interface Volume {
     public default double calculatePointPointSeparation(Point<Integer> point1, Point<Integer> point2, boolean pixelDistances) {
         try {
             Volume volume1 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
-            volume1.add(point1.getX(), point1.getY(), point1.getZ());
+            volume1.addCoord(point1.getX(), point1.getY(), point1.getZ());
 
             Volume volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
-            volume2.add(point2.getX(), point2.getY(), point2.getZ());
+            volume2.addCoord(point2.getX(), point2.getY(), point2.getZ());
 
             return volume1.getCentroidSeparation(volume2, pixelDistances, false);
 

@@ -218,7 +218,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
                     for (int i = 0; i < xx.length; i++) {
                         try {
                             try {
-                                outputObject.add(xx[i] + x, yy[i] + y,
+                                outputObject.addCoord(xx[i] + x, yy[i] + y,
                                         (int) Math.round(zz[i] * cal.dppXY / cal.dppZ + z));
                             } catch (PointOutOfRangeException e) {
                             }

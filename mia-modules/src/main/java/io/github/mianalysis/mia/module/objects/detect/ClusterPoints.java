@@ -138,7 +138,7 @@ public class ClusterPoints extends Module {
                 outputObject.setT(t);
                 double[] coord = point.getPoint();
                 try {
-                    outputObject.add((int) Math.round(coord[0]), (int) Math.round(coord[1]),
+                    outputObject.addCoord((int) Math.round(coord[0]), (int) Math.round(coord[1]),
                             (int) Math.round(coord[2]));
                 } catch (PointOutOfRangeException e) {
                 }
@@ -161,7 +161,7 @@ public class ClusterPoints extends Module {
                 outputObject.setT(t);
                 double[] coord = point.getPoint();
                 try {
-                    outputObject.add((int) Math.round(coord[0]), (int) Math.round(coord[1]),
+                    outputObject.addCoord((int) Math.round(coord[0]), (int) Math.round(coord[1]),
                             (int) Math.round(coord[2]));
                 } catch (PointOutOfRangeException e) {
                 }

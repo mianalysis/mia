@@ -44,16 +44,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
@@ -80,19 +80,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         Obj obj5 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
-        obj5.add(10, 20, 40);
+        obj5.addCoord(10, 20, 40);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
@@ -119,16 +119,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
@@ -155,16 +155,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
@@ -194,13 +194,13 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
@@ -270,16 +270,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         workspace.addObjects(objects1);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
@@ -367,16 +367,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         workspace.addObjects(objects1);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
@@ -464,16 +464,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         workspace.addObjects(objects1);
 
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
 
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
 
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
 
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
@@ -561,13 +561,13 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
@@ -655,13 +655,13 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
@@ -748,23 +748,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
-        obj5.add(12, 25, 40);
+        obj5.addCoord(12, 25, 40);
         Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
-        obj6.add(20, 35, 10);
+        obj6.addCoord(20, 35, 10);
         Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
-        obj7.add(35, 20, 20);
+        obj7.addCoord(35, 20, 20);
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
@@ -834,23 +834,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
-        obj5.add(12, 25, 40);
+        obj5.addCoord(12, 25, 40);
         Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
-        obj6.add(20, 35, 10);
+        obj6.addCoord(20, 35, 10);
         Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
-        obj7.add(35, 20, 20);
+        obj7.addCoord(35, 20, 20);
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
@@ -921,23 +921,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
-        obj5.add(12, 25, 40);
+        obj5.addCoord(12, 25, 40);
         Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
-        obj6.add(20, 35, 10);
+        obj6.addCoord(20, 35, 10);
         Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
-        obj7.add(35, 20, 20);
+        obj7.addCoord(35, 20, 20);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
@@ -1032,23 +1032,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
-        obj1.add(10, 20, 40);
+        obj1.addCoord(10, 20, 40);
         Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
-        obj2.add(20, 30, 10);
+        obj2.addCoord(20, 30, 10);
         Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
-        obj3.add(20, 20, 30);
+        obj3.addCoord(20, 20, 30);
         Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
-        obj4.add(50, 20, 10);
+        obj4.addCoord(50, 20, 10);
 
         // Creating second object set
         Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
-        obj5.add(12, 25, 40);
+        obj5.addCoord(12, 25, 40);
         Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
-        obj6.add(20, 35, 10);
+        obj6.addCoord(20, 35, 10);
         Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
-        obj7.add(35, 20, 20);
+        obj7.addCoord(35, 20, 20);
 
         // Creating the parent object set
         Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);

@@ -202,7 +202,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
 
                             try {
                                 try {
-                                    outputObject.add(xx[i] + x, yy[i] + y, z);
+                                    outputObject.addCoord(xx[i] + x, yy[i] + y, z);
                                 } catch (PointOutOfRangeException e) {
                                 }
                             } catch (IntegerOverflowException e) {

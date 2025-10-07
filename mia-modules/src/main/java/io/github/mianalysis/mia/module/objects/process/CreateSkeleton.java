@@ -385,8 +385,8 @@ public class CreateSkeleton extends Module {
         // Adding coordinates
         for (Point point : edge.getSlabs()) {
             try {
-                skeletonObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
-                edgeObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
+                skeletonObject.addCoord(point.x + xOffs, point.y + yOffs, point.z + zOffs);
+                edgeObject.addCoord(point.x + xOffs, point.y + yOffs, point.z + zOffs);
             } catch (PointOutOfRangeException e) {
             }
         }
@@ -406,8 +406,8 @@ public class CreateSkeleton extends Module {
         // Adding coordinates
         for (Point point : junction.getPoints()) {
             try {
-                skeletonObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
-                junctionObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
+                skeletonObject.addCoord(point.x + xOffs, point.y + yOffs, point.z + zOffs);
+                junctionObject.addCoord(point.x + xOffs, point.y + yOffs, point.z + zOffs);
             } catch (PointOutOfRangeException e) {
             }
         }

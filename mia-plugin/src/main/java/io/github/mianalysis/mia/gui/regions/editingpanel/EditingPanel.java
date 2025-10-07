@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import com.drew.lang.annotations.Nullable;
-import com.formdev.flatlaf.ui.FlatDropShadowBorder;
 import com.formdev.flatlaf.util.SystemInfo;
 
 import io.github.mianalysis.mia.MIA;

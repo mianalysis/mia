@@ -162,8 +162,8 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
                 Volume volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), spatCal.duplicate());
 
                 try {
-                    volume1.add(prevPoint.getX(), prevPoint.getY(), prevPoint.getZ());
-                    volume2.add(point.getX(), point.getY(), point.getZ());
+                    volume1.addCoord(prevPoint.getX(), prevPoint.getY(), prevPoint.getZ());
+                    volume2.addCoord(point.getX(), point.getY(), point.getZ());
                 } catch (PointOutOfRangeException e) {
                     MIA.log.writeError(e);
                 }

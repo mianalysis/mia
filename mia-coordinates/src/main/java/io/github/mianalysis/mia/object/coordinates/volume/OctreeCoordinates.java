@@ -51,7 +51,7 @@ public class OctreeCoordinates extends Octree implements CoordinateSetI {
         CoordinateSetI projectedCoordinates = new QuadtreeCoordinates();
 
         for (Point<Integer> point : this)
-            projectedCoordinates.add(point.x, point.y, 0);
+            projectedCoordinates.addCoord(point.x, point.y, 0);
 
         projectedCoordinates.finalise();
 

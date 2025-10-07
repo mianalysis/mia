@@ -145,7 +145,7 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
                 biSearch.run();
                 for (Point3f point : biSearch.getResult().getPoint3fList()) {
                     try {
-                        outputObject.add((int) point.x, (int) point.y, (int) point.z);
+                        outputObject.addCoord((int) point.x, (int) point.y, (int) point.z);
                     } catch (PointOutOfRangeException e) {
                     }
                 }

@@ -562,10 +562,10 @@ public class MeasureObjectCurvature extends Module {
             int[][] line = BresenhamLine.getLine(x1, x2, y1, y2);
 
             for (int i = 0; i < line.length; i = i + everyNPoints)
-                splineObject.add(line[i][0], line[i][1], 0);
+                splineObject.addCoord(line[i][0], line[i][1], 0);
 
             // It seems to sometimes miss the final point
-            splineObject.add(x2, y2, 0);
+            splineObject.addCoord(x2, y2, 0);
 
         } catch (PointOutOfRangeException e) {
         }
@@ -578,7 +578,7 @@ public class MeasureObjectCurvature extends Module {
             try {
                 if (i++ % everyNPoints == 0) {
                     Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
-                    splineObject.add(vertex.x, vertex.y, vertex.z);
+                    splineObject.addCoord(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);
                     splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_PX,spline.get(vertex)));

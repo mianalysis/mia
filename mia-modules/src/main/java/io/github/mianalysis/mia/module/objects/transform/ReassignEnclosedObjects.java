@@ -88,7 +88,7 @@ public class ReassignEnclosedObjects extends Module {
 
             for (Point<Integer> point : testObject.getCoordinateSet()) {
                 try {
-                    object.add(point.getX(), point.getY(), point.getZ());
+                    object.addCoord(point.getX(), point.getY(), point.getZ());
                 } catch (PointOutOfRangeException e) {
                 }
             }

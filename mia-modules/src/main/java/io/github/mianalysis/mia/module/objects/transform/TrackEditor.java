@@ -180,7 +180,7 @@ public class TrackEditor extends Module {
             int z = (int) Math.round(spot.getFeature(Spot.POSITION_Z));
             int t = (int) Math.round(spot.getFeature(Spot.FRAME));
             try {
-                spotObj.add(x, y, z);
+                spotObj.addCoord(x, y, z);
             } catch (PointOutOfRangeException e) {
             }
             spotObj.setT(t);

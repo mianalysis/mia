@@ -245,11 +245,11 @@ public class ExtractObjectEdges extends Module {
                 switch (mode) {
                     case EDGE:
                         if (pixelVal <= edgeDistance)
-                            outputObject.add(point.getX(), point.getY(), point.getZ());
+                            outputObject.addCoord(point.getX(), point.getY(), point.getZ());
                         break;
                     case INTERIOR:
                         if (pixelVal > edgeDistance)
-                            outputObject.add(point.getX(), point.getY(), point.getZ());
+                            outputObject.addCoord(point.getX(), point.getY(), point.getZ());
                         break;
                 }
             } catch (PointOutOfRangeException e) {

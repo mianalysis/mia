@@ -90,10 +90,10 @@ public class Octree extends AbstractSet<Point<Integer>> {
 
     // add a point to the structure
     public boolean add(Point<Integer> point) {
-        return add(point.getX(), point.getY(), point.getZ());
+        return addCoord(point.getX(), point.getY(), point.getZ());
     }
 
-    public boolean add(int x, int y, int z) {
+    public boolean addCoord(int x, int y, int z) {
         // while the coordinates are out of the root nodes span, increase the size of
         // the root appropriately
         while (x < rootMinX || y < rootMinY || z < rootMinZ) {

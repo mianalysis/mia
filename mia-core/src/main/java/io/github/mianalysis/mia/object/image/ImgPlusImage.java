@@ -145,7 +145,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                                     k -> ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
                                             .setT(finalT));
                             try {
-                                outputObjects.get(outID).add(x, y, z);
+                                outputObjects.get(outID).addCoord(x, y, z);
                             } catch (PointOutOfRangeException e) {
                             }
                         }
@@ -265,7 +265,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         if (overlayToUse == null)
             getRenderer().render(this, title, lut, normalise, displayMode, overlay);
         else
-            getRenderer().render(this, title, lut, normalise, displayMode, overlay);getRenderer().render(this, title, lut, normalise, displayMode, overlayToUse);
+            getRenderer().render(this, title, lut, normalise, displayMode, overlayToUse);
 
     }
 

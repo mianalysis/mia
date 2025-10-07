@@ -264,7 +264,7 @@ public class RunTrackMate extends Module {
         for (Spot spot : spots.iterable(false)) {
             Obj spotObject = spotObjects.createAndAddNewObject(new PointListFactory(), spot.ID());
             try {
-                spotObject.add((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
+                spotObject.addCoord((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
                         (int) spot.getDoublePosition(2));
             } catch (PointOutOfRangeException e) {
                 MIA.log.writeError(e);
@@ -329,7 +329,7 @@ public class RunTrackMate extends Module {
 
                 // Adding coordinates to the instance objects
                 try {
-                    spotObject.add(x, y, z);
+                    spotObject.addCoord(x, y, z);
                 } catch (PointOutOfRangeException e) {
                     continue;
                 }

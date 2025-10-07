@@ -196,8 +196,8 @@ public class CropImageMSTest extends ModuleTest {
                 Objs limitsObjects = new Objs("LimitsObjects", spatCal, 1, 1, null);
                 Obj limitObject = limitsObjects.createAndAddNewObject(new PointListFactory());
                 try {
-                    limitObject.add(x, y, 0);
-                    limitObject.add(x + w - 1, y + h - 1, 0);
+                    limitObject.addCoord(x, y, 0);
+                    limitObject.addCoord(x + w - 1, y + h - 1, 0);
                 } catch (PointOutOfRangeException e) {
                     fail("Can't add object points");
                 }

@@ -132,7 +132,7 @@ public class FillHolesInObjects extends Module {
         // Populating ipl
         for (Point<Integer> point : fromObj.getCoordinateSet())
             try {
-                toObj.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
+                toObj.addCoord(point.x + xOffs, point.y + yOffs, point.z + zOffs);
             } catch (PointOutOfRangeException e) {
             }
 

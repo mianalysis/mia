@@ -175,7 +175,7 @@ public class DuplicateAcrossTime extends Module {
                     case StorageModes.DUPLICATE:
                         for (Point<Integer> point : inputObject.getCoordinateSet()) {
                             try {
-                                outputObject.add(point.x, point.y, point.z);
+                                outputObject.addCoord(point.x, point.y, point.z);
                             } catch (PointOutOfRangeException e) {
                             }
                         }

@@ -9,7 +9,7 @@ public interface CoordinateSetI extends Set<Point<Integer>> {
 
     public CoordinateSetFactoryI getFactory();
 
-    public boolean add(int x, int y, int z);
+    public boolean addCoord(int x, int y, int z);
 
     public void finalise();
 

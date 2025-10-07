@@ -131,7 +131,7 @@ public class EllipseCalculator {
             for (int y = (int) Math.floor(yCent - semiMajor); y <= yCent + semiMajor; y++) {
                 if (ell.isInside(new Point2D(x, y))) {
                     try {
-                        insideEllipse.add(x, y, 0);
+                        insideEllipse.addCoord(x, y, 0);
                     } catch (PointOutOfRangeException e) {
                     }
                 }

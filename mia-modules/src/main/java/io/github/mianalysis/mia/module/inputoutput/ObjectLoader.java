@@ -477,7 +477,7 @@ public class ObjectLoader extends Module {
                     // Creating the object and setting the coordinates
                     Obj obj = outputObjects.createAndAddNewObject(factory);
                     try {
-                        obj.add(x, y, z);
+                        obj.addCoord(x, y, z);
                     } catch (PointOutOfRangeException e) {
                         outOfRangeCount++;
                     }

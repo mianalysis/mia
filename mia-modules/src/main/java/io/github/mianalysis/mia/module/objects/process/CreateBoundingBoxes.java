@@ -60,7 +60,7 @@ public class CreateBoundingBoxes extends Module {
             for (int y = yMin; y <= yMax; y++) {
                 for (int z = zMin; z <= zMax; z++) {
                     try {
-                        outputObject.add(x, y, z);
+                        outputObject.addCoord(x, y, z);
                     } catch (PointOutOfRangeException e) {
                     }
                 }

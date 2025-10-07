@@ -393,7 +393,7 @@ public class RidgeDetection extends Module {
 
         for (int i = 0; i < x.length; i++) {
             try {
-                outputObject.add(Math.round(x[i]), Math.round(y[i]), z);
+                outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), z);
             } catch (PointOutOfRangeException e) {
             }
 
@@ -422,7 +422,7 @@ public class RidgeDetection extends Module {
                 if (xx < 0 || xx >= object.getWidth() || yy < 0 || yy >= object.getHeight())
                     continue;
                 try {
-                    object.add(xx, yy, z);
+                    object.addCoord(xx, yy, z);
                 } catch (PointOutOfRangeException e) {
                 }
             }

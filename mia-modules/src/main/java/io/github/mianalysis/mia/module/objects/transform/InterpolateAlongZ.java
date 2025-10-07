@@ -118,7 +118,7 @@ public class InterpolateAlongZ extends Module {
 
             for (Point<Integer> pt : inputCoords) {
                 try {
-                    outputObject.add(pt.x, pt.y, (int) Math.round(pt.getZ() * scale));
+                    outputObject.addCoord(pt.x, pt.y, (int) Math.round(pt.getZ() * scale));
                 } catch (PointOutOfRangeException e) {
                 }
             }

@@ -105,7 +105,7 @@ public class CreateObjectGrid extends Module {
                 for (int x = 0; x < cellW; x++) {
                     for (int y = 0; y < cellH; y++) {
                         try {
-                            outputObj.add(x + idxX * cellW, y + idxY * cellH, 0);
+                            outputObj.addCoord(x + idxX * cellW, y + idxY * cellH, 0);
                         } catch (PointOutOfRangeException e) {
                             // Some may be out of range at the edge
                         }

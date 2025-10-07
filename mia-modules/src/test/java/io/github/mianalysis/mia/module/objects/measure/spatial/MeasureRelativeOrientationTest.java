@@ -37,7 +37,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -56,7 +56,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -75,7 +75,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -94,7 +94,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -113,7 +113,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -132,7 +132,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -151,7 +151,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = -30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -170,7 +170,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -194,7 +194,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -213,7 +213,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -232,7 +232,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -253,7 +253,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -272,7 +272,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -291,7 +291,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -310,7 +310,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -329,7 +329,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -348,7 +348,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -370,7 +370,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -389,7 +389,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -408,7 +408,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -427,7 +427,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -446,7 +446,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -465,7 +465,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -484,7 +484,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -503,7 +503,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -522,7 +522,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -544,7 +544,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -563,7 +563,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -582,7 +582,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -601,7 +601,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -620,7 +620,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -639,7 +639,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -658,7 +658,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -677,7 +677,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -696,7 +696,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -718,7 +718,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -737,7 +737,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -756,7 +756,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -775,7 +775,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -794,7 +794,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -813,7 +813,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -832,7 +832,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -851,7 +851,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -870,7 +870,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -894,7 +894,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -913,7 +913,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -932,7 +932,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -951,7 +951,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -970,7 +970,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -989,7 +989,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1008,7 +1008,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = -30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1027,7 +1027,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,10,0);
+        object.addCoord(15,10,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1049,7 +1049,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1068,7 +1068,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1087,7 +1087,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1106,7 +1106,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1125,7 +1125,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1144,7 +1144,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1163,7 +1163,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1182,7 +1182,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1201,7 +1201,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,15,0);
+        object.addCoord(15,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1223,7 +1223,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1242,7 +1242,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1261,7 +1261,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1280,7 +1280,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1299,7 +1299,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1318,7 +1318,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1337,7 +1337,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1356,7 +1356,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1375,7 +1375,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(15,5,0);
+        object.addCoord(15,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1397,7 +1397,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1416,7 +1416,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1435,7 +1435,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1454,7 +1454,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1473,7 +1473,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1492,7 +1492,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1511,7 +1511,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1530,7 +1530,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1549,7 +1549,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,5,0);
+        object.addCoord(5,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1571,7 +1571,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1590,7 +1590,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1609,7 +1609,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1628,7 +1628,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1647,7 +1647,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1666,7 +1666,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1685,7 +1685,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1704,7 +1704,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1723,7 +1723,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
         SpatCal spatCal = new SpatCal(0.02,0.1,"um",30,30,1);
         Objs objects = new Objs("Objects",spatCal, 1, 0.02, UNITS.SECOND);
         Obj object = objects.createAndAddNewObject(VolumeTypes.getFactory(volumeType));
-        object.add(5,15,0);
+        object.addCoord(5,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 

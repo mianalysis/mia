@@ -27,7 +27,7 @@ public class QuadtreeCoordinates implements CoordinateSetI {
     }
 
     @Override
-    public boolean add(int x, int y, int z) {
+    public boolean addCoord(int x, int y, int z) {
         quadTrees.putIfAbsent(z, new Quadtree());
 
         // Get relevant Quadtree
@@ -40,7 +40,7 @@ public class QuadtreeCoordinates implements CoordinateSetI {
     }
 
     public boolean add(Point<Integer> point) {
-        return add(point.x, point.y, point.z);
+        return addCoord(point.x, point.y, point.z);
     }
 
     public CoordinateSetI createEmptyCoordinateSet() {
@@ -104,7 +104,7 @@ public class QuadtreeCoordinates implements CoordinateSetI {
 
         for (Quadtree quadTree : quadTrees.values())
             for (Point<Integer> point : quadTree)
-                projectedCoordinates.add(point.x, point.y, 0);
+                projectedCoordinates.addCoord(point.x, point.y, 0);
 
         projectedCoordinates.finalise();
 

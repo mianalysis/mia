@@ -335,7 +335,7 @@ public class MeasureRelativeOrientation extends Module {
 
                 Volume centroidVol = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), inputObject.getSpatialCalibration());
                 try {
-                    centroidVol.add(x1, y1, z1);
+                    centroidVol.addCoord(x1, y1, z1);
                 } catch (IntegerOverflowException e) {
                     MIA.log.writeError(e);
                 } catch (PointOutOfRangeException e) {

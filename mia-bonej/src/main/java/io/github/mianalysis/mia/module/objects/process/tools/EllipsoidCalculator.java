@@ -157,7 +157,7 @@ public class EllipsoidCalculator {
                 for (int z = (int) zRange[0]; z <= zRange[1]; z++) {
                     if (ell.contains(x, y, z)) {
                         try {
-                            insideEllipsoid.add(x, y, (int) Math.round(z * cal));
+                            insideEllipsoid.addCoord(x, y, (int) Math.round(z * cal));
                         } catch (PointOutOfRangeException e) {
                             // If a point is outside the range, we just ignore it
                         } catch (Exception e) {

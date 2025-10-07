@@ -91,7 +91,7 @@ public abstract class ExpectedObjects {
             Obj testObject = testObjects.get(ID);
 
             try {
-                testObject.add(x, y, z);
+                testObject.addCoord(x, y, z);
             } catch (PointOutOfRangeException e) {
             }
             testObject.setT(t);

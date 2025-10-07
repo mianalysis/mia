@@ -42,36 +42,36 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(20,22,32);
-        object2_2.add(20,21,32);
-        object2_2.add(20,22,33);
-        object2_2.add(19,22,32);
+        object2_2.addCoord(20,22,32);
+        object2_2.addCoord(20,21,32);
+        object2_2.addCoord(20,22,33);
+        object2_2.addCoord(19,22,32);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(10,22,32);
-        object2_3.add(10,21,32);
-        object2_3.add(10,22,33);
-        object2_3.add(9,22,32);
+        object2_3.addCoord(10,22,32);
+        object2_3.addCoord(10,21,32);
+        object2_3.addCoord(10,22,33);
+        object2_3.addCoord(9,22,32);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 0;
@@ -95,39 +95,39 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(10,22,32);
-        object2_3.add(10,21,32);
-        object2_3.add(10,22,33);
-        object2_3.add(9,22,32);
+        object2_3.addCoord(10,22,32);
+        object2_3.addCoord(10,21,32);
+        object2_3.addCoord(10,22,33);
+        object2_3.addCoord(9,22,32);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 4;
@@ -151,40 +151,40 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(9,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 7;
@@ -213,41 +213,41 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(9,13,33);
-        object2_3.add(10,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(10,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 7;
@@ -271,44 +271,44 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(10,12,32);
-        object2_2.add(11,12,32);
-        object2_2.add(10,13,32);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(10,12,32);
+        object2_2.addCoord(11,12,32);
+        object2_2.addCoord(10,13,32);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(9,13,33);
-        object2_3.add(10,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(10,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 10;
@@ -335,36 +335,36 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(20,22,32);
-        object2_2.add(20,21,32);
-        object2_2.add(20,22,33);
-        object2_2.add(19,22,32);
+        object2_2.addCoord(20,22,32);
+        object2_2.addCoord(20,21,32);
+        object2_2.addCoord(20,22,33);
+        object2_2.addCoord(19,22,32);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(10,22,32);
-        object2_3.add(10,21,32);
-        object2_3.add(10,22,33);
-        object2_3.add(9,22,32);
+        object2_3.addCoord(10,22,32);
+        object2_3.addCoord(10,21,32);
+        object2_3.addCoord(10,22,33);
+        object2_3.addCoord(9,22,32);
 
         workspace.addObjects(objects1);
         workspace.addObjects(objects2);
@@ -439,39 +439,39 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(10,22,32);
-        object2_3.add(10,21,32);
-        object2_3.add(10,22,33);
-        object2_3.add(9,22,32);
+        object2_3.addCoord(10,22,32);
+        object2_3.addCoord(10,21,32);
+        object2_3.addCoord(10,22,33);
+        object2_3.addCoord(9,22,32);
 
         workspace.addObjects(objects1);
         workspace.addObjects(objects2);
@@ -546,40 +546,40 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(9,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         workspace.addObjects(objects1);
         workspace.addObjects(objects2);
@@ -654,41 +654,41 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(9,13,33);
-        object2_3.add(10,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(10,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         workspace.addObjects(objects1);
         workspace.addObjects(objects2);
@@ -763,44 +763,44 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         // Creating a single test object
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
-        object2_2.add(10,12,32);
-        object2_2.add(11,12,32);
-        object2_2.add(10,13,32);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(10,12,32);
+        object2_2.addCoord(11,12,32);
+        object2_2.addCoord(10,13,32);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
-        object2_3.add(9,13,33);
-        object2_3.add(10,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(10,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         workspace.addObjects(objects1);
         workspace.addObjects(objects2);
@@ -876,43 +876,43 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
         Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object1_1.setT(2);
-        object1_1.add(10,12,32);
-        object1_1.add(11,12,32);
-        object1_1.add(10,13,32);
-        object1_1.add(10,14,32);
-        object1_1.add(11,13,32);
-        object1_1.add(10,12,33);
-        object1_1.add(10,13,33);
-        object1_1.add(11,12,33);
-        object1_1.add(11,13,34);
-        object1_1.add(10,12,34);
+        object1_1.addCoord(10,12,32);
+        object1_1.addCoord(11,12,32);
+        object1_1.addCoord(10,13,32);
+        object1_1.addCoord(10,14,32);
+        object1_1.addCoord(11,13,32);
+        object1_1.addCoord(10,12,33);
+        object1_1.addCoord(10,13,33);
+        object1_1.addCoord(11,12,33);
+        object1_1.addCoord(11,13,34);
+        object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
         Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
         Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
         object2_1.setT(2);
-        object2_1.add(20,12,32);
-        object2_1.add(20,11,32);
-        object2_1.add(20,12,33);
-        object2_1.add(19,12,32);
+        object2_1.addCoord(20,12,32);
+        object2_1.addCoord(20,11,32);
+        object2_1.addCoord(20,12,33);
+        object2_1.addCoord(19,12,32);
 
         Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
         object2_2.setT(3);
-        object2_2.add(9,13,32);
-        object2_2.add(9,14,32);
-        object2_2.add(10,14,32);
-        object2_2.add(11,13,32);
-        object2_2.add(10,12,33);
-        object2_2.add(10,13,33);
-        object2_2.add(9,13,33);
+        object2_2.addCoord(9,13,32);
+        object2_2.addCoord(9,14,32);
+        object2_2.addCoord(10,14,32);
+        object2_2.addCoord(11,13,32);
+        object2_2.addCoord(10,12,33);
+        object2_2.addCoord(10,13,33);
+        object2_2.addCoord(9,13,33);
 
         Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
         object2_3.setT(2);
-        object2_3.add(9,13,33);
-        object2_3.add(11,12,33);
-        object2_3.add(11,13,34);
-        object2_3.add(10,12,34);
-        object2_3.add(10,12,35);
+        object2_3.addCoord(9,13,33);
+        object2_3.addCoord(11,12,33);
+        object2_3.addCoord(11,13,34);
+        object2_3.addCoord(10,12,34);
+        object2_3.addCoord(10,12,35);
 
         workspace.addObjects(objects1);
         workspace.addObjects(objects2);
