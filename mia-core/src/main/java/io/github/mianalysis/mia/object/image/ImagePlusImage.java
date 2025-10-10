@@ -129,7 +129,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                                     outputObjects.get(outID).addCoord(x, y, z);
                                 } catch (PointOutOfRangeException e) {
                                 } catch (Exception e) {
-                                    MIA.log.writeError(e);
+                                    e.printStackTrace();
                                     return outputObjects;
                                 }
                             }
