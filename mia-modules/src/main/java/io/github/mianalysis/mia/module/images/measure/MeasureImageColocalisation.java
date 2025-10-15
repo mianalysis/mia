@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectColocalisation;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -245,9 +245,9 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
     }
 
-    public static ImageI getObjectMask(Objs objects, String maskLogic) {
+    public static ImageI getObjectMask(ObjsI objects, String maskLogic) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(objects, ColourFactory.SingleColours.WHITE);
-        ImageI mask = objects.convertToImage("Mask", hues, 8, false);
+        ImageI mask = objects.convertToImage("Mask", hues, 8, false, false);
 
         if (maskLogic.equals(ObjectMaskLogic.MEASURE_OUTSIDE_OBJECTS))
             InvertIntensity.process(mask);
@@ -521,7 +521,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         ImageI maskImage = (ImageI) workspace.getImage(maskImageName);
         String imageMaskLogic = parameters.getValue(IMAGE_MASK_LOGIC,workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
         String objectMaskLogic = parameters.getValue(OBJECT_MASK_LOGIC,workspace);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE,workspace);
         String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1,workspace);

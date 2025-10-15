@@ -17,10 +17,10 @@ import io.github.mianalysis.mia.expectedobjects.Rings2D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
@@ -51,7 +51,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -80,7 +80,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         measureObjectCurvature.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
-        for (Obj testObject:inputObj.values()) {
+        for (ObjI testObject:inputObj.values()) {
             // Testing measurements
             double expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_PX).getValue();
@@ -106,7 +106,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -136,7 +136,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         measureObjectCurvature.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
-        for (Obj testObject:inputObj.values()) {
+        for (ObjI testObject:inputObj.values()) {
             // Testing measurements
             double expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_PX).getValue();
@@ -170,7 +170,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        Objs inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI inputObj = new Rings2D(VolumeTypes.getFactory(volumeType)).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -200,7 +200,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         measureObjectCurvature.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
-        for (Obj testObject:inputObj.values()) {
+        for (ObjI testObject:inputObj.values()) {
             // Testing measurements
             double expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_PX).getValue();

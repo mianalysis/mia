@@ -7,10 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -145,21 +145,21 @@ public class DuplicateAcrossTime extends Module {
 
     }
 
-    public static Objs duplicate(Objs inputObjects, String outputObjectsName, String storageMode,
+    public static ObjsI duplicate(ObjsI inputObjects, String outputObjectsName, String storageMode,
             int startFrame, int endFrame) {
         // Creating output object collection
         int nFrames = endFrame - startFrame + 1;
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects.getSpatialCalibration(),
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, inputObjects.getSpatialCalibration(),
                 nFrames, inputObjects.getFrameInterval(), inputObjects.getTemporalUnit());
 
         String name = new DuplicateAcrossTime(null).getName();
 
         // Duplicating objects
         int count = 0;
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             for (int t = startFrame; t <= endFrame; t++) {
                 // Creating object for this timepoint
-                Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+                ObjI outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
                 outputObject.setT(t);
 
                 // Setting object relationships
@@ -214,7 +214,7 @@ public class DuplicateAcrossTime extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
@@ -248,7 +248,7 @@ public class DuplicateAcrossTime extends Module {
         }
 
         // Duplicating objects
-        Objs outputObjects = duplicate(inputObjects, outputObjectsName, storageMode, startFrame, endFrame);
+        ObjsI outputObjects = duplicate(inputObjects, outputObjectsName, storageMode, startFrame, endFrame);
         workspace.addObjects(outputObjects);
 
         if (showOutput)

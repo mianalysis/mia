@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.convert.ConvertObjectsToImage;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.ColourFactory;
 
@@ -52,7 +52,7 @@ public class ShowObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
+        ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_32bit.zip").getPath(),"UTF-8");
@@ -60,7 +60,7 @@ public class ShowObjectsTest extends ModuleTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
-        ImageI testImage = testObjects.convertToImage("Test image",hues,32,false);
+        ImageI testImage = testObjects.convertToImage("Test image",hues,32,false, false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();

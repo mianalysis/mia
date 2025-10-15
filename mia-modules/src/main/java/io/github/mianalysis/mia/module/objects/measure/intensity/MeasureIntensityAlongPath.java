@@ -31,9 +31,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -107,7 +107,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
         super("Measure intensity along path", modules);
     }
 
-    public static SXSSFWorkbook process(Objs objects, ImageI[] images, boolean includeCentroids,
+    public static SXSSFWorkbook process(ObjsI objects, ImageI[] images, boolean includeCentroids,
             boolean includeTimepoints) {
         // Creating workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -117,7 +117,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
             addHeaderToSheet(sheets[i], includeCentroids, includeTimepoints);
         }
 
-        for (Obj object : objects.values())
+        for (ObjI object : objects.values())
             for (int i = 0; i < images.length; i++)
                 process(object, images[i], sheets[i], includeCentroids, includeTimepoints);
 
@@ -125,7 +125,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
 
     }
 
-    public static void process(Obj object, ImageI image, Sheet sheet, boolean includeCentroids,
+    public static void process(ObjI object, ImageI image, Sheet sheet, boolean includeCentroids,
             boolean includeTimepoints) {
         if (object.size() < 2)
             return;
@@ -248,7 +248,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
 
     }
 
-    public static void addProfileToSheet(Sheet sheet, Obj object, LinkedHashMap<?, Double> profile,
+    public static void addProfileToSheet(Sheet sheet, ObjI object, LinkedHashMap<?, Double> profile,
             boolean includeCentroids,
             boolean includeTimepoints) {
         int colCount = 0;
@@ -324,7 +324,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
     public Status process(WorkspaceI workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         ParameterGroup inputImages = parameters.getParameter(MEASURE_ANOTHER_IMAGE);
@@ -338,7 +338,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
         // If there are no input objects skip the module
         if (inputObjects == null)
             return Status.PASS;
-        Obj firstObj = inputObjects.getFirst();
+        ObjI firstObj = inputObjects.getFirst();
         if (firstObj == null)
             return Status.PASS;
 

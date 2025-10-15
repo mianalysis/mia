@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Status;
 
 public interface WorkspaceI {
-    public default void addObjects(Objs object) {
+    public default void addObjects(ObjsI object) {
         getAllObjects().put(object.getName(), object);
     }
 
@@ -39,10 +39,10 @@ public interface WorkspaceI {
 
     public void showMetadata();
 
-    public Objs getObjects(String name);
+    public ObjsI getObjects(String name);
 
     @Deprecated
-    public Objs getObjectSet(String name);
+    public ObjsI getObjectSet(String name);
 
     /*
      * Creates a structure containing new Workspaces, each of which represent a different time point
@@ -52,9 +52,9 @@ public interface WorkspaceI {
 
     // GETTERS AND SETTERS
 
-    public LinkedHashMap<String, Objs> getAllObjects();
+    public LinkedHashMap<String, ObjsI> getAllObjects();
 
-    public void setAllObjects(LinkedHashMap<String, Objs> objects);
+    public void setAllObjects(LinkedHashMap<String, ObjsI> objects);
 
     public LinkedHashMap<String, ImageI> getImages();
 

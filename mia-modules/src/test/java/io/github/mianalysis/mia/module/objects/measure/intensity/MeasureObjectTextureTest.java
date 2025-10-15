@@ -16,8 +16,8 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.analysis.TextureCalculator;
@@ -65,7 +65,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -77,7 +77,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
 
         // Testing each object
         double[] offs = new double[]{1,0,0};
-        for (Obj obj:expectedObjects.values()) {
+        for (ObjI obj:expectedObjects.values()) {
             MeasureObjectTexture.processObject(obj,image,calculator,offs,false);
 
             double expected = obj.getMeasurement(Objects2D.Measures.ASM_1PX.name()).getValue();
@@ -106,7 +106,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
@@ -118,7 +118,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
 
         // Testing each object
         double[] offs = new double[]{3,0,0};
-        for (Obj obj:expectedObjects.values()) {
+        for (ObjI obj:expectedObjects.values()) {
             MeasureObjectTexture.processObject(obj,image,calculator,offs,false);
 
             double expected = obj.getMeasurement(Objects2D.Measures.ASM_3PX.name()).getValue();

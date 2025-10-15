@@ -16,10 +16,10 @@ import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.module.objects.relate.mergeobjects.MergeRelatedObjects;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -93,23 +93,23 @@ public class MeasureObjectWidth extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
-        ImageI binaryImage = inputObjects.convertToImage("Binary", hues, 8, false);
+        ImageI binaryImage = inputObjects.convertToImage("Binary", hues, 8, false, false);
         ImageI distanceMap = DistanceMap.process(binaryImage, "DistanceMapTemp", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, false, false);
         ImageMath.process(distanceMap, ImageMath.CalculationModes.MULTIPLY, 2);
         
         // Getting the centroids of each and saving them to the objects
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             double dppXY = inputObject.getDppXY();
 
-            final Objs skeletonObjects = new Objs("SkeletonTemp", inputObjects);
-            final Objs edgeObjects = new Objs("EdgesTemp", inputObjects);
-            final Objs junctionObjects = new Objs("JunctionsTemp", inputObjects);
+            final ObjsI skeletonObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SkeletonTemp", inputObjects);
+            final ObjsI edgeObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("EdgesTemp", inputObjects);
+            final ObjsI junctionObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("JunctionsTemp", inputObjects);
 
             Object[] result = CreateSkeleton.initialiseAnalyzer(inputObject, 0, false);
-            Obj skeleton = CreateSkeleton.createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
+            ObjI skeleton = CreateSkeleton.createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
                     skeletonObjects, edgeObjects, junctionObjects, false);
             MergeRelatedObjects.mergeRelatedObjectsUpdateParent(skeletonObjects, "EdgesTemp",
                     MergeRelatedObjects.MergeModes.MERGE_PARENTS_AND_CHILDREN);

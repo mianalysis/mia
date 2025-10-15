@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
@@ -159,14 +159,14 @@ public abstract class TextType extends Parameter {
             Pattern objMeasPattern = Pattern.compile("([^\\|]+)\\|([^\\|]+)\\|([^\\|]+)");
             Matcher objMeasMatcher = objMeasPattern.matcher(matcher.group(1));
             if (objMeasMatcher.find()) {
-                Objs objs = workspace.getObjects(objMeasMatcher.group(1));
+                ObjsI objs = workspace.getObjects(objMeasMatcher.group(1));
                 if (objs == null)
                     break;
 
                 String measurementName = objMeasMatcher.group(2);
                 String statistic = objMeasMatcher.group(3).toUpperCase();
                 CumStat cs = new CumStat();
-                for (Obj obj : objs.values()) {
+                for (ObjI obj : objs.values()) {
                     Measurement measurement = obj.getMeasurement(measurementName);
                     if (measurement == null)
                         continue;
@@ -209,7 +209,7 @@ public abstract class TextType extends Parameter {
         Pattern pattern = Pattern.compile("Oc\\{([^\\}]+)}");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
-            Objs objs = workspace.getObjects(matcher.group(1));
+            ObjsI objs = workspace.getObjects(matcher.group(1));
             if (objs == null)
                 break;
 

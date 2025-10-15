@@ -8,9 +8,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -47,10 +48,10 @@ public class FitConvexHull2D extends Module {
 	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
     
-    public Obj processObject(Obj inputObject, Objs outputObjects) {
+    public ObjI processObject(ObjI inputObject, ObjsI outputObjects) {
         // We have to explicitly define this, as the number of slices is 1 (potentially
         // unlike the input object)
-        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+        ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
         outputObject.setT(inputObject.getT());
         outputObject.addParent(inputObject);
         inputObject.addChild(outputObject);
@@ -96,18 +97,18 @@ public class FitConvexHull2D extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         
         // If necessary, creating a new Objs and adding it to the Workspace
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
         
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             processObject(inputObject, outputObjects);
             writeProgressStatus(++count, total, "objects");
         }

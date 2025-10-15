@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -1361,7 +1361,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 crop = getCropROI(referenceImage);
                 break;
             case CropModes.OBJECT_COLLECTION_LIMITS:
-                Objs objectsForLimits = workspace.getObjects(objectsForLimitsName);
+                ObjsI objectsForLimits = workspace.getObjects(objectsForLimitsName);
                 int[][] limits = objectsForLimits.getSpatialExtents();
                 crop = new int[] { limits[0][0], limits[1][0], limits[0][1] - limits[0][0],
                         limits[1][1] - limits[1][0] };

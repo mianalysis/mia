@@ -7,10 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.*;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -85,9 +85,9 @@ public class MeasureObjectLimits extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             double[][] extentsPx = inputObject.getExtents(true, true);
             double[][] extentsSlice = inputObject.getExtents(true, false);
 

@@ -11,10 +11,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.FillHoles;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -86,7 +86,7 @@ public class FillHolesInObjects extends Module {
 
     }
 
-    public static Obj processObject(Obj inputObject, String method) throws IntegerOverflowException {
+    public static ObjI processObject(ObjI inputObject, String method) throws IntegerOverflowException {
         // Convert each object to an image, do the hole filling, then convert back to an
         // object
         ImageI objectImage = inputObject.getAsTightImage("Temp");
@@ -106,8 +106,8 @@ public class FillHolesInObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), "NewObjects", false);
-        Obj outputObject = outputObjects.getFirst();
+        ObjsI outputObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), "NewObjects", false);
+        ObjI outputObject = outputObjects.getFirst();
 
         double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]);
@@ -123,7 +123,7 @@ public class FillHolesInObjects extends Module {
 
     }
 
-    static void transferObjectCoordinates(Obj fromObj, Obj toObj, int[][] borderWidths, double[][] extents) {
+    static void transferObjectCoordinates(ObjI fromObj, ObjI toObj, int[][] borderWidths, double[][] extents) {
         // Create empty image
         int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
         int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
@@ -158,18 +158,18 @@ public class FillHolesInObjects extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS,workspace);
         String method = parameters.getValue(METHOD,workspace);
 
         // Storing the image calibration
-        Obj firstObj = inputObjects.getFirst();
+        ObjI firstObj = inputObjects.getFirst();
         if (firstObj == null)
             return Status.PASS;
 
@@ -177,10 +177,10 @@ public class FillHolesInObjects extends Module {
         int count = 1;
         int total = inputObjects.size();
 
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
-            Obj newObject = null;
+            ObjI inputObject = iterator.next();
+            ObjI newObject = null;
             try {
                 newObject = processObject(inputObject, method);
             } catch (IntegerOverflowException e) {
@@ -200,7 +200,7 @@ public class FillHolesInObjects extends Module {
                 inputObject.clearROIs();
 
             } else {
-                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getCoordinateSetFactory());
+                ObjI outputObject = outputObjects.createAndAddNewObject(firstObj.getCoordinateSetFactory());
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);

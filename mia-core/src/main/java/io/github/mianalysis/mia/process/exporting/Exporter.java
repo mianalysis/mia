@@ -46,10 +46,10 @@ import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -695,8 +695,8 @@ public class Exporter {
         }
 
         // Adding object measurements
-        HashMap<String, Objs> objSets = workspace.getAllObjects();
-        for (Objs objCollection : objSets.values()) {
+        HashMap<String, ObjsI> objSets = workspace.getAllObjects();
+        for (ObjsI objCollection : objSets.values()) {
             String objSetName = objCollection.getName();
             double val;
             String headerName;
@@ -726,7 +726,7 @@ public class Exporter {
                 // Running through all objects in this set, adding measurements to a CumStat
                 // object
                 CumStat cs = new CumStat();
-                for (Obj obj : objCollection.values()) {
+                for (ObjI obj : objCollection.values()) {
                     Measurement measurement = obj.getMeasurement(objectMeasurement.getName());
                     if (measurement != null)
                         cs.addMeasure(measurement.getValue());
@@ -921,13 +921,13 @@ public class Exporter {
         // Running through each Workspace, adding rows
         for (WorkspaceI workspace : workspaces) {
             for (String objectName : workspace.getAllObjects().keySet()) {
-                Objs objects = workspace.getObjects(objectName);
+                ObjsI objects = workspace.getObjects(objectName);
 
                 if (!modules.objectsExportMeasurements(objectName) & !modules.objectsExportMetadata(objectName))
                     continue;
 
                 if (objects.values().iterator().hasNext()) {
-                    for (Obj object : objects.values()) {
+                    for (ObjI object : objects.values()) {
                         if (objectSheets.get(objectName) == null || objectRows.get(objectName) == null)
                             continue;
 

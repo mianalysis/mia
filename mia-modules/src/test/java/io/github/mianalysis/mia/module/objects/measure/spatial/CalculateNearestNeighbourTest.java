@@ -11,10 +11,11 @@ import org.junit.jupiter.params.provider.EnumSource;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -41,24 +42,24 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
+        ObjI nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
                 Double.MAX_VALUE, false, null);
 
         assertEquals(obj3, nearestNeighour);
@@ -77,27 +78,27 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
-        Obj obj5 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
+        ObjI obj5 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(10, 20, 40);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
+        ObjI nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
                 Double.MAX_VALUE, false, null);
 
         assertEquals(obj5, nearestNeighour);
@@ -116,24 +117,24 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 100d, false,
+        ObjI nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 100d, false,
                 null);
 
         assertEquals(obj3, nearestNeighour);
@@ -152,24 +153,24 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 50d, false,
+        ObjI nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 50d, false,
                 null);
 
         assertNull(nearestNeighour);
@@ -191,15 +192,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Initialising Module
@@ -266,19 +267,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Initialising Module
@@ -363,19 +364,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Initialising Module
@@ -460,19 +461,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
 
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
 
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
 
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Initialising Module
@@ -558,22 +559,22 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Creating the parent object set
-        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -582,7 +583,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI parent2 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -652,22 +653,22 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Creating the parent object set
-        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -676,7 +677,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI parent2 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -745,25 +746,25 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
+        ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
+        ObjI obj6 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 6);
         obj6.addCoord(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
+        ObjI obj7 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 7);
         obj7.addCoord(35, 20, 20);
 
         // Initialising Module
@@ -831,25 +832,25 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
+        ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
+        ObjI obj6 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 6);
         obj6.addCoord(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
+        ObjI obj7 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 7);
         obj7.addCoord(35, 20, 20);
 
         // Initialising Module
@@ -918,32 +919,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
+        ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
+        ObjI obj6 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 6);
         obj6.addCoord(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
+        ObjI obj7 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 7);
         obj7.addCoord(35, 20, 20);
 
         // Creating the parent object set
-        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -952,7 +953,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI parent2 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -1029,32 +1030,32 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
-        Obj obj1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
-        Obj obj2 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI obj2 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         obj2.addCoord(20, 30, 10);
-        Obj obj3 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 3);
+        ObjI obj3 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 3);
         obj3.addCoord(20, 20, 30);
-        Obj obj4 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 4);
+        ObjI obj4 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 4);
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
-        Obj obj5 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 5);
+        ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
-        Obj obj6 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 6);
+        ObjI obj6 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 6);
         obj6.addCoord(20, 35, 10);
-        Obj obj7 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 7);
+        ObjI obj7 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 7);
         obj7.addCoord(35, 20, 20);
 
         // Creating the parent object set
-        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
-        Obj parent1 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 1);
+        ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -1063,7 +1064,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = parents.createAndAddNewObject(VolumeTypes.getFactory(volumeType), 2);
+        ObjI parent2 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 2);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);

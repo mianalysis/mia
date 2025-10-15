@@ -33,9 +33,10 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -251,7 +252,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public Objs getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
+    public ObjsI getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,null);
         boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,null);
@@ -259,10 +260,10 @@ public class RunTrackMate extends Module {
         // Getting trackObjects and adding them to the output trackObjects
         writeStatus("Processing detected objects");
 
-        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
-            Obj spotObject = spotObjects.createAndAddNewObject(new PointListFactory(), spot.ID());
+            ObjI spotObject = spotObjects.createAndAddNewObjectWithID(new PointListFactory(), spot.ID());
             try {
                 spotObject.addCoord((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
                         (int) spot.getDoublePosition(2));
@@ -282,15 +283,15 @@ public class RunTrackMate extends Module {
 
     }
 
-    public Objs[] getSpotsAndTracks(Model model, SpatCal calibration, int nFrames, double frameInterval)
+    public ObjsI[] getSpotsAndTracks(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,null);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS,null);
         boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,null);
 
         // Getting calibration
-        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
-        Objs trackObjects = new Objs(trackObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(trackObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         // Converting tracks to local track model
         writeStatus("Converting tracks to local track model");
@@ -302,7 +303,7 @@ public class RunTrackMate extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), trackID);
+            ObjI trackObject = trackObjects.createAndAddNewObjectWithID(new PointListFactory(), trackID);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -316,7 +317,7 @@ public class RunTrackMate extends Module {
             for (Spot spot : spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and
                 // group (track) ID.
-                Obj spotObject = spotObjects.createAndAddNewObject(trackObject.getCoordinateSetFactory());
+                ObjI spotObject = spotObjects.createAndAddNewObject(trackObject.getCoordinateSetFactory());
 
                 // Adding measurements
                 addSpotMeasurements(spotObject, spot, doSubpixel);
@@ -346,11 +347,11 @@ public class RunTrackMate extends Module {
         writeStatus(spotObjects.size() + " spots detected");
         writeStatus(trackObjects.size() + " tracks detected");
 
-        return new Objs[] { spotObjects, trackObjects };
+        return new ObjsI[] { spotObjects, trackObjects };
 
     }
 
-    void addSpotMeasurements(Obj spotObject, Spot spot, boolean doSubpixel) {
+    void addSpotMeasurements(ObjI spotObject, Spot spot, boolean doSubpixel) {
         double dppXY = spotObject.getDppXY();
         double dppZ = spotObject.getDppZ();
 
@@ -372,15 +373,15 @@ public class RunTrackMate extends Module {
         }
     }
 
-    public void estimateSpotSize(Objs spotObjects, ImagePlus ipl) throws IntegerOverflowException {
-        Objs tempObjects = new Objs("SpotVolume", spotObjects);
+    public void estimateSpotSize(ObjsI spotObjects, ImagePlus ipl) throws IntegerOverflowException {
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SpotVolume", spotObjects);
         // Replacing spot volumes with explicit volume
-        for (Obj spotObject : spotObjects.values()) {
+        for (ObjI spotObject : spotObjects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.RADIUS_PX).getValue());
             Point<Double> cent = spotObject.getMeanCentroid(true, false);
             int[] centroid = new int[] { (int) Math.round(cent.getX()), (int) Math.round(cent.getY()),
                     (int) Math.round(cent.getZ()) };
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
+            ObjI volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();
@@ -391,7 +392,7 @@ public class RunTrackMate extends Module {
         }
     }
 
-    public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
+    public void showObjects(ImagePlus ipl, ObjsI spotObjects, boolean estimateSize) {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS,null);
         boolean doTracking = parameters.getValue(DO_TRACKING,null);
 
@@ -468,15 +469,15 @@ public class RunTrackMate extends Module {
         // Resetting ipl to the input image
         ipl = inputImage.getImagePlus();
 
-        Objs spotObjects;
+        ObjsI spotObjects;
         try {
             if (doTracking) {
                 writeStatus("Running detection and tracking");
                 trackmate.process();
 
-                Objs[] spotsAndTracks = getSpotsAndTracks(model, calibration, nFrames, frameInterval);
+                ObjsI[] spotsAndTracks = getSpotsAndTracks(model, calibration, nFrames, frameInterval);
                 spotObjects = spotsAndTracks[0];
-                Objs trackObjects = spotsAndTracks[1];
+                ObjsI trackObjects = spotsAndTracks[1];
 
                 if (estimateSize)
                     estimateSpotSize(spotObjects, ipl);

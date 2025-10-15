@@ -26,9 +26,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
@@ -125,14 +126,14 @@ public class ClusterPoints extends Module {
 
     }
 
-    public Objs runKMeansPlusPlus(Objs outputObjects, List<DoublePoint> locations, int kClusters, int maxIterations,
+    public ObjsI runKMeansPlusPlus(ObjsI outputObjects, List<DoublePoint> locations, int kClusters, int maxIterations,
             int t) {
         KMeansPlusPlusClusterer<DoublePoint> clusterer = new KMeansPlusPlusClusterer<>(kClusters, maxIterations);
         List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<DoublePoint> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+            ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (DoublePoint point : cluster.getPoints()) {
                 outputObject.setT(t);
@@ -149,13 +150,13 @@ public class ClusterPoints extends Module {
 
     }
 
-    public Objs runDBSCAN(Objs outputObjects, List<DoublePoint> locations, double eps, int minPoints, int t) {
+    public ObjsI runDBSCAN(ObjsI outputObjects, List<DoublePoint> locations, double eps, int minPoints, int t) {
         DBSCANClusterer<DoublePoint> clusterer = new DBSCANClusterer<>(eps, minPoints);
         List<Cluster<DoublePoint>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
         for (Cluster<DoublePoint> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+            ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (DoublePoint point : cluster.getPoints()) {
                 outputObject.setT(t);
@@ -172,20 +173,20 @@ public class ClusterPoints extends Module {
 
     }
 
-    public void applyClusterVolume(Obj outputObject, Objs childObjects, double eps) throws IntegerOverflowException {
-        Objs children = outputObject.getChildren(childObjects.getName());
+    public void applyClusterVolume(ObjI outputObject, ObjsI childObjects, double eps) throws IntegerOverflowException {
+        ObjsI children = outputObject.getChildren(childObjects.getName());
 
         CoordinateSetI coordinateSet = outputObject.getCoordinateSet();
 
         // Initial pass, adding all coordinates to cluster object
-        Objs tempObjects = new Objs("Cluster", childObjects);
-        for (Obj child : children.values()) {
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Cluster", childObjects);
+        for (ObjI child : children.values()) {
             // Getting local region around children (local region with radius equal to
             // epsilon)
             Point<Double> cent = child.getMeanCentroid(true, false);
             int[] centroid = new int[] { (int) Math.round(cent.getX()), (int) Math.round(cent.getY()),
                     (int) Math.round(cent.getZ()) };
-            Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, centroid, (int) Math.round(eps),
+            ObjI region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, centroid, (int) Math.round(eps),
                     false);
 
             // Adding coordinates from region to the cluster object
@@ -256,7 +257,7 @@ public class ClusterPoints extends Module {
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         int nFrames = inputImagePlus.getNFrames();
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         // Getting parameters
         String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);

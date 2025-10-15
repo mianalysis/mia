@@ -7,9 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -45,9 +46,9 @@ public class GetObjectSurface extends Module {
 	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj getSurface(Obj inputObject, Objs outputObjects, boolean assignRelationships) {
+    public static ObjI getSurface(ObjI inputObject, ObjsI outputObjects, boolean assignRelationships) {
         Volume outputVolume = inputObject.getSurface(false,false);
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+        ObjI outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
 
         if (assignRelationships) {
@@ -86,10 +87,10 @@ public class GetObjectSurface extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
-        for (Obj inputObject : inputObjects.values())
+        for (ObjI inputObject : inputObjects.values())
             getSurface(inputObject, outputObjects, true);
             
         workspace.addObjects(outputObjects);

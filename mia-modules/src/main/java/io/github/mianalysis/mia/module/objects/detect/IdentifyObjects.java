@@ -23,9 +23,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
@@ -350,7 +351,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    public static Objs process(ImageI inputImage, String outputObjectsName, boolean blackBackground,
+    public static ObjsI process(ImageI inputImage, String outputObjectsName, boolean blackBackground,
             boolean singleObject, String detectionMode, int connectivity, CoordinateSetFactoryI factory, boolean multithread,
             int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
@@ -362,7 +363,7 @@ public class IdentifyObjects extends Module {
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
         if (detectionMode.equals(DetectionModes.THREE_D))
@@ -416,22 +417,22 @@ public class IdentifyObjects extends Module {
 
                 // Converting image to objects
                 ImageI tempImage = ImageFactory.createImage("Temp image", currStack);
-                Objs currOutputObjects = tempImage.convertImageToObjects(factory, outputObjectsName, singleObject);
+                ObjsI currOutputObjects = tempImage.convertImageToObjects(factory, outputObjectsName, singleObject);
 
                 // If processing each slice separately, offsetting it to the correct Z-position
                 if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
                     currOutputObjects.setSpatialCalibration(cal, true);
-                    for (Obj currOutputObj : currOutputObjects.values())
+                    for (ObjI currOutputObj : currOutputObjects.values())
                         currOutputObj.translateCoords(0, 0, z - 1);
                 }
 
                 // Updating the current objects (setting the real frame number and offsetting
                 // the ID)
                 int maxID = 0;
-                for (Obj object : outputObjects.values())
+                for (ObjI object : outputObjects.values())
                     maxID = Math.max(object.getID(), maxID);
 
-                for (Obj object : currOutputObjects.values()) {
+                for (ObjI object : currOutputObjects.values()) {
                     object.setID(object.getID() + maxID + 1);
                     object.setT(t - 1);
                     outputObjects.put(object.getID(), object);
@@ -496,7 +497,7 @@ public class IdentifyObjects extends Module {
         int connectivity = getConnectivity(connectivityName);
         CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(type);
 
-        Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject, detectionMode,
+        ObjsI outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject, detectionMode,
                 connectivity, factory, multithread, minStripWidth, true);
 
         // Adding objects to workspace

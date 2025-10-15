@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import ij.ImagePlus;
 import ome.units.UNITS;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -38,11 +38,11 @@ public class WorkspaceTest {
         assertEquals(0, workspace.getAllObjects().size());
         
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         // Creating and adding the new object
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        objects.createAndAddNewObject(factory,0);
+        objects.createAndAddNewObjectWithID(factory,0);
         workspace.addObjects(objects);
 
         // Checking the workspace behaved as expected
@@ -137,28 +137,28 @@ public class WorkspaceTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj = objects.createAndAddNewObject(factory,0);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj = objects.createAndAddNewObjectWithID(factory,0);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         
-        obj = objects.createAndAddNewObject(factory,1);
+        obj = objects.createAndAddNewObjectWithID(factory,1);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(objects);
 
-        Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
-        obj = otherObjects.createAndAddNewObject(factory,0);
+        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Other obj", calibration, 1, 0.02, UNITS.SECOND);
+        obj = otherObjects.createAndAddNewObjectWithID(factory,0);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         
-        obj = otherObjects.createAndAddNewObject(factory,1);
+        obj = otherObjects.createAndAddNewObjectWithID(factory,1);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
@@ -204,28 +204,28 @@ public class WorkspaceTest {
         
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj = objects.createAndAddNewObject(factory,0);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj = objects.createAndAddNewObjectWithID(factory,0);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
 
-        obj = objects.createAndAddNewObject(factory,1);
+        obj = objects.createAndAddNewObjectWithID(factory,1);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(objects);
 
-        Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
-        obj = otherObjects.createAndAddNewObject(factory,0);
+        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Other obj", calibration, 1, 0.02, UNITS.SECOND);
+        obj = otherObjects.createAndAddNewObjectWithID(factory,0);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
 
-        obj = otherObjects.createAndAddNewObject(factory,1);
+        obj = otherObjects.createAndAddNewObjectWithID(factory,1);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
@@ -266,17 +266,17 @@ public class WorkspaceTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj = objects.createAndAddNewObject(factory,0);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj = objects.createAndAddNewObjectWithID(factory,0);
         obj.setT(0);
-        obj = objects.createAndAddNewObject(factory,1);
+        obj = objects.createAndAddNewObjectWithID(factory,1);
         obj.setT(1);
         workspace.addObjects(objects);
 
-        Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
-        obj = otherObjects.createAndAddNewObject(factory,0);
+        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Other obj", calibration, 1, 0.02, UNITS.SECOND);
+        obj = otherObjects.createAndAddNewObjectWithID(factory,0);
         obj.setT(0);
-        obj = otherObjects.createAndAddNewObject(factory,1);
+        obj = otherObjects.createAndAddNewObjectWithID(factory,1);
         obj.setT(2);
         workspace.addObjects(otherObjects);
 

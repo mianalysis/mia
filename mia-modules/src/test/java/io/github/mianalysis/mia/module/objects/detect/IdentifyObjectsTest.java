@@ -21,10 +21,10 @@ import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.Objects4D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
@@ -86,7 +86,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -96,15 +96,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -142,7 +142,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -153,15 +153,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
         
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -198,7 +198,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -208,15 +208,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -254,7 +254,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -264,15 +264,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -309,7 +309,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -319,15 +319,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -364,7 +364,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -374,15 +374,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -419,7 +419,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -429,16 +429,16 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(33, actualObjects.size());
 
         int count = 0;
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -475,7 +475,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -485,16 +485,16 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(33, actualObjects.size());
 
         int count = 0;
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -531,7 +531,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -541,16 +541,16 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(33, actualObjects.size());
 
         int count = 0;
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -598,7 +598,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -608,15 +608,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -652,7 +652,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -662,15 +662,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -706,7 +706,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -716,15 +716,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -761,7 +761,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -771,15 +771,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -816,7 +816,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -826,15 +826,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -871,7 +871,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -881,15 +881,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -927,7 +927,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -937,15 +937,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -983,7 +983,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -993,15 +993,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1039,7 +1039,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1049,15 +1049,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1095,7 +1095,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1105,15 +1105,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1151,7 +1151,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1161,15 +1161,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1207,7 +1207,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1217,15 +1217,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1262,7 +1262,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1272,15 +1272,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1317,7 +1317,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1327,15 +1327,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1372,7 +1372,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1382,15 +1382,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1427,7 +1427,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1440,15 +1440,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1485,7 +1485,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1498,15 +1498,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1543,7 +1543,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1556,15 +1556,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1601,7 +1601,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1611,15 +1611,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1656,7 +1656,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1666,15 +1666,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1711,7 +1711,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1721,15 +1721,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1766,7 +1766,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1776,15 +1776,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1821,7 +1821,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1831,15 +1831,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1876,7 +1876,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1886,15 +1886,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1931,7 +1931,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1944,15 +1944,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1989,7 +1989,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2002,15 +2002,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2047,7 +2047,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2060,15 +2060,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2105,7 +2105,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2115,15 +2115,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2160,7 +2160,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2170,15 +2170,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2215,7 +2215,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2225,15 +2225,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects2D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2270,7 +2270,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2280,15 +2280,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2325,7 +2325,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2335,15 +2335,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2380,7 +2380,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2390,15 +2390,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2435,7 +2435,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2445,16 +2445,16 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(33, actualObjects.size());
 
         int count = 0;
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2491,7 +2491,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2501,16 +2501,16 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(33, actualObjects.size());
 
         int count = 0;
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2547,7 +2547,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2557,16 +2557,16 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects4D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(33, actualObjects.size());
 
         int count = 0;
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2608,7 +2608,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2618,15 +2618,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2662,7 +2662,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2672,15 +2672,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2716,7 +2716,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2726,15 +2726,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2771,7 +2771,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2781,15 +2781,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2826,7 +2826,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2836,15 +2836,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2881,7 +2881,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2891,15 +2891,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2937,7 +2937,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2947,15 +2947,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2993,7 +2993,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3003,15 +3003,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3049,7 +3049,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3059,15 +3059,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3105,7 +3105,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3115,15 +3115,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3160,7 +3160,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3170,15 +3170,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3215,7 +3215,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3225,15 +3225,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(1, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3270,7 +3270,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3280,15 +3280,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3325,7 +3325,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3335,15 +3335,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3380,7 +3380,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3390,15 +3390,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected",
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3435,7 +3435,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3448,15 +3448,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3493,7 +3493,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3506,15 +3506,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3551,7 +3551,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3564,15 +3564,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3609,7 +3609,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3619,15 +3619,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3664,7 +3664,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3674,15 +3674,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3719,7 +3719,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3729,15 +3729,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3774,7 +3774,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3784,15 +3784,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3829,7 +3829,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3839,15 +3839,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3884,7 +3884,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3894,15 +3894,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3939,7 +3939,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3952,15 +3952,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3997,7 +3997,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -4010,15 +4010,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -4055,7 +4055,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getAllObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjects("Test_output_objects");
+        ObjsI actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -4068,15 +4068,15 @@ public class IdentifyObjectsTest extends ModuleTest {
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
         assertEquals(8, actualObjects.size());
 
-        for (Obj object : actualObjects.values()) {
+        for (ObjI object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }

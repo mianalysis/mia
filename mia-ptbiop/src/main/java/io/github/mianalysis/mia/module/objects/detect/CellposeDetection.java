@@ -5,7 +5,6 @@ import java.io.File;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ch.epfl.biop.wrappers.cellpose.ij2commands.Cellpose;
 import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
 import ij.Prefs;
 import io.github.mianalysis.mia.module.Categories;
@@ -13,9 +12,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -192,7 +192,7 @@ public class CellposeDetection extends Module {
         int nFrames = inputImage.getImagePlus().getNFrames();
         int nSlices = inputImage.getImagePlus().getNSlices();
         double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, spatCal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         if (dimensionMode.equals(DimensionModes.TWOD)) {
             int count = 0;
@@ -207,10 +207,10 @@ public class CellposeDetection extends Module {
                     cellpose.run();
 
                     ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                    Objs currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
+                    ObjsI currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
 
-                    for (Obj currOutputObject : currOutputObjects.values()) {
-                        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                    for (ObjI currOutputObject : currOutputObjects.values()) {
+                        ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                         outputObject.setT(t);
                         outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
                         outputObject.translateCoords(0, 0, z);
@@ -230,11 +230,11 @@ public class CellposeDetection extends Module {
                 cellpose.run();
 
                 ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                Objs currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(),
+                ObjsI currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(),
                         outputObjectsName, false);
 
-                for (Obj currOutputObject : currOutputObjects.values()) {
-                    Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                for (ObjI currOutputObject : currOutputObjects.values()) {
+                    ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                     outputObject.setT(t);
                     outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
                 }

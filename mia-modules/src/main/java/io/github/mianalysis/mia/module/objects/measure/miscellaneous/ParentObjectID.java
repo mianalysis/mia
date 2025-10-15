@@ -9,10 +9,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.ParentIDMeasurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -82,13 +82,13 @@ public class ParentObjectID extends Module {
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
 
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
         String measurementName = getFullName(parentObjectsName);
 
         if (objects == null)
             return Status.PASS;
             
-        for (Obj obj : objects.values())
+        for (ObjI obj : objects.values())
             obj.addMeasurement(new ParentIDMeasurement(measurementName, obj, parentObjectsName));
         
         if (showOutput) objects.showMeasurements(this,modules);

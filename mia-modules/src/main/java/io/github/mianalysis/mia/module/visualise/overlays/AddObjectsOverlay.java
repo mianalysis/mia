@@ -33,10 +33,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -304,7 +304,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth,
+    public static void addAllPointsOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth,
             boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -337,7 +337,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static void addArrowsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation,
+    public static void addArrowsOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth, double orientation,
             double arrowLength, double headSize) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -371,7 +371,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth,
+    public static void addCentroidOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth,
             boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -401,7 +401,7 @@ public class AddObjectsOverlay extends Module {
         ipl.getOverlay().addElement(pointRoi);
     }
 
-    public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth,
+    public static void addOutlineOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth,
             boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -434,7 +434,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth,
+    public static void addPositionMeasurementsOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth,
             String[] posMeasurements, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -478,24 +478,24 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour,
+    public static void addTrackOverlay(ObjI object, String spotObjectsName, ImagePlus ipl, Color colour,
             double lineWidth, int history) {
-        Objs pointObjects = object.getChildren(spotObjectsName);
+        ObjsI pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
         ij.gui.Overlay ovl = ipl.getOverlay();
 
         // Putting the current track points into a TreeMap stored by the frame
-        TreeMap<Integer, Obj> points = new TreeMap<>();
-        for (Obj pointObject : pointObjects.values()) {
+        TreeMap<Integer, ObjI> points = new TreeMap<>();
+        for (ObjI pointObject : pointObjects.values()) {
             points.put(pointObject.getT(), pointObject);
         }
 
         // Iterating over all points in the track, drawing lines between them
         int nFrames = ipl.getNFrames();
-        Obj p1 = null;
-        for (Obj p2 : points.values()) {
+        ObjI p1 = null;
+        for (ObjI p2 : points.values()) {
             if (p1 != null) {
                 double x1 = p1.getXMean(true) + 0.5;
                 double y1 = p1.getYMean(true) + 0.5;
@@ -547,7 +547,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public HashMap<Integer, Float> getHues(Objs inputObjects, String colourMode, String singleColour,
+    public HashMap<Integer, Float> getHues(ObjsI inputObjects, String colourMode, String singleColour,
             String parentObjectsForColourName, String measurementForColour) {
         // Generating colours for each object
         switch (colourMode) {
@@ -568,7 +568,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public HashMap<Integer, String> getLabels(Objs inputObjects, String labelMode, DecimalFormat df,
+    public HashMap<Integer, String> getLabels(ObjsI inputObjects, String labelMode, DecimalFormat df,
             String parentObjectsForLabelName, String measurementForLabel) {
         switch (labelMode) {
             case LabelModes.ID:
@@ -586,7 +586,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createAllPointsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
+    public void createAllPointsOverlay(ImagePlus ipl, ObjsI inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -600,7 +600,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
@@ -620,7 +620,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createArrowsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
+    public void createArrowsOverlay(ImagePlus ipl, ObjsI inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, String oriMode, String oriMeasurementName,
             @Nullable String oriParentName, String lengthMode, String lengthMeasurementName,
             @Nullable String lengthParentName, double lengthValue, double lengthScale, int headSize)
@@ -638,7 +638,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
@@ -682,7 +682,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createCentroidOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
+    public void createCentroidOverlay(ImagePlus ipl, ObjsI inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -696,7 +696,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
@@ -714,7 +714,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createLabelOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
+    public void createLabelOverlay(ImagePlus ipl, ObjsI inputObjects, @NotNull HashMap<Integer, Float> values,
             @Nullable HashMap<Integer, String> labels, boolean multithread, int labelSize, boolean renderInAllFrames)
             throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -729,7 +729,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
@@ -758,7 +758,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createOutlineOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
+    public void createOutlineOverlay(ImagePlus ipl, ObjsI inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -772,7 +772,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
@@ -791,7 +791,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createPositionMeasurementsOverlay(ImagePlus ipl, Objs inputObjects,
+    public void createPositionMeasurementsOverlay(ImagePlus ipl, ObjsI inputObjects,
             @NotNull HashMap<Integer, Float> values, String[] posMeasurements, boolean multithread, double lineWidth,
             boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -806,7 +806,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
@@ -825,7 +825,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createTracksOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
+    public void createTracksOverlay(ImagePlus ipl, ObjsI inputObjects, @NotNull HashMap<Integer, Float> values,
             String spotObjectsName, int history, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -840,7 +840,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
             // Job task = () -> {
@@ -892,7 +892,7 @@ public class AddObjectsOverlay extends Module {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);

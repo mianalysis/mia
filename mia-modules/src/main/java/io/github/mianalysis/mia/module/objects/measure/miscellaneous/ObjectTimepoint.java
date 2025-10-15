@@ -8,10 +8,10 @@ import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -69,12 +69,12 @@ public class ObjectTimepoint extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
 
         if (objects == null)
             return Status.PASS;
 
-        for (Obj obj : objects.values())
+        for (ObjI obj : objects.values())
             obj.addMeasurement(new Measurement("TIMEPOINT", obj.getT()));
 
         if (showOutput)

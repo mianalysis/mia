@@ -7,9 +7,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -96,8 +96,8 @@ public class InterpolateAlongZ extends Module {
         return "";
     }
 
-    public static Objs process(Objs inputObjects, double outputZCalibration, String outputObjectsName) {
-        Objs outputObjects = inputObjects.duplicate(outputObjectsName, false, false, false, false);
+    public static ObjsI process(ObjsI inputObjects, double outputZCalibration, String outputObjectsName) {
+        ObjsI outputObjects = inputObjects.duplicate(outputObjectsName, false, false, false, false);
 
         double inputZCalibration = outputObjects.getDppZ();
         int inputNSlices = outputObjects.getNSlices();
@@ -108,7 +108,7 @@ public class InterpolateAlongZ extends Module {
         outputObjects.getSpatialCalibration().dppZ = outputZCalibration;
 
         // Iterating over each coordinate, moving it to a new slice
-        for (Obj outputObject : outputObjects.values()) {
+        for (ObjI outputObject : outputObjects.values()) {
             outputObject.getSpatialCalibration().nSlices = outputNSlices;
             outputObject.getSpatialCalibration().dppZ = outputZCalibration;
 
@@ -137,9 +137,9 @@ public class InterpolateAlongZ extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         double outputZCalibration = parameters.getValue(OUTPUT_Z_SPATIAL_CALIBRATION, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
 
-        Objs outputObjects = process(inputObjects, outputZCalibration, outputObjectsName);
+        ObjsI outputObjects = process(inputObjects, outputZCalibration, outputObjectsName);
         workspace.addObjects(outputObjects);
 
         if (showOutput)

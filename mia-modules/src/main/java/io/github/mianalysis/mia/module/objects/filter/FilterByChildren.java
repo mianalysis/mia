@@ -9,10 +9,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -67,7 +67,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
@@ -80,13 +80,13 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
 
         int count = 0;
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
-            Objs childObjects = inputObject.getChildren(childObjectsName);
+            ObjI inputObject = iterator.next();
+            ObjsI childObjects = inputObject.getChildren(childObjectsName);
 
             double value = 0;
             if (childObjects != null)

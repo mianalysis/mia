@@ -4,16 +4,16 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class ZInterpolator {
-    public static void applySpatialInterpolation(Objs inputObjects, CoordinateSetFactoryI factory) throws IntegerOverflowException {
-        for (Obj inputObj : inputObjects.values()) {
+    public static void applySpatialInterpolation(ObjsI inputObjects, CoordinateSetFactoryI factory) throws IntegerOverflowException {
+        for (ObjI inputObj : inputObjects.values()) {
             ImageI binaryImage = inputObj.getAsTightImage("BinaryTight");
 
             // We need at least 3 slices to make interpolation worthwhile
@@ -23,7 +23,7 @@ public class ZInterpolator {
             applySpatialInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            Obj interpObj = binaryImage.convertImageToObjects(factory, inputObj.getName(), true).getFirst();
+            ObjI interpObj = binaryImage.convertImageToObjects(factory, inputObj.getName(), true).getFirst();
             interpObj.setSpatialCalibration(inputObj.getSpatialCalibration());
             double[][] extents = inputObj.getExtents(true, false);
 

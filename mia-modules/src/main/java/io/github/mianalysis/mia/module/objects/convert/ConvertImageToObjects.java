@@ -10,10 +10,11 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
@@ -104,17 +105,17 @@ public class ConvertImageToObjects extends Module {
                 + "\" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.";
     }
 
-    public static Objs createParents(Objs inputObjects, ImageI image, String parentsName) {
-        Objs parentObjects = new Objs(parentsName, inputObjects);
+    public static ObjsI createParents(ObjsI inputObjects, ImageI image, String parentsName) {
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(parentsName, inputObjects);
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             // Taking parent ID as the largest intensity within the object
             CumStat cs = MeasureObjectIntensity.measureIntensity(inputObject, image, false, false);
             int ID = (int) Math.round(cs.getMax());
 
             // Getting corresponding parent object
             parentObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(parentObjects, new PointListFactory(), ID));
-            Obj parentObject = parentObjects.get(ID);
+            ObjI parentObject = parentObjects.get(ID);
 
             // Assigning relationships
             inputObject.addParent(parentObject);
@@ -136,7 +137,7 @@ public class ConvertImageToObjects extends Module {
         boolean createParents = parameters.getValue(CREATE_TRACKS,workspace);
         String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
 
-        Objs objects = null;
+        ObjsI objects = null;
         try {
             objects = inputImage.convertImageToObjects(CoordinateSetFactories.getFactory(type), outputObjectsName, false);
         } catch (IntegerOverflowException e) {

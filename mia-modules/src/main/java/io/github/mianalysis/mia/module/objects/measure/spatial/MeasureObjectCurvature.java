@@ -15,9 +15,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -348,7 +349,7 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public static void measureCurvature(Obj inputObject, TreeMap<Double, Double> curvature, boolean absoluteCurvature,
+    public static void measureCurvature(ObjI inputObject, TreeMap<Double, Double> curvature, boolean absoluteCurvature,
             boolean signedCurvature) {
         double dppXY = inputObject.getDppXY();
 
@@ -398,7 +399,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public static void measureRelativeCurvature(Obj inputObject, ArrayList<Point<Integer>> longestPath,
+    public static void measureRelativeCurvature(ObjI inputObject, ArrayList<Point<Integer>> longestPath,
             TreeMap<Double, Double> curvature, boolean useReference) {
         double pathLength = 0;
         double posMin = 0;
@@ -441,7 +442,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public static void measureHeadTailAngle(Obj inputObject, ArrayList<Point<Integer>> longestPath, int nPoints) {
+    public static void measureHeadTailAngle(ObjI inputObject, ArrayList<Point<Integer>> longestPath, int nPoints) {
         // Getting starting and ending points for comparison
         double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
         int pathLength = longestPath.size();
@@ -477,7 +478,7 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    private void initialiseObjectMeasurements(Obj inputObject, boolean absoluteCurvature, boolean signedCurvature,
+    private void initialiseObjectMeasurements(ObjI inputObject, boolean absoluteCurvature, boolean signedCurvature,
             boolean useReference) {
         if (absoluteCurvature) {
             inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, Double.NaN));
@@ -515,12 +516,12 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public Obj createFullContour(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double> spline,
+    public ObjI createFullContour(ObjI inputObject, ObjsI outputObjects, TreeMap<Point<Integer>,Double> spline,
             int everyNPoints, boolean isLoop) {
         if (spline == null)
             return null;
 
-        Obj splineObject = outputObjects.createAndAddNewObject(new PointListFactory());
+        ObjI splineObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
         Point<Integer> previousVertex = null;
         for (Point<Integer> currentVertex : spline.keySet()) {
@@ -550,7 +551,7 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    static void addLineSegment(Obj splineObject, Point<Integer> previousVertex, Point<Integer> currentVertex,
+    static void addLineSegment(ObjI splineObject, Point<Integer> previousVertex, Point<Integer> currentVertex,
             int everyNPoints) {
         try {
             // Getting points linking the previous and current vertices
@@ -571,13 +572,13 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public void createControlPointObjects(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double> spline,
+    public void createControlPointObjects(ObjI inputObject, ObjsI outputObjects, TreeMap<Point<Integer>,Double> spline,
             int everyNPoints) {
         int i = 0;
         for (Point<Integer> vertex : spline.keySet()) {
             try {
                 if (i++ % everyNPoints == 0) {
-                    Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+                    ObjI splineObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
                     splineObject.addCoord(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);
@@ -613,7 +614,7 @@ public class MeasureObjectCurvature extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting parameters
         String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS, workspace);
@@ -636,9 +637,9 @@ public class MeasureObjectCurvature extends Module {
         double maxCurvature = parameters.getValue(MAX_CURVATURE, workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
-        Objs outputObjects = null;
+        ObjsI outputObjects = null;
         if (!objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects = new Objs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 
@@ -663,7 +664,7 @@ public class MeasureObjectCurvature extends Module {
 
         int count = 1;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             initialiseObjectMeasurements(inputObject, absoluteCurvature, signedCurvature, useReference);
 
             // Getting the backbone of the object

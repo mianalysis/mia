@@ -29,10 +29,10 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.visualise.overlays.AddText;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -232,7 +232,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
                 "<ol><li>Sun, M., et al. \"Rapid Quantification of 3D Collagen Fiber Alignment and Fiber Intersection Correlations with High Sensitivity\" <i>PLOS ONE</i> (2015), doi: https://doi.org/10.1371/journal.pone.0131814</li></ol>";
     }
 
-    public static Directionality_ processObject(Obj obj, ImageI inputImage, int nBins, double binStart, double binEnd,
+    public static Directionality_ processObject(ObjI obj, ImageI inputImage, int nBins, double binStart, double binEnd,
             AnalysisMethod method, boolean includeBinRange, boolean includeBinNumber) {
         ArrayList<double[]> tempHistograms = new ArrayList<>();
         HashMap<Integer, Roi> rois = obj.getRois();
@@ -315,11 +315,11 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
     }
 
-    void saveHistogramsAllTogether(Objs inputObjects, TreeMap<Integer, ImagePlus> histogramIpls, String outputPath) {
+    void saveHistogramsAllTogether(ObjsI inputObjects, TreeMap<Integer, ImagePlus> histogramIpls, String outputPath) {
         ImagePlus histIpl = IJ.createImage("Histograms", histWidth, histHeight, inputObjects.size(), 24);
 
         int count = 1;
-        for (Obj obj : inputObjects.values()) {
+        for (ObjI obj : inputObjects.values()) {
             ImagePlus currHistIpl = histogramIpls.get(obj.getID());
             AddText.addOverlay(currHistIpl, "ID=" + obj.getID(), Color.RED, 14, 1, 20, 5, new int[] { 1 },
                     new int[] { 1 }, false);
@@ -332,14 +332,14 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
     }
 
-    void saveHistogramsByParent(Objs parentObjects, String inputObjectsName, TreeMap<Integer, ImagePlus> histogramIpls,
+    void saveHistogramsByParent(ObjsI parentObjects, String inputObjectsName, TreeMap<Integer, ImagePlus> histogramIpls,
             String outputPath) {
-        for (Obj parent : parentObjects.values()) {
-            Objs children = parent.getChildren(inputObjectsName);
+        for (ObjI parent : parentObjects.values()) {
+            ObjsI children = parent.getChildren(inputObjectsName);
             ImagePlus histIpl = IJ.createImage("Histograms", histWidth, histHeight, children.size(), 24);
 
             int count = 1;
-            for (Obj obj : children.values()) {
+            for (ObjI obj : children.values()) {
                 ImagePlus currHistIpl = histogramIpls.get(obj.getID());
                 AddText.addOverlay(currHistIpl, "ID=" + obj.getID() + "_T=" + (obj.getT() + 1), Color.RED,
                         14, 1, 20, 5,
@@ -354,8 +354,8 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         }
     }
 
-    void saveHistogramsIndividually(Objs inputObjects, TreeMap<Integer, ImagePlus> histogramIpls, String outputPath) {
-        for (Obj obj : inputObjects.values()) {
+    void saveHistogramsIndividually(ObjsI inputObjects, TreeMap<Integer, ImagePlus> histogramIpls, String outputPath) {
+        for (ObjI obj : inputObjects.values()) {
             ImagePlus currHistIpl = histogramIpls.get(obj.getID());
             AddText.addOverlay(currHistIpl, "ID=" + obj.getID(), Color.RED, 14, 1, 20, 5, new int[] { 1 },
                     new int[] { 1 }, false);
@@ -384,7 +384,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         ImageI inputImage = workspace.getImage(inputImageName);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         AnalysisMethod method;
         switch (methodString) {
@@ -408,7 +408,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         int total = inputObjects.size();
         TreeMap<Integer, ImagePlus> histogramIpls = new TreeMap<>();
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 Directionality_ directionality = processObject(inputObject, inputImage, nBins, binStart, binEnd, method,
                         includeBinRange, includeBinNumber);
@@ -444,7 +444,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
                     saveHistogramsAllTogether(inputObjects, histogramIpls, outputPath);
                     break;
                 case HistogramGroupingModes.GROUP_BY_PARENT:
-                    Objs parentObjects = workspace.getObjects(parentObjectsName);
+                    ObjsI parentObjects = workspace.getObjects(parentObjectsName);
                     saveHistogramsByParent(parentObjects, inputObjectsName, histogramIpls, outputPath);
                     break;
                 case HistogramGroupingModes.INDIVIDUAL_FILES:

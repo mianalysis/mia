@@ -11,10 +11,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.objects.process.GrowObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -50,19 +50,19 @@ public class ResolveObjectOverlap extends Module {
         super("Resolve object overlap", modules);
     }
 
-    public static void process(Objs inputObjects, WorkspaceI workspace) {
+    public static void process(ObjsI inputObjects, WorkspaceI workspace) {
         if (inputObjects == null || inputObjects.size() == 0)
             return;
 
-        ImageI finalMask = inputObjects.convertToImageBinary();
+        ImageI finalMask = inputObjects.convertToImageBinary(inputObjects.getName());
 
         // Creating overlap image
         ImagePlus overlap = IJ.createHyperStack("Overlap", inputObjects.getWidth(), inputObjects.getHeight(), 1,
                 inputObjects.getNSlices(), inputObjects.getNFrames(), 8);
         ImageMath.process(overlap, ImageMath.CalculationModes.ADD, 255);
 
-        for (Obj inputObject : inputObjects.values()) {
-            for (Obj testObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
+            for (ObjI testObject : inputObjects.values()) {
                 if (inputObject == testObject)
                     continue;
 
@@ -107,7 +107,7 @@ public class ResolveObjectOverlap extends Module {
     public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         process(inputObjects, workspace);
 
         // // Showing objects

@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.expectedobjects;
 
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
@@ -26,7 +26,7 @@ public class Rings2D extends ExpectedObjects {
         EXP_REF_Y_CW
     }
 
-    public Objs getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+    public ObjsI getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
         return super.getObjects(objectName, mode, dppXY, dppZ, calibratedUnits, includeMeasurements);
     }
 

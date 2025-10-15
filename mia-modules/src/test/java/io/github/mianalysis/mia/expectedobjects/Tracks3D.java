@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -31,13 +32,13 @@ public class Tracks3D {
         return null;
     }
 
-    public Objs getObjects(VolumeTypes volumeType, String tracksName, String spotsName, double dppXY, double dppZ,
+    public ObjsI getObjects(VolumeTypes volumeType, String tracksName, String spotsName, double dppXY, double dppZ,
             String calibratedUnits) throws IntegerOverflowException {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 127, 90, 13);
 
         // Initialising object store
-        Objs spotObjects = new Objs("Spots", calibration, 10, 0.02, UNITS.SECOND);
-        Objs trackObjects = new Objs(tracksName, calibration, 10, 0.02, UNITS.SECOND);
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Spots", calibration, 10, 0.02, UNITS.SECOND);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(tracksName, calibration, 10, 0.02, UNITS.SECOND);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -50,7 +51,7 @@ public class Tracks3D {
             int t = coordinate[6];
 
             spotID = spotID + (t * 65536);
-            Obj spotObject = spotObjects.createAndAddNewObject(VolumeTypes.getFactory(volumeType), spotID);
+            ObjI spotObject = spotObjects.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), spotID);
             try {
                 spotObject.addCoord(x, y, z);
             } catch (PointOutOfRangeException e) {
@@ -59,7 +60,7 @@ public class Tracks3D {
 
             trackObjects.putIfAbsent(trackID, ObjFactories.getDefaultFactory().createObj(trackObjects,
                     VolumeTypes.getFactory(volumeType), trackID));
-            Obj track = trackObjects.get(trackID);
+            ObjI track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);
 

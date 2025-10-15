@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.image;
 
 import java.util.LinkedHashMap;
 
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -18,7 +18,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Im
 
     // PUBLIC METHODS
 
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
+    public ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
         return convertImageToObjects(factory, outputObjectsName, singleObject);
     }
 

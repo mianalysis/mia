@@ -7,7 +7,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -92,9 +92,9 @@ public class DuplicateObjects extends Module {
         boolean duplicateMetadata = parameters.getValue(DUPLICATE_METADATA, workspace);
         boolean addOriginalDuplicateRelationship = parameters.getValue(ADD_ORIGINAL_DUPLICATE_RELATIONSHIP, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
 
-        Objs outputObjects = inputObjects.duplicate(outputObjectsName, duplicateRelationships, duplicateMeasurements,
+        ObjsI outputObjects = inputObjects.duplicate(outputObjectsName, duplicateRelationships, duplicateMeasurements,
                 duplicateMetadata, addOriginalDuplicateRelationship);
         workspace.addObjects(outputObjects);
 

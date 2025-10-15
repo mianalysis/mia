@@ -29,9 +29,10 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -150,7 +151,7 @@ public class SpotDetection extends Module {
         super("Spot detection", modules);
     }
 
-    public ArrayList<Obj> processStack(ImageI inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
+    public ArrayList<ObjI> processStack(ImageI inputImage, ObjsI spotObjects, boolean estimateSize, WorkspaceI workspace) {
         ImagePlus ipl = inputImage.getImagePlus();
         SpatCal calibration = SpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
@@ -167,7 +168,7 @@ public class SpotDetection extends Module {
         if (!trackmate.computeSpotFeatures(false))
             MIA.log.writeError(trackmate.getErrorMessage());
 
-            ArrayList<Obj> newSpots = addSpots(model, spotObjects);
+            ArrayList<ObjI> newSpots = addSpots(model, spotObjects);
 
         if (estimateSize)
             estimateSpotSize(spotObjects, ipl);
@@ -179,15 +180,15 @@ public class SpotDetection extends Module {
 
     }
 
-    public Objs processSlice(ImageI inputImage, Objs spotObjects, boolean estimateSize, WorkspaceI workspace) {
+    public ObjsI processSlice(ImageI inputImage, ObjsI spotObjects, boolean estimateSize, WorkspaceI workspace) {
         int nSlices = inputImage.getImagePlus().getNSlices();
 
         for (int z=0;z<nSlices;z++) {
             ImageI sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z+1), "1-end");
-            ArrayList<Obj> newSpots = processStack(sliceImage, spotObjects, estimateSize, workspace);
+            ArrayList<ObjI> newSpots = processStack(sliceImage, spotObjects, estimateSize, workspace);
 
             // Putting the new spots at the correct Z-plane
-            for (Obj newSpot:newSpots)
+            for (ObjI newSpot:newSpots)
                 newSpot.translateCoords(0, 0, z);
 
         }        
@@ -221,14 +222,14 @@ public class SpotDetection extends Module {
 
     }
 
-    public ArrayList<Obj> addSpots(Model model, Objs spotObjects)
+    public ArrayList<ObjI> addSpots(Model model, ObjsI spotObjects)
             throws IntegerOverflowException {
-                ArrayList<Obj> newSpots = new ArrayList<>();
+                ArrayList<ObjI> newSpots = new ArrayList<>();
         boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,null);
 
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
-            Obj spotObject = spotObjects.createAndAddNewObject(new PointListFactory(), spot.ID());
+            ObjI spotObject = spotObjects.createAndAddNewObjectWithID(new PointListFactory(), spot.ID());
             try {
                 spotObject.addCoord((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
                         (int) spot.getDoublePosition(2));
@@ -247,7 +248,7 @@ public class SpotDetection extends Module {
 
     }
 
-    void addSpotMeasurements(Obj spotObject, Spot spot, boolean doSubpixel) {
+    void addSpotMeasurements(ObjI spotObject, Spot spot, boolean doSubpixel) {
         double dppXY = spotObject.getDppXY();
         double dppZ = spotObject.getDppZ();
 
@@ -270,15 +271,15 @@ public class SpotDetection extends Module {
         }
     }
 
-    public void estimateSpotSize(Objs spotObjects, ImagePlus ipl) throws IntegerOverflowException {
-        Objs tempObjects = new Objs("SpotVolume", spotObjects);
+    public void estimateSpotSize(ObjsI spotObjects, ImagePlus ipl) throws IntegerOverflowException {
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SpotVolume", spotObjects);
         // Replacing spot volumes with explicit volume
-        for (Obj spotObject : spotObjects.values()) {
+        for (ObjI spotObject : spotObjects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.RADIUS_PX).getValue());
             Point<Double> cent = spotObject.getMeanCentroid(true, false);
             int[] centroid = new int[] { (int) Math.round(cent.getX()), (int) Math.round(cent.getY()),
                     (int) Math.round(cent.getZ()) };
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
+            ObjI volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();
@@ -289,7 +290,7 @@ public class SpotDetection extends Module {
         }
     }
 
-    public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
+    public void showObjects(ImagePlus ipl, ObjsI spotObjects, boolean estimateSize) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(spotObjects,
                 ColourFactory.SingleColours.ORANGE);
         HashMap<Integer, Color> colours = ColourFactory.getColours(hues, 100);
@@ -348,7 +349,7 @@ public class SpotDetection extends Module {
         int nFrames = ipl.getNFrames();
         double frameInterval = ipl.getCalibration().frameInterval;
 
-        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         workspace.addObjects(spotObjects);
 
         switch (detectionMode) {

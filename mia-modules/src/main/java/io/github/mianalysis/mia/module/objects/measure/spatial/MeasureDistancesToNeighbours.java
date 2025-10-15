@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -112,7 +112,7 @@ public class MeasureDistancesToNeighbours extends Module {
         return "NEIGHBOUR_DISTANCES // " + neighbourObjectsName + " // " + referenceMode + " // " + measurement;
     }
 
-    public static TreeMap<Double, Object[]> getNearestNeighbours(Obj inputObject, Objs testObjects,
+    public static TreeMap<Double, Object[]> getNearestNeighbours(ObjI inputObject, ObjsI testObjects,
             String referenceMode,
             double maximumLinkingDistance, boolean linkInSameFrame, int nNeighbours) {
         TreeMap<Double, Object[]> nearestNeighbours = new TreeMap<>();
@@ -120,7 +120,7 @@ public class MeasureDistancesToNeighbours extends Module {
         if (testObjects == null)
             return null;
 
-        for (Obj testObject : testObjects.values()) {
+        for (ObjI testObject : testObjects.values()) {
             // Don't compare an object to itself
             if (testObject == inputObject)
                 continue;
@@ -163,7 +163,7 @@ public class MeasureDistancesToNeighbours extends Module {
 
     }
 
-    public void addMeasurements(Obj inputObject, CumStat cs, String referenceMode,
+    public void addMeasurements(ObjI inputObject, CumStat cs, String referenceMode,
             String nearestNeighbourName, int nNeighbours) {
 
         // Adding details of the nearest neighbour to the input object's measurements
@@ -247,7 +247,7 @@ public class MeasureDistancesToNeighbours extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);
@@ -265,7 +265,7 @@ public class MeasureDistancesToNeighbours extends Module {
         // If there are no input objects skip the module
         if (inputObjects == null)
             return Status.PASS;
-        Obj firstObj = inputObjects.getFirst();
+        ObjI firstObj = inputObjects.getFirst();
         if (firstObj == null)
             return Status.PASS;
 
@@ -278,7 +278,7 @@ public class MeasureDistancesToNeighbours extends Module {
         if (!limitLinkingDistance)
             maxLinkingDist = Double.MAX_VALUE;
 
-        Objs neighbourObjects = null;
+        ObjsI neighbourObjects = null;
         String nearestNeighbourName = null;
         switch (relationshipMode) {
             case RelationshipModes.DIFFERENT_SET:
@@ -295,16 +295,16 @@ public class MeasureDistancesToNeighbours extends Module {
         // Running through each object, calculating the nearest neighbour distance
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             TreeMap<Double, Object[]> nearestNeighbours;
             if (calculateWithinParent) {
-                Obj parentObject = inputObject.getParent(parentObjectsName);
+                ObjI parentObject = inputObject.getParent(parentObjectsName);
                 if (parentObject == null) {
                     addMeasurements(inputObject, null, referenceMode, nearestNeighbourName, nNeighbours);
                     continue;
                 }
 
-                Objs childObjects = parentObject.getChildren(nearestNeighbourName);
+                ObjsI childObjects = parentObject.getChildren(nearestNeighbourName);
                 nearestNeighbours = getNearestNeighbours(inputObject, childObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, nNeighbours);
 
@@ -324,7 +324,7 @@ public class MeasureDistancesToNeighbours extends Module {
             if (addObjectsAsPartners) {
                 inputObject.removePartners(nearestNeighbourName);
                 for (Object[] entry : nearestNeighbours.values()) {
-                    Obj partner = (Obj) entry[0];
+                    ObjI partner = (ObjI) entry[0];
 
                     // Importantly, we don't add the reverse partnership, as this may not be one of
                     // the nearest neighbours for that object

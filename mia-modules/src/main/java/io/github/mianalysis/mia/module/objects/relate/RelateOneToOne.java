@@ -104,10 +104,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -207,14 +207,14 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2,
+    public static ArrayList<Linkable> getCentroidSeparationLinkables(ObjsI inputObjects1, ObjsI inputObjects2,
             boolean linkInSameFrame,
             double maxSeparation) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Getting linkable objects
-        for (Obj object1 : inputObjects1.values()) {
-            for (Obj object2 : inputObjects2.values()) {
+        for (ObjI object1 : inputObjects1.values()) {
+            for (ObjI object2 : inputObjects2.values()) {
                 // Testing if the two objects are in the same frame (if this matters)
                 if (linkInSameFrame && object1.getT() != object2.getT())
                     continue;
@@ -233,14 +233,14 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2,
+    public static ArrayList<Linkable> getSpatialOverlapLinkables(ObjsI inputObjects1, ObjsI inputObjects2,
             boolean linkInSameFrame,
             double minOverlap1, double minOverlap2) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Calculating the overlaps
-        for (Obj object1 : inputObjects1.values()) {
-            for (Obj object2 : inputObjects2.values()) {
+        for (ObjI object1 : inputObjects1.values()) {
+            for (ObjI object2 : inputObjects2.values()) {
                 // Testing if the two objects are in the same frame (if this matters)
                 if (linkInSameFrame && object1.getT() != object2.getT())
                     continue;
@@ -295,11 +295,11 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static Objs assignLinks(Objs inputObjects1, Objs inputObjects2,
+    public static ObjsI assignLinks(ObjsI inputObjects1, ObjsI inputObjects2,
             DefaultCostMatrixCreator<Integer, Integer> creator, @Nullable String outputObjectsName) {
-        Objs outputObjects = null;
+        ObjsI outputObjects = null;
         if (outputObjectsName != null)
-            outputObjects = new Objs(outputObjectsName, inputObjects1);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1);
 
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process())
@@ -308,8 +308,8 @@ public class RelateOneToOne extends Module {
 
         for (Integer ID1 : assignment.keySet()) {
             int ID2 = assignment.get(ID1);
-            Obj object1 = inputObjects1.get(ID1);
-            Obj object2 = inputObjects2.get(ID2);
+            ObjI object1 = inputObjects1.get(ID1);
+            ObjI object2 = inputObjects2.get(ID2);
 
             // Adding measurements
             object1.addMeasurement(new Measurement(getFullName(object2.getName(), Measurements.WAS_LINKED1), 1));
@@ -329,23 +329,23 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static void addMissingLinks(Objs inputObjects1, Objs inputObjects2) {
+    static void addMissingLinks(ObjsI inputObjects1, ObjsI inputObjects2) {
         // Ensuring input objects have "WAS_LINKED" measurements
         String name = getFullName(inputObjects2.getName(), Measurements.WAS_LINKED1);
-        for (Obj object1 : inputObjects1.values()) {
+        for (ObjI object1 : inputObjects1.values()) {
             if (object1.getMeasurement(name) == null)
                 object1.addMeasurement(new Measurement(name, 0));
         }
 
         name = getFullName(inputObjects1.getName(), Measurements.WAS_LINKED1);
-        for (Obj object2 : inputObjects2.values()) {
+        for (ObjI object2 : inputObjects2.values()) {
             if (object2.getMeasurement(name) == null)
                 object2.addMeasurement(new Measurement(name, 0));
         }
     }
 
-    static Obj createClusterObject(Obj object1, Obj object2, Objs outputObjects) {
-        Obj outputObject = outputObjects.createAndAddNewObject(object1.getCoordinateSetFactory());
+    static ObjI createClusterObject(ObjI object1, ObjI object2, ObjsI outputObjects) {
+        ObjI outputObject = outputObjects.createAndAddNewObject(object1.getCoordinateSetFactory());
         outputObject.setT(object1.getT());
 
         // Adding relationships
@@ -400,10 +400,10 @@ public class RelateOneToOne extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
-        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
+        ObjsI inputObjects1 = workspace.getObjects(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
-        Objs inputObjects2 = workspace.getObjects(inputObjects2Name);
+        ObjsI inputObjects2 = workspace.getObjects(inputObjects2Name);
 
         // Getting parameters
         boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace);
@@ -418,14 +418,14 @@ public class RelateOneToOne extends Module {
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             addMissingLinks(inputObjects1, inputObjects2);
-            workspace.addObjects(new Objs(outputObjectsName, inputObjects1));
+            workspace.addObjects(ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
         if (!createClusterObjects)
             outputObjectsName = null;
 
-        Obj firstObj = inputObjects1.getFirst();
+        ObjI firstObj = inputObjects1.getFirst();
         if (calibratedUnits)
             maximumSeparation = maximumSeparation / firstObj.getDppXY();
 
@@ -444,7 +444,7 @@ public class RelateOneToOne extends Module {
                 break;
         }
 
-        Objs outputObjects = null;
+        ObjsI outputObjects = null;
         if (linkables.size() != 0) {
             // Creating cost matrix and checking creator was created
             DefaultCostMatrixCreator<Integer, Integer> creator = getCostMatrixCreator(linkables);
@@ -458,7 +458,7 @@ public class RelateOneToOne extends Module {
 
         if (createClusterObjects) {
             if (outputObjects == null)
-                outputObjects = new Objs(outputObjectsName, inputObjects1);
+                outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1);
 
             workspace.addObjects(outputObjects);
         }

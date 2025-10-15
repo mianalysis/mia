@@ -8,10 +8,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -125,7 +125,7 @@ public class ReplaceMeasurementValue extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         String measurementName = parameters.getValue(MEASUREMENT,workspace);
         String replacementCondition = parameters.getValue(REPLACEMENT_CONDITION,workspace);
@@ -133,7 +133,7 @@ public class ReplaceMeasurementValue extends Module {
         String replacementValueType = parameters.getValue(REPLACEMENT_VALUE_TYPE,workspace);
         double replacementValue = parameters.getValue(REPLACEMENT_VALUE,workspace);
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Measurement measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null)
                 continue;

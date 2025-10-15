@@ -20,9 +20,10 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.binary.Skeletonise;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.filter.FilterOnImageEdge;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
@@ -240,7 +241,7 @@ public class CreateSkeleton extends Module {
         super("Create skeleton", modules);
     }
 
-    public static ImageI getSkeletonImage(Obj inputObject) {
+    public static ImageI getSkeletonImage(ObjI inputObject) {
         // Getting tight image of object
         ImageI skeletonImage = inputObject.getAsTightImage("Skeleton");
 
@@ -251,7 +252,7 @@ public class CreateSkeleton extends Module {
 
     }
 
-    public static Object[] initialiseAnalyzer(Obj inputObject, double minLengthFinal,
+    public static Object[] initialiseAnalyzer(ObjI inputObject, double minLengthFinal,
             boolean exportLargestShortestPathFinal) {
         ImageI skeletonImage = getSkeletonImage(inputObject);
 
@@ -270,16 +271,16 @@ public class CreateSkeleton extends Module {
         }
     }
 
-    public static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects,
-            Objs edgeObjects,
-            Objs junctionObjects) {
+    public static ObjI createEdgeJunctionObjects(ObjI inputObject, SkeletonResult result, ObjsI skeletonObjects,
+            ObjsI edgeObjects,
+            ObjsI junctionObjects) {
         return createEdgeJunctionObjects(inputObject, result, skeletonObjects, edgeObjects, junctionObjects, true);
 
     }
 
-    public static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects,
-            Objs edgeObjects,
-            Objs junctionObjects, boolean addRelationship) {
+    public static ObjI createEdgeJunctionObjects(ObjI inputObject, SkeletonResult result, ObjsI skeletonObjects,
+            ObjsI edgeObjects,
+            ObjsI junctionObjects, boolean addRelationship) {
 
         double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]);
@@ -287,7 +288,7 @@ public class CreateSkeleton extends Module {
         int zOffs = (int) Math.round(extents[2][0]);
 
         // The Skeleton object links branches, junctions and loops.
-        Obj skeletonObject = skeletonObjects.createAndAddNewObject(new PointListFactory());
+        ObjI skeletonObject = skeletonObjects.createAndAddNewObject(new PointListFactory());
         skeletonObject.setT(inputObject.getT());
         if (addRelationship) {
             inputObject.addChild(skeletonObject);
@@ -296,14 +297,14 @@ public class CreateSkeleton extends Module {
 
         // For the purpose of linking edges and junctions, these are stored in a
         // HashMap.
-        HashMap<Edge, Obj> edgeObjs = new HashMap<>();
-        HashMap<Vertex, Obj> junctionObjs = new HashMap<>();
+        HashMap<Edge, ObjI> edgeObjs = new HashMap<>();
+        HashMap<Vertex, ObjI> junctionObjs = new HashMap<>();
 
         // Creating objects
         double dppXY = inputObject.getDppXY();
         for (Graph graph : result.getGraph()) {
             for (Edge edge : graph.getEdges()) {
-                Obj edgeObj = createEdgeObject(skeletonObject, edgeObjects, edge, xOffs, yOffs, zOffs);
+                ObjI edgeObj = createEdgeObject(skeletonObject, edgeObjects, edge, xOffs, yOffs, zOffs);
                 edgeObjs.put(edge, edgeObj);
 
                 // Adding edge length measurements
@@ -316,7 +317,7 @@ public class CreateSkeleton extends Module {
             }
 
             for (Vertex junction : graph.getVertices()) {
-                Obj junctionObj = createJunctionObject(skeletonObject, junctionObjects, junction, xOffs, yOffs, zOffs);
+                ObjI junctionObj = createJunctionObject(skeletonObject, junctionObjects, junction, xOffs, yOffs, zOffs);
                 junctionObjs.put(junction, junctionObj);
             }
         }
@@ -329,19 +330,19 @@ public class CreateSkeleton extends Module {
 
     }
 
-    public static void createLoopObjects(Objs loopObjects, String edgeObjectsName, String junctionObjectsName,
-            String loopObjectsName, Obj skeletonObject) {
+    public static void createLoopObjects(ObjsI loopObjects, String edgeObjectsName, String junctionObjectsName,
+            String loopObjectsName, ObjI skeletonObject) {
 
         // Creating an object for the entire skeleton
-        Objs tempCollection = new Objs("Skeleton", loopObjects);
-        Obj tempObject = tempCollection.createAndAddNewObject(new PointListFactory());
+        ObjsI tempCollection = ObjsFactories.getDefaultFactory().createFromExampleObjs("Skeleton", loopObjects);
+        ObjI tempObject = tempCollection.createAndAddNewObject(new PointListFactory());
         CoordinateSetI coords = tempObject.getCoordinateSet();
 
         // Adding all points from edges and junctions
-        for (Obj edgeObject : skeletonObject.getChildren(edgeObjectsName).values())
+        for (ObjI edgeObject : skeletonObject.getChildren(edgeObjectsName).values())
             coords.addAll(edgeObject.getCoordinateSet());
 
-        for (Obj junctionObject : skeletonObject.getChildren(junctionObjectsName).values())
+        for (ObjI junctionObject : skeletonObject.getChildren(junctionObjectsName).values())
             coords.addAll(junctionObject.getCoordinateSet());
 
         // Creating a binary image of all the points with a 1px border, so we can remove
@@ -350,7 +351,7 @@ public class CreateSkeleton extends Module {
         ImageI binaryImage = tempObject.getAsTightImageWithBorders("outputName", borders);
 
         // Converting binary image to loop objects
-        Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false,
+        ObjsI tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false,
                 IdentifyObjects.DetectionModes.THREE_D, 6,
                 new QuadtreeFactory(), false, 0, false);
 
@@ -364,10 +365,10 @@ public class CreateSkeleton extends Module {
         int zOffs = (int) Math.round(extents[2][0]);
         tempLoopObjects.setSpatialCalibration(loopObjects.getSpatialCalibration(), true);
 
-        for (Obj tempLoopObject : tempLoopObjects.values())
+        for (ObjI tempLoopObject : tempLoopObjects.values())
             tempLoopObject.translateCoords(xOffs, yOffs, zOffs);
 
-        for (Obj tempLoopObject : tempLoopObjects.values()) {
+        for (ObjI tempLoopObject : tempLoopObjects.values()) {
             tempLoopObject.setID(loopObjects.getAndIncrementID());
             tempLoopObject.addParent(skeletonObject);
             skeletonObject.addChild(tempLoopObject);
@@ -375,9 +376,9 @@ public class CreateSkeleton extends Module {
         }
     }
 
-    public static Obj createEdgeObject(Obj skeletonObject, Objs edgeObjects, Edge edge, int xOffs, int yOffs,
+    public static ObjI createEdgeObject(ObjI skeletonObject, ObjsI edgeObjects, Edge edge, int xOffs, int yOffs,
             int zOffs) {
-        Obj edgeObject = edgeObjects.createAndAddNewObject(new PointListFactory());
+        ObjI edgeObject = edgeObjects.createAndAddNewObject(new PointListFactory());
         edgeObject.setT(skeletonObject.getT());
         skeletonObject.addChild(edgeObject);
         edgeObject.addParent(skeletonObject);
@@ -395,10 +396,10 @@ public class CreateSkeleton extends Module {
 
     }
 
-    public static Obj createJunctionObject(Obj skeletonObject, Objs junctionObjects, Vertex junction, int xOffs,
+    public static ObjI createJunctionObject(ObjI skeletonObject, ObjsI junctionObjects, Vertex junction, int xOffs,
             int yOffs,
             int zOffs) {
-        Obj junctionObject = junctionObjects.createAndAddNewObject(new PointListFactory());
+        ObjI junctionObject = junctionObjects.createAndAddNewObject(new PointListFactory());
         junctionObject.setT(skeletonObject.getT());
         skeletonObject.addChild(junctionObject);
         junctionObject.addParent(skeletonObject);
@@ -417,7 +418,7 @@ public class CreateSkeleton extends Module {
     }
 
     public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(
-            Obj inputObject) {
+            ObjI inputObject) {
         Object[] result = initialiseAnalyzer(inputObject, 0, true);
         AnalyzeSkeleton_ analyzeSkeleton = (AnalyzeSkeleton_) result[0];
         SkeletonResult skeletonResult = (SkeletonResult) result[1];
@@ -427,7 +428,7 @@ public class CreateSkeleton extends Module {
     }
 
     public static ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> getLargestShortestPath(
-            Obj inputObject,
+            ObjI inputObject,
             AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult) {
         ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points2 = new ArrayList<>();
 
@@ -460,14 +461,14 @@ public class CreateSkeleton extends Module {
 
     }
 
-    static void createLargestShortestPath(Obj inputObject, Objs largestShortestPathObjects,
+    static void createLargestShortestPath(ObjI inputObject, ObjsI largestShortestPathObjects,
             AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult, boolean addRelationship) {
 
         ArrayList<io.github.mianalysis.mia.object.coordinates.Point<Integer>> points = getLargestShortestPath(
                 inputObject,
                 analyzeSkeleton, skeletonResult);
 
-        Obj largestShortestPath = largestShortestPathObjects.createAndAddNewObject(new PointListFactory());
+        ObjI largestShortestPath = largestShortestPathObjects.createAndAddNewObject(new PointListFactory());
         largestShortestPath.getCoordinateSet().addAll(points);
         largestShortestPath.setT(inputObject.getT());
 
@@ -477,12 +478,12 @@ public class CreateSkeleton extends Module {
         }
     }
 
-    static void applyEdgeJunctionPartnerships(HashMap<Edge, Obj> edgeObjs, HashMap<Vertex, Obj> junctionObjs) {
+    static void applyEdgeJunctionPartnerships(HashMap<Edge, ObjI> edgeObjs, HashMap<Vertex, ObjI> junctionObjs) {
         // Iterating over each edge, adding the two vertices at either end as partners
         for (Edge edge : edgeObjs.keySet()) {
-            Obj edgeObject = edgeObjs.get(edge);
-            Obj junction1 = junctionObjs.get(edge.getV1());
-            Obj junction2 = junctionObjs.get(edge.getV2());
+            ObjI edgeObject = edgeObjs.get(edge);
+            ObjI junction1 = junctionObjs.get(edge.getV1());
+            ObjI junction2 = junctionObjs.get(edge.getV2());
 
             edgeObject.addPartner(junction1);
             junction1.addPartner(edgeObject);
@@ -492,10 +493,10 @@ public class CreateSkeleton extends Module {
         }
     }
 
-    static void applyLoopPartnerships(Objs loopObjects, Objs edgeObjects, Objs junctionObjects) {
+    static void applyLoopPartnerships(ObjsI loopObjects, ObjsI edgeObjects, ObjsI junctionObjects) {
         // Linking junctions and loops with surfaces separated by 1px or less
-        for (Obj loopObject : loopObjects.values()) {
-            for (Obj junctionObject : junctionObjects.values()) {
+        for (ObjI loopObject : loopObjects.values()) {
+            for (ObjI junctionObject : junctionObjects.values()) {
                 if (loopObject.getSurfaceSeparation(junctionObject, true, false, false, false) <= 1) {
                     loopObject.addPartner(junctionObject);
                     junctionObject.addPartner(loopObject);
@@ -504,13 +505,13 @@ public class CreateSkeleton extends Module {
         }
 
         // Linking edges with both junctions linked to the loop
-        for (Obj loopObject : loopObjects.values()) {
-            for (Obj edgeObject : edgeObjects.values()) {
-                Objs junctionPartners = edgeObject.getPartners(junctionObjects.getName());
+        for (ObjI loopObject : loopObjects.values()) {
+            for (ObjI edgeObject : edgeObjects.values()) {
+                ObjsI junctionPartners = edgeObject.getPartners(junctionObjects.getName());
                 boolean matchFound = true;
 
-                for (Obj junctionPartnerObject : junctionPartners.values()) {
-                    Objs loopPartners = junctionPartnerObject.getPartners(loopObjects.getName());
+                for (ObjI junctionPartnerObject : junctionPartners.values()) {
+                    ObjsI loopPartners = junctionPartnerObject.getPartners(loopObjects.getName());
 
                     if (loopPartners == null) {
                         matchFound = false;
@@ -530,7 +531,7 @@ public class CreateSkeleton extends Module {
         }
     }
 
-    static void addMeasurements(Obj inputObject, SkeletonResult result) {
+    static void addMeasurements(ObjI inputObject, SkeletonResult result) {
         double length = 0;
 
         // If the skeleton has no voxels (edge, end or junction), the graphs will be
@@ -573,7 +574,7 @@ public class CreateSkeleton extends Module {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // If processing an image, create a temporary object set
-        Objs inputObjects;
+        ObjsI inputObjects;
         switch (inputMode) {
             case InputModes.IMAGE:
                 ImageI inputImage = workspace.getImage(inputImageName);
@@ -598,12 +599,12 @@ public class CreateSkeleton extends Module {
             minLength = minLength * inputObjects.getDppXY();
 
         // Creating empty output object collections
-        final Objs skeletonObjects = addToWorkspace ? new Objs(skeletonObjectsName, inputObjects) : null;
-        final Objs edgeObjects = addToWorkspace ? new Objs(edgeObjectsName, inputObjects) : null;
-        final Objs junctionObjects = addToWorkspace ? new Objs(junctionObjectsName, inputObjects) : null;
-        final Objs loopObjects = addToWorkspace & exportLoops ? new Objs(loopObjectsName, inputObjects) : null;
-        final Objs largestShortestPathObjects = exportLargestShortestPath
-                ? new Objs(largestShortestPathName, inputObjects)
+        final ObjsI skeletonObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExampleObjs(skeletonObjectsName, inputObjects) : null;
+        final ObjsI edgeObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExampleObjs(edgeObjectsName, inputObjects) : null;
+        final ObjsI junctionObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExampleObjs(junctionObjectsName, inputObjects) : null;
+        final ObjsI loopObjects = addToWorkspace & exportLoops ? ObjsFactories.getDefaultFactory().createFromExampleObjs(loopObjectsName, inputObjects) : null;
+        final ObjsI largestShortestPathObjects = exportLargestShortestPath
+                ? ObjsFactories.getDefaultFactory().createFromExampleObjs(largestShortestPathName, inputObjects)
                 : null;
 
         if (addToWorkspace) {
@@ -636,7 +637,7 @@ public class CreateSkeleton extends Module {
 
         final double minLengthFinal = minLength;
         final boolean exportLargestShortestPathFinal = exportLargestShortestPath;
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
                     Object[] result = initialiseAnalyzer(inputObject, minLengthFinal, exportLargestShortestPathFinal);
@@ -644,7 +645,7 @@ public class CreateSkeleton extends Module {
                     // Adding the skeleton to the input object
                     if (addToWorkspace) {
 
-                        Obj skeletonObject = createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
+                        ObjI skeletonObject = createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
                                 skeletonObjects, edgeObjects, junctionObjects, inputMode.equals(InputModes.OBJECTS));
 
                         // Creating loop objects

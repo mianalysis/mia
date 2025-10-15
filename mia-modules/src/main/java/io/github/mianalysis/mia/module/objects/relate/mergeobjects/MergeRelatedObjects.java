@@ -7,9 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -120,29 +121,29 @@ public class MergeRelatedObjects extends Module {
         super("Merge related objects", modules);
     }
 
-    public static Objs mergeRelatedObjectsCreateNew(Objs parentObjects, String childObjectsName,
+    public static ObjsI mergeRelatedObjectsCreateNew(ObjsI parentObjects, String childObjectsName,
             String relatedObjectsName, String mergeMode) {
-        Objs relatedObjects = new Objs(relatedObjectsName, parentObjects);
+        ObjsI relatedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(relatedObjectsName, parentObjects);
 
         if (parentObjects == null)
             return relatedObjects;
 
-        for (Obj parentObj : parentObjects.values()) {
+        for (ObjI parentObj : parentObjects.values()) {
             // Collecting all children for this parent. If none are present, skip to the
             // next parent
-            Objs currChildObjects = parentObj.getChildren(childObjectsName);
+            ObjsI currChildObjects = parentObj.getChildren(childObjectsName);
             if (currChildObjects.size() == 0)
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = relatedObjects.createAndAddNewObject(parentObj.getCoordinateSetFactory());
+            ObjI relatedObject = relatedObjects.createAndAddNewObject(parentObj.getCoordinateSetFactory());
             relatedObject.setT(parentObj.getT());
             relatedObjects.add(relatedObject);
             parentObj.addChild(relatedObject);
             relatedObject.addParent(parentObj);
 
             // Transferring points from the child object to the new object
-            for (Obj childObject : currChildObjects.values())
+            for (ObjI childObject : currChildObjects.values())
                 relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
 
             switch (mergeMode) {
@@ -157,20 +158,20 @@ public class MergeRelatedObjects extends Module {
 
     }
 
-    public static void mergeRelatedObjectsUpdateParent(Objs parentObjects, String childObjectsName,
+    public static void mergeRelatedObjectsUpdateParent(ObjsI parentObjects, String childObjectsName,
             String mergeMode) {
         if (parentObjects == null)
             return;
 
-        for (Obj parentObj : parentObjects.values()) {
+        for (ObjI parentObj : parentObjects.values()) {
             // Collecting all children for this parent. If none are present, skip to the
             // next parent
-            Objs currChildObjects = parentObj.getChildren(childObjectsName);
+            ObjsI currChildObjects = parentObj.getChildren(childObjectsName);
             if (currChildObjects.size() == 0)
                 continue;
 
             // Transferring points from the child object to the parent object
-            for (Obj childObject : currChildObjects.values())
+            for (ObjI childObject : currChildObjects.values())
                 parentObj.getCoordinateSet().addAll(childObject.getCoordinateSet());
 
             // Removing any surfaces/centroids that have been previously calculated
@@ -202,7 +203,7 @@ public class MergeRelatedObjects extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
-        Objs parentObjects = workspace.getObjects(parentObjectName);
+        ObjsI parentObjects = workspace.getObjects(parentObjectName);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
         String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
@@ -211,7 +212,7 @@ public class MergeRelatedObjects extends Module {
 
         switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
-                Objs relatedObjects = mergeRelatedObjectsCreateNew(parentObjects, childObjectsName,
+                ObjsI relatedObjects = mergeRelatedObjectsCreateNew(parentObjects, childObjectsName,
                         relatedObjectsName, mergeMode);
                 if (relatedObjects == null)
                     return Status.PASS;

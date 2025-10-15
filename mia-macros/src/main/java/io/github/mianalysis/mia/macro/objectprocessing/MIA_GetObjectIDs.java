@@ -6,10 +6,10 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectIDs extends MacroOperation {
@@ -27,11 +27,11 @@ public class MIA_GetObjectIDs extends MacroOperation {
         String inputObjectsName = (String) objects[0];
 
         // Getting the input objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null) return "";
                 
         StringBuilder sb = new StringBuilder();
-        for (Obj inputObject:inputObjects.values()){
+        for (ObjI inputObject:inputObjects.values()){
             if (sb.length() == 0) {
                 sb.append(inputObject.getID());
             } else {

@@ -40,7 +40,7 @@ import fiji.plugin.trackmate.gui.components.tracker.OverlapTrackerSettingsPanel;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 
 @Plugin(type = SpotTrackerFactory.class)
 public class OverlapTracker3DFactory implements SpotTrackerFactory {
@@ -65,7 +65,7 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
 
     public static final boolean DEFAULT_ALLOW_TRACK_MERGING = false;
 
-    public static final Objs DEFAULT_MIA_OBJECTS = null;
+    public static final ObjsI DEFAULT_MIA_OBJECTS = null;
 
     public static final String TRACKER_KEY = "OVERLAP_TRACKER";
 
@@ -100,7 +100,7 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
         final double minIoU = (Double) settings.get(KEY_MIN_IOU);
         final boolean allowTrackSplitting = (Boolean) settings.get(KEY_ALLOW_TRACK_SPLITTING);
         final boolean allowTrackMerging = (Boolean) settings.get(KEY_ALLOW_TRACK_MERGING);
-        final Objs objs = (Objs) settings.get(KEY_MIA_OBJECTS);
+        final ObjsI objs = (ObjsI) settings.get(KEY_MIA_OBJECTS);
         return new OverlapTracker3D(spots, objs, minIoU,allowTrackSplitting,allowTrackMerging);
     }
 

@@ -26,9 +26,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -226,14 +227,14 @@ public class TrackObjects extends Module {
 
     }
 
-    public ArrayList<Obj>[] getCandidateObjects(Objs inputObjects, int t1, int t2) {
+    public ArrayList<ObjI>[] getCandidateObjects(ObjsI inputObjects, int t1, int t2) {
         // Creating a pair of ArrayLists to store the current and previous objects
-        ArrayList<Obj>[] objects = new ArrayList[2];
+        ArrayList<ObjI>[] objects = new ArrayList[2];
         objects[0] = new ArrayList<>(); // Previous objects
         objects[1] = new ArrayList<>(); // Current objects
 
         // Include objects from the previous and current frames that haven't been linked
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             if (inputObject.getT() == t1 && inputObject.getMeasurement(Measurements.TRACK_NEXT_ID) == null) {
                 objects[0].add(inputObject);
 
@@ -247,7 +248,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, WorkspaceI workspace, @Nullable Objs inputObjects, @Nullable int[][] spatialLimits) {
+    public ArrayList<Linkable> calculateCostMatrix(ArrayList<ObjI> prevObjects, ArrayList<ObjI> currObjects, WorkspaceI workspace, @Nullable ObjsI inputObjects, @Nullable int[][] spatialLimits) {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
         boolean useVolume = parameters.getValue(USE_VOLUME, workspace);
         double frameGapWeighting = parameters.getValue(FRAME_GAP_WEIGHTING, workspace);
@@ -274,8 +275,8 @@ public class TrackObjects extends Module {
 
         for (int curr = 0; curr < currObjects.size(); curr++) {
             for (int prev = 0; prev < prevObjects.size(); prev++) {
-                Obj prevObj = prevObjects.get(prev);
-                Obj currObj = currObjects.get(curr);
+                ObjI prevObj = prevObjects.get(prev);
+                ObjI currObj = currObjects.get(curr);
 
                 // Calculating main spatial cost
                 double spatialCost = 0;
@@ -357,7 +358,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
+    public static float getAbsoluteOverlap(ObjI prevObj, ObjI currObj, int[][] spatialLimits) {
         // Getting coordinates for each object
         TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
         TreeSet<Point<Integer>> currPoints = currObj.getPoints();
@@ -386,7 +387,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getFrameGapCost(Obj prevObj, Obj currObj) {
+    public static double getFrameGapCost(ObjI prevObj, ObjI currObj) {
         // Calculating volume weighting
         double prevT = prevObj.getT();
         double currT = currObj.getT();
@@ -395,10 +396,10 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getTrackDurationCost(Obj prevObj, String trackObjectsName) {
+    public static double getTrackDurationCost(ObjI prevObj, String trackObjectsName) {
         // Scores between 0 (track present since start of time-series) and 1 (no track
         // assigned)
-        Obj prevTrack = prevObj.getParent(trackObjectsName);
+        ObjI prevTrack = prevObj.getParent(trackObjectsName);
         if (prevTrack == null)
             return 1;
 
@@ -410,7 +411,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getVolumeCost(Obj prevObj, Obj currObj) {
+    public static double getVolumeCost(ObjI prevObj, ObjI currObj) {
         // Calculating volume weighting
         double prevVol = prevObj.size();
         double currVol = currObj.size();
@@ -419,7 +420,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getMeasurementCost(Obj prevObj, Obj currObj, String measurementName) {
+    public static double getMeasurementCost(ObjI prevObj, ObjI currObj, String measurementName) {
         Measurement currMeasurement = currObj.getMeasurement(measurementName);
         Measurement prevMeasurement = prevObj.getMeasurement(measurementName);
 
@@ -432,7 +433,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getAbsoluteOrientationCost(Obj prevObj, Obj currObj, String orientationRangeMode,
+    public static double getAbsoluteOrientationCost(ObjI prevObj, ObjI currObj, String orientationRangeMode,
             double preferredDirection) {
         // Getting centroid coordinates for three points
         double prevXCent = prevObj.getXMean(true);
@@ -465,7 +466,7 @@ public class TrackObjects extends Module {
         }
     }
 
-    public static double getPreviousStepDirectionCost(Obj prevObj, Obj currObj, Objs inputObjects) {
+    public static double getPreviousStepDirectionCost(ObjI prevObj, ObjI currObj, ObjsI inputObjects) {
         // Get direction of previous object
         Measurement prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
 
@@ -476,7 +477,7 @@ public class TrackObjects extends Module {
 
         // Getting the previous-previous object
         int prevPrevObjID = (int) prevPrevObjMeas.getValue();
-        Obj prevPrevObj = inputObjects.get(prevPrevObjID);
+        ObjI prevPrevObj = inputObjects.get(prevPrevObjID);
 
         // Getting centroid coordinates for three points
         double prevXCent = prevObj.getXMean(true);
@@ -502,31 +503,31 @@ public class TrackObjects extends Module {
         return Math.abs(Math.toDegrees(directionCost)) <= directionTolerance;
     }
 
-    public static boolean testSeparationValidity(Obj prevObj, Obj currObj, double maxDist) {
+    public static boolean testSeparationValidity(ObjI prevObj, ObjI currObj, double maxDist) {
         double dist = prevObj.getCentroidSeparation(currObj, true, false);
         return dist <= maxDist;
     }
 
-    public static boolean testOverlapValidity(Obj prevObj, Obj currObj, double minOverlap, int[][] spatialLimits) {
+    public static boolean testOverlapValidity(ObjI prevObj, ObjI currObj, double minOverlap, int[][] spatialLimits) {
         double overlap = getAbsoluteOverlap(prevObj, currObj, spatialLimits);
         return overlap != 0 && overlap >= minOverlap;
 
     }
 
-    public static boolean testVolumeValidity(Obj prevObj, Obj currObj, double maxVolumeChange) {
+    public static boolean testVolumeValidity(ObjI prevObj, ObjI currObj, double maxVolumeChange) {
         double volumeChange = getVolumeCost(prevObj, currObj);
         return volumeChange <= maxVolumeChange;
     }
 
-    public static boolean testMeasurementValidity(Obj prevObj, Obj currObj, String measurementName,
+    public static boolean testMeasurementValidity(ObjI prevObj, ObjI currObj, String measurementName,
             double maxMeasurementChange) {
         double measurementChange = getMeasurementCost(prevObj, currObj, measurementName);
         return measurementChange <= maxMeasurementChange;
     }
 
-    public static void linkObjects(Obj prevObj, Obj currObj, Objs trackObjects) {
+    public static void linkObjects(ObjI prevObj, ObjI currObj, ObjsI trackObjects) {
         // Getting the track object from the previous-frame object
-        Obj track = prevObj.getParent(trackObjects.getName());
+        ObjI track = prevObj.getParent(trackObjects.getName());
         
         // If the previous object hasn't already got a track, create one
         if (track == null)
@@ -546,9 +547,9 @@ public class TrackObjects extends Module {
 
     }
 
-    public static Obj createNewTrack(Obj currObj, Objs trackObjects) {        
+    public static ObjI createNewTrack(ObjI currObj, ObjsI trackObjects) {        
         // Creating a new track object
-        Obj track = trackObjects.createAndAddNewObject(new PointListFactory());
+        ObjI track = trackObjects.createAndAddNewObject(new PointListFactory());
 
         // Setting relationship between the current object and track
         track.addChild(currObj);
@@ -558,11 +559,11 @@ public class TrackObjects extends Module {
 
     }
 
-    public static void showObjects(Objs spotObjects, String trackObjectsName) {
+    public static void showObjects(ObjsI spotObjects, String trackObjectsName) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
         // Creating a parent-ID encoded image of the objects
-        ImageI dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false);
+        ImageI dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false, false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();
@@ -602,8 +603,8 @@ public class TrackObjects extends Module {
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs trackObjects = new Objs(trackObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
@@ -614,7 +615,7 @@ public class TrackObjects extends Module {
 
         // Clearing previous relationships and measurements (in case module has been
         // generateModuleList before)
-        for (Obj inputObj : inputObjects.values()) {
+        for (ObjI inputObj : inputObjects.values()) {
             inputObj.removeMeasurement(Measurements.TRACK_NEXT_ID);
             inputObj.removeMeasurement(Measurements.TRACK_PREV_ID);
             inputObj.removeParent(trackObjectsName);
@@ -630,7 +631,7 @@ public class TrackObjects extends Module {
 
             // Testing the previous permitted frames for links
             for (int t1 = t2 - 1; t1 >= t2 - 1 - maxMissingFrames; t1--) {
-                ArrayList<Obj>[] nPObjects = getCandidateObjects(inputObjects, t1, t2);
+                ArrayList<ObjI>[] nPObjects = getCandidateObjects(inputObjects, t1, t2);
 
                 // If no previous or current objects were found no linking takes place
                 if (nPObjects[0].size() == 0 || nPObjects[1].size() == 0) {
@@ -665,8 +666,8 @@ public class TrackObjects extends Module {
                     // Applying the calculated assignments as relationships
                     for (int ID1 : assignment.keySet()) {
                         int ID2 = assignment.get(ID1);
-                        Obj currObj = inputObjects.get(ID1);
-                        Obj prevObj = inputObjects.get(ID2);
+                        ObjI currObj = inputObjects.get(ID1);
+                        ObjI prevObj = inputObjects.get(ID2);
                         linkObjects(prevObj, currObj, trackObjects);
                     }
                 }
@@ -674,7 +675,7 @@ public class TrackObjects extends Module {
         }
 
         // Create a new track for any objects that still don't have one (mostly those that appear only for one frame)
-        for (Obj inputObject:inputObjects.values())
+        for (ObjI inputObject:inputObjects.values())
             if (inputObject.getParent(trackObjectsName) == null)
                 createNewTrack(inputObject, trackObjects);        
 

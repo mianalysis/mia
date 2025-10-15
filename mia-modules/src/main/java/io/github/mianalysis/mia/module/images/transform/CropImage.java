@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -213,7 +213,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
         switch (limitsMode) {
             case LimitsModes.FROM_OBJECTS:
-                Objs inputObjects = workspace.getObjects(inputObjectsName);
+                ObjsI inputObjects = workspace.getObjects(inputObjectsName);
                 int[][] extents = inputObjects.getSpatialExtents();
 
                 if (extents == null) {

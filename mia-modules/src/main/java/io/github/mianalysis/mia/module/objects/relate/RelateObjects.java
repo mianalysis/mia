@@ -13,9 +13,10 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -227,11 +228,11 @@ public class RelateObjects extends Module {
         return "RELATE_OBJ // " + measurement.replace("${PARENT}", parentName);
     }
 
-    public void linkMatchingIDs(Objs parentObjects, Objs childObjects) {
-        for (Obj parentObject : parentObjects.values()) {
+    public void linkMatchingIDs(ObjsI parentObjects, ObjsI childObjects) {
+        for (ObjI parentObject : parentObjects.values()) {
             int ID = parentObject.getID();
 
-            Obj childObject = childObjects.get(ID);
+            ObjI childObject = childObjects.get(ID);
 
             if (childObject != null) {
                 parentObject.addChild(childObject);
@@ -245,7 +246,7 @@ public class RelateObjects extends Module {
      * Iterates over each testObject, calculating getting the smallest distance to a
      * parentObject. If this is smaller than linkingDistance the link is assigned.
      */
-    public void proximity(Objs parentObjects, Objs childObjects, WorkspaceI workspace, boolean ignoreEdgesXY,
+    public void proximity(ObjsI parentObjects, ObjsI childObjects, WorkspaceI workspace, boolean ignoreEdgesXY,
             boolean ignoreEdgesZ) {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
@@ -256,11 +257,11 @@ public class RelateObjects extends Module {
         int iter = 1;
         int numberOfChildren = childObjects.size();
 
-        for (Obj childObject : childObjects.values()) {
+        for (ObjI childObject : childObjects.values()) {
             double minDist = Double.MAX_VALUE;
-            Obj minLink = null;
+            ObjI minLink = null;
 
-            for (Obj parentObject : parentObjects.values()) {
+            for (ObjI parentObject : parentObjects.values()) {
                 if (linkInSameFrame & parentObject.getT() != childObject.getT())
                     continue;
 
@@ -336,7 +337,7 @@ public class RelateObjects extends Module {
         }
     }
 
-    public void calculateFractionalDistance(Obj childObject, Obj parentObject, double minDist) {
+    public void calculateFractionalDistance(ObjI childObject, ObjI parentObject, double minDist) {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
@@ -359,7 +360,7 @@ public class RelateObjects extends Module {
 
     }
 
-    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink,
+    public void applyMeasurements(ObjI childObject, ObjsI parentObjects, double minDist, ObjI minLink,
             WorkspaceI workspace) {
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
 
@@ -425,7 +426,7 @@ public class RelateObjects extends Module {
         }
     }
 
-    public void spatialOverlap(Objs parentObjects, Objs childObjects, double minOverlap,
+    public void spatialOverlap(ObjsI parentObjects, ObjsI childObjects, double minOverlap,
             boolean centroidOverlap, boolean linkInSameFrame) {
 
         long nCombined = parentObjects.size() * childObjects.size();
@@ -436,8 +437,8 @@ public class RelateObjects extends Module {
             return;
 
         // Runs through each child object against each parent object
-        for (Obj parentObject : parentObjects.values()) {
-            for (Obj childObject : childObjects.values()) {
+        for (ObjI parentObject : parentObjects.values()) {
+            for (ObjI childObject : childObjects.values()) {
                 // Testing if the two objects are in the same frame (if this matters)
                 if (linkInSameFrame && parentObject.getT() != childObject.getT())
                     continue;
@@ -467,7 +468,7 @@ public class RelateObjects extends Module {
                 // If the tests are successful, addRef the link. If the child has already been
                 // linked, but with a smaller
                 // overlap, remove that link.
-                Obj oldParent = childObject.getParent(parentObject.getName());
+                ObjI oldParent = childObject.getParent(parentObject.getName());
                 if (oldParent != null) {
                     if (childObject.getMeasurement(overlapMeasurementName).getValue() < overlap) {
                         oldParent.removeChild(childObject);
@@ -526,29 +527,29 @@ public class RelateObjects extends Module {
 
     }
 
-    public Objs mergeRelatedObjects(Objs parentObjects, Objs childObjects,
+    public ObjsI mergeRelatedObjects(ObjsI parentObjects, ObjsI childObjects,
             String relatedObjectsName) {
-        Obj exampleParent = parentObjects.getFirst();
-        Objs relatedObjects = new Objs(relatedObjectsName, parentObjects);
+        ObjI exampleParent = parentObjects.getFirst();
+        ObjsI relatedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(relatedObjectsName, parentObjects);
 
         if (exampleParent == null)
             return relatedObjects;
 
-        Iterator<Obj> parentIterator = parentObjects.values().iterator();
+        Iterator<ObjI> parentIterator = parentObjects.values().iterator();
         while (parentIterator.hasNext()) {
-            Obj parentObj = parentIterator.next();
+            ObjI parentObj = parentIterator.next();
 
             // Collecting all children for this parent. If none are present, skip to the
             // next parent
-            Objs currChildObjects = parentObj.getChildren(childObjects.getName());
+            ObjsI currChildObjects = parentObj.getChildren(childObjects.getName());
             if (currChildObjects.size() == 0)
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = relatedObjects.createAndAddNewObject(exampleParent.getCoordinateSetFactory());
+            ObjI relatedObject = relatedObjects.createAndAddNewObject(exampleParent.getCoordinateSetFactory());
             relatedObject.setT(parentObj.getT());
 
-            for (Obj childObject : currChildObjects.values()) {
+            for (ObjI childObject : currChildObjects.values()) {
                 // Transferring points from the child object to the new object
                 relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
 
@@ -588,10 +589,10 @@ public class RelateObjects extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
-        Objs parentObjects = workspace.getObjects(parentObjectName);
+        ObjsI parentObjects = workspace.getObjects(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS, workspace);
-        Objs childObjects = workspace.getObjects(childObjectName);
+        ObjsI childObjects = workspace.getObjects(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE, workspace);
@@ -626,7 +627,7 @@ public class RelateObjects extends Module {
         }
 
         if (mergeRelatedObjects) {
-            Objs relatedObjects = mergeRelatedObjects(parentObjects, childObjects, relatedObjectsName);
+            ObjsI relatedObjects = mergeRelatedObjects(parentObjects, childObjects, relatedObjectsName);
             if (relatedObjects != null)
                 workspace.addObjects(relatedObjects);
 
@@ -642,7 +643,7 @@ public class RelateObjects extends Module {
             parentImage.showWithNormalisation(false);
 
             HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
-            ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
+            ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false, false);
             SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
             childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR, null);
 

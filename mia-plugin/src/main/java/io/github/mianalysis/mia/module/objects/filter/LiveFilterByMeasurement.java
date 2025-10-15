@@ -17,16 +17,15 @@ import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -45,7 +44,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import net.imagej.ImageJ;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 
@@ -102,7 +100,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
                 + referenceValue;
     }
 
-    public double getThreshold(Objs inputObjects, String measName, double refValue, String filterMethod) {
+    public double getThreshold(ObjsI inputObjects, String measName, double refValue, String filterMethod) {
         ImagePlus showIpl = inputObjects.convertToImageIDColours().getImagePlus();
         showIpl.getProcessor().resetMinAndMax();
         ImagePlus testIpl = showIpl.duplicate();
@@ -161,7 +159,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
 
     }
 
-    static void testThreshold(Objs inputObjects, String measName, JTextField thresholdTextField, String filterMethod,
+    static void testThreshold(ObjsI inputObjects, String measName, JTextField thresholdTextField, String filterMethod,
             ImagePlus testIpl) {
         double refValue = Double.parseDouble(thresholdTextField.getText());
 
@@ -170,7 +168,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         String measurementName = getIndividualFixedValueFullName(filterMethod, measName, String.valueOf(refValue));
         HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementName, false,
                 new double[] { -1, 1 });
-        ImageI dispImage = inputObjects.convertToImage("Thresholded", hues, 32, true);
+        ImageI dispImage = inputObjects.convertToImage("Thresholded", hues, 32, true, false);
         SetLookupTable.setLUT(dispImage, LUTs.BlackSpectrum(), SetLookupTable.ChannelModes.ALL_CHANNELS, 0);
 
         // Replacing
@@ -182,19 +180,19 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         thresholdTextField.selectAll();
 
         // Removing temporary measurements
-        for (Obj inputObj : inputObjects.values())
+        for (ObjI inputObj : inputObjects.values())
             inputObj.removeMeasurement(measurementName);
 
     }
 
-    public static int process(Objs inputObjects, String measName, double refValue, String filterMethod,
-            boolean storeIndividual, boolean remove, Objs outputObjects) {
+    public static int process(ObjsI inputObjects, String measName, double refValue, String filterMethod,
+            boolean storeIndividual, boolean remove, ObjsI outputObjects) {
         String measurementName = getIndividualFixedValueFullName(filterMethod, measName, String.valueOf(refValue));
 
         int count = 0;
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // Skipping this object if it doesn't have the measurement
             Measurement measurement = inputObject.getMeasurement(measName);
@@ -241,7 +239,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         // Getting input objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         if (liveSelection)
             refValue = getThreshold(inputObjects, measName, refValue, filterMethod);
@@ -250,7 +248,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         parameters.getParameter(REFERENCE_VALUE).setValue(refValue);
         GUI.updateParameters(false, null);
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
 
         int count = process(inputObjects, measName, refValue, filterMethod, storeIndividual, remove, outputObjects);
 

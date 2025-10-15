@@ -8,10 +8,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -99,14 +99,14 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
     }
 
-    long[] getLargestObjectCentroid(Objs inputObjects) {
+    long[] getLargestObjectCentroid(ObjsI inputObjects) {
         if (inputObjects.size() == 0)
             return null;
 
         // Getting the largest object
-        Obj largestObject = null;
+        ObjI largestObject = null;
         int largestSize = 0;
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             int currentSize = inputObject.size();
             if (currentSize > largestSize) {
                 largestSize = currentSize;
@@ -243,7 +243,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
             // break;
 
             case PositionModes.LARGEST_OBJ_CENTROID:
-                Objs inputObjects = workspace.getObjects(inputObjectsName);
+                ObjsI inputObjects = workspace.getObjects(inputObjectsName);
                 long[] centres = getLargestObjectCentroid(inputObjects);
 
                 // If no objects were present, create a blank image

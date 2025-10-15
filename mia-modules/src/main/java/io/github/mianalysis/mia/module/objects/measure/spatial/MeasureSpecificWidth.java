@@ -14,14 +14,13 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.GetObjectSurface;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -156,7 +155,7 @@ public class MeasureSpecificWidth extends Module {
         return "SPECIFIC_WIDTH // " + prefix + measurementName;
     }
 
-    public static Point<Double> getCentroid(final Obj obj) {
+    public static Point<Double> getCentroid(final ObjI obj) {
         final double xMeas = obj.getXMean(true);
         final double yMeas = obj.getYMean(true);
         final double zMeas = obj.getZMean(true, true);
@@ -178,7 +177,7 @@ public class MeasureSpecificWidth extends Module {
 
     }
 
-    public static Point<Double> getObjectReference(final Obj obj, final String xMeasName, final String yMeasName,
+    public static Point<Double> getObjectReference(final ObjI obj, final String xMeasName, final String yMeasName,
             final String zMeasName) {
         final SpatCal spatCal = obj.getSpatialCalibration();
 
@@ -190,7 +189,7 @@ public class MeasureSpecificWidth extends Module {
 
     }
 
-    public static WidthMeasurementResult getExtentAlongAxis(final Obj obj, final Point<Double> ref1,
+    public static WidthMeasurementResult getExtentAlongAxis(final ObjI obj, final Point<Double> ref1,
             final Point<Double> ref2) {
         // Getting calibration to convert z into px
         final double dppXY = obj.getSpatialCalibration().dppXY;
@@ -202,8 +201,8 @@ public class MeasureSpecificWidth extends Module {
         final Line primaryLine = new Line(vector1, vector2, 1.0E-10D);
 
         // Getting surface points
-        Objs tempCollection = new Objs("Surfaces", obj.getObjectCollection());
-        Obj surface = GetObjectSurface.getSurface(obj, tempCollection, false);
+        ObjsI tempCollection = ObjsFactories.getDefaultFactory().createFromExampleObjs("Surfaces", obj.getObjectCollection());
+        ObjI surface = GetObjectSurface.getSurface(obj, tempCollection, false);
 
         // Storing candidate points
         HashSet<Point<Integer>> candidates = new HashSet<Point<Integer>>();
@@ -246,7 +245,7 @@ public class MeasureSpecificWidth extends Module {
 
     }
 
-    static void addMeasurements(Obj obj, WidthMeasurementResult result, String prefix) {
+    static void addMeasurements(ObjI obj, WidthMeasurementResult result, String prefix) {
         obj.addMeasurement(new Measurement(getFullName(Measurements.WIDTH_PX, prefix), result.calculateWidth(true)));
         obj.addMeasurement(new Measurement(getFullName(Measurements.WIDTH_CAL, prefix), result.calculateWidth(false)));
         obj.addMeasurement(new Measurement(getFullName(Measurements.X1_PX, prefix), result.getEnd1().x));
@@ -282,7 +281,7 @@ public class MeasureSpecificWidth extends Module {
 
         final String prefix = parameters.getValue(MEASUREMENT_PREFIX, workspace);
 
-        final Objs inputObjects = workspace.getObjects(inputObjectsName);
+        final ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         ImageI referenceImage1 = null;
         if (refMode1.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
@@ -294,7 +293,7 @@ public class MeasureSpecificWidth extends Module {
             referenceImage2 = workspace.getImage(referenceImageName2);
         }
 
-        for (final Obj inputObject : inputObjects.values()) {
+        for (final ObjI inputObject : inputObjects.values()) {
             final Point<Double> ref1;
             final Point<Double> ref2;
 

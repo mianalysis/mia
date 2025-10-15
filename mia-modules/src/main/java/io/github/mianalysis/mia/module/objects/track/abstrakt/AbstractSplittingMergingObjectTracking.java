@@ -3,9 +3,10 @@ package io.github.mianalysis.mia.module.objects.track.abstrakt;
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -24,12 +25,12 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         super(name, modules);
     }
 
-    public static void addTrackSegmentRelationships(Obj inputObject, Obj trackSegmentObject, String trackObjectsName) {
+    public static void addTrackSegmentRelationships(ObjI inputObject, ObjI trackSegmentObject, String trackObjectsName) {
         inputObject.addParent(trackSegmentObject);
         trackSegmentObject.addChild(inputObject);
 
         // Getting track and reassigning associations
-        Obj trackObject = inputObject.getParent(trackObjectsName);
+        ObjI trackObject = inputObject.getParent(trackObjectsName);
         trackObject.removeChild(inputObject);
         inputObject.removeParent(trackObject.getName());
         trackObject.addChild(trackSegmentObject);
@@ -37,11 +38,11 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
 
     }
 
-    public static void addPreviousObjectsToTrackSegment(Obj inputObject, Obj trackSegmentObject,
+    public static void addPreviousObjectsToTrackSegment(ObjI inputObject, ObjI trackSegmentObject,
             String trackObjectsName) {
         // Adding to previous partners as long as that partner doesn't already have an
         // assigned track segment
-        Objs previousObjects = inputObject.getPreviousPartners(inputObject.getName());
+        ObjsI previousObjects = inputObject.getPreviousPartners(inputObject.getName());
 
         // If the current object was the result of a merge (i.e. multiple previous
         // partners), don't assign track fragment
@@ -49,7 +50,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
             return;
 
         // Adding relationships
-        Obj previousObject = previousObjects.getFirst();
+        ObjI previousObject = previousObjects.getFirst();
 
         // If this object has already been assigned, skip it
         if (previousObject.getParent(trackSegmentObject.getName()) != null)
@@ -66,18 +67,18 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
 
     }
 
-    public static void addNextObjectsToTrackSegment(Obj inputObject, Obj trackSegmentObject,
+    public static void addNextObjectsToTrackSegment(ObjI inputObject, ObjI trackSegmentObject,
             String trackObjectsName) {
         // Adding to next partners as long as that partner doesn't already have an
         // assigned track segment
-        Objs nextObjects = inputObject.getNextPartners(inputObject.getName());
+        ObjsI nextObjects = inputObject.getNextPartners(inputObject.getName());
 
         // If the current object splits at the next step, don't assign any further
         if (nextObjects.size() != 1)
             return;
 
         // Adding relationships
-        Obj nextObject = nextObjects.getFirst();
+        ObjI nextObject = nextObjects.getFirst();
 
         // If this object has already been assigned, skip it
         if (nextObject.getParent(trackSegmentObject.getName()) != null)
@@ -105,8 +106,8 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         String trackSegmentObjectsName = parameters.getValue(TRACK_SEGMENT_OBJECTS, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs trackObjects = new Objs(trackObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
@@ -117,7 +118,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
 
         // Clearing previous relationships and measurements (in case module has been
         // generateModuleList before)
-        for (Obj inputObj : inputObjects.values()) {
+        for (ObjI inputObj : inputObjects.values()) {
             inputObj.removeParent(trackObjectsName);
             inputObj.removeParent(trackSegmentObjectsName);
             inputObj.removePartners(inputObjectsName);
@@ -131,19 +132,19 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         addSpotMeasurements(inputObjects, spotCollection);
 
         if (allowSplit || allowMerge) {
-            Objs trackSegmentObjects = new Objs(trackSegmentObjectsName, inputObjects);
+            ObjsI trackSegmentObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackSegmentObjectsName, inputObjects);
             workspace.addObjects(trackSegmentObjects);
 
             // Inserting track segments between tracks and input objects
             // Iterating over each spot, adding its partners to the current segment unless
             // they are already in one
-            for (Obj inputObject : inputObjects.values()) {
+            for (ObjI inputObject : inputObjects.values()) {
                 // If this object has already been assigned, skip it
                 if (inputObject.getParent(trackSegmentObjectsName) != null)
                     continue;
 
                 // Creating a new track segment object
-                Obj trackSegmentObject = trackSegmentObjects.createAndAddNewObject(new PointListFactory());
+                ObjI trackSegmentObject = trackSegmentObjects.createAndAddNewObject(new PointListFactory());
 
                 addTrackSegmentRelationships(inputObject, trackSegmentObject, trackObjectsName);
 

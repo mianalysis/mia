@@ -46,7 +46,7 @@ import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.util.Threads;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
@@ -58,7 +58,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 	private final SpotCollection spots;
 
-	private final Objs objs;
+	private final ObjsI objs;
 
 	private final double minIoU;
 
@@ -74,7 +74,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 	 * CONSTRUCTOR
 	 */
 
-	public OverlapTracker3D(final SpotCollection spots, final Objs objs, final double minIoU,
+	public OverlapTracker3D(final SpotCollection spots, final ObjsI objs, final double minIoU,
 			final boolean allowTrackSplitting, final boolean allowTrackMerging) {
 		this.spots = spots;
 		this.objs = objs;
@@ -249,7 +249,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 	}
 
-	private static Map<Spot, Volume> createGeometry(final Iterable<Spot> spots, final Objs objs) {
+	private static Map<Spot, Volume> createGeometry(final Iterable<Spot> spots, final ObjsI objs) {
 		final Map<Spot, Volume> geometries = new HashMap<>();
 
 		for (final Spot spot : spots)

@@ -29,9 +29,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -117,22 +117,22 @@ public class TrackEditor extends Module {
 
     }
 
-    public static Model initialiseModel(Objs trackObjects, String inputSpotObjectsName) {
+    public static Model initialiseModel(ObjsI trackObjects, String inputSpotObjectsName) {
         // Initialising the stores for tracks and spots
         SpotCollection spotCollection = new SpotCollection();
         SimpleWeightedGraph<Spot, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 
         // Converting tracks to TrackMate Model object
-        for (Obj trackObj : trackObjects.values()) {
+        for (ObjI trackObj : trackObjects.values()) {
             // Getting associated objects
-            Objs spotObjects = trackObj.getChildren(inputSpotObjectsName);
+            ObjsI spotObjects = trackObj.getChildren(inputSpotObjectsName);
 
             // Ensuring the spots are ordered by time
-            ArrayList<Obj> orderedSpots = new ArrayList<>(spotObjects.values());
+            ArrayList<ObjI> orderedSpots = new ArrayList<>(spotObjects.values());
             orderedSpots.sort((s1, s2) -> s1.getT() - s2.getT());
 
             Spot prevSpot = null;
-            for (Obj spotObj : orderedSpots) {
+            for (ObjI spotObj : orderedSpots) {
                 double xCent = spotObj.getXMean(true);
                 double yCent = spotObj.getYMean(true);
                 double zCent = spotObj.getZMean(true, false);
@@ -165,7 +165,7 @@ public class TrackEditor extends Module {
 
     }
 
-    public static void addSpots(Objs spotObjects, Model model) {
+    public static void addSpots(ObjsI spotObjects, Model model) {
         SpotCollection spots = model.getSpots();
 
         int maxID = spotObjects.getLargestID();
@@ -174,7 +174,7 @@ public class TrackEditor extends Module {
             if (spot.getFeatures().containsKey("ID"))
                 continue;
 
-            Obj spotObj = spotObjects.createAndAddNewObject(new PointListFactory(), ++maxID);
+            ObjI spotObj = spotObjects.createAndAddNewObjectWithID(new PointListFactory(), ++maxID);
             int x = (int) Math.round(spot.getFeature(Spot.POSITION_X));
             int y = (int) Math.round(spot.getFeature(Spot.POSITION_Y));
             int z = (int) Math.round(spot.getFeature(Spot.POSITION_Z));
@@ -191,7 +191,7 @@ public class TrackEditor extends Module {
         }
     }
 
-    public static void removeDeletedSpots(Objs spotObjects, Model model) {
+    public static void removeDeletedSpots(ObjsI spotObjects, Model model) {
         // Finding any "spots" that have been deleted
         SpotCollection spots = model.getSpots();
 
@@ -203,7 +203,7 @@ public class TrackEditor extends Module {
         while (iterator.hasNext()) {
             int ID = iterator.next();
             if (!availableIDs.contains(ID)) {
-                Obj spot = spotObjects.get(ID);
+                ObjI spot = spotObjects.get(ID);
                 spot.removeRelationships();
                 iterator.remove();
             }
@@ -271,7 +271,7 @@ public class TrackEditor extends Module {
 
     }
 
-    static void addSingleTimepointTracks(Set<Integer> trackIDs, Objs spotObjects, Objs trackObjects,
+    static void addSingleTimepointTracks(Set<Integer> trackIDs, ObjsI spotObjects, ObjsI trackObjects,
             String inputTrackObjectsName) {
         // Determining the maximum current track ID
         int maxID = 0;
@@ -279,9 +279,9 @@ public class TrackEditor extends Module {
             maxID = Math.max(maxID, trackID);
 
         // Single timepoint "tracks" aren't assigned track IDs yet, so doing that now
-        for (Obj obj : spotObjects.values()) {
+        for (ObjI obj : spotObjects.values()) {
             if (obj.getParent(inputTrackObjectsName) == null) {
-                Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), ++maxID + 1);
+                ObjI trackObject = trackObjects.createAndAddNewObjectWithID(new PointListFactory(), ++maxID + 1);
                 obj.addParent(trackObject);
                 trackObject.addChild(obj);
             }
@@ -293,11 +293,11 @@ public class TrackEditor extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
-        Objs trackObjects = workspace.getObjects(inputTrackObjectsName);
+        ObjsI trackObjects = workspace.getObjects(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
-        Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
+        ObjsI spotObjects = workspace.getObjects(inputSpotObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(DISPLAY_IMAGE, workspace);
@@ -327,7 +327,7 @@ public class TrackEditor extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), trackID + 1);
+            ObjI trackObject = trackObjects.createAndAddNewObjectWithID(new PointListFactory(), trackID + 1);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -338,10 +338,10 @@ public class TrackEditor extends Module {
             });
 
             // Finding the relevant spot and adding relationships
-            Obj prevSpotObj = null;
+            ObjI prevSpotObj = null;
             for (Spot currSpot : spots) {
                 int spotID = (int) Math.round(currSpot.getFeature("ID"));
-                Obj currSpotObj = spotObjects.get(spotID);
+                ObjI currSpotObj = spotObjects.get(spotID);
 
                 // Adding the connection between instance and summary objects
                 currSpotObj.addParent(trackObject);

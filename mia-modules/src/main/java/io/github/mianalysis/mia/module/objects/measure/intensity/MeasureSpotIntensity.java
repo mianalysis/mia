@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -185,7 +185,7 @@ public class MeasureSpotIntensity extends Module {
 
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         double radius = parameters.getValue(FIXED_VALUE,workspace);
@@ -197,7 +197,7 @@ public class MeasureSpotIntensity extends Module {
 
         // Checking if there are any objects to measure
         if (inputObjects.size() == 0) {
-            for (Obj inputObject : inputObjects.values()) {
+            for (ObjI inputObject : inputObjects.values()) {
                 if ((boolean) parameters.getValue(MEASURE_MEAN,workspace))
                     inputObject.getParent(inputObjectsName).addMeasurement(
                             new Measurement(getFullName(inputImageName, Measurements.MEAN), Double.NaN));
@@ -220,14 +220,14 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
-        Objs tempObjects = new Objs("Temp", inputObjects);
-        for (Obj inputObject : inputObjects.values()) {
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Temp", inputObjects);
+        for (ObjI inputObject : inputObjects.values()) {
             switch (radiusSource) {
                 case RadiusSources.MEASUREMENT:
                     radius = inputObject.getMeasurement(radiusMeasurement).getValue();
                     break;
                 case RadiusSources.PARENT_MEASUREMENT:
-                    Obj parentObject = inputObject.getParent(parentObjectsName);
+                    ObjI parentObject = inputObject.getParent(parentObjectsName);
                     if (parentObject == null)
                         radius = Double.NaN;
                     else
@@ -240,7 +240,7 @@ public class MeasureSpotIntensity extends Module {
             double zPosition = inputObject.getZMean(true, false);
             int[] centroid = new int[] { (int) Math.round(xPosition), (int) Math.round(yPosition),
                     (int) Math.round(zPosition) };
-            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject, tempObjects, centroid, (int) Math.round(radius), false);
+            ObjI spotObject = GetLocalObjectRegion.getLocalRegion(inputObject, tempObjects, centroid, (int) Math.round(radius), false);
 
             CumStat cs = new CumStat();
 

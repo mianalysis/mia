@@ -1,20 +1,20 @@
 package io.github.mianalysis.mia.object.measurements;
 
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 public class ChildCountMeasurement extends Measurement {
-    private Obj obj;
+    private ObjI obj;
     private String childName;
 
-    public ChildCountMeasurement(String name, Obj obj, String childName) {
+    public ChildCountMeasurement(String name, ObjI obj, String childName) {
         super(name);
         this.obj = obj;
         this.childName = childName;
     }
     
     public double getValue() {
-        Objs children = obj.getChildren(childName);
+        ObjsI children = obj.getChildren(childName);
 
         if (children == null)
             return 0;

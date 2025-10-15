@@ -9,9 +9,9 @@ import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
@@ -31,11 +31,11 @@ public class MIA_GetLongestPathCoordinates extends MacroOperation {
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 
         // Getting the input objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null)
             return "";
         
-        Obj inputObject = inputObjects.get(inputObjectsID);
+        ObjI inputObject = inputObjects.get(inputObjectsID);
         ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
 
         StringBuilder sb = new StringBuilder();        

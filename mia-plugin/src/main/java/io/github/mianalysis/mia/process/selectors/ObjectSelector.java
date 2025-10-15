@@ -82,22 +82,22 @@ import io.github.mianalysis.mia.gui.parametercontrols.WiderDropDownCombo;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
 public class ObjectSelector implements ActionListener, KeyListener, MouseListener {
-    private Objs outputObjects = null;
-    private Objs outputTrackObjects = null;
+    private ObjsI outputObjects = null;
+    private ObjsI outputTrackObjects = null;
 
     private boolean overflow = false;
     private String saveObjectsPath = null;
@@ -263,9 +263,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         updateOverlay();
 
         // Initialising output objects
-        outputObjects = new Objs(outputObjectsName, inputIpl);
+        outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
         if (outputTrackObjectsName != null)
-            outputTrackObjects = new Objs(outputTrackObjectsName, inputIpl);
+            outputTrackObjects = ObjsFactories.getDefaultFactory().createFromImage(outputTrackObjectsName, inputIpl);
 
         // Displaying the image and showing the control
         createControlPanel(instructionText);
@@ -326,11 +326,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         return displayIpl;
     }
 
-    public Objs getObjects() {
+    public ObjsI getObjects() {
         return outputObjects;
     }
 
-    public Objs getTrackObjects() {
+    public ObjsI getTrackObjects() {
         return outputTrackObjects;
     }
 
@@ -746,9 +746,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    public static void applyTemporalInterpolation(Objs inputObjects, Objs trackObjects, CoordinateSetFactoryI factory)
+    public static void applyTemporalInterpolation(ObjsI inputObjects, ObjsI trackObjects, CoordinateSetFactoryI factory)
             throws IntegerOverflowException {
-        for (Obj trackObj : trackObjects.values()) {
+        for (ObjI trackObj : trackObjects.values()) {
             // Keeping a record of frames which have an object (these will be unchanged, so
             // don't need a new object)
             ArrayList<Integer> timepoints = new ArrayList<>();
@@ -757,7 +757,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             ImageI binaryImage = trackObj.getAsImage("Track", false);
 
             // Adding each timepoint object (child) to this image
-            for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
+            for (ObjI childObj : trackObj.getChildren(inputObjects.getName()).values()) {
                 childObj.addToImage(binaryImage, Float.MAX_VALUE);
                 timepoints.add(childObj.getT());
             }
@@ -765,12 +765,12 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             applyTemporalInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            Objs interpObjs = binaryImage.convertImageToObjects(factory, inputObjects.getName(), true);
+            ObjsI interpObjs = binaryImage.convertImageToObjects(factory, inputObjects.getName(), true);
 
             // Transferring new timepoint objects to inputObjects Objs
-            Iterator<Obj> iterator = interpObjs.values().iterator();
+            Iterator<ObjI> iterator = interpObjs.values().iterator();
             while (iterator.hasNext()) {
-                Obj interpObj = iterator.next();
+                ObjI interpObj = iterator.next();
 
                 // If this timepoint already existed, it doesn't need a new object
                 if (timepoints.contains(interpObj.getT()))
@@ -1162,7 +1162,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             // Creating the new object
             CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(volumeTypeString);
-            Obj outputObject = outputObjects.createAndAddNewObject(factory, ID);
+            ObjI outputObject = outputObjects.createAndAddNewObjectWithID(factory, ID);
 
             for (ObjRoi objRoi : currentRois) {
                 Roi roi = objRoi.getRoi();
@@ -1199,15 +1199,15 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 continue;
 
             // Creating current track object
-            Obj outputTrack = outputTrackObjects.createAndAddNewObject(new PointListFactory(), ID);
+            ObjI outputTrack = outputTrackObjects.createAndAddNewObjectWithID(new PointListFactory(), ID);
 
             CoordinateSetFactoryI factory = CoordinateSetFactories.getFactory(volumeTypeString);
 
-            HashMap<Integer, Obj> objectsByT = new HashMap<>();
+            HashMap<Integer, ObjI> objectsByT = new HashMap<>();
             for (ObjRoi objRoi : currentRois) {
                 int t = objRoi.getT();
 
-                Obj outputObject;
+                ObjI outputObject;
                 if (objectsByT.containsKey(t)) {
                     // Getting a previously-defined Obj
                     outputObject = objectsByT.get(t);
@@ -1502,10 +1502,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
-    public void addObjects(Objs inputObjects, String existingObjectType, @Nullable String metadataForClass) {
+    public void addObjects(ObjsI inputObjects, String existingObjectType, @Nullable String metadataForClass) {
         TreeSet<String> existingClasses = classSelector != null ? new TreeSet<>() : null;
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             String assignedClass = null;
             if (metadataForClass != null) {
                 ObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);

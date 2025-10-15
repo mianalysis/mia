@@ -23,9 +23,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -114,7 +114,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         return "";
     }
 
-    public static void saveObjects(String outPath, String fileMode, Objs inputObjects,
+    public static void saveObjects(String outPath, String fileMode, ObjsI inputObjects,
             @Nullable String trackObjectsName, @Nullable String metadataItem) {
         String moduleName = new SaveObjectsAsROIs(null).getName();
         try {
@@ -129,11 +129,11 @@ public class SaveObjectsAsROIs extends AbstractSaver {
 
             int total = inputObjects.size();
             int count = 0;
-            for (Obj inputObject : inputObjects.values()) {
+            for (ObjI inputObject : inputObjects.values()) {
                 int oid = inputObject.getID();
                 int tid = -1;
                 if (trackObjectsName != null) {
-                    Obj parentObject = inputObject.getParent(trackObjectsName);
+                    ObjI parentObject = inputObject.getParent(trackObjectsName);
                     if (parentObject != null)
                         tid = parentObject.getID();
                 }
@@ -220,7 +220,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         if (!addClass)
             metadataItem = null;
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         String outputPath = getOutputPath(modules, workspace);
         String outputName = getOutputName(modules, workspace);

@@ -9,9 +9,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -91,17 +91,17 @@ public class AdoptParentMeasurement extends Module {
         String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_MEASUREMENT, workspace);
 
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
 
         if (objects == null)
             return Status.PASS;
 
         int count = 0;
         int total = objects.size();
-        for (Obj obj : objects.values()) {
+        for (ObjI obj : objects.values()) {
             count++;
 
-            Obj parentObj = obj.getParent(parentObjectsName);
+            ObjI parentObj = obj.getParent(parentObjectsName);
             if (parentObj == null)
                 continue;
 

@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -66,7 +66,7 @@ public class WhiteBalanceCorrection extends Module {
 
 
 
-    static double[] getRGBIntensities(ImageI image, Obj refObj) {
+    static double[] getRGBIntensities(ImageI image, ObjI refObj) {
         // Splitting channels
         ImagePlus[] channels = ChannelSplitter.split(image.getImagePlus());
 
@@ -109,7 +109,7 @@ public class WhiteBalanceCorrection extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
         String refObjectsName = parameters.getValue(REFERENCE_OBJECT,workspace);
-        Objs refObjects = workspace.getObjects(refObjectsName);
+        ObjsI refObjects = workspace.getObjects(refObjectsName);
 
         // Checking input image has 3 channels
         if (inputImage.getImagePlus().getNChannels() != 3) {
@@ -121,7 +121,7 @@ public class WhiteBalanceCorrection extends Module {
         if (!applyToInput) {inputImage = ImageFactory.createImage(outputImageName,inputImage.getImagePlus().duplicate());}
 
         // Getting the reference object.  If there is more than 1 object in the collection, use the largest.
-        Obj refObj = null;
+        ObjI refObj = null;
         if (refObjects.size() == 0) {
             MIA.log.writeWarning("No objects found to use as reference.  Skipping white balance correction.");
             return Status.PASS;

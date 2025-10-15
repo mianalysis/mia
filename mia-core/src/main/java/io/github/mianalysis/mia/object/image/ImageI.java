@@ -11,8 +11,8 @@ import ij.gui.Overlay;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
@@ -67,11 +67,11 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public void setRawImage(Object image);
 
-    public Objs initialiseEmptyObjs(String outputObjectsName);
+    public ObjsI initialiseEmptyObjs(String outputObjectsName);
 
-    public void addObject(Obj obj, float hue);
+    public void addObject(ObjI obj, float hue);
 
-    public void addObjectCentroid(Obj obj, float hue);
+    public void addObjectCentroid(ObjI obj, float hue);
 
     public ImageI<T> duplicate(String outputImageName);
 
@@ -96,9 +96,9 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
         UseGlobalImageRenderer.useGlobalImageRenderer = state;
     }
 
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject);
+    public ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject);
 
-    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground);
+    public ObjsI convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground);
 
     public void addMeasurement(Measurement measurement);
 

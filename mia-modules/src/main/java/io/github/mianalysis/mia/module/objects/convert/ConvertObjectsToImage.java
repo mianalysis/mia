@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.visualise.overlays.AbstractOverlay;
 import io.github.mianalysis.mia.module.visualise.overlays.AddAllObjectPoints;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -233,7 +233,7 @@ public class ConvertObjectsToImage extends Module {
     String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR, workspace);
     String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR, workspace);
 
-    Objs inputObjects = workspace.getObjects(objectName);
+    ObjsI inputObjects = workspace.getObjects(objectName);
 
     // Generating colours for each object
     HashMap<Integer, Float> hues = null;
@@ -289,7 +289,7 @@ public class ConvertObjectsToImage extends Module {
         break;
       case OutputModes.WHOLE_OBJECT:
       default:
-        outputImage = inputObjects.convertToImage(outputImageName, hues, bitDepth, nanBackground);
+        outputImage = inputObjects.convertToImage(outputImageName, hues, bitDepth, nanBackground, false);
         break;
     }
 

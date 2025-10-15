@@ -16,9 +16,10 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -156,16 +157,16 @@ public class GrowObjects extends Module {
         return Categories.OBJECTS_PROCESS;
     }
 
-    public static Objs process(Objs inputObjects, @Nullable String outputObjectsName, String startingObjectsMode,
+    public static ObjsI process(ObjsI inputObjects, @Nullable String outputObjectsName, String startingObjectsMode,
             String growthMode, @Nullable String intensityImageName, @Nullable String maskImageName,
             boolean blackBackground, int connectivity, boolean excludeInputRegions, WorkspaceI workspace) {
-        Objs outputObjects = outputObjectsName == null ? null : new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = outputObjectsName == null ? null : ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Loop over timepoints
         int nFrames = inputObjects.getNFrames();
         for (int frame = 0; frame < nFrames; frame++) {
             // Get objects in this frame
-            Objs currObjs = inputObjects.getObjectsInFrame("This frame", frame);
+            ObjsI currObjs = inputObjects.getObjectsInFrame("This frame", frame);
 
             // Get marker, intensity and mask images
             ImageI markerImage = getMarkerImage(currObjs, startingObjectsMode);
@@ -185,16 +186,16 @@ public class GrowObjects extends Module {
             ImageI segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
 
             // Get objects and create new object collection
-            Objs segmentedObjects = segmentedImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
+            ObjsI segmentedObjects = segmentedImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
 
             // Update timepoint, set relationships, (optionally) apply mask and add objects
             // to output collection
-            for (Obj segmentedObject : segmentedObjects.values()) {
+            for (ObjI segmentedObject : segmentedObjects.values()) {
                 segmentedObject.setT(frame);
 
                 Point<Integer> coord = segmentedObject.getCoordinateIterator().next();
                 int ID = (int) Math.round(segmentedIpl.getStack().getProcessor(coord.z + 1).getf(coord.x, coord.y));
-                Obj inputObject = inputObjects.get(ID);
+                ObjI inputObject = inputObjects.get(ID);
 
                 if (excludeInputRegions)
                     for (Point<Integer> point : inputObject.getCoordinateSet())
@@ -221,7 +222,7 @@ public class GrowObjects extends Module {
 
     }
 
-    public static ImageI getMarkerImage(Objs objects, String startingObjectsMode) {
+    public static ImageI getMarkerImage(ObjsI objects, String startingObjectsMode) {
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(objects, false);
 
         switch (startingObjectsMode) {
@@ -229,16 +230,16 @@ public class GrowObjects extends Module {
                 return objects.convertCentroidsToImage("Markers", hues, 32, false);
             case StartingObjectModes.SURFACES:
             default:
-                return objects.convertToImage("Markers", hues, 32, false);
+                return objects.convertToImage("Markers", hues, 32, false, false);
         }
     }
 
-    public static ImageI getIntensityImage(Objs objects, int frame, String growthMode, @Nullable String intensityImageName, WorkspaceI workspace) {
+    public static ImageI getIntensityImage(ObjsI objects, int frame, String growthMode, @Nullable String intensityImageName, WorkspaceI workspace) {
         switch (growthMode) {
             case GrowthModes.EQUIDISTANT_FROM_OBJECTS:
             default:
                 // No intensity image, so creating blank (black) image
-                ImageI intensityImage = objects.convertToImageBinary();
+                ImageI intensityImage = objects.convertToImageBinary(objects.getName());
                 ImageMath.process(intensityImage, ImageMath.CalculationModes.MULTIPLY, 0);
                 return intensityImage;
             case GrowthModes.FROM_IMAGE:
@@ -248,7 +249,7 @@ public class GrowObjects extends Module {
         }
     }
 
-    public static ImageI getMaskImage(Objs objects, int frame, @Nullable String maskImageName, boolean blackBackground,
+    public static ImageI getMaskImage(ObjsI objects, int frame, @Nullable String maskImageName, boolean blackBackground,
             WorkspaceI workspace) {
         if (maskImageName != null) {
             ImageI fullMaskImage = workspace.getImage(maskImageName);
@@ -280,7 +281,7 @@ public class GrowObjects extends Module {
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
         boolean excludeInputRegions = parameters.getValue(EXCLUDE_INPUT_REGIONS, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         if (outputMode.equals(OutputModes.UPDATE_INPUT))
             outputObjectsName = null;
@@ -288,7 +289,7 @@ public class GrowObjects extends Module {
         if (!maskOutputObjects)
             maskImageName = null;
 
-        Objs outputObjects = process(inputObjects, outputObjectsName, startingObjectMode, growthMode,
+        ObjsI outputObjects = process(inputObjects, outputObjectsName, startingObjectMode, growthMode,
                 intensityImageName, maskImageName, blackBackground, connectivity, excludeInputRegions, workspace);
 
         if (outputObjects == null) {

@@ -22,9 +22,10 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -100,7 +101,7 @@ public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
 
         // Setting up the parameters
         CentroidBUnwarpJParam centroidParam = (CentroidBUnwarpJParam) param;
-        centroidParam.centroidObjects = (Objs) workspace.getObjects(parameters.getValue(INPUT_OBJECTS, workspace));
+        centroidParam.centroidObjects = (ObjsI) workspace.getObjects(parameters.getValue(INPUT_OBJECTS, workspace));
         centroidParam.maxSeparation = (float) (double) parameters.getValue(MAXIMUM_SEPARATION, workspace);
         centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON, workspace);
         centroidParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO, workspace);
@@ -118,19 +119,19 @@ public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
         String referenceMode = p.referenceMode;
         int numPrevFrames = p.numPrevFrames;
 
-        Objs candidates1 = new Objs("Candidates1", p.centroidObjects);
-        Objs candidates2 = new Objs("Candidates2", p.centroidObjects);
+        ObjsI candidates1 = ObjsFactories.getDefaultFactory().createFromExampleObjs("Candidates1", p.centroidObjects);
+        ObjsI candidates2 = ObjsFactories.getDefaultFactory().createFromExampleObjs("Candidates2", p.centroidObjects);
 
-        for (Obj obj : p.centroidObjects.values()) {
+        for (ObjI obj : p.centroidObjects.values()) {
             switch ((String) p.registrationAxis) {
                 case RegistrationAxes.TIME:
                     if ((referenceMode.equals(ReferenceModes.FIRST_FRAME) && obj.getT() == 0)
                             || (referenceMode.equals(ReferenceModes.PREVIOUS_N_FRAMES)
                                     && ((p.t - obj.getT()) <= numPrevFrames && (p.t - obj.getT()) > 0))) {
-                        Obj candidateObj = candidates1.createAndAddNewObject(obj.getCoordinateSetFactory());
+                        ObjI candidateObj = candidates1.createAndAddNewObject(obj.getCoordinateSetFactory());
                         candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
                     } else if (obj.getT() == p.t) {
-                        Obj candidateObj = candidates2.createAndAddNewObject(obj.getCoordinateSetFactory());
+                        ObjI candidateObj = candidates2.createAndAddNewObject(obj.getCoordinateSetFactory());
                         candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
                     }
                     break;
@@ -140,10 +141,10 @@ public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
                             || (referenceMode.equals(ReferenceModes.PREVIOUS_N_FRAMES)
                                     && ((p.t - obj.getZMean(true, false)) <= numPrevFrames
                                             && (p.t - obj.getZMean(true, false)) > 0))) {
-                        Obj candidateObj = candidates1.createAndAddNewObject(obj.getCoordinateSetFactory());
+                        ObjI candidateObj = candidates1.createAndAddNewObject(obj.getCoordinateSetFactory());
                         candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
                     } else if (obj.getZMean(true, false) == p.t) {
-                        Obj candidateObj = candidates2.createAndAddNewObject(obj.getCoordinateSetFactory());
+                        ObjI candidateObj = candidates2.createAndAddNewObject(obj.getCoordinateSetFactory());
                         candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
                     }
                     break;
@@ -256,7 +257,7 @@ public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
         float maxSeparation = 100f;
         float maxEpsilon = 25.0f;
         float minInlierRatio = 0.05f;
-        Objs centroidObjects = null;
+        ObjsI centroidObjects = null;
         String referenceMode = null;
         int numPrevFrames = 0;
         String registrationAxis = null;

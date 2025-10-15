@@ -23,9 +23,10 @@ import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -257,13 +258,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
             ArrayList<PointPair> pairs) {
         SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(), referenceIpr.getHeight(), 2);
-        Objs oc = new Objs("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
+        ObjsI oc = ObjsFactories.getDefaultFactory().createFromSpatCal("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
         ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
                 referenceIpr.getBitDepth());
 
         showIpl.getStack().setProcessor(referenceIpr, 1);
         for (PointPair pair : pairs) {
-            Obj obj = oc.createAndAddNewObject(new PointListFactory());
+            ObjI obj = oc.createAndAddNewObject(new PointListFactory());
             try {
                 obj.addCoord((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()),
                         0);
@@ -275,7 +276,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         showIpl.getStack().setProcessor(warpedIpr, 2);
         for (PointPair pair : pairs) {
-            Obj obj = oc.createAndAddNewObject(new PointListFactory());
+            ObjI obj = oc.createAndAddNewObject(new PointListFactory());
             try {
                 obj.addCoord((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()),
                         1);

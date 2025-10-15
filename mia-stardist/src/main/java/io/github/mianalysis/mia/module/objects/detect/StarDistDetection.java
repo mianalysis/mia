@@ -31,9 +31,10 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -295,7 +296,7 @@ public class StarDistDetection extends Module {
         double frameInterval = ipl.getCalibration().frameInterval;
 
         // Creating output object collection
-        Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         ImageJ ij = new ImageJ();
         Context context = MIA.getIJService().context();
@@ -357,7 +358,7 @@ public class StarDistDetection extends Module {
 
                     for (Integer idx : indices) {
                         PolygonRoi polygon = polygons.getPolygonRoi(idx);
-                        Obj obj = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                        ObjI obj = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                         try {
                             obj.addPointsFromRoi(polygon, z);
                         } catch (IntegerOverflowException e) {

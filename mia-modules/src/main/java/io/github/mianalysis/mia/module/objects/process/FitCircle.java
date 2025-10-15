@@ -19,10 +19,11 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.transform.ProjectObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -216,11 +217,11 @@ public class FitCircle extends Module {
 
     }
 
-    public void processObject(Obj inputObject, Objs outputObjects, String objectOutputMode)
+    public void processObject(ObjI inputObject, ObjsI outputObjects, String objectOutputMode)
             throws IntegerOverflowException {
         // Get projected object
-        Objs projectedObjects = new Objs("Projected", inputObject.getObjectCollection());
-        Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
+        ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Projected", inputObject.getObjectCollection());
+        ObjI projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
         Roi inputObjectRoi = projObj.getRoi(0);
         Roi circleRoi = fitCircle(inputObjectRoi);
@@ -232,7 +233,7 @@ public class FitCircle extends Module {
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
-                Obj circleObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+                ObjI circleObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
                 circleObject.addPointsFromRoi(circleRoi, (int) Math.round(inputObject.getZMean(true, false)));
                 circleObject.setT(inputObject.getT());
 
@@ -252,7 +253,7 @@ public class FitCircle extends Module {
         }
     }
 
-    public void addMeasurements(Obj inputObject, Roi circleRoi) {
+    public void addMeasurements(ObjI inputObject, Roi circleRoi) {
         if (circleRoi == null) {
             inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_CAL, Double.NaN));
@@ -303,7 +304,7 @@ public class FitCircle extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
@@ -311,9 +312,9 @@ public class FitCircle extends Module {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
-        Objs outputObjects = null;
+        ObjsI outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = new Objs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 
@@ -326,9 +327,9 @@ public class FitCircle extends Module {
         // workspace where necessary
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
-        Objs finalOutputObjects = outputObjects;
+        ObjsI finalOutputObjects = outputObjects;
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
                     processObject(inputObject, finalOutputObjects, objectOutputMode);

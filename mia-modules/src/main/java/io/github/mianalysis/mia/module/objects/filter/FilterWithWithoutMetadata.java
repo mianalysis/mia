@@ -2,17 +2,18 @@ package io.github.mianalysis.mia.module.objects.filter;
 
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
@@ -110,7 +111,7 @@ public class FilterWithWithoutMetadata extends AbstractObjectFilter {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
@@ -122,12 +123,12 @@ public class FilterWithWithoutMetadata extends AbstractObjectFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
 
         int count = 0;
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // Removing the object if it has no children
             ObjMetadata metadataItem = inputObject.getMetadataItem(metaName);

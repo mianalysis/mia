@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
@@ -30,7 +30,7 @@ public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
 
         String units = SpatialUnit.getOMEUnit().getSymbol();
 
-        Obj inputObject = workspace.getObjects(inputObjectsName).get(inputObjectsID);
+        ObjI inputObject = workspace.getObjects(inputObjectsName).get(inputObjectsID);
 
         ResultsTable resultsTable = new ResultsTable();
         resultsTable.setValue("X-mean (px)",0,inputObject.getXMean(true));

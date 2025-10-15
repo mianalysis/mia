@@ -16,10 +16,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -174,7 +174,7 @@ public class ApplyWekaObjectClassification extends Module {
 
     }
 
-    public static void addProbabilityMeasurements(Obj inputObject, Instances instances, double[] classification) {
+    public static void addProbabilityMeasurements(ObjI inputObject, Instances instances, double[] classification) {
         for (int i = 0; i < instances.numClasses(); i++) {
             String measName = getProbabilityMeasurementName(instances.classAttribute().value(i));
             Measurement measurement = new Measurement(measName, classification[i]);
@@ -186,7 +186,7 @@ public class ApplyWekaObjectClassification extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting other parameters
         String classifierPath = parameters.getValue(CLASSIFIER_PATH, workspace);
@@ -212,8 +212,8 @@ public class ApplyWekaObjectClassification extends Module {
         }
 
         // Adding object instances
-        ArrayList<Obj> processedObjects = new ArrayList<>();
-        for (Obj inputObject : inputObjects.values()) {
+        ArrayList<ObjI> processedObjects = new ArrayList<>();
+        for (ObjI inputObject : inputObjects.values()) {
             double[] objAttr = new double[measurementNames.size() - 1];
             for (int i = 0; i < measurementNames.size() - 1; i++) {
                 Measurement measurement = inputObject.getMeasurement(measurementNames.get(i));
@@ -243,7 +243,7 @@ public class ApplyWekaObjectClassification extends Module {
 
             String classMeasName = getClassMeasurementName(instances);
             for (int i = 0; i < processedObjects.size(); i++) {
-                Obj inputObject = processedObjects.get(i);
+                ObjI inputObject = processedObjects.get(i);
                 double[] classification = classifications[i];
                 addProbabilityMeasurements(inputObject, instances, classification);
 

@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -44,7 +44,7 @@ public class ReassignEnclosedObjects extends Module {
         super("Reassign enclosed objects", modules);
     }
 
-    public static void testEnclosed(Obj object, Objs objects) throws IntegerOverflowException {
+    public static void testEnclosed(ObjI object, ObjsI objects) throws IntegerOverflowException {
         // If this object has already been removed (i.e. ID = -1), skip it
         if (object.getID() == -1)
             return;
@@ -60,7 +60,7 @@ public class ReassignEnclosedObjects extends Module {
 
         // Iterating over each object in the collection, testing if the centroid is
         // present in the filled object
-        for (Obj testObject : objects.values()) {
+        for (ObjI testObject : objects.values()) {
             // We don't want to test against the same object
             if (object.getID() == testObject.getID())
                 continue;
@@ -118,11 +118,11 @@ public class ReassignEnclosedObjects extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         int count = 0;
         try {
-            for (Obj object : inputObjects.values()) {
+            for (ObjI object : inputObjects.values()) {
                 testEnclosed(object, inputObjects);
                 writeProgressStatus(++count, inputObjects.size(), "objects");
             }

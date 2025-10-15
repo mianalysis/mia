@@ -11,10 +11,11 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ScaleStack;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -121,7 +122,7 @@ public class ScaleObjectSet extends Module {
         boolean zAdoptCalibration = parameters.getValue(Z_ADOPT_CALIBRATION, workspace);
         double zScaleFactor = parameters.getValue(Z_SCALE_FACTOR, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Updating resolution values if fixed resolution not already provided
         switch (xScaleMode) {
@@ -179,11 +180,11 @@ public class ScaleObjectSet extends Module {
         else if (zScaleMode.equals(ScaleModes.MATCH_OBJECTS) && zAdoptCalibration)
             dppZOut = workspace.getObjects(zObjectsName).getDppZ();
 
-        Objs outputObjects = new Objs(outputObjectsName, dppXYOut, dppZOut, unitsOut, xResolution, yResolution,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createObjs(outputObjectsName, dppXYOut, dppZOut, unitsOut, xResolution, yResolution,
                 zResolution, inputObjects.getNFrames(), inputObjects.getFrameInterval(),
                 inputObjects.getTemporalUnit());
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             ImagePlus inputIpl = inputObject.getAsImage("Object image", true).getImagePlus();
             ImagePlus outputIpl = Scaler.resize(inputIpl, xResolution, yResolution, zResolution, "None");
 
@@ -197,12 +198,12 @@ public class ScaleObjectSet extends Module {
             outputCal.fps = 1 / TemporalUnit.getOMEUnit().convertValue(inputObjects.getFrameInterval(), UNITS.SECOND);
 
             ImageI objectImage = ImageFactory.createImage("Object image", outputIpl);
-            Objs tempObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), outputObjectsName, true);
+            ObjsI tempObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), outputObjectsName, true);
 
             if (tempObjects.size() == 0)
                 continue;
 
-            Obj scaledObject = tempObjects.getFirst();
+            ObjI scaledObject = tempObjects.getFirst();
             scaledObject.setID(inputObject.getID());
             scaledObject.setT(inputObject.getT());
             scaledObject.addParent(inputObject);

@@ -19,9 +19,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -441,7 +442,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    void loadObjects(Objs outputObjects, File inputFile, WorkspaceI workspace, @Nullable Objs parentObjects) {
+    void loadObjects(ObjsI outputObjects, File inputFile, WorkspaceI workspace, @Nullable ObjsI parentObjects) {
         int xIdx = parameters.getValue(X_COLUMN_INDEX, workspace);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX, workspace);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX, workspace);
@@ -475,7 +476,7 @@ public class ObjectLoader extends Module {
                     int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
                     // Creating the object and setting the coordinates
-                    Obj obj = outputObjects.createAndAddNewObject(factory);
+                    ObjI obj = outputObjects.createAndAddNewObject(factory);
                     try {
                         obj.addCoord(x, y, z);
                     } catch (PointOutOfRangeException e) {
@@ -491,8 +492,8 @@ public class ObjectLoader extends Module {
                         // Getting parent object. If it doesn't exist, adding it to the parent objects
                         // collection
                         if (!parentObjects.containsKey(parentID))
-                            parentObjects.createAndAddNewObject(obj.getCoordinateSetFactory(), parentID);
-                        Obj parentObj = parentObjects.get(parentID);
+                            parentObjects.createAndAddNewObjectWithID(obj.getCoordinateSetFactory(), parentID);
+                        ObjI parentObj = parentObjects.get(parentID);
 
                         // Adding relationship
                         parentObj.addChild(obj);
@@ -595,15 +596,15 @@ public class ObjectLoader extends Module {
         SpatCal calibration = new SpatCal(spatialCal[0], spatialCal[1], units, limits[0], limits[1], limits[2]);
 
         // Creating output objects
-        Objs outputObjects = new Objs(outputObjectsName, calibration, limits[3], temporalCal,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, limits[3], temporalCal,
                 TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
-        Objs parentObjects = null;
+        ObjsI parentObjects = null;
         if (createParents) {
             double frameInterval = parameters.getValue(FRAME_INTERVAL, workspace);
-            parentObjects = new Objs(parentObjectsName, calibration, limits[3], frameInterval,
+            parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, limits[3], frameInterval,
                     TemporalUnit.getOMEUnit());
             workspace.addObjects(parentObjects);
         }

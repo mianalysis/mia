@@ -19,9 +19,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -73,9 +74,9 @@ public abstract class AbstractObjectTracking extends Module {
 
     protected abstract SpotTracker getSpotTracker(SpotCollection spotCollection, WorkspaceI workspace);
 
-    protected abstract void addSpotMeasurements(Objs inputObjects, SpotCollection spotCollection);
+    protected abstract void addSpotMeasurements(ObjsI inputObjects, SpotCollection spotCollection);
 
-    public static void process(Objs inputObjects, Objs trackObjects, SpotCollection spotCollection,
+    public static void process(ObjsI inputObjects, ObjsI trackObjects, SpotCollection spotCollection,
             SpotTracker spotTracker) {
         Model model = new Model();
         model.setSpots(spotCollection, false);
@@ -92,8 +93,8 @@ public abstract class AbstractObjectTracking extends Module {
             Spot sourceSpot = result.getEdgeSource(edge);
             Spot targetSpot = result.getEdgeTarget(edge);
 
-            Obj sourceObj = inputObjects.get(sourceSpot.getFeature(Features.MIA_ID).intValue());
-            Obj targetObj = inputObjects.get(targetSpot.getFeature(Features.MIA_ID).intValue());
+            ObjI sourceObj = inputObjects.get(sourceSpot.getFeature(Features.MIA_ID).intValue());
+            ObjI targetObj = inputObjects.get(targetSpot.getFeature(Features.MIA_ID).intValue());
 
             sourceObj.addPartner(targetObj);
             targetObj.addPartner(sourceObj);
@@ -104,7 +105,7 @@ public abstract class AbstractObjectTracking extends Module {
         Set<Integer> trackIDs = trackModel.trackIDs(false);
 
         for (Integer trackID : trackIDs) {
-            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory(), trackID + 1);
+            ObjI trackObject = trackObjects.createAndAddNewObjectWithID(new PointListFactory(), trackID + 1);
 
             Set<DefaultWeightedEdge> trackEdges = trackModel.trackEdges(trackID);
 
@@ -112,8 +113,8 @@ public abstract class AbstractObjectTracking extends Module {
                 Spot sourceSpot = result.getEdgeSource(trackEdge);
                 Spot targetSpot = result.getEdgeTarget(trackEdge);
 
-                Obj sourceObj = inputObjects.get(sourceSpot.getFeature(Features.MIA_ID).intValue());
-                Obj targetObj = inputObjects.get(targetSpot.getFeature(Features.MIA_ID).intValue());
+                ObjI sourceObj = inputObjects.get(sourceSpot.getFeature(Features.MIA_ID).intValue());
+                ObjI targetObj = inputObjects.get(targetSpot.getFeature(Features.MIA_ID).intValue());
 
                 sourceObj.addPartner(targetObj);
                 targetObj.addPartner(sourceObj);
@@ -128,21 +129,21 @@ public abstract class AbstractObjectTracking extends Module {
         }
 
         // Ensuring every object has a track
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             if (inputObject.getParent(trackObjects.getName()) != null)
                 continue;
 
-            Obj trackObject = trackObjects.createAndAddNewObject(new PointListFactory());
+            ObjI trackObject = trackObjects.createAndAddNewObject(new PointListFactory());
             inputObject.addParent(trackObject);
             trackObject.addChild(inputObject);
 
         }
     }
 
-    public static SpotCollection createSpotCollection(Objs inputObjects, boolean asROIs) {
+    public static SpotCollection createSpotCollection(ObjsI inputObjects, boolean asROIs) {
         SpotCollection spotCollection = new SpotCollection();
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Spot spot = convertObjToSpot(inputObject);
 
             if (asROIs)
@@ -156,7 +157,7 @@ public abstract class AbstractObjectTracking extends Module {
 
     }
 
-    public static Spot convertObjToSpot(Obj obj) {
+    public static Spot convertObjToSpot(ObjI obj) {
         double x = obj.getXMean(true);
         double y = obj.getYMean(true);
         double z = obj.getZMean(true, false);
@@ -168,7 +169,7 @@ public abstract class AbstractObjectTracking extends Module {
 
     }
 
-    public static void addSpotRoi(Spot spot, Obj obj) {
+    public static void addSpotRoi(Spot spot, ObjI obj) {
         Roi roi = obj.getProjected().getRoi(0);
         float[] fx = roi.getFloatPolygon().xpoints;
         float[] fy = roi.getFloatPolygon().ypoints;
@@ -185,11 +186,11 @@ public abstract class AbstractObjectTracking extends Module {
 
     }
 
-    public static void showObjects(Objs spotObjects, String trackObjectsName) {
+    public static void showObjects(ObjsI spotObjects, String trackObjectsName) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
         // Creating a parent-ID encoded image of the objects
-        ImageI dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false);
+        ImageI dispImage = spotObjects.convertToImage(spotObjects.getName(), hues, 32, false, false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();
@@ -207,8 +208,8 @@ public abstract class AbstractObjectTracking extends Module {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs trackObjects = new Objs(trackObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
@@ -219,7 +220,7 @@ public abstract class AbstractObjectTracking extends Module {
 
         // Clearing previous relationships and measurements (in case module has been
         // generateModuleList before)
-        for (Obj inputObj : inputObjects.values()) {
+        for (ObjI inputObj : inputObjects.values()) {
             inputObj.removeParent(trackObjectsName);
             inputObj.removePartners(inputObjectsName);
         }

@@ -16,10 +16,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.tools.EllipseCalculator;
 import io.github.mianalysis.mia.module.objects.transform.ProjectObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -179,13 +180,13 @@ public class FitEllipse extends Module {
 
     }
 
-    public void processObject(Obj inputObject, Objs outputObjects, String objectOutputMode,
+    public void processObject(ObjI inputObject, ObjsI outputObjects, String objectOutputMode,
             double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
 
         // Get projected object
-        Objs projectedObjects = new Objs("Projected", inputObject.getObjectCollection());
-        Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
+        ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Projected", inputObject.getObjectCollection());
+        ObjI projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
         boolean fitSurface = fittingMode.equals(FittingModes.FIT_TO_SURFACE);
         calculator = new EllipseCalculator(projObj, maxAxisLength, fitSurface);
@@ -200,7 +201,7 @@ public class FitEllipse extends Module {
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
-                Obj ellipseObject = createNewObject(inputObject, ellipse, outputObjects);
+                ObjI ellipseObject = createNewObject(inputObject, ellipse, outputObjects);
                 if (ellipseObject != null) {
                     outputObjects.add(ellipseObject);
                     ellipseObject.removeOutOfBoundsCoords();
@@ -213,11 +214,11 @@ public class FitEllipse extends Module {
         }
     }
 
-    public Obj createNewObject(Obj inputObject, Volume ellipse, Objs outputObjects) {
+    public ObjI createNewObject(ObjI inputObject, Volume ellipse, ObjsI outputObjects) {
         if (ellipse == null)
             return null;
 
-        Obj ellipseObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+        ObjI ellipseObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         ellipseObject.setCoordinateSet(ellipse.getCoordinateSet());
         ellipseObject.setT(inputObject.getT());
 
@@ -228,13 +229,13 @@ public class FitEllipse extends Module {
 
     }
 
-    public void updateInputObject(Obj inputObject, Volume ellipse) {
+    public void updateInputObject(ObjI inputObject, Volume ellipse) {
         inputObject.getCoordinateSet().clear();
         inputObject.setCoordinateSet(ellipse.getCoordinateSet());
 
     }
 
-    public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {
+    public void addMeasurements(ObjI inputObject, EllipseCalculator calculator) {
         double dppXY = inputObject.getDppXY();
 
         double xCent = calculator.getXCentre();
@@ -293,7 +294,7 @@ public class FitEllipse extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
@@ -304,9 +305,9 @@ public class FitEllipse extends Module {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
-        Objs outputObjects = null;
+        ObjsI outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = new Objs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 
@@ -319,9 +320,9 @@ public class FitEllipse extends Module {
         // workspace where necessary
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
-        Objs finalOutputObjects = outputObjects;
+        ObjsI finalOutputObjects = outputObjects;
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
                     processObject(inputObject, finalOutputObjects, objectOutputMode, maxAxisLength, fittingMode);

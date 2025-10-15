@@ -25,10 +25,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -304,7 +304,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public static double[] getMeanObjectLocation(Obj object) {
+    public static double[] getMeanObjectLocation(ObjI object) {
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
         double zMean = object.getZMean(true, false);
@@ -314,7 +314,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public static double[] getLocation(Obj object, String labelPosition, int xOffset, int yOffset,
+    public static double[] getLocation(ObjI object, String labelPosition, int xOffset, int yOffset,
             @Nullable int[] positions, @Nullable String[] measurementNames) {
         double[] location;
         switch (labelPosition) {
@@ -340,7 +340,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public static double[] getInsideObjectLocation(Obj obj) {
+    public static double[] getInsideObjectLocation(ObjI obj) {
         // Binarise object and calculate its distance map
         ImageI binaryImage = obj.getAsImage("Binary", false);
         BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1, true);
@@ -367,7 +367,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public static double[] getMeasurementObjectLocation(Obj obj, String[] measurements) {
+    public static double[] getMeasurementObjectLocation(ObjI obj, String[] measurements) {
         double x;
         double y;
         double z;
@@ -392,7 +392,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public static void addOverlay(ImagePlus ipl, Objs inputObjects, String labelPosition,
+    public static void addOverlay(ImagePlus ipl, ObjsI inputObjects, String labelPosition,
             HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, boolean centreText,
             HashMap<Integer, Color> colours,
             boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread,
@@ -409,7 +409,7 @@ public class AddLabels extends AbstractOverlay {
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object : inputObjects.values()) {
+            for (ObjI object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
@@ -475,7 +475,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public HashMap<Integer, String> getLabels(Objs inputObjects, String labelMode, DecimalFormat df,
+    public HashMap<Integer, String> getLabels(ObjsI inputObjects, String labelMode, DecimalFormat df,
             String childObjectsForLabelName, String parentObjectsForLabelName, String partnerObjectsForLabelName,
             String measurementForLabel, String objectMetadataForLabel) {
         switch (labelMode) {
@@ -535,7 +535,7 @@ public class AddLabels extends AbstractOverlay {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);

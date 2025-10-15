@@ -16,10 +16,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -197,7 +197,7 @@ public class NormaliseIntensity extends Module {
     }
 
     public static void applyNormalisationWithinObjects(ImagePlus ipl, String calculationMode, double[] clipFraction,
-            @Nullable double[] intRange, @Nullable Obj maskObject) {
+            @Nullable double[] intRange, @Nullable ObjI maskObject) {
         int bitDepth = ipl.getProcessor().getBitDepth();
 
         for (int c = 1; c <= ipl.getNChannels(); c++) {
@@ -293,10 +293,10 @@ public class NormaliseIntensity extends Module {
                 break;
 
             case RegionModes.PER_OBJECT:
-                Objs inputObjects = workspace.getObjects(inputObjectsName);
+                ObjsI inputObjects = workspace.getObjects(inputObjectsName);
                 int count = 0;
                 int total = inputObjects.size();
-                for (Obj inputObject : inputObjects.values()) {
+                for (ObjI inputObject : inputObjects.values()) {
                     applyNormalisationWithinObjects(inputImagePlus, calculationMode, clipFraction, intRange,
                             inputObject);
                     writeProgressStatus(++count, total, "objects");

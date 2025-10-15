@@ -7,11 +7,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -68,25 +68,25 @@ public class MergeSingleClass extends Module {
         return "Combines all objects at a single timepoint from a specific object collection into a single object.  Due to the fact objects are stored in 3D, there are still separate objects for each timepoint.";
     }
 
-    public static Objs mergeSingleClass(Objs inputObjects, String outputObjectsName) {
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+    public static ObjsI mergeSingleClass(ObjsI inputObjects, String outputObjectsName) {
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Iterating over all input objects, adding their coordinates to the relevant
         // object
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             // Getting the current timepoint instance
             int t = inputObject.getT();
 
             // If it doesn't already exist, creating a new object for this timepoint. The ID
             // of this object is the timepoint index (numbering starting at 1).
             if (!outputObjects.containsKey(t + 1)) {
-                Obj outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, t + 1, inputObject);
+                ObjI outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, t + 1, inputObject);
                 outputObject.setT(t);
                 outputObjects.add(outputObject);
             }
 
             // Adding coordinates to this object
-            Obj outputObject = outputObjects.get(t + 1);
+            ObjI outputObject = outputObjects.get(t + 1);
             outputObject.getCoordinateSet().addAll(inputObject.getCoordinateSet());
 
         }
@@ -98,11 +98,11 @@ public class MergeSingleClass extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Merging objects
-        Objs outputObjects = mergeSingleClass(inputObjects, outputObjectsName);
+        ObjsI outputObjects = mergeSingleClass(inputObjects, outputObjectsName);
 
         // Adding objects to workspace
         workspace.addObjects(outputObjects);

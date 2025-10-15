@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.refs.collections;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -44,7 +44,7 @@ public class ObjMetadataRefs extends TreeMap<String, ObjMetadataRef>
         return true;
     }
 
-    public void addBlankMetadata(Obj obj) {
+    public void addBlankMetadata(ObjI obj) {
         MIA.log.writeError("To implement - ObjMetadataRefs");
         // for (ObjMetadataRef ref : values())
         //     obj.addMeasurement(new Measurement(ref.getName(), Double.NaN));

@@ -25,9 +25,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -149,7 +150,7 @@ public class LoadObjectsFromROIs extends Module {
         return "";
     }
 
-    public static void loadObjects(String filePath, Objs outputObjects, @Nullable Objs trackObjects, boolean assignClass) {
+    public static void loadObjects(String filePath, ObjsI outputObjects, @Nullable ObjsI trackObjects, boolean assignClass) {
         byte[] buf = new byte[1024];
         int len;
 
@@ -220,15 +221,15 @@ public class LoadObjectsFromROIs extends Module {
 
         // If dealing with tracks, reapply partnerships between adjacent timepoints
         if (trackObjects != null) {
-            for (Obj track : trackObjects.values()) {
+            for (ObjI track : trackObjects.values()) {
                 // Sorting children by timepoint
-                TreeMap<Integer, Obj> children = new TreeMap<>();
-                for (Obj child : track.getChildren(outputObjects.getName()).values())
+                TreeMap<Integer, ObjI> children = new TreeMap<>();
+                for (ObjI child : track.getChildren(outputObjects.getName()).values())
                     children.put(child.getT(), child);
 
                 // Iterating over map, adding partnerships
-                Obj previousChild = null;
-                for (Obj child : children.values()) {
+                ObjI previousChild = null;
+                for (ObjI child : children.values()) {
                     if (previousChild != null) {
                         previousChild.addPartner(child);
                         child.addPartner(previousChild);
@@ -242,7 +243,7 @@ public class LoadObjectsFromROIs extends Module {
 
     }
 
-    static void addRoi(Objs outputObjects, Objs trackObjects, Roi roi, String name, boolean assignClass) {
+    static void addRoi(ObjsI outputObjects, ObjsI trackObjects, Roi roi, String name, boolean assignClass) {
         Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-[0-9]]+)_T([0-9]+)_Z([0-9]+)_?(.*)");
 
         name = name.substring(0, name.length() - 4);
@@ -257,13 +258,13 @@ public class LoadObjectsFromROIs extends Module {
                 return;
 
             if (!outputObjects.keySet().contains(oid))
-                outputObjects.createAndAddNewObject(new QuadtreeFactory(), oid);
-            Obj outputObject = outputObjects.get(oid);
+                outputObjects.createAndAddNewObjectWithID(new QuadtreeFactory(), oid);
+            ObjI outputObject = outputObjects.get(oid);
 
             if (trackObjects != null && tid != -1) {
                 if (!trackObjects.keySet().contains(tid))
-                    trackObjects.createAndAddNewObject(new QuadtreeFactory(), tid);
-                Obj trackObject = trackObjects.get(tid);
+                    trackObjects.createAndAddNewObjectWithID(new QuadtreeFactory(), tid);
+                ObjI trackObject = trackObjects.get(tid);
                 trackObject.addChild(outputObject);
                 outputObject.addParent(trackObject);
             }
@@ -277,7 +278,7 @@ public class LoadObjectsFromROIs extends Module {
         } else {
             // If the name doesn't match, just add it at the first location with the next ID
             // number.
-            Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+            ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
             outputObject.addPointsFromRoi(roi, 0);
             outputObject.setT(0);
 
@@ -320,12 +321,12 @@ public class LoadObjectsFromROIs extends Module {
         SpatCal cal = SpatCal.getFromImage(refIpl);
         int nFrames = refIpl.getNFrames();
         double frameInterval = refIpl.getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
-        Objs trackObjects = null;
+        ObjsI trackObjects = null;
         if (assignTracks) {
-            trackObjects = new Objs(trackObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+            trackObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(trackObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
             workspace.addObjects(trackObjects);
         }
 

@@ -15,9 +15,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -104,7 +105,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
         SpatCal cal = SpatCal.getFromImage(ipl);
         int nFrames = ipl.getNFrames();
         double frameInterval = ipl.getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         xRange = resampleRange(xRange, samplingRate);
         yRange = resampleRange(yRange, samplingRate);
@@ -167,7 +168,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
                     }
                     for (double[] rectangle : rectangles) {
                         // Initialising the object
-                        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                        ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
 
                         // Getting rectangle parameters
                         int x = (int) Math.round(rectangle[0]) * samplingRate;

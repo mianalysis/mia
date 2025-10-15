@@ -9,9 +9,9 @@ import com.drew.lang.annotations.Nullable;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -44,11 +44,11 @@ public abstract class AbstractObjectFilter extends Module {
 
     }
 
-    protected static void processRemoval(Obj inputObject, @Nullable Objs outputObjects, Iterator<Obj> iterator) {
+    protected static void processRemoval(ObjI inputObject, @Nullable ObjsI outputObjects, Iterator<ObjI> iterator) {
         // Getting existing relationships
-        LinkedHashMap<String, Objs> children = inputObject.getAllChildren();
-        LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
-        LinkedHashMap<String, Objs> partners = inputObject.getAllPartners();
+        LinkedHashMap<String, ObjsI> children = inputObject.getAllChildren();
+        LinkedHashMap<String, ObjI> parents = inputObject.getParents(true);
+        LinkedHashMap<String, ObjsI> partners = inputObject.getAllPartners();
 
         // Removing existing relationships
         inputObject.removeRelationships();
@@ -58,22 +58,22 @@ public abstract class AbstractObjectFilter extends Module {
             inputObject.setObjectCollection(outputObjects);
 
             // Adding new child relationships
-            for (Objs childCollection : children.values()) {
-                for (Obj childObject : childCollection.values()) {
+            for (ObjsI childCollection : children.values()) {
+                for (ObjI childObject : childCollection.values()) {
                     inputObject.addChild(childObject);
                     childObject.addParent(inputObject);
                 }
             }
 
             // Adding new parent relationships
-            for (Obj parentObject : parents.values()) {
+            for (ObjI parentObject : parents.values()) {
                 parentObject.addChild(inputObject);
                 inputObject.addParent(parentObject);
             }
 
             // Adding new partner relationships
-            for (Objs partnerCollection : partners.values()) {
-                for (Obj partnerObject : partnerCollection.values()) {
+            for (ObjsI partnerCollection : partners.values()) {
+                for (ObjI partnerObject : partnerCollection.values()) {
                     inputObject.addPartner(partnerObject);
                     partnerObject.addPartner(inputObject);
                 }

@@ -13,9 +13,9 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageColocalisation;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -186,7 +186,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         return "COLOCALISATION // " + imageName1 + "-" + imageName2 + "_" + measurement;
     }
 
-    public void setObjectMeasurements(Obj obj, HashMap<String, Double> measurements, String imageName1,
+    public void setObjectMeasurements(ObjI obj, HashMap<String, Double> measurements, String imageName1,
             String imageName2) {
         for (String measurementName : measurements.keySet()) {
             String fullName = getFullName(imageName1, imageName2, measurementName);
@@ -222,7 +222,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE, workspace);
         String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1, workspace);
         String imageMeasurementName2 = parameters.getValue(IMAGE_MEASUREMENT_2, workspace);
@@ -239,7 +239,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         // null is returned
         int count = 0;
         int total = objects.size();
-        for (Obj inputObject : objects.values()) {
+        for (ObjI inputObject : objects.values()) {
             ImageI maskImage = null;
 
             if (inputObject.size() > 0)

@@ -36,9 +36,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -179,17 +180,17 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public static Objs runKMeansPlusPlus(Objs outputObjects, List<LocationWrapper> locations, int kClusters,
+    public static ObjsI runKMeansPlusPlus(ObjsI outputObjects, List<LocationWrapper> locations, int kClusters,
             int maxIterations) {
         KMeansPlusPlusClusterer<LocationWrapper> clusterer = new KMeansPlusPlusClusterer<>(kClusters, maxIterations);
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster : clusters) {
-            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+            ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (LocationWrapper point : cluster.getPoints()) {
-                Obj pointObject = point.getObject();
+                ObjI pointObject = point.getObject();
                 outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
@@ -198,9 +199,9 @@ public class SingleClassCluster extends Module {
 
         // Add single object cluster object for unclustered objects
         for (LocationWrapper wrapper : locations) {
-            Obj obj = wrapper.getObject();
+            ObjI obj = wrapper.getObject();
             if (obj.getParent(outputObjects.getName()) == null) {
-                Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+                ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -213,7 +214,7 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public static Objs runDBSCAN(Objs outputObjects, List<LocationWrapper> locations, double eps, int minPoints) {
+    public static ObjsI runDBSCAN(ObjsI outputObjects, List<LocationWrapper> locations, double eps, int minPoints) {
         double[][] data = new double[locations.size()][2];
         for (int i = 0; i < locations.size(); i++)
             data[i] = locations.get(i).getPoint();
@@ -231,13 +232,13 @@ public class SingleClassCluster extends Module {
             if (cluster.isNoise())
                 continue;
 
-            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+            ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             for (DBIDIter it = cluster.getIDs().iter(); it.valid(); it.advance()) {
 
                 // To get the vector use:
                 int offset = ids.getOffset(it);
-                Obj pointObject = locations.get(offset).getObject();
+                ObjI pointObject = locations.get(offset).getObject();
                 outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
@@ -262,9 +263,9 @@ public class SingleClassCluster extends Module {
 
         // Add single object cluster object for unclustered objects
         for (LocationWrapper wrapper : locations) {
-            Obj obj = wrapper.getObject();
+            ObjI obj = wrapper.getObject();
             if (obj.getParent(outputObjects.getName()) == null) {
-                Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+                ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -277,11 +278,11 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public void applyClusterVolume(Obj outputObject, Objs childObjects, double eps) throws IntegerOverflowException {
-        Objs children = outputObject.getChildren(childObjects.getName());
+    public void applyClusterVolume(ObjI outputObject, ObjsI childObjects, double eps) throws IntegerOverflowException {
+        ObjsI children = outputObject.getChildren(childObjects.getName());
         CoordinateSetI coordinateSet = outputObject.getCoordinateSet();
 
-        for (Obj child : children.values())
+        for (ObjI child : children.values())
             coordinateSet.addAll(child.getCoordinateSet().duplicate());
 
     }
@@ -310,11 +311,11 @@ public class SingleClassCluster extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS, workspace);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME, workspace);
@@ -326,7 +327,7 @@ public class SingleClassCluster extends Module {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
 
         // If there are no input objects skipping this module
-        Obj firstObject = inputObjects.getFirst();
+        ObjI firstObject = inputObjects.getFirst();
         if (firstObject == null) {
             workspace.addObjects(outputObjects);
             return Status.PASS;
@@ -342,7 +343,7 @@ public class SingleClassCluster extends Module {
             for (int f = temporalLimits[0]; f <= temporalLimits[1]; f++) {
                 // Getting locations in current frame
                 List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
-                for (Obj inputObject : inputObjects.values()) {
+                for (ObjI inputObject : inputObjects.values()) {
                     if (inputObject.getT() == f) {
                         locations.add(new LocationWrapper(inputObject));
                     }
@@ -364,7 +365,7 @@ public class SingleClassCluster extends Module {
         } else {
             // Adding points to collection
             List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
-            for (Obj inputObject : inputObjects.values())
+            for (ObjI inputObject : inputObjects.values())
                 locations.add(new LocationWrapper(inputObject));
 
             // Running clustering system
@@ -383,7 +384,7 @@ public class SingleClassCluster extends Module {
         int count = 0;
         int total = outputObjects.size();
         if (applyVolume) {
-            for (Obj outputObject : outputObjects.values()) {
+            for (ObjI outputObject : outputObjects.values()) {
                 try {
                     applyClusterVolume(outputObject, inputObjects, eps);
                 } catch (IntegerOverflowException e) {
@@ -399,7 +400,7 @@ public class SingleClassCluster extends Module {
         if (showOutput) {
             // Generating colours
             HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(inputObjects, outputObjectsName, true);
-            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName, hues, 8, true).getImagePlus();
+            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName, hues, 8, true, false).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1, 1, 1);
             dispIpl.updateChannelAndDraw();
@@ -548,10 +549,10 @@ public class SingleClassCluster extends Module {
     }
 
     class LocationWrapper implements Clusterable {
-        private Obj object;
+        private ObjI object;
         private double[] location;
 
-        public LocationWrapper(Obj object) {
+        public LocationWrapper(ObjI object) {
             this.object = object;
 
             // Getting the centroid of the current object
@@ -569,7 +570,7 @@ public class SingleClassCluster extends Module {
 
         }
 
-        public Obj getObject() {
+        public ObjI getObject() {
             return object;
 
         }

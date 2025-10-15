@@ -14,10 +14,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -110,11 +110,11 @@ public class MeasureObjectOverlap extends Module {
 
     }
 
-    public static int getNOverlappingPoints(Obj inputObject1, Objs inputObjects2, boolean linkInSameFrame) {
+    public static int getNOverlappingPoints(ObjI inputObject1, ObjsI inputObjects2, boolean linkInSameFrame) {
         Volume overlap = VolumeFactories.getDefaultFactory().createVolume(inputObject1.getCoordinateSetFactory(), inputObject1.getSpatialCalibration());
 
         // Running through each object, getting a list of overlapping pixels
-        for (Obj obj2 : inputObjects2.values()) {
+        for (ObjI obj2 : inputObjects2.values()) {
             // If only linking objects in the same frame, we may just skip this object
             if (linkInSameFrame && inputObject1.getT() != obj2.getT())
                 continue;
@@ -154,10 +154,10 @@ public class MeasureObjectOverlap extends Module {
 
         // Getting input objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1,workspace);
-        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
+        ObjsI inputObjects1 = workspace.getObjects(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(OBJECT_SET_2,workspace);
-        Objs inputObjects2;
+        ObjsI inputObjects2;
 
         switch (objectSourceMode) {
             default:
@@ -188,7 +188,7 @@ public class MeasureObjectOverlap extends Module {
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based
         // on their index
-        for (Obj obj1 : inputObjects1.values()) {
+        for (ObjI obj1 : inputObjects1.values()) {
             Runnable task = () -> {
                 double dppXY = obj1.getDppXY();
                 double dppZ = obj1.getDppZ();
@@ -218,7 +218,7 @@ public class MeasureObjectOverlap extends Module {
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based
         // on their index
-        for (Obj obj2 : inputObjects2.values()) {
+        for (ObjI obj2 : inputObjects2.values()) {
             Runnable task = () -> {
                 double dppXY = obj2.getDppXY();
                 double dppZ = obj2.getDppZ();

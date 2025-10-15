@@ -1,43 +1,28 @@
 package io.github.mianalysis.mia.python;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.poi.ss.formula.functions.T;
-
-import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Roi;
-import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
-import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
-import io.github.mianalysis.mia.object.units.SpatialUnit;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
-import net.imagej.ImgPlus;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 
 public class ObjAdaptor {
-    public static LinkedHashMap<String, Obj> getParents(Obj obj, boolean useFullHierarchy) {
+    public static LinkedHashMap<String, ObjI> getParents(ObjI obj, boolean useFullHierarchy) {
         if (!useFullHierarchy)
             return obj.getAllParents();
 
         // Adding each parent and then the parent of that
-        LinkedHashMap<String, Obj> parentHierarchy = new LinkedHashMap<>(obj.getAllParents());
+        LinkedHashMap<String, ObjI> parentHierarchy = new LinkedHashMap<>(obj.getAllParents());
 
         // Going through each parent, adding the parents of that.
-        for (Obj parent : obj.getAllParents().values()) {
+        for (ObjI parent : obj.getAllParents().values()) {
             if (parent == null)
                 continue;
 
-            LinkedHashMap<String, Obj> currentParents = parent.getParents(true);
+            LinkedHashMap<String, ObjI> currentParents = parent.getParents(true);
             if (currentParents == null)
                 continue;
 
@@ -49,12 +34,12 @@ public class ObjAdaptor {
 
     }
 
-    public static Obj getParent(Obj obj, String name) {
+    public static ObjI getParent(ObjI obj, String name) {
         // Split name down by " // " tokenizer
         String[] elements = name.split(" // ");
 
         // Getting the first parent
-        Obj parent = obj.getAllParents().get(elements[0]);
+        ObjI parent = obj.getAllParents().get(elements[0]);
 
         // If the first parent was the only one listed, returning this
         if (elements.length == 1)
@@ -76,22 +61,22 @@ public class ObjAdaptor {
 
     }
 
-    public static void addParent(Obj obj, Obj parent) {
+    public static void addParent(ObjI obj, ObjI parent) {
         obj.getAllParents().put(parent.getName(), parent);
     }
 
-    public static void removeParent(Obj obj, String name) {
+    public static void removeParent(ObjI obj, String name) {
         obj.getAllParents().remove(name);
     }
 
-    public static Objs getChildren(Obj obj, String name) {
+    public static ObjsI getChildren(ObjI obj, String name) {
         // Split name down by " // " tokenizer
         String[] elements = name.split(" // ");
 
         // Getting the first set of children
-        Objs allChildren = obj.getAllChildren().get(elements[0]);
+        ObjsI allChildren = obj.getAllChildren().get(elements[0]);
         if (allChildren == null)
-            return new Objs(elements[0], obj.getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExampleObjs(elements[0], obj.getObjectCollection());
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -108,10 +93,10 @@ public class ObjAdaptor {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        Objs outputChildren = new Objs(name, allChildren);
-        for (Obj child : allChildren.values()) {
-            Objs currentChildren = child.getChildren(stringBuilder.toString());
-            for (Obj currentChild : currentChildren.values())
+        ObjsI outputChildren = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allChildren);
+        for (ObjI child : allChildren.values()) {
+            ObjsI currentChildren = child.getChildren(stringBuilder.toString());
+            for (ObjI currentChild : currentChildren.values())
                 outputChildren.add(currentChild);
         }
 
@@ -119,7 +104,7 @@ public class ObjAdaptor {
 
     }
 
-    public static void addChildren(Obj obj, Objs childSet) {
+    public static void addChildren(ObjI obj, ObjsI childSet) {
         obj.getAllChildren().put(childSet.getName(), childSet);
     }
 
@@ -304,7 +289,7 @@ public class ObjAdaptor {
 
     // }
 
-    public static void addToImage(Obj obj, ImageI image, float hue) {
+    public static void addToImage(ObjI obj, ImageI image, float hue) {
         ImagePlus ipl = image.getImagePlus();
         int bitDepth = ipl.getBitDepth();
 

@@ -8,15 +8,14 @@ import java.util.TreeSet;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -110,7 +109,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     }
 
-    public static ArrayList<Integer> getIDsToRemove(Objs inputObjects, String measName, String filterMethod,
+    public static ArrayList<Integer> getIDsToRemove(ObjsI inputObjects, String measName, String filterMethod,
             boolean perTimepoint, int nMeas) {
         ArrayList<Integer> toRemove = new ArrayList<>();
 
@@ -120,9 +119,9 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         // Getting reference limits
         HashMap<Integer, double[]> minMax = getMeasurementExtremes(inputObjects, measName, perTimepoint, nMeas);
 
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
             Measurement measurement = inputObject.getMeasurement(measName);
             if (measurement == null)
                 continue;
@@ -141,7 +140,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     }
 
-    public static HashMap<Integer, double[]> getMeasurementExtremes(Objs objects, String measurementName,
+    public static HashMap<Integer, double[]> getMeasurementExtremes(ObjsI objects, String measurementName,
             boolean perTimepoint, int nMeas) {
         HashMap<Integer, double[]> minMax = new HashMap<>();
 
@@ -152,7 +151,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         for (int t = 0; t < nFrames; t++) {
             // Adding measurements to TreeSet (sorted)
             TreeSet<Double> measurementsSet = new TreeSet<>();
-            for (Obj obj : objects.values()) {
+            for (ObjI obj : objects.values()) {
                 if (perTimepoint && obj.getT() != t)
                     continue;
 
@@ -217,7 +216,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
@@ -232,7 +231,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
 
         // Identifying object IDs to remove
         ArrayList<Integer> toRemove = new ArrayList<>();
@@ -245,18 +244,18 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
                 childObjectsName = childObjectsName + names[i] + " // ";
             childObjectsName = childObjectsName + inputObjectsName;
 
-            Objs parentObjects = workspace.getObjects(names[names.length - 1]);
-            for (Obj parentObject : parentObjects.values()) {
-                Objs childObjects = parentObject.getChildren(childObjectsName);
+            ObjsI parentObjects = workspace.getObjects(names[names.length - 1]);
+            for (ObjI parentObject : parentObjects.values()) {
+                ObjsI childObjects = parentObject.getChildren(childObjectsName);
                 toRemove.addAll(getIDsToRemove(childObjects, measName, filterMethod, perTimepoint, nMeas));
             }
         } else {
             toRemove.addAll(getIDsToRemove(inputObjects, measName, filterMethod, perTimepoint, nMeas));
         }
 
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // Removing the object if it failed the test
             if (toRemove.contains(inputObject.getID()) && remove)

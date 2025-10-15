@@ -12,9 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -55,12 +56,12 @@ public abstract class ExpectedObjects {
 
     public abstract HashMap<Integer, HashMap<String, Double>> getMeasurements();
 
-    public Objs getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits,
+    public ObjsI getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits,
             boolean includeMeasurements) throws IntegerOverflowException {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, width, height, nSlices);
 
         // Initialising object store
-        Objs testObjects = new Objs(objectName, calibration, nFrames, frameInterval, temporalUnit);
+        ObjsI testObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(objectName, calibration, nFrames, frameInterval, temporalUnit);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -88,7 +89,7 @@ public abstract class ExpectedObjects {
             ID = ID + (t * 65536);
             testObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(testObjects, factory, ID));
 
-            Obj testObject = testObjects.get(ID);
+            ObjI testObject = testObjects.get(ID);
 
             try {
                 testObject.addCoord(x, y, z);
@@ -102,7 +103,7 @@ public abstract class ExpectedObjects {
         if (includeMeasurements & !mode.equals(BINARY) & !mode.equals(SIXTEEN_BIT)) {
             HashMap<Integer, HashMap<String, Double>> measurements = getMeasurements();
             if (measurements != null) {
-                for (Obj testObject : testObjects.values()) {
+                for (ObjI testObject : testObjects.values()) {
                     int ID = testObject.getID();
                     HashMap<String, Double> measurement = measurements.get(ID);
 

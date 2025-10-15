@@ -12,9 +12,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -115,34 +116,34 @@ public class CombineObjectSets extends Module {
         super("Combine object sets", modules);
     }
 
-    public static void addObjects(Objs targetObjects, Objs sourceObjects) {
+    public static void addObjects(ObjsI targetObjects, ObjsI sourceObjects) {
         // Ensuring new objects are added to end of collection
         targetObjects.recalculateMaxID();
 
-        for (Obj obj : sourceObjects.values()) {
+        for (ObjI obj : sourceObjects.values()) {
 
-            Obj newObj = targetObjects.createAndAddNewObject(obj.getCoordinateSetFactory());
+            ObjI newObj = targetObjects.createAndAddNewObject(obj.getCoordinateSetFactory());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
 
             // Transferring parents
-            LinkedHashMap<String, Obj> parents = obj.getParents(false);
+            LinkedHashMap<String, ObjI> parents = obj.getParents(false);
             newObj.setAllParents(parents);
-            for (Obj parent : parents.values())
+            for (ObjI parent : parents.values())
                 parent.addChild(newObj);
 
             // Transferring children
-            LinkedHashMap<String, Objs> children = obj.getAllChildren();
+            LinkedHashMap<String, ObjsI> children = obj.getAllChildren();
             newObj.setAllChildren(children);
-            for (Objs childSet : children.values())
-                for (Obj child : childSet.values())
+            for (ObjsI childSet : children.values())
+                for (ObjI child : childSet.values())
                     child.addParent(newObj);
 
             // Transferring partners
-            LinkedHashMap<String, Objs> partners = obj.getAllPartners();
+            LinkedHashMap<String, ObjsI> partners = obj.getAllPartners();
             newObj.setAllPartners(partners);
-            for (Objs partnerSet : partners.values())
-                for (Obj partner : partnerSet.values())
+            for (ObjsI partnerSet : partners.values())
+                for (ObjI partner : partnerSet.values())
                     partner.addPartner(newObj);
 
             // Transferring measurements
@@ -182,8 +183,8 @@ public class CombineObjectSets extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Getting objects
-        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
-        Objs inputObjects2 = workspace.getObjects(inputObjects2Name);
+        ObjsI inputObjects1 = workspace.getObjects(inputObjects1Name);
+        ObjsI inputObjects2 = workspace.getObjects(inputObjects2Name);
 
         if (allowMissingObjects)
             outputMode = OutputModes.CREATE_NEW;
@@ -207,13 +208,13 @@ public class CombineObjectSets extends Module {
                 break;
 
             case OutputModes.CREATE_NEW:
-                Objs exampleObjects = inputObjects1;
+                ObjsI exampleObjects = inputObjects1;
                 if (exampleObjects == null)
                     exampleObjects = inputObjects2;
                 if (exampleObjects == null)
                     return Status.PASS;
 
-                Objs outputObjects = new Objs(outputObjectsName, exampleObjects);
+                ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, exampleObjects);
 
                 if (inputObjects1 != null)
                     addObjects(outputObjects, inputObjects1);

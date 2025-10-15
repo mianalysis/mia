@@ -15,10 +15,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -95,12 +95,12 @@ public class CreateClassImage extends Module {
         return "Creates a class image for the specific objects.  For each object, the index of that class is assigned to all pixels.";
     }
 
-    static LinkedHashMap<Objs, Integer> getAvailableObjects(WorkspaceI workspace,
+    static LinkedHashMap<ObjsI, Integer> getAvailableObjects(WorkspaceI workspace,
             LinkedHashMap<Integer, Parameters> collections) {
-        LinkedHashMap<Objs, Integer> available = new LinkedHashMap<>();
+        LinkedHashMap<ObjsI, Integer> available = new LinkedHashMap<>();
 
         for (Parameters collection : collections.values()) {
-            Objs image = workspace.getObjects(collection.getValue(INPUT_OBJECTS, workspace));
+            ObjsI image = workspace.getObjects(collection.getValue(INPUT_OBJECTS, workspace));
             if (image == null)
                 continue;
 
@@ -120,11 +120,11 @@ public class CreateClassImage extends Module {
 
         // Getting input objects
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_OBJECTS, workspace);
-        LinkedHashMap<Objs, Integer> inputObjects = getAvailableObjects(workspace, collections);
+        LinkedHashMap<ObjsI, Integer> inputObjects = getAvailableObjects(workspace, collections);
 
         // Adding first objects to image
         ImageI outputImage = null;
-        for (Objs currInputObjects:inputObjects.keySet()) {
+        for (ObjsI currInputObjects:inputObjects.keySet()) {
             int classIndex = inputObjects.get(currInputObjects);
 
             if (outputImage == null) {
@@ -132,7 +132,7 @@ public class CreateClassImage extends Module {
                 outputImage = ImageFactory.createImage(outputImageName, ipl);
             }
 
-            for (Obj inputObject:currInputObjects.values())
+            for (ObjI inputObject:currInputObjects.values())
                 inputObject.addToImage(outputImage, classIndex);
             
         }        

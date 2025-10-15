@@ -13,10 +13,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -163,7 +163,7 @@ public class AddLine extends AbstractOverlay {
         return Categories.VISUALISATION_OVERLAYS;
     }
 
-    public static Point<Double> getCentroid(final Obj obj) {
+    public static Point<Double> getCentroid(final ObjI obj) {
         final double xMeas = obj.getXMean(true);
         final double yMeas = obj.getYMean(true);
         final double zMeas = obj.getZMean(true, true);
@@ -180,7 +180,7 @@ public class AddLine extends AbstractOverlay {
 
     }
 
-    public static Point<Double> getObjectReference(final Obj obj, final String xMeasName, final String yMeasName) {
+    public static Point<Double> getObjectReference(final ObjI obj, final String xMeasName, final String yMeasName) {
         final double xMeas = obj.getMeasurement(xMeasName).getValue();
         final double yMeas = obj.getMeasurement(yMeasName).getValue();
 
@@ -211,7 +211,7 @@ public class AddLine extends AbstractOverlay {
             ovl.addElement(line);
     }
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
+    public static void addOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
             Point<Double> pos2) {
         addOverlay(ipl, colour, lineWidth, pos1, pos2, object.getT()+1);
     }
@@ -225,7 +225,7 @@ public class AddLine extends AbstractOverlay {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
@@ -276,7 +276,7 @@ public class AddLine extends AbstractOverlay {
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
-        for (final Obj inputObject : inputObjects.values()) {
+        for (final ObjI inputObject : inputObjects.values()) {
             final Point<Double> pos1;
             final Point<Double> pos2;
 

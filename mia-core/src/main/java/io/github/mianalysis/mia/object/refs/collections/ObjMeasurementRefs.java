@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.refs.collections;
 
 import java.util.TreeMap;
 
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
@@ -44,7 +44,7 @@ public class ObjMeasurementRefs extends TreeMap<String, ObjMeasurementRef>
         return true;
     }
 
-    public void addBlankMeasurements(Obj obj) {
+    public void addBlankMeasurements(ObjI obj) {
         for (ObjMeasurementRef ref : values())
             obj.addMeasurement(new Measurement(ref.getName(), Double.NaN));
     }

@@ -17,10 +17,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -86,7 +86,7 @@ public class MeasureTextureAlongPath extends Module {
         return "LONGEST_PATH_TEXTURE // " + imageName + "_" + measurement + "_(" + offs + " PX)";
     }
 
-    static void convertCalibratedOffsets(double[] offs, Obj referenceObject) {
+    static void convertCalibratedOffsets(double[] offs, ObjI referenceObject) {
         double dppXY = referenceObject.getDppXY();
         double dppZ = referenceObject.getDppZ();
 
@@ -96,7 +96,7 @@ public class MeasureTextureAlongPath extends Module {
 
     }
 
-    public static void processObject(Obj object, ImageI image, TextureCalculator textureCalculator,
+    public static void processObject(ObjI object, ImageI image, TextureCalculator textureCalculator,
             int offs) {
         ImagePlus ipl = image.getImagePlus();
 
@@ -172,7 +172,7 @@ public class MeasureTextureAlongPath extends Module {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // If no objects were detected, skipping this module
         if (inputObjects.size() == 0)
@@ -186,7 +186,7 @@ public class MeasureTextureAlongPath extends Module {
 
         int nObjects = inputObjects.size();
         AtomicInteger iter = new AtomicInteger(0);
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             textureCalculator.resetConfusionMatrix();
             processObject(object, inputImage, textureCalculator, offs);
             writeProgressStatus(iter.incrementAndGet(), nObjects, "objects");

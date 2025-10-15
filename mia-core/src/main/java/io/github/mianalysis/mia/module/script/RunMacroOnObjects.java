@@ -17,9 +17,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -186,7 +186,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         String macroFile = parameters.getValue(MACRO_FILE,workspace);
 
         // Getting the input objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
@@ -218,7 +218,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         // Show current image
         int count = 1;
         int nTotal = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             // Appending object name and ID number onto macro
             String finalMacroText = addObjectToMacroText(macroText, inputObjectsName, inputObject.getID(), count - 1);
 

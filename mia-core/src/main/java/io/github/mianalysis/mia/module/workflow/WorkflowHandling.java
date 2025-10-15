@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
 import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -370,7 +370,7 @@ public class WorkflowHandling extends Module {
             return AbstractTextObjectFilter.testFilter(metadataValue, referenceValue, referenceMode);
     }
 
-    public static boolean testObjectCount(Objs inputObjects, String referenceMode, double referenceValue) {
+    public static boolean testObjectCount(ObjsI inputObjects, String referenceMode, double referenceValue) {
         int testValue = 0;
         if (inputObjects != null)
             testValue = inputObjects.size();
@@ -442,7 +442,7 @@ public class WorkflowHandling extends Module {
                     terminate = testTextMetadata(value.toString(), textFilterMode, referenceValueText);
                 break;
             case TestModes.OBJECT_COUNT:
-                Objs inputObjects = workspace.getObjects(inputObjectsName);
+                ObjsI inputObjects = workspace.getObjects(inputObjectsName);
                 terminate = testObjectCount(inputObjects, numericFilterMode, referenceValueNumber);
                 break;
         }

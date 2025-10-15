@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.measurements.Measurement;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class DefaultObj extends DefaultVolume implements Obj {
+public class DefaultObj extends DefaultVolume implements ObjI {
     /**
      * Unique instance ID for this object
      */
@@ -22,18 +22,18 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
     private int T = 0;
 
-    private Objs objCollection;
+    private ObjsI objCollection;
 
-    private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
-    private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjI> parents = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjsI> children = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjsI> partners = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     private HashMap<Integer, Roi> rois = new HashMap<>();
 
     // CONSTRUCTORS
 
-    public DefaultObj(Objs objCollection, CoordinateSetFactoryI factory, int ID) {
+    public DefaultObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID) {
         super(factory, objCollection.getSpatialCalibration());
 
         this.objCollection = objCollection;
@@ -41,7 +41,7 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
     }
 
-    public DefaultObj(Objs objCollection, CoordinateSetFactoryI factory, int ID, SpatCal spatCal) {
+    public DefaultObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID, SpatCal spatCal) {
         super(factory, spatCal);
 
         this.objCollection = objCollection;
@@ -50,12 +50,12 @@ public class DefaultObj extends DefaultVolume implements Obj {
     }
 
     @Override
-    public Objs getObjectCollection() {
+    public ObjsI getObjectCollection() {
         return objCollection;
     }
 
     @Override
-    public void setObjectCollection(Objs objCollection) {
+    public void setObjectCollection(ObjsI objCollection) {
         this.objCollection = objCollection;
     }
 
@@ -70,7 +70,7 @@ public class DefaultObj extends DefaultVolume implements Obj {
     }
 
     @Override
-    public Obj setID(int ID) {
+    public ObjI setID(int ID) {
         this.ID = ID;
         return this;
     }
@@ -81,38 +81,38 @@ public class DefaultObj extends DefaultVolume implements Obj {
     }
 
     @Override
-    public Obj setT(int t) {
+    public ObjI setT(int t) {
         this.T = t;
         return this;
     }
 
     @Override
-    public LinkedHashMap<String, Obj> getAllParents() {
+    public LinkedHashMap<String, ObjI> getAllParents() {
         return parents;
     }
 
     @Override
-    public void setAllParents(LinkedHashMap<String, Obj> parents) {
+    public void setAllParents(LinkedHashMap<String, ObjI> parents) {
         this.parents = parents;
     }
 
     @Override
-    public LinkedHashMap<String, Objs> getAllChildren() {
+    public LinkedHashMap<String, ObjsI> getAllChildren() {
         return children;
     }
 
     @Override
-    public void setAllChildren(LinkedHashMap<String, Objs> children) {
+    public void setAllChildren(LinkedHashMap<String, ObjsI> children) {
         this.children = children;
     }
 
     @Override
-    public LinkedHashMap<String, Objs> getAllPartners() {
+    public LinkedHashMap<String, ObjsI> getAllPartners() {
         return partners;
     }
 
     @Override
-    public void setAllPartners(LinkedHashMap<String, Objs> partners) {
+    public void setAllPartners(LinkedHashMap<String, ObjsI> partners) {
         this.partners = partners;
     }
 
@@ -123,7 +123,7 @@ public class DefaultObj extends DefaultVolume implements Obj {
     public void removeRelationships() {
         // Removing itself as a child from its parent
         if (parents != null) {
-            for (Obj parent : parents.values()) {
+            for (ObjI parent : parents.values()) {
                 if (parent != null)
                     parent.removeChild(this);
             }
@@ -131,8 +131,8 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
         // Removing itself as a parent from any children
         if (children != null) {
-            for (Objs childSet : children.values()) {
-                for (Obj child : childSet.values()) {
+            for (ObjsI childSet : children.values()) {
+                for (ObjI child : childSet.values()) {
                     if (child.getParent(getName()) == this) {
                         child.removeParent(getName());
                     }
@@ -142,8 +142,8 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
         // Removing itself as a partner from any partners
         if (partners != null) {
-            for (Objs partnerSet : partners.values()) {
-                for (Obj partner : partnerSet.values()) {
+            for (ObjsI partnerSet : partners.values()) {
+                for (ObjI partner : partnerSet.values()) {
                     partner.removePartner(this);
                 }
             }
@@ -228,9 +228,9 @@ public class DefaultObj extends DefaultVolume implements Obj {
     }
 
     @Override
-    public Obj duplicate(Objs newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
+    public ObjI duplicate(ObjsI newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata) {
-        Obj newObj = new DefaultObj(newCollection, getCoordinateSetFactory(), getID());
+        ObjI newObj = new DefaultObj(newCollection, getCoordinateSetFactory(), getID());
 
         // Duplicating coordinates
         newObj.setCoordinateSet(getCoordinateSet().duplicate());
@@ -240,19 +240,19 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
         // Duplicating relationships
         if (duplicateRelationships) {
-            for (Obj parent : parents.values()) {
+            for (ObjI parent : parents.values()) {
                 newObj.addParent(parent);
                 parent.addChild(this);
             }
 
-            for (Objs currChildren : children.values())
-                for (Obj child : currChildren.values()) {
+            for (ObjsI currChildren : children.values())
+                for (ObjI child : currChildren.values()) {
                     newObj.addChild(child);
                     child.addParent(newObj);
                 }
 
-            for (Objs currPartners : partners.values())
-                for (Obj partner : currPartners.values()) {
+            for (ObjsI currPartners : partners.values())
+                for (ObjI partner : currPartners.values()) {
                     newObj.addPartner(partner);
                     partner.addPartner(newObj);
                 }
@@ -288,16 +288,16 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
         if (obj == this)
             return true;
-        if (!(obj instanceof Obj))
+        if (!(obj instanceof ObjI))
             return false;
 
-        if (ID != ((Obj) obj).getID())
+        if (ID != ((ObjI) obj).getID())
             return false;
 
-        if (T != ((Obj) obj).getT())
+        if (T != ((ObjI) obj).getT())
             return false;
 
-        return (getName().equals(((Obj) obj).getName()));
+        return (getName().equals(((ObjI) obj).getName()));
 
     }
 
@@ -310,10 +310,10 @@ public class DefaultObj extends DefaultVolume implements Obj {
 
         if (obj == this)
             return true;
-        if (!(obj instanceof Obj))
+        if (!(obj instanceof ObjI))
             return false;
 
-        return (T == ((Obj) obj).getT());
+        return (T == ((ObjI) obj).getT());
 
     }
 

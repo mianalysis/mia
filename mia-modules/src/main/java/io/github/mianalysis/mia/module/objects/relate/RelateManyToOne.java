@@ -17,9 +17,9 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -250,11 +250,11 @@ public class RelateManyToOne extends Module {
         return "RELATE_MANY_TO_ONE // " + measurement.replace("${PARENT}", parentName);
     }
 
-    public static void linkMatchingIDs(Objs parentObjects, Objs childObjects) {
-        for (Obj parentObject : parentObjects.values()) {
+    public static void linkMatchingIDs(ObjsI parentObjects, ObjsI childObjects) {
+        for (ObjI parentObject : parentObjects.values()) {
             int ID = parentObject.getID();
 
-            Obj childObject = childObjects.get(ID);
+            ObjI childObject = childObjects.get(ID);
 
             if (childObject != null) {
                 parentObject.addChild(childObject);
@@ -264,7 +264,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidProximity(Objs parentObjects, Objs childObjects,
+    public static void linkByCentroidProximity(ObjsI parentObjects, ObjsI childObjects,
             boolean linkInSameFrame, String linkingDistanceLimit, double linkingDistance, int nThreads) {
         String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
@@ -274,19 +274,19 @@ public class RelateManyToOne extends Module {
         int numberOfChildren = childObjects.size();
 
         // Ensuring all parent objects have a calculated centroid
-        for (Obj parent : parentObjects.values())
+        for (ObjI parent : parentObjects.values())
             parent.getMeanCentroid(true, false);
 
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        for (Obj childObject : childObjects.values()) {
+        for (ObjI childObject : childObjects.values()) {
             Runnable task = () -> {
                 double minDist = Double.MAX_VALUE;
-                Obj minLink = null;
+                ObjI minLink = null;
                 double dpp = childObject.getDppXY();
 
-                for (Obj parentObject : parentObjects.values()) {
+                for (ObjI parentObject : parentObjects.values()) {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
@@ -325,7 +325,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkBySurfaceProximity(Objs parentObjects, Objs childObjects, boolean linkInSameFrame,
+    public static void linkBySurfaceProximity(ObjsI parentObjects, ObjsI childObjects, boolean linkInSameFrame,
             String linkingDistanceLimit, double linkingDistance, String insideOutsideMode, boolean ignoreEdgesXY,
             boolean ignoreEdgesZ, int nThreads) {
         String moduleName = new RelateManyToOne(null).getName();
@@ -336,20 +336,20 @@ public class RelateManyToOne extends Module {
         int numberOfChildren = childObjects.size();
 
         // Ensuring all parent objects have a calculated surface
-        for (Obj parent : parentObjects.values())
+        for (ObjI parent : parentObjects.values())
             if (!parent.hasCalculatedSurface())
                 parent.getCoordinateSet().calculateSurface(parent.is2D());
 
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        for (Obj childObject : childObjects.values()) {
+        for (ObjI childObject : childObjects.values()) {
             Runnable task = () -> {
                 double minDist = Double.MAX_VALUE;
-                Obj minLink = null;
+                ObjI minLink = null;
                 double dpp = childObject.getDppXY();
 
-                for (Obj parentObject : parentObjects.values()) {
+                for (ObjI parentObject : parentObjects.values()) {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
@@ -392,7 +392,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidToSurfaceProximity(Objs parentObjects, Objs childObjects, boolean linkInSameFrame,
+    public static void linkByCentroidToSurfaceProximity(ObjsI parentObjects, ObjsI childObjects, boolean linkInSameFrame,
             String linkingDistanceLimit, double linkingDistance, String insideOutsideMode, boolean calcFrac,
             boolean ignoreEdgesXY, boolean ignoreEdgesZ, int nThreads) {
         String moduleName = new RelateManyToOne(null).getName();
@@ -407,7 +407,7 @@ public class RelateManyToOne extends Module {
         int numberOfParents = parentObjects.size();
         int numberOfChildren = childObjects.size();
 
-        for (Obj parent : parentObjects.values()) {
+        for (ObjI parent : parentObjects.values()) {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
@@ -428,15 +428,15 @@ public class RelateManyToOne extends Module {
         count.set(1);
 
         writeStatus("Processing objects", moduleName);
-        for (Obj childObject : childObjects.values()) {
+        for (ObjI childObject : childObjects.values()) {
             Runnable task = () -> {
                 double minDist = Double.MAX_VALUE;
-                Obj minLink = null;
+                ObjI minLink = null;
                 double dpp = childObject.getDppXY();
 
                 Point<Double> childCentPx = childObject.getMeanCentroid(true, false);
 
-                for (Obj parentObject : parentObjects.values()) {
+                for (ObjI parentObject : parentObjects.values()) {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT())
                         continue;
 
@@ -488,7 +488,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void calculateFractionalDistance(Obj childObject, Obj parentObject, double minDist) {
+    public static void calculateFractionalDistance(ObjI childObject, ObjI parentObject, double minDist) {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
@@ -512,7 +512,7 @@ public class RelateManyToOne extends Module {
 
     }
 
-    public void spatialOverlap(Objs parentObjects, Objs childObjects, double minOverlap,
+    public void spatialOverlap(ObjsI parentObjects, ObjsI childObjects, double minOverlap,
             boolean centroidOverlap, boolean linkInSameFrame) {
 
         long nCombined = parentObjects.size() * childObjects.size();
@@ -524,8 +524,8 @@ public class RelateManyToOne extends Module {
             return;
 
         // Runs through each child object against each parent object
-        for (Obj parentObject : parentObjects.values()) {
-            for (Obj childObject : childObjects.values()) {
+        for (ObjI parentObject : parentObjects.values()) {
+            for (ObjI childObject : childObjects.values()) {
                 // Testing if the two objects are in the same frame (if this matters)
                 if (linkInSameFrame && parentObject.getT() != childObject.getT())
                     continue;
@@ -555,7 +555,7 @@ public class RelateManyToOne extends Module {
                 // If the tests are successful, addRef the link. If the child has already been
                 // linked, but with a smaller
                 // overlap, remove that link.
-                Obj oldParent = childObject.getParent(parentObject.getName());
+                ObjI oldParent = childObject.getParent(parentObject.getName());
                 if (oldParent != null) {
                     if (childObject.getMeasurement(overlapMeasurementName).getValue() < overlap) {
                         oldParent.removeChild(childObject);
@@ -629,11 +629,11 @@ public class RelateManyToOne extends Module {
 
     }
 
-    static void applyLinkMeasurements(Objs parentObjects, Objs childObjects) {
+    static void applyLinkMeasurements(ObjsI parentObjects, ObjsI childObjects) {
         String parentMeasurementName = getFullName(Measurements.WAS_LINKED, childObjects.getName());
         String childMeasurementName = getFullName(Measurements.WAS_LINKED, parentObjects.getName());
 
-        for (Obj parentObject : parentObjects.values()) {
+        for (ObjI parentObject : parentObjects.values()) {
             if (parentObject.getChildren(childObjects.getName()).size() == 0) {
                 parentObject.addMeasurement(new Measurement(parentMeasurementName, 0));
             } else {
@@ -641,7 +641,7 @@ public class RelateManyToOne extends Module {
             }
         }
 
-        for (Obj childObject : childObjects.values()) {
+        for (ObjI childObject : childObjects.values()) {
             if (childObject.getParent(parentObjects.getName()) == null) {
                 childObject.addMeasurement(new Measurement(childMeasurementName, 0));
             } else {
@@ -671,10 +671,10 @@ public class RelateManyToOne extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS, workspace);
-        Objs parentObjects = workspace.getObjects(parentObjectName);
+        ObjsI parentObjects = workspace.getObjects(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS, workspace);
-        Objs childObjects = workspace.getObjects(childObjectName);
+        ObjsI childObjects = workspace.getObjects(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE, workspace);
@@ -743,7 +743,7 @@ public class RelateManyToOne extends Module {
                 parentImage.showWithNormalisation(false);
 
                 HashMap<Integer, Float> hues2 = ColourFactory.getParentIDHues(childObjects, parentObjectName, false);
-                ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false);
+                ImageI childImage = childObjects.convertToImage(childObjectName, hues2, 32, false, false);
                 SetDisplayRange.setDisplayRangeManual(childImage, new double[] { 0, maxID });
                 childImage.show(childObjectName, LUTs.Random(true, false), false, ImageI.DisplayModes.COLOUR, null);
 

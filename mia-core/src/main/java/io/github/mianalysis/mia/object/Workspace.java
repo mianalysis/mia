@@ -8,7 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 public class Workspace implements WorkspaceI {
     private Workspaces workspaces;
-    private LinkedHashMap<String, Objs> objects = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjsI> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, ImageI> images = new LinkedHashMap<>();
     private MetadataI metadata = new Metadata();
     private int ID;
@@ -56,7 +56,7 @@ public class Workspace implements WorkspaceI {
 
     public void removeObjects(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
-            for (Obj obj:objects.get(name).values()) {
+            for (ObjI obj:objects.get(name).values()) {
                 obj.clearAllCoordinates();
             }
         } else {
@@ -93,8 +93,8 @@ public class Workspace implements WorkspaceI {
     public void clearAllObjects(boolean retainMeasurements) {
         if (retainMeasurements) {
             // Sets the ImagePlus to null, but leaves measurements
-            for (Objs objCollection :objects.values()) {
-                for (Obj obj: objCollection.values()) {
+            for (ObjsI objCollection :objects.values()) {
+                for (ObjI obj: objCollection.values()) {
                     obj.clearAllCoordinates();
                 }
             }
@@ -151,7 +151,7 @@ public class Workspace implements WorkspaceI {
 
     }
 
-    public Objs getObjects(String name) {
+    public ObjsI getObjects(String name) {
         if (name.contains(" // ")) 
             name = name.substring(name.lastIndexOf(" // ")+4);
 
@@ -160,7 +160,7 @@ public class Workspace implements WorkspaceI {
     }
 
     @Deprecated
-    public Objs getObjectSet(String name) {
+    public ObjsI getObjectSet(String name) {
         return getObjects(name);
 
     }
@@ -172,8 +172,8 @@ public class Workspace implements WorkspaceI {
         HashMap<Integer, WorkspaceI> workspaceList = new HashMap<>();
         Workspaces workspacesT = new Workspaces();
 
-        for (Objs collection:objects.values()) {
-            for (Obj obj:collection.values()) {
+        for (ObjsI collection:objects.values()) {
+            for (ObjI obj:collection.values()) {
                 int t = obj.getT();
 
                 // If there isn't already a Workspace for this time point, addRef one
@@ -186,7 +186,7 @@ public class Workspace implements WorkspaceI {
 
                 // Adding the current Obj to the new Workspace
                 if (workspaceList.get(t).getObjects(obj.getName()) == null) {
-                    Objs currObjects = new Objs(obj.getName(), obj.getObjectCollection());
+                    ObjsI currObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(obj.getName(), obj.getObjectCollection());
                     workspaceList.get(t).addObjects(currObjects);
                 }
                 
@@ -202,11 +202,11 @@ public class Workspace implements WorkspaceI {
 
     // GETTERS AND SETTERS
 
-    public LinkedHashMap<String, Objs> getAllObjects() {
+    public LinkedHashMap<String, ObjsI> getAllObjects() {
         return objects;
     }
 
-    public void setAllObjects(LinkedHashMap<String, Objs> objects) {
+    public void setAllObjects(LinkedHashMap<String, ObjsI> objects) {
         this.objects = objects;
     }
 

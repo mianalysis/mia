@@ -5,27 +5,27 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.tools.EllipsoidCalculator;
-
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 /**
@@ -181,7 +182,7 @@ public class FitEllipsoid extends Module {
 
     }
 
-    public void processObject(Obj inputObject, Objs outputObjects, String objectOutputMode, String fittingMode,
+    public void processObject(ObjI inputObject, ObjsI outputObjects, String objectOutputMode, String fittingMode,
             double maxAxisLength) throws IntegerOverflowException {
         EllipsoidCalculator calculator = null;
         try {
@@ -191,8 +192,8 @@ public class FitEllipsoid extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    Objs tempObjects = new Objs("Edge", outputObjects);
-                    Obj edgeObject = GetObjectSurface.getSurface(inputObject, tempObjects, false);
+                    ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Edge", outputObjects);
+                    ObjI edgeObject = GetObjectSurface.getSurface(inputObject, tempObjects, false);
                     calculator = new EllipsoidCalculator(edgeObject, maxAxisLength);
                     break;
             }
@@ -212,7 +213,7 @@ public class FitEllipsoid extends Module {
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
-                Obj ellipsoidObject = createNewObject(inputObject, ellipsoid, outputObjects);
+                ObjI ellipsoidObject = createNewObject(inputObject, ellipsoid, outputObjects);
                 if (ellipsoidObject != null) {
                     outputObjects.add(ellipsoidObject);
                     ellipsoidObject.removeOutOfBoundsCoords();
@@ -225,11 +226,11 @@ public class FitEllipsoid extends Module {
         }
     }
 
-    public Obj createNewObject(Obj inputObject, Volume ellipsoid, Objs outputObjects) {
+    public ObjI createNewObject(ObjI inputObject, Volume ellipsoid, ObjsI outputObjects) {
         if (ellipsoid == null)
             return null;
 
-        Obj ellipsoidObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+        ObjI ellipsoidObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         ellipsoidObject.setCoordinateSet(ellipsoid.getCoordinateSet());
         ellipsoidObject.setT(inputObject.getT());
 
@@ -240,7 +241,7 @@ public class FitEllipsoid extends Module {
 
     }
 
-    public void updateInputObject(Obj inputObject, Volume ellipsoid) {
+    public void updateInputObject(ObjI inputObject, Volume ellipsoid) {
         inputObject.getCoordinateSet().clear();
         inputObject.getCoordinateSet().addAll(ellipsoid.getCoordinateSet());
         inputObject.clearCentroid();
@@ -250,7 +251,7 @@ public class FitEllipsoid extends Module {
 
     }
 
-    public void addMeasurements(Obj inputObject, EllipsoidCalculator calculator) {
+    public void addMeasurements(ObjI inputObject, EllipsoidCalculator calculator) {
         if (calculator == null || calculator.getCentroid() == null) {
             inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.X_CENT_CAL, Double.NaN));
@@ -331,7 +332,7 @@ public class FitEllipsoid extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
@@ -342,9 +343,9 @@ public class FitEllipsoid extends Module {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
-        Objs outputObjects = null;
+        ObjsI outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = new Objs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 
@@ -357,8 +358,8 @@ public class FitEllipsoid extends Module {
         // workspace where necessary
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
-        Objs finalOutputObjects = outputObjects;
-        for (Obj inputObject : inputObjects.values()) {
+        ObjsI finalOutputObjects = outputObjects;
+        for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
                     processObject(inputObject, finalOutputObjects, objectOutputMode, fittingMode, maxAxisLength);

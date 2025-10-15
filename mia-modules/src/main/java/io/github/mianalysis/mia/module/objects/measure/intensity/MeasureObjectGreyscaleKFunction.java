@@ -17,10 +17,10 @@ import io.github.mianalysis.mia.module.images.measure.MeasureGreyscaleKFunction;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -126,7 +126,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         // Getting input objects
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
 
         int minRadius = parameters.getValue(MINIMUM_RADIUS_PX, workspace);
         int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX, workspace);
@@ -144,7 +144,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         int rowI = 1;
         int count = 0;
         int total = objects.size();
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int t = object.getT();
 
             // Getting images cropped to this object

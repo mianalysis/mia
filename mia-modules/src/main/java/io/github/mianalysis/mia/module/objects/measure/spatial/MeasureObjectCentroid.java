@@ -7,10 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -81,12 +81,12 @@ public class MeasureObjectCentroid extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
 
         // Getting the centroids of each and saving them to the objects
         int count = 0;
         int total = inputObjects.size();
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             object.addMeasurement(new Measurement(Measurements.MEAN_X_PX, object.getXMean(true)));
             object.addMeasurement(new Measurement(Measurements.MEAN_X_CAL, object.getXMean(false)));
             object.addMeasurement(new Measurement(Measurements.MEAN_Y_PX, object.getYMean(true)));

@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -99,7 +99,7 @@ public abstract class AbstractHoughDetection extends Module {
 
     }
 
-    public static void showDetectionImage(ImageI image, Objs outputObjects, boolean showHoughScore, int labelSize) {
+    public static void showDetectionImage(ImageI image, ObjsI outputObjects, boolean showHoughScore, int labelSize) {
         ImagePlus dispIpl = new Duplicator().run(image.getImagePlus());
         IntensityMinMax.run(dispIpl, true);
 

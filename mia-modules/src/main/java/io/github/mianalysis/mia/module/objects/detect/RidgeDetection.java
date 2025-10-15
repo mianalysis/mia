@@ -29,9 +29,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectFill;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -376,15 +377,15 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static Obj initialiseObject(Objs outputObjects, int t) {
-        Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+    public static ObjI initialiseObject(ObjsI outputObjects, int t) {
+        ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
         outputObject.setT(t);
 
         return outputObject;
 
     }
 
-    public static void addLine(Obj outputObject, int z, Line line, @Nullable CumStat width, boolean applyWidthToOutput) {
+    public static void addLine(ObjI outputObject, int z, Line line, @Nullable CumStat width, boolean applyWidthToOutput) {
         // Adding coordinates for the current line
         float[] x = line.getXCoordinates();
         float[] y = line.getYCoordinates();
@@ -409,7 +410,7 @@ public class RidgeDetection extends Module {
         }
     }
 
-    public static void addPointWidth(Obj object, float x, float y, int z, float halfWidth) {
+    public static void addPointWidth(ObjI object, float x, float y, int z, float halfWidth) {
         int xMin = Math.round(x - halfWidth);
         int xMax = Math.round(x + halfWidth);
         int yMin = Math.round(y - halfWidth);
@@ -429,7 +430,7 @@ public class RidgeDetection extends Module {
         }
     }
 
-    public static void addMeasurements(Obj object, double estimatedLength, @Nullable CumStat width) {
+    public static void addMeasurements(ObjI object, double estimatedLength, @Nullable CumStat width) {
         double dppXY = object.getDppXY();
 
         // Setting single values for the current contour
@@ -518,7 +519,7 @@ public class RidgeDetection extends Module {
         SpatCal calibration = SpatCal.getFromImage(inputIpl);
         int nFrames = inputIpl.getNFrames();
         double frameInterval = inputIpl.getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
@@ -563,7 +564,7 @@ public class RidgeDetection extends Module {
                     // Getting the unique LineGroups and converting them to Obj
                     Set<HashSet<Line>> uniqueLineGroups = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroups) {
-                        Obj outputObject = initialiseObject(outputObjects, t);
+                        ObjI outputObject = initialiseObject(outputObjects, t);
 
                         double estimatedLength = 0;
                         if (estimateWidth)

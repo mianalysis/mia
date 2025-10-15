@@ -14,10 +14,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -139,8 +139,8 @@ public class BleachingCorrection extends Module {
 
         Roi roi = null;
         if (useRoiObjects) {
-            Objs roiObjects = workspace.getObjects(roiObjectsName);
-            Obj roiObject = roiObjects.getAsSingleObject();
+            ObjsI roiObjects = workspace.getObjects(roiObjectsName);
+            ObjI roiObject = roiObjects.getAsSingleObject();
             roiObject.setCoordinateSet(roiObject.getProjected().getCoordinateSet());
             roi = roiObject.getRoi(0);
         }

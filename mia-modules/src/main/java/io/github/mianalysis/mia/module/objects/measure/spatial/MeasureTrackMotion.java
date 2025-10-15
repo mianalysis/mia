@@ -15,10 +15,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.interfaces.MeasurementPositionProvider;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.tracks.Timepoint;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
@@ -179,10 +179,10 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         return "TRACK_ANALYSIS // " + measurement;
     }
 
-    Track createTrack(Obj trackObject, String spotObjectsName) {
+    Track createTrack(ObjI trackObject, String spotObjectsName) {
         // Getting the corresponding spots for this track
         Track track = new Track("px");
-        for (Obj spotObject : trackObject.getChildren(spotObjectsName).values()) {
+        for (ObjI spotObject : trackObject.getChildren(spotObjectsName).values()) {
             double[] position = getObjectPosition(spotObject, parameters, true, true);
 
             int t = spotObject.getT();
@@ -195,13 +195,13 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
     }
 
-    public static Track createAverageTrack(Objs tracks, String spotObjectsName) {
+    public static Track createAverageTrack(ObjsI tracks, String spotObjectsName) {
         TreeMap<Integer, CumStat> x = new TreeMap<>();
         TreeMap<Integer, CumStat> y = new TreeMap<>();
         TreeMap<Integer, CumStat> z = new TreeMap<>();
 
-        for (Obj track : tracks.values()) {
-            for (Obj spot : track.getChildren(spotObjectsName).values()) {
+        for (ObjI track : tracks.values()) {
+            for (ObjI spot : track.getChildren(spotObjectsName).values()) {
                 int t = spot.getT();
 
                 // Adding new CumStats to store coordinates at this timepoint if there isn't one
@@ -246,7 +246,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static void calculateTemporalMeasurements(Obj trackObject, Track track, boolean averageSubtracted) {
+    public static void calculateTemporalMeasurements(ObjI trackObject, Track track, boolean averageSubtracted) {
         if (track.size() == 0) {
             String name = getFullName(Measurements.DURATION, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
@@ -279,7 +279,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static void calculateVelocity(Obj trackObject, Track track, boolean averageSubtracted) {
+    public static void calculateVelocity(ObjI trackObject, Track track, boolean averageSubtracted) {
         if (track.size() <= 1) {
             String name = getFullName(Measurements.MEAN_X_VELOCITY_PX, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
@@ -350,14 +350,14 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static void calculateRelativeTimepoint(Obj trackObject, Track track, String inputSpotObjectsName,
+    public static void calculateRelativeTimepoint(ObjI trackObject, Track track, String inputSpotObjectsName,
             boolean averageSubtracted) {
         if (track.size() == 0)
             return;
 
         int firstTimepoint = track.values().iterator().next().getF();
 
-        for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
+        for (ObjI spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
             int currentTimepoint = spotObject.getT();
             String name = getFullName(Measurements.RELATIVE_FRAME, averageSubtracted);
             spotObject.addMeasurement(new Measurement(name, currentTimepoint - firstTimepoint));
@@ -365,7 +365,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static void calculateSpatialMeasurements(Obj trackObject, Track track, boolean averageSubtracted) {
+    public static void calculateSpatialMeasurements(ObjI trackObject, Track track, boolean averageSubtracted) {
         if (track.size() == 0) {
             // Adding measurements to track objects
             String name = getFullName(Measurements.EUCLIDEAN_DISTANCE_PX, averageSubtracted);
@@ -410,7 +410,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
     }
 
-    public static void calculateInstantaneousVelocity(Obj trackObject, Track track, String inputSpotObjectsName,
+    public static void calculateInstantaneousVelocity(ObjI trackObject, Track track, String inputSpotObjectsName,
             boolean averageSubtracted) {
         double distPerPxXY = trackObject.getDppXY();
         double distPerPxZ = trackObject.getDppZ();
@@ -425,11 +425,11 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
         // Getting the first timepoint
         int minT = Integer.MAX_VALUE;
-        for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
+        for (ObjI spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
             minT = Math.min(minT, spotObject.getT());
         }
 
-        for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
+        for (ObjI spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
             int t = spotObject.getT();
 
             // For the first time-point set certain velocity measurements to Double.NaN
@@ -474,7 +474,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static void calculateInstantaneousSpatialMeasurements(Obj trackObject, Track track,
+    public static void calculateInstantaneousSpatialMeasurements(ObjI trackObject, Track track,
             String inputSpotObjectsName, boolean averageSubtracted) {
         double distPerPxXY = trackObject.getDppXY();
 
@@ -485,7 +485,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         TreeMap<Integer, Double> angularPersistence = new AngularPersistenceCalculator().calculate(track);
 
         // Applying the relevant measurement to each spot
-        for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
+        for (ObjI spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
             int t = spotObject.getT();
 
             // The remaining measurements are unaffected by whether it's the first
@@ -506,10 +506,10 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static void calculateOrientation(Objs objects, String orientationMode, boolean averageSubtracted) {
+    public static void calculateOrientation(ObjsI objects, String orientationMode, boolean averageSubtracted) {
         String name = getFullName(Measurements.ORIENTATION, averageSubtracted);
 
-        for (Obj obj : objects.values()) {
+        for (ObjI obj : objects.values()) {
             double angle = getInstantaneousOrientationRads(obj, objects, orientationMode);
 
             if (Double.isNaN(angle))
@@ -520,7 +520,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         }
     }
 
-    public static double getInstantaneousOrientationRads(Obj object, Objs objects, String orientationMode) {
+    public static double getInstantaneousOrientationRads(ObjI object, ObjsI objects, String orientationMode) {
         double prevAngle = Double.NaN;
         double nextAngle = Double.NaN;
 
@@ -528,7 +528,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
                 || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
                 && object.getPreviousPartners(object.getName()) != null
                 && object.getPreviousPartners(object.getName()).size() == 1) {
-            Obj prevObj = object.getPreviousPartners(object.getName()).getFirst();
+            ObjI prevObj = object.getPreviousPartners(object.getName()).getFirst();
             prevAngle = prevObj.calculateAngle2D(object);
         }
 
@@ -536,7 +536,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
                 || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
                 && object.getNextPartners(object.getName()) != null
                 && object.getNextPartners(object.getName()).size() == 1) {
-            Obj nextObj = object.getNextPartners(object.getName()).getFirst();
+            ObjI nextObj = object.getNextPartners(object.getName()).getFirst();
             nextAngle = object.calculateAngle2D(nextObj);
         }
 
@@ -553,8 +553,8 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
     }
 
-    public static void identifyLeading(Objs objects, String orientationMode, boolean averageSubtracted) {
-        for (Obj obj : objects.values()) {
+    public static void identifyLeading(ObjsI objects, String orientationMode, boolean averageSubtracted) {
+        for (ObjI obj : objects.values()) {
             // Get previously-calculated orientation
             String name = getFullName(Measurements.ORIENTATION, averageSubtracted);
             Measurement orientation = obj.getMeasurement(name);
@@ -639,7 +639,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
     public Status process(WorkspaceI workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
-        Objs trackObjects = workspace.getObjects(inputTrackObjectsName);
+        ObjsI trackObjects = workspace.getObjects(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
@@ -658,7 +658,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             averageTrack = createAverageTrack(trackObjects, inputSpotObjectsName);
 
         // Converting objects to Track class object
-        for (Obj trackObject : trackObjects.values()) {
+        for (ObjI trackObject : trackObjects.values()) {
             Track track = createTrack(trackObject, inputSpotObjectsName);
 
             // If necessary, applying the motion correction to the object
@@ -677,13 +677,13 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
         // Determining the orientation
         if (calculateOrientation) {
-            Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
+            ObjsI spotObjects = workspace.getObjects(inputSpotObjectsName);
             calculateOrientation(spotObjects, orientationMode, subtractAverage);
         }
 
         // Determining the leading point in the object (to next object)
         if (identifyLeading) {
-            Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
+            ObjsI spotObjects = workspace.getObjects(inputSpotObjectsName);
             identifyLeading(spotObjects, orientationMode, subtractAverage);
         }
 

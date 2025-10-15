@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 /**
  * Created by Stephen Cross on 10/09/2017.
@@ -43,7 +43,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectCentroid
@@ -55,7 +55,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         measureObjectCentroid.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
-        for (Obj testObject:testObjects.values()) {
+        for (ObjI testObject:testObjects.values()) {
             // Testing measurements
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_X_MEAN.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_X_PX).getValue();

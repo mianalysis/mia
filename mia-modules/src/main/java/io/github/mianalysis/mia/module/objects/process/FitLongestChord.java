@@ -7,9 +7,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -108,7 +108,7 @@ public class FitLongestChord extends Module {
 
     }
 
-    public static void processObject(Obj object, boolean measureWidth, boolean measureOrientation,
+    public static void processObject(ObjI object, boolean measureWidth, boolean measureOrientation,
             boolean storeEndPoints) {
         double dppXY = object.getDppXY();
 
@@ -185,7 +185,7 @@ public class FitLongestChord extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH, workspace);
@@ -196,7 +196,7 @@ public class FitLongestChord extends Module {
         // workspace where necessary
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             processObject(inputObject, measureWidth, measureOrientation, storeEndPoints);
             writeProgressStatus(++count, total, "objects");
         }

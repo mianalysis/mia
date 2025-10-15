@@ -11,10 +11,10 @@ import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 /**
  * Created by Stephen Cross on 03/09/2017.
@@ -45,7 +45,7 @@ public class ProjectObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        Objs inputObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
+        ObjsI inputObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -66,12 +66,12 @@ public class ProjectObjectsTest extends ModuleTest {
         assertEquals(8,workspace.getObjects(outputObjectsName).size());
 
         // Getting expected and actual objects
-        Objs expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        Objs actualObjects = workspace.getObjects(outputObjectsName);
+        ObjsI expectedObjects = new Objects2D(VolumeTypes.getFactory(volumeType)).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI actualObjects = workspace.getObjects(outputObjectsName);
 
-        for (Obj object:actualObjects.values()) {
+        for (ObjI object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }

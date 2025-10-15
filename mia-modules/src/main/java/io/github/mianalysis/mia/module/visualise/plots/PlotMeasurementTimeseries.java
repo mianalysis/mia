@@ -19,9 +19,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -139,7 +139,7 @@ public class PlotMeasurementTimeseries extends Module {
 
     }
 
-    public static int[] getXValues(Objs trackObjects, Obj trackObject, String objectsName, String xRangeMode,
+    public static int[] getXValues(ObjsI trackObjects, ObjI trackObject, String objectsName, String xRangeMode,
             @Nullable int xRangeMin, @Nullable int xRangeMax) {
         switch (xRangeMode) {
             case XRangeModes.ALL_FRAMES:
@@ -159,12 +159,12 @@ public class PlotMeasurementTimeseries extends Module {
         }
     }
 
-    public static double[] getYValues(Obj trackObject, String objectsName, String measurementName, int[] xValues) {
+    public static double[] getYValues(ObjI trackObject, String objectsName, String measurementName, int[] xValues) {
         TreeMap<Integer, Double> yValues = new TreeMap<>();
         for (int xValue : xValues)
             yValues.put(xValue, Double.NaN);
 
-        for (Obj inputObject : trackObject.getChildren(objectsName).values()) {
+        for (ObjI inputObject : trackObject.getChildren(objectsName).values()) {
             Measurement measurement = inputObject.getMeasurement(measurementName);
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
@@ -197,8 +197,8 @@ public class PlotMeasurementTimeseries extends Module {
                 
         // Iterating over each track, creating the plot
         int count = 0;
-        Objs trackObjects = workspace.getObjects(inputTracksName);
-        for (Obj trackObject : trackObjects.values()) {
+        ObjsI trackObjects = workspace.getObjects(inputTracksName);
+        for (ObjI trackObject : trackObjects.values()) {
             // Initialising plot
             Plot plot = new Plot(inputTracksName + " (ID " + trackObject.getID() + ")", "Frame", yLabel);
 

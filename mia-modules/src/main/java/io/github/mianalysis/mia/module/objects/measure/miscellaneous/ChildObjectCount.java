@@ -7,10 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.ChildCountMeasurement;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -95,17 +95,17 @@ public class ChildObjectCount extends Module {
         String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
         boolean liveMeasurement = parameters.getValue(LIVE_MEASUREMENT, workspace);
 
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
         String measurementName = getFullName(childObjectsName);
 
         if (objects == null)
             return Status.PASS;
 
-        for (Obj obj : objects.values())
+        for (ObjI obj : objects.values())
             if (liveMeasurement)
                 obj.addMeasurement(new ChildCountMeasurement(measurementName, obj, childObjectsName));
             else {
-                Objs children = obj.getChildren(childObjectsName);
+                ObjsI children = obj.getChildren(childObjectsName);
                 int count = children == null ? 0 : children.size();
                 obj.addMeasurement(new Measurement(measurementName, count));
             }

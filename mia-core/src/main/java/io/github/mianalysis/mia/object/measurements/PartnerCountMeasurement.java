@@ -1,20 +1,20 @@
 package io.github.mianalysis.mia.object.measurements;
 
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 public class PartnerCountMeasurement extends Measurement {
-    private Obj obj;
+    private ObjI obj;
     private String partnerName;
 
-    public PartnerCountMeasurement(String name, Obj obj, String partnerName) {
+    public PartnerCountMeasurement(String name, ObjI obj, String partnerName) {
         super(name);
         this.obj = obj;
         this.partnerName = partnerName;
     }
     
     public double getValue() {
-        Objs partners = obj.getPartners(partnerName);
+        ObjsI partners = obj.getPartners(partnerName);
 
         if (partners == null)
             return 0;

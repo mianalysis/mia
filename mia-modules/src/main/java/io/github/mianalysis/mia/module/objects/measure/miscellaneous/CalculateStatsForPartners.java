@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -138,16 +138,16 @@ public class CalculateStatsForPartners extends Module {
         return "PARTNER_STATS // " + partnerObjectName + " // " + measurementType + " // [" + measurement + "]";
     }
 
-    public static void processObject(Obj inputObject, String partnerObjectsName, String measurement,
+    public static void processObject(ObjI inputObject, String partnerObjectsName, String measurement,
             boolean[] statsToCalculate) {
         if (statsToCalculate[0] || statsToCalculate[1] || statsToCalculate[2] || statsToCalculate[3]
                 || statsToCalculate[4]) {
-            Objs partnerObjects = inputObject.getPartners(partnerObjectsName);
+            ObjsI partnerObjects = inputObject.getPartners(partnerObjectsName);
 
             // Calculating statistics for measurement
             CumStat cs = new CumStat();
             if (partnerObjects != null) {
-                for (Obj partnerObject : partnerObjects.values()) {
+                for (ObjI partnerObject : partnerObjects.values()) {
                     // Check the measurement exists
                     if (partnerObject.getMeasurement(measurement) == null)
                         continue;
@@ -192,10 +192,10 @@ public class CalculateStatsForPartners extends Module {
         }
     }
 
-    public static double calculateMedian(Obj inputObject, String partnerObjectsName, String measurement) {
+    public static double calculateMedian(ObjI inputObject, String partnerObjectsName, String measurement) {
         double[] values = new double[inputObject.getPartners(partnerObjectsName).size()];
         int i = 0;
-        for (Obj partnerObj : inputObject.getPartners(partnerObjectsName).values())
+        for (ObjI partnerObj : inputObject.getPartners(partnerObjectsName).values())
             values[i++] = partnerObj.getMeasurement(measurement).getValue();
 
         return new Median().evaluate(values);
@@ -231,11 +231,11 @@ public class CalculateStatsForPartners extends Module {
         statsToCalculate[5] = parameters.getValue(CALCULATE_MEDIAN, workspace);
 
         // Getting objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             for (Parameters collection : collections.values()) {
                 String measurement = collection.getValue(MEASUREMENT, workspace);
                 processObject(inputObject, partnerObjectsName, measurement, statsToCalculate);

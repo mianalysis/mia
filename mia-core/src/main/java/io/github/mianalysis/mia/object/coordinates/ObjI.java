@@ -11,7 +11,8 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -24,20 +25,20 @@ import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public interface Obj extends MeasurementProvider, Volume {
-    public default LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
+public interface ObjI extends MeasurementProvider, Volume {
+    public default LinkedHashMap<String, ObjI> getParents(boolean useFullHierarchy) {
         if (!useFullHierarchy)
             return getAllParents();
 
         // Adding each parent and then the parent of that
-        LinkedHashMap<String, Obj> parentHierarchy = new LinkedHashMap<>(getAllParents());
+        LinkedHashMap<String, ObjI> parentHierarchy = new LinkedHashMap<>(getAllParents());
 
         // Going through each parent, adding the parents of that.
-        for (Obj parent : getAllParents().values()) {
+        for (ObjI parent : getAllParents().values()) {
             if (parent == null)
                 continue;
 
-            LinkedHashMap<String, Obj> currentParents = parent.getParents(true);
+            LinkedHashMap<String, ObjI> currentParents = parent.getParents(true);
             if (currentParents == null)
                 continue;
 
@@ -49,12 +50,12 @@ public interface Obj extends MeasurementProvider, Volume {
 
     }
 
-    public default Obj getParent(String name) {
+    public default ObjI getParent(String name) {
         // Split name down by " // " tokenizer
         String[] elements = name.split(" // ");
 
         // Getting the first parent
-        Obj parent = getAllParents().get(elements[0]);
+        ObjI parent = getAllParents().get(elements[0]);
 
         // If the first parent was the only one listed, returning this
         if (elements.length == 1)
@@ -76,7 +77,7 @@ public interface Obj extends MeasurementProvider, Volume {
 
     }
 
-    public default void addParent(Obj parent) {
+    public default void addParent(ObjI parent) {
         getAllParents().put(parent.getName(), parent);
     }
 
@@ -84,14 +85,14 @@ public interface Obj extends MeasurementProvider, Volume {
         getAllParents().remove(name);
     }
 
-    public default Objs getChildren(String name) {
+    public default ObjsI getChildren(String name) {
         // Split name down by " // " tokenizer
         String[] elements = name.split(" // ");
 
         // Getting the first set of children
-        Objs allChildren = getAllChildren().get(elements[0]);
+        ObjsI allChildren = getAllChildren().get(elements[0]);
         if (allChildren == null)
-            return new Objs(elements[0], getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExampleObjs(elements[0], getObjectCollection());
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -108,10 +109,10 @@ public interface Obj extends MeasurementProvider, Volume {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        Objs outputChildren = new Objs(name, allChildren);
-        for (Obj child : allChildren.values()) {
-            Objs currentChildren = child.getChildren(stringBuilder.toString());
-            for (Obj currentChild : currentChildren.values())
+        ObjsI outputChildren = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allChildren);
+        for (ObjI child : allChildren.values()) {
+            ObjsI currentChildren = child.getChildren(stringBuilder.toString());
+            for (ObjI currentChild : currentChildren.values())
                 outputChildren.add(currentChild);
         }
 
@@ -119,7 +120,7 @@ public interface Obj extends MeasurementProvider, Volume {
 
     }
 
-    public default void addChildren(Objs childSet) {
+    public default void addChildren(ObjsI childSet) {
         getAllChildren().put(childSet.getName(), childSet);
     }
 
@@ -127,36 +128,36 @@ public interface Obj extends MeasurementProvider, Volume {
         getAllChildren().remove(name);
     }
 
-    public default void addChild(Obj child) {
+    public default void addChild(ObjI child) {
         String childName = child.getName();
 
-        getAllChildren().computeIfAbsent(childName, k -> new Objs(childName, child.getObjectCollection()));
+        getAllChildren().computeIfAbsent(childName, k -> ObjsFactories.getDefaultFactory().createFromExampleObjs(childName, child.getObjectCollection()));
         getAllChildren().get(childName).add(child);
 
     }
 
-    public default void removeChild(Obj child) {
+    public default void removeChild(ObjI child) {
         String childName = child.getName();
         getAllChildren().get(childName).values().remove(child);
 
     }
 
-    public default Objs getPartners(String name) {
+    public default ObjsI getPartners(String name) {
         return getAllPartners().get(name);
     }
 
-    public default void addPartners(Objs partnerSet) {
+    public default void addPartners(ObjsI partnerSet) {
         getAllPartners().put(partnerSet.getName(), partnerSet);
     }
 
-    public default void addPartner(Obj partner) {
+    public default void addPartner(ObjI partner) {
         String partnerName = partner.getName();
 
-        getAllPartners().computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getObjectCollection()));
+        getAllPartners().computeIfAbsent(partnerName, k -> ObjsFactories.getDefaultFactory().createFromExampleObjs(partnerName, partner.getObjectCollection()));
         getAllPartners().get(partnerName).add(partner);
     }
 
-    public default void removePartner(Obj partner) {
+    public default void removePartner(ObjI partner) {
         String partnerName = partner.getName();
         getAllPartners().get(partnerName).values().remove(partner);
 
@@ -169,14 +170,14 @@ public interface Obj extends MeasurementProvider, Volume {
     /**
      * Returns any partners that happened in previous frames
      */
-    public default Objs getPreviousPartners(String name) {
-        Objs allPartners = getPartners(name);
+    public default ObjsI getPreviousPartners(String name) {
+        ObjsI allPartners = getPartners(name);
 
         if (allPartners == null)
-            return new Objs(name, getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExampleObjs(name, getObjectCollection());
 
-        Objs previousPartners = new Objs(name, allPartners);
-        for (Obj partner : allPartners.values())
+        ObjsI previousPartners = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allPartners);
+        for (ObjI partner : allPartners.values())
             if (partner.getT() < getT())
                 previousPartners.add(partner);
 
@@ -187,14 +188,14 @@ public interface Obj extends MeasurementProvider, Volume {
     /**
      * Returns any partners that happen in following frames
      */
-    public default Objs getSimultaneousPartners(String name) {
-        Objs allPartners = getPartners(name);
+    public default ObjsI getSimultaneousPartners(String name) {
+        ObjsI allPartners = getPartners(name);
 
         if (allPartners == null)
-            return new Objs(name, getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExampleObjs(name, getObjectCollection());
 
-        Objs simultaneousPartners = new Objs(name, allPartners);
-        for (Obj partner : allPartners.values())
+        ObjsI simultaneousPartners = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allPartners);
+        for (ObjI partner : allPartners.values())
             if (partner.getT() == getT())
                 simultaneousPartners.add(partner);
 
@@ -205,14 +206,14 @@ public interface Obj extends MeasurementProvider, Volume {
     /**
      * Returns any partners that happen in following frames
      */
-    public default Objs getNextPartners(String name) {
-        Objs allPartners = getPartners(name);
+    public default ObjsI getNextPartners(String name) {
+        ObjsI allPartners = getPartners(name);
 
         if (allPartners == null)
-            return new Objs(name, getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExampleObjs(name, getObjectCollection());
 
-        Objs nextPartners = new Objs(name, allPartners);
-        for (Obj partner : allPartners.values())
+        ObjsI nextPartners = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allPartners);
+        for (ObjI partner : allPartners.values())
             if (partner.getT() > getT())
                 nextPartners.add(partner);
 
@@ -375,31 +376,31 @@ public interface Obj extends MeasurementProvider, Volume {
 
     }
 
-    public Objs getObjectCollection();
+    public ObjsI getObjectCollection();
 
-    public void setObjectCollection(Objs objCollection);
+    public void setObjectCollection(ObjsI objCollection);
 
     public String getName();
 
     public int getID();
 
-    public Obj setID(int ID);
+    public ObjI setID(int ID);
 
     public int getT();
 
-    public Obj setT(int t);
+    public ObjI setT(int t);
 
-    public LinkedHashMap<String, Obj> getAllParents();
+    public LinkedHashMap<String, ObjI> getAllParents();
 
-    public void setAllParents(LinkedHashMap<String, Obj> parents);
+    public void setAllParents(LinkedHashMap<String, ObjI> parents);
 
-    public LinkedHashMap<String, Objs> getAllChildren();
+    public LinkedHashMap<String, ObjsI> getAllChildren();
 
-    public void setAllChildren(LinkedHashMap<String, Objs> children);
+    public void setAllChildren(LinkedHashMap<String, ObjsI> children);
 
-    public LinkedHashMap<String, Objs> getAllPartners();
+    public LinkedHashMap<String, ObjsI> getAllPartners();
 
-    public void setAllPartners(LinkedHashMap<String, Objs> partners);
+    public void setAllPartners(LinkedHashMap<String, ObjsI> partners);
 
     public void removeRelationships();
     
@@ -411,7 +412,7 @@ public interface Obj extends MeasurementProvider, Volume {
 
     public void clearROIs();
 
-    public Obj duplicate(Objs newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
+    public ObjI duplicate(ObjsI newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata);
 
     public boolean equalsIgnoreNameAndID(Object obj);

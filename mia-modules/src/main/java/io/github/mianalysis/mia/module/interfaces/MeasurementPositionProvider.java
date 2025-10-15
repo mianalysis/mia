@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.interfaces;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -75,7 +75,7 @@ public interface MeasurementPositionProvider {
 
     }
 
-    default double[] getObjectPosition(Obj object, Parameters parameters, boolean pixelDistances, boolean matchXY) {
+    default double[] getObjectPosition(ObjI object, Parameters parameters, boolean pixelDistances, boolean matchXY) {
         String positionMode = parameters.getValue(POSITION_MODE, null);
         switch (positionMode) {
             case PositionModes.OBJECT_CENTROID:

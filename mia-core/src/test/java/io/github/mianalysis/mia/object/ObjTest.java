@@ -15,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
@@ -30,10 +30,10 @@ public class ObjTest {
     @EnumSource(VolumeTypes.class)
     public void testAddMeasurementNormal(VolumeTypes volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Obj obj = objects.createAndAddNewObject(factory);
+        ObjI obj = objects.createAndAddNewObject(factory);
         assertEquals(0, obj.getMeasurements().size());
 
         obj.addMeasurement(new Measurement("Meas", -12.4));
@@ -49,10 +49,10 @@ public class ObjTest {
     @EnumSource(VolumeTypes.class)
     public void testAddMeasurementOverwrite(VolumeTypes volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Obj obj = objects.createAndAddNewObject(factory);
+        ObjI obj = objects.createAndAddNewObject(factory);
         assertEquals(0, obj.getMeasurements().size());
 
         obj.addMeasurement(new Measurement("Meas", -12.4));
@@ -69,10 +69,10 @@ public class ObjTest {
     @EnumSource(VolumeTypes.class)
     public void testAddMeasurementNull(VolumeTypes volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Obj obj = objects.createAndAddNewObject(factory);
+        ObjI obj = objects.createAndAddNewObject(factory);
         assertEquals(0, obj.getMeasurements().size());
 
         obj.addMeasurement(null);
@@ -87,10 +87,10 @@ public class ObjTest {
     @EnumSource(VolumeTypes.class)
     public void testToString(VolumeTypes volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Obj obj = objects.createAndAddNewObject(factory);
+        ObjI obj = objects.createAndAddNewObject(factory);
         obj.setT(12);
 
         String expected = "Object \"Obj\", ID = 1, frame = 12";
@@ -110,14 +110,14 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = children.createAndAddNewObject(factory, 1);
-        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = parents1.createAndAddNewObject(factory, 12);
-        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
-        Obj obj3 = parents2.createAndAddNewObject(factory, 3);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = children.createAndAddNewObjectWithID(factory, 1);
+        ObjsI parents1 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = parents1.createAndAddNewObjectWithID(factory, 12);
+        ObjsI parents2 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        ObjI obj3 = parents2.createAndAddNewObjectWithID(factory, 3);
 
-        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
+        LinkedHashMap<String, ObjI> parents = obj1.getParents(false);
         assertEquals(0, parents.size());
 
     }
@@ -132,19 +132,19 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = children.createAndAddNewObject(factory, 1);
-        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = parents1.createAndAddNewObject(factory, 12);
-        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
-        Obj obj3 = parents2.createAndAddNewObject(factory, 3);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = children.createAndAddNewObjectWithID(factory, 1);
+        ObjsI parents1 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = parents1.createAndAddNewObjectWithID(factory, 12);
+        ObjsI parents2 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        ObjI obj3 = parents2.createAndAddNewObjectWithID(factory, 3);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
         obj1.addParent(obj3);
         obj3.addChild(obj1);
 
-        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
+        LinkedHashMap<String, ObjI> parents = obj1.getParents(false);
         assertEquals(2, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -161,19 +161,19 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = children.createAndAddNewObject(factory, 1);
-        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = parents1.createAndAddNewObject(factory, 12);
-        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
-        Obj obj3 = parents2.createAndAddNewObject(factory, 3);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = children.createAndAddNewObjectWithID(factory, 1);
+        ObjsI parents1 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = parents1.createAndAddNewObjectWithID(factory, 12);
+        ObjsI parents2 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        ObjI obj3 = parents2.createAndAddNewObjectWithID(factory, 3);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
         obj1.addParent(obj3);
         obj3.addChild(obj1);
 
-        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
+        LinkedHashMap<String, ObjI> parents = obj1.getParents(false);
         assertEquals(1, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
 
@@ -194,15 +194,15 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = children.createAndAddNewObject(factory, 1);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = children.createAndAddNewObjectWithID(factory, 1);
 
-        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = parents1.createAndAddNewObject(factory, 12);
-        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
-        Obj obj3 = parents2.createAndAddNewObject(factory, 3);
-        Objs parents3 = new Objs(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj4 = parents3.createAndAddNewObject(factory, 42);
+        ObjsI parents1 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = parents1.createAndAddNewObjectWithID(factory, 12);
+        ObjsI parents2 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        ObjI obj3 = parents2.createAndAddNewObjectWithID(factory, 3);
+        ObjsI parents3 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj4 = parents3.createAndAddNewObjectWithID(factory, 42);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -213,7 +213,7 @@ public class ObjTest {
         obj3.addParent(obj4);
         obj4.addChild(obj3);
 
-        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
+        LinkedHashMap<String, ObjI> parents = obj1.getParents(true);
         assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -236,14 +236,14 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = children.createAndAddNewObject(factory, 1);
-        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = parents1.createAndAddNewObject(factory, 12);
-        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
-        Obj obj3 = parents2.createAndAddNewObject(factory, 3);
-        Objs parents3 = new Objs(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj4 = parents3.createAndAddNewObject(factory, 42);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = children.createAndAddNewObjectWithID(factory, 1);
+        ObjsI parents1 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = parents1.createAndAddNewObjectWithID(factory, 12);
+        ObjsI parents2 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        ObjI obj3 = parents2.createAndAddNewObjectWithID(factory, 3);
+        ObjsI parents3 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj4 = parents3.createAndAddNewObjectWithID(factory, 42);
 
         obj3.addParent(obj4);
         obj4.addChild(obj3);
@@ -254,7 +254,7 @@ public class ObjTest {
         obj1.addParent(obj2);
         obj2.addChild(obj1);
 
-        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
+        LinkedHashMap<String, ObjI> parents = obj1.getParents(true);
         assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -280,15 +280,15 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = children.createAndAddNewObject(factory, 1);
-        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = parents1.createAndAddNewObject(factory, 12);
-        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
-        Obj obj3 = parents2.createAndAddNewObject(factory, 3);
-        Objs parents3 = new Objs(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj4 = parents3.createAndAddNewObject(factory, 42);
-        Obj obj5 = parents1.createAndAddNewObject(factory, 14);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = children.createAndAddNewObjectWithID(factory, 1);
+        ObjsI parents1 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = parents1.createAndAddNewObjectWithID(factory, 12);
+        ObjsI parents2 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        ObjI obj3 = parents2.createAndAddNewObjectWithID(factory, 3);
+        ObjsI parents3 = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj4 = parents3.createAndAddNewObjectWithID(factory, 42);
+        ObjI obj5 = parents1.createAndAddNewObjectWithID(factory, 14);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -302,7 +302,7 @@ public class ObjTest {
         obj3.addParent(obj5);
         obj5.addChild(obj3);
 
-        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
+        LinkedHashMap<String, ObjI> parents = obj1.getParents(true);
         assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
@@ -319,16 +319,16 @@ public class ObjTest {
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
-        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = parents.createAndAddNewObject(factory, 1);
-        Obj obj2 = parents.createAndAddNewObject(factory, 12);
-        Obj obj3 = parents.createAndAddNewObject(factory, 2);
-        Obj obj4 = parents.createAndAddNewObject(factory, 32);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = parents.createAndAddNewObjectWithID(factory, 1);
+        ObjI obj2 = parents.createAndAddNewObjectWithID(factory, 12);
+        ObjI obj3 = parents.createAndAddNewObjectWithID(factory, 2);
+        ObjI obj4 = parents.createAndAddNewObjectWithID(factory, 32);
 
         assertEquals(0, obj1.getAllChildren().size());
 
         // Creating a new collection of child objects
-        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI children = ObjsFactories.getDefaultFactory().createFromSpatCal(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         children.add(obj2);
         children.add(obj3);
         children.add(obj4);
@@ -400,14 +400,14 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects1.createAndAddNewObject(factory);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = objects2.createAndAddNewObject(factory);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 4);
         obj2.addCoord(3, 5, 1);
@@ -423,14 +423,14 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects1.createAndAddNewObject(factory);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = objects2.createAndAddNewObject(factory);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(3, 5, 1);
         obj2.addCoord(1, 3, 4);
@@ -446,14 +446,14 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects1.createAndAddNewObject(factory);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = objects2.createAndAddNewObject(factory);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 4);
         obj2.addCoord(3, 5, 1);
@@ -469,13 +469,13 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(factory);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 1, 1);
         obj1.addCoord(2, 1, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(factory);
+        ObjI obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(2);
         obj2.addCoord(1, 1, 1);
         obj2.addCoord(1, 2, 1);
@@ -491,13 +491,13 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(factory);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(factory);
+        ObjI obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 3);
         obj2.addCoord(3, 5, 1);
@@ -513,13 +513,13 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(factory);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(factory);
+        ObjI obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 4);
 
@@ -533,14 +533,14 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects1.createAndAddNewObject(factory);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = objects2.createAndAddNewObject(factory);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 4);
         obj2.addCoord(3, 5, 1);
@@ -557,14 +557,14 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects1.createAndAddNewObject(factory);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = objects2.createAndAddNewObject(factory);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(3, 5, 1);
         obj2.addCoord(1, 3, 4);
@@ -581,14 +581,14 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects1.createAndAddNewObject(factory);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects1.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj2 = objects2.createAndAddNewObject(factory);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj2 = objects2.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 4);
         obj2.addCoord(3, 5, 1);
@@ -605,13 +605,13 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(factory);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 1, 1);
         obj1.addCoord(2, 1, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(factory);
+        ObjI obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(2);
         obj2.addCoord(1, 1, 1);
         obj2.addCoord(1, 2, 1);
@@ -628,13 +628,13 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(factory);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(factory);
+        ObjI obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 3);
         obj2.addCoord(3, 5, 1);
@@ -651,13 +651,13 @@ public class ObjTest {
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(factory);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjI obj1 = objects.createAndAddNewObject(factory);
         obj1.setT(1);
         obj1.addCoord(1, 3, 4);
         obj1.addCoord(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(factory);
+        ObjI obj2 = objects.createAndAddNewObject(factory);
         obj2.setT(1);
         obj2.addCoord(1, 3, 4);
 

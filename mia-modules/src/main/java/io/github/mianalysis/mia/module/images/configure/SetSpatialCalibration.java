@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -138,7 +138,7 @@ public class SetSpatialCalibration extends Module {
     }
 
     public static double getFirstObjectMeasurement(WorkspaceI workspace, String objectsName, String measurementName) {
-        Obj firstObj = workspace.getObjects(objectsName).getFirst();
+        ObjI firstObj = workspace.getObjects(objectsName).getFirst();
         if (firstObj == null) {
             MIA.log.writeWarning("No object to provide distance.  Setting calibration to NaN.");
             return Double.NaN;

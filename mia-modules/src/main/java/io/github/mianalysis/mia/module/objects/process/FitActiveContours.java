@@ -13,10 +13,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -223,11 +223,11 @@ public class FitActiveContours extends Module {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // If there are no input objects, creating an empty collection
         if (inputObjects.getFirst() == null) {
@@ -263,9 +263,9 @@ public class FitActiveContours extends Module {
         int count = 1;
         int total = inputObjects.size();
 
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // Getting the z-plane of the current object
             int z = inputObject.getCoordinateSet().iterator().next().getZ();
@@ -331,7 +331,7 @@ public class FitActiveContours extends Module {
                     inputObject.clearAllCoordinates();
                     inputObject.addPointsFromRoi(newRoi, z);
                 } else {
-                    Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+                    ObjI outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi, z);
                 }

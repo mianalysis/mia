@@ -7,9 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -45,10 +46,10 @@ public class CreateBoundingBoxes extends Module {
      */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj getBoundingBox(Obj inputObject, Objs outputObjects, boolean assignRelationships) {
+    public static ObjI getBoundingBox(ObjI inputObject, ObjsI outputObjects, boolean assignRelationships) {
         double[][] extents = inputObject.getExtents(true, false);
 
-        Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+        ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
         int xMin = (int) Math.floor(extents[0][0]);
         int xMax = (int) Math.ceil(extents[0][1]);
         int yMin = (int) Math.floor(extents[1][0]);
@@ -103,10 +104,10 @@ public class CreateBoundingBoxes extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
-        for (Obj inputObject : inputObjects.values())
+        for (ObjI inputObject : inputObjects.values())
             getBoundingBox(inputObject, outputObjects, true);
 
         workspace.addObjects(outputObjects);

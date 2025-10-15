@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.scijava.Priority;
@@ -12,10 +11,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -119,15 +118,15 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
         }
     }
 
-    public static int process(Objs inputObjects, int maxContact, @Nullable boolean[] removalEdges,
-            boolean includeZ, boolean remove, @Nullable Objs outputObjects) {
+    public static int process(ObjsI inputObjects, int maxContact, @Nullable boolean[] removalEdges,
+            boolean includeZ, boolean remove, @Nullable ObjsI outputObjects) {
         if (removalEdges == null)
             removalEdges = new boolean[] { true, true, true, true };
 
         int count = 0;
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // If the following is negative, there's no need to remove the object
             if (!hasContactWithEdge(inputObject, maxContact, removalEdges, includeZ))
@@ -145,7 +144,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     }
 
-    public static boolean hasContactWithEdge(Obj obj, int maxContact, boolean[] removalEdges, boolean includeZ) {
+    public static boolean hasContactWithEdge(ObjI obj, int maxContact, boolean[] removalEdges, boolean includeZ) {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
@@ -201,7 +200,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
@@ -218,7 +217,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
         boolean[] removalEdges = new boolean[] { removeTop, removeLeft, removeBottom, removeRight };
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
 
         int count = process(inputObjects, maxContact, removalEdges, includeZ, remove, outputObjects);
 

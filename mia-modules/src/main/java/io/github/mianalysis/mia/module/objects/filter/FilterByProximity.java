@@ -13,10 +13,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.measure.spatial.CalculateNearestNeighbour;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -177,7 +177,7 @@ public class FilterByProximity extends AbstractObjectFilter {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
@@ -197,25 +197,25 @@ public class FilterByProximity extends AbstractObjectFilter {
         if (inputObjects == null)
             return Status.PASS;
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
 
         // Ordering objects based on their measurement
         MeasurementComparator comparator = getComparator(filterMethod, measName);
-        ArrayList<Obj> sortedObjects = new ArrayList<>(inputObjects.values());
+        ArrayList<ObjI> sortedObjects = new ArrayList<>(inputObjects.values());
         sortedObjects.sort(comparator);
 
         // Iterating over each object, identifying any objects within the mimimum
         // distance and removing them
         int count = 0;
         int total = sortedObjects.size();
-        for (Obj sortedObject : sortedObjects) {
+        for (ObjI sortedObject : sortedObjects) {
             // Checking that this object hasn't already been removed
             if (!inputObjects.containsValue(sortedObject)) {
                 writeProgressStatus(++count, total, "objects");
                 continue;
             }
 
-            LinkedHashMap<Obj, Double> scores = new LinkedHashMap<>();
+            LinkedHashMap<ObjI, Double> scores = new LinkedHashMap<>();
 
             // Calculating all nearest neighbour distances (minSeparation parameter doesn't
             // influence result here)
@@ -224,9 +224,9 @@ public class FilterByProximity extends AbstractObjectFilter {
 
             // Iterating over each neighbour, removing it if it's closer than the minimum
             // separation
-            Iterator<Obj> iterator = inputObjects.values().iterator();
+            Iterator<ObjI> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
+                ObjI inputObject = iterator.next();
 
                 // Don't compare an object to itself
                 if (inputObject == sortedObject)
@@ -351,7 +351,7 @@ public class FilterByProximity extends AbstractObjectFilter {
     }
 }
 
-class MeasurementComparator implements Comparator<Obj> {
+class MeasurementComparator implements Comparator<ObjI> {
     private String measurementName;
     private boolean ascending;
 
@@ -361,7 +361,7 @@ class MeasurementComparator implements Comparator<Obj> {
     }
 
     @Override
-    public int compare(Obj o1, Obj o2) {
+    public int compare(ObjI o1, ObjI o2) {
         Double val1 = Double.NaN;
         Double val2 = Double.NaN;
 

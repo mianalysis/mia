@@ -14,10 +14,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -102,8 +103,8 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
         int nodeInterval = parameters.getValue(NODE_INTERVAL, workspace);
 
         ImageI<T> inputImage = workspace.getImages().get(inputImageName);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Calibration calibration = inputImage.getImagePlus().getCalibration();
         Calibration calibration = new Calibration();
@@ -111,18 +112,18 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
         Cost costFunction = new Reciprocal(imageStatistics.min, imageStatistics.max);
         Heuristic heuristic = new Dijkstra();
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             RandomAccessibleInterval<T> rai = ExtractSubstack
                     .extractSubstack(inputImage, "Timepoint", "1-end", "1-end", String.valueOf(inputObject.getT() + 1))
                     .getImgPlus();
 
-            Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
+            ObjI outputObject = outputObjects.createAndAddNewObject(new PointListFactory());
 
             ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
 
             if (longestPath.size() <= 1) {
-                Objs tempObjs = new Objs("Temp", inputObjects);
-                Obj tempObj = inputObject.duplicate(tempObjs, false, false, false);
+                ObjsI tempObjs = ObjsFactories.getDefaultFactory().createFromExampleObjs("Temp", inputObjects);
+                ObjI tempObj = inputObject.duplicate(tempObjs, false, false, false);
                 while (longestPath.size() <= 1 && tempObj.size() > 0) {
                     tempObj.getCoordinateSet().remove(tempObj.getCoordinateIterator().next());
                     longestPath = CreateSkeleton.getLargestShortestPath(tempObj);

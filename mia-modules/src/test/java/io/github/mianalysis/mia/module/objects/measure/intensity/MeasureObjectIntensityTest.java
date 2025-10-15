@@ -17,10 +17,10 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -50,7 +50,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -78,7 +78,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         assertEquals(8,workspace.getObjects(inputObjectsName).size());
 
         // Running through each object, checking it has the expected number of measurements and the expected value
-        for (Obj testObject:testObjects.values()) {
+        for (ObjI testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_8BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals(expected, actual, 1E-2);
@@ -116,7 +116,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -144,7 +144,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         assertEquals(8,workspace.getObjects(inputObjectsName).size());
 
         // Running through each object, checking it has the expected number of measurements and the expected value
-        for (Obj testObject:testObjects.values()) {
+        for (ObjI testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_16BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals(expected, actual, 1E-2);
@@ -182,7 +182,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        Objs testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -210,7 +210,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         assertEquals(8,workspace.getObjects(inputObjectsName).size());
 
         // Running through each object, checking it has the expected number of measurements and the expected value
-        for (Obj testObject:testObjects.values()) {
+        for (ObjI testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_32BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals(expected, actual,1E-2);

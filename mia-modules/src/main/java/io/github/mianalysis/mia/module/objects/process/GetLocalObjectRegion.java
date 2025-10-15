@@ -9,10 +9,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -225,12 +225,12 @@ public class GetLocalObjectRegion extends Module {
         super("Get local object region", modules);
     }
 
-    public static Obj getLocalRegion(Obj inputObject, Objs outputObjects, int[] centroid, int radius,
+    public static ObjI getLocalRegion(ObjI inputObject, ObjsI outputObjects, int[] centroid, int radius,
             boolean addRelationship) throws IntegerOverflowException {
         double xy_z_ratio = inputObject.getDppXY() / inputObject.getDppZ();
 
         // Creating new object and assigning relationship to input objects
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
+        ObjI outputObject = outputObjects.createAndAddNewObjectWithID(inputObject.getCoordinateSetFactory(), inputObject.getID());
 
         if (radius == 0) {
             // The output object is a single point
@@ -285,7 +285,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    protected int getRadius(Obj inputObject, WorkspaceI workspace) {
+    protected int getRadius(ObjI inputObject, WorkspaceI workspace) {
         String radiusSource = parameters.getValue(RADIUS_SOURCE, workspace);
         double radius = parameters.getValue(FIXED_VALUE_FOR_RADIUS, workspace);
         String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT, workspace);
@@ -297,7 +297,7 @@ public class GetLocalObjectRegion extends Module {
                 radius = inputObject.getMeasurement(radiusMeasurement).getValue();
                 break;
             case RadiusSources.PARENT_MEASUREMENT:
-                Obj parentObject = inputObject.getParent(radiusParentObjectsName);
+                ObjI parentObject = inputObject.getParent(radiusParentObjectsName);
                 if (parentObject == null)
                     return -1;
                 else {
@@ -320,7 +320,7 @@ public class GetLocalObjectRegion extends Module {
         }
     }
 
-    protected int[] getCentroid(Obj inputObject, WorkspaceI workspace) {
+    protected int[] getCentroid(ObjI inputObject, WorkspaceI workspace) {
         String centroidSource = parameters.getValue(CENTROID_SOURCE, workspace);
         double xPosition = parameters.getValue(X_POSITION, workspace);
         double yPosition = parameters.getValue(Y_POSITION, workspace);
@@ -357,7 +357,7 @@ public class GetLocalObjectRegion extends Module {
                 break;
 
             case CentroidSources.PARENT_MEASUREMENT:
-                Obj parentObject = inputObject.getParent(centroidParentObjectsName);
+                ObjI parentObject = inputObject.getParent(centroidParentObjectsName);
                 if (parentObject == null)
                     return null;
                 else {
@@ -411,15 +411,15 @@ public class GetLocalObjectRegion extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Getting input objects
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Creating store for output objects
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Iterating over each input object, creating an output object
         int count = 0;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             int radius = getRadius(inputObject, workspace);
             if (radius == -1) {
                 MIA.log.writeWarning("Could not get radius for object " + inputObject.getID());

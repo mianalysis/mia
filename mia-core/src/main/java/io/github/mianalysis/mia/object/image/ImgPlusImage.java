@@ -11,9 +11,10 @@ import ij.measure.Calibration;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -60,29 +61,29 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     // PUBLIC METHODS
 
-    public Objs initialiseEmptyObjs(String outputObjectsName) {
+    public ObjsI initialiseEmptyObjs(String outputObjectsName) {
         SpatCal cal = SpatCal.getFromImage(img);
         int tIdx = img.dimensionIndex(Axes.TIME);
         int nFrames = (int) (tIdx == -1 ? 1 : img.dimension(tIdx));
         double frameInterval = tIdx == -1 ? 1 : img.axis(tIdx).calibratedValue(1);
 
-        return new Objs(outputObjectsName, cal, nFrames, frameInterval,
+        return ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
     }
 
     @Override
-    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName,
+    public ObjsI convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName,
             boolean blackBackground) {
         return convertImageToObjects(factory, outputObjectsName, true, blackBackground);
     }
 
     @Override
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
+    public ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
         return convertImageToObjects(factory, outputObjectsName, singleObject, true);
     }
 
-    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject,
+    ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject,
             boolean blackBackground) {
         int xIdx = img.dimensionIndex(Axes.X);
         int yIdx = img.dimensionIndex(Axes.Y);
@@ -104,7 +105,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
         // Need to get coordinates and convert to a HCObject
         SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
-        Objs outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
         for (int c = 0; c < nChannels; c++) {
@@ -153,14 +154,14 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
                     // Finalising the object store for this slice (this only does something for
                     // Quadtrees)
-                    for (Obj obj : outputObjects.values())
+                    for (ObjI obj : outputObjects.values())
                         obj.finaliseSlice(z);
 
                 }
             }
         }
 
-        for (Obj obj : outputObjects.values())
+        for (ObjI obj : outputObjects.values())
             obj.finalise();
 
         return outputObjects;
@@ -168,7 +169,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public void addObject(Obj obj, float hue) {
+    public void addObject(ObjI obj, float hue) {
         T type = img.firstElement();
 
         int xIdx = img.dimensionIndex(Axes.X);
@@ -203,7 +204,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public void addObjectCentroid(Obj obj, float hue) {
+    public void addObjectCentroid(ObjI obj, float hue) {
         T type = img.firstElement();
 
         int xIdx = img.dimensionIndex(Axes.X);

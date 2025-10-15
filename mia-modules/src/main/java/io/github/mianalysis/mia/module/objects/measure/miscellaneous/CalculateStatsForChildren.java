@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -138,16 +138,16 @@ public class CalculateStatsForChildren extends Module {
         return "CHILD_STATS // " + childObjectName + " // " + measurementType + " // [" + measurement + "]";
     }
 
-    public static void processObject(Obj parentObject, String childObjectsName, String measurement,
+    public static void processObject(ObjI parentObject, String childObjectsName, String measurement,
             boolean[] statsToCalculate) {
         if (statsToCalculate[0] || statsToCalculate[1] || statsToCalculate[2] || statsToCalculate[3]
                 || statsToCalculate[4]) {
-            Objs childObjects = parentObject.getChildren(childObjectsName);
+            ObjsI childObjects = parentObject.getChildren(childObjectsName);
 
             // Calculating statistics for measurement
             CumStat cs = new CumStat();
             if (childObjects != null) {
-                for (Obj childObject : childObjects.values()) {
+                for (ObjI childObject : childObjects.values()) {
                     // Check the measurement exists
                     if (childObject.getMeasurement(measurement) == null)
                         continue;
@@ -192,10 +192,10 @@ public class CalculateStatsForChildren extends Module {
         }
     }
 
-    public static double calculateMedian(Obj parentObject, String childObjectsName, String measurement) {
+    public static double calculateMedian(ObjI parentObject, String childObjectsName, String measurement) {
         double[] values = new double[parentObject.getChildren(childObjectsName).size()];
         int i = 0;
-        for (Obj childObj : parentObject.getChildren(childObjectsName).values())
+        for (ObjI childObj : parentObject.getChildren(childObjectsName).values())
             values[i++] = childObj.getMeasurement(measurement).getValue();
 
         return new Median().evaluate(values);
@@ -231,11 +231,11 @@ public class CalculateStatsForChildren extends Module {
         statsToCalculate[5] = parameters.getValue(CALCULATE_MEDIAN, workspace);
 
         // Getting objects
-        Objs parentObjects = workspace.getObjects(parentObjectsName);
+        ObjsI parentObjects = workspace.getObjects(parentObjectsName);
 
         int count = 0;
         int total = parentObjects.size();
-        for (Obj parentObject : parentObjects.values()) {
+        for (ObjI parentObject : parentObjects.values()) {
             for (Parameters collection : collections.values()) {
                 String measurement = collection.getValue(MEASUREMENT, workspace);
                 processObject(parentObject, childObjectsName, measurement, statsToCalculate);

@@ -7,9 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
@@ -132,12 +133,12 @@ public class ExtractObjectCrossSection extends Module {
 
     }
 
-    static void process(Obj inputObject, Objs outputObjects, int[] indices) {
+    static void process(ObjI inputObject, ObjsI outputObjects, int[] indices) {
         CoordinateSetFactoryI factory = inputObject.getCoordinateSetFactory();
         if (factory instanceof OctreeFactory)
             factory = new QuadtreeFactory();
 
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
+        ObjI outputObject = outputObjects.createAndAddNewObjectWithID(inputObject.getCoordinateSetFactory(), inputObject.getID());
 
         for (int idx : indices) {
             if (idx < 0 || idx >= inputObject.getNSlices())
@@ -168,7 +169,7 @@ public class ExtractObjectCrossSection extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
@@ -178,7 +179,7 @@ public class ExtractObjectCrossSection extends Module {
         String objectMeasurementName = parameters.getValue(OBJECT_MEASUREMENT,workspace);
         String indicesString = parameters.getValue(RELATIVE_SLICE_INDICES,workspace);
 
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
         int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true, inputObjects.getNSlices());
@@ -193,7 +194,7 @@ public class ExtractObjectCrossSection extends Module {
                 break;
         }
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             int[] finalIndices = indices;
             switch (referenceMode) {
                 case ReferenceModes.OBJECT_MEASUREMENT:

@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -127,7 +127,7 @@ public abstract class MeasurementCalculator extends Module {
         super(name, modules);
     }
 
-    public static double getObjectCollectionStatistic(Objs objects, String measurementName, String statistic) {
+    public static double getObjectCollectionStatistic(ObjsI objects, String measurementName, String statistic) {
         // The first and last values are calculated slightly differently
         switch (statistic) {
             case StatisticModes.FIRST:
@@ -139,7 +139,7 @@ public abstract class MeasurementCalculator extends Module {
         CumStat cs = new CumStat();
 
         // Creating statistics calculator
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             Measurement measurement = object.getMeasurement(measurementName);
             if (measurement == null)
                 continue;
@@ -166,13 +166,13 @@ public abstract class MeasurementCalculator extends Module {
         }
     }
 
-    static double getFirstValue(Objs objects, String measurementName) {
+    static double getFirstValue(ObjsI objects, String measurementName) {
         CumStat cs = new CumStat();
 
         int minFrame = Integer.MAX_VALUE;
 
         // Creating statistics calculator
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int t = object.getT();
 
             if (t < minFrame) {
@@ -189,13 +189,13 @@ public abstract class MeasurementCalculator extends Module {
 
     }
 
-    static double getLastValue(Objs objects, String measurementName) {
+    static double getLastValue(ObjsI objects, String measurementName) {
         CumStat cs = new CumStat();
 
         int maxFrame = -Integer.MAX_VALUE;
 
         // Creating statistics calculator
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int t = object.getT();
 
             if (t > maxFrame) {
@@ -281,11 +281,11 @@ public abstract class MeasurementCalculator extends Module {
         double refValue1 = Double.NaN;
         double refValue2 = Double.NaN;
         if (valueMode1.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            Objs refObjects1 = workspace.getObjects(refObjectsName1);
+            ObjsI refObjects1 = workspace.getObjects(refObjectsName1);
             refValue1 = getObjectCollectionStatistic(refObjects1, refMeasurementName1, statisticMode1);
         }
         if (valueMode2.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            Objs refObjects2 = workspace.getObjects(refObjectsName2);
+            ObjsI refObjects2 = workspace.getObjects(refObjectsName2);
             refValue2 = getObjectCollectionStatistic(refObjects2, refMeasurementName2, statisticMode2);
         }
 

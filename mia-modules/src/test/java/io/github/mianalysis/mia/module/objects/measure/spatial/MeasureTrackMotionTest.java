@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import io.github.mianalysis.mia.expectedobjects.Tracks3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
@@ -70,7 +70,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
         String spotObjectsName = "Spots";
 
         // Getting input objects and expected values
-        Objs trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
+        ObjsI trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
         TreeMap<Integer,Track> expectedObjects = new Tracks3D().getAverageTrack(zScaling);
 
         Track expected = expectedObjects.get(0);

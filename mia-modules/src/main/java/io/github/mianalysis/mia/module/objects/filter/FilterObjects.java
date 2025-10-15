@@ -27,9 +27,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -278,7 +279,7 @@ public class FilterObjects extends Module implements ActionListener {
 
     }
 
-    public void filterObjectsOnImageEdge(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsOnImageEdge(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, boolean includeZ) {
         int minX = 0;
         int minY = 0;
@@ -287,9 +288,9 @@ public class FilterObjects extends Module implements ActionListener {
         int maxY = inputObjects.getSpatialCalibration().getHeight() - 1;
         int maxZ = inputObjects.getSpatialCalibration().getNSlices() - 1;
 
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             for (Point<Integer> pt:inputObject.getCoordinateSet()) {
             // for (int i = 0; i < x.size(); i++) {
@@ -309,11 +310,11 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMissingMeasurement(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithMissingMeasurement(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String measurement) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             if (Double.isNaN(inputObject.getMeasurement(measurement).getValue())) {
                 if (remove)
@@ -322,13 +323,13 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithoutAParent(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithoutAParent(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String parentObjectName) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
-            LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
+            LinkedHashMap<String, ObjI> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) == null) {
                 if (remove)
                     processRemoval(inputObject, outputObjects, iterator);
@@ -336,13 +337,13 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithAParent(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithAParent(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String parentObjectName) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
-            LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
+            LinkedHashMap<String, ObjI> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) != null) {
                 if (remove)
                     processRemoval(inputObject, outputObjects, iterator);
@@ -350,12 +351,12 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMinNumOfChildren(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithMinNumOfChildren(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String childObjectsName, double minChildN) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
-            Objs childObjects = inputObject.getChildren(childObjectsName);
+            ObjI inputObject = iterator.next();
+            ObjsI childObjects = inputObject.getChildren(childObjectsName);
 
             // Removing the object if it has no children
             if (childObjects == null) {
@@ -372,12 +373,12 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMaxNumOfChildren(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithMaxNumOfChildren(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String childObjectsName, double maxChildN) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
-            Objs childObjects = inputObject.getChildren(childObjectsName);
+            ObjI inputObject = iterator.next();
+            ObjsI childObjects = inputObject.getChildren(childObjectsName);
 
             if (childObjects == null)
                 continue;
@@ -390,11 +391,11 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMeasSmallerThan(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithMeasSmallerThan(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String measurementName, MeasRef measurementReference) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // Removing the object if it has no children
             Measurement measurement = inputObject.getMeasurement(measurementName);
@@ -419,11 +420,11 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMeasLargerThan(Objs inputObjects, @Nullable Objs outputObjects,
+    public void filterObjectsWithMeasLargerThan(ObjsI inputObjects, @Nullable ObjsI outputObjects,
             boolean remove, String measurementName, MeasRef measurementReference) {
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             Measurement measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
@@ -448,7 +449,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsByID(Objs inputObjects, @Nullable Objs outputObjects, boolean remove,
+    public void filterObjectsByID(ObjsI inputObjects, @Nullable ObjsI outputObjects, boolean remove,
             @Nullable ImageI image) {
         ImagePlus ipl = null;
         if (image != null) {
@@ -475,7 +476,7 @@ public class FilterObjects extends Module implements ActionListener {
             ipl.close();
 
         for (int id : ids) {
-            Obj obj = inputObjects.get(id);
+            ObjI obj = inputObjects.get(id);
             if (remove) {
                 obj.removeRelationships();
                 if (outputObjects != null) {
@@ -487,7 +488,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    void processRemoval(Obj inputObject, Objs outputObjects, Iterator<Obj> iterator) {
+    void processRemoval(ObjI inputObject, ObjsI outputObjects, Iterator<ObjI> iterator) {
         inputObject.removeRelationships();
         if (outputObjects != null) {
             inputObject.setObjectCollection(outputObjects);
@@ -518,7 +519,7 @@ public class FilterObjects extends Module implements ActionListener {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE,workspace);
@@ -538,8 +539,8 @@ public class FilterObjects extends Module implements ActionListener {
         boolean showImage = parameters.getValue(SHOW_IMAGE,workspace);
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME,workspace);
 
-        Objs outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
-                ? new Objs(outputObjectsName, inputObjects)
+        ObjsI outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
+                ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects)
                 : null;
 
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -959,7 +960,7 @@ public class MeasRef {
             return referenceType;
         }
 
-        public double getValue(@Nullable Obj object) {
+        public double getValue(@Nullable ObjI object) {
             switch (referenceType) {
                 case ReferenceModes.FIXED_VALUE:
                 case ReferenceModes.IMAGE_MEASUREMENT:

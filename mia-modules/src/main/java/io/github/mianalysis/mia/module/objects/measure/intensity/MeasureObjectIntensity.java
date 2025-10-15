@@ -12,10 +12,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -128,7 +128,7 @@ public class MeasureObjectIntensity extends Module {
         return "INTENSITY // " + imageName + "_" + measurement;
     }
 
-    public static CumStat measureIntensity(Obj object, ImageI image, boolean measureMedian, boolean addMeasurements) {
+    public static CumStat measureIntensity(ObjI object, ImageI image, boolean measureMedian, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -170,7 +170,7 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public static CumStat[] measureWeightedCentre(Obj object, ImageI image, boolean addMeasurements) {
+    public static CumStat[] measureWeightedCentre(ObjI object, ImageI image, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -206,7 +206,7 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public static CumStat[] measurePeakLocation(Obj object, ImageI image, boolean addMeasurements) {
+    public static CumStat[] measurePeakLocation(ObjI object, ImageI image, boolean addMeasurements) {
         // Getting parameters
         String imageName = image.getName();
 
@@ -273,7 +273,7 @@ public class MeasureObjectIntensity extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects(objectName);
+        ObjsI objects = workspace.getObjects(objectName);
 
         // Getting input image
         String imageName = parameters.getValue(INPUT_IMAGE, workspace);
@@ -286,7 +286,7 @@ public class MeasureObjectIntensity extends Module {
         // Measuring intensity for each object and adding the measurement to that object
         int count = 0;
         int total = objects.size();
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             measureIntensity(object, inputImage, measureMedian, true);
 
             // If specified, measuring weighted centre for intensity

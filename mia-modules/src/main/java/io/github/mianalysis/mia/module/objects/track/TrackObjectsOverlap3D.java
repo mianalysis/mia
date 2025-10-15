@@ -14,9 +14,9 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractObjectTracking;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractSplittingMergingObjectTracking;
 import io.github.mianalysis.mia.module.objects.track.trackmate.OverlapTracker3DFactory;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -48,7 +48,7 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
         Map<String, Object> trackerSettings = spotTrackerFactory.getDefaultSettings();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         trackerSettings.put(OverlapTracker3DFactory.KEY_MIA_OBJECTS, inputObjects);
 
         double minIoU = parameters.getValue(MIN_IOU, workspace);
@@ -65,10 +65,10 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
     }
 
     @Override
-    protected void addSpotMeasurements(Objs inputObjects, SpotCollection spotCollection) {
+    protected void addSpotMeasurements(ObjsI inputObjects, SpotCollection spotCollection) {
         for (Spot spot : spotCollection.iterable(false)) {
             int MIA_ID = spot.getFeature(Features.MIA_ID).intValue();
-            Obj inputObject = inputObjects.get(MIA_ID);
+            ObjI inputObject = inputObjects.get(MIA_ID);
             if (inputObject == null)
                 continue;
 

@@ -17,10 +17,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -213,7 +213,7 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static boolean saveFeatures(Objs objects, ObjMeasurementRefs refs, TreeMap<String, Boolean> states,
+    static boolean saveFeatures(ObjsI objects, ObjMeasurementRefs refs, TreeMap<String, Boolean> states,
             String folderName, String fileName) {
         DecimalFormat df = new DecimalFormat("0.0000000E0");
 
@@ -227,7 +227,7 @@ public class ExportACCDataset extends Module {
 
         StringBuilder builder = new StringBuilder();
 
-        for (Obj obj : objects.values()) {
+        for (ObjI obj : objects.values()) {
             // Adding centroid
             builder.append(df.format(obj.getXMean(true))).append(" ").append(df.format(obj.getYMean(true)));
 
@@ -262,7 +262,7 @@ public class ExportACCDataset extends Module {
     @Override
     public Status process(WorkspaceI workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE,workspace);
         ImageI inputRawImage = workspace.getImage(inputRawImageName);
         String inputOverlayImageName = parameters.getValue(INPUT_OVERLAY_IMAGE,workspace);

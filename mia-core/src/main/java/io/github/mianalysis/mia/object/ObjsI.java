@@ -1,9 +1,10 @@
 package io.github.mianalysis.mia.object;
 
 import java.awt.Color;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import ij.IJ;
@@ -13,15 +14,12 @@ import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.coordinates.Obj;
-import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -37,124 +35,72 @@ import ome.units.unit.Unit;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public class Objs extends LinkedHashMap<Integer, Obj> {
-    private static final long serialVersionUID = 7383226061156796558L;
-    private String name;
-    private int maxID = 0;
-    private SpatCal spatCal;
-    private int nFrames;
-    private double frameInterval;
-    private Unit<Time> temporalUnit;
+public interface ObjsI extends Map<Integer, ObjI> {
+    public ObjI createAndAddNewObject(CoordinateSetFactoryI factory);
 
-    public Objs(String name, double dppXY, double dppZ, String units, int width, int height, int nSlices, int nFrames,
-            double frameInterval, Unit<Time> temporalUnit) {
-        this.name = name;
-        this.spatCal = new SpatCal(dppXY, dppZ, units, width, height, nSlices);
-        this.nFrames = nFrames;
-        this.frameInterval = frameInterval;
-        this.temporalUnit = temporalUnit;
+    public ObjI createAndAddNewObjectWithID(CoordinateSetFactoryI factory, int ID);
 
+    public Collection<ObjI> values();
+
+    public int size();
+
+    public String getName();
+
+    public void add(ObjI object);
+
+    public SpatCal getSpatialCalibration();
+
+    public void setSpatialCalibration(SpatCal spatCal, boolean updateAllObjects);
+
+    public int getAndIncrementID();
+
+    public void resetCollection();
+
+    public void recalculateMaxID();
+
+    public ObjI getAsSingleObject();
+
+    public ObjsI getObjectsInFrame(String outputObjectsName, int frame);
+
+    public int getNFrames();
+
+    public double getFrameInterval();
+
+    public Unit<Time> getTemporalUnit();
+
+    public void setNFrames(int nFrames);
+
+    public ObjsI duplicate(String newObjectsName, boolean duplicateRelationships, boolean duplicateMeasurement,
+            boolean duplicateMetadata, boolean addOriginalDuplicateRelationship);
+
+
+    // Default methods
+
+    public default int getWidth() {
+        return getSpatialCalibration().getWidth();
     }
 
-    public Objs(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
-        this.name = name;
-        this.spatCal = cal;
-        this.nFrames = nFrames;
-        this.frameInterval = frameInterval;
-        this.temporalUnit = temporalUnit;
-
+    public default int getHeight() {
+        return getSpatialCalibration().getHeight();
     }
 
-    public Objs(String name, Objs exampleCollection) {
-        this.name = name;
-        this.spatCal = exampleCollection.getSpatialCalibration().duplicate();
-        this.nFrames = exampleCollection.getNFrames();
-        this.frameInterval = exampleCollection.getFrameInterval();
-        this.temporalUnit = exampleCollection.getTemporalUnit();
-
+    public default int getNSlices() {
+        return getSpatialCalibration().getNSlices();
     }
 
-    public Objs(String name, ImagePlus imageForCalibration) {
-        this.name = name;
-        this.spatCal = SpatCal.getFromImage(imageForCalibration);
-        this.nFrames = imageForCalibration.getNFrames();
-        this.frameInterval = imageForCalibration.getCalibration().frameInterval;
-        this.temporalUnit = TemporalUnit.getOMEUnit();
-
+    public default double getDppXY() {
+        return getSpatialCalibration().getDppXY();
     }
 
-    public Obj createAndAddNewObject(CoordinateSetFactoryI factory) {
-        Obj newObject = ObjFactories.getDefaultFactory().createObj(this, factory, getAndIncrementID());
-        add(newObject);
-
-        return newObject;
-
+    public default double getDppZ() {
+        return getSpatialCalibration().getDppZ();
     }
 
-    public Obj createAndAddNewObject(CoordinateSetFactoryI factory, int ID) {
-        Obj newObject = ObjFactories.getDefaultFactory().createObj(this, factory, ID);
-        add(newObject);
-
-        // Updating the maxID if necessary
-        maxID = Math.max(maxID, ID);
-
-        return newObject;
-
+    public default String getSpatialUnits() {
+        return getSpatialCalibration().getUnits();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    synchronized public void add(Obj object) {
-        maxID = Math.max(maxID, object.getID());
-        put(object.getID(), object);
-
-    }
-
-    public SpatCal getSpatialCalibration() {
-        return spatCal;
-    }
-
-    public int getWidth() {
-        return spatCal.getWidth();
-    }
-
-    public int getHeight() {
-        return spatCal.getHeight();
-    }
-
-    public int getNSlices() {
-        return spatCal.getNSlices();
-    }
-
-    public double getDppXY() {
-        return spatCal.getDppXY();
-    }
-
-    public double getDppZ() {
-        return spatCal.getDppZ();
-    }
-
-    public String getSpatialUnits() {
-        return spatCal.getUnits();
-    }
-
-    public void setSpatialCalibration(SpatCal spatCal, boolean updateAllObjects) {
-        this.spatCal = spatCal;
-        if (updateAllObjects) {
-            for (Obj obj : values()) {
-                obj.setSpatialCalibration(spatCal);
-            }
-        }
-    }
-
-    public synchronized int getAndIncrementID() {
-        maxID++;
-        return maxID;
-    }
-
-    public Obj getFirst() {
+    public default ObjI getFirst() {
         if (size() == 0)
             return null;
 
@@ -162,14 +108,14 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public int[][] getSpatialExtents() {
+    public default int[][] getSpatialExtents() {
         if (size() == 0)
             return null;
 
         int[][] extents = new int[][] { { Integer.MAX_VALUE, Integer.MIN_VALUE },
                 { Integer.MAX_VALUE, Integer.MIN_VALUE }, { Integer.MAX_VALUE, Integer.MIN_VALUE } };
 
-        for (Obj obj : values()) {
+        for (ObjI obj : values()) {
             double[][] currExtents = obj.getExtents(true, false);
             extents[0][0] = (int) Math.round(Math.min(extents[0][0], currExtents[0][0]));
             extents[0][1] = (int) Math.round(Math.max(extents[0][1], currExtents[0][1]));
@@ -183,7 +129,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public int[][] getSpatialLimits() {
+    public default int[][] getSpatialLimits() {
         // Taking limits from the first object, otherwise returning null
         if (size() == 0)
             return null;
@@ -193,13 +139,13 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public int[] getTemporalLimits() {
+    public default int[] getTemporalLimits() {
         // Finding the first and last frame of all objects in the inputObjects set
         int[] limits = new int[2];
         limits[0] = Integer.MAX_VALUE;
         limits[1] = -Integer.MAX_VALUE;
 
-        for (Obj object : values()) {
+        for (ObjI object : values()) {
             if (object.getT() < limits[0])
                 limits[0] = object.getT();
             if (object.getT() > limits[1])
@@ -211,9 +157,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public int getLargestID() {
+    public default int getLargestID() {
         int largestID = 0;
-        for (Obj obj : values())
+        for (ObjI obj : values())
             if (obj.getID() > largestID)
                 largestID = obj.getID();
 
@@ -221,34 +167,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Obj getAsSingleObject() {
-        Objs newCollection = new Objs("Single", this);
-
-        CoordinateSetFactoryI factory = new PointListFactory();
-        Obj firstObj = getFirst();
-        if (firstObj != null)
-            factory = firstObj.getCoordinateSetFactory();
-
-        Obj newObj = newCollection.createAndAddNewObject(factory);
-        for (Obj obj : values())
-            for (Point<Integer> point : obj.getCoordinateSet())
-                try {
-                    newObj.addPoint(point.duplicate());
-                } catch (PointOutOfRangeException e) {
-                    // This shouldn't occur, as the points are from a collection with the same
-                    // dimensions
-                    e.printStackTrace();
-                }
-
-        return newObj;
-
-    }
-
-    public ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground) {
-        return convertToImage(outputName, hues, bitDepth, nanBackground, false);
-    }
-
-    public ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground,
+    public default ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground,
             boolean verbose) {
         // Create output image
         ImageI image = createImage(outputName, bitDepth);
@@ -259,22 +178,22 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
         // Labelling pixels in image
         int count = 0;
-        for (Obj object : values()) {
+        for (ObjI object : values()) {
             object.addToImage(image, hues.get(object.getID()));
             if (verbose)
                 Module.writeProgressStatus(++count, size(), "objects", "Object collection");
         }
 
         // Assigning the spatial cal from the cal
-        spatCal.applyImageCalibration(image.getImagePlus());
+        getSpatialCalibration().applyImageCalibration(image.getImagePlus());
 
         return image;
 
     }
 
-    public ImageI convertToImageRandomColours() {
+    public default ImageI convertToImageRandomColours() {
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(this);
-        ImageI dispImage = convertToImage(name, hues, 8, false);
+        ImageI dispImage = convertToImage(getName(), hues, 8, false, false);
 
         if (dispImage == null)
             return null;
@@ -290,13 +209,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public ImageI convertToImageBinary() {
-            return convertToImageBinary(name);
-    }
-
-    public ImageI convertToImageBinary(String name) {
+    public default ImageI convertToImageBinary(String name) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(this, ColourFactory.SingleColours.WHITE);
-        ImageI dispImage = convertToImage(name, hues, 8, false);
+        ImageI dispImage = convertToImage(name, hues, 8, false, false);
 
         if (dispImage == null)
             return null;
@@ -312,9 +227,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public ImageI convertToImageIDColours() {
+    public default ImageI convertToImageIDColours() {
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(this, false);
-        ImageI dispImage = convertToImage(name, hues, 32, false);
+        ImageI dispImage = convertToImage(getName(), hues, 32, false, false);
 
         if (dispImage == null)
             return null;
@@ -331,7 +246,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public ImageI convertCentroidsToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
+    public default ImageI convertCentroidsToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
             boolean nanBackground) {
         // Create output image
         ImageI image = createImage(outputName, bitDepth);
@@ -341,22 +256,22 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
             setNaNBackground(image.getImagePlus());
 
         // Labelling pixels in image
-        for (Obj object : values())
+        for (ObjI object : values())
             object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        spatCal.applyImageCalibration(image.getImagePlus());
+        getSpatialCalibration().applyImageCalibration(image.getImagePlus());
 
         return image;
 
     }
 
-    public void applyCalibration(ImageI image) {
-        applyCalibration(image.getImagePlus());
+    public default void applyCalibration(ImageI image) {
+        applyCalibrationFromImagePlus(image.getImagePlus());
     }
 
-    public void applyCalibration(ImagePlus ipl) {
-        Obj obj = getFirst();
+    public default void applyCalibrationFromImagePlus(ImagePlus ipl) {
+        ObjI obj = getFirst();
         if (obj == null)
             return;
 
@@ -366,12 +281,15 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         calibration.pixelDepth = obj.getDppZ();
         calibration.setUnit(obj.getUnits());
 
-        calibration.frameInterval = frameInterval;
-        calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval, UNITS.SECOND);
+        calibration.frameInterval = getFrameInterval();
+        calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(getFrameInterval(), UNITS.SECOND);
 
     }
 
-    ImageI createImage(String outputName, int bitDepth) {
+    public default ImageI createImage(String outputName, int bitDepth) {
+        SpatCal spatCal = getSpatialCalibration();
+        int nFrames = getNFrames();
+
         // Creating a new image
         ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
                 spatCal.getNSlices(), nFrames, bitDepth);
@@ -380,7 +298,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    void setNaNBackground(ImagePlus ipl) {
+    public default void setNaNBackground(ImagePlus ipl) {
         for (int z = 1; z <= ipl.getNSlices(); z++) {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
@@ -399,22 +317,13 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
      * Returns the Obj with coordinates matching the Obj passed as an argument.
      * Useful for unit tests.
      */
-    public Obj getByEqualsIgnoreNameAndID(Obj referenceObj) {
-        for (Obj testObj : values())
+    public default ObjI getByEqualsIgnoreNameAndID(ObjI referenceObj) {
+        for (ObjI testObj : values())
             if (testObj.equalsIgnoreNameAndID(referenceObj))
                 return testObj;
 
         return null;
 
-    }
-
-    public void resetCollection() {
-        clear();
-        maxID = 0;
-    }
-
-    public void recalculateMaxID() {
-        maxID = getLargestID();
     }
 
     /**
@@ -423,7 +332,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
      * @param module  The module for which measurements will be displayed
      * @param modules The collection of modules in which this module resides
      */
-    public void showMeasurements(Module module, Modules modules) {
+    public default void showMeasurements(Module module, Modules modules) {
         // Getting MeasurementReferences
         ObjMeasurementRefs measRefs = module.updateAndGetObjectMeasurementRefs();
         if (measRefs == null)
@@ -435,13 +344,13 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
         for (ObjMeasurementRef measRef : measRefs.values()) {
-            if (measRef.getObjectsName().equals(name))
+            if (measRef.getObjectsName().equals(getName()))
                 measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values
         int row = 0;
-        for (Obj obj : values()) {
+        for (ObjI obj : values()) {
             if (row != 0)
                 rt.incrementCounter();
 
@@ -467,17 +376,17 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         // Displaying the results table
-        rt.show("\"" + module.getName() + " \"measurements for \"" + name + "\"");
+        rt.show("\"" + module.getName() + " \"measurements for \"" + getName() + "\"");
 
     }
 
-    public void showAllMeasurements() {
+    public default void showAllMeasurements() {
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
 
         // Iterating over each measurement, adding all the values
         int row = 0;
-        for (Obj obj : values()) {
+        for (ObjI obj : values()) {
             if (row != 0)
                 rt.incrementCounter();
 
@@ -504,7 +413,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         // Displaying the results table
-        rt.show("All measurements for \"" + name + "\"");
+        rt.show("All measurements for \"" + getName() + "\"");
 
     }
 
@@ -514,7 +423,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
      * @param module  The module for which metadata will be displayed
      * @param modules The collection of modules in which this module resides
      */
-    public void showMetadata(Module module, Modules modules) {
+    public default void showMetadata(Module module, Modules modules) {
         // Getting metadata references
         ObjMetadataRefs metadataRefs = module.updateAndGetObjectMetadataRefs();
         if (metadataRefs == null)
@@ -526,13 +435,13 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         // Getting a list of all metadata relating to this object collection
         LinkedHashSet<String> metadataNames = new LinkedHashSet<>();
         for (ObjMetadataRef metadataRef : metadataRefs.values()) {
-            if (metadataRef.getObjectsName().equals(name))
+            if (metadataRef.getObjectsName().equals(getName()))
                 metadataNames.add(metadataRef.getName());
         }
 
         // Iterating over each measurement, adding all the values
         int row = 0;
-        for (Obj obj : values()) {
+        for (ObjI obj : values()) {
             if (row != 0)
                 rt.incrementCounter();
 
@@ -558,17 +467,17 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         // Displaying the results table
-        rt.show("\"" + module.getName() + " \"metadata for \"" + name + "\"");
+        rt.show("\"" + module.getName() + " \"metadata for \"" + getName() + "\"");
 
     }
 
-    public void showAllMetadata() {
+    public default void showAllMetadata() {
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
 
         // Iterating over each metadata, adding all the values
         int row = 0;
-        for (Obj obj : values()) {
+        for (ObjI obj : values()) {
             if (row != 0)
                 rt.incrementCounter();
 
@@ -595,28 +504,28 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         // Displaying the results table
-        rt.show("All measurements for \"" + name + "\"");
+        rt.show("All measurements for \"" + getName() + "\"");
 
     }
 
-    public void removeParents(String parentObjectsName) {
-        for (Obj obj : values())
+    public default void removeParents(String parentObjectsName) {
+        for (ObjI obj : values())
             obj.removeParent(parentObjectsName);
 
     }
 
-    public void removeChildren(String childObjectsName) {
-        for (Obj obj : values())
+    public default void removeChildren(String childObjectsName) {
+        for (ObjI obj : values())
             obj.removeChildren(childObjectsName);
     }
 
-    public void removePartners(String partnerObjectsName) {
-        for (Obj obj : values())
+    public default void removePartners(String partnerObjectsName) {
+        for (ObjI obj : values())
             obj.removePartners(partnerObjectsName);
     }
 
-    public boolean containsPoint(Point<Integer> point) {
-        for (Obj obj : values()) {
+    public default boolean containsPoint(Point<Integer> point) {
+        for (ObjI obj : values()) {
             if (obj.contains(point))
                 return true;
         }
@@ -625,20 +534,20 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public boolean containsPoint(int x, int y, int z) {
+    public default boolean containsCoord(int x, int y, int z) {
         Point<Integer> point = new Point<>(x, y, z);
 
         return containsPoint(point);
 
     }
 
-    public Obj getLargestObject(int t) {
-        Obj referenceObject = null;
+    public default ObjI getLargestObject(int t) {
+        ObjI referenceObject = null;
         int objSize = Integer.MIN_VALUE;
 
         // Iterating over each object, checking its size against the current reference
         // values
-        for (Obj currReferenceObject : values()) {
+        for (ObjI currReferenceObject : values()) {
             // Only check objects in the current frame (if required - if frame doesn't
             // matter, t = -1)
             if (t != -1 && currReferenceObject.getT() != t)
@@ -653,13 +562,13 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Obj getSmallestObject(int t) {
-        Obj referenceObject = null;
+    public default ObjI getSmallestObject(int t) {
+        ObjI referenceObject = null;
         int objSize = Integer.MAX_VALUE;
 
         // Iterating over each object, checking its size against the current reference
         // values
-        for (Obj currReferenceObject : values()) {
+        for (ObjI currReferenceObject : values()) {
             // Only check objects in the current frame (if required - if frame doesn't
             // matter, t = -1)
             if (t != -1 && currReferenceObject.getT() != t)
@@ -672,63 +581,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         return referenceObject;
-
-    }
-
-    public Objs getObjectsInFrame(String outputObjectsName, int frame) {
-        Objs outputObjects = new Objs(outputObjectsName, this);
-
-        // Setting output objects collection to have one frame
-        outputObjects.setNFrames(1);
-
-        // Iterating over objects, getting those in this frame
-        for (Obj obj : values()) {
-            if (obj.getT() == frame) {
-                Obj outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, obj.getCoordinateSetFactory(), obj.getID());
-                outputObject.setCoordinateSet(obj.getCoordinateSet().duplicate());
-                outputObject.setT(0);
-                outputObjects.add(outputObject);
-            }
-        }
-
-        return outputObjects;
-
-    }
-
-    public int getNFrames() {
-        return nFrames;
-    }
-
-    public double getFrameInterval() {
-        return frameInterval;
-    }
-
-    public Unit<Time> getTemporalUnit() {
-        return temporalUnit;
-    }
-
-    public void setNFrames(int nFrames) {
-        this.nFrames = nFrames;
-    }
-
-    public Objs duplicate(String newObjectsName, boolean duplicateRelationships, boolean duplicateMeasurement,
-            boolean duplicateMetadata, boolean addOriginalDuplicateRelationship) {
-        Objs newObjs = new Objs(newObjectsName, this);
-
-        for (Obj obj : values()) {
-            Obj newObj = obj.duplicate(newObjs, duplicateRelationships, duplicateMeasurement, duplicateMetadata);
-
-            newObjs.add(newObj);
-
-            if (addOriginalDuplicateRelationship) {
-                newObj.addParent(obj);
-                obj.addChild(newObj);
-            }
-        }
-
-        newObjs.maxID = this.maxID;
-
-        return newObjs;
 
     }
 }

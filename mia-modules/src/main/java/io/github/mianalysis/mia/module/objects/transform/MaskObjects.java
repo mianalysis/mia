@@ -14,10 +14,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -138,18 +138,18 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static Objs maskObjects(Objs inputObjects, ImageI maskImage, @Nullable String outputObjectsName,
+    public static ObjsI maskObjects(ObjsI inputObjects, ImageI maskImage, @Nullable String outputObjectsName,
             boolean removeEmptyObjects, boolean verbose) {
         String moduleName = new MaskObjects<>(null).getName();
         String outputMode = outputObjectsName == null ? OutputModes.UPDATE_INPUT : OutputModes.CREATE_NEW_OBJECT;
-        Objs outputObjects = outputObjectsName == null ? null : new Objs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = outputObjectsName == null ? null : ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         // Iterating over all objects
         int count = 1;
         int total = inputObjects.size();
 
-        for (Obj inputObject : inputObjects.values()) {
-            Obj outputObject = maskObject(inputObject, maskImage, outputObjectsName);
+        for (ObjI inputObject : inputObjects.values()) {
+            ObjI outputObject = maskObject(inputObject, maskImage, outputObjectsName);
 
             switch (outputMode) {
                 case OutputModes.CREATE_NEW_OBJECT:
@@ -175,7 +175,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Removing any objects which now have no volume
         if (removeEmptyObjects) {
-            Iterator<Obj> iterator = inputObjects.values().iterator();
+            Iterator<ObjI> iterator = inputObjects.values().iterator();
             while (iterator.hasNext())
                 if (iterator.next().getCoordinateSet().size() == 0)
                     iterator.remove();
@@ -185,12 +185,12 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, ImageI<T> maskImage,
+    public static <T extends RealType<T> & NativeType<T>> ObjI maskObject(ObjI inputObject, ImageI<T> maskImage,
             String maskObjectsName) {
-        Objs tempObjects = new Objs(maskObjectsName, inputObject.getObjectCollection());
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(maskObjectsName, inputObject.getObjectCollection());
 
         // Creating the mask object
-        Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
+        ObjI maskObject = tempObjects.createAndAddNewObjectWithID(inputObject.getCoordinateSetFactory(), inputObject.getID());
         maskObject.setT(inputObject.getT());
 
         ImgPlus<T> maskImg = maskImage.getImgPlus();
@@ -262,7 +262,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         String outputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         if (outputMode.equals(OutputModes.UPDATE_INPUT))
             outputObjectsName = null;
@@ -278,10 +278,10 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
             case MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP:
             case MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP:
-                Objs maskObjects = workspace.getObjects(maskObjectsName);
+                ObjsI maskObjects = workspace.getObjects(maskObjectsName);
                 HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(maskObjects,
                         ColourFactory.SingleColours.WHITE);
-                maskImage = maskObjects.convertToImage("Mask", hues, 8, false);
+                maskImage = maskObjects.convertToImage("Mask", hues, 8, false, false);
 
                 if (maskMode.equals(MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP))
                     InvertIntensity.process(maskImage);
@@ -289,7 +289,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
-        Objs outputObjects = maskObjects(inputObjects, maskImage, outputObjectsName, removeEmptyObjects,
+        ObjsI outputObjects = maskObjects(inputObjects, maskImage, outputObjectsName, removeEmptyObjects,
                 removeEmptyObjects);
 
         switch (outputMode) {

@@ -13,9 +13,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -70,8 +71,8 @@ public class ObjectSlicesTo3D extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
         int maxMissingSlices = parameters.getValue(MAX_MISSING_SLICES, workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
 
         if (calibratedUnits)
             linkingDistance = linkingDistance / inputObjects.getDppXY();
@@ -80,10 +81,10 @@ public class ObjectSlicesTo3D extends Module {
         for (int t = 0; t < inputObjects.getNFrames(); t++) {
             // Creating a store for existing objects. Each cluster has a collection
             // of the slice objects that make it up
-            ArrayList<ArrayList<Obj>> clusters = new ArrayList<>();
+            ArrayList<ArrayList<ObjI>> clusters = new ArrayList<>();
 
             // Assigning any objects in the first slice as new clusters
-            for (Obj inputObject : inputObjects.values()) {
+            for (ObjI inputObject : inputObjects.values()) {
                 if (inputObject.getT() != t)
                     continue;
 
@@ -91,7 +92,7 @@ public class ObjectSlicesTo3D extends Module {
                     continue;
 
                 // Adding current object as new cluster
-                ArrayList<Obj> cluster = new ArrayList<>();
+                ArrayList<ObjI> cluster = new ArrayList<>();
                 cluster.add(inputObject);
                 clusters.add(cluster);
 
@@ -102,9 +103,9 @@ public class ObjectSlicesTo3D extends Module {
             for (int z = 1; z < inputObjects.getNSlices(); z++) {
                 // Getting any available clusters (those with a top slice
                 // within range)
-                ArrayList<Obj> candidates1 = new ArrayList<>();
-                for (ArrayList<Obj> cluster : clusters) {
-                    Obj topSlice = cluster.get(cluster.size() - 1);
+                ArrayList<ObjI> candidates1 = new ArrayList<>();
+                for (ArrayList<ObjI> cluster : clusters) {
+                    ObjI topSlice = cluster.get(cluster.size() - 1);
 
                     if (topSlice.getT() != t)
                         if (topSlice.getZMean(true, false) < z - maxMissingSlices)
@@ -115,8 +116,8 @@ public class ObjectSlicesTo3D extends Module {
                 }
 
                 // Getting objects in current frame
-                ArrayList<Obj> candidates2 = new ArrayList<>();
-                for (Obj inputObject : inputObjects.values()) {
+                ArrayList<ObjI> candidates2 = new ArrayList<>();
+                for (ObjI inputObject : inputObjects.values()) {
                     if (inputObject.getT() != t)
                         continue;
 
@@ -131,8 +132,8 @@ public class ObjectSlicesTo3D extends Module {
                 ArrayList<Linkable> linkables = new ArrayList<>();
                 for (int prev = 0; prev < candidates1.size(); prev++) {
                     for (int curr = 0; curr < candidates2.size(); curr++) {
-                        Obj prevObj = candidates1.get(prev);
-                        Obj currObj = candidates2.get(curr);
+                        ObjI prevObj = candidates1.get(prev);
+                        ObjI currObj = candidates2.get(curr);
 
                         // Calculating main spatial cost
                         double spatialCost = prevObj.getCentroidSeparation(currObj, true, false);
@@ -169,10 +170,10 @@ public class ObjectSlicesTo3D extends Module {
                     // Applying the calculated assignments as relationships
                     for (int ID1 : assignment.keySet()) {
                         int ID2 = assignment.get(ID1);
-                        Obj currObj = inputObjects.get(ID1);
-                        Obj prevObj = inputObjects.get(ID2);
+                        ObjI currObj = inputObjects.get(ID1);
+                        ObjI prevObj = inputObjects.get(ID2);
 
-                        for (ArrayList<Obj> cluster : clusters) {
+                        for (ArrayList<ObjI> cluster : clusters) {
                             if (cluster.contains(prevObj)) {
                                 cluster.add(currObj);
                                 break;
@@ -182,9 +183,9 @@ public class ObjectSlicesTo3D extends Module {
                 }
 
                 // Assigning any objects in the current slice without a cluster
-                for (Obj currObj : candidates2) {
+                for (ObjI currObj : candidates2) {
                     boolean alreadyPlaced = false;
-                    for (ArrayList<Obj> cluster : clusters) {
+                    for (ArrayList<ObjI> cluster : clusters) {
                         if (cluster.contains(currObj)) {
                             alreadyPlaced = true;
                             break;
@@ -194,16 +195,16 @@ public class ObjectSlicesTo3D extends Module {
                     if (alreadyPlaced)
                         continue;
 
-                    ArrayList<Obj> cluster = new ArrayList<>();
+                    ArrayList<ObjI> cluster = new ArrayList<>();
                     cluster.add(currObj);
                     clusters.add(cluster);
                 }
             }
 
-            for (ArrayList<Obj> cluster : clusters) {
-                Obj outputObject = outputObjects.createAndAddNewObject(cluster.get(0).getCoordinateSetFactory());
+            for (ArrayList<ObjI> cluster : clusters) {
+                ObjI outputObject = outputObjects.createAndAddNewObject(cluster.get(0).getCoordinateSetFactory());
                 outputObject.setT(t);
-                for (Obj clusterSlice : cluster)
+                for (ObjI clusterSlice : cluster)
                     outputObject.getCoordinateSet().addAll(clusterSlice.getCoordinateSet());
 
             }

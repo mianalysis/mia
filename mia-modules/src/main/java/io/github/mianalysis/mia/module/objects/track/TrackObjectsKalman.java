@@ -13,7 +13,7 @@ import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractObjectTracking;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -51,7 +51,7 @@ public class TrackObjectsKalman extends AbstractObjectTracking {
     }
 
     @Override
-    protected void addSpotMeasurements(Objs inputObjects, SpotCollection spotCollection) {
+    protected void addSpotMeasurements(ObjsI inputObjects, SpotCollection spotCollection) {
     }
 
     @Override

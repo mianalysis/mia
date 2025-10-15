@@ -8,10 +8,11 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import ome.units.UNITS;
@@ -40,8 +41,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -54,20 +55,20 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(20,22,32);
         object2_2.addCoord(20,21,32);
         object2_2.addCoord(20,22,33);
         object2_2.addCoord(19,22,32);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(10,22,32);
         object2_3.addCoord(10,21,32);
         object2_3.addCoord(10,22,33);
@@ -93,8 +94,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -107,14 +108,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
         object2_2.addCoord(10,14,32);
@@ -123,7 +124,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(10,22,32);
         object2_3.addCoord(10,21,32);
         object2_3.addCoord(10,22,33);
@@ -149,8 +150,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1, calibration, 1, 0.02, UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -163,14 +164,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
         object2_2.addCoord(10,14,32);
@@ -179,7 +180,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(11,12,33);
         object2_3.addCoord(11,13,34);
@@ -211,8 +212,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -225,14 +226,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
         object2_2.addCoord(10,14,32);
@@ -241,7 +242,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(10,13,33);
         object2_3.addCoord(11,12,33);
@@ -269,8 +270,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -283,14 +284,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(10,12,32);
         object2_2.addCoord(11,12,32);
         object2_2.addCoord(10,13,32);
@@ -302,7 +303,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(10,13,33);
         object2_3.addCoord(11,12,33);
@@ -333,8 +334,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
         
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -347,20 +348,20 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(20,22,32);
         object2_2.addCoord(20,21,32);
         object2_2.addCoord(20,22,33);
         object2_2.addCoord(19,22,32);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(10,22,32);
         object2_3.addCoord(10,21,32);
         object2_3.addCoord(10,22,33);
@@ -437,8 +438,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -451,14 +452,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
         object2_2.addCoord(10,14,32);
@@ -467,7 +468,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(10,22,32);
         object2_3.addCoord(10,21,32);
         object2_3.addCoord(10,22,33);
@@ -544,8 +545,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -558,14 +559,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
         object2_2.addCoord(10,14,32);
@@ -574,7 +575,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(11,12,33);
         object2_3.addCoord(11,13,34);
@@ -652,8 +653,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -666,14 +667,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
         object2_2.addCoord(10,14,32);
@@ -682,7 +683,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(10,13,33);
         object2_3.addCoord(11,12,33);
@@ -761,8 +762,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
         object1_1.addCoord(10,13,32);
@@ -775,14 +776,14 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.addCoord(10,12,32);
         object2_2.addCoord(11,12,32);
         object2_2.addCoord(10,13,32);
@@ -794,7 +795,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(10,13,33);
         object2_3.addCoord(11,12,33);
@@ -873,8 +874,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,30,50,50);
 
         // Creating a single test object
-        Objs objects1 = new Objs(objectsName1,calibration,1,0.02,UNITS.SECOND);
-        Obj object1_1 = objects1.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName1,calibration,1,0.02,UNITS.SECOND);
+        ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object1_1.setT(2);
         object1_1.addCoord(10,12,32);
         object1_1.addCoord(11,12,32);
@@ -888,15 +889,15 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object1_1.addCoord(10,12,34);
 
         // Creating a collection of multiple objects to test against
-        Objs objects2 = new Objs(objectsName2,calibration,1,0.02,UNITS.SECOND);
-        Obj object2_1 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),1);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createFromSpatCal(objectsName2,calibration,1,0.02,UNITS.SECOND);
+        ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),1);
         object2_1.setT(2);
         object2_1.addCoord(20,12,32);
         object2_1.addCoord(20,11,32);
         object2_1.addCoord(20,12,33);
         object2_1.addCoord(19,12,32);
 
-        Obj object2_2 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),2);
+        ObjI object2_2 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),2);
         object2_2.setT(3);
         object2_2.addCoord(9,13,32);
         object2_2.addCoord(9,14,32);
@@ -906,7 +907,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_2.addCoord(10,13,33);
         object2_2.addCoord(9,13,33);
 
-        Obj object2_3 = objects2.createAndAddNewObject(VolumeTypes.getFactory(volumeType),3);
+        ObjI object2_3 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType),3);
         object2_3.setT(2);
         object2_3.addCoord(9,13,33);
         object2_3.addCoord(11,12,33);

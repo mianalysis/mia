@@ -12,9 +12,10 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -52,28 +53,28 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
     // PUBLIC METHODS
 
-    public Objs initialiseEmptyObjs(String outputObjectsName) {
+    public ObjsI initialiseEmptyObjs(String outputObjectsName) {
         SpatCal cal = SpatCal.getFromImage(imagePlus);
         int nFrames = imagePlus.getNFrames();
         double frameInterval = imagePlus.getCalibration().frameInterval;
 
-        return new Objs(outputObjectsName, cal, nFrames, frameInterval,
+        return ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
     }
 
     @Override
-    public Objs convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName,
+    public ObjsI convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName,
             boolean blackBackground) {
         return convertImageToObjects(factory, outputObjectsName, true, blackBackground);
     }
 
     @Override
-    public Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
+    public ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject) {
         return convertImageToObjects(factory, outputObjectsName, singleObject, true);
     }
 
-    Objs convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject,
+    ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject,
             boolean blackBackground) {
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
@@ -91,7 +92,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
         // Need to get coordinates and convert to a HCObject
         SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
-        Objs outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
         for (int c = 0; c < nChannels; c++) {
@@ -138,14 +139,14 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
                     // Finalising the object store for this slice (this only does something for
                     // Quadtrees)
-                    for (Obj obj : outputObjects.values())
+                    for (ObjI obj : outputObjects.values())
                         obj.finaliseSlice(z);
 
                 }
             }
         }
 
-        for (Obj obj : outputObjects.values())
+        for (ObjI obj : outputObjects.values())
             obj.finalise();
 
         return outputObjects;
@@ -153,7 +154,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     @Override
-    public void addObject(Obj obj, float hue) {
+    public void addObject(ObjI obj, float hue) {
         int bitDepth = imagePlus.getBitDepth();
 
         int tPos = obj.getT();
@@ -176,7 +177,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         }
     }
 
-    public void addObjectCentroid(Obj obj, float hue) {
+    public void addObjectCentroid(ObjI obj, float hue) {
         int bitDepth = imagePlus.getBitDepth();
 
         int tPos = obj.getT();

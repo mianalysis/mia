@@ -7,9 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -92,7 +93,7 @@ public class CreateObjectGrid extends Module {
 
         // Creating output objects
         ImageI inputImage = workspace.getImages().get(inputImageName);
-        Objs outputObjects = new Objs(outputObjectsName, inputImage.getImagePlus());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage.getImagePlus());
 
         double imageW = inputImage.getWidth();
         double imageH = inputImage.getHeight();
@@ -101,7 +102,7 @@ public class CreateObjectGrid extends Module {
 
         for (int idxX = 0; idxX < nCols; idxX++) {
             for (int idxY = 0; idxY < nRows; idxY++) {
-                Obj outputObj = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                ObjI outputObj = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                 for (int x = 0; x < cellW; x++) {
                     for (int y = 0; y < cellH; y++) {
                         try {

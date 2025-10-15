@@ -19,10 +19,10 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -198,7 +198,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         super("Add relationship connection", modules);
     }
 
-    public static void addParentChildOverlay(ImagePlus ipl, Objs inputObjects, String childObjectsName,
+    public static void addParentChildOverlay(ImagePlus ipl, ObjsI inputObjects, String childObjectsName,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
             String measName2, HashMap<Integer, Color> colours, boolean renderInAllFrames,
             boolean multithread) {
@@ -215,7 +215,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object : inputObjects.values()) {
+            for (ObjI object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
@@ -236,7 +236,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addParentChildOverlay(Obj object, String childObjectsName, ImagePlus ipl, Color colour,
+    public static void addParentChildOverlay(ObjI object, String childObjectsName, ImagePlus ipl, Color colour,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
             String measName2, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
@@ -245,7 +245,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         int t = renderInAllFrames ? 0 : object.getT() + 1;
 
         // Running through each slice of this object
-        for (Obj childObj : object.getChildren(childObjectsName).values()) {
+        for (ObjI childObj : object.getChildren(childObjectsName).values()) {
             switch (renderMode) {
                 case RenderModes.FULL_LINE:
                     drawFullLine(ipl, object, childObj, t, colour, lineWidth);
@@ -261,7 +261,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addSiblingOverlay(ImagePlus ipl, Objs inputObjects, String childObjects1Name,
+    public static void addSiblingOverlay(ImagePlus ipl, ObjsI inputObjects, String childObjects1Name,
             String childObjects2Name, String renderMode, double lineWidth, String pointSize, String pointType,
             boolean offset, String measName1, String measName2, HashMap<Integer, Color> colours,
             boolean renderInAllFrames, boolean multithread) {
@@ -278,7 +278,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object : inputObjects.values()) {
+            for (ObjI object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
@@ -299,16 +299,16 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addSiblingOverlay(Obj object, String childObjects1Name, String childObjects2Name, ImagePlus ipl,
+    public static void addSiblingOverlay(ObjI object, String childObjects1Name, String childObjects2Name, ImagePlus ipl,
             Color colour, String renderMode, double lineWidth, String pointSize, String pointType, boolean offset,
             String measName1, String measName2, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
 
         // Running through each slice of this object
-        for (Obj childObj1 : object.getChildren(childObjects1Name).values()) {
+        for (ObjI childObj1 : object.getChildren(childObjects1Name).values()) {
             int t = renderInAllFrames ? 0 : childObj1.getT() + 1;
-            for (Obj childObj2 : object.getChildren(childObjects2Name).values()) {
+            for (ObjI childObj2 : object.getChildren(childObjects2Name).values()) {
                 if (childObj1.getT() == childObj2.getT())
                 switch (renderMode) {
                     case RenderModes.FULL_LINE:
@@ -326,7 +326,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addPartnerOverlay(ImagePlus ipl, Objs partnerObjects1, String partnerObjects2Name,
+    public static void addPartnerOverlay(ImagePlus ipl, ObjsI partnerObjects1, String partnerObjects2Name,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
             String measName2, HashMap<Integer, Color> colours, boolean renderInAllFrames,
             boolean multithread) {
@@ -343,7 +343,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj partnerObject1 : partnerObjects1.values()) {
+            for (ObjI partnerObject1 : partnerObjects1.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
@@ -364,7 +364,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addPartnerOverlay(Obj partnerObject1, String partnerObjects2Name, ImagePlus ipl, Color colour,
+    public static void addPartnerOverlay(ObjI partnerObject1, String partnerObjects2Name, ImagePlus ipl, Color colour,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
             String measName2, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null)
@@ -373,7 +373,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         int t = renderInAllFrames ? 0 : partnerObject1.getT() + 1;
 
         // Running through each slice of this object
-        for (Obj partnerObject2 : partnerObject1.getPartners(partnerObjects2Name).values()) {
+        for (ObjI partnerObject2 : partnerObject1.getPartners(partnerObjects2Name).values()) {
             switch (renderMode) {
                 case RenderModes.FULL_LINE:
                     drawFullLine(ipl, partnerObject1, partnerObject2, t, colour, lineWidth);
@@ -390,7 +390,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void drawFullLine(ImagePlus ipl, Obj object1, Obj object2, int t, Color colour, double lineWidth) {
+    public static void drawFullLine(ImagePlus ipl, ObjI object1, ObjI object2, int t, Color colour, double lineWidth) {
         int nSlices = ipl.getNSlices();
 
         double x1 = object1.getXMean(true) + 0.5;
@@ -416,7 +416,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void drawHalfLine(ImagePlus ipl, Obj object1, Obj object2, int t, Color colour, double lineWidth,
+    public static void drawHalfLine(ImagePlus ipl, ObjI object1, ObjI object2, int t, Color colour, double lineWidth,
             boolean offset, String measName1, String measName2) {
         int nSlices = ipl.getNSlices();
 
@@ -452,7 +452,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void drawMidpointDot(ImagePlus ipl, Obj object1, Obj object2, int t, Color colour, String pointSize,
+    public static void drawMidpointDot(ImagePlus ipl, ObjI object1, ObjI object2, int t, Color colour, String pointSize,
             String pointType, boolean offset, String measName1, String measName2) {
         int sizeVal = AddObjectCentroid.getSize(pointSize);
         int typeVal = AddObjectCentroid.getType(pointType);
@@ -550,7 +550,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         switch (lineMode) {
             case LineModes.BETWEEN_CHILDREN:
-                Objs parentObjects = workspace.getObjects(parentObjectsName);
+                ObjsI parentObjects = workspace.getObjects(parentObjectsName);
                 HashMap<Integer, Color> colours = getColours(parentObjects, workspace);
                 addSiblingOverlay(ipl, parentObjects, childObjects1Name, childObjects2Name, renderMode, lineWidth,
                         pointSize, pointType, offset, measName1, measName2, colours, renderInAllFrames,
@@ -558,7 +558,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 break;
 
             case LineModes.BETWEEN_PARTNERS:
-                Objs partnerObjects1 = workspace.getObjects(partnerObjects1Name);
+                ObjsI partnerObjects1 = workspace.getObjects(partnerObjects1Name);
                 colours = getColours(partnerObjects1, workspace);
                 addPartnerOverlay(ipl, partnerObjects1, partnerObjects2Name, renderMode, lineWidth, pointSize,
                         pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);

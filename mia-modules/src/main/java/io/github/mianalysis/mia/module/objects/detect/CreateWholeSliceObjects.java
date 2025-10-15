@@ -9,10 +9,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
@@ -103,7 +103,7 @@ public class CreateWholeSliceObjects extends Module {
         return "For conversion of an image to individual slice objects.  This is useful for subsequently making independent measurements on each slice of an image.  Individual objects can either be created per slice or per timepoint.  Output objects are automatically assigned measurements for timepoint and optionally also slice if processing slice-by-slice.";
     }
 
-    public static Objs process(ImageI inputImage, String outputObjectsName, String outputMode) {
+    public static ObjsI process(ImageI inputImage, String outputObjectsName, String outputMode) {
         ImageI blankImage = ImageFactory.createImage("Temp", inputImage.getImagePlus().duplicate());
         ImageMath.process(blankImage, ImageMath.CalculationModes.MULTIPLY, 0);
         ImageTypeConverter.process(blankImage, 8, ImageTypeConverter.ScalingModes.CLIP);
@@ -122,10 +122,10 @@ public class CreateWholeSliceObjects extends Module {
         int connectivity = IdentifyObjects.getConnectivity(IdentifyObjects.Connectivity.SIX);
         CoordinateSetFactoryI factory = new QuadtreeFactory();
         
-        Objs outputObjects = IdentifyObjects.process(blankImage, outputObjectsName, false, false, detectionMode,
+        ObjsI outputObjects = IdentifyObjects.process(blankImage, outputObjectsName, false, false, detectionMode,
                 connectivity, factory, false, 60, false);
 
-        for (Obj outputObject : outputObjects.values()) {
+        for (ObjI outputObject : outputObjects.values()) {
             outputObject.addMeasurement(new Measurement(Measurements.TIMEPOINT, outputObject.getT()));
 
             switch (outputMode) {
@@ -153,12 +153,12 @@ public class CreateWholeSliceObjects extends Module {
         ImageI inputImage = workspace.getImage(inputImageName);
 
         // Getting objects
-        Objs outputObjects = process(inputImage, outputObjectsName, outputMode);
+        ObjsI outputObjects = process(inputImage, outputObjectsName, outputMode);
 
         // Adding objects to workspace
         workspace.addObjects(outputObjects);
 
-        for (Obj o:outputObjects.values()) {
+        for (ObjI o:outputObjects.values()) {
             
         }
         // Showing objects

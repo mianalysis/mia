@@ -18,10 +18,10 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -176,7 +176,7 @@ public class AddArrows extends AbstractOverlay {
 
     }
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation,
+    public static void addOverlay(ObjI object, ImagePlus ipl, Color colour, double lineWidth, double orientation,
             double arrowLength, double headSize) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -236,7 +236,7 @@ public class AddArrows extends AbstractOverlay {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
@@ -281,7 +281,7 @@ public class AddArrows extends AbstractOverlay {
 
             // Running through each object, adding it to the overlay along with an ID label
             AtomicInteger count = new AtomicInteger();
-            for (Obj object : inputObjects.values()) {
+            for (ObjI object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {

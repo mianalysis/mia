@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependencies;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
@@ -554,7 +554,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         // Loading existing objects
         if (addExistingObjects) {
-            Objs inputObjects = workspace.getObjects(inputObjectsName);
+            ObjsI inputObjects = workspace.getObjects(inputObjectsName);
             if (!applyExistingClass)
                 metadataForClass = null;
 
@@ -599,8 +599,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     suffix);
 
         // Getting objects
-        Objs outputObjects = objectSelector.getObjects();
-        Objs outputTrackObjects = objectSelector.getTrackObjects();
+        ObjsI outputObjects = objectSelector.getObjects();
+        ObjsI outputTrackObjects = objectSelector.getTrackObjects();
 
         // If necessary, apply interpolation
         try {

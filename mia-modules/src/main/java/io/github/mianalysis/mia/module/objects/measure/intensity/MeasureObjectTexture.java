@@ -14,10 +14,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -111,7 +111,7 @@ public class MeasureObjectTexture extends Module {
         }
     }
 
-    static void convertCalibratedOffsets(double[] offs, Obj referenceObject) {
+    static void convertCalibratedOffsets(double[] offs, ObjI referenceObject) {
         double dppXY = referenceObject.getDppXY();
         double dppZ = referenceObject.getDppZ();
 
@@ -121,7 +121,7 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    public static void processObject(Obj object, ImageI image, TextureCalculator textureCalculator, double[] offs,
+    public static void processObject(ObjI object, ImageI image, TextureCalculator textureCalculator, double[] offs,
             boolean calibratedOffset) {
         ImagePlus ipl = image.getImagePlus();
 
@@ -189,7 +189,7 @@ public class MeasureObjectTexture extends Module {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // If no objects were detected, skipping this module
         if (inputObjects.size() == 0)
@@ -212,7 +212,7 @@ public class MeasureObjectTexture extends Module {
 
         int nObjects = inputObjects.size();
         AtomicInteger iter = new AtomicInteger(0);
-        for (Obj object : inputObjects.values()) {
+        for (ObjI object : inputObjects.values()) {
             processObject(object, inputImage, textureCalculator, offs, calibratedOffset);
             writeProgressStatus(iter.incrementAndGet(), nObjects, "objects");
         }

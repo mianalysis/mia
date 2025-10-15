@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -96,7 +96,7 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        Objs actualObjects = image.convertImageToObjects(new PointListFactory(), testObjectsName, false);
+        ObjsI actualObjects = image.convertImageToObjects(new PointListFactory(), testObjectsName, false);
 
         // Checking objects have been assigned
         assertNotNull(actualObjects);
@@ -109,12 +109,12 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
                 dppZ, calibratedUnits, true);
 
-        for (Obj object : expectedObjects.values()) {
+        for (ObjI object : expectedObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj actualObject = actualObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI actualObject = actualObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(actualObject);
         }
     }
@@ -138,7 +138,7 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        Objs actualObjects = image.convertImageToObjects(new PointListFactory(), testObjectsName, false);
+        ObjsI actualObjects = image.convertImageToObjects(new PointListFactory(), testObjectsName, false);
 
         // Checking objects have been assigned
         assertNotNull(actualObjects);
@@ -151,12 +151,12 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        Objs expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
+        ObjsI expectedObjects = new Objects3D(factory).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT, dppXY,
                 dppZ, calibratedUnits, true);
 
-        for (Obj object : expectedObjects.values()) {
+        for (ObjI object : expectedObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj actualObject = actualObjects.getByEqualsIgnoreNameAndID(object);
+            ObjI actualObject = actualObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(actualObject);
         }
     }

@@ -20,10 +20,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.transform.ProjectObjects;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -164,7 +164,7 @@ public class MeasureObjectShape extends Module {
         }
     }
 
-    public double calculateBaseAreaPx(Obj object) {
+    public double calculateBaseAreaPx(ObjI object) {
         // Getting the lowest slice
         double[][] extents = object.getExtents(true, false);
         int baseZ = (int) Math.round(extents[2][0]);
@@ -184,7 +184,7 @@ public class MeasureObjectShape extends Module {
     /*
      * Calculates the maximum distance between any two points of the
      */
-    public double calculateMaximumPointPointDistance(Obj object) {
+    public double calculateMaximumPointPointDistance(ObjI object) {
         double[] x = object.getX(true);
         double[] y = object.getY(true);
         double[] z = object.getZ(true, true);
@@ -214,7 +214,7 @@ public class MeasureObjectShape extends Module {
 
     }
 
-    public void measure3DMetrics(Obj inputObject, int connectivity, int surfaceAreaMethod) {
+    public void measure3DMetrics(ObjI inputObject, int connectivity, int surfaceAreaMethod) {
         ImagePlus tightIpl = inputObject.getAsTightImage("Object").getImagePlus();
 
         IntrinsicVolumesAnalyzer3D analyser = new IntrinsicVolumesAnalyzer3D();
@@ -263,7 +263,7 @@ public class MeasureObjectShape extends Module {
         int surfaceAreaMethodInt = getSurfaceAreaMethod(surfaceAreaMethodStr);
 
         // Getting input objects
-        Objs inputObjects = workspace.getObjects(inputObjectName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectName);
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -274,7 +274,7 @@ public class MeasureObjectShape extends Module {
         AtomicInteger count = new AtomicInteger();
 
         // Running through each object, making the measurements
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 // Adding the volume measurements
                 if (measureVolume) {
@@ -301,8 +301,8 @@ public class MeasureObjectShape extends Module {
                 }
 
                 // If necessary analyses are included
-                Objs projectedObjects = new Objs("Projected", inputObjects);
-                Obj projectedObject = null;
+                ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Projected", inputObjects);
+                ObjI projectedObject = null;
                 if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                     if (inputObject.is2D()) {
                         projectedObject = inputObject;

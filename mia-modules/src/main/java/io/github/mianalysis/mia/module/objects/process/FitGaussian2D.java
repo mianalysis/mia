@@ -20,13 +20,13 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -233,15 +233,15 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static void assignVolume(Objs objects) {
+    static void assignVolume(ObjsI objects) {
         // Replacing spot volumes with explicit volume
-        Objs tempObjects = new Objs("SpotVolume", objects);
-        for (Obj spotObject : objects.values()) {
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SpotVolume", objects);
+        for (ObjI spotObject : objects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue());
             Point<Double> cent = spotObject.getMeanCentroid(true, false);
             int[] centroid = new int[] { (int) Math.round(cent.getX()), (int) Math.round(cent.getY()),
                     (int) Math.round(cent.getZ()) };
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
+            ObjI volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();
@@ -252,7 +252,7 @@ public class FitGaussian2D extends Module {
         }
     }
 
-    static void assignMissingMeasurements(Obj obj) {
+    static void assignMissingMeasurements(ObjI obj) {
         obj.addMeasurement(new Measurement(Measurements.X0_PX, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.Y0_PX, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.Z0_SLICE, Double.NaN));
@@ -273,7 +273,7 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static void assignMeasurements(Obj obj, ImageProcessor iprCrop, double[] p, int x, int y, int halfW) {
+    static void assignMeasurements(ObjI obj, ImageProcessor iprCrop, double[] p, int x, int y, int halfW) {
         double distPerPxXY = obj.getDppXY();
         double distPerPxZ = obj.getDppZ();
 
@@ -310,19 +310,19 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static ImageI createGaussianImage(Objs objects, String outputImageName, @Nullable Module module) {
+    static ImageI createGaussianImage(ObjsI objects, String outputImageName, @Nullable Module module) {
         if (objects.size() == 0)
             return null;
 
         // Create blank image
-        Obj firstObject = objects.getFirst();
+        ObjI firstObject = objects.getFirst();
         ImagePlus ipl = IJ.createImage(outputImageName, firstObject.getWidth(), firstObject.getHeight(), 1, 32);
         ImageI image = ImageFactory.createImage(outputImageName, ipl);
 
         // Get the image for the first object. Not adding the background to any object,
         // as the average background will
         // be added later on.
-        Iterator<Obj> iterator = objects.values().iterator();
+        Iterator<ObjI> iterator = objects.values().iterator();
         addGaussianProfile(iterator.next(), image, true);
 
         int count = 0;
@@ -344,17 +344,17 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static double getMeanBackground(Objs objects) {
+    static double getMeanBackground(ObjsI objects) {
         CumStat cs = new CumStat();
 
-        for (Obj obj : objects.values())
+        for (ObjI obj : objects.values())
             cs.addMeasure(obj.getMeasurement(Measurements.A_BG).getValue());
 
         return cs.getMean();
 
     }
 
-    static void addGaussianProfile(Obj obj, ImageI inputImage, boolean zeroBackground) {
+    static void addGaussianProfile(ObjI obj, ImageI inputImage, boolean zeroBackground) {
         // Create the 2D Gaussian distribution
         double x0 = obj.getMeasurement(Measurements.X0_PX).getValue();
         double y0 = obj.getMeasurement(Measurements.Y0_PX).getValue();
@@ -408,7 +408,7 @@ public class FitGaussian2D extends Module {
 
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String sigmaMode = parameters.getValue(SIGMA_MODE,workspace);
@@ -426,9 +426,9 @@ public class FitGaussian2D extends Module {
         // Running through each object, doing the fitting
         int count = 0;
         int startingNumber = inputObjects.size();
-        Iterator<Obj> iterator = inputObjects.values().iterator();
+        Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
+            ObjI inputObject = iterator.next();
 
             // Getting the centroid of the current object (should be single points anyway)
             int x = (int) Math.round(inputObject.getXMean(true));

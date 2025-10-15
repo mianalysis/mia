@@ -16,14 +16,14 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -224,11 +224,11 @@ public class ExtractObjectEdges extends Module {
     public interface WeightModes extends DistanceMap.WeightModes {
     }
 
-    public static Obj getRegion(Obj inputObject, Objs outputObjects, ImageI distImage, double edgeDistance, Mode mode) {
+    public static ObjI getRegion(ObjI inputObject, ObjsI outputObjects, ImageI distImage, double edgeDistance, Mode mode) {
         ImagePlus distIpl = distImage.getImagePlus();
         
         // Creating new edge object
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
+        ObjI outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         outputObject.setT(inputObject.getT());
 
         double[][] range = inputObject.getExtents(true, false);
@@ -264,7 +264,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static ImageI getPaddedDistanceMap(Obj inputObject, String weightMode) {
+    public static ImageI getPaddedDistanceMap(ObjI inputObject, String weightMode) {
         // Creating a Hyperstack to hold the distance transform. The image is padded by
         // 1px to ensure the distance
         // map knows where the object edges are. If the image is a single plane there is
@@ -274,7 +274,7 @@ public class ExtractObjectEdges extends Module {
 
         ImagePlus distIpl = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
                 (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2 * zPad), 1, 8);
-        inputObject.getObjectCollection().applyCalibration(distIpl);
+        inputObject.getObjectCollection().applyCalibrationFromImagePlus(distIpl);
 
         // Setting pixels corresponding to the parent object to 1
         for (Point<Integer> point : inputObject.getCoordinateSet()) {
@@ -309,9 +309,9 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    static void showObjects(Objs objects, String parentObjectsName, LUT lut) {
+    static void showObjects(ObjsI objects, String parentObjectsName, LUT lut) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(objects, parentObjectsName, true);
-        ImageI dispImage = objects.convertToImage(objects.getName(), hues, 8, false);
+        ImageI dispImage = objects.convertToImage(objects.getName(), hues, 8, false, false);
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(lut);
         dispIpl.setPosition(1, 1, 1);
@@ -339,7 +339,7 @@ public class ExtractObjectEdges extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         boolean createEdgeObjects = parameters.getValue(CREATE_EDGE_OBJECTS, workspace);
@@ -355,19 +355,19 @@ public class ExtractObjectEdges extends Module {
 
         // Initialising output edge objects
         String edgeObjectName = null;
-        Objs edgeObjects = null;
+        ObjsI edgeObjects = null;
         if (createEdgeObjects) {
             edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS, workspace);
-            edgeObjects = new Objs(edgeObjectName, inputObjects);
+            edgeObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(edgeObjectName, inputObjects);
             workspace.addObjects(edgeObjects);
         }
 
         // Initialising output interior objects
         String interiorObjectName = null;
-        Objs interiorObjects = null;
+        ObjsI interiorObjects = null;
         if (createInteriorObjects) {
             interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS, workspace);
-            interiorObjects = new Objs(interiorObjectName, inputObjects);
+            interiorObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(interiorObjectName, inputObjects);
             workspace.addObjects(interiorObjects);
         }
 
@@ -379,7 +379,7 @@ public class ExtractObjectEdges extends Module {
         if (calibratedDistances)
             edgeDistance = edgeDistance / inputObjects.getDppXY();
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             // Creating distance map
             ImageI distImage = getPaddedDistanceMap(inputObject, weightMode);
             switch (edgeMode) {
@@ -389,7 +389,7 @@ public class ExtractObjectEdges extends Module {
                         edgeDistance = edgeDistance / inputObjects.getDppXY();
                     break;
                 case EdgeModes.PARENT_OBJECT_MEASUREMENT:
-                    Obj parentObj = inputObject.getParent(parentObjectsName);
+                    ObjI parentObj = inputObject.getParent(parentObjectsName);
                     if (parentObj == null)
                         continue;
                     edgeDistance = parentObj.getMeasurement(parentMeasurementName).getValue();

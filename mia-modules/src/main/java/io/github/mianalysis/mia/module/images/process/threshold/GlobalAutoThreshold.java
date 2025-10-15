@@ -15,9 +15,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -190,7 +190,7 @@ public class GlobalAutoThreshold extends Module {
     }
 
     public int calculateThreshold(ImagePlus inputImagePlus, String algorithm, double thrMult, boolean useLowerLim,
-            double lowerLim, Objs inputObjects) {
+            double lowerLim, ObjsI inputObjects) {
 
         // Image must be 8-bit
         if (inputImagePlus.getBitDepth() != 8) {
@@ -257,10 +257,10 @@ public class GlobalAutoThreshold extends Module {
 
     }
 
-    public static Roi getRoi(Objs inputObjects, int t, int z) {
+    public static Roi getRoi(ObjsI inputObjects, int t, int z) {
         ShapeRoi roi = null;
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             if (inputObject.getT() != t - 1)
                 continue;
 
@@ -329,7 +329,7 @@ public class GlobalAutoThreshold extends Module {
         boolean measureOnObjects = parameters.getValue(MEASURE_ON_OBJECTS, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        Objs inputObjects = measureOnObjects ? workspace.getObjects(inputObjectsName) : null;
+        ObjsI inputObjects = measureOnObjects ? workspace.getObjects(inputObjectsName) : null;
         int threshold = 0;
 
         // Calculating the threshold based on the selected algorithm

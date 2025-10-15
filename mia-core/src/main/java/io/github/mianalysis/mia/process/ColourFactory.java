@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 import io.github.mianalysis.mia.object.ObjMetadata;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.ObjsI;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.math.CumStat;
@@ -62,13 +62,13 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getRandomHues(Objs objects) {
+    public static HashMap<Integer, Float> getRandomHues(ObjsI objects) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
         Random rand = new Random(randomSeed);
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -82,12 +82,12 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getIDHues(Objs objects, boolean normalised) {
+    public static HashMap<Integer, Float> getIDHues(ObjsI objects, boolean normalised) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -103,12 +103,12 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getParentIDHues(Objs objects, String parentObjectsName, boolean normalised) {
+    public static HashMap<Integer, Float> getParentIDHues(ObjsI objects, String parentObjectsName, boolean normalised) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -130,12 +130,12 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getSingleColourValues(Objs objects, String colour) {
+    public static HashMap<Integer, Float> getSingleColourValues(ObjsI objects, String colour) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -205,7 +205,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getChildCountHues(Objs objects, String childObjectsName, boolean normalised,
+    public static HashMap<Integer, Float> getChildCountHues(ObjsI objects, String childObjectsName, boolean normalised,
             double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -216,7 +216,7 @@ public class ColourFactory {
         double max = range[1];
         if (Double.isNaN(min) || Double.isNaN(max)) {
             CumStat cs = new CumStat();
-            for (Obj obj : objects.values()) {
+            for (ObjI obj : objects.values()) {
                 if (obj.getChildren(childObjectsName) == null)
                     continue;
                 cs.addMeasure(obj.getChildren(childObjectsName).size());
@@ -227,13 +227,13 @@ public class ColourFactory {
                 max = cs.getMax();
         }
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
             float H = 0f;
 
-            Objs childObjects = object.getChildren(childObjectsName);
+            ObjsI childObjects = object.getChildren(childObjectsName);
             if (childObjects == null) {
                 hues.put(ID, -1f);
                 continue;
@@ -254,7 +254,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getPartnerCountHues(Objs objects, String partnerObjectsName,
+    public static HashMap<Integer, Float> getPartnerCountHues(ObjsI objects, String partnerObjectsName,
             boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -265,7 +265,7 @@ public class ColourFactory {
         double max = range[1];
         if (Double.isNaN(min) || Double.isNaN(max)) {
             CumStat cs = new CumStat();
-            for (Obj obj : objects.values()) {
+            for (ObjI obj : objects.values()) {
                 if (obj.getPartners(partnerObjectsName) == null)
                     continue;
                 cs.addMeasure(obj.getPartners(partnerObjectsName).size());
@@ -276,13 +276,13 @@ public class ColourFactory {
                 max = cs.getMax();
         }
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
             float H = 0f;
 
-            Objs partnerObjects = object.getPartners(partnerObjectsName);
+            ObjsI partnerObjects = object.getPartners(partnerObjectsName);
             if (partnerObjects == null) {
                 hues.put(ID, -1f);
                 continue;
@@ -303,7 +303,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getMeasurementValueHues(Objs objects, String measurementName,
+    public static HashMap<Integer, Float> getMeasurementValueHues(ObjsI objects, String measurementName,
             boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -314,7 +314,7 @@ public class ColourFactory {
         double max = range[1];
         if (Double.isNaN(min) || Double.isNaN(max)) {
             CumStat cs = new CumStat();
-            for (Obj obj : objects.values()) {
+            for (ObjI obj : objects.values()) {
                 if (obj.getMeasurement(measurementName) == null)
                     continue;
                 cs.addMeasure(obj.getMeasurement(measurementName).getValue());
@@ -325,7 +325,7 @@ public class ColourFactory {
                 max = cs.getMax();
         }
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -352,12 +352,12 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getObjectMetadataHues(Objs objects, String metadataName) {
+    public static HashMap<Integer, Float> getObjectMetadataHues(ObjsI objects, String metadataName) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             if (metadataName == null) {
                 hues.put(object.getID(), -1f);
                 continue;
@@ -377,7 +377,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getParentMeasurementValueHues(Objs objects, String parentObjectsName,
+    public static HashMap<Integer, Float> getParentMeasurementValueHues(ObjsI objects, String parentObjectsName,
             String measurementName, boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -388,8 +388,8 @@ public class ColourFactory {
         double max = range[1];
         if (Double.isNaN(min) || Double.isNaN(max)) {
             CumStat cs = new CumStat();
-            for (Obj obj : objects.values()) {
-                Obj parentObj = obj.getParent(parentObjectsName);
+            for (ObjI obj : objects.values()) {
+                ObjI parentObj = obj.getParent(parentObjectsName);
                 if (parentObj == null)
                     continue;
                 if (parentObj.getMeasurement(measurementName) == null)
@@ -402,13 +402,13 @@ public class ColourFactory {
                 max = cs.getMax();
         }
 
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
             float H = 0f;
 
-            Obj parentObj = object.getParent(parentObjectsName);
+            ObjI parentObj = object.getParent(parentObjectsName);
             if (parentObj == null) {
                 hues.put(ID, -1f);
                 continue;

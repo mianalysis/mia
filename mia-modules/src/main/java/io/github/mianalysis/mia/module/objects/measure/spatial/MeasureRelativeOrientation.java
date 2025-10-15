@@ -10,9 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
@@ -234,7 +234,7 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static Obj getReferenceObject(Objs objects, int t, String choiceMode) {
+    static ObjI getReferenceObject(ObjsI objects, int t, String choiceMode) {
         switch (choiceMode) {
             default:
                 return null;
@@ -245,14 +245,14 @@ public class MeasureRelativeOrientation extends Module {
         }
     }
 
-    static HashMap<Integer, Point<Double>> getObjectCentroidRefs(Objs objects, String choiceMode,
+    static HashMap<Integer, Point<Double>> getObjectCentroidRefs(ObjsI objects, String choiceMode,
             String orientationMode, int nFrames, boolean mustBeSameFrame) {
         HashMap<Integer, Point<Double>> centres = new HashMap<>();
 
         if (mustBeSameFrame) {
             for (int t = 0; t < nFrames; t++) {
                 // Initialising the references for this timepoint
-                Obj referenceObject = getReferenceObject(objects, t, choiceMode);
+                ObjI referenceObject = getReferenceObject(objects, t, choiceMode);
 
                 if (referenceObject != null) {
                     double x = referenceObject.getXMean(true);
@@ -268,7 +268,7 @@ public class MeasureRelativeOrientation extends Module {
 
         } else {
             // Initialising the references for this timepoint
-            Obj referenceObject = getReferenceObject(objects, -1, choiceMode);
+            ObjI referenceObject = getReferenceObject(objects, -1, choiceMode);
 
             // Getting reference object centroid
             if (referenceObject != null) {
@@ -313,11 +313,11 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer, Point<Double>> getObjectCentroidSurfaceRefs(Objs inputObjects, Objs referenceObjects,
+    static HashMap<Integer, Point<Double>> getObjectCentroidSurfaceRefs(ObjsI inputObjects, ObjsI referenceObjects,
             String choiceMode, String orientationMode, int nFrames, boolean mustBeSameFrame) {
         HashMap<Integer, Point<Double>> centres = new HashMap<>();
 
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             int t = inputObject.getT();
 
             // If frame doesn't matter, t is set to -1
@@ -325,7 +325,7 @@ public class MeasureRelativeOrientation extends Module {
                 t = -1;
 
             // Initialising the references for this timepoint
-            Obj referenceObject = getReferenceObject(referenceObjects, t, choiceMode);
+            ObjI referenceObject = getReferenceObject(referenceObjects, t, choiceMode);
 
             if (referenceObject != null) {
                 // Get the centroid of the current object
@@ -355,7 +355,7 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    public static void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, String measurementRange,
+    public static void processObject(ObjI object, String xyOriMeasName, String xzOriMeasName, String measurementRange,
             Point<Double> referencePoint, String orientationMode, String measurementReference) {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
@@ -376,7 +376,7 @@ public class MeasureRelativeOrientation extends Module {
         }
     }
 
-    static void assignMissingMeasurements(Obj object, String xyOriMeasName, String xzOriMeasName,
+    static void assignMissingMeasurements(ObjI object, String xyOriMeasName, String xzOriMeasName,
             String orientationMode, String measurementReference) {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
@@ -387,7 +387,7 @@ public class MeasureRelativeOrientation extends Module {
         }
     }
 
-    public static double getXYAngle(Obj object, double xyOrientation, String measurementRange,
+    public static double getXYAngle(ObjI object, double xyOrientation, String measurementRange,
             Point<Double> referencePoint) {
         xyOrientation = Math.toRadians(xyOrientation);
         if (xyOrientation == -Math.PI)
@@ -437,7 +437,7 @@ public class MeasureRelativeOrientation extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting other parameters
         // String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
@@ -465,7 +465,7 @@ public class MeasureRelativeOrientation extends Module {
 
             case ReferenceModes.OBJECT_CENTROID:
                 int nFrames = inputObjects.getTemporalLimits()[1] + 1;
-                Objs referenceObjects = workspace.getObjects(referenceObjectsName);
+                ObjsI referenceObjects = workspace.getObjects(referenceObjectsName);
                 referencePoints = getObjectCentroidRefs(referenceObjects, objectChoiceMode, orientationMode, nFrames,
                         mustBeSameFrame);
                 break;
@@ -483,7 +483,7 @@ public class MeasureRelativeOrientation extends Module {
 
         // Processing each object
         Point<Double> referencePoint = null;
-        for (Obj inputObject : inputObjects.values()) {
+        for (ObjI inputObject : inputObjects.values()) {
             switch (referenceMode) {
                 case ReferenceModes.IMAGE_CENTRE:
                 case ReferenceModes.OBJECT_CENTROID:

@@ -6,9 +6,9 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectParentID extends MacroOperation {
@@ -28,10 +28,10 @@ public class MIA_GetObjectParentID extends MacroOperation {
         String parentObjectsName = (String) objects[2];
 
         // Getting the children of the input object
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null) return "";
-        Obj inputObject = inputObjects.get(objectID);
-        Obj parentObject = inputObject.getParent(parentObjectsName);
+        ObjI inputObject = inputObjects.get(objectID);
+        ObjI parentObject = inputObject.getParent(parentObjectsName);
 
         return String.valueOf(parentObject.getID());
 

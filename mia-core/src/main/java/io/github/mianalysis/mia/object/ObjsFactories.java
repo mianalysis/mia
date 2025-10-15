@@ -1,22 +1,21 @@
-package io.github.mianalysis.mia.object.coordinates;
+package io.github.mianalysis.mia.object;
 
 import java.util.HashMap;
 
-public class ObjFactories {
-    private static ObjFactoryI defaultFactory = new DefaultObjFactory();
+public class ObjsFactories {
+    private static ObjsFactoryI defaultFactory = new DefaultObjsFactory();
 
-    private static HashMap<String, ObjFactoryI> factories = new HashMap<>();
+    private static HashMap<String, ObjsFactoryI> factories = new HashMap<>();
 
-    public static HashMap<String, ObjFactoryI> getFactories() {
+    public static HashMap<String, ObjsFactoryI> getFactories() {
         return factories;
-
     }
 
-    public static void addFactory(ObjFactoryI factory) {
+    public static void addFactory(ObjsFactoryI factory) {
         factories.put(factory.getName(), factory);
     }
 
-    public static ObjFactoryI getFactory(String name) {
+    public static ObjsFactoryI getFactory(String name) {
         if (factories.containsKey(name))
             return factories.get(name);
 
@@ -25,7 +24,7 @@ public class ObjFactories {
 
     }
 
-    public static ObjFactoryI getDefaultFactory() {
+    public static ObjsFactoryI getDefaultFactory() {
         return defaultFactory;
     }
 
@@ -33,7 +32,7 @@ public class ObjFactories {
         return defaultFactory.getName();
     }
 
-    public static void setDefaultFactory(ObjFactoryI factory) {
+    public static void setDefaultFactory(ObjsFactoryI factory) {
         defaultFactory = factory;
     }
 

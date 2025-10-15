@@ -25,10 +25,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
-import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -137,7 +137,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     }
 
-    public int filter(Objs inputObjects, @Nullable Objs outputObjects, boolean remove,
+    public int filter(ObjsI inputObjects, @Nullable ObjsI outputObjects, boolean remove,
             @Nullable ImageI image) {
         ImagePlus ipl = null;
         if (image != null) {
@@ -165,7 +165,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
         int count = 0;
         for (int id : ids) {
-            Obj obj = inputObjects.get(id);
+            ObjI obj = inputObjects.get(id);
             count++;
             if (remove) {
                 obj.removeRelationships();
@@ -203,7 +203,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE, workspace);
@@ -214,7 +214,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
         ImageI displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
         int count = filter(inputObjects, outputObjects, remove, displayImage);

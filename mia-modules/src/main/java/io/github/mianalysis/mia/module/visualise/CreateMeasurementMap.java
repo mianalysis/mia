@@ -19,10 +19,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -165,12 +165,12 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    public static void processObjectMeasurement(CumStat[] cumStats, Indexer indexer, Objs objects,
+    public static void processObjectMeasurement(CumStat[] cumStats, Indexer indexer, ObjsI objects,
             String measurementName, @Nullable String message) {
         // Adding objects
         int count = 0;
         int nTotal = objects.size();
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             // Getting measurement value. Skip if null or NaN.
             Measurement measurement = object.getMeasurement(measurementName);
             if (measurement == null)
@@ -197,14 +197,14 @@ public class CreateMeasurementMap extends Module {
         }
     }
 
-    public static void processParentMeasurements(CumStat[] cumStats, Indexer indexer, Objs objects,
+    public static void processParentMeasurements(CumStat[] cumStats, Indexer indexer, ObjsI objects,
             String parentObjectsName, String measurementName, @Nullable String message) {
         // Adding objects
         int count = 0;
         int nTotal = objects.size();
-        for (Obj object : objects.values()) {
+        for (ObjI object : objects.values()) {
             // Getting parent object
-            Obj parentObject = object.getParent(parentObjectsName);
+            ObjI parentObject = object.getParent(parentObjectsName);
             if (parentObject == null)
                 continue;
 
@@ -375,7 +375,7 @@ public class CreateMeasurementMap extends Module {
     public Status process(WorkspaceI workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);

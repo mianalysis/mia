@@ -24,9 +24,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.manualextensions.SAMJExtension.EnvironmentPathModes;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -192,7 +193,7 @@ public class ApplySegmentAnything extends Module {
 
     }
 
-    public List<Mask> getPolygonsFromObjectBoundingBox(Obj inputObject, AbstractSamJ samJ) {
+    public List<Mask> getPolygonsFromObjectBoundingBox(ObjI inputObject, AbstractSamJ samJ) {
         double[][] extents = inputObject.getExtents(true, false);
         int[] boundingBox = new int[4];
         boundingBox[0] = (int) Math.round(extents[0][0]);
@@ -210,7 +211,7 @@ public class ApplySegmentAnything extends Module {
 
     }
 
-    public List<Mask> getPolygonsFromObjectCentroid(Obj inputObject, AbstractSamJ samJ) {
+    public List<Mask> getPolygonsFromObjectCentroid(ObjI inputObject, AbstractSamJ samJ) {
         ArrayList<int[]> pts = new ArrayList<>();
         pts.add(new int[] { (int) Math.round(inputObject.getXMean(true)),
                 (int) Math.round(inputObject.getYMean(true)) });
@@ -241,7 +242,7 @@ public class ApplySegmentAnything extends Module {
 
         ImageI inputImage = workspace.getImages().get(inputImageName);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         if (calibratedUnits)
             maxObjectArea = maxObjectArea / (inputObjects.getDppXY() * inputObjects.getDppXY());
@@ -256,26 +257,26 @@ public class ApplySegmentAnything extends Module {
         AbstractSamJ samJ = initialiseSAMJ(environmentPath, installIfMissing);
 
         // Gathering objects by timepoint and slice
-        HashMap<Integer, HashMap<Integer, ArrayList<Obj>>> inputObjectsBySliceAndTime = new HashMap<>();
-        for (Obj inputObject : inputObjects.values()) {
+        HashMap<Integer, HashMap<Integer, ArrayList<ObjI>>> inputObjectsBySliceAndTime = new HashMap<>();
+        for (ObjI inputObject : inputObjects.values()) {
             int t = inputObject.getT();
             int z = (int) Math.round(inputObject.getZMean(true, false));
 
-            inputObjectsBySliceAndTime.putIfAbsent(t, new HashMap<Integer, ArrayList<Obj>>());
-            HashMap<Integer, ArrayList<Obj>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
+            inputObjectsBySliceAndTime.putIfAbsent(t, new HashMap<Integer, ArrayList<ObjI>>());
+            HashMap<Integer, ArrayList<ObjI>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
 
-            inputObjectsBySlice.putIfAbsent(z, new ArrayList<Obj>());
+            inputObjectsBySlice.putIfAbsent(z, new ArrayList<ObjI>());
             inputObjectsBySlice.get(z).add(inputObject);
 
         }
 
         // Creating output objects
-        Objs outputObjects = new Objs(outputObjectsName, inputImage.getImagePlus());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage.getImagePlus());
 
         int count = 0;
         int total = inputObjects.size();
         for (int t : inputObjectsBySliceAndTime.keySet()) {
-            HashMap<Integer, ArrayList<Obj>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
+            HashMap<Integer, ArrayList<ObjI>> inputObjectsBySlice = inputObjectsBySliceAndTime.get(t);
             for (int z : inputObjectsBySlice.keySet()) {
                 Img img = ExtractSubstack
                         .extractSubstack(inputImage, "Substack", "1-end", String.valueOf(z + 1), String.valueOf(t + 1))
@@ -296,7 +297,7 @@ public class ApplySegmentAnything extends Module {
                     }
                 }
 
-                for (Obj inputObject : inputObjectsBySlice.get(z)) {
+                for (ObjI inputObject : inputObjectsBySlice.get(z)) {
                     List<Mask> masks = null;
                     switch (inputObjectMode) {
                         case InputObjectsModes.BOUNDING_BOX:
@@ -311,7 +312,7 @@ public class ApplySegmentAnything extends Module {
                     if (masks == null)
                         return Status.PASS;
 
-                    Obj outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
+                    ObjI outputObject = outputObjects.createAndAddNewObject(new QuadtreeFactory());
                     for (Mask mask : masks)
                         try {
                             if (limitObjectSize && new PolygonRoi(mask.getContour(), PolygonRoi.FREEROI)

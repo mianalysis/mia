@@ -6,10 +6,10 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectChildIDs extends MacroOperation {
@@ -29,13 +29,13 @@ public class MIA_GetObjectChildIDs extends MacroOperation {
         String childObjectsName = (String) objects[2];
 
         // Getting the children of the input object
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null) return "";
-        Obj inputObject = inputObjects.get(objectID);
-        Objs childObjects = inputObject.getChildren(childObjectsName);
+        ObjI inputObject = inputObjects.get(objectID);
+        ObjsI childObjects = inputObject.getChildren(childObjectsName);
 
         StringBuilder sb = new StringBuilder();
-        for (Obj childObject:childObjects.values()){
+        for (ObjI childObject:childObjects.values()){
             if (sb.length() == 0) {
                 sb.append(childObject.getID());
             } else {

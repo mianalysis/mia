@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.expectedobjects;
 
 import io.github.mianalysis.mia.expectedobjects.Objects3D.Measures;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
@@ -30,7 +30,7 @@ public class Objects3D extends ExpectedObjects {
         EXP_BIN_N_VOXELS_4BINS_HIGHRANGE
     }
 
-    public Objs getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+    public ObjsI getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
         return super.getObjects(objectName, mode, dppXY, dppZ, calibratedUnits, includeMeasurements);
     }
 

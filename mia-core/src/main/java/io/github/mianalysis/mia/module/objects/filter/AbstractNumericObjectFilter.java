@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.module.objects.filter;
 
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -200,7 +200,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         }
     }
 
-    public double getReferenceValue(WorkspaceI workspace, Obj inputObject) {
+    public double getReferenceValue(WorkspaceI workspace, ObjI inputObject) {
         String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         double fixedValue = parameters.getValue(REFERENCE_VALUE, workspace);
         String refImage = parameters.getValue(REFERENCE_VAL_IMAGE, workspace);
@@ -223,7 +223,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
                 refValue = inputObject.getMeasurement(refMeas).getValue();
                 break;
             case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-                Obj parentObject = inputObject.getParent(refParent);
+                ObjI parentObject = inputObject.getParent(refParent);
                 if (parentObject == null)
                     return Double.NaN;
                 refValue = parentObject.getMeasurement(refMeas).getValue();

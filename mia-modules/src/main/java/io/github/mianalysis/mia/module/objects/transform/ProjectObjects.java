@@ -7,9 +7,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -54,10 +55,10 @@ public class ProjectObjects extends Module {
         super("Project objects",modules);
     }
 
-    public static Obj process(Obj inputObject, Objs outputObjects, boolean addRelationship) throws IntegerOverflowException {
+    public static ObjI process(ObjI inputObject, ObjsI outputObjects, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
-        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory(), inputObject.getID());
+        ObjI outputObject = outputObjects.createAndAddNewObjectWithID(inputObject.getCoordinateSetFactory(), inputObject.getID());
         outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 
@@ -85,16 +86,16 @@ public class ProjectObjects extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
+        ObjsI inputObjects = workspace.getObjects(inputObjectsName);
         SpatCal calIn = inputObjects.getSpatialCalibration();
         SpatCal calOut = new SpatCal(calIn.getDppXY(), calIn.getDppZ(), calIn.getUnits(), calIn.getWidth(),
                 calIn.getHeight(), 1);
         double frameInterval = inputObjects.getFrameInterval();
         Unit<Time> temporalUnit = inputObjects.getTemporalUnit();
-        Objs outputObjects = new Objs(outputObjectsName, calOut, inputObjects.getNFrames(),
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calOut, inputObjects.getNFrames(),
                 frameInterval, temporalUnit);
 
-        for (Obj inputObject:inputObjects.values()) {
+        for (ObjI inputObject:inputObjects.values()) {
             try {
                 process(inputObject,outputObjects, true);
             } catch (IntegerOverflowException e) {
@@ -123,7 +124,6 @@ public class ProjectObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
         return parameters;
     }
 

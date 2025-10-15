@@ -99,9 +99,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsFactories;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -313,7 +314,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static boolean testCentroidSeparation(Obj object1, Obj object2, double maxSeparation) {
+    static boolean testCentroidSeparation(ObjI object1, ObjI object2, double maxSeparation) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
             return false;
@@ -326,7 +327,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static boolean testSpatialOverlap(Obj object1, Obj object2, String thresholdMode, double minOverlap1,
+    static boolean testSpatialOverlap(ObjI object1, ObjI object2, String thresholdMode, double minOverlap1,
             double minOverlap2) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
@@ -353,7 +354,7 @@ public class RelateManyToMany extends Module {
         }
     }
 
-    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside,
+    static boolean testSurfaceSeparation(ObjI object1, ObjI object2, double maxSeparation, boolean acceptAllInside,
             boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
@@ -375,7 +376,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static boolean testGeneric(Obj object1, Obj object2, String measurement1, String measurement2, String calculation,
+    static boolean testGeneric(ObjI object1, ObjI object2, String measurement1, String measurement2, String calculation,
             double measurementLimit) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
@@ -412,7 +413,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static int updateAssignments(Obj object1, Obj object2, HashMap<Obj, Integer> assignments, int maxGroupID) {
+    static int updateAssignments(ObjI object1, ObjI object2, HashMap<ObjI, Integer> assignments, int maxGroupID) {
         // Any pairs that got this far can be linked. First, checking if they are
         // already part of a group
         if (assignments.containsKey(object1) & !assignments.containsKey(object2)) {
@@ -433,7 +434,7 @@ public class RelateManyToMany extends Module {
             // objects previous in the same group as object 2.
             int groupID1 = assignments.get(object1);
             int groupID2 = assignments.get(object2);
-            for (Obj object : assignments.keySet()) {
+            for (ObjI object : assignments.keySet()) {
                 if (assignments.get(object) == groupID2)
                     assignments.put(object, groupID1);
             }
@@ -455,16 +456,16 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static Objs createClusters(Objs outputObjects, HashMap<Obj, Integer> assignments) {
-        for (Obj object : assignments.keySet()) {
+    static ObjsI createClusters(ObjsI outputObjects, HashMap<ObjI, Integer> assignments) {
+        for (ObjI object : assignments.keySet()) {
             int groupID = assignments.get(object);
 
             // Getting cluster object
             if (!outputObjects.containsKey(groupID)) {
-                Obj outputObject = outputObjects.createAndAddNewObject(new PointListFactory(), groupID);
+                ObjI outputObject = outputObjects.createAndAddNewObjectWithID(new PointListFactory(), groupID);
                 outputObject.setT(object.getT());
             }
-            Obj outputObject = outputObjects.get(groupID);
+            ObjI outputObject = outputObjects.get(groupID);
 
             // Adding relationships
             outputObject.addChild(object);
@@ -476,9 +477,9 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static void applyMeasurements(Objs objCollection, HashMap<Obj, Integer> assignments,
+    static void applyMeasurements(ObjsI objCollection, HashMap<ObjI, Integer> assignments,
             String linkedObjectName) {
-        for (Obj object : objCollection.values())
+        for (ObjI object : objCollection.values())
             if (object.getPartners(linkedObjectName) != null && object.getPartners(linkedObjectName).size() > 0)
                 object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 1));
             else
@@ -512,10 +513,10 @@ public class RelateManyToMany extends Module {
 
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
-        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
+        ObjsI inputObjects1 = workspace.getObjects(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
-        Objs inputObjects2;
+        ObjsI inputObjects2;
 
         switch (objectSourceMode) {
             default:
@@ -552,7 +553,7 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new Objs(outputObjectsName, inputObjects1));
+            workspace.addObjects(ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
@@ -562,20 +563,20 @@ public class RelateManyToMany extends Module {
             minOverlap2 = lowerThresh;
         }
 
-        Obj firstObj = inputObjects1.getFirst();
+        ObjI firstObj = inputObjects1.getFirst();
         if (calibratedUnits)
             maximumSeparation = maximumSeparation / firstObj.getDppXY();
 
         // Creating a HashMap to store the group ID that each object was assigned to
-        HashMap<Obj, Integer> assignments = new HashMap<>();
+        HashMap<ObjI, Integer> assignments = new HashMap<>();
         int maxGroupID = 0;
 
         int count = 0;
         int total = inputObjects1.size()*inputObjects2.size();
 
         // Iterating over all object pairs
-        for (Obj object1 : inputObjects1.values()) {
-            for (Obj object2 : inputObjects2.values()) {
+        for (ObjI object1 : inputObjects1.values()) {
+            for (ObjI object2 : inputObjects2.values()) {
                 count++;
 
                 if (object1 == object2)
@@ -641,14 +642,14 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName, false);
             }
 
-            Objs outputObjects = new Objs(outputObjectsName, inputObjects1);
+            ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1);
             createClusters(outputObjects, assignments);
             workspace.addObjects(outputObjects);
 
             if (showOutput) {
                 // Generating colours
                 HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(inputObjects1, outputObjectsName, true);
-                ImagePlus dispIpl = inputObjects1.convertToImage(outputObjectsName, hues, 8, true).getImagePlus();
+                ImagePlus dispIpl = inputObjects1.convertToImage(outputObjectsName, hues, 8, true, false).getImagePlus();
                 dispIpl.setLut(LUTs.Random(true));
                 dispIpl.setPosition(1, 1, 1);
                 dispIpl.updateChannelAndDraw();
@@ -657,7 +658,7 @@ public class RelateManyToMany extends Module {
                 if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
                     // Generating colours
                     hues = ColourFactory.getParentIDHues(inputObjects2, outputObjectsName, true);
-                    dispIpl = inputObjects2.convertToImage(outputObjectsName, hues, 8, true).getImagePlus();
+                    dispIpl = inputObjects2.convertToImage(outputObjectsName, hues, 8, true, false).getImagePlus();
                     dispIpl.setLut(LUTs.Random(true));
                     dispIpl.setPosition(1, 1, 1);
                     dispIpl.updateChannelAndDraw();

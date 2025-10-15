@@ -17,10 +17,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualise.overlays.AbstractOverlay;
-import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -104,7 +104,7 @@ public class PlotTrackMotility extends AbstractOverlay {
 
     }
 
-    public static ImageI createPlotsAllTogether(Objs trackObjects, String inputObjectsName, String outputImageName,
+    public static ImageI createPlotsAllTogether(ObjsI trackObjects, String inputObjectsName, String outputImageName,
             double lineWidth, HashMap<Integer, Color> colours, String[] rangeModes, double[] ranges) {
         // Creating plot
         Plot plot = new Plot("Motility", "x-position (px)", "y-position (px)");
@@ -114,7 +114,7 @@ public class PlotTrackMotility extends AbstractOverlay {
         CumStat csX = new CumStat();
         CumStat csY = new CumStat();
 
-        for (Obj trackObject : trackObjects.values()) {
+        for (ObjI trackObject : trackObjects.values()) {
             // Getting values to plot
             double[][] posDouble = getPositionValues(trackObject, inputObjectsName);
 
@@ -138,12 +138,12 @@ public class PlotTrackMotility extends AbstractOverlay {
 
     }
 
-    public static ImageI createPlotsSeparately(Objs trackObjects, String inputObjectsName, String outputImageName,
+    public static ImageI createPlotsSeparately(ObjsI trackObjects, String inputObjectsName, String outputImageName,
             double lineWidth, HashMap<Integer, Color> colours, double[] ranges, boolean addObjectID, String objectIDColour) {
         ImagePlus ipl = null;
 
         int count = 0;
-        for (Obj trackObject : trackObjects.values()) {
+        for (ObjI trackObject : trackObjects.values()) {
             // Initialising plot
             Plot plot = new Plot(trackObjects.getName() + " (ID " + trackObject.getID() + ")", "x-position (px)",
                     "y-position (px)");
@@ -193,13 +193,13 @@ public class PlotTrackMotility extends AbstractOverlay {
 
     }
 
-    public static double[][] getPositionValues(Obj trackObject, String objectsName) {
-        Objs childObjects = trackObject.getChildren(objectsName);
+    public static double[][] getPositionValues(ObjI trackObject, String objectsName) {
+        ObjsI childObjects = trackObject.getChildren(objectsName);
 
         // Find first object in track
         int minT = Integer.MAX_VALUE;
-        Obj currObj = null;
-        for (Obj childObject : childObjects.values()) {
+        ObjI currObj = null;
+        for (ObjI childObject : childObjects.values()) {
             if (childObject.getT() < minT) {
                 minT = childObject.getT();
                 currObj = childObject;
@@ -216,9 +216,9 @@ public class PlotTrackMotility extends AbstractOverlay {
         double x0 = currObj.getXMean(true);
         double y0 = currObj.getYMean(true);
 
-        Objs nextObjects = currObj.getNextPartners(objectsName);
+        ObjsI nextObjects = currObj.getNextPartners(objectsName);
         while (nextObjects.size() > 0) {
-            Obj nextObject = nextObjects.getFirst();
+            ObjI nextObject = nextObjects.getFirst();
 
             x.add(nextObject.getXMean(true) - x0);
             y.add(nextObject.getYMean(true) - y0);
@@ -287,7 +287,7 @@ public class PlotTrackMotility extends AbstractOverlay {
         ranges[2] = parameters.getValue(Y_RANGE_MIN, workspace);
         ranges[3] = parameters.getValue(Y_RANGE_MAX, workspace);
 
-        Objs trackObjects = workspace.getObjects(inputTracksName);
+        ObjsI trackObjects = workspace.getObjects(inputTracksName);
 
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(trackObjects, workspace);

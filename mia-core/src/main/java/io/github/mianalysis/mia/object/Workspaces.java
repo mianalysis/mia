@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 /**
@@ -69,20 +69,20 @@ public class Workspaces extends LinkedHashSet<WorkspaceI> {
 
             // Adding all objects to the current workspace (there can only be one image for each name, so it makes no
             // sense to do any images)
-            LinkedHashMap<String,Objs> currObjects = currWorkspace.getAllObjects();
+            LinkedHashMap<String,ObjsI> currObjects = currWorkspace.getAllObjects();
             for (String objName:currObjects.keySet()) {
                 // If there are no current objects, skip this
-                Objs currObjectSet = currObjects.get(objName);
+                ObjsI currObjectSet = currObjects.get(objName);
                 if (currObjectSet == null)
                     continue;
 
                 // If this is the first time these objects have been added, create a blank Objs
                 if (metadataWorkspace.getObjects(objName) == null)
-                    metadataWorkspace.addObjects(new Objs(objName,currObjectSet));
+                    metadataWorkspace.addObjects(ObjsFactories.getDefaultFactory().createFromExampleObjs(objName,currObjectSet));
                 
                 // If a collection of these objects already exists, add to this
-                Objs coreSet = metadataWorkspace.getObjects(objName);
-                for (Obj currObject:currObjectSet.values())
+                ObjsI coreSet = metadataWorkspace.getObjects(objName);
+                for (ObjI currObject:currObjectSet.values())
                     // Adding the object and incrementing the count (a new ID has to be assigned for this to prevent
                     // clashes between workspaces)
                     coreSet.put(coreSet.getAndIncrementID(),currObject);

@@ -1,19 +1,19 @@
 package io.github.mianalysis.mia.object.measurements;
 
-import io.github.mianalysis.mia.object.coordinates.Obj;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 
 public class ParentIDMeasurement extends Measurement {
-    private Obj obj;
+    private ObjI obj;
     private String parentName;
 
-    public ParentIDMeasurement(String name, Obj obj, String parentName) {
+    public ParentIDMeasurement(String name, ObjI obj, String parentName) {
         super(name);
         this.obj = obj;
         this.parentName = parentName;
     }
     
     public double getValue() {
-        Obj parentObj = obj.getParent(parentName);
+        ObjI parentObj = obj.getParent(parentName);
 
         if (parentObj == null)
             return Double.NaN;
