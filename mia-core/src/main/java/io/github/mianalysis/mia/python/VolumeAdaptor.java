@@ -38,18 +38,6 @@ public class VolumeAdaptor {
     //     return getCoordinateSet().iterator();
     // }
 
-    public static void addCoord(Volume volume, int x, int y, int z) throws PointOutOfRangeException {
-        if (x < 0 || x >= volume.getWidth())
-            throw new PointOutOfRangeException("Coordinate out of bounds! (x: " + x + ")");
-        if (y < 0 || y >= volume.getHeight())
-            throw new PointOutOfRangeException("Coordinate out of bounds! (y: " + y + ")");
-        if (z < 0 || z >= volume.getNSlices())
-            throw new PointOutOfRangeException("Coordinate out of bounds! (z: " + z + ")");
-
-        volume.getCoordinateSet().addCoord(x, y, z);
-
-    }
-
     // public default void addPoint(Point<Integer> point) throws PointOutOfRangeException {
     //     addCoord(point.x, point.y, point.z);
 
