@@ -16,6 +16,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -31,6 +32,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -342,7 +344,18 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         parameters.add(new InputImageP(MASK_IMAGE, this));
 
         parameters.add(new SeparatorP(FUNCTION_SEPARATOR, this));
-        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3));
+        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3) {
+            @Override
+            public boolean verify() {
+                if ((int) getValue(null) == 0) {
+                    MIA.log.writeWarning(getName()+": Minimum radius must be greater than 0");
+                    return false;
+                }
+
+                return true;
+
+            }
+        });
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 

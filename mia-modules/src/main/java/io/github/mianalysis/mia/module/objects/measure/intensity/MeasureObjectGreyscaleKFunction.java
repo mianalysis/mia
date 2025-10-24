@@ -9,6 +9,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -39,30 +40,33 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Measure's Ripley's K-function for greyscale images on an object-by-object basis.  This method is re-written from the publication "Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.
-*/
+ * Measure's Ripley's K-function for greyscale images on an object-by-object
+ * basis. This method is re-written from the publication "Extending Ripley’s
+ * K-Function to Quantify Aggregation in 2-D Grayscale Images" by M. Amgad, et
+ * al. (doi: 10.1371/journal.pone.0144404). Results are output to an Excel
+ * spreadsheet, with one file per input image.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object and image input";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_IMAGE = "Input image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FUNCTION_SEPARATOR = "K-function controls";
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
@@ -196,7 +200,6 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                     cell = row.createCell(colI++);
                     cell.setCellValue(kRes[2]);
 
-                    writeProgressStatus(++count, total, "steps");
                 }
             }
             writeProgressStatus(++count, total, "objects");
@@ -226,7 +229,18 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(FUNCTION_SEPARATOR, this));
-        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3));
+        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3) {
+            @Override
+            public boolean verify() {
+                if ((int) getValue(null) == 0) {
+                    MIA.log.writeWarning(getName()+": Minimum radius must be greater than 0");
+                    return false;
+                }
+
+                return true;
+
+            }
+        });
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 
@@ -265,8 +279,8 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
