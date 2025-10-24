@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.coordinates;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 
 public interface ObjFactoryI {
     public String getName();
@@ -12,7 +12,7 @@ public interface ObjFactoryI {
 
     public ObjI createObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID, SpatCal spatCal);
 
-    public default ObjI createObj(ObjsI objCollection, int ID, Volume exampleVolume) {
+    public default ObjI createObj(ObjsI objCollection, int ID, VolumeI exampleVolume) {
         return createObj(objCollection, exampleVolume.getCoordinateSetFactory(), ID);
     }
 

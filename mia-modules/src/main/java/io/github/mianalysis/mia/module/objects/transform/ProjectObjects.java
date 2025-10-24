@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -56,7 +56,7 @@ public class ProjectObjects extends Module {
     }
 
     public static ObjI process(ObjI inputObject, ObjsI outputObjects, boolean addRelationship) throws IntegerOverflowException {
-        Volume projected = inputObject.getProjected();
+        VolumeI projected = inputObject.getProjected();
 
         ObjI outputObject = outputObjects.createAndAddNewObjectWithID(inputObject.getCoordinateSetFactory(), inputObject.getID());
         outputObject.setCoordinateSet(projected.getCoordinateSet());

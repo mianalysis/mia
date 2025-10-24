@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -144,7 +144,7 @@ public class ExtractObjectCrossSection extends Module {
             if (idx < 0 || idx >= inputObject.getNSlices())
                 continue;
 
-            Volume slice = inputObject.getSlice(idx);
+            VolumeI slice = inputObject.getSlice(idx);
             if (slice == null)
                 continue;
 

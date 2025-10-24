@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalcula
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
-public interface Volume {
+public interface VolumeI {
     public default void initialise(CoordinateSetFactoryI factory, SpatCal spatCal) {
         setSpatialCalibration(spatCal);
         setCoordinateSet(factory.createCoordinateSet());
@@ -84,7 +84,7 @@ public interface Volume {
     }
 
     public default void translateCoords(int xOffs, int yOffs, int zOffs) {
-        Volume newVol = createNewVolume(getCoordinateSet().getFactory(), getSpatialCalibration());
+        VolumeI newVol = createNewVolume(getCoordinateSet().getFactory(), getSpatialCalibration());
 
         // CoordinateSet newCoordinateSet = coordinateSet.createEmptyCoordinateSet();
         for (Point<Integer> point : getCoordinateSet()) {
@@ -316,7 +316,7 @@ public interface Volume {
         }
     }
 
-    public default int getOverlap(Volume volume2) {
+    public default int getOverlap(VolumeI volume2) {
         int count = 0;
 
         if (size() < volume2.size()) {
@@ -478,7 +478,7 @@ public interface Volume {
 
     }
 
-    public default double calculateAngle2D(Volume volume2) {
+    public default double calculateAngle2D(VolumeI volume2) {
         Point<Double> p1 = new Point<>(getXMean(true), getYMean(true), 0d);
         Point<Double> p2 = new Point<>(volume2.getXMean(true), volume2.getYMean(true), 0d);
 
@@ -495,10 +495,10 @@ public interface Volume {
 
     public default double calculatePointPointSeparation(Point<Integer> point1, Point<Integer> point2, boolean pixelDistances) {
         try {
-            Volume volume1 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
+            VolumeI volume1 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
             volume1.addCoord(point1.getX(), point1.getY(), point1.getZ());
 
-            Volume volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
+            VolumeI volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), getSpatialCalibration().duplicate());
             volume2.addCoord(point2.getX(), point2.getY(), point2.getZ());
 
             return volume1.getCentroidSeparation(volume2, pixelDistances, false);
@@ -508,7 +508,7 @@ public interface Volume {
         }
     }
 
-    public default double getSurfaceSeparation(Volume volume2, boolean pixelDistances, boolean force2D, boolean ignoreEdgesXY,
+    public default double getSurfaceSeparation(VolumeI volume2, boolean pixelDistances, boolean force2D, boolean ignoreEdgesXY,
             boolean ignoreEdgesZ) {
         SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(this, volume2, force2D, ignoreEdgesXY,
                 ignoreEdgesZ);
@@ -527,7 +527,7 @@ public interface Volume {
         return calculator.getMinDist(pixelDistances);
     }
 
-    public default double getCentroidSeparation(Volume volume2, boolean pixelDistances, boolean force2D) {
+    public default double getCentroidSeparation(VolumeI volume2, boolean pixelDistances, boolean force2D) {
         double x1 = getXMean(pixelDistances);
         double y1 = getYMean(pixelDistances);
         double x2 = volume2.getXMean(pixelDistances);
@@ -546,8 +546,8 @@ public interface Volume {
         }
     }
 
-    public default Volume getOverlappingPoints(Volume volume2) {
-        Volume overlapping = getFactory().createVolume(getCoordinateSet().getFactory(), getSpatialCalibration());
+    public default VolumeI getOverlappingPoints(VolumeI volume2) {
+        VolumeI overlapping = getFactory().createVolume(getCoordinateSet().getFactory(), getSpatialCalibration());
 
         try {
             if (size() < volume2.size()) {
@@ -569,7 +569,7 @@ public interface Volume {
 
     }
 
-    public default Volume getSlice(int slice) {
+    public default VolumeI getSlice(int slice) {
         SpatCal spatCal = getSpatialCalibration();
 
         // Octree is best represented by quadtree. Pointlist can stay as pointlist.
@@ -578,7 +578,7 @@ public interface Volume {
         if (factory instanceof OctreeFactory)
             factory = new QuadtreeFactory();
 
-        Volume sliceVol = VolumeFactories.getDefaultFactory().createVolume(factory, spatCal);
+        VolumeI sliceVol = VolumeFactories.getDefaultFactory().createVolume(factory, spatCal);
         sliceVol.setCoordinateSet(getCoordinateSet().getSlice(slice));
 
         return sliceVol;
@@ -587,7 +587,7 @@ public interface Volume {
 
     public default Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
-        Volume sliceVol = getSlice(slice);
+        VolumeI sliceVol = getSlice(slice);
 
         ImageProcessor ipr = sliceVol.getAsTightImage("Crop").getImagePlus().getProcessor();
         ipr.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
@@ -610,7 +610,7 @@ public interface Volume {
 
     public CoordinateSetFactoryI getCoordinateSetFactory();
 
-    public Volume createNewVolume(CoordinateSetFactoryI coordinateSetFactory, SpatCal spatCal);
+    public VolumeI createNewVolume(CoordinateSetFactoryI coordinateSetFactory, SpatCal spatCal);
 
     public SpatCal getSpatialCalibration();
 
@@ -620,11 +620,11 @@ public interface Volume {
 
     public void setCoordinateSet(CoordinateSetI coordinateSet);
 
-    public Volume getSurface(boolean ignoreEdgesXY, boolean ignoreEdgesZ);
+    public VolumeI getSurface(boolean ignoreEdgesXY, boolean ignoreEdgesZ);
 
     public boolean hasCalculatedSurface();
 
-    public Volume getProjected();
+    public VolumeI getProjected();
 
     public boolean hasCalculatedProjection();
 

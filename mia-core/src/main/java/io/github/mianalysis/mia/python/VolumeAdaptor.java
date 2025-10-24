@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -96,11 +96,11 @@ public class VolumeAdaptor {
 
     // }
 
-    public static void finalise(Volume volume) {
+    public static void finalise(VolumeI volume) {
         volume.getCoordinateSet().finalise();
     }
 
-    public static void finaliseSlice(Volume volume, int z) {
+    public static void finaliseSlice(VolumeI volume, int z) {
         volume.getCoordinateSet().finaliseSlice(z);
     }
 
@@ -123,7 +123,7 @@ public class VolumeAdaptor {
     //     return getSpatialCalibration().units;
     // }
 
-    public static int getWidth(Volume volume) {
+    public static int getWidth(VolumeI volume) {
         return volume.getSpatialCalibration().getWidth();
     }
 

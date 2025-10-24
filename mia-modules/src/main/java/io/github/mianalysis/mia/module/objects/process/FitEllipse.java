@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -197,7 +197,7 @@ public class FitEllipse extends Module {
                 || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
             return;
 
-        Volume ellipse = calculator.getContainedPoints();
+        VolumeI ellipse = calculator.getContainedPoints();
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -214,7 +214,7 @@ public class FitEllipse extends Module {
         }
     }
 
-    public ObjI createNewObject(ObjI inputObject, Volume ellipse, ObjsI outputObjects) {
+    public ObjI createNewObject(ObjI inputObject, VolumeI ellipse, ObjsI outputObjects) {
         if (ellipse == null)
             return null;
 
@@ -229,7 +229,7 @@ public class FitEllipse extends Module {
 
     }
 
-    public void updateInputObject(ObjI inputObject, Volume ellipse) {
+    public void updateInputObject(ObjI inputObject, VolumeI ellipse) {
         inputObject.getCoordinateSet().clear();
         inputObject.setCoordinateSet(ellipse.getCoordinateSet());
 

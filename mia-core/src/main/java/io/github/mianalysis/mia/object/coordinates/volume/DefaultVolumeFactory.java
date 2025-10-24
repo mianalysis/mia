@@ -7,7 +7,7 @@ public class DefaultVolumeFactory implements VolumeFactory {
     }
     
     @Override
-    public Volume createVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
+    public VolumeI createVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
         return new DefaultVolume(factory, spatCal);
     }
 

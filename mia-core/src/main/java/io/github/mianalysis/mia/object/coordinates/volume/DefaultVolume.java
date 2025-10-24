@@ -5,11 +5,11 @@ import java.util.Iterator;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.process.analysis.CentroidCalculator;
 
-public class DefaultVolume implements Volume {
+public class DefaultVolume implements VolumeI {
     protected SpatCal spatCal;
     protected CoordinateSetI coordinateSet;
-    protected Volume surface = null;
-    protected Volume projection = null;
+    protected VolumeI surface = null;
+    protected VolumeI projection = null;
     protected Point<Double> meanCentroidPx = null;
 
     public DefaultVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
@@ -34,11 +34,11 @@ public class DefaultVolume implements Volume {
     }
 
     @Override
-    public Volume getSurface(boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+    public VolumeI getSurface(boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
         // If ignoring edges, we want to create a new surface as it's not the "proper"
         // surface. We also don't want to retain this surface, so we return it directly.
         if (ignoreEdgesXY || ignoreEdgesZ) {
-            Volume tempSurface = new DefaultVolume(new PointListFactory(), getSpatialCalibration());
+            VolumeI tempSurface = new DefaultVolume(new PointListFactory(), getSpatialCalibration());
             CoordinateSetI tempSurfaceCoords = new PointCoordinates();
             for (Point<Integer> pt : coordinateSet.calculateSurface(is2D())) {
                 if (ignoreEdgesXY && isOnEdgeXY(pt))
@@ -72,7 +72,7 @@ public class DefaultVolume implements Volume {
     }
 
     @Override
-    public Volume getProjected() {
+    public VolumeI getProjected() {
         if (projection == null) {
             // Octree is best represented by quadtree. Pointlist can stay as pointlist.
             CoordinateSetFactoryI factory = getCoordinateSet().getFactory();
@@ -176,10 +176,10 @@ public class DefaultVolume implements Volume {
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        if (!(obj instanceof Volume))
+        if (!(obj instanceof VolumeI))
             return false;
 
-        Volume volume = (Volume) obj;
+        VolumeI volume = (VolumeI) obj;
 
         if (spatCal.dppXY != volume.getDppXY())
             return false;
@@ -223,7 +223,7 @@ public class DefaultVolume implements Volume {
     }
     
     @Override
-    public Volume createNewVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
+    public VolumeI createNewVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
         return new DefaultVolume(factory, spatCal);
     }
 

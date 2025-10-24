@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -47,7 +47,7 @@ public class GetObjectSurface extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public static ObjI getSurface(ObjI inputObject, ObjsI outputObjects, boolean assignRelationships) {
-        Volume outputVolume = inputObject.getSurface(false,false);
+        VolumeI outputVolume = inputObject.getSurface(false,false);
         ObjI outputObject = outputObjects.createAndAddNewObject(inputObject.getCoordinateSetFactory());
         outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
 

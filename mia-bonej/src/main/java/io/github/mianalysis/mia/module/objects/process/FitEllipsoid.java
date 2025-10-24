@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -207,7 +207,7 @@ public class FitEllipsoid extends Module {
         if (calculator == null || calculator.getRadii() == null || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
             return;
 
-        Volume ellipsoid = calculator.getContainedPoints();
+        VolumeI ellipsoid = calculator.getContainedPoints();
         if (ellipsoid.size() == 0)
             return;
 
@@ -226,7 +226,7 @@ public class FitEllipsoid extends Module {
         }
     }
 
-    public ObjI createNewObject(ObjI inputObject, Volume ellipsoid, ObjsI outputObjects) {
+    public ObjI createNewObject(ObjI inputObject, VolumeI ellipsoid, ObjsI outputObjects) {
         if (ellipsoid == null)
             return null;
 
@@ -241,7 +241,7 @@ public class FitEllipsoid extends Module {
 
     }
 
-    public void updateInputObject(ObjI inputObject, Volume ellipsoid) {
+    public void updateInputObject(ObjI inputObject, VolumeI ellipsoid) {
         inputObject.getCoordinateSet().clear();
         inputObject.getCoordinateSet().addAll(ellipsoid.getCoordinateSet());
         inputObject.clearCentroid();

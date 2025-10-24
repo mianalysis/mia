@@ -6,12 +6,12 @@ import org.bonej.geometry.FitEllipsoid;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class EllipsoidCalculator {
-    private final Volume volume;
+    private final VolumeI volume;
     private Ellipsoid ell;
 
     /**
@@ -20,12 +20,12 @@ public class EllipsoidCalculator {
      * @param ell
      * @param volume
      */
-    EllipsoidCalculator(Ellipsoid ell, Volume volume) throws RuntimeException {
+    EllipsoidCalculator(Ellipsoid ell, VolumeI volume) throws RuntimeException {
         this.ell = ell;
         this.volume = volume;
     }
 
-    public EllipsoidCalculator(Volume volume, double maxAxisLength) throws RuntimeException {
+    public EllipsoidCalculator(VolumeI volume, double maxAxisLength) throws RuntimeException {
         this.volume = volume;
 
         double[][] coords = new double[volume.size()][3];
@@ -139,13 +139,13 @@ public class EllipsoidCalculator {
 
     }
 
-    public Volume getContainedPoints() throws IntegerOverflowException {
+    public VolumeI getContainedPoints() throws IntegerOverflowException {
         if (ell == null)
             return null;
 
         double cal = volume.getDppXY() / volume.getDppZ();
 
-        Volume insideEllipsoid = volume.getFactory().createVolume(volume.getCoordinateSetFactory(), volume.getSpatialCalibration());
+        VolumeI insideEllipsoid = volume.getFactory().createVolume(volume.getCoordinateSetFactory(), volume.getSpatialCalibration());
 
         // Testing which points are within the convex hull
         double[] xRange = ell.getXMinAndMax();

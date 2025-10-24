@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -25,7 +25,7 @@ import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public interface ObjI extends MeasurementProvider, Volume {
+public interface ObjI extends MeasurementProvider, VolumeI {
     public default LinkedHashMap<String, ObjI> getParents(boolean useFullHierarchy) {
         if (!useFullHierarchy)
             return getAllParents();

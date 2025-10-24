@@ -47,7 +47,7 @@ import fiji.plugin.trackmate.util.Threads;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.ObjsI;
-import io.github.mianalysis.mia.object.coordinates.volume.Volume;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import net.imglib2.algorithm.MultiThreadedBenchmarkAlgorithm;
 
 public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements SpotTracker, Cancelable {
@@ -148,7 +148,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 		// First frame.
 		final int sourceFrame = frameIterator.next();
-		Map<Spot, Volume> sourceGeometries = createGeometry(spots.iterable(sourceFrame, true), objs);
+		Map<Spot, VolumeI> sourceGeometries = createGeometry(spots.iterable(sourceFrame, true), objs);
 
 		logger.setStatus("Frame to frame linking...");
 		int progress = 0;
@@ -159,7 +159,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 			final int targetFrame = frameIterator.next();
 
-			final Map<Spot, Volume> targetGeometries = createGeometry(spots.iterable(targetFrame, true), objs);
+			final Map<Spot, VolumeI> targetGeometries = createGeometry(spots.iterable(targetFrame, true), objs);
 
 			if (sourceGeometries.isEmpty() || targetGeometries.isEmpty())
 				continue;
@@ -169,7 +169,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 			// Submit work.
 			for (final Spot target : targetGeometries.keySet()) {
-				final Volume targetVolume = targetGeometries.get(target);
+				final VolumeI targetVolume = targetGeometries.get(target);
 				futures.add(executors
 						.submit(new FindBestSourcesTask(target, targetVolume, sourceGeometries, minIoU, allowTrackMerging)));
 			}
@@ -249,8 +249,8 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 	}
 
-	private static Map<Spot, Volume> createGeometry(final Iterable<Spot> spots, final ObjsI objs) {
-		final Map<Spot, Volume> geometries = new HashMap<>();
+	private static Map<Spot, VolumeI> createGeometry(final Iterable<Spot> spots, final ObjsI objs) {
+		final Map<Spot, VolumeI> geometries = new HashMap<>();
 
 		for (final Spot spot : spots)
 			geometries.put(spot, objs.get(spot.getFeature("MIA_ID").intValue()));
@@ -263,16 +263,16 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 		private final Spot target;
 
-		private final Volume targetVolume;
+		private final VolumeI targetVolume;
 
-		private final Map<Spot, Volume> sourceGeometries;
+		private final Map<Spot, VolumeI> sourceGeometries;
 
 		private final double minIoU;
 
 		private final boolean allowTrackMerging;
 
-		public FindBestSourcesTask(final Spot target, final Volume targetVolume,
-				final Map<Spot, Volume> sourceGeometries, final double minIoU,
+		public FindBestSourcesTask(final Spot target, final VolumeI targetVolume,
+				final Map<Spot, VolumeI> sourceGeometries, final double minIoU,
 				final boolean allowTrackMerging) {
 			this.target = target;
 			this.targetVolume = targetVolume;
@@ -288,7 +288,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 
 			if (allowTrackMerging) {
 				for (final Spot spot : sourceGeometries.keySet()) {
-					final Volume sourceVolume = sourceGeometries.get(spot);
+					final VolumeI sourceVolume = sourceGeometries.get(spot);
 					final double intersection = targetVolume.getOverlap(sourceVolume);
 					if (intersection == 0.)
 						continue;
@@ -302,7 +302,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 				double maxIoU = minIoU;
 				Spot bestSpot = null;
 				for (final Spot spot : sourceGeometries.keySet()) {
-					final Volume sourceVolume = sourceGeometries.get(spot);
+					final VolumeI sourceVolume = sourceGeometries.get(spot);
 					final double intersection = targetVolume.getOverlap(sourceVolume);
 					if (intersection == 0.)
 						continue;
