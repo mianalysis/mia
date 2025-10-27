@@ -18,10 +18,6 @@ public class Point<T extends Number> implements Comparable<Point<T>>, Serializab
 
     }
 
-    public Point(Point<T> point) {
-        this(point.x, point.y, point.z);
-    }
-
     public T getX() {
         return x;
     }
