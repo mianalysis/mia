@@ -352,7 +352,8 @@ public class IdentifyObjects extends Module {
     }
 
     public static ObjsI process(ImageI inputImage, String outputObjectsName, boolean blackBackground,
-            boolean singleObject, String detectionMode, int connectivity, CoordinateSetFactoryI factory, boolean multithread,
+            boolean singleObject, String detectionMode, int connectivity, CoordinateSetFactoryI factory,
+            boolean multithread,
             int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
@@ -363,7 +364,8 @@ public class IdentifyObjects extends Module {
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval,
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames,
+                frameInterval,
                 TemporalUnit.getOMEUnit());
 
         if (detectionMode.equals(DetectionModes.THREE_D))
@@ -522,7 +524,8 @@ public class IdentifyObjects extends Module {
         parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(),
+                CoordinateSetFactories.listFactoryNames()));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));

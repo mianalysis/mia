@@ -123,8 +123,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                                 int outID = links.get(imageID);
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID,
-                                        k -> ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
+                                outputObjects.putIfAbsent(outID, ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
                                                 .setT(finalT));
                                 try {
                                     outputObjects.get(outID).addCoord(x, y, z);

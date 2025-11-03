@@ -131,7 +131,7 @@ public interface ObjI extends MeasurementProvider, VolumeI {
     public default void addChild(ObjI child) {
         String childName = child.getName();
 
-        getAllChildren().computeIfAbsent(childName, k -> ObjsFactories.getDefaultFactory().createFromExampleObjs(childName, child.getObjectCollection()));
+        getAllChildren().putIfAbsent(childName, ObjsFactories.getDefaultFactory().createFromExampleObjs(childName, child.getObjectCollection()));
         getAllChildren().get(childName).add(child);
 
     }
@@ -153,7 +153,7 @@ public interface ObjI extends MeasurementProvider, VolumeI {
     public default void addPartner(ObjI partner) {
         String partnerName = partner.getName();
 
-        getAllPartners().computeIfAbsent(partnerName, k -> ObjsFactories.getDefaultFactory().createFromExampleObjs(partnerName, partner.getObjectCollection()));
+        getAllPartners().putIfAbsent(partnerName, ObjsFactories.getDefaultFactory().createFromExampleObjs(partnerName, partner.getObjectCollection()));
         getAllPartners().get(partnerName).add(partner);
     }
 
