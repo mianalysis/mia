@@ -16,6 +16,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -27,11 +28,13 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureIntensityAlongPath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -78,6 +81,13 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
+
+    public interface Measurements {
+        String MAX_LOCATION_PX = "GREYSCALE_K_FUNCTION // MAX_LOCATION_(PX)";
+        String MIN_LOCATION_PX = "GREYSCALE_K_FUNCTION // MIN_LOCATION_(PX)";
+        String MAX_VALUE = "GREYSCALE_K_FUNCTION // MAX_VALUE";
+        String MIN_VALUE = "GREYSCALE_K_FUNCTION // MIN_VALUE";
+    }
 
     public MeasureGreyscaleKFunction(Modules modules) {
         super("Measure greyscale K-function", modules);
@@ -277,10 +287,16 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         Image maskImage = useMask ? workspace.getImage(maskImageName) : null;
         ImagePlus inputIpl = inputImage.getImagePlus();
 
+        double maxK = -Double.MAX_VALUE;
+        double maxKLoc = -1;
+        double minK = Double.MAX_VALUE;
+        double minKLoc = -1;
+        
         int rowI = 1;
         int count = 0;
         int nRadii = Math.floorDiv(maxRadius - minRadius, radiusInc);
         int total = inputIpl.getNFrames() * inputIpl.getNSlices() * nRadii;
+        
         for (int t = 0; t < inputIpl.getNFrames(); t++) {
             for (int z = 0; z < inputIpl.getNSlices(); z++) {
                 Image currImage = ExtractSubstack.extractSubstack(inputImage, "TimepointImage", "1-end",
@@ -312,10 +328,27 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
                     cell = row.createCell(colI++);
                     cell.setCellValue(kRes[2]);
 
+                    // Updating measurement values
+                    if (kRes[0] > maxK) {
+                        maxK = kRes[0];
+                        maxKLoc = r;
+                    }
+
+                    if (kRes[0] < minK) {
+                        minK = kRes[0];
+                        minKLoc = r;
+                    }
+
                     writeProgressStatus(++count, total, "steps");
                 }
             }
         }
+
+        // Adding measurements
+        inputImage.addMeasurement(new Measurement(Measurements.MAX_LOCATION_PX, maxKLoc));
+        inputImage.addMeasurement(new Measurement(Measurements.MIN_LOCATION_PX, minKLoc));
+        inputImage.addMeasurement(new Measurement(Measurements.MAX_VALUE, maxK));
+        inputImage.addMeasurement(new Measurement(Measurements.MIN_VALUE, minK));
 
         String outputPath = getOutputPath(modules, workspace);
         String outputName = getOutputName(modules, workspace);
@@ -342,7 +375,18 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         parameters.add(new InputImageP(MASK_IMAGE, this));
 
         parameters.add(new SeparatorP(FUNCTION_SEPARATOR, this));
-        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3));
+        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3) {
+            @Override
+            public boolean verify() {
+                if ((int) getValue(null) == 0) {
+                    MIA.log.writeWarning(getName()+": Minimum radius must be greater than 0");
+                    return false;
+                }
+
+                return true;
+
+            }
+        });
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 
@@ -372,7 +416,28 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+        ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
+
+        String inputImageName = parameters.getValue(INPUT_IMAGE, null);
+
+        ImageMeasurementRef measurementRef = imageMeasurementRefs.getOrPut(Measurements.MAX_LOCATION_PX);
+        measurementRef.setImageName(inputImageName);
+        returnedRefs.add(measurementRef);
+
+        measurementRef = imageMeasurementRefs.getOrPut(Measurements.MIN_LOCATION_PX);
+        measurementRef.setImageName(inputImageName);
+        returnedRefs.add(measurementRef);
+
+        measurementRef = imageMeasurementRefs.getOrPut(Measurements.MAX_VALUE);
+        measurementRef.setImageName(inputImageName);
+        returnedRefs.add(measurementRef);
+
+        measurementRef = imageMeasurementRefs.getOrPut(Measurements.MIN_VALUE);
+        measurementRef.setImageName(inputImageName);
+        returnedRefs.add(measurementRef);
+
+        return returnedRefs;
+
     }
 
     @Override

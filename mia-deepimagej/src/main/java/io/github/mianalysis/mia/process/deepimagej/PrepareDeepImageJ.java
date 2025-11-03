@@ -49,7 +49,7 @@ public class PrepareDeepImageJ implements PlugIn {
     public static String getModelsPath() {
         if (MIA.isDebug())
             if (SystemUtils.OS_NAME.equals("Mac OS X"))
-                return "/Users/sc13967/Applications/Fiji.app/models/";
+                return "/Users/sc13967/Applications/Fiji-J21/models/";
             else
                 // return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
                 return "C:\\Users\\sc13967\\Programs\\Fiji.app (DeepImageJ)\\models\\";
@@ -60,7 +60,7 @@ public class PrepareDeepImageJ implements PlugIn {
     @Override
     public void run(String arg) {
         ImagePlus imp = IJ.openImage(
-                "C:\\Users\\steph\\Documents\\People\\Qiao Tong\\2022-10-06 DL scale segmentation\\TIF\\Test_raw\\Test\\OSX_mCH_4M_D10_REGEN_ALP_S33.tif");
+                "[path to image]");
         DeepImageJ model = getModel("my_model");
         new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", false, false, "400,400,1");
     }

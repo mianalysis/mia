@@ -9,6 +9,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -21,11 +22,14 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -39,37 +43,51 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Measure's Ripley's K-function for greyscale images on an object-by-object basis.  This method is re-written from the publication "Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.
-*/
+ * Measure's Ripley's K-function for greyscale images on an object-by-object
+ * basis. This method is re-written from the publication "Extending Ripley’s
+ * K-Function to Quantify Aggregation in 2-D Grayscale Images" by M. Amgad, et
+ * al. (doi: 10.1371/journal.pone.0144404). Results are output to an Excel
+ * spreadsheet, with one file per input image.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object and image input";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_IMAGE = "Input image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FUNCTION_SEPARATOR = "K-function controls";
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
 
+    public interface Measurements {
+        String MAX_LOCATION_PX = "MAX_LOCATION_(PX)";
+        String MIN_LOCATION_PX = "MIN_LOCATION_(PX)";
+        String MAX_VALUE = "MAX_VALUE";
+        String MIN_VALUE = "MIN_VALUE";
+    }
+
     public MeasureObjectGreyscaleKFunction(Modules modules) {
         super("Measure object greyscale K-function", modules);
+    }
+
+    public static String getFullName(String imageName, String measurementName) {
+        return "GREYSCALE_K_FUNCTION // " + imageName + " // " + measurementName;
     }
 
     SXSSFWorkbook initialiseWorkbook() {
@@ -143,11 +161,11 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         int rowI = 1;
         int count = 0;
         int total = objects.size();
-        for (Obj object : objects.values()) {
-            int t = object.getT();
+        for (Obj obj : objects.values()) {
+            int t = obj.getT();
 
             // Getting images cropped to this object
-            double[][] extents = object.getExtents(true, false);
+            double[][] extents = obj.getExtents(true, false);
             int top = (int) Math.round(extents[1][0]);
             int left = (int) Math.round(extents[0][0]);
             int width = (int) Math.round(extents[0][1] - left) + 1;
@@ -160,8 +178,13 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
             Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ + 1) + "-" + (maxZ + 1),
                     "1");
 
+            double maxK = -Double.MAX_VALUE;
+            double maxKLoc = -1;
+            double minK = Double.MAX_VALUE;
+            double minKLoc = -1;
+
             // Getting
-            Image maskImage = object.getAsTightImage("Mask");
+            Image maskImage = obj.getAsTightImage("Mask");
 
             for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
                 Image currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
@@ -185,7 +208,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                     cell.setCellValue(r);
 
                     cell = row.createCell(colI++);
-                    cell.setCellValue(object.getID());
+                    cell.setCellValue(obj.getID());
 
                     cell = row.createCell(colI++);
                     cell.setCellValue(kRes[0]);
@@ -196,10 +219,28 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                     cell = row.createCell(colI++);
                     cell.setCellValue(kRes[2]);
 
-                    writeProgressStatus(++count, total, "steps");
+                    // Updating measurement values
+                    if (kRes[0] > maxK) {
+                        maxK = kRes[0];
+                        maxKLoc = r;
+                    }
+
+                    if (kRes[0] < minK) {
+                        minK = kRes[0];
+                        minKLoc = r;
+                    }
+
                 }
             }
+
+            // Adding measurements
+            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MAX_LOCATION_PX), maxKLoc));
+            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MIN_LOCATION_PX), minKLoc));
+            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MAX_VALUE), maxK));
+            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MIN_VALUE), minK));
+
             writeProgressStatus(++count, total, "objects");
+
         }
 
         String outputPath = getOutputPath(modules, workspace);
@@ -226,7 +267,18 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(FUNCTION_SEPARATOR, this));
-        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3));
+        parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3) {
+            @Override
+            public boolean verify() {
+                if ((int) getValue(null) == 0) {
+                    MIA.log.writeWarning(getName() + ": Minimum radius must be greater than 0");
+                    return false;
+                }
+
+                return true;
+
+            }
+        });
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 
@@ -236,7 +288,6 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -261,12 +312,38 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
+
+        String inputImageName = parameters.getValue(INPUT_IMAGE, null);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, null);
+
+        String measurementName = getFullName(inputImageName, Measurements.MAX_LOCATION_PX);
+        ObjMeasurementRef measurementRef = objectMeasurementRefs.getOrPut(measurementName);
+        measurementRef.setObjectsName(inputObjectsName);
+        returnedRefs.add(measurementRef);
+
+        measurementName = getFullName(inputImageName, Measurements.MIN_LOCATION_PX);
+        measurementRef = objectMeasurementRefs.getOrPut(measurementName);
+        measurementRef.setObjectsName(inputObjectsName);
+        returnedRefs.add(measurementRef);
+
+        measurementName = getFullName(inputImageName, Measurements.MAX_VALUE);
+        measurementRef = objectMeasurementRefs.getOrPut(measurementName);
+        measurementRef.setObjectsName(inputObjectsName);
+        returnedRefs.add(measurementRef);
+
+        measurementName = getFullName(inputImageName, Measurements.MIN_VALUE);
+        measurementRef = objectMeasurementRefs.getOrPut(measurementName);
+        measurementRef.setObjectsName(inputObjectsName);
+        returnedRefs.add(measurementRef);
+
+        return returnedRefs;
+
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

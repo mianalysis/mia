@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.16</version>
+        <version>1.7.17</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-samj</artifactId>
-    <version>1.7.16</version>
+    <version>1.7.17</version>
     <packaging>jar</packaging>
     <name>mia-samj</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -158,7 +158,7 @@
         <dependency>
             <groupId>com.github.segment-anything-models-java</groupId>
             <artifactId>SAMJ</artifactId>
-            <version>main-SNAPSHOT</version>
+            <version>c6de55ac7f</version>
         </dependency>
     </dependencies>
 

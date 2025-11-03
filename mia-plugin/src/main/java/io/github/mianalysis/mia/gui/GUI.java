@@ -92,7 +92,7 @@ public class GUI {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         
-        frameHeight = Math.min(frameHeight, screenSize.height - 50);
+        frameHeight = Math.min(frameHeight, (int) Math.floor(screenSize.height*0.8));
         frameHeight = Math.max(frameHeight, minimumFrameHeight);
 
         // Detecting modules

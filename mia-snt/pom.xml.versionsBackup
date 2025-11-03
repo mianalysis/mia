@@ -6,14 +6,14 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.17</version>
+        <version>1.7.16</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
-    <artifactId>mia-deepimagej</artifactId>
-    <version>1.7.17</version>
+    <artifactId>mia-snt</artifactId>
+    <version>1.7.16</version>
     <packaging>jar</packaging>
-    <name>mia-deepimagej</name>
+    <name>mia-samj</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
@@ -131,32 +131,52 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.deepimagej</groupId>
-            <artifactId>deepimagej-plugin</artifactId>
-            <version>2.1.16</version>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-modules</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.morphonets</groupId>
+            <artifactId>SNT</artifactId>
+            <version>4.2.1</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.tensorflow</groupId>
-            <artifactId>tensorflow</artifactId>
-            <version>1.15.0</version>
+            <groupId>org.scijava</groupId>
+            <artifactId>vecmath</artifactId>
+            <version>1.6.0-scijava-2</version>
             <scope>${scp}</scope>
         </dependency>
-
-        <!-- <dependency>
-            <groupId>com.github.deepimagej</groupId>
-            <artifactId>deepimagej-plugin</artifactId>
-            <version>bb15220</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.bioimage</groupId>
-            <artifactId>dl-modelrunner</artifactId>
-            <version>0.3.10</version>
-        </dependency> -->
     </dependencies>
 
-
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../mia-plugin/target/mia-dependencies</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>mia-samj-${project.version}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

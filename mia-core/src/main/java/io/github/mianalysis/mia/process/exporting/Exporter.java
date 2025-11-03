@@ -176,24 +176,22 @@ public class Exporter {
             FileOutputStream outputStream = new FileOutputStream(outPath);
             workbook.write(outputStream);
 
-            // workbook.close();
-            // outputStream.close();
+            workbook.close();
+            outputStream.close();
 
         } catch (FileNotFoundException e) {
             String newOutPath = appendDateTime(outPath);
             FileOutputStream outputStream = new FileOutputStream(newOutPath);
             workbook.write(outputStream);
 
-            // workbook.close();
-            // outputStream.close();
+            workbook.close();
+            outputStream.close();
 
             MIA.log.write("Target file (" + new File(outPath).getName() + ") inaccessible", LogRenderer.Level.WARNING);
             MIA.log.write("Saved to alternative file (" + new File(newOutPath).getName() + ")",
                     LogRenderer.Level.WARNING);
 
         }
-
-        workbook.close();
 
         if (verbose)
             MIA.log.writeStatus("Saved results");
