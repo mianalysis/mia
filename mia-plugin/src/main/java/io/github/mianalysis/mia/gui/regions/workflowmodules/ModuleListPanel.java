@@ -89,7 +89,7 @@ public class ModuleListPanel extends JScrollPane {
             c.gridx = 0;
             c.insets = new Insets(top, 5, 0, 0);
 
-            ModuleEnabledButton enabledButton = new ModuleEnabledButton(module);
+            ModuleEnabledButton enabledButton = new ModuleEnabledButton(module, false);
             enabledButton.setPreferredSize(new Dimension(26,26));
             moduleListPanel.add(enabledButton,c);
             c.gridx++;

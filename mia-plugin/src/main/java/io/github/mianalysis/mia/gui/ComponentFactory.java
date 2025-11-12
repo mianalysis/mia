@@ -241,7 +241,7 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module, true);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
         moduleEnabledButton.setEnabled(module.canBeDisabled());
         moduleEnabledButton.setBorderPainted(false);
@@ -275,7 +275,7 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module, true);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
         moduleEnabledButton.setMinimumSize(new Dimension(elementHeight, elementHeight));
         moduleEnabledButton.setEnabled(module.canBeDisabled());

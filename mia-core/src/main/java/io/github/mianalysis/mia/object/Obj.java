@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
@@ -339,7 +340,9 @@ public class Obj extends Volume implements MeasurementProvider {
 
     public void removePartner(Obj partner) {
         String partnerName = partner.getName();
-        partners.get(partnerName).values().remove(partner);
+        Objs selectedPartners = partners.get(partnerName);
+        if (selectedPartners != null)
+            selectedPartners.values().remove(partner);
 
     }
 
