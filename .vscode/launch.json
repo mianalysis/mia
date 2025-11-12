@@ -47,7 +47,8 @@
             "name": "MIA_",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA_",
-            "projectName": "mia-plugin"
+            "projectName": "mia-plugin",
+            "vmArgs": "-Xmx14000m"
         },
         {
             "type": "java",

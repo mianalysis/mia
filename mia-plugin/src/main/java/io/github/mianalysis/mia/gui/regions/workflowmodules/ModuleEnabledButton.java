@@ -18,11 +18,10 @@ import io.github.mianalysis.mia.object.system.SwingPreferences;
  * Created by sc13967 on 07/06/2017.
  */
 public class ModuleEnabledButton extends JButton implements ActionListener {
-    /**
-     *
-     */
     private static final long serialVersionUID = 6135822183769524507L;
     private Module module;
+    private boolean processingView = false;
+
     private static final ImageIcon blackIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"), "");
     private static final ImageIcon blackIconDM = new ImageIcon(
@@ -44,8 +43,9 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     private static final ImageIcon darkBlueIconDM = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_darkblueDM_12px.png"), "");
 
-    public ModuleEnabledButton(Module module) {
+    public ModuleEnabledButton(Module module, boolean processingView) {
         this.module = module;
+        this.processingView = processingView;
 
         setFocusPainted(false);
         setSelected(false);
@@ -66,7 +66,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
                 setIcon(darkBlueIconDM);
             else
                 setIcon(darkBlueIcon);
-        } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
+        } else if (module.isEnabled() && module.isReachable() && (module.isRunnable() || processingView)) {
             if (isDark)
                 setIcon(greenIconDM);
             else
