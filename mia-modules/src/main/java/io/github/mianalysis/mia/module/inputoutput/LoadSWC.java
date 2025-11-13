@@ -363,7 +363,7 @@ public class LoadSWC extends Module {
 
     @Override
     public String getDescription() {
-        return "Load centroid coordinates of pre-detected objects from file.  Loaded objects are stored in a single object collection and are represented by a single coordinate point.  For example, this module could be used to import detections from another piece of software or from a previous analysis run.";
+        return "Loads objects stored as SWC files, which typically hold neuron traces.  Each object will typically be stored as a single SWC file.  This module does not support multiple timepoints.";
     }
 
     @Override
