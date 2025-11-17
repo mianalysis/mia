@@ -5,37 +5,35 @@ import java.util.HashMap;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.module.inputoutput.ImportObjectsFromCSV;
+import io.github.mianalysis.mia.module.inputoutput.LoadSWC;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
 @Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
-public class ObjectLoaderLostFound extends LostAndFoundItem {
+public class LoadSWCLostAndFound extends LostAndFoundItem {
 
     @Override
     public String getModuleName() {
-        return new ImportObjectsFromCSV(null).getClass().getSimpleName();
+        return new LoadSWC(null).getClass().getSimpleName();
     }
 
     @Override
     public String[] getPreviousModuleNames() {
-        return new String[]{"Load objects"};
+        return new String[]{"Load objects from SWC file"};
     }
 
     @Override
     public HashMap<String, String> getPreviousParameterNames() {
         HashMap<String,String> parameterNames = new HashMap<String,String>();
-        parameterNames.put("Output parent clusters name", ImportObjectsFromCSV.PARENT_OBJECTS_NAME);
-        parameterNames.put("Output tracks clusters name", ImportObjectsFromCSV.PARENT_OBJECTS_NAME);
-        parameterNames.put("Calibration source", ImportObjectsFromCSV.PARENT_OBJECTS_NAME);
-        parameterNames.put("Calibration reference image", ImportObjectsFromCSV.PARENT_OBJECTS_NAME);
         
         return parameterNames;
-
+        
     }
 
     @Override
     public HashMap<String, HashMap<String, String>> getPreviousParameterValues() {
-        return new HashMap<String, HashMap<String, String>>();
-    }
+        HashMap<String, HashMap<String, String>> parameterValues = null;
+
+        return parameterValues;
     
+    }
 }

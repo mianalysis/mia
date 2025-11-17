@@ -16,7 +16,6 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;

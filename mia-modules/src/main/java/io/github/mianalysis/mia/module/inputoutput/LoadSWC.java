@@ -103,7 +103,7 @@ public class LoadSWC extends Module {
     }
 
     public LoadSWC(Modules modules) {
-        super("Load objects from SWC file", modules);
+        super("Load objects from SWC", modules);
     }
 
     public ArrayList<File> getFileList(String absolutePath) {
