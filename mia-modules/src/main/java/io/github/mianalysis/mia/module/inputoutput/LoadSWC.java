@@ -431,6 +431,12 @@ public class LoadSWC extends Module {
 
         }
 
+        if (outputObjects == null) {
+            MIA.log.writeWarning("No objects could be loaded");
+            return Status.FAIL;
+            
+        }
+
         workspace.addObjects(outputObjects);
 
         if (showOutput)
