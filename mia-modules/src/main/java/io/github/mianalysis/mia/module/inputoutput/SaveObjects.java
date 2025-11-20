@@ -209,28 +209,35 @@ public class SaveObjects extends AbstractSaver {
         JSONArray parentArray = new JSONArray();
         for (Obj currParent : inputObject.getParents(false).values()) {
             JSONObject parentJSON = new JSONObject();
-            parentJSON.put(currParent.getName(),currParent.getID());
+            parentJSON.put("Name",currParent.getName());
+            parentJSON.put("ID",currParent.getID());
             parentArray.put(parentJSON);
         }
         jsonObject.put("Parents", parentArray);
 
-        JSONObject childrenJSON = new JSONObject();
+        JSONArray childrenArray = new JSONArray();
         for (String currChildrenName : inputObject.getChildren().keySet()) {
-            JSONArray childrenArray = new JSONArray();
+            JSONObject childrenJSON = new JSONObject();
+            childrenJSON.put("Name", currChildrenName);
+            JSONArray childrenIDArray = new JSONArray();
             for (Obj currChild : inputObject.getChildren(currChildrenName).values())
-                childrenArray.put(currChild.getID());
-            childrenJSON.put(currChildrenName, childrenArray);
+                childrenIDArray.put(currChild.getID());
+            childrenJSON.put("IDs", childrenIDArray);
+            childrenArray.put(childrenJSON);
         }
-        jsonObject.put("Children", childrenJSON);
+        jsonObject.put("Children", childrenArray);
 
-        JSONObject partnerJSON = new JSONObject();
-        for (String currPartnerName : inputObject.getPartners().keySet()) {
-            JSONArray partnerArray = new JSONArray();
-            for (Obj currPartner : inputObject.getPartners(currPartnerName).values())
-                partnerArray.put(currPartner.getID());
-            partnerJSON.put(currPartnerName, partnerArray);
+        JSONArray partnersArray = new JSONArray();
+        for (String currPartnersName : inputObject.getPartners().keySet()) {
+            JSONObject partnersJSON = new JSONObject();
+            partnersJSON.put("Name", currPartnersName);
+            JSONArray partnersIDArray = new JSONArray();
+            for (Obj currPartner : inputObject.getPartners(currPartnersName).values())
+                partnersIDArray.put(currPartner.getID());
+            partnersJSON.put("IDs", partnersIDArray);
+            partnersArray.put(partnersJSON);
         }
-        jsonObject.put("Partners", childrenJSON);
+        jsonObject.put("Partners", partnersArray);
 
         JSONArray roiJSON = new JSONArray();
         for (Roi roi : rois.values())
