@@ -1,12 +1,9 @@
 package io.github.mianalysis.mia.module.images.process;
 
-import java.util.Arrays;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
-import deepimagej.tools.DijTensor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;

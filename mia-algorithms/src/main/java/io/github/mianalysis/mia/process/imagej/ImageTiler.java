@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
+import ij.measure.Calibration;
 import ij.plugin.CanvasResizer;
 import ij.process.ImageProcessor;
 
@@ -14,6 +15,20 @@ public class ImageTiler {
         String Z = "Z";
 
         String[] ALL = new String[] { CHANNEL, T, Z };
+
+    }
+
+    public static void copyImageCalibration(ImagePlus inputIpl, ImagePlus outputIpl) {
+        // Applying new calibration
+        Calibration inputCal = inputIpl.getCalibration();
+        Calibration outputCal = outputIpl.getCalibration();
+        
+        outputCal.pixelWidth = inputCal.pixelWidth;
+        outputCal.pixelHeight = inputCal.pixelHeight;
+        outputCal.pixelDepth = inputCal.pixelDepth;
+        outputCal.setUnit(inputCal.getUnit());
+        outputCal.frameInterval = inputCal.frameInterval;
+        outputCal.fps = inputCal.fps;
 
     }
 
@@ -85,6 +100,8 @@ public class ImageTiler {
 
             }
         }
+
+        copyImageCalibration(inputIpl, outputIpl);
 
         return outputIpl;
 
@@ -194,6 +211,8 @@ public class ImageTiler {
                 IJ.run(outputIpl, "16-bit", null);
                 break;
         }
+
+        copyImageCalibration(inputIpl, outputIpl);
 
         return outputIpl;
 

@@ -1527,7 +1527,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (setSpatialCalibration) {
             double xyCal = parameters.getValue(XY_CAL, workspace);
             double zCal = parameters.getValue(Z_CAL, workspace);
-            
+
             writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal +
                     ")");
             Calibration calibration = ipl.getCalibration();
@@ -1656,7 +1656,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
                 MetadataRefs metadataRefs = modules.getMetadataRefs(this);
-                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues()
+                        + " The position of the index (e.g. 000, 001, etc.) can be added in the form Z{000}, where the number of zeroes should match the number of digits in the index.");
                 break;
 
             case ImportModes.MATCHING_FORMAT:
@@ -1806,8 +1807,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
@@ -1892,7 +1893,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 + "\" set to \"" + SeriesModes.SPECIFIC_SERIES + "\"), this is the series that will be used.");
 
         parameters.get(SEQUENCE_ROOT_NAME).setDescription(
-                "Template filename for loading multiple image sequence files (those with names in the format \"image0001.tif\", \"image0002.tif\", \"image0003.tif\",etc.).  Template filenames are constructed in a generic manner, whereby metadata values stored in the workspace can be inserted into the name using the notation  \"M{name}\".  This allows names to be created dynamically for each analysis run.  The location in the filenam of the variable image number is specified using the \"Z{0000}\" notation, where the number of \"0\" characters specifies the number of digits.  It is also necessary to specify the filepath (input file filepath stored as metadata value \"M{Filepath}\".   <br><br>For example, loading the sequence \"image0001.tif\", etc. from the same folder as the input file would require the format \"M{Filepath}\\\\imageZ{0000}.tif\".  Note: Backslash characters specifying the folder path need to be double typed (standard Java formatting).");
+                "Template filename for loading multiple image sequence files (those with names in the format \"image0001.tif\", \"image0002.tif\", \"image0003.tif\",etc.).  Template filenames are constructed in a generic manner, whereby metadata values stored in the workspace can be inserted into the name using the notation  \"M{name}\".  This allows names to be created dynamically for each analysis run.  The location in the filename of the variable image number is specified using the \"Z{0000}\" notation, where the number of \"0\" characters specifies the number of digits.  It is also necessary to specify the filepath (input file filepath stored as metadata value \"M{Filepath}\".   <br><br>For example, loading the sequence \"image0001.tif\", etc. from the same folder as the input file would require the format \"M{Filepath}\\\\imageZ{0000}.tif\".  Note: Backslash characters specifying the folder path need to be double typed (standard Java formatting).");
 
         parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
 
