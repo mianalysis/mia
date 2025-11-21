@@ -376,7 +376,7 @@ public class ImportObjectsFromCSV extends Module {
                     // Comparing the coordinates
                     int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
                     int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
-                    int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[zIdx]));
                     int t = Integer.parseInt(row[tIdx]);
                     limits[0] = Math.max(limits[0], x);
                     limits[1] = Math.max(limits[1], y);
