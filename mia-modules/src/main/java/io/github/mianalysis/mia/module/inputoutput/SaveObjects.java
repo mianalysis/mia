@@ -66,7 +66,11 @@ public class SaveObjects extends AbstractSaver {
     }
 
     public enum FieldKeys {
-        CHILDREN, MEASUREMENTS, METADATA, NAME, PARENTS, PARTNERS
+        ID, VOLUME_TYPE, CHILDREN, MEASUREMENTS, METADATA, NAME, PARENTS, PARTNERS, ROIS, DPPXY, DPPZ, HEIGHT, WIDTH, UNITS, N_SLICES, N_FRAMES, FRAME_INTERVAL, TEMPORAL_UNIT
+    }
+
+    public enum RefKeys {
+        NAME, VALUE, ID, IDS
     }
 
     public static JSONObject getObjectTemplate(Modules modules, String objectName, Module exportModule) {
@@ -165,61 +169,73 @@ public class SaveObjects extends AbstractSaver {
             Module exportModule) {
         JSONObject jsonObject = new JSONObject();
 
+        jsonObject.put(FieldKeys.ID.toString(), inputObject.getID());
+        jsonObject.put(FieldKeys.VOLUME_TYPE.toString(), inputObject.getVolumeType().name());
+        jsonObject.put(FieldKeys.WIDTH.toString(), inputObject.getWidth());
+        jsonObject.put(FieldKeys.HEIGHT.toString(), inputObject.getHeight());
+        jsonObject.put(FieldKeys.DPPXY.toString(), inputObject.getDppXY());
+        jsonObject.put(FieldKeys.DPPZ.toString(), inputObject.getDppZ());
+        jsonObject.put(FieldKeys.UNITS.toString(), inputObject.getUnits());
+        jsonObject.put(FieldKeys.N_FRAMES.toString(), inputObject.getObjectCollection().getNFrames());
+        jsonObject.put(FieldKeys.N_SLICES.toString(), inputObject.getNSlices());
+        jsonObject.put(FieldKeys.FRAME_INTERVAL.toString(), inputObject.getObjectCollection().getFrameInterval());
+        jsonObject.put(FieldKeys.TEMPORAL_UNIT.toString(), inputObject.getObjectCollection().getTemporalUnit().toString());
+
         JSONArray measurementArray = new JSONArray();
         for (Measurement currObjectMeasurement : inputObject.getMeasurements().values()) {
             JSONObject measurementJSON = new JSONObject();
-            measurementJSON.put("Name", currObjectMeasurement.getName());
-            measurementJSON.put("Value", currObjectMeasurement.getValue());
+            measurementJSON.put(RefKeys.NAME.toString(), currObjectMeasurement.getName());
+            measurementJSON.put(RefKeys.VALUE.toString(), currObjectMeasurement.getValue());
             measurementArray.put(measurementJSON);
         }
-        jsonObject.put("Measurements", measurementArray);
+        jsonObject.put(FieldKeys.MEASUREMENTS.toString(), measurementArray);
 
         JSONArray metadataArray = new JSONArray();
         for (ObjMetadata currObjectMetadata : inputObject.getMetadata().values()) {
             JSONObject metadataJSON = new JSONObject();
-            metadataJSON.put("Name", currObjectMetadata.getName());
-            metadataJSON.put("Value", currObjectMetadata.getValue());
+            metadataJSON.put(RefKeys.NAME.toString(), currObjectMetadata.getName());
+            metadataJSON.put(RefKeys.VALUE.toString(), currObjectMetadata.getValue());
             metadataArray.put(metadataJSON);
         }
-        jsonObject.put("Metadata", metadataArray);
+        jsonObject.put(FieldKeys.METADATA.toString(), metadataArray);
 
         JSONArray parentArray = new JSONArray();
         for (Obj currParent : inputObject.getParents(false).values()) {
             JSONObject parentJSON = new JSONObject();
-            parentJSON.put("Name", currParent.getName());
-            parentJSON.put("ID", currParent.getID());
+            parentJSON.put(RefKeys.NAME.toString(), currParent.getName());
+            parentJSON.put(RefKeys.ID.toString(), currParent.getID());
             parentArray.put(parentJSON);
         }
-        jsonObject.put("Parents", parentArray);
+        jsonObject.put(FieldKeys.PARENTS.toString(), parentArray);
 
         JSONArray childrenArray = new JSONArray();
         for (String currChildrenName : inputObject.getChildren().keySet()) {
             JSONObject childrenJSON = new JSONObject();
-            childrenJSON.put("Name", currChildrenName);
+            childrenJSON.put(RefKeys.NAME.toString(), currChildrenName);
             JSONArray childrenIDArray = new JSONArray();
             for (Obj currChild : inputObject.getChildren(currChildrenName).values())
                 childrenIDArray.put(currChild.getID());
-            childrenJSON.put("IDs", childrenIDArray);
+            childrenJSON.put(RefKeys.IDS.toString(), childrenIDArray);
             childrenArray.put(childrenJSON);
         }
-        jsonObject.put("Children", childrenArray);
+        jsonObject.put(FieldKeys.CHILDREN.toString(), childrenArray);
 
         JSONArray partnersArray = new JSONArray();
         for (String currPartnersName : inputObject.getPartners().keySet()) {
             JSONObject partnersJSON = new JSONObject();
-            partnersJSON.put("Name", currPartnersName);
+            partnersJSON.put(RefKeys.NAME.toString(), currPartnersName);
             JSONArray partnersIDArray = new JSONArray();
             for (Obj currPartner : inputObject.getPartners(currPartnersName).values())
                 partnersIDArray.put(currPartner.getID());
-            partnersJSON.put("IDs", partnersIDArray);
+            partnersJSON.put(RefKeys.IDS.toString(), partnersIDArray);
             partnersArray.put(partnersJSON);
         }
-        jsonObject.put("Partners", partnersArray);
+        jsonObject.put(FieldKeys.PARTNERS.toString(), partnersArray);
 
         JSONArray roiJSON = new JSONArray();
         for (Roi roi : rois.values())
             roiJSON.put(roi.getName());
-        jsonObject.put("ROIs", roiJSON);
+        jsonObject.put(FieldKeys.ROIS.toString(), roiJSON);
 
         return jsonObject;
 

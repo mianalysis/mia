@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.module.inputoutput;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.zip.ZipEntry;
@@ -13,16 +14,24 @@ import org.json.JSONObject;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.gui.Roi;
+import ij.io.RoiDecoder;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.SaveObjects.FieldKeys;
+import io.github.mianalysis.mia.module.inputoutput.SaveObjects.RefKeys;
 import io.github.mianalysis.mia.module.script.GeneralOutputter;
 import io.github.mianalysis.mia.module.script.RunScript;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -32,6 +41,9 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 /**
  * Created by Stephen Cross on 24/11/25
@@ -68,6 +80,23 @@ public class ImportObjects extends GeneralOutputter {
         return "";
     }
 
+    public static JSONObject readJSON(ZipInputStream in) throws IOException {
+        int len;
+        byte[] buf = new byte[1024];
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        while ((len = in.read(buf)) > 0)
+            out.write(buf, 0, len);
+        out.close();
+
+        String jsonString = out.toString();
+        jsonString = jsonString.substring(jsonString.indexOf("{"));
+        jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
+        jsonString = jsonString.replaceAll("[^\\x20-\\x7E]", ""); // Remove unwanted characters
+
+        return new JSONObject(jsonString);
+
+    }
+
     private void populateOutputs() {
         String currTemplateFilePath = parameters.getValue(POPULATE_OUTPUTS, null);
 
@@ -94,21 +123,9 @@ public class ImportObjects extends GeneralOutputter {
                     continue;
                 }
 
-                int len;
-                byte[] buf = new byte[1024];
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                while ((len = in.read(buf)) > 0)
-                    out.write(buf, 0, len);
-                out.close();
-
-                String jsonString = out.toString();
-                jsonString = jsonString.substring(jsonString.indexOf("{"));
-                jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
-                jsonString = jsonString.replaceAll("[^\\x20-\\x7E]", ""); // Remove unwanted characters
-
-                JSONObject templateJSON = new JSONObject(jsonString);
-
+                JSONObject templateJSON = readJSON(in);
                 String objectsName = templateJSON.getString(FieldKeys.NAME.toString());
+
                 Parameters currParameters = new Parameters();
                 currParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.OBJECTS, OutputTypes.ALL));
                 currParameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, objectsName));
@@ -211,7 +228,7 @@ public class ImportObjects extends GeneralOutputter {
 
     }
 
-    public void initialiseObjects(String filePath, Workspace workspace) {
+    public void createObjects(String filePath, Workspace workspace) {
         String currTemplateFilePath = parameters.getValue(POPULATE_OUTPUTS, null);
 
         if (!new File(currTemplateFilePath).exists())
@@ -221,40 +238,132 @@ public class ImportObjects extends GeneralOutputter {
         groups.removeAllParameters();
 
         try {
-            // Iterating over all files in the zip, checking if its an objtemplate
-            // Loading multiple ROIs from .zip
+            // First, adding objects, measurements and metadata
             ZipInputStream in = new ZipInputStream(new FileInputStream(currTemplateFilePath));
             ZipEntry entry = in.getNextEntry();
 
             while (entry != null) {
                 String name = entry.getName();
 
-                if (!name.endsWith(".objtemplate")) {
+                if (!name.endsWith(".objmetadata")) {
                     entry = in.getNextEntry();
                     continue;
                 }
 
-                int len;
+                JSONObject objJSON = readJSON(in);
+                String objectsName = objJSON.getString(FieldKeys.NAME.toString());
+                int objectID = objJSON.getInt(FieldKeys.ID.toString());
+                VolumeType volumeType = VolumeTypesInterface
+                        .getVolumeType(objJSON.getString(FieldKeys.VOLUME_TYPE.toString()));
+
+                // Getting object collection
+                if (!workspace.getObjects().containsKey(objectsName))
+                    workspace.addObjects(createObjectCollection(objJSON));
+                Objs outputObjects = workspace.getObjects(objectsName);
+                Obj outputObject = outputObjects.createAndAddNewObject(volumeType, objectID);
+
+                // Adding measurements
+                JSONArray measurementArray = objJSON.getJSONArray(FieldKeys.MEASUREMENTS.toString());
+                measurementArray.forEach((v) -> {
+                    String measurementName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    double measurementValue = ((JSONObject) v).getDouble(RefKeys.VALUE.toString());
+                    outputObject.addMeasurement(new Measurement(measurementName, measurementValue));
+                });
+
+                // Adding metadata
+                JSONArray metadataArray = objJSON.getJSONArray(FieldKeys.METADATA.toString());
+                metadataArray.forEach((v) -> {
+                    String metadataName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    String metadataValue = ((JSONObject) v).getString(RefKeys.VALUE.toString());
+                    outputObject.addMetadataItem(new ObjMetadata(metadataName, metadataValue));
+                });
+
+                entry = in.getNextEntry();
+
+            }
+
+            // Second, loading object relationships
+            in.reset();
+            while (entry != null) {
+                String name = entry.getName();
+
+                if (!name.endsWith(".objmetadata")) {
+                    entry = in.getNextEntry();
+                    continue;
+                }
+
+                JSONObject objJSON = readJSON(in);
+                String objectsName = objJSON.getString(FieldKeys.NAME.toString());
+                int objectID = objJSON.getInt(FieldKeys.ID.toString());
+
+                Objs outputObjects = workspace.getObjects(objectsName);
+                Obj outputObject = outputObjects.get(objectID);
+
+                // Adding parents
+                JSONArray parentArray = objJSON.getJSONArray(FieldKeys.PARENTS.toString());
+                parentArray.forEach((v) -> {
+                    String parentName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    int parentID = ((JSONObject) v).getInt(RefKeys.VALUE.toString());
+                    Obj parentObject = workspace.getObjects(parentName).get(parentID);
+                    outputObject.addParent(parentObject);
+                });
+
+                // Adding children
+                JSONArray childrenArray = objJSON.getJSONArray(FieldKeys.CHILDREN.toString());
+                childrenArray.forEach((v) -> {
+                    String childName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    int childID = ((JSONObject) v).getInt(RefKeys.VALUE.toString());
+                    Obj childObject = workspace.getObjects(childName).get(childID);
+                    outputObject.addChild(childObject);
+                });
+
+                // Adding partners
+                JSONArray partnerArray = objJSON.getJSONArray(FieldKeys.PARTNERS.toString());
+                partnerArray.forEach((v) -> {
+                    String partnerName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    int partnerID = ((JSONObject) v).getInt(RefKeys.VALUE.toString());
+                    Obj partnerObject = workspace.getObjects(partnerName).get(partnerID);
+                    outputObject.addPartner(partnerObject);
+                });
+
+                entry = in.getNextEntry();
+
+            }
+
+            // Third, loading object coordinates
+            in.reset();
+            while (entry != null) {
+                String name = entry.getName();
+
+                if (!name.endsWith(".roi")) {
+                    entry = in.getNextEntry();
+                    continue;
+                }
+
                 byte[] buf = new byte[1024];
+                int len;
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 while ((len = in.read(buf)) > 0)
                     out.write(buf, 0, len);
                 out.close();
 
-                String jsonString = out.toString();
-                jsonString = jsonString.substring(jsonString.indexOf("{"));
-                jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
-                jsonString = jsonString.replaceAll("[^\\x20-\\x7E]", ""); // Remove unwanted characters
+                byte[] bytes = out.toByteArray();
+                RoiDecoder rd = new RoiDecoder(bytes, name);
+                Roi roi = rd.getRoi();
 
-                JSONObject templateJSON = new JSONObject(jsonString);
+                if (roi == null) {
+                    entry = in.getNextEntry();
+                    continue;
+                }
 
-                // Objs outputObjects = new Objs(name, null);
+                String[] nameParts = name.substring(0, name.lastIndexOf(".roi") - 1).split("_");
+                String objectsName = nameParts[0];
+                int objectID = Integer.parseInt(nameParts[1].substring(3));
+                int objectZ = Integer.parseInt(nameParts[3].substring(1));
+                Objs outputObjects = workspace.getObjects(objectsName);
+                Obj outputObject = outputObjects.get(objectID);
 
-                String objectsName = templateJSON.getString(FieldKeys.NAME.toString());
-                Parameters currParameters = new Parameters();
-                currParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.OBJECTS, OutputTypes.ALL));
-                currParameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, objectsName));
-                groups.addParameters(currParameters);
+                outputObject.addPointsFromRoi(roi, objectZ);
 
                 entry = in.getNextEntry();
 
@@ -265,6 +374,24 @@ public class ImportObjects extends GeneralOutputter {
         } catch (Exception e) {
             MIA.log.writeError(e);
         }
+    }
+
+    public Objs createObjectCollection(JSONObject objJSON) {
+        String objectsName = objJSON.getString(FieldKeys.NAME.toString());
+
+        int width = objJSON.getInt(FieldKeys.WIDTH.toString());
+        int height = objJSON.getInt(FieldKeys.HEIGHT.toString());
+        double dppXY = objJSON.getDouble(FieldKeys.DPPXY.toString());
+        double dppZ = objJSON.getDouble(FieldKeys.DPPZ.toString());
+        String units = objJSON.getString(FieldKeys.UNITS.toString());
+        int nSlices = objJSON.getInt(FieldKeys.N_SLICES.toString());
+        int nFrames = objJSON.getInt(FieldKeys.N_FRAMES.toString());
+        double frameInterval = objJSON.getDouble(FieldKeys.FRAME_INTERVAL.toString());
+        String temporalUnitString = objJSON.getString(FieldKeys.TEMPORAL_UNIT.toString());
+        Unit<Time> temporalUnit = TemporalUnit.getOMEUnit(temporalUnitString);
+
+        return new Objs(objectsName, dppXY, dppZ, units, width, height, nSlices, nFrames, frameInterval, temporalUnit);
+
     }
 
     public void addObjects(String filePath, Workspace workspace) {
