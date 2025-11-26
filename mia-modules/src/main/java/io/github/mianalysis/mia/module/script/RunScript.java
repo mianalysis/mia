@@ -49,7 +49,6 @@ import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -84,7 +83,7 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
  * Scripts are run once per workflow execution.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class RunScript extends Module {
+public class RunScript extends GeneralOutputter {
 
     /**
     * 
@@ -141,29 +140,7 @@ public class RunScript extends Module {
     * 
     */
     public static final String IMAGE_OUTPUT_SEPARATOR = "Script outputs";
-
-    /**
-     * If images or new object collections have been added to the workspace during
-     * script execution they must be added here, so subsequent modules are aware of
-     * their presence. The act of adding an output via this method simply tells
-     * subsequent MIA modules the relevant images/object collections were added to
-     * the workspace; the image/object collection must be added to the workspace
-     * during script execution using the "workspace.addImage([image])" or
-     * "workspace.addObjects([object collection])" commands.
-     */
-    public static final String ADD_OUTPUT = "Add output";
-    public static final String OUTPUT_TYPE = "Output type";
-    public static final String OUTPUT_IMAGE = "Output image";
-    public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String ASSOCIATED_IMAGE = "Associated image";
-    public static final String METADATA_NAME = "Metadata name";
-    public static final String ASSOCIATED_OBJECTS = "Associated objects";
-    public static final String MEASUREMENT_NAME = "Measurement name";
-    public static final String OBJECT_METADATA_NAME = "Object metadata name";
-    public static final String PARENT_NAME = "Parent name";
-    public static final String CHILDREN_NAME = "Children name";
-    public static final String PARTNERS_NAME_1 = "Partners name 1";
-    public static final String PARTNERS_NAME_2 = "Partners name 2";
+    
 
     public interface ScriptModes {
         String SCRIPT_FILE = "Script file";
@@ -192,21 +169,6 @@ public class RunScript extends Module {
         String TEXT = "Text";
 
         String[] ALL = new String[] { BOOLEAN, NUMBER, TEXT };
-
-    }
-
-    public interface OutputTypes {
-        String IMAGE = "Image";
-        String IMAGE_MEASUREMENT = "Image measurement";
-        String METADATA = "Metadata";
-        String OBJECTS = "Objects";
-        String OBJECT_MEASUREMENT = "Object measurement";
-        String OBJECT_METADATA_ITEM = "Object metadata item";
-        String PARENT_CHILD = "Parent-child relationship";
-        String PARTNERS = "Partner relationship";
-
-        String[] ALL = new String[] { IMAGE, IMAGE_MEASUREMENT, METADATA, OBJECTS, OBJECT_MEASUREMENT,
-                OBJECT_METADATA_ITEM, PARENT_CHILD, PARTNERS };
 
     }
 
@@ -453,6 +415,8 @@ public class RunScript extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(SCRIPT_SEPARATOR, this));
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
@@ -471,22 +435,7 @@ public class RunScript extends Module {
         parameters.add(new SeparatorP(PARAMETER_SEPARATOR, this));
         parameters.add(new ParameterGroup(ADD_PARAMETER, this, variableCollection, getParameterUpdaterAndGetter()));
 
-        Parameters parameterCollection = new Parameters();
-        parameterCollection.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.IMAGE, OutputTypes.ALL));
-        parameterCollection.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameterCollection.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameterCollection.add(new InputImageP(ASSOCIATED_IMAGE, this));
-        parameterCollection.add(new StringP(METADATA_NAME, this));
-        parameterCollection.add(new InputObjectsInclusiveP(ASSOCIATED_OBJECTS, this));
-        parameterCollection.add(new StringP(MEASUREMENT_NAME, this));
-        parameterCollection.add(new StringP(OBJECT_METADATA_NAME, this));
-        parameterCollection.add(new InputObjectsInclusiveP(PARENT_NAME, this));
-        parameterCollection.add(new InputObjectsInclusiveP(CHILDREN_NAME, this));
-        parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_1, this));
-        parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_2, this));
-
         parameters.add(new SeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
-        parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getOutputUpdaterAndGetter()));
 
         addParameterDescriptions();
 
@@ -513,7 +462,7 @@ public class RunScript extends Module {
         returnedParameters.add(parameters.getParameter(ADD_PARAMETER));
 
         returnedParameters.add(parameters.getParameter(IMAGE_OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_OUTPUT));
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         return returnedParameters;
 
@@ -716,47 +665,7 @@ public class RunScript extends Module {
                 + SCRIPT_TEXT
                 + "\" parameter, this script can start with the lines \"#@ io.github.mianalysis.mia.object.Workspace workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\", which provide access to the active workspace and this module.");
 
-        ParameterGroup group = (ParameterGroup) parameters.get(ADD_OUTPUT);
-        Parameters collection = group.getTemplateParameters();
-        collection.get(OUTPUT_TYPE).setDescription(
-                "Specifies the type of variable that has been added to the workspace during the script.  These can either be images, new object collections or measurements associated with existing images or object collections.");
-
-        collection.get(OUTPUT_IMAGE).setDescription(
-                "Name of the image that has been added to the workspace during script execution.  This name must match that assigned to the image.");
-
-        collection.get(OUTPUT_OBJECTS).setDescription(
-                "Name of the object collection that has been added to the workspace during script execution.  This name must match that assigned to the object collection.");
-
-        collection.get(ASSOCIATED_IMAGE).setDescription(
-                "Image from the workspace (i.e. one already present before running this module) to which a measurement has been added during execution of the script.");
-
-        collection.get(METADATA_NAME).setDescription(
-                "Name of a metadata item which has been added during execution of the script.");
-
-        collection.get(ASSOCIATED_OBJECTS).setDescription(
-                "Object collection from the workspace (i.e. one already present before running this module) to which a measurement has been added during execution of the script.");
-
-        collection.get(MEASUREMENT_NAME).setDescription(
-                "Name of the measurement that has been added to either an image or objects of an object collection.  This name must exactly match that assigned in the script.");
-
-        collection.get(PARENT_NAME).setDescription(
-                "Name of a parent object already in the workspace which has been related to the objects specified by \""
-                        + CHILDREN_NAME + "\" during execution of the script.");
-
-        collection.get(CHILDREN_NAME).setDescription(
-                "Name of child objects already in the workspace which have been related to the objects specified by \""
-                        + PARENT_NAME + "\" during execution of the script.");
-
-        collection.get(PARTNERS_NAME_1).setDescription(
-                "Name of partner object already in the workspace which have been related to the objects specified by \""
-                        + PARTNERS_NAME_2 + "\" during execution of the script.");
-
-        collection.get(PARTNERS_NAME_2).setDescription(
-                "Name of partner object already in the workspace which have been related to the objects specified by \""
-                        + PARTNERS_NAME_1 + "\" during execution of the script.");
-
-        parameters.get(ADD_OUTPUT).setDescription(
-                "If images or new object collections have been added to the workspace during script execution they must be added here, so subsequent modules are aware of their presence.  The act of adding an output via this method simply tells subsequent MIA modules the relevant images/object collections were added to the workspace; the image/object collection must be added to the workspace during script execution using the \"workspace.addImage([image])\" or \"workspace.addObjects([object collection])\" commands.");
+        super.addParameterDescriptions();
 
     }
 
@@ -786,112 +695,4 @@ public class RunScript extends Module {
             }
         };
     }
-
-    private ParameterUpdaterAndGetter getOutputUpdaterAndGetter() {
-        return new ParameterUpdaterAndGetter() {
-
-            @Override
-            public Parameters updateAndGet(Parameters params) {
-                Parameters returnedParameters = new Parameters();
-
-                returnedParameters.add(params.getParameter(OUTPUT_TYPE));
-                switch ((String) params.getValue(OUTPUT_TYPE, null)) {
-                    case OutputTypes.IMAGE:
-                        returnedParameters.add(params.getParameter(OUTPUT_IMAGE));
-                        break;
-                    case OutputTypes.IMAGE_MEASUREMENT:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_IMAGE));
-                        returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
-                        break;
-                    case OutputTypes.METADATA:
-                        returnedParameters.add(params.getParameter(METADATA_NAME));
-                        break;
-                    case OutputTypes.OBJECTS:
-                        returnedParameters.add(params.getParameter(OUTPUT_OBJECTS));
-                        break;
-                    case OutputTypes.OBJECT_MEASUREMENT:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
-                        returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
-                        break;
-                    case OutputTypes.OBJECT_METADATA_ITEM:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
-                        returnedParameters.add(params.getParameter(OBJECT_METADATA_NAME));
-                        break;
-                    case OutputTypes.PARENT_CHILD:
-                        returnedParameters.add(params.getParameter(PARENT_NAME));
-                        returnedParameters.add(params.getParameter(CHILDREN_NAME));
-                        break;
-                    case OutputTypes.PARTNERS:
-                        returnedParameters.add(params.getParameter(PARTNERS_NAME_1));
-                        returnedParameters.add(params.getParameter(PARTNERS_NAME_2));
-                        break;
-                }
-
-                return returnedParameters;
-
-            }
-        };
-    }
-
-    class InputObjectsInclusiveP extends InputObjectsP {
-
-        public InputObjectsInclusiveP(String name, Module module) {
-            super(name, module);
-        }
-
-        @Override
-        public String[] getChoices() {
-            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,
-                    OutputObjectsP.class,
-                    true);
-
-            // Adding objects output by this module
-            ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
-            LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
-
-            for (Parameters collection : collections.values())
-                if (collection.getValue(OUTPUT_TYPE, null).equals(OutputTypes.OBJECTS))
-                    objects.add((OutputObjectsP) collection.getParameter(OUTPUT_OBJECTS));
-
-            return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
-        }
-
-        @Override
-        public boolean verify() {
-            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,
-                    OutputObjectsP.class, true);
-
-            for (OutputObjectsP currChoice : objects)
-                if (choice.equals(currChoice.getValue(null)))
-                    return true;
-
-            // If not found yet, it could have been generated in this module
-            ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
-            LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
-
-            for (Parameters collection : collections.values())
-                if (collection.getValue(OUTPUT_TYPE, null).equals(OutputTypes.OBJECTS))
-                    if (((String) collection.getValue(OUTPUT_OBJECTS, null)).equals(choice))
-                        return true;
-
-            return false;
-
-        }
-
-        @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
-            InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
-                    newModule);
-
-            newParameter.setChoice(getRawStringValue());
-            newParameter.setDescription(getDescription());
-            newParameter.setNickname(getNickname());
-            newParameter.setVisible(isVisible());
-            newParameter.setExported(isExported());
-
-            return (T) newParameter;
-
-        }
-    }
-
 }
