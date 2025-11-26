@@ -29,6 +29,7 @@ public class ParameterGroup extends Parameter {
     private Parameters templateParameters;
     private ParameterUpdaterAndGetter updaterAndGetter;
     private int maxIdx = 0;
+    private boolean editable = true;
 
     // CONSTRUCTORS
 
@@ -246,6 +247,14 @@ public class ParameterGroup extends Parameter {
 
     public Parameters getTemplateParameters() {
         return templateParameters;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     @Override
