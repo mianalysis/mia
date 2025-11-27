@@ -35,13 +35,19 @@ import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
+import io.github.mianalysis.mia.process.system.FileTools;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.formats.FormatException;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
@@ -51,12 +57,26 @@ import ome.units.unit.Unit;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImportObjects extends GeneralOutputter {
+    public static final String PATH_SEPARATOR = "File path controls";
+    public static final String FILE_PATH_MODE = "File path mode";
+    public static final String SPECIFIC_FILE_PATH = "Specific file path";
+    public static final String GENERIC_FILE_PATH = "Generic file path";
+    public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
+
     public static final String POPULATE_SEPARATOR = "Populate controls";
     public static final String POPULATE_OUTPUTS = "Populate outputs";
 
     public static final String OUTPUT_SEPARATOR = "Output controls";
 
-    private String templateFilePath = null;
+    private String templateFilePathDefault = "Click to select template";
+
+    public interface FilePathModes {
+        String GENERIC_PATH = "Generic path";
+        String SPECIFIC_FILE = "Specific file";
+
+        String[] ALL = new String[] { GENERIC_PATH, SPECIFIC_FILE };
+
+    }
 
     public interface OutputTypes extends RunScript.OutputTypes {
     }
@@ -223,23 +243,17 @@ public class ImportObjects extends GeneralOutputter {
         } catch (Exception e) {
             MIA.log.writeError(e);
         }
-
-        templateFilePath = currTemplateFilePath;
-
     }
 
     public void createObjects(String filePath, Workspace workspace) {
-        String currTemplateFilePath = parameters.getValue(POPULATE_OUTPUTS, null);
-
-        if (!new File(currTemplateFilePath).exists())
+        if (!new File(filePath).exists()) {
+            MIA.log.writeWarning("Input objects file \"" + filePath + "\" can't be found");
             return;
-
-        ParameterGroup groups = parameters.getParameter(ADD_OUTPUT);
-        groups.removeAllParameters();
+        }
 
         try {
             // First, adding objects, measurements and metadata
-            ZipInputStream in = new ZipInputStream(new FileInputStream(currTemplateFilePath));
+            ZipInputStream in = new ZipInputStream(new FileInputStream(filePath));
             ZipEntry entry = in.getNextEntry();
 
             while (entry != null) {
@@ -283,7 +297,10 @@ public class ImportObjects extends GeneralOutputter {
             }
 
             // Second, loading object relationships
-            in.reset();
+            in.close();
+            in = new ZipInputStream(new FileInputStream(filePath));
+            entry = in.getNextEntry();
+
             while (entry != null) {
                 String name = entry.getName();
 
@@ -303,8 +320,12 @@ public class ImportObjects extends GeneralOutputter {
                 JSONArray parentArray = objJSON.getJSONArray(FieldKeys.PARENTS.toString());
                 parentArray.forEach((v) -> {
                     String parentName = ((JSONObject) v).getString(RefKeys.NAME.toString());
-                    int parentID = ((JSONObject) v).getInt(RefKeys.VALUE.toString());
-                    Obj parentObject = workspace.getObjects(parentName).get(parentID);
+                    Objs parentObjects = workspace.getObjects(parentName);
+                    if (parentObjects == null)
+                        return;
+
+                    int parentID = ((JSONObject) v).getInt(RefKeys.ID.toString());
+                    Obj parentObject = parentObjects.get(parentID);
                     outputObject.addParent(parentObject);
                 });
 
@@ -312,18 +333,30 @@ public class ImportObjects extends GeneralOutputter {
                 JSONArray childrenArray = objJSON.getJSONArray(FieldKeys.CHILDREN.toString());
                 childrenArray.forEach((v) -> {
                     String childName = ((JSONObject) v).getString(RefKeys.NAME.toString());
-                    int childID = ((JSONObject) v).getInt(RefKeys.VALUE.toString());
-                    Obj childObject = workspace.getObjects(childName).get(childID);
-                    outputObject.addChild(childObject);
+                    Objs childObjects = workspace.getObjects(childName);
+                    if (childObjects == null)
+                        return;
+
+                    JSONArray childIDs = ((JSONObject) v).getJSONArray(RefKeys.IDS.toString());
+                    childIDs.forEach((childID) -> {
+                        Obj childObject = childObjects.get(childID);
+                        outputObject.addChild(childObject);
+                    });
                 });
 
                 // Adding partners
                 JSONArray partnerArray = objJSON.getJSONArray(FieldKeys.PARTNERS.toString());
                 partnerArray.forEach((v) -> {
                     String partnerName = ((JSONObject) v).getString(RefKeys.NAME.toString());
-                    int partnerID = ((JSONObject) v).getInt(RefKeys.VALUE.toString());
-                    Obj partnerObject = workspace.getObjects(partnerName).get(partnerID);
-                    outputObject.addPartner(partnerObject);
+                    Objs partnerObjects = workspace.getObjects(partnerName);
+                    if (partnerObjects == null)
+                        return;
+
+                    JSONArray partnerIDs = ((JSONObject) v).getJSONArray(RefKeys.IDS.toString());
+                    partnerIDs.forEach((partnerID) -> {
+                        Obj partnerObject = partnerObjects.get(partnerID);
+                        outputObject.addPartner(partnerObject);
+                    });
                 });
 
                 entry = in.getNextEntry();
@@ -331,7 +364,10 @@ public class ImportObjects extends GeneralOutputter {
             }
 
             // Third, loading object coordinates
-            in.reset();
+            in.close();
+            in = new ZipInputStream(new FileInputStream(filePath));
+            entry = in.getNextEntry();
+
             while (entry != null) {
                 String name = entry.getName();
 
@@ -356,9 +392,9 @@ public class ImportObjects extends GeneralOutputter {
                     continue;
                 }
 
-                String[] nameParts = name.substring(0, name.lastIndexOf(".roi") - 1).split("_");
+                String[] nameParts = name.substring(0, name.lastIndexOf(".roi")).split("_");
                 String objectsName = nameParts[0];
-                int objectID = Integer.parseInt(nameParts[1].substring(3));
+                int objectID = Integer.parseInt(nameParts[1].substring(2));
                 int objectZ = Integer.parseInt(nameParts[3].substring(1));
                 Objs outputObjects = workspace.getObjects(objectsName);
                 Obj outputObject = outputObjects.get(objectID);
@@ -394,48 +430,24 @@ public class ImportObjects extends GeneralOutputter {
 
     }
 
-    public void addObjects(String filePath, Workspace workspace) {
-        try {
-            // Iterating over all files in the zip, checking if its an objtemplate
-            // Loading multiple ROIs from .zip
-            ZipInputStream in = new ZipInputStream(new FileInputStream(filePath));
-            ZipEntry entry = in.getNextEntry();
-
-            while (entry != null) {
-                String name = entry.getName();
-
-                if (!name.endsWith(".objmetadata")) {
-                    entry = in.getNextEntry();
-                    continue;
-                }
-
-                int len;
-                byte[] buf = new byte[1024];
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                while ((len = in.read(buf)) > 0)
-                    out.write(buf, 0, len);
-                out.close();
-
-                String jsonString = out.toString();
-                jsonString = jsonString.substring(jsonString.indexOf("{"));
-                jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
-                jsonString = jsonString.replaceAll("[^\\x20-\\x7E]", ""); // Remove unwanted characters
-
-                JSONObject templateJSON = new JSONObject(jsonString);
-
-                entry = in.getNextEntry();
-
-            }
-
-            in.close();
-
-        } catch (Exception e) {
-            MIA.log.writeError(e);
-        }
-    }
-
     @Override
     public Status process(Workspace workspace) {
+        String filePathMode = parameters.getValue(FILE_PATH_MODE, workspace);
+        String filePath = parameters.getValue(SPECIFIC_FILE_PATH, workspace);
+        String genericFilePath = parameters.getValue(GENERIC_FILE_PATH, workspace);
+
+        // Getting the final file path
+        switch (filePathMode) {
+            case FilePathModes.GENERIC_PATH:
+                try {
+                    filePath = FileTools.getGenericName(workspace.getMetadata(), genericFilePath);
+                } catch (ServiceException | DependencyException | FormatException | IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
+        createObjects(filePath, workspace);
 
         return Status.PASS;
 
@@ -445,8 +457,19 @@ public class ImportObjects extends GeneralOutputter {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
+        parameters.add(new SeparatorP(PATH_SEPARATOR, this));
+        parameters.add(new ChoiceP(FILE_PATH_MODE, this, FilePathModes.GENERIC_PATH, FilePathModes.ALL));
+        parameters.add(new StringP(GENERIC_FILE_PATH, this));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, ParameterState.MESSAGE, 170));
+        parameters.add(new FilePathP(SPECIFIC_FILE_PATH, this));
+
         parameters.add(new SeparatorP(POPULATE_SEPARATOR, this));
-        parameters.add(new FilePathP(POPULATE_OUTPUTS, this));
+        parameters.add(new FilePathP(POPULATE_OUTPUTS, this) {
+            @Override
+            public boolean verify() {
+                return true;
+            }
+        });
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
 
@@ -458,13 +481,29 @@ public class ImportObjects extends GeneralOutputter {
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
 
+        returnedParameters.add(parameters.getParameter(PATH_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(FILE_PATH_MODE));
+        switch ((String) parameters.getValue(FILE_PATH_MODE, null)) {
+            case FilePathModes.GENERIC_PATH:
+                returnedParameters.add(parameters.getParameter(GENERIC_FILE_PATH));
+                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                break;
+            case FilePathModes.SPECIFIC_FILE:
+                returnedParameters.add(parameters.getParameter(SPECIFIC_FILE_PATH));
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(POPULATE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POPULATE_OUTPUTS));
 
         // Updating output
         String currTemplateFilePath = parameters.getValue(POPULATE_OUTPUTS, null);
-        if (!currTemplateFilePath.equals(templateFilePath))
+        if (!currTemplateFilePath.equals(templateFilePathDefault)) {
             populateOutputs();
+            parameters.updateValue(POPULATE_OUTPUTS, templateFilePathDefault);
+        }
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         if (group.getCollections(true).size() > 1) {
