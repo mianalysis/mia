@@ -21,6 +21,7 @@ public class CurvatureCalculator {
     private ArrayList<Point<Double>> path;
     private PolynomialSplineFunction[] splines = null;
     private TreeMap<Double, Double> curvature = null;
+    private TreeMap<Double, Double> orientationXY = null;
     private FittingMethod fittingMethod = FittingMethod.STANDARD;
     private boolean isLoop = false;
 
@@ -138,11 +139,12 @@ public class CurvatureCalculator {
         splines[3] = splines[2].polynomialSplineDerivative(); // dy
         if (!is2D)
             splines[5] = splines[4].polynomialSplineDerivative(); // dz
-        
+
         // Extracting the gradients as a function of position along the curve
         double[] knots = splines[0].getKnots();
 
         curvature = new TreeMap<>();
+        orientationXY = new TreeMap<>();
         double w = (double) NNeighbours / 2d;
         int startIdx = isLoop ? NNeighbours : 0;
         int endIdx = isLoop ? knots.length - NNeighbours : knots.length;
@@ -171,6 +173,15 @@ public class CurvatureCalculator {
             }
 
             curvature.put(knots[i], k);
+            double orientationXYDegs = Math.toDegrees(Math.atan2(dy, dx));
+            if (orientationXYDegs < 0)
+                    orientationXYDegs += 360;
+
+            orientationXYDegs = (orientationXYDegs + 90) % 180 - 90;
+
+            // orientationXYRads = Math.abs((orientationXYRads + Math.PI) % (2 * Math.PI) - Math.PI);
+            // orientationXYRads = orientationXYRads - Math.PI;
+            orientationXY.put(knots[i], orientationXYDegs);
 
         }
     }
@@ -290,11 +301,11 @@ public class CurvatureCalculator {
         this.fittingMethod = fittingMethod;
     }
 
-    public TreeMap<Point<Double>,Double> getSpline() {
+    public TreeMap<Point<Double>, Double[]> getSpline() {
         if (splines == null)
             calculateCurvature();
 
-        TreeMap<Point<Double>,Double> spline = new TreeMap<>();
+        TreeMap<Point<Double>, Double[]> spline = new TreeMap<>();
 
         double[] knots = splines[0].getKnots();
         int startIdx = isLoop ? NNeighbours : 0;
@@ -306,7 +317,7 @@ public class CurvatureCalculator {
             double y = splines[2].value(t);
             double z = is2D ? 0d : splines[4].value(t);
 
-            spline.put(new Point<Double>(x, y, z),curvature.get(t));
+            spline.put(new Point<Double>(x, y, z), new Double[] { curvature.get(t), orientationXY.get(t) });
 
         }
 
