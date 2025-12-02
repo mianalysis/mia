@@ -286,9 +286,9 @@ public class MeasureObjectCurvature extends Module {
         String REL_LOC_OF_MIN_CURVATURE = "CURVATURE // REL_LOC_OF_MIN_CURVATURE";
         String REL_LOC_OF_MAX_CURVATURE = "CURVATURE // REL_LOC_OF_MAX_CURVATURE";
         String HEAD_TAIL_ANGLE_DEGS = "CURVATURE // HEAD_TAIL_ANGLE_DEGS";
-        String ABSOLUTE_CURVATURE_PX = "ABSOLUTE_CURVATURE_(PX⁻¹)";
-        String ABSOLUTE_CURVATURE_CAL = "ABSOLUTE_CURVATURE_(${SCAL}⁻¹)";
-        String ORIENTATION_XY_DEGS = "ORIENTATION_XY_(DEGS)";
+        String ABSOLUTE_CURVATURE_PX = "CURVATURE // ABSOLUTE_CURVATURE_(PX⁻¹)";
+        String ABSOLUTE_CURVATURE_CAL = "CURVATURE // ABSOLUTE_CURVATURE_(${SCAL}⁻¹)";
+        String ORIENTATION_XY_DEGS = "CURVATURE // ORIENTATION_XY_(DEGS)";
 
     }
 
@@ -672,7 +672,6 @@ public class MeasureObjectCurvature extends Module {
             // Getting the backbone of the object
             ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
             boolean isLoop = checkForLoop(longestPath);
-            MIA.log.writeDebug(isLoop);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3)
