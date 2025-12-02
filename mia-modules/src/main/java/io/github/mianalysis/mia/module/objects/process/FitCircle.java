@@ -79,10 +79,6 @@ public class FitCircle extends Module {
      */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public FitCircle(Modules modules) {
-        super("Fit circle", modules);
-    }
-
     public interface OutputModes {
         String DO_NOT_STORE = "Do not store";
         String CREATE_NEW_OBJECT = "Create new objects";
@@ -100,6 +96,10 @@ public class FitCircle extends Module {
         String RADIUS_PX = "CIRCLE // RADIUS_(PX)";
         String RADIUS_CAL = "CIRCLE // RADIUS_(${SCAL})";
 
+    }
+
+    public FitCircle(Modules modules) {
+        super("Fit circle", modules);
     }
 
     public Roi fitCircle(Roi roi) {
@@ -244,8 +244,9 @@ public class FitCircle extends Module {
                 }
                 break;
             case OutputModes.UPDATE_INPUT:
+                int z = (int) Math.round(inputObject.getZMean(true, false));
                 inputObject.getCoordinateSet().clear();
-                inputObject.addPointsFromRoi(circleRoi, (int) Math.round(inputObject.getZMean(true, false)));
+                inputObject.addPointsFromRoi(circleRoi, z);
                 inputObject.removeOutOfBoundsCoords();
                 break;
         }
@@ -300,14 +301,14 @@ public class FitCircle extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjects(inputObjectsName);
-
         // Getting parameters
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+
+        // Getting input objects
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // If necessary, creating a new Objs and adding it to the Workspace
         Objs outputObjects = null;
@@ -351,8 +352,14 @@ public class FitCircle extends Module {
 
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
-            if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE))
-                outputObjects.convertToImageIDColours().show(false);
+            switch (objectOutputMode) {
+                case OutputModes.CREATE_NEW_OBJECT:
+                    outputObjects.convertToImageIDColours().show(false);
+                    break;
+                case OutputModes.UPDATE_INPUT:
+                    inputObjects.convertToImageIDColours().show(false);
+                    break;
+            }
         }
 
         return Status.PASS;
