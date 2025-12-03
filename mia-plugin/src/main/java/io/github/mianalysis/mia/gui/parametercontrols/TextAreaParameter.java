@@ -92,7 +92,7 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         resizeBar = new JLabel("Drag to resize", SwingConstants.CENTER);
-        resizeBar.setForeground(Colours.getDarkBlue(isDark));
+        resizeBar.setForeground(Colours.getDarkGrey(isDark));
         resizeBar.setPreferredSize(new Dimension(0,20));
         resizeBar.addMouseListener(new MouseListener() {
             public void mousePressed(MouseEvent e) {

@@ -384,7 +384,8 @@ public class MetadataExtractor extends Module {
     }
 
     public String[] getGroups(String groupString) {
-        groupString = groupString.replace(" ", "");
+        groupString = groupString.trim();
+        // groupString = groupString.replace(" ", "");
 
         StringTokenizer tokenizer = new StringTokenizer(groupString, ",");
         int nTokens = tokenizer.countTokens();

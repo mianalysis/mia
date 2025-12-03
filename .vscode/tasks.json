@@ -39,7 +39,7 @@
         {
             "label": "maven: package-complete",
             "type": "shell",
-            "command": "mvn clean package -Dscp=provided site -e -T 1C -Dparallel=all -DperCoreThreadCount=true",
+            "command": "mvn clean package -Dscp=provided site -e -T 1C -Dparallel=all -DperCoreThreadCount=true -D maven.javadoc.skip",
             "group": {
                 "kind": "build",
                 "isDefault": true
