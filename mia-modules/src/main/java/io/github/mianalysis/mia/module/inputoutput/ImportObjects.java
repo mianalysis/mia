@@ -4,8 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -32,9 +35,11 @@ import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -67,6 +72,7 @@ public class ImportObjects extends GeneralOutputter {
     public static final String POPULATE_OUTPUTS = "Populate outputs";
 
     public static final String OUTPUT_SEPARATOR = "Output controls";
+    public static final String EXPORT = "Export";
 
     private String templateFilePathDefault = "Click to select template";
 
@@ -249,6 +255,54 @@ public class ImportObjects extends GeneralOutputter {
         if (!new File(filePath).exists()) {
             MIA.log.writeWarning("Input objects file \"" + filePath + "\" can't be found");
             return;
+        }
+
+        // Getting lists of exported objects, measurements, metadata and relationships
+        ParameterGroup groups = parameters.getParameter(ADD_OUTPUT);
+        ArrayList<String> exportedObjects = new ArrayList<>();
+        HashMap<String, ArrayList<String>> exportedMeasurements = new HashMap<>();
+        HashMap<String, ArrayList<String>> exportedMetadata = new HashMap<>();
+        HashMap<String, ArrayList<String>> exportedParents = new HashMap<>();
+        HashMap<String, ArrayList<String>> exportedChildren = new HashMap<>();
+        HashMap<String, ArrayList<String>> exportedPartners = new HashMap<>();
+        LinkedHashMap<Integer, Parameters> collections = groups.getCollections(true);
+        for (Parameters collection : collections.values()) {
+            if (!(Boolean) collection.getParameter(EXPORT).getValue(workspace))
+                continue;
+
+            switch ((String) collection.getValue(OUTPUT_TYPE, workspace)) {
+                case OutputTypes.OBJECTS:
+                    exportedObjects.add(collection.getValue(OUTPUT_OBJECTS, workspace));
+                    break;
+                case OutputTypes.OBJECT_MEASUREMENT:
+                    String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
+                    String measurementsName = collection.getValue(MEASUREMENT_NAME, workspace);
+                    exportedMeasurements.putIfAbsent(objectsName, new ArrayList<>());
+                    exportedMeasurements.get(objectsName).add(measurementsName);
+                    break;
+                case OutputTypes.OBJECT_METADATA_ITEM:
+                    objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
+                    String metadataName = collection.getValue(METADATA_NAME, workspace);
+                    exportedMetadata.putIfAbsent(objectsName, new ArrayList<>());
+                    exportedMetadata.get(objectsName).add(metadataName);
+                    break;
+                case OutputTypes.PARENT_CHILD:
+                    String parentName = collection.getValue(PARENT_NAME, workspace);
+                    String childName = collection.getValue(CHILDREN_NAME, workspace);
+                    exportedParents.putIfAbsent(childName, new ArrayList<>());
+                    exportedParents.get(childName).add(parentName);
+                    exportedChildren.putIfAbsent(parentName, new ArrayList<>());
+                    exportedChildren.get(parentName).add(childName);
+                    break;
+                case OutputTypes.PARTNERS:
+                    String partnerName1 = collection.getValue(PARTNERS_NAME_1, workspace);
+                    String partnerName2 = collection.getValue(PARTNERS_NAME_2, workspace);
+                    exportedPartners.putIfAbsent(partnerName1, new ArrayList<>());
+                    exportedPartners.get(partnerName1).add(partnerName2);
+                    exportedPartners.putIfAbsent(partnerName2, new ArrayList<>());
+                    exportedPartners.get(partnerName2).add(partnerName1);
+                    break;
+            }
         }
 
         try {
@@ -473,8 +527,25 @@ public class ImportObjects extends GeneralOutputter {
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
 
-        ((ParameterGroup) parameters.getParameter(ADD_OUTPUT)).setEditable(false);
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        group.setEditable(false);
+        group.getTemplateParameters().add(new BooleanP(EXPORT, this, true));
 
+    }
+
+    @Override
+    protected ParameterUpdaterAndGetter getOutputUpdaterAndGetter() {
+        return new OutputterParameterUpdaterAndGetter() {
+            @Override
+            public Parameters updateAndGet(Parameters parameters) {
+                Parameters outputParameters = super.updateAndGet(parameters);
+
+                outputParameters.add(parameters.getParameter(EXPORT));
+
+                return outputParameters;
+
+            }
+        };
     }
 
     @Override
@@ -513,11 +584,35 @@ public class ImportObjects extends GeneralOutputter {
 
         // Setting all parameter controls to uneditable
         for (Parameters currParameters : group.getCollections(true).values())
-            for (Parameter currParameter : currParameters.values())
+            for (Parameter currParameter : currParameters.values()) {
+                if (currParameter.getName().equals(EXPORT))
+                    continue;
+
                 currParameter.getControl().getComponent().setEnabled(false);
+            }
 
         return returnedParameters;
 
+    }
+
+    @Override
+    public <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
+            LinkedHashSet<T> parameters) {
+        LinkedHashMap<Integer, Parameters> collections = parameterGroup.getCollections(true);
+        for (Parameters collection : collections.values()) {
+            if (collection.containsKey(EXPORT))
+                if (!(Boolean) collection.getValue(EXPORT, null))
+                    continue;
+
+            for (Parameter currParameter : collection.values()) {
+                if (type.isInstance(currParameter))
+                    parameters.add((T) currParameter);
+
+                if (currParameter instanceof ParameterGroup)
+                    addParameterGroupParameters((ParameterGroup) currParameter, type, parameters);
+
+            }
+        }
     }
 
     @Override

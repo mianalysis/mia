@@ -355,17 +355,17 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     }
 
-    public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
+    public <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
         LinkedHashMap<Integer, Parameters> collections = parameterGroup.getCollections(true);
         for (Parameters collection : collections.values()) {
             for (Parameter currParameter : collection.values()) {
-                if (type.isInstance(currParameter)) {
+                if (type.isInstance(currParameter))
                     parameters.add((T) currParameter);
-                }
-                if (currParameter instanceof ParameterGroup) {
+                
+                if (currParameter instanceof ParameterGroup)
                     addParameterGroupParameters((ParameterGroup) currParameter, type, parameters);
-                }
+                
             }
         }
     }
