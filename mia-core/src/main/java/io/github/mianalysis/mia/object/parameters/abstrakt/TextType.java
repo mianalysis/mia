@@ -228,6 +228,14 @@ public abstract class TextType extends Parameter {
 
     @Override
     public boolean verify() {
+        // Check it doesn't start or end with whitespace (this just helps prevents
+        // problems)
+        if (getRawStringValue().length() != getRawStringValue().trim().length()) {
+            MIA.log.writeWarning(
+                    "Text values can't start or end with whitespace.  Please check there aren't extra spaces after the name and try again.");
+            return false;
+        }
+
         // The only thing to check is that any global variables and metadata values have
         // been defined
         return GlobalVariables.variablesPresent(getRawStringValue(), module.getModules());

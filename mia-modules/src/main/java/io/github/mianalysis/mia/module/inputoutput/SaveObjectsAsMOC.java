@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.zip.ZipEntry;
@@ -19,7 +18,6 @@ import org.scijava.plugin.Plugin;
 
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -51,16 +49,14 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class SaveObjects extends AbstractSaver {
+public class SaveObjectsAsMOC extends AbstractSaver {
     public static final String OBJECT_SEPARATOR = "Exported objects";
     public static final String ADD_OBJECTS = "Add objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String EXPORT_OBJECTS = "Export objects";
 
-    private HashMap<String, Boolean> exportStatus = new HashMap<>();
-
-    public SaveObjects(Modules modules) {
-        super("Save objects", modules);
+    public SaveObjectsAsMOC(Modules modules) {
+        super("Save objects as MOC (MIA collection)", modules);
     }
 
     @Override
@@ -137,7 +133,7 @@ public class SaveObjects extends AbstractSaver {
             ArrayList<String> exportedObjects) {
         String moduleName = new SaveObjectsAsROIs(null).getName();
         try {
-            ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outPath + ".zip")));
+            ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outPath + ".moc")));
             DataOutputStream out = new DataOutputStream(new BufferedOutputStream(zos));
             RoiEncoder re = new RoiEncoder(out);
 

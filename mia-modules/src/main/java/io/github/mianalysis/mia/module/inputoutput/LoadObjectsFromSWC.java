@@ -59,7 +59,7 @@ import util.opencsv.CSVReader;
  * from another piece of software or from a previous analysis run.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class LoadSWC extends Module {
+public class LoadObjectsFromSWC extends Module {
     private static int classIdx = 1;
     private static int coordIdx = 2;
     private static int xIdx = 0;
@@ -102,7 +102,7 @@ public class LoadSWC extends Module {
 
     }
 
-    public LoadSWC(Modules modules) {
+    public LoadObjectsFromSWC(Modules modules) {
         super("Load objects from SWC", modules);
     }
 

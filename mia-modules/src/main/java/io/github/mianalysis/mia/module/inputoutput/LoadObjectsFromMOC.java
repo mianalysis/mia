@@ -24,8 +24,8 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.inputoutput.SaveObjects.FieldKeys;
-import io.github.mianalysis.mia.module.inputoutput.SaveObjects.RefKeys;
+import io.github.mianalysis.mia.module.inputoutput.SaveObjectsAsMOC.FieldKeys;
+import io.github.mianalysis.mia.module.inputoutput.SaveObjectsAsMOC.RefKeys;
 import io.github.mianalysis.mia.module.script.GeneralOutputter;
 import io.github.mianalysis.mia.module.script.RunScript;
 import io.github.mianalysis.mia.object.Obj;
@@ -47,6 +47,14 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
+import io.github.mianalysis.mia.object.refs.ParentChildRef;
+import io.github.mianalysis.mia.object.refs.PartnerRef;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
+import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.system.FileTools;
@@ -61,7 +69,7 @@ import ome.units.unit.Unit;
  */
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ImportObjects extends GeneralOutputter {
+public class LoadObjectsFromMOC extends GeneralOutputter {
     public static final String PATH_SEPARATOR = "File path controls";
     public static final String FILE_PATH_MODE = "File path mode";
     public static final String SPECIFIC_FILE_PATH = "Specific file path";
@@ -87,8 +95,8 @@ public class ImportObjects extends GeneralOutputter {
     public interface OutputTypes extends RunScript.OutputTypes {
     }
 
-    public ImportObjects(Modules modules) {
-        super("Import objects", modules);
+    public LoadObjectsFromMOC(Modules modules) {
+        super("Load objects from MOC (MIA collection)", modules);
     }
 
     @Override
@@ -133,8 +141,8 @@ public class ImportObjects extends GeneralOutputter {
         groups.removeAllParameters();
 
         try {
-            // Iterating over all files in the zip, checking if its an objtemplate
-            // Loading multiple ROIs from .zip
+            // Iterating over all files in the .moc, checking if its an objtemplate
+            // Loading multiple ROIs from .moc
             ZipInputStream in = new ZipInputStream(new FileInputStream(currTemplateFilePath));
             ZipEntry entry = in.getNextEntry();
 
@@ -151,10 +159,11 @@ public class ImportObjects extends GeneralOutputter {
 
                 JSONObject templateJSON = readJSON(in);
                 String objectsName = templateJSON.getString(FieldKeys.NAME.toString());
-
+                
                 Parameters currParameters = new Parameters();
                 currParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.OBJECTS, OutputTypes.ALL));
                 currParameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, objectsName));
+                currParameters.add(new BooleanP(EXPORT, this, true));
                 groups.addParameters(currParameters);
 
                 JSONArray measurementArray = templateJSON.getJSONArray(FieldKeys.MEASUREMENTS.toString());
@@ -163,6 +172,7 @@ public class ImportObjects extends GeneralOutputter {
                     measParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.OBJECT_MEASUREMENT, OutputTypes.ALL));
                     measParameters.add(new InputObjectsInclusiveP(ASSOCIATED_OBJECTS, this, objectsName));
                     measParameters.add(new StringP(MEASUREMENT_NAME, this, (String) v));
+                    measParameters.add(new BooleanP(EXPORT, this, true));
                     groups.addParameters(measParameters);
                 });
 
@@ -173,6 +183,7 @@ public class ImportObjects extends GeneralOutputter {
                             .add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.OBJECT_METADATA_ITEM, OutputTypes.ALL));
                     metadataParameters.add(new InputObjectsInclusiveP(ASSOCIATED_OBJECTS, this, objectsName));
                     metadataParameters.add(new StringP(OBJECT_METADATA_NAME, this, (String) v));
+                    metadataParameters.add(new BooleanP(EXPORT, this, true));
                     groups.addParameters(metadataParameters);
                 });
 
@@ -188,6 +199,7 @@ public class ImportObjects extends GeneralOutputter {
                     parentParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.PARENT_CHILD, OutputTypes.ALL));
                     parentParameters.add(new InputObjectsInclusiveP(CHILDREN_NAME, this, objectsName));
                     parentParameters.add(new InputObjectsInclusiveP(PARENT_NAME, this, (String) v));
+                    parentParameters.add(new BooleanP(EXPORT, this, true));
                     groups.addParameters(parentParameters);
 
                     // Adding this to the existing relationships collection
@@ -208,6 +220,7 @@ public class ImportObjects extends GeneralOutputter {
                     childParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.PARENT_CHILD, OutputTypes.ALL));
                     childParameters.add(new InputObjectsInclusiveP(CHILDREN_NAME, this, (String) v));
                     childParameters.add(new InputObjectsInclusiveP(PARENT_NAME, this, objectsName));
+                    childParameters.add(new BooleanP(EXPORT, this, true));
                     groups.addParameters(childParameters);
 
                     // Adding this to the existing relationships collection
@@ -232,6 +245,7 @@ public class ImportObjects extends GeneralOutputter {
                     partnerParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.PARTNERS, OutputTypes.ALL));
                     partnerParameters.add(new InputObjectsInclusiveP(PARTNERS_NAME_1, this, objectsName));
                     partnerParameters.add(new InputObjectsInclusiveP(PARTNERS_NAME_2, this, (String) v));
+                    partnerParameters.add(new BooleanP(EXPORT, this, true));
                     groups.addParameters(partnerParameters);
 
                     // Adding this to the existing relationships collection
@@ -327,13 +341,22 @@ public class ImportObjects extends GeneralOutputter {
                 // Getting object collection
                 if (!workspace.getObjects().containsKey(objectsName))
                     workspace.addObjects(createObjectCollection(objJSON));
+
+                if (!exportedObjects.contains(objectsName))
+                    continue;
+
                 Objs outputObjects = workspace.getObjects(objectsName);
                 Obj outputObject = outputObjects.createAndAddNewObject(volumeType, objectID);
 
                 // Adding measurements
                 JSONArray measurementArray = objJSON.getJSONArray(FieldKeys.MEASUREMENTS.toString());
                 measurementArray.forEach((v) -> {
-                    String measurementName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    ArrayList<String> currExportedMeasurements = exportedMeasurements.get(objectsName);
+                    String measurementNickname = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    if (currExportedMeasurements == null || !currExportedMeasurements.contains(measurementNickname))
+                        return;
+
+                    String measurementName = objectsName + " // " + measurementNickname;
                     double measurementValue = ((JSONObject) v).getDouble(RefKeys.VALUE.toString());
                     outputObject.addMeasurement(new Measurement(measurementName, measurementValue));
                 });
@@ -341,7 +364,12 @@ public class ImportObjects extends GeneralOutputter {
                 // Adding metadata
                 JSONArray metadataArray = objJSON.getJSONArray(FieldKeys.METADATA.toString());
                 metadataArray.forEach((v) -> {
-                    String metadataName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    ArrayList<String> currExportedMetadata = exportedMetadata.get(objectsName);
+                    String metadataNickname = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    if (currExportedMetadata == null || !currExportedMetadata.contains(metadataNickname))
+                        return;
+
+                    String metadataName = objectsName + " // " + metadataNickname;
                     String metadataValue = ((JSONObject) v).getString(RefKeys.VALUE.toString());
                     outputObject.addMetadataItem(new ObjMetadata(metadataName, metadataValue));
                 });
@@ -378,6 +406,10 @@ public class ImportObjects extends GeneralOutputter {
                     if (parentObjects == null)
                         return;
 
+                    ArrayList<String> currExportedParents = exportedParents.get(objectsName);
+                    if (currExportedParents == null || !currExportedParents.contains(parentName))
+                        return;
+
                     int parentID = ((JSONObject) v).getInt(RefKeys.ID.toString());
                     Obj parentObject = parentObjects.get(parentID);
                     outputObject.addParent(parentObject);
@@ -389,6 +421,10 @@ public class ImportObjects extends GeneralOutputter {
                     String childName = ((JSONObject) v).getString(RefKeys.NAME.toString());
                     Objs childObjects = workspace.getObjects(childName);
                     if (childObjects == null)
+                        return;
+
+                    ArrayList<String> currExportedChildren = exportedChildren.get(objectsName);
+                    if (currExportedChildren == null || !currExportedChildren.contains(childName))
                         return;
 
                     JSONArray childIDs = ((JSONObject) v).getJSONArray(RefKeys.IDS.toString());
@@ -404,6 +440,10 @@ public class ImportObjects extends GeneralOutputter {
                     String partnerName = ((JSONObject) v).getString(RefKeys.NAME.toString());
                     Objs partnerObjects = workspace.getObjects(partnerName);
                     if (partnerObjects == null)
+                        return;
+
+                    ArrayList<String> currExportedPartners = exportedPartners.get(objectsName);
+                    if (currExportedPartners == null || !currExportedPartners.contains(partnerName))
                         return;
 
                     JSONArray partnerIDs = ((JSONObject) v).getJSONArray(RefKeys.IDS.toString());
@@ -613,6 +653,113 @@ public class ImportObjects extends GeneralOutputter {
 
             }
         }
+    }
+
+    @Override
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+        for (Parameters collection : collections.values()) {
+            if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_MEASUREMENT)
+                    && (Boolean) collection.getValue(EXPORT, workspace)) {
+                String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
+                String measurementNickname = collection.getValue(MEASUREMENT_NAME, workspace);
+                String measurementName = objectsName + " // " + measurementNickname;
+
+                ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
+                ref.setNickname(measurementNickname);
+                ref.setObjectsName(objectsName);
+                returnedRefs.add(ref);
+
+            }
+        }
+
+        return returnedRefs;
+
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        Workspace workspace = null;
+        ObjMetadataRefs returnedRefs = new ObjMetadataRefs();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+        for (Parameters collection : collections.values()) {
+            if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_METADATA_ITEM)
+                    && (Boolean) collection.getValue(EXPORT, workspace)) {
+                String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
+                String metadataNickname = collection.getValue(OBJECT_METADATA_NAME, workspace);
+                String metadataName = objectsName + " // " + metadataNickname;
+
+                ObjMetadataRef ref = objectMetadataRefs.getOrPut(metadataName);
+                ref.setNickname(metadataNickname);
+                ref.setObjectsName(objectsName);
+                returnedRefs.add(ref);
+            }
+        }
+
+        return returnedRefs;
+
+    }
+
+    @Override
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        Workspace workspace = null;
+        ParentChildRefs returnedRefs = new ParentChildRefs();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+        for (Parameters collection : collections.values()) {
+            if (!(Boolean) collection.getValue(EXPORT, workspace))
+                continue;
+
+            switch ((String) collection.getValue(OUTPUT_TYPE, workspace)) {
+                case OutputTypes.PARENT_CHILD:
+                    String parentsName = collection.getValue(PARENT_NAME, workspace);
+                    String childrenName = collection.getValue(CHILDREN_NAME, workspace);
+
+                    ParentChildRef ref = parentChildRefs.getOrPut(parentsName, childrenName);
+                    returnedRefs.add(ref);
+                    break;
+            }
+        }
+
+        return returnedRefs;
+
+    }
+
+    @Override
+    public PartnerRefs updateAndGetPartnerRefs() {
+        Workspace workspace = null;
+        PartnerRefs returnedRefs = new PartnerRefs();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+        for (Parameters collection : collections.values()) {
+            if (!(Boolean) collection.getValue(EXPORT, workspace))
+                continue;
+
+            switch ((String) collection.getValue(OUTPUT_TYPE, workspace)) {
+                case OutputTypes.PARTNERS:
+                    String partnersName1 = collection.getValue(PARTNERS_NAME_1, workspace);
+                    String partnersName2 = collection.getValue(PARTNERS_NAME_2, workspace);
+
+                    PartnerRef ref = partnerRefs.getOrPut(partnersName1, partnersName2);
+                    returnedRefs.add(ref);
+                    break;
+            }
+        }
+
+        return returnedRefs;
+
     }
 
     @Override
