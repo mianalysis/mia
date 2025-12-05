@@ -354,6 +354,7 @@ public abstract class GeneralOutputter extends Module {
                     objects.add((OutputObjectsP) collection.getParameter(OUTPUT_OBJECTS));
 
             return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
+            
         }
 
         @Override

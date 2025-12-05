@@ -159,7 +159,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
 
                 JSONObject templateJSON = readJSON(in);
                 String objectsName = templateJSON.getString(FieldKeys.NAME.toString());
-                
+
                 Parameters currParameters = new Parameters();
                 currParameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.OBJECTS, OutputTypes.ALL));
                 currParameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, objectsName));
@@ -342,8 +342,10 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                 if (!workspace.getObjects().containsKey(objectsName))
                     workspace.addObjects(createObjectCollection(objJSON));
 
-                if (!exportedObjects.contains(objectsName))
+                if (!exportedObjects.contains(objectsName)) {
+                    entry = in.getNextEntry();
                     continue;
+                }
 
                 Objs outputObjects = workspace.getObjects(objectsName);
                 Obj outputObject = outputObjects.createAndAddNewObject(volumeType, objectID);
@@ -470,6 +472,19 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                     continue;
                 }
 
+                String[] nameParts = name.substring(0, name.lastIndexOf(".roi")).split("_");
+                String objectsName = nameParts[0];
+
+                if (!exportedObjects.contains(objectsName)) {
+                    entry = in.getNextEntry();
+                    continue;
+                }
+
+                int objectID = Integer.parseInt(nameParts[1].substring(2));
+                int objectZ = Integer.parseInt(nameParts[3].substring(1));
+                Objs outputObjects = workspace.getObjects(objectsName);
+                Obj outputObject = outputObjects.get(objectID);
+
                 byte[] buf = new byte[1024];
                 int len;
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -485,13 +500,6 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                     entry = in.getNextEntry();
                     continue;
                 }
-
-                String[] nameParts = name.substring(0, name.lastIndexOf(".roi")).split("_");
-                String objectsName = nameParts[0];
-                int objectID = Integer.parseInt(nameParts[1].substring(2));
-                int objectZ = Integer.parseInt(nameParts[3].substring(1));
-                Objs outputObjects = workspace.getObjects(objectsName);
-                Obj outputObject = outputObjects.get(objectID);
 
                 outputObject.addPointsFromRoi(roi, objectZ);
 
