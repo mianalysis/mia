@@ -6,29 +6,39 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class TextAreaParameter extends ParameterControl implements CaretReporter, FocusListener {
     protected JPanel control;
     protected int caretPosition = 0;
 
+    private JLabel resizeBar;
     private  JTextArea textArea;
     private JScrollPane objectsScrollPane;
     private String prevString = "";
+    private int dragStartY;
     
     public TextAreaParameter(TextAreaP parameter) {
         super(parameter);
@@ -71,13 +81,63 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
         textArea.setWrapStyleWord(true);
 
         objectsScrollPane = new JScrollPane(textArea);
-        control.setPreferredSize(new Dimension(0, height));
+        objectsScrollPane.setPreferredSize(new Dimension(0, height));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         objectsScrollPane.getVerticalScrollBar().setValue(0);
         objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         control.add(objectsScrollPane, c);
+
+        boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+
+        resizeBar = new JLabel("Drag to resize", SwingConstants.CENTER);
+        resizeBar.setForeground(Colours.getDarkGrey(isDark));
+        resizeBar.setPreferredSize(new Dimension(0,20));
+        resizeBar.addMouseListener(new MouseListener() {
+            public void mousePressed(MouseEvent e) {
+                dragStartY = e.getYOnScreen();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        resizeBar.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int dy = e.getYOnScreen() - dragStartY;
+                dragStartY = e.getYOnScreen();
+
+                Dimension size = objectsScrollPane.getPreferredSize();
+                size.height = Math.max(50, size.height + dy);
+                objectsScrollPane.setPreferredSize(size);
+                objectsScrollPane.revalidate();
+                control.revalidate();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+            
+        });
+        c.gridy++;
+        c.gridy++;
+        control.add(resizeBar, c);
+
     }
 
     public int getCaretPosition() {

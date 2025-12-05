@@ -267,14 +267,12 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             if (ref.getObjectsName() == null)
                 continue;
             if (ref.getObjectsName().equals(objectName))
-                measurementRefs.put(ref.getName(), ref);
-
+                measurementRefs.add(ref);
         }
     }
 
     public ObjMetadataRefs getObjectMetadataRefs(String objectName) {
         return getObjectMetadataRefs(objectName, null);
-
     }
 
     public ObjMetadataRefs getObjectMetadataRefs(String objectName, Module cutoffModule) {
@@ -325,7 +323,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             if (ref.getObjectsName() == null)
                 continue;
             if (ref.getObjectsName().equals(objectName))
-                metadataRefs.put(ref.getName(), ref);
+                metadataRefs.add(ref);
 
         }
     }

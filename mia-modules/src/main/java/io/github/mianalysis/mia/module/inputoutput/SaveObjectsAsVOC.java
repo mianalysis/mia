@@ -14,7 +14,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromROIs.ObjMetadataItems;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
@@ -36,7 +35,7 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.io.VOCWriter;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ExportVOCAnnotations extends AbstractSaver {
+public class SaveObjectsAsVOC extends AbstractSaver {
     /**
     * 
     */
@@ -62,8 +61,8 @@ public class ExportVOCAnnotations extends AbstractSaver {
     */
     public static final String METADATA_FOR_CLASS = "Metadata item for class";
 
-    public ExportVOCAnnotations(Modules modules) {
-        super("Export VOC annotations", modules);
+    public SaveObjectsAsVOC(Modules modules) {
+        super("Save objects as VOC", modules);
     }
 
     @Override

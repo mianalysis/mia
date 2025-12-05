@@ -282,50 +282,51 @@ public abstract class GeneralOutputter extends Module {
 
     }
 
-    private ParameterUpdaterAndGetter getOutputUpdaterAndGetter() {
-        return new ParameterUpdaterAndGetter() {
+    protected ParameterUpdaterAndGetter getOutputUpdaterAndGetter() {
+        return new OutputterParameterUpdaterAndGetter();
+    }
 
-            @Override
-            public Parameters updateAndGet(Parameters params) {
-                Parameters returnedParameters = new Parameters();
+    public class OutputterParameterUpdaterAndGetter implements ParameterUpdaterAndGetter {
+        @Override
+        public Parameters updateAndGet(Parameters parameters) {
+            Parameters returnedParameters = new Parameters();
 
-                returnedParameters.add(params.getParameter(OUTPUT_TYPE));
-                switch ((String) params.getValue(OUTPUT_TYPE, null)) {
+                returnedParameters.add(parameters.getParameter(OUTPUT_TYPE));
+                switch ((String) parameters.getValue(OUTPUT_TYPE, null)) {
                     case OutputTypes.IMAGE:
-                        returnedParameters.add(params.getParameter(OUTPUT_IMAGE));
+                        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
                         break;
                     case OutputTypes.IMAGE_MEASUREMENT:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_IMAGE));
-                        returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
+                        returnedParameters.add(parameters.getParameter(ASSOCIATED_IMAGE));
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME));
                         break;
                     case OutputTypes.METADATA:
-                        returnedParameters.add(params.getParameter(METADATA_NAME));
+                        returnedParameters.add(parameters.getParameter(METADATA_NAME));
                         break;
                     case OutputTypes.OBJECTS:
-                        returnedParameters.add(params.getParameter(OUTPUT_OBJECTS));
+                        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                         break;
                     case OutputTypes.OBJECT_MEASUREMENT:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
-                        returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
+                        returnedParameters.add(parameters.getParameter(ASSOCIATED_OBJECTS));
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME));
                         break;
                     case OutputTypes.OBJECT_METADATA_ITEM:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
-                        returnedParameters.add(params.getParameter(OBJECT_METADATA_NAME));
+                        returnedParameters.add(parameters.getParameter(ASSOCIATED_OBJECTS));
+                        returnedParameters.add(parameters.getParameter(OBJECT_METADATA_NAME));
                         break;
                     case OutputTypes.PARENT_CHILD:
-                        returnedParameters.add(params.getParameter(PARENT_NAME));
-                        returnedParameters.add(params.getParameter(CHILDREN_NAME));
+                        returnedParameters.add(parameters.getParameter(PARENT_NAME));
+                        returnedParameters.add(parameters.getParameter(CHILDREN_NAME));
                         break;
                     case OutputTypes.PARTNERS:
-                        returnedParameters.add(params.getParameter(PARTNERS_NAME_1));
-                        returnedParameters.add(params.getParameter(PARTNERS_NAME_2));
+                        returnedParameters.add(parameters.getParameter(PARTNERS_NAME_1));
+                        returnedParameters.add(parameters.getParameter(PARTNERS_NAME_2));
                         break;
                 }
 
                 return returnedParameters;
 
-            }
-        };
+        }
     }
 
     protected class InputObjectsInclusiveP extends InputObjectsP {
@@ -353,6 +354,7 @@ public abstract class GeneralOutputter extends Module {
                     objects.add((OutputObjectsP) collection.getParameter(OUTPUT_OBJECTS));
 
             return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
+            
         }
 
         @Override

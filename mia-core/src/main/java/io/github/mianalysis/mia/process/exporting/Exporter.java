@@ -861,9 +861,9 @@ public class Exporter {
                 if (!ref.isExportIndividual())
                     continue;
 
-                metadataNames.put(col, ref.getNickname());
+                metadataNames.put(col, ref.getName());
                 cell = objectHeaderRow.createCell(col++);
-                cell.setCellValue(getMetadataString(ref.getName()));
+                cell.setCellValue(getMetadataString(ref.getNickname()));
                 cell.setCellStyle(cellStyle);
 
             }

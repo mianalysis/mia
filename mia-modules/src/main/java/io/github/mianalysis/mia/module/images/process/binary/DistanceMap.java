@@ -3,6 +3,8 @@ package io.github.mianalysis.mia.module.images.process.binary;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -12,6 +14,7 @@ import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.binary.distmap.ChamferMask3D;
 import inra.ijpb.binary.distmap.ChamferMasks3D;
+import inra.ijpb.binary.geodesic.GeodesicDistanceTransform3DFloat;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -113,6 +116,10 @@ public class DistanceMap extends Module {
      */
     public static final String BINARY_LOGIC = "Binary logic";
 
+    public static final String USE_GEODESIC_DISTANCES = "Use geodesic distances";
+
+    public static final String MASK_IMAGE = "Mask image";
+
     public interface WeightModes {
         String BORGEFORS = "Borgefors (3,4,5) (Emax = 0.1181)";
         String CHESSBOARD = "Chessboard (1,1,1)";
@@ -150,7 +157,7 @@ public class DistanceMap extends Module {
     }
 
     public static Image process(Image inputImage, String outputImageName, boolean blackBackground, String weightMode,
-            boolean matchZToXY, boolean verbose) {
+            boolean matchZToXY, boolean verbose, boolean useGeodesicDistances, @Nullable Image maskImage) {
         String name = new DistanceMap(null).getName();
 
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -169,7 +176,12 @@ public class DistanceMap extends Module {
                 inputIpl.getNChannels(), nSlices, nFrames, 32);
         ImageStack outputIst = outputIpl.getStack();
 
-        ChamferDistanceTransform3DFloat transform = new ChamferDistanceTransform3DFloat(weights, true);
+        ChamferDistanceTransform3DFloat transform = useGeodesicDistances
+                ? null
+                : new ChamferDistanceTransform3DFloat(weights, true);
+        GeodesicDistanceTransform3DFloat geodesicTransform = useGeodesicDistances
+                ? new GeodesicDistanceTransform3DFloat(weights, true)
+                : null;
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -187,7 +199,21 @@ public class DistanceMap extends Module {
                 if (matchZToXY && nSlices > 1)
                     currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
 
-                ImageStack ist = transform.distanceMap(currentIpl.getStack().duplicate());
+                ImageStack ist;
+                if (useGeodesicDistances) {
+                    ImagePlus maskIpl = SubHyperstackMaker
+                            .makeSubhyperstack(maskImage.getImagePlus(), String.valueOf(c + 1), "1-" + nSlices,
+                                    String.valueOf(t + 1))
+                            .duplicate();
+
+                    if (matchZToXY && nSlices > 1)
+                        maskIpl = InterpolateZAxis.matchZToXY(maskIpl, InterpolateZAxis.InterpolationModes.NONE);
+
+                    ist = geodesicTransform.geodesicDistanceMap(currentIpl.getStack().duplicate(),
+                            maskIpl.getStack().duplicate());
+                } else {
+                    ist = transform.distanceMap(currentIpl.getStack().duplicate());
+                }
                 currentIpl.setStack(ist);
 
                 // If the input image as interpolated, it now needs to be returned to the
@@ -231,6 +257,18 @@ public class DistanceMap extends Module {
 
     }
 
+    public static Image process(Image inputImage, String outputImageName, boolean blackBackground, String weightMode,
+            boolean matchZToXY, boolean verbose) {
+        return process(inputImage, outputImageName, blackBackground, weightMode, matchZToXY, verbose, false, null);
+
+    }
+
+    public static void applyCalibratedUnits(Image inputImage, double dppXY) {
+        ImageTypeConverter.process(inputImage, 32, ImageTypeConverter.ScalingModes.CLIP);
+        ImageMath.process(inputImage, ImageMath.CalculationModes.MULTIPLY, dppXY);
+
+    }
+
     static ChamferMask3D getFloatWeights(String weightMode) {
         switch (weightMode) {
             case WeightModes.BORGEFORS:
@@ -255,12 +293,6 @@ public class DistanceMap extends Module {
         }
     }
 
-    public static void applyCalibratedUnits(Image inputImage, double dppXY) {
-        ImageTypeConverter.process(inputImage, 32, ImageTypeConverter.ScalingModes.CLIP);
-        ImageMath.process(inputImage, ImageMath.CalculationModes.MULTIPLY, dppXY);
-
-    }
-
     @Override
     public Category getCategory() {
         return Categories.IMAGES_PROCESS_BINARY;
@@ -281,20 +313,24 @@ public class DistanceMap extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
-
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String weightMode = parameters.getValue(WEIGHT_MODE, workspace);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE, workspace);
         String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+        boolean useGeodesicDistances = parameters.getValue(USE_GEODESIC_DISTANCES, workspace);
+        String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
+
+        // Getting input image
+        Image inputImage = workspace.getImage(inputImageName);
+        Image maskImage = useGeodesicDistances ? workspace.getImage(maskImageName) : null;
 
         // Running distance map
-        Image distanceMap = process(inputImage, outputImageName, blackBackground, weightMode, matchZToXY, true);
+        Image distanceMap = process(inputImage, outputImageName, blackBackground, weightMode,
+                matchZToXY, true, useGeodesicDistances, maskImage);
 
         // Applying spatial calibration
         if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
@@ -323,6 +359,8 @@ public class DistanceMap extends Module {
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+        parameters.add(new BooleanP(USE_GEODESIC_DISTANCES, this, false));
+        parameters.add(new InputImageP(MASK_IMAGE, this));
 
         addParameterDescriptions();
 
@@ -330,7 +368,22 @@ public class DistanceMap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(DISTANCE_MAP_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(WEIGHT_MODE));
+        returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
+        returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
+        returnedParameters.add(parameters.getParameter(USE_GEODESIC_DISTANCES));
+        if ((Boolean) parameters.getValue(USE_GEODESIC_DISTANCES, null))
+            returnedParameters.add(parameters.getParameter(MASK_IMAGE));
+
+        return returnedParameters;
 
     }
 
@@ -345,8 +398,8 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

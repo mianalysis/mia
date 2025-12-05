@@ -1,52 +1,53 @@
 package io.github.mianalysis.mia.object.refs.collections;
 
-import java.util.TreeMap;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 
-public class ObjMetadataRefs extends TreeMap<String, ObjMetadataRef>
-        implements Refs<ObjMetadataRef> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 225316245096553320L;
-
-    public void updateImageObjectName(String metadataName, String objectsName) {
-        get(metadataName).setObjectsName(objectsName);
-    }
-
+public class ObjMetadataRefs extends HashSet<ObjMetadataRef> implements Refs<ObjMetadataRef> {
     public String[] getMetadataNames() {
-        return keySet().toArray(new String[0]);
+        return stream().map((v) -> v.getName()).sorted().toArray(size -> new String[size]);
     }
 
-    public ObjMetadataRef getOrPut(String key) {
+    public ObjMetadataRef getOrPut(String metadataName) {
         // Stripping placeholders for units
-        key = SpatialUnit.replace(key);
-        key = TemporalUnit.replace(key);
+        metadataName = SpatialUnit.replace(metadataName);
+        metadataName = TemporalUnit.replace(metadataName);
 
-        putIfAbsent((String) key, new ObjMetadataRef((String) key));
+        String finalMetadataName = metadataName;
 
-        return get(key);
+        Optional<ObjMetadataRef> matches = stream().filter((v) -> v.getName().equals(finalMetadataName)).findFirst();
+        if (matches.isPresent())
+            return matches.get();
+
+        ObjMetadataRef ref = new ObjMetadataRef((String) metadataName);
+        add(ref);
+
+        return ref;
 
     }
 
     public boolean hasExportedMetadata() {
         return size() >= 1;
-
     }
 
-    public boolean add(ObjMetadataRef ref) {
-        put(ref.getName(), ref);
-        return true;
+    public boolean containsMetadata(String metadataName) {
+        return stream().anyMatch(v -> v.getName().endsWith(metadataName));
     }
 
     public void addBlankMetadata(Obj obj) {
-        MIA.log.writeError("To implement - ObjMetadataRefs");
-        // for (ObjMetadataRef ref : values())
-        //     obj.addMeasurement(new Measurement(ref.getName(), Double.NaN));
+        for (ObjMetadataRef ref : values())
+            obj.addMetadataItem(new ObjMetadata(ref.getName(), ""));
+    }
+
+    @Override
+    public Collection<ObjMetadataRef> values() {
+        return this;
     }
 }

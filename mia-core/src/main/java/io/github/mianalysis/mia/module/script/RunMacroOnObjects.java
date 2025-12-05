@@ -47,69 +47,102 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the "Run macro" module, which runs once per analysis run).  This module can optionally open an image into ImageJ for the macro to run on.  Variables assigned during the macro can be extracted and stored as measurements associated with the current object.<br><br>Note: ImageJ can only run one macro at a time, so by using this module the "Simultaneous jobs" parameter of the "Input control" module must be set to 1.<br><br>Note: When this module runs, all windows currently open in ImageJ will be automatically hidden, then re-opened upon macro completion.  This is to prevent accidental interference while the macro is running.  It also allows the macro to run much faster (batch mode).  To keep images open while the macro is running (for example, during debugging) start the macro with the command "setBatchMode(false)".
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Run a specific ImageJ macro once per object from a specified input object
+ * collection (as opposed to the "Run macro" module, which runs once per
+ * analysis run). This module can optionally open an image into ImageJ for the
+ * macro to run on. Variables assigned during the macro can be extracted and
+ * stored as measurements associated with the current object.<br>
+ * <br>
+ * Note: ImageJ can only run one macro at a time, so by using this module the
+ * "Simultaneous jobs" parameter of the "Input control" module must be set to
+ * 1.<br>
+ * <br>
+ * Note: When this module runs, all windows currently open in ImageJ will be
+ * automatically hidden, then re-opened upon macro completion. This is to
+ * prevent accidental interference while the macro is running. It also allows
+ * the macro to run much faster (batch mode). To keep images open while the
+ * macro is running (for example, during debugging) start the macro with the
+ * command "setBatchMode(false)".
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunMacroOnObjects extends AbstractMacroRunner {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image and object input";
 
-	/**
-	* The specified macro will be run once on each of the objects from this object collection.  No information (e.g. assigned variables) is transferred between macro runs.
-	*/
+    /**
+     * The specified macro will be run once on each of the objects from this object
+     * collection. No information (e.g. assigned variables) is transferred between
+     * macro runs.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the "active" image the macro runs on.
-	*/
+    /**
+     * When selected, a specified image from the workspace will be opened prior to
+     * running the macro. This image will be the "active" image the macro runs on.
+     */
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
 
-	/**
-	* If "Provide input image" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.
-	*/
+    /**
+     * If "Provide input image" is selected, this is the image that will be loaded
+     * into the macro. A duplicate of this image is made, so the image stored in the
+     * workspace will not be affected by any processing in the macro.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* When selected (and "Provide input image" is also selected), the input image will be updated to the currently-active image at the end of each iteration.  This allows all object runs for a macro to alter the input image..
-	*/
+    /**
+     * When selected (and "Provide input image" is also selected), the input image
+     * will be updated to the currently-active image at the end of each iteration.
+     * This allows all object runs for a macro to alter the input image..
+     */
     public static final String UPDATE_INPUT_IMAGE = "Update image after each run";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String VARIABLE_SEPARATOR = "Variables input";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MACRO_SEPARATOR = "Macro definition";
 
-	/**
-	* Select the source for the macro code:<br><ul><li>"Macro file" Load the macro from the file specified by the "Macro file" parameter.</li><li>"Macro text" Macro code is written directly into the "Macro text" box.</li></ul>
-	*/
+    /**
+     * Select the source for the macro code:<br>
+     * <ul>
+     * <li>"Macro file" Load the macro from the file specified by the "Macro file"
+     * parameter.</li>
+     * <li>"Macro text" Macro code is written directly into the "Macro text"
+     * box.</li>
+     * </ul>
+     */
     public static final String MACRO_MODE = "Macro mode";
 
-	/**
-	* Macro code to be executed.  MIA macro commands are enabled using the "run("Enable MIA Extensions");" command which is included by default.  This should always be the first line of a macro if these commands are needed.
-	*/
+    /**
+     * Macro code to be executed. MIA macro commands are enabled using the
+     * "run("Enable MIA Extensions");" command which is included by default. This
+     * should always be the first line of a macro if these commands are needed.
+     */
     public static final String MACRO_TEXT = "Macro text";
 
-	/**
-	* Select a macro file (.ijm) to be run by this module.  As with the "Macro text" parameter, this macro should start with the "run("Enable MIA Extensions");" command.
-	*/
+    /**
+     * Select a macro file (.ijm) to be run by this module. As with the "Macro text"
+     * parameter, this macro should start with the "run("Enable MIA Extensions");"
+     * command.
+     */
     public static final String MACRO_FILE = "Macro file";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Measurement output";
 
-	/**
-	* This allows variables assigned in the macro to be stored as measurements associated with the current object.
-	*/
+    /**
+     * This allows variables assigned in the macro to be stored as measurements
+     * associated with the current object.
+     */
     public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
     public static final String VARIABLE = "Variable";
 
@@ -177,13 +210,13 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE,workspace);
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        boolean updateInputImage = parameters.getValue(UPDATE_INPUT_IMAGE,workspace);
-        String macroMode = parameters.getValue(MACRO_MODE,workspace);
-        String macroText = parameters.getValue(MACRO_TEXT,workspace);
-        String macroFile = parameters.getValue(MACRO_FILE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE, workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        boolean updateInputImage = parameters.getValue(UPDATE_INPUT_IMAGE, workspace);
+        String macroMode = parameters.getValue(MACRO_MODE, workspace);
+        String macroText = parameters.getValue(MACRO_TEXT, workspace);
+        String macroFile = parameters.getValue(MACRO_FILE, workspace);
 
         // Getting the input objects
         Objs inputObjects = workspace.getObjects(inputObjectsName);
@@ -302,14 +335,14 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
-        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE,workspace)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE, workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(UPDATE_INPUT_IMAGE));
         }
@@ -319,7 +352,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
-        switch ((String) parameters.getValue(MACRO_MODE,workspace)) {
+        switch ((String) parameters.getValue(MACRO_MODE, workspace)) {
             case MacroModes.MACRO_FILE:
                 returnedParameters.add(parameters.getParameter(MACRO_FILE));
                 break;
@@ -337,15 +370,15 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE, workspace);
@@ -362,23 +395,23 @@ Workspace workspace = null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
