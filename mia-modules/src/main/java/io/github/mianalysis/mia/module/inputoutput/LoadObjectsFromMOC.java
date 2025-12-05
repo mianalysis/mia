@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,7 +97,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
     }
 
     public LoadObjectsFromMOC(Modules modules) {
-        super("Load objects from MOC (MIA collection)", modules);
+        super("Load objects from MOC (MIA)", modules);
     }
 
     @Override
@@ -122,10 +123,9 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
             out.write(buf, 0, len);
         out.close();
 
-        String jsonString = out.toString();
+        String jsonString = out.toString("UTF-8");
         jsonString = jsonString.substring(jsonString.indexOf("{"));
         jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
-        jsonString = jsonString.replaceAll("[^\\x20-\\x7E]", ""); // Remove unwanted characters
 
         return new JSONObject(jsonString);
 
@@ -354,11 +354,10 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                 JSONArray measurementArray = objJSON.getJSONArray(FieldKeys.MEASUREMENTS.toString());
                 measurementArray.forEach((v) -> {
                     ArrayList<String> currExportedMeasurements = exportedMeasurements.get(objectsName);
-                    String measurementNickname = ((JSONObject) v).getString(RefKeys.NAME.toString());
-                    if (currExportedMeasurements == null || !currExportedMeasurements.contains(measurementNickname))
+                    String measurementName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    if (currExportedMeasurements == null || !currExportedMeasurements.contains(measurementName))
                         return;
 
-                    String measurementName = objectsName + " // " + measurementNickname;
                     double measurementValue = ((JSONObject) v).getDouble(RefKeys.VALUE.toString());
                     outputObject.addMeasurement(new Measurement(measurementName, measurementValue));
                 });
@@ -367,11 +366,10 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                 JSONArray metadataArray = objJSON.getJSONArray(FieldKeys.METADATA.toString());
                 metadataArray.forEach((v) -> {
                     ArrayList<String> currExportedMetadata = exportedMetadata.get(objectsName);
-                    String metadataNickname = ((JSONObject) v).getString(RefKeys.NAME.toString());
-                    if (currExportedMetadata == null || !currExportedMetadata.contains(metadataNickname))
+                    String metadataName = ((JSONObject) v).getString(RefKeys.NAME.toString());
+                    if (currExportedMetadata == null || !currExportedMetadata.contains(metadataName))
                         return;
 
-                    String metadataName = objectsName + " // " + metadataNickname;
                     String metadataValue = ((JSONObject) v).getString(RefKeys.VALUE.toString());
                     outputObject.addMetadataItem(new ObjMetadata(metadataName, metadataValue));
                 });
@@ -675,12 +673,22 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_MEASUREMENT)
                     && (Boolean) collection.getValue(EXPORT, workspace)) {
                 String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
-                String measurementNickname = collection.getValue(MEASUREMENT_NAME, workspace);
-                String measurementName = objectsName + " // " + measurementNickname;
+                String measurementName = collection.getValue(MEASUREMENT_NAME, workspace);
 
-                ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
-                ref.setNickname(measurementNickname);
-                ref.setObjectsName(objectsName);
+                // We can't use the usual "getOrPut" as we may have duplicate measurement names
+                // across different objects. Instead, we need to manually check both names and
+                // object names
+                ObjMeasurementRef ref = null;
+                for (ObjMeasurementRef currRef : objectMeasurementRefs.values()) {
+                    if (currRef.getName().equals(measurementName) && currRef.getObjectsName().equals(objectsName)) {
+                        ref = currRef;
+                        break;
+                    }
+                }
+
+                if (ref == null)
+                    ref = new ObjMeasurementRef(measurementName, objectsName);
+
                 returnedRefs.add(ref);
 
             }
@@ -702,13 +710,24 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
             if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_METADATA_ITEM)
                     && (Boolean) collection.getValue(EXPORT, workspace)) {
                 String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
-                String metadataNickname = collection.getValue(OBJECT_METADATA_NAME, workspace);
-                String metadataName = objectsName + " // " + metadataNickname;
+                String metadataName = collection.getValue(OBJECT_METADATA_NAME, workspace);
 
-                ObjMetadataRef ref = objectMetadataRefs.getOrPut(metadataName);
-                ref.setNickname(metadataNickname);
-                ref.setObjectsName(objectsName);
+                // We can't use the usual "getOrPut" as we may have duplicate measurement names
+                // across different objects. Instead, we need to manually check both names and
+                // object names
+                ObjMetadataRef ref = null;
+                for (ObjMetadataRef currRef : objectMetadataRefs.values()) {
+                    if (currRef.getName().equals(metadataName) && currRef.getObjectsName().equals(objectsName)) {
+                        ref = currRef;
+                        break;
+                    }
+                }
+
+                if (ref == null)
+                    ref = new ObjMetadataRef(metadataName, objectsName);
+
                 returnedRefs.add(ref);
+
             }
         }
 

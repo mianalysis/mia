@@ -194,10 +194,9 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
                 MeasureObjectTexture.getFullName("", MeasureObjectTexture.Measurements.CORRELATION, offs, false),
                 MeasureObjectTexture.getFullName("", MeasureObjectTexture.Measurements.ENTROPY, offs, false) };
 
-        for (String expectedName1 : expectedNames1) {
-            assertTrue(references1.containsKey(expectedName1));
-        }
-
+        for (String expectedName1 : expectedNames1)
+            assertTrue(references1.containsMeasurement(expectedName1));
+        
         // Checking the values for the second object set
         ObjMeasurementRefs references2 = modules.getObjectMeasurementRefs(obj2Name);
         assertEquals(9, references2.size());
@@ -211,9 +210,9 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
                 MeasureObjectShape.Measurements.HEIGHT_SLICE,
                 SpatialUnit.replace(MeasureObjectShape.Measurements.HEIGHT_CAL) };
 
-        for (String expectedName2 : expectedNames2) {
-            assertTrue(references2.containsKey(expectedName2));
-        }
+        for (String expectedName2 : expectedNames2)
+            assertTrue(references2.containsMeasurement(expectedName2));
+        
     }
 
     @Test
@@ -255,10 +254,9 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
                 SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
                 SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL) };
 
-        for (String expectedName1 : expectedNames1) {
-            assertTrue(references1.containsKey(expectedName1));
-        }
-
+        for (String expectedName1 : expectedNames1)
+            assertTrue(references1.containsMeasurement(expectedName1));
+        
         // Checking the values for the second object set
         ObjMeasurementRefs references2 = modules.getObjectMeasurementRefs(obj2Name, measureObjectShape);
         assertEquals(0, references2.size());
