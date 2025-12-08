@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -77,7 +76,7 @@ public class SaveObjectsAsMOC extends AbstractSaver {
 
     public enum FieldKeys {
         ID, VOLUME_TYPE, CHILDREN, MEASUREMENTS, METADATA, NAME, PARENTS, PARTNERS, ROIS, DPPXY, DPPZ, HEIGHT, WIDTH,
-        UNITS, N_SLICES, N_FRAMES, FRAME_INTERVAL, TEMPORAL_UNIT
+        UNITS, N_SLICES, N_FRAMES, FRAME_INTERVAL, TEMPORAL_UNIT, T
     }
 
     public enum RefKeys {
@@ -194,6 +193,7 @@ public class SaveObjectsAsMOC extends AbstractSaver {
 
         jsonObject.put(FieldKeys.NAME.toString(), inputObject.getName());
         jsonObject.put(FieldKeys.ID.toString(), inputObject.getID());
+        jsonObject.put(FieldKeys.T.toString(), inputObject.getT());
         jsonObject.put(FieldKeys.VOLUME_TYPE.toString(), inputObject.getVolumeType().name());
         jsonObject.put(FieldKeys.WIDTH.toString(), inputObject.getWidth());
         jsonObject.put(FieldKeys.HEIGHT.toString(), inputObject.getHeight());
@@ -204,7 +204,7 @@ public class SaveObjectsAsMOC extends AbstractSaver {
         jsonObject.put(FieldKeys.N_SLICES.toString(), inputObject.getNSlices());
         jsonObject.put(FieldKeys.FRAME_INTERVAL.toString(), inputObject.getObjectCollection().getFrameInterval());
         jsonObject.put(FieldKeys.TEMPORAL_UNIT.toString(),
-                inputObject.getObjectCollection().getTemporalUnit().toString());
+                inputObject.getObjectCollection().getTemporalUnit().getSymbol().toString());
 
         JSONArray measurementArray = new JSONArray();
         for (Measurement currObjectMeasurement : inputObject.getMeasurements().values()) {
@@ -274,8 +274,7 @@ public class SaveObjectsAsMOC extends AbstractSaver {
         for (int z : rois.keySet()) {
             Roi roi = rois.get(z);
 
-            String label = inputObject.getName() + "_ID" + String.valueOf(oid) + "_T"
-                    + (inputObject.getT() + 1) + "_Z" + (z + 1) + ".roi";
+            String label = inputObject.getName() + "_ID" + String.valueOf(oid) + "_Z" + z + ".roi";
 
             roi.setName(label);
 
