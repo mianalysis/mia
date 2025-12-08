@@ -43,7 +43,7 @@ import io.github.mianalysis.mia.object.system.Status;
 * Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href="https://www.cellclassifier.org/">Advanced Cell Classifier documentation</a>.
 */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ExportACCDataset extends Module {
+public class SaveObjectsAsACC extends Module {
 
 	/**
 	* 
@@ -107,8 +107,8 @@ public class ExportACCDataset extends Module {
 	*/
     public static final String MEASUREMENTS = "Measurements";
 
-    public ExportACCDataset(Modules modules) {
-        super("Export ACC dataset", modules);
+    public SaveObjectsAsACC(Modules modules) {
+        super("Save objects as ACC", modules);
     }
 
     @Override

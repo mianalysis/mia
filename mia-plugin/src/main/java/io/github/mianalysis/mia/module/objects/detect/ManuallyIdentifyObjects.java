@@ -639,7 +639,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.QUADTREE, VolumeTypes.ALL));
         parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
         parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
         parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));

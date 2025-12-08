@@ -5,20 +5,20 @@ import java.util.HashMap;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromSWC;
+import io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromCSV;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
 @Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
-public class LoadSWCLostAndFound extends LostAndFoundItem {
+public class LoadObjectsFromCSVLostFound extends LostAndFoundItem {
 
     @Override
     public String getModuleName() {
-        return new LoadObjectsFromSWC(null).getClass().getSimpleName();
+        return new LoadObjectsFromCSV(null).getClass().getSimpleName();
     }
 
     @Override
     public String[] getPreviousModuleNames() {
-        return new String[]{"Load objects from SWC file", "LoadSWC"};
+        return new String[]{"Import objects from CSV"};
     }
 
     @Override

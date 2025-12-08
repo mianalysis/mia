@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -21,10 +22,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
@@ -169,7 +170,11 @@ public class ParametersPanel extends JScrollPane {
 
         // Iterating over the measurements for the current object, adding a control for
         // each
-        for (ExportableRef reference : refs.values()) {
+        TreeMap<String,ExportableRef> sortedRefs = new TreeMap<>();
+        for (ExportableRef reference : refs.values())
+            sortedRefs.put(reference.getNickname(), reference);
+
+        for (ExportableRef reference : sortedRefs.values()) {
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleRefControl(reference);
             c.gridy++;
@@ -192,7 +197,11 @@ public class ParametersPanel extends JScrollPane {
 
         // Iterating over the measurements for the current object, adding a control for
         // each
-        for (SummaryRef reference : refs.values()) {
+        TreeMap<String,SummaryRef> sortedRefs = new TreeMap<>();
+        for (SummaryRef reference : refs.values())
+            sortedRefs.put(reference.getNickname(), reference);
+
+        for (SummaryRef reference : sortedRefs.values()) {
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleSummaryRefControl(reference);
             c.gridy++;

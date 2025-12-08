@@ -1,6 +1,8 @@
 package io.github.mianalysis.mia.object.refs.collections;
 
-import java.util.TreeMap;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
 
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -8,44 +10,44 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 
-public class ObjMeasurementRefs extends TreeMap<String, ObjMeasurementRef>
-        implements Refs<ObjMeasurementRef> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 225316245096553320L;
-
-    public void updateImageObjectName(String measurementName, String objectsName) {
-        get(measurementName).setObjectsName(objectsName);
-    }
+public class ObjMeasurementRefs extends HashSet<ObjMeasurementRef> implements Refs<ObjMeasurementRef> {
 
     public String[] getMeasurementNames() {
-        return keySet().toArray(new String[0]);
+        return stream().map((v) -> v.getName()).sorted().toArray(size -> new String[size]);
     }
 
-    public ObjMeasurementRef getOrPut(String key) {
+    public ObjMeasurementRef getOrPut(String measurementName) {
         // Stripping placeholders for units
-        key = SpatialUnit.replace(key);
-        key = TemporalUnit.replace(key);
+        measurementName = SpatialUnit.replace(measurementName);
+        measurementName = TemporalUnit.replace(measurementName);
 
-        putIfAbsent((String) key, new ObjMeasurementRef((String) key));
+        String finalMeasurementName = measurementName;
+        Optional<ObjMeasurementRef> matches = stream().filter((v) -> v.getName().equals(finalMeasurementName)).findFirst();
+        if (matches.isPresent())
+            return matches.get();
 
-        return get(key);
+        ObjMeasurementRef ref = new ObjMeasurementRef((String) measurementName);
+        add(ref);
+        
+        return ref;
 
     }
 
     public boolean hasExportedMeasurements() {
         return size() >= 1;
-
     }
 
-    public boolean add(ObjMeasurementRef ref) {
-        put(ref.getName(), ref);
-        return true;
+    public boolean containsMeasurement(String measurementName) {
+        return stream().anyMatch(v -> v.getName().endsWith(measurementName));
     }
 
     public void addBlankMeasurements(Obj obj) {
         for (ObjMeasurementRef ref : values())
             obj.addMeasurement(new Measurement(ref.getName(), Double.NaN));
+    }
+
+    @Override
+    public Collection<ObjMeasurementRef> values() {
+        return this;
     }
 }

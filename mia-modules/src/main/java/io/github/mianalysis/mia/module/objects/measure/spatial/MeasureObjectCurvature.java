@@ -10,6 +10,7 @@ import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -285,8 +286,9 @@ public class MeasureObjectCurvature extends Module {
         String REL_LOC_OF_MIN_CURVATURE = "CURVATURE // REL_LOC_OF_MIN_CURVATURE";
         String REL_LOC_OF_MAX_CURVATURE = "CURVATURE // REL_LOC_OF_MAX_CURVATURE";
         String HEAD_TAIL_ANGLE_DEGS = "CURVATURE // HEAD_TAIL_ANGLE_DEGS";
-        String ABSOLUTE_CURVATURE_PX = "ABSOLUTE_CURVATURE_(PX⁻¹)";
-        String ABSOLUTE_CURVATURE_CAL = "ABSOLUTE_CURVATURE_(${SCAL}⁻¹)";
+        String ABSOLUTE_CURVATURE_PX = "CURVATURE // ABSOLUTE_CURVATURE_(PX⁻¹)";
+        String ABSOLUTE_CURVATURE_CAL = "CURVATURE // ABSOLUTE_CURVATURE_(${SCAL}⁻¹)";
+        String ORIENTATION_XY_DEGS = "CURVATURE // ORIENTATION_XY_(DEGS)";
 
     }
 
@@ -488,6 +490,7 @@ public class MeasureObjectCurvature extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+
         }
 
         if (signedCurvature) {
@@ -515,7 +518,7 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public Obj createFullContour(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double> spline,
+    public Obj createFullContour(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double[]> spline,
             int everyNPoints, boolean isLoop) {
         if (spline == null)
             return null;
@@ -571,8 +574,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public void createControlPointObjects(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double> spline,
-            int everyNPoints) {
+    public void createControlPointObjects(Obj inputObject, Objs outputObjects, TreeMap<Point<Integer>,Double[]> spline, int everyNPoints) {
         int i = 0;
         for (Point<Integer> vertex : spline.keySet()) {
             try {
@@ -581,8 +583,9 @@ public class MeasureObjectCurvature extends Module {
                     splineObject.add(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);
-                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_PX,spline.get(vertex)));
-                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_CAL,spline.get(vertex)/inputObject.getDppXY()));
+                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_PX,spline.get(vertex)[0]));
+                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_CAL,spline.get(vertex)[0]/inputObject.getDppXY()));
+                    splineObject.addMeasurement(new Measurement(Measurements.ORIENTATION_XY_DEGS,spline.get(vertex)[1]));
                     
                     inputObject.addChild(splineObject);
                 }
@@ -598,7 +601,7 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public String getVersionNumber() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -723,12 +726,14 @@ public class MeasureObjectCurvature extends Module {
             switch (objectOutputMode) {
                 case ObjectOutputModes.CONTROL_POINTS:
                 case ObjectOutputModes.FULL_CONTOUR:
-                    TreeMap<Point<Double>, Double> spline = calculator.getSpline();
-                    TreeMap<Point<Integer>, Double> splinePath = new TreeMap<>();
+                    TreeMap<Point<Double>, Double[]> spline = calculator.getSpline();
+                    TreeMap<Point<Integer>, Double[]> splinePath = new TreeMap<>();
 
-                    for (Point<Double> ptIn : spline.keySet())
-                        splinePath.put(new Point<Integer>((int) Math.round(ptIn.x), (int) Math.round(ptIn.y),
-                                (int) (ptIn.z / conversion)), spline.get(ptIn));
+                    for (Point<Double> ptIn : spline.keySet()) {
+                        Point<Integer> pt = new Point<Integer>((int) Math.round(ptIn.x), (int) Math.round(ptIn.y),
+                                (int) (ptIn.z / conversion));
+                        splinePath.put(pt, spline.get(ptIn));
+                    }
 
                     switch (objectOutputMode) {
                         case ObjectOutputModes.FULL_CONTOUR:
@@ -992,6 +997,10 @@ public class MeasureObjectCurvature extends Module {
             returnedRefs.add(ref);
 
             ref = objectMeasurementRefs.getOrPut(Measurements.ABSOLUTE_CURVATURE_CAL);
+            ref.setObjectsName(outputObjectsName);
+            returnedRefs.add(ref);
+
+            ref = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_XY_DEGS);
             ref.setObjectsName(outputObjectsName);
             returnedRefs.add(ref);
 

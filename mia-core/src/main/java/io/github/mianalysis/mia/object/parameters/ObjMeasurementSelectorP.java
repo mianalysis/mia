@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import com.drew.lang.annotations.NotNull;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -74,9 +75,9 @@ public class ObjMeasurementSelectorP extends Parameter {
         Pattern pattern = Pattern.compile("\\[NAME:(.+?),STATE:(.+?)]");
         Matcher matcher = pattern.matcher(string);
 
-        while (matcher.find()) {
+        while (matcher.find())
             measurementStates.put(matcher.group(1), Boolean.valueOf(matcher.group(2)));
-        }
+        
     }
 
     @Override
@@ -99,8 +100,7 @@ public class ObjMeasurementSelectorP extends Parameter {
 
     /**
      * Iterate over all measurements. If they're not present in the current object,
-     * remove them. If they're
-     * missing, add them.
+     * remove them. If they're missing, add them.
      */
     public void validateStates() {
         // Getting list of all available measurements for selected object.
@@ -113,12 +113,12 @@ public class ObjMeasurementSelectorP extends Parameter {
         }
 
         // Iterate over all measurement states and check their availability
-        measurementStates.keySet().removeIf(measurementName -> !refs.keySet().contains(measurementName));
+        measurementStates.keySet().removeIf(measurementName -> !refs.containsMeasurement(measurementName));
 
         // Iterate over all measurements and add any that are missing
-        for (ObjMeasurementRef ref : refs.values()) {
+        for (ObjMeasurementRef ref : refs.values())
             measurementStates.putIfAbsent(ref.getName(), true);
-        }
+        
     }
 
     public TreeMap<String, Boolean> getMeasurementStates() {

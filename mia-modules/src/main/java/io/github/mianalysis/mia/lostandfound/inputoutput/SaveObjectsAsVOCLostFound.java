@@ -5,28 +5,28 @@ import java.util.HashMap;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromSWC;
+import io.github.mianalysis.mia.module.inputoutput.SaveObjectsAsVOC;
 import io.github.mianalysis.mia.module.lostandfound.LostAndFoundItem;
 
 @Plugin(type = LostAndFoundItem.class, priority = Priority.LOW, visible = true)
-public class LoadSWCLostAndFound extends LostAndFoundItem {
+public class SaveObjectsAsVOCLostFound extends LostAndFoundItem {
 
     @Override
     public String getModuleName() {
-        return new LoadObjectsFromSWC(null).getClass().getSimpleName();
+        return new SaveObjectsAsVOC(null).getClass().getSimpleName();
     }
 
     @Override
     public String[] getPreviousModuleNames() {
-        return new String[]{"Load objects from SWC file", "LoadSWC"};
+        return new String[] { "Export VOC annotations" };
     }
 
     @Override
     public HashMap<String, String> getPreviousParameterNames() {
-        HashMap<String,String> parameterNames = new HashMap<String,String>();
-        
+        HashMap<String, String> parameterNames = new HashMap<String, String>();
+
         return parameterNames;
-        
+
     }
 
     @Override
@@ -34,6 +34,6 @@ public class LoadSWCLostAndFound extends LostAndFoundItem {
         HashMap<String, HashMap<String, String>> parameterValues = null;
 
         return parameterValues;
-    
+
     }
 }

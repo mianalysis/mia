@@ -51,8 +51,8 @@ public class TextParameter extends ParameterControl implements CaretReporter, Fo
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateParameters(true, parameter.getModule());
         GUI.updateModuleStates(true, parameter.getModule());
+        GUI.updateParameters(true, parameter.getModule());
         
         updateControl();
 
