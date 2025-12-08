@@ -628,7 +628,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         }
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
-        if (group.getCollections(true).size() > 1) {
+        if (group.getCollections(true).size() > 0) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
             returnedParameters.addAll(super.updateAndGetParameters());
         }

@@ -18,6 +18,7 @@ import org.scijava.plugin.Plugin;
 
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -194,7 +195,7 @@ public class SaveObjectsAsMOC extends AbstractSaver {
         jsonObject.put(FieldKeys.NAME.toString(), inputObject.getName());
         jsonObject.put(FieldKeys.ID.toString(), inputObject.getID());
         jsonObject.put(FieldKeys.T.toString(), inputObject.getT());
-        jsonObject.put(FieldKeys.VOLUME_TYPE.toString(), inputObject.getVolumeType().name());
+        jsonObject.put(FieldKeys.VOLUME_TYPE.toString(), inputObject.getVolumeType().toString());
         jsonObject.put(FieldKeys.WIDTH.toString(), inputObject.getWidth());
         jsonObject.put(FieldKeys.HEIGHT.toString(), inputObject.getHeight());
         jsonObject.put(FieldKeys.DPPXY.toString(), inputObject.getDppXY());
@@ -202,7 +203,10 @@ public class SaveObjectsAsMOC extends AbstractSaver {
         jsonObject.put(FieldKeys.UNITS.toString(), inputObject.getUnits());
         jsonObject.put(FieldKeys.N_FRAMES.toString(), inputObject.getObjectCollection().getNFrames());
         jsonObject.put(FieldKeys.N_SLICES.toString(), inputObject.getNSlices());
-        jsonObject.put(FieldKeys.FRAME_INTERVAL.toString(), inputObject.getObjectCollection().getFrameInterval());
+        double frameInterval = inputObject.getObjectCollection().getFrameInterval();
+        if (Double.isNaN(frameInterval))
+            frameInterval = 0;
+        jsonObject.put(FieldKeys.FRAME_INTERVAL.toString(), frameInterval);
         jsonObject.put(FieldKeys.TEMPORAL_UNIT.toString(),
                 inputObject.getObjectCollection().getTemporalUnit().getSymbol().toString());
 
