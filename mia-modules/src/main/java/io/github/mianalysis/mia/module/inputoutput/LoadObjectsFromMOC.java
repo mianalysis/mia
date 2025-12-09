@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -126,6 +125,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         String jsonString = out.toString("UTF-8");
         jsonString = jsonString.substring(jsonString.indexOf("{"));
         jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
+        jsonString = jsonString.replaceAll("[\\x00-\\x1F&&[^\\n\\t]]", "");
 
         return new JSONObject(jsonString);
 
@@ -281,6 +281,10 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         HashMap<String, ArrayList<String>> exportedPartners = new HashMap<>();
         LinkedHashMap<Integer, Parameters> collections = groups.getCollections(true);
         for (Parameters collection : collections.values()) {
+            // Removing objects from previous runs
+            if (((String) collection.getValue(OUTPUT_TYPE, workspace)).equals(OutputTypes.OBJECTS))
+                workspace.removeObjects(collection.getValue(OUTPUT_OBJECTS, workspace), false);
+
             if (!(Boolean) collection.getParameter(EXPORT).getValue(workspace))
                 continue;
 
@@ -349,6 +353,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
 
                 Objs outputObjects = workspace.getObjects(objectsName);
                 Obj outputObject = outputObjects.createAndAddNewObject(volumeType, objectID);
+                outputObject.setT(objJSON.getInt(FieldKeys.T.toString()));
 
                 // Adding measurements
                 JSONArray measurementArray = objJSON.getJSONArray(FieldKeys.MEASUREMENTS.toString());
@@ -479,7 +484,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                 }
 
                 int objectID = Integer.parseInt(nameParts[1].substring(2));
-                int objectZ = Integer.parseInt(nameParts[3].substring(1));
+                int objectZ = Integer.parseInt(nameParts[2].substring(1));
                 Objs outputObjects = workspace.getObjects(objectsName);
                 Obj outputObject = outputObjects.get(objectID);
 
@@ -525,7 +530,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         double frameInterval = objJSON.getDouble(FieldKeys.FRAME_INTERVAL.toString());
         String temporalUnitString = objJSON.getString(FieldKeys.TEMPORAL_UNIT.toString());
         Unit<Time> temporalUnit = TemporalUnit.getOMEUnit(temporalUnitString);
-
+        
         return new Objs(objectsName, dppXY, dppZ, units, width, height, nSlices, nFrames, frameInterval, temporalUnit);
 
     }
@@ -623,7 +628,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         }
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
-        if (group.getCollections(true).size() > 1) {
+        if (group.getCollections(true).size() > 0) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
             returnedParameters.addAll(super.updateAndGetParameters());
         }

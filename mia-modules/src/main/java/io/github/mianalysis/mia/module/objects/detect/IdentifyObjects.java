@@ -17,6 +17,7 @@ import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -416,6 +417,7 @@ public class IdentifyObjects extends Module {
                 // Converting image to objects
                 Image tempImage = ImageFactory.createImage("Temp image", currStack);
                 Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+                currOutputObjects.setNFrames(nFrames);
 
                 // If processing each slice separately, offsetting it to the correct Z-position
                 if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
