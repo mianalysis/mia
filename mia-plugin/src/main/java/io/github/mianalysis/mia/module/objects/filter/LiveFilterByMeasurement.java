@@ -125,8 +125,18 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         });
         frame.add(thresholdTextField);
 
+        JButton previewButton = new JButton();
+        previewButton.setText("Preview");
+        previewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                testThreshold(inputObjects, measName, thresholdTextField, filterMethod, testIpl);
+            }
+        });
+        frame.add(previewButton);
+
         JButton acceptButton = new JButton();
-        acceptButton.setText("Accept");
+        acceptButton.setText("Accept and continue");
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
