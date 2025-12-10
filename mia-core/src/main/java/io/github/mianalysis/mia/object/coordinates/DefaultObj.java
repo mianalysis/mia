@@ -8,7 +8,6 @@ import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 
 /**

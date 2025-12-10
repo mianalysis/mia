@@ -14,7 +14,6 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import ome.units.UNITS;
 
@@ -28,10 +27,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
-
+        
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -61,10 +59,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -94,10 +91,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -134,10 +130,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -174,10 +169,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -213,10 +207,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -252,11 +245,10 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -290,11 +282,10 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -328,10 +319,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -362,10 +352,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -396,10 +385,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -437,10 +425,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -478,10 +465,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -518,10 +504,9 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -552,11 +537,10 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -591,11 +575,10 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);

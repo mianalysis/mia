@@ -15,7 +15,6 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import ome.units.UNITS;
 
 
@@ -36,8 +35,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
+        String calibratedUnits = "µm";  
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,
@@ -46,8 +44,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[] { true, true, false, true, false, false, false, false };
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents", calibration, 1, 0.02, UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("PassOutput", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY,dppZ,calibratedUnits,1,1,1, 1, 0.02, UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput", dppXY,dppZ,calibratedUnits,1,1,1, 1, 0.02, UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject : testObjects.values()) {
@@ -97,7 +95,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -105,9 +102,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("PassOutput",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("FailOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createObjs("FailOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject : testObjects.values()) {
@@ -167,7 +164,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -175,8 +171,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -220,7 +216,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -228,8 +223,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -273,7 +268,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -281,9 +275,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("PassOutput",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("FailOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createObjs("FailOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -333,7 +327,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -341,8 +334,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -385,7 +378,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjsI testObjects = new Objects3D(VolumeTypes.getFactory(volumeType)).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -393,7 +385,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Parents",calibration,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {

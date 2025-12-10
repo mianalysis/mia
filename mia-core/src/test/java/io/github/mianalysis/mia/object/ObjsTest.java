@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,9 +22,8 @@ public class ObjsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         collection.createAndAddNewObjectWithID(factory, 0);
@@ -44,9 +42,8 @@ public class ObjsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("TestObj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("TestObj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
         ObjI firstObj = collection.getFirst();
         assertNull(firstObj);
 
@@ -59,10 +56,9 @@ public class ObjsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 10, 3, 12);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 10, 3, 12, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -96,10 +92,9 @@ public class ObjsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -126,10 +121,9 @@ public class ObjsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -178,10 +172,9 @@ public class ObjsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 10, 4, 12);
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createFromSpatCal("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 10, 4, 12, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);

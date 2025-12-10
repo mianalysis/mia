@@ -6,21 +6,24 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.process.analysis.CentroidCalculator;
 
 public class DefaultVolume implements VolumeI {
-    protected SpatCal spatCal;
+    protected int width;
+    protected int height;
+    protected int nSlices;
+    protected double dppXY;
+    protected double dppZ;
+    protected String units;
     protected CoordinateSetI coordinateSet;
     protected VolumeI surface = null;
     protected VolumeI projection = null;
     protected Point<Double> meanCentroidPx = null;
 
-    public DefaultVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
-        this.spatCal = spatCal;
-        coordinateSet = factory.createCoordinateSet();
-    }
-
     public DefaultVolume(CoordinateSetFactoryI factory, int width, int height, int nSlices, double dppXY, double dppZ,
             String units) {
-        this.spatCal = new SpatCal(dppXY, dppZ, units, width, height, nSlices);
-        coordinateSet = factory.createCoordinateSet();
+        initialise(factory, width, height, nSlices, dppXY, dppZ, units);
+    }
+
+    public DefaultVolume(CoordinateSetFactoryI factory, VolumeI exampleVolume) {
+        initialiseFromExample(factory, exampleVolume);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class DefaultVolume implements VolumeI {
         // If ignoring edges, we want to create a new surface as it's not the "proper"
         // surface. We also don't want to retain this surface, so we return it directly.
         if (ignoreEdgesXY || ignoreEdgesZ) {
-            VolumeI tempSurface = new DefaultVolume(new PointListFactory(), getSpatialCalibration());
+            VolumeI tempSurface = createNewVolume(new PointListFactory(), this);
             CoordinateSetI tempSurfaceCoords = new PointCoordinates();
             for (Point<Integer> pt : coordinateSet.calculateSurface(is2D())) {
                 if (ignoreEdgesXY && isOnEdgeXY(pt))
@@ -58,7 +61,7 @@ public class DefaultVolume implements VolumeI {
         }
 
         if (surface == null) {
-            surface = new DefaultVolume(new PointListFactory(), getSpatialCalibration());
+            surface = createNewVolume(new PointListFactory(), this);
             surface.setCoordinateSet(coordinateSet.calculateSurface(is2D()));
         }
 
@@ -80,8 +83,7 @@ public class DefaultVolume implements VolumeI {
             if (factory instanceof OctreeFactory)
                 factory = new QuadtreeFactory();
 
-            projection = new DefaultVolume(factory, spatCal.width, spatCal.height, 1, spatCal.dppXY, spatCal.dppZ,
-                    spatCal.units);
+            projection = new DefaultVolume(factory, this);
 
             projection.setCoordinateSet(coordinateSet.calculateProjected());
 
@@ -117,9 +119,9 @@ public class DefaultVolume implements VolumeI {
         }
 
         // Converting to calibrated units
-        double xCent = meanCentroidPx.getX() * spatCal.dppXY;
-        double yCent = meanCentroidPx.getY() * spatCal.dppXY;
-        double zCent = meanCentroidPx.getZ() * spatCal.dppZ;
+        double xCent = meanCentroidPx.getX() * getDppXY();
+        double yCent = meanCentroidPx.getY() * getDppXY();
+        double zCent = meanCentroidPx.getZ() * getDppZ();
 
         return new Point<Double>(xCent, yCent, zCent);
 
@@ -164,9 +166,9 @@ public class DefaultVolume implements VolumeI {
     public int hashCode() {
         int hash = coordinateSet.hashCode();
 
-        hash = 31 * hash + ((Number) spatCal.dppXY).hashCode();
-        hash = 31 * hash + ((Number) spatCal.dppZ).hashCode();
-        hash = 31 * hash + spatCal.units.toUpperCase().hashCode();
+        hash = 31 * hash + ((Number) getDppXY()).hashCode();
+        hash = 31 * hash + ((Number) getDppZ()).hashCode();
+        hash = 31 * hash + getSpatialUnits().toUpperCase().hashCode();
 
         return hash;
 
@@ -181,29 +183,15 @@ public class DefaultVolume implements VolumeI {
 
         VolumeI volume = (VolumeI) obj;
 
-        if (spatCal.dppXY != volume.getDppXY())
+        if (getDppXY() != volume.getDppXY())
             return false;
-        if (spatCal.dppZ != volume.getDppZ())
+        if (getDppZ() != volume.getDppZ())
             return false;
-        if (!spatCal.units.toUpperCase().equals(volume.getUnits().toUpperCase()))
+        if (!getSpatialUnits().toUpperCase().equals(volume.getSpatialUnits().toUpperCase()))
             return false;
 
         return coordinateSet.equals(volume.getCoordinateSet());
 
-    }
-
-    @Override
-    public SpatCal getSpatialCalibration() {
-        return spatCal;
-    }
-
-    @Override
-    public void setSpatialCalibration(SpatCal spatCal) {
-        this.spatCal = spatCal;
-        if (surface != null)
-            surface.setSpatialCalibration(spatCal);
-        if (projection != null)
-            projection.setSpatialCalibration(spatCal);
     }
 
     @Override
@@ -220,11 +208,6 @@ public class DefaultVolume implements VolumeI {
         clearProjected();
         clearCentroid();
 
-    }
-    
-    @Override
-    public VolumeI createNewVolume(CoordinateSetFactoryI factory, SpatCal spatCal) {
-        return new DefaultVolume(factory, spatCal);
     }
 
     @Override
@@ -256,12 +239,101 @@ public class DefaultVolume implements VolumeI {
             int z = nextPoint.z;
 
             if (pixelDistances && matchXY) {
-                return new Point<>((double) x, (double) y, (double) z * spatCal.dppZ / spatCal.dppXY);
+                return new Point<>((double) x, (double) y, (double) z * getDppZ() / getDppXY());
             } else if (pixelDistances & !matchXY) {
                 return new Point<>((double) x, (double) y, (double) z);
             } else {
-                return new Point<>((double) x * spatCal.dppXY, (double) y * spatCal.dppXY, (double) z * spatCal.dppZ);
+                return new Point<>((double) x * getDppXY(), (double) y * getDppXY(), (double) z * getDppZ());
             }
         }
+    }
+
+    @Override
+    public int getWidth() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getWidth'");
+    }
+
+    @Override
+    public void setWidth(int width) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setWidth'");
+    }
+
+    @Override
+    public int getHeight() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHeight'");
+    }
+
+    @Override
+    public void setHeight(int height) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setHeight'");
+    }
+
+    @Override
+    public int getNSlices() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getNSlices'");
+    }
+
+    @Override
+    public void setNSlices(int nSlices) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setNSlices'");
+    }
+
+    @Override
+    public double getDppXY() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDppXY'");
+    }
+
+    @Override
+    public void setDppXY(double dppXY) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDppXY'");
+    }
+
+    @Override
+    public double getDppZ() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDppZ'");
+    }
+
+    @Override
+    public void setDppZ(double dppZ) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDppZ'");
+    }
+
+    @Override
+    public String getSpatialUnits() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSpatialUnits'");
+    }
+
+    @Override
+    public void setSpatialUnits(String units) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setSpatialUnits'");
+    }
+
+    @Override
+    public void setCalibration(VolumeI exampleVolume) {
+        setWidth(exampleVolume.getWidth());
+        setHeight(exampleVolume.getHeight());
+        setNSlices(exampleVolume.getNSlices());
+        setDppXY(exampleVolume.getDppXY());
+        setDppZ(exampleVolume.getDppZ());
+        setSpatialUnits(exampleVolume.getSpatialUnits());
+    }
+
+    @Override
+    public VolumeI createNewVolume(CoordinateSetFactoryI coordinateSetFactory, VolumeI exampleVolume) {
+        return new DefaultVolume(coordinateSetFactory, exampleVolume.getWidth(), exampleVolume.getHeight(),
+                exampleVolume.getNSlices(), exampleVolume.getDppXY(), exampleVolume.getDppZ(),
+                exampleVolume.getSpatialUnits());
     }
 }

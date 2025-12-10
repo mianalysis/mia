@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -35,7 +35,7 @@ import ome.units.unit.Unit;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public interface ObjsI extends Map<Integer, ObjI> {
+public interface ObjsI extends Map<Integer, ObjI>, VolumeI {
     public ObjI createAndAddNewObject(CoordinateSetFactoryI factory);
 
     public ObjI createAndAddNewObjectWithID(CoordinateSetFactoryI factory, int ID);
@@ -47,10 +47,6 @@ public interface ObjsI extends Map<Integer, ObjI> {
     public String getName();
 
     public void add(ObjI object);
-
-    public SpatCal getSpatialCalibration();
-
-    public void setSpatialCalibration(SpatCal spatCal, boolean updateAllObjects);
 
     public int getAndIncrementID();
 
@@ -73,32 +69,7 @@ public interface ObjsI extends Map<Integer, ObjI> {
     public ObjsI duplicate(String newObjectsName, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata, boolean addOriginalDuplicateRelationship);
 
-
     // Default methods
-
-    public default int getWidth() {
-        return getSpatialCalibration().getWidth();
-    }
-
-    public default int getHeight() {
-        return getSpatialCalibration().getHeight();
-    }
-
-    public default int getNSlices() {
-        return getSpatialCalibration().getNSlices();
-    }
-
-    public default double getDppXY() {
-        return getSpatialCalibration().getDppXY();
-    }
-
-    public default double getDppZ() {
-        return getSpatialCalibration().getDppZ();
-    }
-
-    public default String getSpatialUnits() {
-        return getSpatialCalibration().getUnits();
-    }
 
     public default ObjI getFirst() {
         if (size() == 0)
@@ -167,7 +138,8 @@ public interface ObjsI extends Map<Integer, ObjI> {
 
     }
 
-    public default ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground,
+    public default ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
+            boolean nanBackground,
             boolean verbose) {
         // Create output image
         ImageI image = createImage(outputName, bitDepth);
@@ -279,7 +251,7 @@ public interface ObjsI extends Map<Integer, ObjI> {
         calibration.pixelWidth = obj.getDppXY();
         calibration.pixelHeight = obj.getDppXY();
         calibration.pixelDepth = obj.getDppZ();
-        calibration.setUnit(obj.getUnits());
+        calibration.setUnit(obj.getSpatialUnits());
 
         calibration.frameInterval = getFrameInterval();
         calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(getFrameInterval(), UNITS.SECOND);
@@ -287,12 +259,10 @@ public interface ObjsI extends Map<Integer, ObjI> {
     }
 
     public default ImageI createImage(String outputName, int bitDepth) {
-        SpatCal spatCal = getSpatialCalibration();
         int nFrames = getNFrames();
 
         // Creating a new image
-        ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
-                spatCal.getNSlices(), nFrames, bitDepth);
+        ImagePlus ipl = IJ.createHyperStack(outputName, getWidth(), getHeight(), 1, getNSlices(), nFrames, bitDepth);
 
         return ImageFactory.createImage(outputName, ipl);
 

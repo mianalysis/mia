@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactory;
@@ -124,7 +123,7 @@ public class VolumeAdaptor {
     // }
 
     public static int getWidth(VolumeI volume) {
-        return volume.getSpatialCalibration().getWidth();
+        return volume.getWidth();
     }
 
     // public default int getHeight() {

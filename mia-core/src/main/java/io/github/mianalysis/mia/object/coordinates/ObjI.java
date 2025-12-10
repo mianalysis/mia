@@ -13,7 +13,6 @@ import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -285,14 +284,15 @@ public interface ObjI extends MeasurementProvider, VolumeI {
     }
 
     public default ImageI getCentroidAsImage(String imageName, boolean singleTimepoint) {
-        SpatCal spatCal = getSpatialCalibration();
-
         int nFrames = singleTimepoint ? 1 : getObjectCollection().getNFrames();
         int t = singleTimepoint ? 0 : getT();
 
-        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
-        spatCal.applyImageCalibration(ipl);
-
+        ImagePlus ipl = IJ.createHyperStack(imageName, getWidth(), getHeight(), 1, getNSlices(), nFrames, 8);
+        ipl.getCalibration().pixelWidth = getWidth();
+        ipl.getCalibration().pixelHeight = getHeight();
+        ipl.getCalibration().pixelDepth = getNSlices() == 1 ? 1 : getDppZ();
+        ipl.getCalibration().setUnit(getUnits());
+        
         Point<Double> centroid = getMeanCentroid(true, false);
         int x = (int) Math.round(centroid.getX());
         int y = (int) Math.round(centroid.getY());
@@ -352,11 +352,9 @@ public interface ObjI extends MeasurementProvider, VolumeI {
     }
 
     public default void removeOutOfBoundsCoords() {
-        SpatCal spatCal = getSpatialCalibration();
-
-        int width = spatCal.getWidth();
-        int height = spatCal.getHeight();
-        int nSlices = spatCal.getNSlices();
+        int width = getWidth();
+        int height = getHeight();
+        int nSlices = getNSlices();
 
         getCoordinateSet().removeIf(point -> point.getX() < 0 || point.getX() >= width || point.getY() < 0
                 || point.getY() >= height || point.getZ() < 0 || point.getZ() >= nSlices);

@@ -30,7 +30,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
@@ -150,13 +149,14 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // Getting the current slices (input and calculation)
             ImageI currInputImage = ExtractSubstack.extractSubstack(inputImage, inputImage.getName(), "1-end",
                     String.valueOf(z + 1), "1-end");
-            ImageI currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(), "1-end",
+            ImageI currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(),
+                    "1-end",
                     String.valueOf(z + 1), "1-end");
 
-                    // Performing the registration on this slice
+            // Performing the registration on this slice
             processLinked(currInputImage, currCalcImage, referenceMode, numPrevFrames, prevFrameStatMode, param,
                     fillMode, showDetectedPoints, multithread, reference);
-            
+
             // Replacing all images in this slice of the input with the registered images
             replaceSlice(inputImage, currInputImage, z);
 
@@ -210,7 +210,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             }
 
             // Getting the calculation image at this time-point
-            ImageI warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
+            ImageI warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1",
+                    String.valueOf(t + 1));
 
             // Calculating the transformation for this image pair
             Transform transform = getTransform(reference.getImagePlus().getProcessor(),
@@ -232,8 +233,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     applyTransformation(warpedChannel, transform, fillMode, multithread);
                 } catch (InterruptedException e) {
                 }
-                
-                replaceStack(inputImage, warpedChannel, c+1, t+1);
+
+                replaceStack(inputImage, warpedChannel, c + 1, t + 1);
 
             }
 
@@ -245,7 +246,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 } catch (InterruptedException e) {
                     return;
                 }
-                replaceStack(calculationImage, warped, 1, t+1);
+                replaceStack(calculationImage, warped, 1, t + 1);
             }
 
             transform = null;
@@ -257,8 +258,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
             ArrayList<PointPair> pairs) {
-        SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(), referenceIpr.getHeight(), 2);
-        ObjsI oc = ObjsFactories.getDefaultFactory().createFromSpatCal("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
+        ObjsI oc = ObjsFactories.getDefaultFactory().createObjs("Im", 1, 1, "um", referenceIpr.getWidth(),
+                referenceIpr.getHeight(), 2, 1, 1d, TemporalUnit.getOMEUnit());
         ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
                 referenceIpr.getBitDepth());
 
@@ -266,7 +267,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (PointPair pair : pairs) {
             ObjI obj = oc.createAndAddNewObject(new PointListFactory());
             try {
-                obj.addCoord((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()),
+                obj.addCoord((int) Math.round(pair.getPoint2().getXBase()),
+                        (int) Math.round(pair.getPoint2().getYBase()),
                         0);
             } catch (PointOutOfRangeException e) {
             }
@@ -278,7 +280,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (PointPair pair : pairs) {
             ObjI obj = oc.createAndAddNewObject(new PointListFactory());
             try {
-                obj.addCoord((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()),
+                obj.addCoord((int) Math.round(pair.getPoint1().getXBase()),
+                        (int) Math.round(pair.getPoint1().getYBase()),
                         1);
             } catch (PointOutOfRangeException e) {
             }
@@ -299,10 +302,10 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         int nFrames = inputIpl.getNFrames();
 
         // int nThreads = multithread ? Prefs.getThreads() : 1;
-        // ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-        //         new LinkedBlockingQueue<>());
+        // ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L,
+        // TimeUnit.MILLISECONDS,
+        // new LinkedBlockingQueue<>());
 
-        
         for (int c = 1; c <= nChannels; c++) {
             for (int z = 1; z <= nSlices; z++) {
                 for (int t = 1; t <= nFrames; t++) {
@@ -311,11 +314,11 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     int finalT = t;
 
                     // Runnable task = () -> {
-                        ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
-                        int fillValue = getFillValue(fillMode, slice);
-                        ImageProcessor alignedSlice = applyTransform(slice, transform, fillValue);
-                        alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
-                        getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
+                    ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+                    int fillValue = getFillValue(fillMode, slice);
+                    ImageProcessor alignedSlice = applyTransform(slice, transform, fillValue);
+                    alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
+                    getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
                     // };
                     // pool.submit(task);
                 }
@@ -323,7 +326,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
 
         // pool.shutdown();
-        // pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        // pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never
+        // terminate early
 
     }
 
@@ -383,7 +387,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             images.add(referenceImage);
 
             return ConcatenateStacks2.process(images, axis, "Overlay");
-        
+
         }
 
         return inputImage;
@@ -439,13 +443,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         for (int channel = 0; channel < targetIpl.getNChannels(); channel++) {
             for (int timepoint = 0; timepoint < targetIpl.getNFrames(); timepoint++) {
-                int sourceIdx = sourceIpl.getStackIndex(channel+1,1,timepoint+1);
-                int targetIdx = targetIpl.getStackIndex(channel+1,slice+1,timepoint+1);
+                int sourceIdx = sourceIpl.getStackIndex(channel + 1, 1, timepoint + 1);
+                int targetIdx = targetIpl.getStackIndex(channel + 1, slice + 1, timepoint + 1);
 
                 targetIpl.getStack().setProcessor(sourceIpl.getStack().getProcessor(sourceIdx), targetIdx);
 
             }
-        }        
+        }
     }
 
     @Override
@@ -661,8 +665,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
