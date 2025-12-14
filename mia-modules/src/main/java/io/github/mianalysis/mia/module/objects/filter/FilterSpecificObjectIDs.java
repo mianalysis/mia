@@ -214,7 +214,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects) : null;
         ImageI displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
         int count = filter(inputObjects, outputObjects, remove, displayImage);

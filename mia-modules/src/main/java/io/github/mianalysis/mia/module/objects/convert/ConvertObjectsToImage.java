@@ -296,9 +296,8 @@ public class ConvertObjectsToImage extends Module {
     if (colourMode.equals(ColourModes.SINGLE_COLOUR) && singleColourMode.equals(SingleColourModes.B_ON_W))
       InvertIntensity.process(outputImage);
 
-    // Applying spatial calibration from template image
-    Calibration calibration = inputObjects.getSpatialCalibration().createImageCalibration();
-    outputImage.getImagePlus().setCalibration(calibration);
+    // Applying spatial calibration to output image
+    inputObjects.applyCalibrationToImage(outputImage.getImagePlus());
 
     // Adding image to workspace
     workspace.addImage(outputImage);

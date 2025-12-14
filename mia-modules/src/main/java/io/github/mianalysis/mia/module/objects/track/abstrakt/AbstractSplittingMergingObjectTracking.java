@@ -107,7 +107,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
 
         // Getting objects
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackObjectsName, inputObjects);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExample(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
@@ -132,7 +132,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
         addSpotMeasurements(inputObjects, spotCollection);
 
         if (allowSplit || allowMerge) {
-            ObjsI trackSegmentObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackSegmentObjectsName, inputObjects);
+            ObjsI trackSegmentObjects = ObjsFactories.getDefaultFactory().createFromExample(trackSegmentObjectsName, inputObjects);
             workspace.addObjects(trackSegmentObjects);
 
             // Inserting track segments between tracks and input objects

@@ -19,7 +19,6 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -179,11 +178,9 @@ public class MeasureSpecificWidth extends Module {
 
     public static Point<Double> getObjectReference(final ObjI obj, final String xMeasName, final String yMeasName,
             final String zMeasName) {
-        final SpatCal spatCal = obj.getSpatialCalibration();
-
         final double xMeas = obj.getMeasurement(xMeasName).getValue();
         final double yMeas = obj.getMeasurement(yMeasName).getValue();
-        final double zMeas = obj.getMeasurement(zMeasName).getValue() * (spatCal.dppZ / spatCal.dppXY);
+        final double zMeas = obj.getMeasurement(zMeasName).getValue() * (obj.getDppZ() / obj.getDppXY());
 
         return new Point<Double>(xMeas, yMeas, zMeas);
 
@@ -192,8 +189,8 @@ public class MeasureSpecificWidth extends Module {
     public static WidthMeasurementResult getExtentAlongAxis(final ObjI obj, final Point<Double> ref1,
             final Point<Double> ref2) {
         // Getting calibration to convert z into px
-        final double dppXY = obj.getSpatialCalibration().dppXY;
-        final double dppZ = obj.getSpatialCalibration().dppZ;
+        final double dppXY = obj.getDppXY();
+        final double dppZ = obj.getDppZ();
 
         // Getting the vector pointing to p2
         final Vector3D vector1 = new Vector3D(ref1.x, ref1.y, ref1.z * dppZ / dppXY);
@@ -201,7 +198,7 @@ public class MeasureSpecificWidth extends Module {
         final Line primaryLine = new Line(vector1, vector2, 1.0E-10D);
 
         // Getting surface points
-        ObjsI tempCollection = ObjsFactories.getDefaultFactory().createFromExampleObjs("Surfaces", obj.getObjectCollection());
+        ObjsI tempCollection = ObjsFactories.getDefaultFactory().createFromExample("Surfaces", obj.getObjectCollection());
         ObjI surface = GetObjectSurface.getSurface(obj, tempCollection, false);
 
         // Storing candidate points
@@ -241,7 +238,7 @@ public class MeasureSpecificWidth extends Module {
             }
         }
 
-        return new WidthMeasurementResult(end1, end2, obj.getSpatialCalibration());
+        return new WidthMeasurementResult(end1, end2, obj.getDppXY(), obj.getDppZ());
 
     }
 
@@ -618,17 +615,17 @@ public class MeasureSpecificWidth extends Module {
 class WidthMeasurementResult {
     private final Point<Integer> end1;
     private final Point<Integer> end2;
-    private final SpatCal spatCal;
+    private final double dppXY;
+    private final double dppZ;
 
-    WidthMeasurementResult(final Point<Integer> end1, final Point<Integer> end2, final SpatCal spatCal) {
+    WidthMeasurementResult(final Point<Integer> end1, final Point<Integer> end2, final double dppXY, final double dppZ) {
         this.end1 = end1;
         this.end2 = end2;
-        this.spatCal = spatCal;
+        this.dppXY = dppXY;
+        this.dppZ = dppZ;
     }
 
     public double calculateWidth(final boolean pixelDistances) {
-        final double dppXY = spatCal.dppXY;
-        final double dppZ = spatCal.dppZ;
         final double ratio = dppZ / dppXY;
 
         if (pixelDistances) {

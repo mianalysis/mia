@@ -36,7 +36,6 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -291,12 +290,9 @@ public class StarDistDetection extends Module {
 
         ImageI image = workspace.getImages().get(inputImageName);
         ImagePlus ipl = image.getImagePlus();
-        SpatCal cal = SpatCal.getFromImage(ipl);
-        int nFrames = ipl.getNFrames();
-        double frameInterval = ipl.getCalibration().frameInterval;
 
         // Creating output object collection
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ipl);
 
         ImageJ ij = new ImageJ();
         Context context = MIA.getIJService().context();

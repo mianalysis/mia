@@ -217,8 +217,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                 case RelativeModes.OBJECT_CENTROID:
                     Point<Double> centroidPoint = inputObject.getMeanCentroid(true, false);
 
-                    VolumeI centroidVolume = VolumeFactories.getDefaultFactory().createVolume(inputObject.getCoordinateSetFactory(),
-                            inputObject.getSpatialCalibration());
+                    VolumeI centroidVolume = VolumeFactories.getDefaultFactory().createVolumeFromExample(
+                            inputObject.getCoordinateSetFactory(), inputObject);
 
                     centroidVolume.addPoint(new Point<>((int) Math.round(centroidPoint.x),
                             (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
@@ -234,7 +234,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                         return null;
 
                     centroidPoint = parentObject.getMeanCentroid(true, false);
-                    centroidVolume = VolumeFactories.getDefaultFactory().createVolume(parentObject.getCoordinateSetFactory(), parentObject.getSpatialCalibration());
+                    centroidVolume = VolumeFactories.getDefaultFactory()
+                            .createVolumeFromExample(parentObject.getCoordinateSetFactory(), parentObject);
                     centroidVolume.addPoint(new Point<>((int) Math.round(centroidPoint.x),
                             (int) Math.round(centroidPoint.y), (int) Math.round(centroidPoint.z)));
 
@@ -351,7 +352,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> void addMeasurements(ObjsI bands, ImageI<T> distPx, double bandWidthPx,
+    static <T extends RealType<T> & NativeType<T>> void addMeasurements(ObjsI bands, ImageI<T> distPx,
+            double bandWidthPx,
             boolean internalObjects) {
         double dppXY = bands.getDppXY();
         double sign = internalObjects ? -1 : 1;
@@ -419,7 +421,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             maxDist = Double.MAX_VALUE;
 
         // Creating output bands objects
-        ObjsI bandObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI bandObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Iterating over each object, creating distance bands
         int count = 0;
@@ -457,7 +459,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             // Transferring new band objects to main collection
             for (ObjI tempBandObject : tempBandObjects.values()) {
                 // Update spatial calibration, so translated coordinates aren't out of range
-                tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
+                tempBandObject.setSpatialCalibrationFromExample(inputObject);
 
                 // Shifting back to original coordinates
                 int xShift = (int) Math.round(extents[0][0] - referenceBorderWidths[0][0]);
@@ -496,7 +498,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(), CoordinateSetFactories.listFactoryNames()));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, CoordinateSetFactories.getDefaultFactoryName(),
+                CoordinateSetFactories.listFactoryNames()));
 
         parameters.add(new SeparatorP(BAND_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.OBJECT_CENTROID, RelativeModes.ALL));

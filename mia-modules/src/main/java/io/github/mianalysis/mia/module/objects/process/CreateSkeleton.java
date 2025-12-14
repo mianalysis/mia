@@ -334,7 +334,7 @@ public class CreateSkeleton extends Module {
             String loopObjectsName, ObjI skeletonObject) {
 
         // Creating an object for the entire skeleton
-        ObjsI tempCollection = ObjsFactories.getDefaultFactory().createFromExampleObjs("Skeleton", loopObjects);
+        ObjsI tempCollection = ObjsFactories.getDefaultFactory().createFromExample("Skeleton", loopObjects);
         ObjI tempObject = tempCollection.createAndAddNewObject(new PointListFactory());
         CoordinateSetI coords = tempObject.getCoordinateSet();
 
@@ -363,7 +363,7 @@ public class CreateSkeleton extends Module {
         int xOffs = (int) Math.round(extents[0][0]) - 1;
         int yOffs = (int) Math.round(extents[1][0]) - 1;
         int zOffs = (int) Math.round(extents[2][0]);
-        tempLoopObjects.setSpatialCalibration(loopObjects.getSpatialCalibration(), true);
+        tempLoopObjects.setCalibrationFromExample(loopObjects, true);
 
         for (ObjI tempLoopObject : tempLoopObjects.values())
             tempLoopObject.translateCoords(xOffs, yOffs, zOffs);
@@ -599,12 +599,12 @@ public class CreateSkeleton extends Module {
             minLength = minLength * inputObjects.getDppXY();
 
         // Creating empty output object collections
-        final ObjsI skeletonObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExampleObjs(skeletonObjectsName, inputObjects) : null;
-        final ObjsI edgeObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExampleObjs(edgeObjectsName, inputObjects) : null;
-        final ObjsI junctionObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExampleObjs(junctionObjectsName, inputObjects) : null;
-        final ObjsI loopObjects = addToWorkspace & exportLoops ? ObjsFactories.getDefaultFactory().createFromExampleObjs(loopObjectsName, inputObjects) : null;
+        final ObjsI skeletonObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExample(skeletonObjectsName, inputObjects) : null;
+        final ObjsI edgeObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExample(edgeObjectsName, inputObjects) : null;
+        final ObjsI junctionObjects = addToWorkspace ? ObjsFactories.getDefaultFactory().createFromExample(junctionObjectsName, inputObjects) : null;
+        final ObjsI loopObjects = addToWorkspace & exportLoops ? ObjsFactories.getDefaultFactory().createFromExample(loopObjectsName, inputObjects) : null;
         final ObjsI largestShortestPathObjects = exportLargestShortestPath
-                ? ObjsFactories.getDefaultFactory().createFromExampleObjs(largestShortestPathName, inputObjects)
+                ? ObjsFactories.getDefaultFactory().createFromExample(largestShortestPathName, inputObjects)
                 : null;
 
         if (addToWorkspace) {

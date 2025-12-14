@@ -248,7 +248,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
         parameters.getParameter(REFERENCE_VALUE).setValue(refValue);
         GUI.updateParameters(false, null);
 
-        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects) : null;
 
         int count = process(inputObjects, measName, refValue, filterMethod, storeIndividual, remove, outputObjects);
 

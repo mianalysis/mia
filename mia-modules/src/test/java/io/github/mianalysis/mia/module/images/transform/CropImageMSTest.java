@@ -28,7 +28,6 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageType;
@@ -193,8 +192,11 @@ public class CropImageMSTest extends ModuleTest {
                 cropImage.updateParameterValue(CropImage.HEIGHT, 0);
                 cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
 
-                SpatCal spatCal = SpatCal.getFromImage(ipl);
-                ObjsI limitsObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("LimitsObjects", spatCal, 1, 1, null);
+                ObjsI limitsObjects = ObjsFactories.getDefaultFactory().createFromImage("LimitsObjects", ipl);
+                limitsObjects.setNFrames(1);
+                limitsObjects.setFrameInterval(1);
+                limitsObjects.setTemporalUnit(null);
+                
                 ObjI limitObject = limitsObjects.createAndAddNewObject(new PointListFactory());
                 try {
                     limitObject.addCoord(x, y, 0);

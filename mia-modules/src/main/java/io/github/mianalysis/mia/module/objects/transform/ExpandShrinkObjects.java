@@ -188,7 +188,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Updating the output objects spatial calibration to the full range, then
         // moving objects to the correct positions
-        outputObjects.setSpatialCalibration(inputObject.getSpatialCalibration(), true);
+        outputObjects.setCalibrationFromExample(inputObject, true);
         outputObject.translateCoords(xOffs, yOffs, zOffs);
         outputObject.setT(inputObject.getT());
 
@@ -236,7 +236,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS,workspace);

@@ -192,7 +192,7 @@ public class FitEllipsoid extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Edge", outputObjects);
+                    ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExample("Edge", outputObjects);
                     ObjI edgeObject = GetObjectSurface.getSurface(inputObject, tempObjects, false);
                     calculator = new EllipsoidCalculator(edgeObject, maxAxisLength);
                     break;
@@ -345,7 +345,7 @@ public class FitEllipsoid extends Module {
         // If necessary, creating a new Objs and adding it to the Workspace
         ObjsI outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 

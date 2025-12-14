@@ -414,7 +414,7 @@ public class GetLocalObjectRegion extends Module {
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
 
         // Creating store for output objects
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Iterating over each input object, creating an output object
         int count = 0;

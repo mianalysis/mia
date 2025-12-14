@@ -214,7 +214,7 @@ public class CombineObjectSets extends Module {
                 if (exampleObjects == null)
                     return Status.PASS;
 
-                ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, exampleObjects);
+                ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, exampleObjects);
 
                 if (inputObjects1 != null)
                     addObjects(outputObjects, inputObjects1);

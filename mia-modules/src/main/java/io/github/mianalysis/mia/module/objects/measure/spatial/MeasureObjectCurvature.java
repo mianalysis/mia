@@ -639,7 +639,7 @@ public class MeasureObjectCurvature extends Module {
         // If necessary, creating a new Objs and adding it to the Workspace
         ObjsI outputObjects = null;
         if (!objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 

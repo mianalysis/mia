@@ -9,15 +9,15 @@ import java.util.Set;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
+import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -26,19 +26,15 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
-import ome.units.UNITS;
-import ome.units.quantity.Time;
-import ome.units.unit.Unit;
 
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public interface ObjsI extends Map<Integer, ObjI>, VolumeI {
-    public ObjI createAndAddNewObject(CoordinateSetFactoryI factory);
+public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
+    public ObjI createAndAddNewObject(CoordinateSetFactoryI coordinateSetFactory);
 
-    public ObjI createAndAddNewObjectWithID(CoordinateSetFactoryI factory, int ID);
+    public ObjI createAndAddNewObjectWithID(CoordinateSetFactoryI coordinateSetFactory, int ID);
 
     public Collection<ObjI> values();
 
@@ -58,13 +54,7 @@ public interface ObjsI extends Map<Integer, ObjI>, VolumeI {
 
     public ObjsI getObjectsInFrame(String outputObjectsName, int frame);
 
-    public int getNFrames();
-
-    public double getFrameInterval();
-
-    public Unit<Time> getTemporalUnit();
-
-    public void setNFrames(int nFrames);
+    public void setCalibrationFromExample(SpatioTemporallyCalibrated example, boolean updateAllObjects);
 
     public ObjsI duplicate(String newObjectsName, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata, boolean addOriginalDuplicateRelationship);
@@ -157,7 +147,7 @@ public interface ObjsI extends Map<Integer, ObjI>, VolumeI {
         }
 
         // Assigning the spatial cal from the cal
-        getSpatialCalibration().applyImageCalibration(image.getImagePlus());
+        applyCalibrationToImage(image.getImagePlus());
 
         return image;
 
@@ -232,29 +222,9 @@ public interface ObjsI extends Map<Integer, ObjI>, VolumeI {
             object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        getSpatialCalibration().applyImageCalibration(image.getImagePlus());
+        applyCalibrationToImage(image.getImagePlus());
 
         return image;
-
-    }
-
-    public default void applyCalibration(ImageI image) {
-        applyCalibrationFromImagePlus(image.getImagePlus());
-    }
-
-    public default void applyCalibrationFromImagePlus(ImagePlus ipl) {
-        ObjI obj = getFirst();
-        if (obj == null)
-            return;
-
-        Calibration calibration = ipl.getCalibration();
-        calibration.pixelWidth = obj.getDppXY();
-        calibration.pixelHeight = obj.getDppXY();
-        calibration.pixelDepth = obj.getDppZ();
-        calibration.setUnit(obj.getSpatialUnits());
-
-        calibration.frameInterval = getFrameInterval();
-        calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(getFrameInterval(), UNITS.SECOND);
 
     }
 

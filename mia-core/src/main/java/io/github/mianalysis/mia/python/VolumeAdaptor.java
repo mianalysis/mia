@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
-import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactory;
+import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactoryI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;

@@ -23,7 +23,8 @@ public class ObjsTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
         collection.createAndAddNewObjectWithID(factory, 0);
@@ -43,7 +44,8 @@ public class ObjsTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("TestObj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("TestObj", 1, 1, 1, dppXY, dppZ,
+                calibratedUnits, 1, 0.02, UNITS.SECOND);
         ObjI firstObj = collection.getFirst();
         assertNull(firstObj);
 
@@ -58,7 +60,8 @@ public class ObjsTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 10, 3, 12, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 10, 3, 12, dppXY, dppZ, calibratedUnits,
+                1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -94,7 +97,8 @@ public class ObjsTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -123,7 +127,8 @@ public class ObjsTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -174,7 +179,8 @@ public class ObjsTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 10, 4, 12, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 10, 4, 12, dppXY, dppZ, calibratedUnits,
+                1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -199,7 +205,8 @@ public class ObjsTest {
         oj4.addCoord(2, 2, 9);
 
         // Creating a test object with the same coordinates as one of the other objects
-        ObjsI testObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Test", calibration, 1, 0.02, UNITS.SECOND);
+        ObjsI testObjects = ObjsFactories.getDefaultFactory().createObjs("Test", 10, 4,
+                12, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         ObjI testObj = testObjects.createAndAddNewObjectWithID(factory, 5);
         testObj.addCoord(3, 1, 6);
         testObj.addCoord(2, 2, 8);

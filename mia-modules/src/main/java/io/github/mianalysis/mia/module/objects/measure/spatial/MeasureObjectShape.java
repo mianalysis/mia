@@ -301,7 +301,7 @@ public class MeasureObjectShape extends Module {
                 }
 
                 // If necessary analyses are included
-                ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Projected", inputObjects);
+                ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExample("Projected", inputObjects);
                 ObjI projectedObject = null;
                 if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                     if (inputObject.is2D()) {

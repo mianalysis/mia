@@ -158,7 +158,7 @@ public class FitConcaveHull2D extends Module {
         int range = parameters.getValue(RANGE_PX,workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
         int count = 0;

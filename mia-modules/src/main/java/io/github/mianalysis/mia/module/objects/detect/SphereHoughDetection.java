@@ -23,7 +23,6 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -43,24 +42,30 @@ import io.github.mianalysis.mia.process.voxel.SphereSolid;
  */
 
 /**
-* Detects spheres within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the sphere features must be brighter than their surrounding background and have dark centres (i.e. be shells).  For solid spheres, a gradient filter or equivalent should be applied to the image first.  Detected spheres are output to the workspace as solid objects.  Spheres are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the spherical feartures in the input image and the feature sphericity.
-*/
+ * Detects spheres within grayscale images using the Hough transform. Input
+ * images can be of binary or grayscale format, but the sphere features must be
+ * brighter than their surrounding background and have dark centres (i.e. be
+ * shells). For solid spheres, a gradient filter or equivalent should be applied
+ * to the image first. Detected spheres are output to the workspace as solid
+ * objects. Spheres are detected within a user-defined radius range and must
+ * exceed a user-defined threshold score (based on the intensity of the
+ * spherical feartures in the input image and the feature sphericity.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SphereHoughDetection extends AbstractHoughDetection {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RANGE_SEPARATOR = "Parameter ranges";
     public static final String X_RANGE = "X range (px)";
     public static final String Y_RANGE = "Y range (px)";
     public static final String Z_RANGE = "Z range (slices)";
     public static final String RADIUS_RANGE = "Radius range (px)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
     public static final String RADIUS_RESIZE = "Output radius resize (px)";
 
@@ -87,38 +92,35 @@ public class SphereHoughDetection extends AbstractHoughDetection {
     @Override
     public Status process(WorkspaceI workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting parameters
-        String xRange = parameters.getValue(X_RANGE,workspace);
-        String yRange = parameters.getValue(Y_RANGE,workspace);
-        String zRange = parameters.getValue(Z_RANGE,workspace);
-        String radiusRange = parameters.getValue(RADIUS_RANGE,workspace);
-        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
-        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES,workspace);
-        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
-        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD,workspace);
-        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS,workspace);
-        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS,workspace);
-        int radiusResize = parameters.getValue(RADIUS_RESIZE,workspace);
-        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE,workspace);
-        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE,workspace);
-        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE,workspace);
-        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
+        String xRange = parameters.getValue(X_RANGE, workspace);
+        String yRange = parameters.getValue(Y_RANGE, workspace);
+        String zRange = parameters.getValue(Z_RANGE, workspace);
+        String radiusRange = parameters.getValue(RADIUS_RANGE, workspace);
+        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES, workspace);
+        String detectionMode = parameters.getValue(DETECTION_MODE, workspace);
+        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD, workspace);
+        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS, workspace);
+        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS, workspace);
+        int radiusResize = parameters.getValue(RADIUS_RESIZE, workspace);
+        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE, workspace);
+        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE, workspace);
+        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE, workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE, workspace);
 
         // Storing the image calibration
-        SpatCal cal = SpatCal.getFromImage(ipl);
-        int nFrames = ipl.getNFrames();
-        double frameInterval = ipl.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ipl);
 
         xRange = resampleRange(xRange, samplingRate);
         yRange = resampleRange(yRange, samplingRate);
@@ -135,7 +137,8 @@ public class SphereHoughDetection extends AbstractHoughDetection {
         for (int c = 0; c < ipl.getNChannels(); c++) {
             for (int t = 0; t < ipl.getNFrames(); t++) {
                 // Getting current image stack
-                ImageI substack = ExtractSubstack.extractSubstack(inputImage, "Substack", String.valueOf(c + 1), "1-end",
+                ImageI substack = ExtractSubstack.extractSubstack(inputImage, "Substack", String.valueOf(c + 1),
+                        "1-end",
                         String.valueOf(t + 1));
                 ImagePlus substackIpl = substack.getImagePlus();
 
@@ -206,7 +209,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
                     // Getting sphere parameters
                     int x = (int) Math.round(sphere[0]) * samplingRate;
                     int y = (int) Math.round(sphere[1]) * samplingRate;
-                    int z = (int) Math.round(sphere[2] * samplingRate * cal.dppXY / cal.dppZ);
+                    int z = (int) Math.round(sphere[2] * samplingRate * outputObject.getDppXY() / outputObject.getDppZ());
                     int r = (int) Math.round(sphere[3]) * samplingRate + radiusResize;
                     double score = sphere[4];
 
@@ -220,7 +223,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
                         try {
                             try {
                                 outputObject.addCoord(xx[i] + x, yy[i] + y,
-                                        (int) Math.round(zz[i] * cal.dppXY / cal.dppZ + z));
+                                        (int) Math.round(zz[i] * outputObject.getDppXY() / outputObject.getDppZ() + z));
                             } catch (PointOutOfRangeException e) {
                             }
                         } catch (IntegerOverflowException e) {
@@ -268,7 +271,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
+        WorkspaceI workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(updateAndGetInputParameters());

@@ -15,7 +15,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.UNITS;
 import util.opencsv.CSVReader;
@@ -34,11 +33,9 @@ public class Tracks3D {
 
     public ObjsI getObjects(VolumeTypes volumeType, String tracksName, String spotsName, double dppXY, double dppZ,
             String calibratedUnits) throws IntegerOverflowException {
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 127, 90, 13);
-
         // Initialising object store
-        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromSpatCal("Spots", calibration, 10, 0.02, UNITS.SECOND);
-        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(tracksName, calibration, 10, 0.02, UNITS.SECOND);
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createObjs("Spots", 127, 90, 13, dppXY, dppZ, calibratedUnits, 10, 0.02, UNITS.SECOND);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createObjs(tracksName, 127, 90, 13, dppXY, dppZ, calibratedUnits, 10, 0.02, UNITS.SECOND);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -58,8 +55,7 @@ public class Tracks3D {
             }
             spotObject.setT(t);
 
-            trackObjects.putIfAbsent(trackID, ObjFactories.getDefaultFactory().createObj(trackObjects,
-                    VolumeTypes.getFactory(volumeType), trackID));
+            trackObjects.putIfAbsent(trackID, ObjFactories.getDefaultFactory().createObjWithID(VolumeTypes.getFactory(volumeType), trackObjects, trackID));
             ObjI track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);

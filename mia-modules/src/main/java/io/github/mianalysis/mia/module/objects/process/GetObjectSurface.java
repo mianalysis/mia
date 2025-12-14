@@ -88,7 +88,7 @@ public class GetObjectSurface extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         for (ObjI inputObject : inputObjects.values())
             getSurface(inputObject, outputObjects, true);

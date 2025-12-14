@@ -72,7 +72,7 @@ public class ObjectSlicesTo3D extends Module {
         int maxMissingSlices = parameters.getValue(MAX_MISSING_SLICES, workspace);
 
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         if (calibratedUnits)
             linkingDistance = linkingDistance / inputObjects.getDppXY();

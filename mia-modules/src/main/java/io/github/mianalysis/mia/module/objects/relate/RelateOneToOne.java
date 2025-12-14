@@ -299,7 +299,7 @@ public class RelateOneToOne extends Module {
             DefaultCostMatrixCreator<Integer, Integer> creator, @Nullable String outputObjectsName) {
         ObjsI outputObjects = null;
         if (outputObjectsName != null)
-            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects1);
 
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process())
@@ -418,7 +418,7 @@ public class RelateOneToOne extends Module {
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             addMissingLinks(inputObjects1, inputObjects2);
-            workspace.addObjects(ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1));
+            workspace.addObjects(ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
@@ -458,7 +458,7 @@ public class RelateOneToOne extends Module {
 
         if (createClusterObjects) {
             if (outputObjects == null)
-                outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1);
+                outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects1);
 
             workspace.addObjects(outputObjects);
         }

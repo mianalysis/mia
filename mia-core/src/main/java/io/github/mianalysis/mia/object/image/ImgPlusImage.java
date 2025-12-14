@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -62,12 +61,23 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     // PUBLIC METHODS
 
     public ObjsI initialiseEmptyObjs(String outputObjectsName) {
-        SpatCal cal = SpatCal.getFromImage(img);
+        int xIdx = img.dimensionIndex(Axes.X);
+        int yIdx = img.dimensionIndex(Axes.Y);
+        int zIdx = img.dimensionIndex(Axes.Z);
+
+        double dppXY = xIdx == -1 ? 1 : img.axis(xIdx).calibratedValue(1);
+        double dppZ = zIdx == -1 ? 1 : img.axis(zIdx).calibratedValue(1);
+        String units = xIdx == -1 ? "px" : img.axis(xIdx).unit();
+
+        int w = (int) (xIdx == -1 ? 1 : img.dimension(xIdx));
+        int h = (int) (yIdx == -1 ? 1 : img.dimension(yIdx));
+        int nSlices = (int) (zIdx == -1 ? 1 : img.dimension(zIdx));
         int tIdx = img.dimensionIndex(Axes.TIME);
         int nFrames = (int) (tIdx == -1 ? 1 : img.dimension(tIdx));
         double frameInterval = tIdx == -1 ? 1 : img.axis(tIdx).calibratedValue(1);
 
-        return ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval,
+        return ObjsFactories.getDefaultFactory().createObjs(outputObjectsName, w, h, nSlices, dppXY, dppZ, units,
+                nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
     }
@@ -104,9 +114,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         double frameInterval = tIdx == -1 ? 1 : img.axis(tIdx).calibratedValue(1);
 
         // Need to get coordinates and convert to a HCObject
-        SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createObjs(outputObjectsName, w, h, nSlices, dppXY,
+                dppZ, units, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -142,8 +151,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                             int outID = links.get(imageID);
                             int finalT = t;
 
-                            outputObjects.putIfAbsent(outID, ObjFactories.getDefaultFactory().createObj(outputObjects, factory, outID)
-                                            .setT(finalT));
+                            outputObjects.putIfAbsent(outID, ObjFactories.getDefaultFactory()
+                                    .createObjWithID(factory, outputObjects, outID).setT(finalT));
                             try {
                                 outputObjects.get(outID).addCoord(x, y, z);
                             } catch (PointOutOfRangeException e) {

@@ -32,7 +32,6 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -357,16 +356,12 @@ public class IdentifyObjects extends Module {
             int minStripWidth, boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-        int nChannels = inputImagePlus.getNChannels();
-        int nSlices = inputImagePlus.getNSlices();
-        int nFrames = inputImagePlus.getNFrames();
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
 
-        SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-        double frameInterval = inputImagePlus.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames,
-                frameInterval,
-                TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
 
         if (detectionMode.equals(DetectionModes.THREE_D))
             nSlices = 1;
@@ -380,19 +375,19 @@ public class IdentifyObjects extends Module {
                 switch (detectionMode) {
                     case DetectionModes.SLICE_BY_SLICE:
                         currStack = SubHyperstackMaker
-                                .makeSubhyperstack(inputImagePlus, "1-" + nChannels, z + "-" + z,
+                                .makeSubhyperstack(inputIpl, "1-" + nChannels, z + "-" + z,
                                         t + "-" + t)
                                 .duplicate();
                         break;
                     case DetectionModes.THREE_D:
                     default:
                         currStack = SubHyperstackMaker
-                                .makeSubhyperstack(inputImagePlus, "1-" + nChannels, "1-" + inputImagePlus.getNSlices(),
+                                .makeSubhyperstack(inputIpl, "1-" + nChannels, "1-" + inputIpl.getNSlices(),
                                         t + "-" + t)
                                 .duplicate();
                         break;
                 }
-                currStack.setCalibration(inputImagePlus.getCalibration());
+                currStack.setCalibration(inputIpl.getCalibration());
                 currStack.updateChannelAndDraw();
 
                 if (!blackBackground)
@@ -423,7 +418,7 @@ public class IdentifyObjects extends Module {
 
                 // If processing each slice separately, offsetting it to the correct Z-position
                 if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
-                    currOutputObjects.setSpatialCalibration(cal, true);
+                    currOutputObjects.applyCalibrationToImage(inputIpl);
                     for (ObjI currOutputObj : currOutputObjects.values())
                         currOutputObj.translateCoords(0, 0, z - 1);
                 }

@@ -97,8 +97,8 @@ public class AffineCentroids extends AbstractAffineRegistration {
         String referenceMode = p.referenceMode;
         int numPrevFrames = p.numPrevFrames; 
 
-        ObjsI candidates1 = ObjsFactories.getDefaultFactory().createFromExampleObjs("Candidates1", p.centroidObjects);
-        ObjsI candidates2 = ObjsFactories.getDefaultFactory().createFromExampleObjs("Candidates2", p.centroidObjects);
+        ObjsI candidates1 = ObjsFactories.getDefaultFactory().createFromExample("Candidates1", p.centroidObjects);
+        ObjsI candidates2 = ObjsFactories.getDefaultFactory().createFromExample("Candidates2", p.centroidObjects);
 
         for (ObjI obj : p.centroidObjects.values()) {
             if ((referenceMode.equals(ReferenceModes.FIRST_FRAME) && obj.getT() == 0)

@@ -76,7 +76,7 @@ public class ObjAdaptor {
         // Getting the first set of children
         ObjsI allChildren = obj.getAllChildren().get(elements[0]);
         if (allChildren == null)
-            return ObjsFactories.getDefaultFactory().createFromExampleObjs(elements[0], obj.getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExample(elements[0], obj.getObjectCollection());
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -93,7 +93,7 @@ public class ObjAdaptor {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        ObjsI outputChildren = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allChildren);
+        ObjsI outputChildren = ObjsFactories.getDefaultFactory().createFromExample(name, allChildren);
         for (ObjI child : allChildren.values()) {
             ObjsI currentChildren = child.getChildren(stringBuilder.toString());
             for (ObjI currentChild : currentChildren.values())

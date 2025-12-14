@@ -26,7 +26,7 @@ public class LabelFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -53,7 +53,7 @@ public class LabelFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -79,7 +79,7 @@ public class LabelFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -106,7 +106,7 @@ public class LabelFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -133,8 +133,8 @@ public class LabelFactoryTest {
         String calibratedUnits = "m*10-6";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -166,7 +166,7 @@ public class LabelFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1,dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);

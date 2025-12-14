@@ -220,7 +220,7 @@ public class FitCircle extends Module {
     public void processObject(ObjI inputObject, ObjsI outputObjects, String objectOutputMode)
             throws IntegerOverflowException {
         // Get projected object
-        ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Projected", inputObject.getObjectCollection());
+        ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExample("Projected", inputObject.getObjectCollection());
         ObjI projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
         Roi inputObjectRoi = projObj.getRoi(0);
@@ -314,7 +314,7 @@ public class FitCircle extends Module {
         // If necessary, creating a new Objs and adding it to the Workspace
         ObjsI outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 

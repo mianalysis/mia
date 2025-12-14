@@ -186,7 +186,7 @@ public class Workspace implements WorkspaceI {
 
                 // Adding the current Obj to the new Workspace
                 if (workspaceList.get(t).getObjects(obj.getName()) == null) {
-                    ObjsI currObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(obj.getName(), obj.getObjectCollection());
+                    ObjsI currObjects = ObjsFactories.getDefaultFactory().createFromExample(obj.getName(), obj.getObjectCollection());
                     workspaceList.get(t).addObjects(currObjects);
                 }
                 

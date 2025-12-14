@@ -104,7 +104,7 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
 
         ImageI<T> inputImage = workspace.getImages().get(inputImageName);
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Calibration calibration = inputImage.getImagePlus().getCalibration();
         Calibration calibration = new Calibration();
@@ -122,7 +122,7 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
             ArrayList<Point<Integer>> longestPath = CreateSkeleton.getLargestShortestPath(inputObject);
 
             if (longestPath.size() <= 1) {
-                ObjsI tempObjs = ObjsFactories.getDefaultFactory().createFromExampleObjs("Temp", inputObjects);
+                ObjsI tempObjs = ObjsFactories.getDefaultFactory().createFromExample("Temp", inputObjects);
                 ObjI tempObj = inputObject.duplicate(tempObjs, false, false, false);
                 while (longestPath.size() <= 1 && tempObj.size() > 0) {
                     tempObj.getCoordinateSet().remove(tempObj.getCoordinateIterator().next());

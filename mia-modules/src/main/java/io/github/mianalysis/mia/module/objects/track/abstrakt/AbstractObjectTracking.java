@@ -209,7 +209,7 @@ public abstract class AbstractObjectTracking extends Module {
 
         // Getting objects
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(trackObjectsName, inputObjects);
+        ObjsI trackObjects = ObjsFactories.getDefaultFactory().createFromExample(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module

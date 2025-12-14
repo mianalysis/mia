@@ -44,8 +44,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[] { true, true, false, true, false, false, false, false };
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY,dppZ,calibratedUnits,1,1,1, 1, 0.02, UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput", dppXY,dppZ,calibratedUnits,1,1,1, 1, 0.02, UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents", 1,1,1,dppXY,dppZ,calibratedUnits, 1, 0.02, UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput", 1,1,1,dppXY,dppZ,calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject : testObjects.values()) {
@@ -102,9 +102,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createObjs("FailOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createObjs("FailOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject : testObjects.values()) {
@@ -171,8 +171,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -223,8 +223,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -275,9 +275,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createObjs("FailOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedFailObjects = ObjsFactories.getDefaultFactory().createObjs("FailOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -334,8 +334,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
-        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
+        ObjsI expectedPassObjects = ObjsFactories.getDefaultFactory().createObjs("PassOutput",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {
@@ -385,7 +385,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",dppXY,dppZ,calibratedUnits,1,1,1,1,0.02,UNITS.SECOND);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createObjs("Parents",1,1,1,dppXY,dppZ,calibratedUnits,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (ObjI testObject:testObjects.values()) {

@@ -315,7 +315,7 @@ public class SingleClassCluster extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS, workspace);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME, workspace);

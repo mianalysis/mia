@@ -105,7 +105,7 @@ public class CreateBoundingBoxes extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         for (ObjI inputObject : inputObjects.values())
             getBoundingBox(inputObject, outputObjects, true);

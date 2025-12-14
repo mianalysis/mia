@@ -22,7 +22,6 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -107,10 +106,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Storing the image calibration
-        SpatCal cal = SpatCal.getFromImage(ipl);
-        int nFrames = ipl.getNFrames();
-        double frameInterval = ipl.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ipl);
 
         String rRange = resampleRange("-end-end", samplingRate);
 

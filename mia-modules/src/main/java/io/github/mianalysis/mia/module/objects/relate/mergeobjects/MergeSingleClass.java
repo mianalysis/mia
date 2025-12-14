@@ -69,7 +69,7 @@ public class MergeSingleClass extends Module {
     }
 
     public static ObjsI mergeSingleClass(ObjsI inputObjects, String outputObjectsName) {
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Iterating over all input objects, adding their coordinates to the relevant
         // object
@@ -80,7 +80,8 @@ public class MergeSingleClass extends Module {
             // If it doesn't already exist, creating a new object for this timepoint. The ID
             // of this object is the timepoint index (numbering starting at 1).
             if (!outputObjects.containsKey(t + 1)) {
-                ObjI outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, t + 1, inputObject);
+                ObjI outputObject = ObjFactories.getDefaultFactory()
+                        .createObjWithID(inputObject.getCoordinateSetFactory(), outputObjects, t + 1);
                 outputObject.setT(t);
                 outputObjects.add(outputObject);
             }
@@ -142,8 +143,8 @@ public class MergeSingleClass extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

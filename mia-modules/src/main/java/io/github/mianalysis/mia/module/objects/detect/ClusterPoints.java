@@ -34,7 +34,6 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -179,7 +178,7 @@ public class ClusterPoints extends Module {
         CoordinateSetI coordinateSet = outputObject.getCoordinateSet();
 
         // Initial pass, adding all coordinates to cluster object
-        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Cluster", childObjects);
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExample("Cluster", childObjects);
         for (ObjI child : children.values()) {
             // Getting local region around children (local region with radius equal to
             // epsilon)
@@ -250,14 +249,11 @@ public class ClusterPoints extends Module {
         // Getting objects to measure
         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         ImageI inputImage = workspace.getImage(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-        int nFrames = inputImagePlus.getNFrames();
-        double frameInterval = inputImagePlus.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
 
         // Getting parameters
         String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
@@ -273,16 +269,16 @@ public class ClusterPoints extends Module {
         double dppZ = outputObjects.getDppZ();
 
         // Iterating over each pixel
-        for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
+        for (int t = 0; t < inputIpl.getNFrames(); t++) {
             List<DoublePoint> locations = new ArrayList<>();
-            for (int z = 0; z < inputImagePlus.getNSlices(); z++) {
-                inputImagePlus.setPosition(1, z + 1, t + 1);
-                ImageProcessor ipr = inputImagePlus.getProcessor().duplicate();
+            for (int z = 0; z < inputIpl.getNSlices(); z++) {
+                inputIpl.setPosition(1, z + 1, t + 1);
+                ImageProcessor ipr = inputIpl.getProcessor().duplicate();
                 if (!blackBackground)
                     ipr.invert();
 
-                for (int x = 0; x < inputImagePlus.getWidth(); x++) {
-                    for (int y = 0; y < inputImagePlus.getHeight(); y++) {
+                for (int x = 0; x < inputIpl.getWidth(); x++) {
+                    for (int y = 0; y < inputIpl.getHeight(); y++) {
                         if (ipr.get(x, y) == 255)
                             locations.add(new DoublePoint(new double[] { x, y, z * dppZ / dppXY }));
 

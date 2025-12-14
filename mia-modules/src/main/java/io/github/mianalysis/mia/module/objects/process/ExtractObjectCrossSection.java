@@ -179,7 +179,7 @@ public class ExtractObjectCrossSection extends Module {
         String objectMeasurementName = parameters.getValue(OBJECT_MEASUREMENT,workspace);
         String indicesString = parameters.getValue(RELATIVE_SLICE_INDICES,workspace);
 
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
         int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true, inputObjects.getNSlices());

@@ -185,7 +185,7 @@ public class FitEllipse extends Module {
         EllipseCalculator calculator = null;
 
         // Get projected object
-        ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Projected", inputObject.getObjectCollection());
+        ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExample("Projected", inputObject.getObjectCollection());
         ObjI projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
         boolean fitSurface = fittingMode.equals(FittingModes.FIT_TO_SURFACE);
@@ -307,7 +307,7 @@ public class FitEllipse extends Module {
         // If necessary, creating a new Objs and adding it to the Workspace
         ObjsI outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+            outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 

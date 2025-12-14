@@ -122,7 +122,7 @@ public class EllipseCalculator {
     }
 
     public VolumeI getContainedPoints() {
-        VolumeI insideEllipse = volume.getFactory().createVolume(volume.getCoordinateSetFactory(),volume.getSpatialCalibration());
+        VolumeI insideEllipse = volume.getFactory().createVolumeFromExample(volume.getCoordinateSetFactory(),volume);
 
         Point2D cent = new Point2D(xCent, yCent);
         Ellipse2D ell = Ellipse2D.create(cent, semiMajor, semiMinor, getEllipseThetaRads(), true);

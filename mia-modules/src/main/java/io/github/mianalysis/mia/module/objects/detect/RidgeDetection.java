@@ -35,7 +35,6 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -516,11 +515,7 @@ public class RidgeDetection extends Module {
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         LineDetector lineDetector = new LineDetector();
-        SpatCal calibration = SpatCal.getFromImage(inputIpl);
-        int nFrames = inputIpl.getNFrames();
-        double frameInterval = inputIpl.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack

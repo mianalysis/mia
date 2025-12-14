@@ -530,7 +530,7 @@ public class RelateObjects extends Module {
     public ObjsI mergeRelatedObjects(ObjsI parentObjects, ObjsI childObjects,
             String relatedObjectsName) {
         ObjI exampleParent = parentObjects.getFirst();
-        ObjsI relatedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(relatedObjectsName, parentObjects);
+        ObjsI relatedObjects = ObjsFactories.getDefaultFactory().createFromExample(relatedObjectsName, parentObjects);
 
         if (exampleParent == null)
             return relatedObjects;

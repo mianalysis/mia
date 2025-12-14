@@ -15,38 +15,14 @@ import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
-public interface VolumeI {
-    public default void initialise(CoordinateSetFactoryI factory, int width, int height, int nSlices, double dppXY,
-            double dppZ, String units) {
-        setWidth(width);
-        setHeight(height);
-        setNSlices(nSlices);
-        setDppXY(dppXY);
-        setDppZ(dppZ);
-        setSpatialUnits(units);
-
-        setCoordinateSet(factory.createCoordinateSet());
-
-    }
-
-    public default void initialiseFromExample(CoordinateSetFactoryI factory, VolumeI exampleVolume) {
-        setWidth(exampleVolume.getWidth());
-        setHeight(exampleVolume.getHeight());
-        setNSlices(exampleVolume.getNSlices());
-        setDppXY(exampleVolume.getDppXY());
-        setDppZ(exampleVolume.getDppZ());
-        setSpatialUnits(exampleVolume.getSpatialUnits());
-
-        setCoordinateSet(factory.createCoordinateSet());
-
-    }
-
+public interface VolumeI extends SpatiallyCalibrated {
     public default Iterator<Point<Integer>> getCoordinateIterator() {
         return getCoordinateSet().iterator();
     }
@@ -245,7 +221,7 @@ public interface VolumeI {
 
     public default ImageI getAsImage(String imageName, int t, int nFrames) {
         ImagePlus ipl = IJ.createHyperStack(imageName, getWidth(), getHeight(), 1, getNSlices(), nFrames, 8);
-        spatCal.applyImageCalibration(ipl);
+        applyCalibrationToImage(ipl);
 
         for (Point<Integer> point : getCoordinateSet()) {
             int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
@@ -282,7 +258,7 @@ public interface VolumeI {
                 + borderWidths[2][1] + 1;
 
         ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
-        getSpatialCalibration().applyImageCalibration(ipl);
+        applyCalibrationToImage(ipl);
 
         // Populating ipl
         for (Point<Integer> point : getCoordinateSet()) {
@@ -599,33 +575,7 @@ public interface VolumeI {
 
     }
 
-    public int getWidth();
-
-    public void setWidth(int width);
-
-    public int getHeight();
-
-    public void setHeight(int height);
-
-    public int getNSlices();
-
-    public void setNSlices(int nSlices);
-
-    public double getDppXY();
-
-    public void setDppXY(double dppXY);
-
-    public double getDppZ();
-
-    public void setDppZ(double dppZ);
-
-    public String getSpatialUnits();
-
-    public void setSpatialUnits(String units);
-
-    public void setCalibration(VolumeI exampleVolume);
-
-    public VolumeFactory getFactory();
+    public VolumeFactoryI getFactory();
 
     public CoordinateSetFactoryI getCoordinateSetFactory();
 

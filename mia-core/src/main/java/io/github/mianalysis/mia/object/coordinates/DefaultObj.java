@@ -9,6 +9,8 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
 import io.github.mianalysis.mia.object.measurements.Measurement;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -23,6 +25,10 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
     private ObjsI objCollection;
 
+    protected int nFrames;
+    protected double frameInterval;
+    protected Unit<Time> temporalUnit;
+
     private LinkedHashMap<String, ObjI> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjsI> children = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjsI> partners = new LinkedHashMap<>();
@@ -32,18 +38,24 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
     // CONSTRUCTORS
 
-    public DefaultObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID) {
-        super(factory, objCollection.getSpatialCalibration());
+    public DefaultObj(CoordinateSetFactoryI factory, ObjsI objCollection) {
+        super(factory, objCollection);
 
-        this.objCollection = objCollection;
-        this.ID = ID;
+        this.nFrames = objCollection.getNFrames();
+        this.frameInterval = objCollection.getFrameInterval();
+        this.temporalUnit = objCollection.getTemporalUnit();
+        
+        this.ID = objCollection.getAndIncrementID();
 
     }
 
-    public DefaultObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID, SpatCal spatCal) {
-        super(factory, spatCal);
+    public DefaultObj(CoordinateSetFactoryI factory, ObjsI objCollection, int ID) {
+        super(factory, objCollection);
 
-        this.objCollection = objCollection;
+        this.nFrames = objCollection.getNFrames();
+        this.frameInterval = objCollection.getFrameInterval();
+        this.temporalUnit = objCollection.getTemporalUnit();
+
         this.ID = ID;
 
     }
@@ -229,7 +241,7 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     @Override
     public ObjI duplicate(ObjsI newCollection, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata) {
-        ObjI newObj = new DefaultObj(newCollection, getCoordinateSetFactory(), getID());
+        ObjI newObj = new DefaultObj(getCoordinateSetFactory(), newCollection, getID());
 
         // Duplicating coordinates
         newObj.setCoordinateSet(getCoordinateSet().duplicate());
@@ -319,5 +331,35 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     @Override
     public String toString() {
         return "Object \"" + getName() + "\", ID = " + ID + ", frame = " + getT();
+    }
+
+    @Override
+    public int getNFrames() {
+        return nFrames;
+    }
+
+    @Override
+    public double getFrameInterval() {
+        return frameInterval;
+    }
+
+    @Override
+    public Unit<Time> getTemporalUnit() {
+        return temporalUnit;
+    }
+
+    @Override
+    public void setNFrames(int nFrames) {
+        this.nFrames = nFrames;
+    }
+
+    @Override
+    public void setFrameInterval(double frameInterval) {
+        this.frameInterval = frameInterval;
+    }
+
+    @Override
+    public void setTemporalUnit(Unit<Time> temporalUnit) {
+        this.temporalUnit = temporalUnit;
     }
 }

@@ -103,7 +103,7 @@ public class FitConvexHull2D extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         
         // If necessary, creating a new Objs and adding it to the Workspace
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
         
         int count = 0;

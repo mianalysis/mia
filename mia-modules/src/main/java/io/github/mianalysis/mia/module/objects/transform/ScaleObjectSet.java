@@ -180,8 +180,8 @@ public class ScaleObjectSet extends Module {
         else if (zScaleMode.equals(ScaleModes.MATCH_OBJECTS) && zAdoptCalibration)
             dppZOut = workspace.getObjects(zObjectsName).getDppZ();
 
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createObjs(outputObjectsName, dppXYOut, dppZOut, unitsOut, xResolution, yResolution,
-                zResolution, inputObjects.getNFrames(), inputObjects.getFrameInterval(),
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createObjs(outputObjectsName, xResolution, yResolution,
+                zResolution, dppXYOut, dppZOut, unitsOut, inputObjects.getNFrames(), inputObjects.getFrameInterval(),
                 inputObjects.getTemporalUnit());
 
         for (ObjI inputObject : inputObjects.values()) {
@@ -198,7 +198,8 @@ public class ScaleObjectSet extends Module {
             outputCal.fps = 1 / TemporalUnit.getOMEUnit().convertValue(inputObjects.getFrameInterval(), UNITS.SECOND);
 
             ImageI objectImage = ImageFactory.createImage("Object image", outputIpl);
-            ObjsI tempObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(), outputObjectsName, true);
+            ObjsI tempObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(),
+                    outputObjectsName, true);
 
             if (tempObjects.size() == 0)
                 continue;

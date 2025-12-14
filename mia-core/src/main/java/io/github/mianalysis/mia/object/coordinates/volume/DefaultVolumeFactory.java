@@ -1,13 +1,15 @@
 package io.github.mianalysis.mia.object.coordinates.volume;
 
-public class DefaultVolumeFactory implements VolumeFactory {
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
+
+public class DefaultVolumeFactory implements VolumeFactoryI {
     @Override
     public String getName() {
         return "Default";
     }
 
     @Override
-    public VolumeFactory duplicate() {
+    public VolumeFactoryI duplicate() {
         return new DefaultVolumeFactory();
     }
 
@@ -18,7 +20,8 @@ public class DefaultVolumeFactory implements VolumeFactory {
     }
 
     @Override
-    public VolumeI createVolumeFromExample(CoordinateSetFactoryI factory, VolumeI exampleVolume) {
-        return new DefaultVolume(factory, exampleVolume);
-    }    
+    public VolumeI createVolumeFromExample(CoordinateSetFactoryI factory, SpatiallyCalibrated example) {
+        return new DefaultVolume(factory, example.getWidth(), example.getHeight(), example.getNSlices(),
+                example.getDppXY(), example.getDppZ(), example.getSpatialUnits());
+    }
 }

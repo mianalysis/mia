@@ -148,9 +148,9 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
-        int maxX = obj.getSpatialCalibration().getWidth() - 1;
-        int maxY = obj.getSpatialCalibration().getHeight() - 1;
-        int maxZ = obj.getSpatialCalibration().getNSlices() - 1;
+        int maxX = obj.getWidth() - 1;
+        int maxY = obj.getHeight() - 1;
+        int maxZ = obj.getNSlices() - 1;
 
         if (!removalEdges[0])
             minY = -Integer.MAX_VALUE;
@@ -217,7 +217,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
         boolean[] removalEdges = new boolean[] { removeTop, removeLeft, removeBottom, removeRight };
 
-        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects) : null;
 
         int count = process(inputObjects, maxContact, removalEdges, includeZ, remove, outputObjects);
 

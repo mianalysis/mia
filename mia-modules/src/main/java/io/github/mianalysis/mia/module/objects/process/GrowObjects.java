@@ -160,7 +160,7 @@ public class GrowObjects extends Module {
     public static ObjsI process(ObjsI inputObjects, @Nullable String outputObjectsName, String startingObjectsMode,
             String growthMode, @Nullable String intensityImageName, @Nullable String maskImageName,
             boolean blackBackground, int connectivity, boolean excludeInputRegions, WorkspaceI workspace) {
-        ObjsI outputObjects = outputObjectsName == null ? null : ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = outputObjectsName == null ? null : ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Loop over timepoints
         int nFrames = inputObjects.getNFrames();

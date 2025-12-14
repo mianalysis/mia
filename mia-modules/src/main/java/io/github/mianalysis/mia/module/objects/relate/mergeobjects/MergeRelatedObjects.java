@@ -123,7 +123,7 @@ public class MergeRelatedObjects extends Module {
 
     public static ObjsI mergeRelatedObjectsCreateNew(ObjsI parentObjects, String childObjectsName,
             String relatedObjectsName, String mergeMode) {
-        ObjsI relatedObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(relatedObjectsName, parentObjects);
+        ObjsI relatedObjects = ObjsFactories.getDefaultFactory().createFromExample(relatedObjectsName, parentObjects);
 
         if (parentObjects == null)
             return relatedObjects;

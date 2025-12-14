@@ -26,7 +26,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -61,185 +60,260 @@ import util.opencsv.CSVReader;
  */
 
 /**
-* Load centroid coordinates of pre-detected objects from file.  Loaded objects are stored in a single object collection and are represented by a single coordinate point.  For example, this module could be used to import detections from another piece of software or from a previous analysis run.
-*/
+ * Load centroid coordinates of pre-detected objects from file. Loaded objects
+ * are stored in a single object collection and are represented by a single
+ * coordinate point. For example, this module could be used to import detections
+ * from another piece of software or from a previous analysis run.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ObjectLoader extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Object output";
 
-	/**
-	* Objects loaded into the workspace will be stored with this name.  They will be accessible by subsequent modules using this name.
-	*/
+    /**
+     * Objects loaded into the workspace will be stored with this name. They will be
+     * accessible by subsequent modules using this name.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String COORDINATE_SEPARATOR = "Coordinate input";
 
-	/**
-	* Controls where the coordinates for the output object collection will be loaded from:<br><ul><li>"Current file" (default option) will use the current root-file for the workspace (this is the file specified in the "Input control" module).</li><li>"Matching format" will load the coordinate file matching a filename based on the root-file for the workspace and a series of rules.</li><li>"Specific file" will load the coordinate file at the location specified by "Input file".</li></ul>
-	*/
+    /**
+     * Controls where the coordinates for the output object collection will be
+     * loaded from:<br>
+     * <ul>
+     * <li>"Current file" (default option) will use the current root-file for the
+     * workspace (this is the file specified in the "Input control" module).</li>
+     * <li>"Matching format" will load the coordinate file matching a filename based
+     * on the root-file for the workspace and a series of rules.</li>
+     * <li>"Specific file" will load the coordinate file at the location specified
+     * by "Input file".</li>
+     * </ul>
+     */
     public static final String COORDINATE_SOURCE = "Coordinate source";
 
-	/**
-	* Method to use for generation of the input filename:<br><ul><li>"Generic (from metadata)" (default) will generate a name from metadata values stored in the current workspace.</li><li>"Input filename with prefix" will load a file with the same name as the input image, but with an additional prefix, specified by the "Prefix" parameter.</li><li>"Input filename with suffix" will load a file with the same name as the input image, but with an additional suffix, specified by the "Suffix" parameter.</li></ul>
-	*/
+    /**
+     * Method to use for generation of the input filename:<br>
+     * <ul>
+     * <li>"Generic (from metadata)" (default) will generate a name from metadata
+     * values stored in the current workspace.</li>
+     * <li>"Input filename with prefix" will load a file with the same name as the
+     * input image, but with an additional prefix, specified by the "Prefix"
+     * parameter.</li>
+     * <li>"Input filename with suffix" will load a file with the same name as the
+     * input image, but with an additional suffix, specified by the "Suffix"
+     * parameter.</li>
+     * </ul>
+     */
     public static final String NAME_FORMAT = "Name format";
 
-	/**
-	* Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.
-	*/
+    /**
+     * Format for a generic filename. Plain text can be mixed with global variables
+     * or metadata values currently stored in the workspace. Global variables are
+     * specified using the "V{name}" notation, where "name" is the name of the
+     * variable to insert. Similarly, metadata values are specified with the
+     * "M{name}" notation.
+     */
     public static final String GENERIC_FORMAT = "Generic format";
 
-	/**
-	* List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.
-	*/
+    /**
+     * List of the currently-available metadata values for this workspace. These can
+     * be used when compiling a generic filename.
+     */
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
-	/**
-	* Prefix to use when generating coordinate file filename in "Input filename with prefix" mode.
-	*/
+    /**
+     * Prefix to use when generating coordinate file filename in "Input filename
+     * with prefix" mode.
+     */
     public static final String PREFIX = "Prefix";
 
-	/**
-	* Suffix to use when generating coordinate file filename in "Input filename with suffix" mode.
-	*/
+    /**
+     * Suffix to use when generating coordinate file filename in "Input filename
+     * with suffix" mode.
+     */
     public static final String SUFFIX = "Suffix";
 
-	/**
-	* Extension for the generated filename.
-	*/
+    /**
+     * Extension for the generated filename.
+     */
     public static final String EXTENSION = "Extension";
 
-	/**
-	* Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file.
-	*/
+    /**
+     * Option to include the current series number when compiling filenames. This
+     * may be necessary when working with multi-series files, as there will be
+     * multiple analyses completed for the same root file.
+     */
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
 
-	/**
-	* Path to specific file to be loaded when "Coordinate source" is in "Specific file" mode.
-	*/
+    /**
+     * Path to specific file to be loaded when "Coordinate source" is in "Specific
+     * file" mode.
+     */
     public static final String INPUT_FILE = "Input file";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String COLUMN_SEPARATOR = "Column selection";
 
-	/**
-	* Index of column in input coordinates file specifying the object ID number.
-	*/
+    /**
+     * Index of column in input coordinates file specifying the object ID number.
+     */
     public static final String ID_COLUMN_INDEX = "ID-column index";
 
-	/**
-	* Index of column in input coordinates file specifying the object x-centroid location (pixel units).
-	*/
+    /**
+     * Index of column in input coordinates file specifying the object x-centroid
+     * location (pixel units).
+     */
     public static final String X_COLUMN_INDEX = "X-column index";
 
-	/**
-	* Index of column in input coordinates file specifying the object y-centroid location (pixel units).
-	*/
+    /**
+     * Index of column in input coordinates file specifying the object y-centroid
+     * location (pixel units).
+     */
     public static final String Y_COLUMN_INDEX = "Y-column index";
 
-	/**
-	* Index of column in input coordinates file specifying the object z-centroid location (slice units).
-	*/
+    /**
+     * Index of column in input coordinates file specifying the object z-centroid
+     * location (slice units).
+     */
     public static final String Z_COLUMN_INDEX = "Z-column index";
 
-	/**
-	* Index of column in input coordinates file specifying the timepoint the object appears in.  Timepoint numbering starts at 0.
-	*/
+    /**
+     * Index of column in input coordinates file specifying the timepoint the object
+     * appears in. Timepoint numbering starts at 0.
+     */
     public static final String T_COLUMN_INDEX = "Timepoint-column index";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LIMIT_SEPARATOR = "Coordinate limits and calibration";
 
-	/**
-	* Controls how the spatial limits (width, height, number of slices and number of timepoints) for the output object collection are defined:<br><ul><li>"From image" limits match the spatial and temporal dimensions of an image in the workspace (specified with the "Limits reference image" parameter).  This is equivalent to how spatial limits are determined when identifying objects directly from an image.</li><li>"Manual" limits are specified using the "Width", "Height", "Number of slices" and "Number of timepoints" parameters.</li><li>"Maximum coordinate" limits are determined from the maximum x,y,z coordinates and timepoint present in the loaded coordinate set.</li></ul>
-	*/
+    /**
+     * Controls how the spatial limits (width, height, number of slices and number
+     * of timepoints) for the output object collection are defined:<br>
+     * <ul>
+     * <li>"From image" limits match the spatial and temporal dimensions of an image
+     * in the workspace (specified with the "Limits reference image" parameter).
+     * This is equivalent to how spatial limits are determined when identifying
+     * objects directly from an image.</li>
+     * <li>"Manual" limits are specified using the "Width", "Height", "Number of
+     * slices" and "Number of timepoints" parameters.</li>
+     * <li>"Maximum coordinate" limits are determined from the maximum x,y,z
+     * coordinates and timepoint present in the loaded coordinate set.</li>
+     * </ul>
+     */
     public static final String LIMITS_SOURCE = "Limits source";
 
-	/**
-	* Image used to determine spatial and temporal limits of the output object collection if "Limits source" is set to "From image".
-	*/
+    /**
+     * Image used to determine spatial and temporal limits of the output object
+     * collection if "Limits source" is set to "From image".
+     */
     public static final String LIMITS_REFERENCE_IMAGE = "Limits reference image";
 
-	/**
-	* Output object collection spatial width to be used if "Limits source" is set to "Manual".  Specified in pixel units.
-	*/
+    /**
+     * Output object collection spatial width to be used if "Limits source" is set
+     * to "Manual". Specified in pixel units.
+     */
     public static final String WIDTH = "Width";
 
-	/**
-	* Output object collection spatial height to be used if "Limits source" is set to "Manual".  Specified in pixel units.
-	*/
+    /**
+     * Output object collection spatial height to be used if "Limits source" is set
+     * to "Manual". Specified in pixel units.
+     */
     public static final String HEIGHT = "Height";
 
-	/**
-	* Output object collection number of slices (depth) to be used if "Limits source" is set to "Manual".  Specified in slice units.
-	*/
+    /**
+     * Output object collection number of slices (depth) to be used if "Limits
+     * source" is set to "Manual". Specified in slice units.
+     */
     public static final String N_SLICES = "Number of slices";
 
-	/**
-	* Output object collection number of frames to be used if "Limits source" is set to "Manual".
-	*/
+    /**
+     * Output object collection number of frames to be used if "Limits source" is
+     * set to "Manual".
+     */
     public static final String N_FRAMES = "Number of timepoints";
 
-	/**
-	* Time between adjacent frames if dealing with objects detected across multiple timepoints.  Units for this are specified in the main "Input control" module.
-	*/
+    /**
+     * Time between adjacent frames if dealing with objects detected across multiple
+     * timepoints. Units for this are specified in the main "Input control" module.
+     */
     public static final String FRAME_INTERVAL = "Frame interval";
 
-	/**
-	* Controls how the spatial calibration for the output object collection are defined:<br><ul><li>"From image" spatial calibrations match those of an image in the workspace (specified with the "Spatial calibration ref. image" parameter).  This is equivalent to how calibrations are determined when identifying objects directly from an image.</li><li>"Manual" spatial calibrations are specified using the "XY calibration (dist/px)" and "Z calibration (dist/px)" parameters.</li></ul>
-	*/
+    /**
+     * Controls how the spatial calibration for the output object collection are
+     * defined:<br>
+     * <ul>
+     * <li>"From image" spatial calibrations match those of an image in the
+     * workspace (specified with the "Spatial calibration ref. image" parameter).
+     * This is equivalent to how calibrations are determined when identifying
+     * objects directly from an image.</li>
+     * <li>"Manual" spatial calibrations are specified using the "XY calibration
+     * (dist/px)" and "Z calibration (dist/px)" parameters.</li>
+     * </ul>
+     */
     public static final String SPATIAL_CALIBRATION_SOURCE = "Spatial calibration source";
 
-	/**
-	* Image used to determine spatial calibrations of the output object collection if "Spatial calibration source" is set to "From image".
-	*/
+    /**
+     * Image used to determine spatial calibrations of the output object collection
+     * if "Spatial calibration source" is set to "From image".
+     */
     public static final String SPATIAL_CALIBRATION_REFERENCE_IMAGE = "Spatial calibration ref. image";
 
-	/**
-	* Controls how the temporal calibration for the output object collection is defined:<br><ul><li>"From image" temporal calibration matches that of an image in the workspace (specified with the "Temporal calibration ref. image" parameter).  This is equivalent to how calibrations are determined when identifying objects directly from an image.</li><li>"Manual" temporal calibration is specified using the "Frame interval" parameter.</li></ul>
-	*/
+    /**
+     * Controls how the temporal calibration for the output object collection is
+     * defined:<br>
+     * <ul>
+     * <li>"From image" temporal calibration matches that of an image in the
+     * workspace (specified with the "Temporal calibration ref. image" parameter).
+     * This is equivalent to how calibrations are determined when identifying
+     * objects directly from an image.</li>
+     * <li>"Manual" temporal calibration is specified using the "Frame interval"
+     * parameter.</li>
+     * </ul>
+     */
     public static final String TEMPORAL_CALIBRATION_SOURCE = "Temporal calibration source";
 
-	/**
-	* Image used to determine the temporal calibration of the output object collection if "Temporal calibration source" is set to "From image".
-	*/
+    /**
+     * Image used to determine the temporal calibration of the output object
+     * collection if "Temporal calibration source" is set to "From image".
+     */
     public static final String TEMPORAL_CALIBRATION_REFERENCE_IMAGE = "Temporal calibration ref. image";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RELATIONSHIP_SEPARATOR = "Relationship controls";
 
-	/**
-	* When selected, an output parent object collection can also be specified which allows objects to be linked.  These parent objectcs can only perform a linking function for the output objects; the parent objects themselves do not contain any coordinate information.  For example, the loaded parent objects could be tracks or clusters.
-	*/
+    /**
+     * When selected, an output parent object collection can also be specified which
+     * allows objects to be linked. These parent objectcs can only perform a linking
+     * function for the output objects; the parent objects themselves do not contain
+     * any coordinate information. For example, the loaded parent objects could be
+     * tracks or clusters.
+     */
     public static final String CREATE_PARENTS = "Create parent objects";
 
-	/**
-	* Name of the output parent objects collection.
-	*/
+    /**
+     * Name of the output parent objects collection.
+     */
     public static final String PARENT_OBJECTS_NAME = "Output parent objects name";
 
-	/**
-	* Index of column in input coordinates file specifying the parent object ID number.
-	*/
+    /**
+     * Index of column in input coordinates file specifying the parent object ID
+     * number.
+     */
     public static final String PARENTS_COLUMN_INDEX = "Parent object ID index";
 
     public ObjectLoader(Modules modules) {
@@ -593,18 +667,18 @@ public class ObjectLoader extends Module {
             return Status.FAIL;
 
         String units = SpatialUnit.getOMEUnit().getSymbol();
-        SpatCal calibration = new SpatCal(spatialCal[0], spatialCal[1], units, limits[0], limits[1], limits[2]);
 
         // Creating output objects
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calibration, limits[3], temporalCal,
-                TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createObjs(outputObjectsName, limits[0], limits[1],
+                limits[2], spatialCal[0], spatialCal[1], units, limits[3], temporalCal, TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
         ObjsI parentObjects = null;
         if (createParents) {
             double frameInterval = parameters.getValue(FRAME_INTERVAL, workspace);
-            parentObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(parentObjectsName, calibration, limits[3], frameInterval,
+            parentObjects = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, limits[0], limits[1],
+                    limits[2], spatialCal[0], spatialCal[1], units, limits[3], frameInterval,
                     TemporalUnit.getOMEUnit());
             workspace.addObjects(parentObjects);
         }
@@ -769,8 +843,8 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

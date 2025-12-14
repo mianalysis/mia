@@ -14,9 +14,10 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
+import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.measurements.Measurement;
@@ -216,18 +217,16 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer, Point<Double>> getImageCentreRefs(SpatCal cal, int nFrames, String orientationMode) {
+    static HashMap<Integer, Point<Double>> getImageCentreRefs(SpatioTemporallyCalibrated calibrated,
+            String orientationMode) {
         boolean useZ = !orientationMode.equals(OrientationModes.X_Y_PLANE);
-        double width = cal.getWidth();
-        double height = cal.getHeight();
-        double nSlices = cal.getNSlices();
 
-        double xc = width / 2 - 0.5;
-        double yc = height / 2 - 0.5;
-        double zc = useZ ? nSlices / 2 - 0.5 : 0;
+        double xc = calibrated.getWidth() / 2 - 0.5;
+        double yc = calibrated.getHeight() / 2 - 0.5;
+        double zc = useZ ? calibrated.getNSlices() / 2 - 0.5 : 0;
 
         HashMap<Integer, Point<Double>> centres = new HashMap<>();
-        for (int i = 0; i < nFrames; i++)
+        for (int i = 0; i < calibrated.getNFrames(); i++)
             centres.put(i, new Point<>(xc, yc, zc));
 
         return centres;
@@ -333,7 +332,8 @@ public class MeasureRelativeOrientation extends Module {
                 int y1 = (int) inputObject.getYMean(true);
                 int z1 = (int) inputObject.getZMean(true, false);
 
-                VolumeI centroidVol = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), inputObject.getSpatialCalibration());
+                VolumeI centroidVol = VolumeFactories.getDefaultFactory()
+                        .createVolumeFromExample(new PointListFactory(), inputObject);
                 try {
                     centroidVol.addCoord(x1, y1, z1);
                 } catch (IntegerOverflowException e) {
@@ -459,8 +459,7 @@ public class MeasureRelativeOrientation extends Module {
         HashMap<Integer, Point<Double>> referencePoints = null;
         switch (referenceMode) {
             case ReferenceModes.IMAGE_CENTRE:
-                referencePoints = getImageCentreRefs(inputObjects.getSpatialCalibration(), inputObjects.getNFrames(),
-                        orientationMode);
+                referencePoints = getImageCentreRefs(inputObjects, orientationMode);
                 break;
 
             case ReferenceModes.OBJECT_CENTROID:

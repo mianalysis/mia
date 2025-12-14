@@ -106,7 +106,7 @@ public class ConvertImageToObjects extends Module {
     }
 
     public static ObjsI createParents(ObjsI inputObjects, ImageI image, String parentsName) {
-        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(parentsName, inputObjects);
+        ObjsI parentObjects = ObjsFactories.getDefaultFactory().createFromExample(parentsName, inputObjects);
 
         for (ObjI inputObject : inputObjects.values()) {
             // Taking parent ID as the largest intensity within the object
@@ -114,7 +114,7 @@ public class ConvertImageToObjects extends Module {
             int ID = (int) Math.round(cs.getMax());
 
             // Getting corresponding parent object
-            parentObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(parentObjects, new PointListFactory(), ID));
+            parentObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObjWithID(new PointListFactory(), parentObjects, ID));
             ObjI parentObject = parentObjects.get(ID);
 
             // Assigning relationships

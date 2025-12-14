@@ -553,7 +553,7 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1));
+            workspace.addObjects(ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
@@ -642,7 +642,7 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName, false);
             }
 
-            ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects1);
+            ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects1);
             createClusters(outputObjects, assignments);
             workspace.addObjects(outputObjects);
 

@@ -78,7 +78,7 @@ public class Workspaces extends LinkedHashSet<WorkspaceI> {
 
                 // If this is the first time these objects have been added, create a blank Objs
                 if (metadataWorkspace.getObjects(objName) == null)
-                    metadataWorkspace.addObjects(ObjsFactories.getDefaultFactory().createFromExampleObjs(objName,currObjectSet));
+                    metadataWorkspace.addObjects(ObjsFactories.getDefaultFactory().createFromExample(objName,currObjectSet));
                 
                 // If a collection of these objects already exists, add to this
                 ObjsI coreSet = metadataWorkspace.getObjects(objName);

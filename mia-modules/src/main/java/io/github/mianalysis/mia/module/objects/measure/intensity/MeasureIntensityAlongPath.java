@@ -35,9 +35,9 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -135,7 +135,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
                 CreateSkeleton.getLargestShortestPath(object));
 
         LinkedHashMap<Double, Double> rawIntensities = measureIntensityProfile(orderedPoints, image, object.getT(),
-                object.getSpatialCalibration());
+                object);
         LinkedHashMap<Integer, Double> spacedIntensities = interpolateProfile(rawIntensities);
 
         addProfileToSheet(sheet, object, spacedIntensities, includeCentroids, includeTimepoints);
@@ -143,7 +143,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
     }
 
     public static LinkedHashMap<Double, Double> measureIntensityProfile(Collection<Point<Integer>> points, ImageI image,
-            int t, SpatCal spatCal) {
+            int t, SpatiallyCalibrated calibrated) {
         ImagePlus ipl = image.getImagePlus();
 
         LinkedHashMap<Double, Double> profile = new LinkedHashMap<>();
@@ -158,8 +158,8 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
             double intensity = ipl.getProcessor().getPixel(x, y);
 
             if (prevPoint != null) {
-                VolumeI volume1 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), spatCal.duplicate());
-                VolumeI volume2 = VolumeFactories.getDefaultFactory().createVolume(new PointListFactory(), spatCal.duplicate());
+                VolumeI volume1 = VolumeFactories.getDefaultFactory().createVolumeFromExample(new PointListFactory(), calibrated);
+                VolumeI volume2 = VolumeFactories.getDefaultFactory().createVolumeFromExample(new PointListFactory(), calibrated);
 
                 try {
                     volume1.addCoord(prevPoint.getX(), prevPoint.getY(), prevPoint.getZ());

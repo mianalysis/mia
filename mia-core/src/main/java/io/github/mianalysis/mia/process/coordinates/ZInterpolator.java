@@ -24,7 +24,7 @@ public class ZInterpolator {
 
             // Converting binary image back to objects
             ObjI interpObj = binaryImage.convertImageToObjects(factory, inputObj.getName(), true).getFirst();
-            interpObj.setCalibration(inputObj);
+            interpObj.setSpatialCalibrationFromExample(inputObjects);
             double[][] extents = inputObj.getExtents(true, false);
 
             interpObj.translateCoords((int) Math.round(extents[0][0]), (int) Math.round(extents[1][0]),

@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.object.coordinates;
 
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 
 public class DefaultObjFactory implements ObjFactoryI {
     @Override
@@ -11,13 +10,13 @@ public class DefaultObjFactory implements ObjFactoryI {
     }
 
     @Override
-    public ObjI createObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID) {
-        return new DefaultObj(objCollection, factory, ID);
+    public ObjI createObj(CoordinateSetFactoryI factory, ObjsI objectCollection) {
+        return new DefaultObj(factory, objectCollection);
     }
 
     @Override
-    public ObjI createObj(ObjsI objCollection, CoordinateSetFactoryI factory, int ID, SpatCal spatCal) {
-        return new DefaultObj(objCollection, factory, ID, spatCal);
+    public ObjI createObjWithID(CoordinateSetFactoryI factory, ObjsI objectCollection, int ID) {
+        return new DefaultObj(factory, objectCollection, ID);
     }
 
     @Override

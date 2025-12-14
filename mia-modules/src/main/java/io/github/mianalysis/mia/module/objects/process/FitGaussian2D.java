@@ -235,7 +235,7 @@ public class FitGaussian2D extends Module {
 
     static void assignVolume(ObjsI objects) {
         // Replacing spot volumes with explicit volume
-        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SpotVolume", objects);
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExample("SpotVolume", objects);
         for (ObjI spotObject : objects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue());
             Point<Double> cent = spotObject.getMeanCentroid(true, false);

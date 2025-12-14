@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.object.coordinates.volume;
 import java.util.Iterator;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
 import io.github.mianalysis.mia.process.analysis.CentroidCalculator;
 
 public class DefaultVolume implements VolumeI {
@@ -11,23 +12,39 @@ public class DefaultVolume implements VolumeI {
     protected int nSlices;
     protected double dppXY;
     protected double dppZ;
-    protected String units;
+    protected String spatialUnits;
     protected CoordinateSetI coordinateSet;
     protected VolumeI surface = null;
     protected VolumeI projection = null;
     protected Point<Double> meanCentroidPx = null;
 
     public DefaultVolume(CoordinateSetFactoryI factory, int width, int height, int nSlices, double dppXY, double dppZ,
-            String units) {
-        initialise(factory, width, height, nSlices, dppXY, dppZ, units);
+            String spatialUnits) {
+        this.coordinateSet = factory.createCoordinateSet();
+
+        this.width = width;
+        this.height = height;
+        this.nSlices = nSlices;
+        this.dppXY = dppXY;
+        this.dppZ = dppZ;
+        this.spatialUnits = spatialUnits;
+
     }
 
-    public DefaultVolume(CoordinateSetFactoryI factory, VolumeI exampleVolume) {
-        initialiseFromExample(factory, exampleVolume);
+    public DefaultVolume(CoordinateSetFactoryI factory, SpatiallyCalibrated example) {
+        this.coordinateSet = factory.createCoordinateSet();
+
+        this.width = example.getWidth();
+        this.height = example.getHeight();
+        this.nSlices = example.getNSlices();
+        this.dppXY = example.getDppXY();
+        this.dppZ = example.getDppZ();
+        this.spatialUnits = example.getSpatialUnits();
+
     }
 
     @Override
-    public VolumeFactory getFactory() {
+    public VolumeFactoryI getFactory() {
         return new DefaultVolumeFactory();
     }
 
@@ -83,7 +100,7 @@ public class DefaultVolume implements VolumeI {
             if (factory instanceof OctreeFactory)
                 factory = new QuadtreeFactory();
 
-            projection = new DefaultVolume(factory, this);
+            projection = getFactory().createVolume(factory, width, height, nSlices, dppXY, dppZ, spatialUnits);
 
             projection.setCoordinateSet(coordinateSet.calculateProjected());
 
@@ -250,84 +267,62 @@ public class DefaultVolume implements VolumeI {
 
     @Override
     public int getWidth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWidth'");
+        return width;
     }
 
     @Override
     public void setWidth(int width) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setWidth'");
+        this.width = width;
     }
 
     @Override
     public int getHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHeight'");
+        return height;
     }
 
     @Override
     public void setHeight(int height) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setHeight'");
+        this.height = height;
     }
 
     @Override
     public int getNSlices() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNSlices'");
+        return nSlices;
     }
 
     @Override
     public void setNSlices(int nSlices) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNSlices'");
+        this.nSlices = nSlices;
     }
 
     @Override
     public double getDppXY() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDppXY'");
+        return dppXY;
     }
 
-    @Override
+     @Override
     public void setDppXY(double dppXY) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDppXY'");
+        this.dppXY = dppXY;
     }
 
     @Override
     public double getDppZ() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDppZ'");
+        return dppZ;
     }
 
     @Override
     public void setDppZ(double dppZ) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDppZ'");
+        this.dppZ = dppZ;
     }
 
     @Override
     public String getSpatialUnits() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSpatialUnits'");
+        return spatialUnits;
     }
 
     @Override
-    public void setSpatialUnits(String units) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSpatialUnits'");
-    }
-
-    @Override
-    public void setCalibration(VolumeI exampleVolume) {
-        setWidth(exampleVolume.getWidth());
-        setHeight(exampleVolume.getHeight());
-        setNSlices(exampleVolume.getNSlices());
-        setDppXY(exampleVolume.getDppXY());
-        setDppZ(exampleVolume.getDppZ());
-        setSpatialUnits(exampleVolume.getSpatialUnits());
+    public void setSpatialUnits(String spatialUnits) {
+        this.spatialUnits = spatialUnits;
     }
 
     @Override

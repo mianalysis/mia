@@ -149,8 +149,8 @@ public class DuplicateAcrossTime extends Module {
             int startFrame, int endFrame) {
         // Creating output object collection
         int nFrames = endFrame - startFrame + 1;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, inputObjects.getSpatialCalibration(),
-                nFrames, inputObjects.getFrameInterval(), inputObjects.getTemporalUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
+        outputObjects.setNFrames(nFrames);
 
         String name = new DuplicateAcrossTime(null).getName();
 

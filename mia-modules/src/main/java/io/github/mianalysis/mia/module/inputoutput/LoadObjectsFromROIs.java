@@ -30,7 +30,6 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -317,16 +316,12 @@ public class LoadObjectsFromROIs extends Module {
         }
 
         // Creating output objects
-        ImagePlus refIpl = refImage.getImagePlus();
-        SpatCal cal = SpatCal.getFromImage(refIpl);
-        int nFrames = refIpl.getNFrames();
-        double frameInterval = refIpl.getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, refImage.getImagePlus());
         workspace.addObjects(outputObjects);
 
         ObjsI trackObjects = null;
         if (assignTracks) {
-            trackObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(trackObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+            trackObjects = ObjsFactories.getDefaultFactory().createFromImage(trackObjectsName, refImage.getImagePlus());
             workspace.addObjects(trackObjects);
         }
 

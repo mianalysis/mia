@@ -80,7 +80,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects) : null;
 
         int count = 0;
         Iterator<ObjI> iterator = inputObjects.values().iterator();

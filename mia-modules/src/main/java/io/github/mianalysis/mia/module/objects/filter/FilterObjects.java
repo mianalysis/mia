@@ -284,9 +284,9 @@ public class FilterObjects extends Module implements ActionListener {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
-        int maxX = inputObjects.getSpatialCalibration().getWidth() - 1;
-        int maxY = inputObjects.getSpatialCalibration().getHeight() - 1;
-        int maxZ = inputObjects.getSpatialCalibration().getNSlices() - 1;
+        int maxX = inputObjects.getWidth() - 1;
+        int maxY = inputObjects.getHeight() - 1;
+        int maxZ = inputObjects.getNSlices() - 1;
 
         Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -540,7 +540,7 @@ public class FilterObjects extends Module implements ActionListener {
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME,workspace);
 
         ObjsI outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
-                ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects)
+                ? ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects)
                 : null;
 
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);

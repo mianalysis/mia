@@ -104,9 +104,9 @@ public class MeasureObjectWidth extends Module {
         for (ObjI inputObject : inputObjects.values()) {
             double dppXY = inputObject.getDppXY();
 
-            final ObjsI skeletonObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SkeletonTemp", inputObjects);
-            final ObjsI edgeObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("EdgesTemp", inputObjects);
-            final ObjsI junctionObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("JunctionsTemp", inputObjects);
+            final ObjsI skeletonObjects = ObjsFactories.getDefaultFactory().createFromExample("SkeletonTemp", inputObjects);
+            final ObjsI edgeObjects = ObjsFactories.getDefaultFactory().createFromExample("EdgesTemp", inputObjects);
+            final ObjsI junctionObjects = ObjsFactories.getDefaultFactory().createFromExample("JunctionsTemp", inputObjects);
 
             Object[] result = CreateSkeleton.initialiseAnalyzer(inputObject, 0, false);
             ObjI skeleton = CreateSkeleton.createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],

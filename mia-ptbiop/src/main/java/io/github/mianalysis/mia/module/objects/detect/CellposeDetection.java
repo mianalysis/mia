@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -40,7 +39,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CellposeDetection extends Module {
@@ -188,11 +186,9 @@ public class CellposeDetection extends Module {
 
         cellpose.compileAdditionalFlags();
 
-        SpatCal spatCal = SpatCal.getFromImage(inputImage.getImagePlus());
         int nFrames = inputImage.getImagePlus().getNFrames();
         int nSlices = inputImage.getImagePlus().getNSlices();
-        double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, spatCal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage.getImagePlus());
 
         if (dimensionMode.equals(DimensionModes.TWOD)) {
             int count = 0;

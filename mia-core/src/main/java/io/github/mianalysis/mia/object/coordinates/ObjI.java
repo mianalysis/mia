@@ -24,7 +24,7 @@ import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public interface ObjI extends MeasurementProvider, VolumeI {
+public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCalibrated {
     public default LinkedHashMap<String, ObjI> getParents(boolean useFullHierarchy) {
         if (!useFullHierarchy)
             return getAllParents();
@@ -91,7 +91,7 @@ public interface ObjI extends MeasurementProvider, VolumeI {
         // Getting the first set of children
         ObjsI allChildren = getAllChildren().get(elements[0]);
         if (allChildren == null)
-            return ObjsFactories.getDefaultFactory().createFromExampleObjs(elements[0], getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExample(elements[0], getObjectCollection());
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -108,7 +108,7 @@ public interface ObjI extends MeasurementProvider, VolumeI {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        ObjsI outputChildren = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allChildren);
+        ObjsI outputChildren = ObjsFactories.getDefaultFactory().createFromExample(name, allChildren);
         for (ObjI child : allChildren.values()) {
             ObjsI currentChildren = child.getChildren(stringBuilder.toString());
             for (ObjI currentChild : currentChildren.values())
@@ -130,7 +130,7 @@ public interface ObjI extends MeasurementProvider, VolumeI {
     public default void addChild(ObjI child) {
         String childName = child.getName();
 
-        getAllChildren().putIfAbsent(childName, ObjsFactories.getDefaultFactory().createFromExampleObjs(childName, child.getObjectCollection()));
+        getAllChildren().putIfAbsent(childName, ObjsFactories.getDefaultFactory().createFromExample(childName, child.getObjectCollection()));
         getAllChildren().get(childName).add(child);
 
     }
@@ -152,7 +152,7 @@ public interface ObjI extends MeasurementProvider, VolumeI {
     public default void addPartner(ObjI partner) {
         String partnerName = partner.getName();
 
-        getAllPartners().putIfAbsent(partnerName, ObjsFactories.getDefaultFactory().createFromExampleObjs(partnerName, partner.getObjectCollection()));
+        getAllPartners().putIfAbsent(partnerName, ObjsFactories.getDefaultFactory().createFromExample(partnerName, partner.getObjectCollection()));
         getAllPartners().get(partnerName).add(partner);
     }
 
@@ -173,9 +173,9 @@ public interface ObjI extends MeasurementProvider, VolumeI {
         ObjsI allPartners = getPartners(name);
 
         if (allPartners == null)
-            return ObjsFactories.getDefaultFactory().createFromExampleObjs(name, getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExample(name, getObjectCollection());
 
-        ObjsI previousPartners = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allPartners);
+        ObjsI previousPartners = ObjsFactories.getDefaultFactory().createFromExample(name, allPartners);
         for (ObjI partner : allPartners.values())
             if (partner.getT() < getT())
                 previousPartners.add(partner);
@@ -191,9 +191,9 @@ public interface ObjI extends MeasurementProvider, VolumeI {
         ObjsI allPartners = getPartners(name);
 
         if (allPartners == null)
-            return ObjsFactories.getDefaultFactory().createFromExampleObjs(name, getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExample(name, getObjectCollection());
 
-        ObjsI simultaneousPartners = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allPartners);
+        ObjsI simultaneousPartners = ObjsFactories.getDefaultFactory().createFromExample(name, allPartners);
         for (ObjI partner : allPartners.values())
             if (partner.getT() == getT())
                 simultaneousPartners.add(partner);
@@ -209,9 +209,9 @@ public interface ObjI extends MeasurementProvider, VolumeI {
         ObjsI allPartners = getPartners(name);
 
         if (allPartners == null)
-            return ObjsFactories.getDefaultFactory().createFromExampleObjs(name, getObjectCollection());
+            return ObjsFactories.getDefaultFactory().createFromExample(name, getObjectCollection());
 
-        ObjsI nextPartners = ObjsFactories.getDefaultFactory().createFromExampleObjs(name, allPartners);
+        ObjsI nextPartners = ObjsFactories.getDefaultFactory().createFromExample(name, allPartners);
         for (ObjI partner : allPartners.values())
             if (partner.getT() > getT())
                 nextPartners.add(partner);
@@ -280,18 +280,18 @@ public interface ObjI extends MeasurementProvider, VolumeI {
         if (singleTimepoint)
             return getAsImage(imageName, 0, 1);
         else
-            return getAsImage(imageName, getT(), getObjectCollection().getNFrames());
+            return getAsImage(imageName, getT(), getNFrames());
     }
 
     public default ImageI getCentroidAsImage(String imageName, boolean singleTimepoint) {
-        int nFrames = singleTimepoint ? 1 : getObjectCollection().getNFrames();
+        int nFrames = singleTimepoint ? 1 : getNFrames();
         int t = singleTimepoint ? 0 : getT();
 
         ImagePlus ipl = IJ.createHyperStack(imageName, getWidth(), getHeight(), 1, getNSlices(), nFrames, 8);
         ipl.getCalibration().pixelWidth = getWidth();
         ipl.getCalibration().pixelHeight = getHeight();
         ipl.getCalibration().pixelDepth = getNSlices() == 1 ? 1 : getDppZ();
-        ipl.getCalibration().setUnit(getUnits());
+        ipl.getCalibration().setUnit(getSpatialUnits());
         
         Point<Double> centroid = getMeanCentroid(true, false);
         int x = (int) Math.round(centroid.getX());

@@ -3,24 +3,24 @@ package io.github.mianalysis.mia.object.coordinates.volume;
 import java.util.HashMap;
 
 public class VolumeFactories {
-    private static VolumeFactory defaultFactory = new DefaultVolumeFactory();
+    private static VolumeFactoryI defaultFactory = new DefaultVolumeFactory();
 
     public static void main(String[] args) {
 
     }
 
-    private static HashMap<String, VolumeFactory> factories = new HashMap<>();
+    private static HashMap<String, VolumeFactoryI> factories = new HashMap<>();
 
-    public static HashMap<String, VolumeFactory> getFactories() {
+    public static HashMap<String, VolumeFactoryI> getFactories() {
         return factories;
 
     }
 
-    public static void addFactory(VolumeFactory factory) {
+    public static void addFactory(VolumeFactoryI factory) {
         factories.put(factory.getName(), factory);
     }
 
-    public static VolumeFactory getFactory(String name) {
+    public static VolumeFactoryI getFactory(String name) {
         if (factories.containsKey(name))
             return factories.get(name);
 
@@ -29,7 +29,7 @@ public class VolumeFactories {
 
     }
 
-    public static VolumeFactory getDefaultFactory() {
+    public static VolumeFactoryI getDefaultFactory() {
         return defaultFactory;
     }
 
@@ -37,7 +37,7 @@ public class VolumeFactories {
         return defaultFactory.getName();
     }
 
-    public static void setDefaultFactory(VolumeFactory factory) {
+    public static void setDefaultFactory(VolumeFactoryI factory) {
         defaultFactory = factory;
     }
 

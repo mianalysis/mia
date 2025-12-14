@@ -36,7 +36,7 @@ public class WorkspaceTest {
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
         assertEquals(0, workspace.getAllObjects().size());
 
-        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 20, 10, 5, 1,
+        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1,
                 0.02, UNITS.SECOND);
 
         // Creating and adding the new object
@@ -135,8 +135,7 @@ public class WorkspaceTest {
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
-        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 20, 10,
-                5, 1, 0.02, UNITS.SECOND);
+        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         ObjI obj = objects.createAndAddNewObjectWithID(factory, 0);
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
@@ -150,9 +149,7 @@ public class WorkspaceTest {
         obj.addMeasurement(new Measurement("Test meas", 1.5));
         workspace.addObjects(objects);
 
-        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", dppXY, dppZ, calibratedUnits, 20,
-                10,
-                5, 1, 0.02,
+        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1, 0.02,
                 UNITS.SECOND);
         obj = otherObjects.createAndAddNewObjectWithID(factory, 0);
         obj.addCoord(12, 5, 2);
@@ -205,7 +202,7 @@ public class WorkspaceTest {
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
-        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 20, 10, 5, 1,
+        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1,
                 0.02, UNITS.SECOND);
         ObjI obj = objects.createAndAddNewObjectWithID(factory, 0);
         obj.addCoord(12, 5, 2);
@@ -220,8 +217,7 @@ public class WorkspaceTest {
         obj.addMeasurement(new Measurement("Test meas", 1.5));
         workspace.addObjects(objects);
 
-        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", dppXY, dppZ, calibratedUnits, 20,
-                10, 5, 1, 0.02, UNITS.SECOND);
+        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         obj = otherObjects.createAndAddNewObjectWithID(factory, 0);
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
@@ -268,7 +264,7 @@ public class WorkspaceTest {
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
 
-        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 20, 10, 5, 1,
+        ObjsI objects = ObjsFactories.getDefaultFactory().createObjs("Obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1,
                 0.02, UNITS.SECOND);
         ObjI obj = objects.createAndAddNewObjectWithID(factory, 0);
         obj.setT(0);
@@ -276,8 +272,7 @@ public class WorkspaceTest {
         obj.setT(1);
         workspace.addObjects(objects);
 
-        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", dppXY, dppZ, calibratedUnits, 20,
-                10, 5, 1, 0.02,
+        ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1, 0.02,
                 UNITS.SECOND);
         obj = otherObjects.createAndAddNewObjectWithID(factory, 0);
         obj.setT(0);

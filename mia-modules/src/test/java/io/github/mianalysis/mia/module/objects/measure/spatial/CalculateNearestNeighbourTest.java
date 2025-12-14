@@ -40,7 +40,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -75,7 +75,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -113,7 +113,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -148,7 +148,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs("Objects 1", 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -186,7 +186,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -260,7 +260,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
@@ -356,7 +356,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
@@ -452,7 +452,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
@@ -549,7 +549,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -561,7 +561,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.addCoord(50, 20, 10);
 
         // Creating the parent object set
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
@@ -642,7 +642,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -654,7 +654,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.addCoord(50, 20, 10);
 
         // Creating the parent object set
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
@@ -734,7 +734,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -746,7 +746,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
@@ -819,7 +819,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -831,7 +831,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
@@ -905,7 +905,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -917,7 +917,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
@@ -927,7 +927,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj7.addCoord(35, 20, 20);
 
         // Creating the parent object set
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
@@ -1015,7 +1015,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating first object set
-        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(inputObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         ObjI obj1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
         obj1.addCoord(10, 20, 40);
@@ -1027,7 +1027,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.addCoord(50, 20, 10);
 
         // Creating second object set
-        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(secondObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         ObjI obj5 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 5);
         obj5.addCoord(12, 25, 40);
@@ -1037,7 +1037,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj7.addCoord(35, 20, 20);
 
         // Creating the parent object set
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, dppXY, dppZ, calibratedUnits, 60, 50, 50, 1, 0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs(parentObjectsName, 60, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         ObjI parent1 = parents.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);

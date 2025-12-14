@@ -142,7 +142,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
             boolean removeEmptyObjects, boolean verbose) {
         String moduleName = new MaskObjects<>(null).getName();
         String outputMode = outputObjectsName == null ? OutputModes.UPDATE_INPUT : OutputModes.CREATE_NEW_OBJECT;
-        ObjsI outputObjects = outputObjectsName == null ? null : ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = outputObjectsName == null ? null : ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // Iterating over all objects
         int count = 1;
@@ -187,7 +187,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     public static <T extends RealType<T> & NativeType<T>> ObjI maskObject(ObjI inputObject, ImageI<T> maskImage,
             String maskObjectsName) {
-        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(maskObjectsName, inputObject.getObjectCollection());
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExample(maskObjectsName, inputObject.getObjectCollection());
 
         // Creating the mask object
         ObjI maskObject = tempObjects.createAndAddNewObjectWithID(inputObject.getCoordinateSetFactory(), inputObject.getID());

@@ -227,7 +227,7 @@ public class FitActiveContours extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
 
         // If there are no input objects, creating an empty collection
         if (inputObjects.getFirst() == null) {

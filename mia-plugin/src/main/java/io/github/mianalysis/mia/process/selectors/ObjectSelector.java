@@ -779,7 +779,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 // Adding this object to the original collection
                 interpObj.setID(inputObjects.getAndIncrementID());
 
-                interpObj.setSpatialCalibration(inputObjects.getSpatialCalibration());
+                interpObj.setSpatialCalibrationFromExample(inputObjects);
                 interpObj.addParent(trackObj);
                 trackObj.addChild(interpObj);
                 inputObjects.add(interpObj);

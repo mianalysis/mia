@@ -36,7 +36,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -153,14 +152,13 @@ public class SpotDetection extends Module {
 
     public ArrayList<ObjI> processStack(ImageI inputImage, ObjsI spotObjects, boolean estimateSize, WorkspaceI workspace) {
         ImagePlus ipl = inputImage.getImagePlus();
-        SpatCal calibration = SpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
         ipl.setCalibration(null);
 
         // Initialising TrackMate model to store data
         Model model = new Model();
         model.setLogger(Logger.VOID_LOGGER);
-        Settings settings = initialiseSettings(ipl, calibration, workspace);
+        Settings settings = initialiseSettings(ipl, spotObjects.getDppXY(), workspace);
         TrackMate trackmate = new TrackMate(model, settings);
 
         if (!trackmate.execDetection())
@@ -197,7 +195,7 @@ public class SpotDetection extends Module {
 
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, WorkspaceI workspace) {
+    public Settings initialiseSettings(ImagePlus ipl, double dppXY, WorkspaceI workspace) {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING,workspace);
@@ -206,7 +204,7 @@ public class SpotDetection extends Module {
 
         // Applying conversion to parameters
         if (calibratedUnits)
-            radius = radius / calibration.getDppXY();
+            radius = radius / dppXY;
 
         // Initialising settings for TrackMate
         Settings settings = new Settings(ipl);
@@ -272,7 +270,7 @@ public class SpotDetection extends Module {
     }
 
     public void estimateSpotSize(ObjsI spotObjects, ImagePlus ipl) throws IntegerOverflowException {
-        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("SpotVolume", spotObjects);
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExample("SpotVolume", spotObjects);
         // Replacing spot volumes with explicit volume
         for (ObjI spotObject : spotObjects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.RADIUS_PX).getValue());
@@ -345,11 +343,7 @@ public class SpotDetection extends Module {
         ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        SpatCal calibration = SpatCal.getFromImage(ipl);
-        int nFrames = ipl.getNFrames();
-        double frameInterval = ipl.getCalibration().frameInterval;
-
-        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromImage(spotObjectsName, ipl);
         workspace.addObjects(spotObjects);
 
         switch (detectionMode) {

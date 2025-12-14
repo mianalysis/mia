@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.quantity.Time;
@@ -58,10 +57,8 @@ public abstract class ExpectedObjects {
 
     public ObjsI getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits,
             boolean includeMeasurements) throws IntegerOverflowException {
-        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, width, height, nSlices);
-
         // Initialising object store
-        ObjsI testObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(objectName, calibration, nFrames, frameInterval, temporalUnit);
+        ObjsI testObjects = ObjsFactories.getDefaultFactory().createObjs(objectName, width, height, nSlices, dppXY, dppZ, calibratedUnits, nFrames, frameInterval, temporalUnit);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -87,7 +84,7 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID + (t * 65536);
-            testObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObj(testObjects, factory, ID));
+            testObjects.putIfAbsent(ID, ObjFactories.getDefaultFactory().createObjWithID(factory, testObjects, ID));
 
             ObjI testObject = testObjects.get(ID);
 

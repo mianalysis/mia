@@ -258,8 +258,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
             ArrayList<PointPair> pairs) {
-        ObjsI oc = ObjsFactories.getDefaultFactory().createObjs("Im", 1, 1, "um", referenceIpr.getWidth(),
-                referenceIpr.getHeight(), 2, 1, 1d, TemporalUnit.getOMEUnit());
+        ObjsI oc = ObjsFactories.getDefaultFactory().createObjs("Im", referenceIpr.getWidth(),
+                referenceIpr.getHeight(), 2, 1, 1, "um", 1, 1d, TemporalUnit.getOMEUnit());
+
         ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
                 referenceIpr.getBitDepth());
 

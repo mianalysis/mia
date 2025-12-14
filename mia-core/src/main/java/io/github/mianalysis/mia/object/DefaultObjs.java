@@ -13,15 +13,15 @@ import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
+import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -37,62 +37,76 @@ import ome.units.unit.Unit;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  {
-    private static final long serialVersionUID = 7383226061156796558L;
+public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
     private String name;
     private int maxID = 0;
-    private SpatCal spatCal;
-    private int nFrames;
-    private double frameInterval;
-    private Unit<Time> temporalUnit;
 
-    public DefaultObjs(String name, double dppXY, double dppZ, String units, int width, int height, int nSlices, int nFrames,
-            double frameInterval, Unit<Time> temporalUnit) {
+    protected int width;
+    protected int height;
+    protected int nSlices;
+    protected double dppXY;
+    protected double dppZ;
+    protected String spatialUnits;
+    protected int nFrames;
+    protected double frameInterval;
+    protected Unit<Time> temporalUnit;
+
+    public DefaultObjs(String name, int width, int height, int nSlices, double dppXY, double dppZ,
+            String spatialUnits, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
         this.name = name;
-        this.spatCal = new SpatCal(dppXY, dppZ, units, width, height, nSlices);
+        this.width = width;
+        this.height = height;
+        this.nSlices = nSlices;
+        this.dppXY = dppXY;
+        this.dppZ = dppZ;
+        this.spatialUnits = spatialUnits;
         this.nFrames = nFrames;
         this.frameInterval = frameInterval;
         this.temporalUnit = temporalUnit;
 
     }
 
-    public DefaultObjs(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
+    public DefaultObjs(String name, SpatioTemporallyCalibrated example) {
         this.name = name;
-        this.spatCal = cal;
-        this.nFrames = nFrames;
-        this.frameInterval = frameInterval;
-        this.temporalUnit = temporalUnit;
-
-    }
-
-    public DefaultObjs(String name, ObjsI exampleCollection) {
-        this.name = name;
-        this.spatCal = exampleCollection.getSpatialCalibration().duplicate();
-        this.nFrames = exampleCollection.getNFrames();
-        this.frameInterval = exampleCollection.getFrameInterval();
-        this.temporalUnit = exampleCollection.getTemporalUnit();
+        this.width = example.getWidth();
+        this.height = example.getHeight();
+        this.nSlices = example.getNSlices();
+        this.dppXY = example.getDppXY();
+        this.dppZ = example.getDppZ();
+        this.spatialUnits = example.getSpatialUnits();
+        this.nFrames = example.getNFrames();
+        this.frameInterval = example.getFrameInterval();
+        this.temporalUnit = example.getTemporalUnit();
 
     }
 
     public DefaultObjs(String name, ImagePlus imageForCalibration) {
+        Calibration calibration = imageForCalibration.getCalibration();
+
         this.name = name;
-        this.spatCal = SpatCal.getFromImage(imageForCalibration);
+        this.width = imageForCalibration.getWidth();
+        this.height = imageForCalibration.getHeight();
+        this.nSlices = imageForCalibration.getNSlices();
+        this.dppXY = calibration.getX(1);
+        this.dppZ = calibration.getZ(1);
+        this.spatialUnits = calibration.getUnits();
         this.nFrames = imageForCalibration.getNFrames();
         this.frameInterval = imageForCalibration.getCalibration().frameInterval;
         this.temporalUnit = TemporalUnit.getOMEUnit();
 
     }
 
-    public ObjI createAndAddNewObject(CoordinateSetFactoryI factory) {
-        ObjI newObject = ObjFactories.getDefaultFactory().createObj(this, factory, getAndIncrementID());
+    public ObjI createAndAddNewObject(CoordinateSetFactoryI coordinateSetFactory) {
+        ObjI newObject = ObjFactories.getDefaultFactory().createObjWithID(coordinateSetFactory, this,
+                getAndIncrementID());
         add(newObject);
 
         return newObject;
 
     }
 
-    public ObjI createAndAddNewObjectWithID(CoordinateSetFactoryI factory, int ID) {
-        ObjI newObject = ObjFactories.getDefaultFactory().createObj(this, factory, ID);
+    public ObjI createAndAddNewObjectWithID(CoordinateSetFactoryI coordinateSetFactory, int ID) {
+        ObjI newObject = ObjFactories.getDefaultFactory().createObjWithID(coordinateSetFactory, this, ID);
         add(newObject);
 
         // Updating the maxID if necessary
@@ -112,41 +126,64 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
 
     }
 
-    public SpatCal getSpatialCalibration() {
-        return spatCal;
-    }
-
+    @Override
     public int getWidth() {
-        return spatCal.getWidth();
+        return width;
     }
 
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    @Override
     public int getHeight() {
-        return spatCal.getHeight();
+        return height;
     }
 
+    @Override
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    @Override
     public int getNSlices() {
-        return spatCal.getNSlices();
+        return nSlices;
     }
 
+    @Override
+    public void setNSlices(int nSlices) {
+        this.nSlices = nSlices;
+    }
+
+    @Override
     public double getDppXY() {
-        return spatCal.getDppXY();
+        return dppXY;
     }
 
+    @Override
+    public void setDppXY(double dppXY) {
+        this.dppXY = dppXY;
+    }
+
+    @Override
     public double getDppZ() {
-        return spatCal.getDppZ();
+        return dppZ;
     }
 
+    @Override
+    public void setDppZ(double dppZ) {
+        this.dppZ = dppZ;
+    }
+
+    @Override
     public String getSpatialUnits() {
-        return spatCal.getUnits();
+        return spatialUnits;
     }
 
-    public void setSpatialCalibration(SpatCal spatCal, boolean updateAllObjects) {
-        this.spatCal = spatCal;
-        if (updateAllObjects) {
-            for (ObjI obj : values()) {
-                obj.setSpatialCalibration(spatCal);
-            }
-        }
+    @Override
+    public void setSpatialUnits(String spatialUnits) {
+        this.spatialUnits = spatialUnits;
     }
 
     public synchronized int getAndIncrementID() {
@@ -222,14 +259,14 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
     }
 
     public ObjI getAsSingleObject() {
-        ObjsI newCollection = new DefaultObjs("Single", this);
+        ObjsI newCollection = new DefaultObjsFactory().createFromExample("Single", this);
 
-        CoordinateSetFactoryI factory = new PointListFactory();
+        CoordinateSetFactoryI coordinateSetFactory = new PointListFactory();
         ObjI firstObj = getFirst();
         if (firstObj != null)
-            factory = firstObj.getCoordinateSetFactory();
+            coordinateSetFactory = firstObj.getCoordinateSetFactory();
 
-        ObjI newObj = newCollection.createAndAddNewObject(factory);
+        ObjI newObj = newCollection.createAndAddNewObject(coordinateSetFactory);
         for (ObjI obj : values())
             for (Point<Integer> point : obj.getCoordinateSet())
                 try {
@@ -266,7 +303,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
         }
 
         // Assigning the spatial cal from the cal
-        spatCal.applyImageCalibration(image.getImagePlus());
+        applyCalibrationToImage(image.getImagePlus());
 
         return image;
 
@@ -291,7 +328,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
     }
 
     public ImageI convertToImageBinary() {
-            return convertToImageBinary(name);
+        return convertToImageBinary(name);
     }
 
     public ImageI convertToImageBinary(String name) {
@@ -345,17 +382,17 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
             object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        spatCal.applyImageCalibration(image.getImagePlus());
+        applyCalibrationToImage(image.getImagePlus());
 
         return image;
 
     }
 
-    public void applyCalibration(ImageI image) {
-        applyCalibrationFromImagePlus(image.getImagePlus());
+    public void applyCalibrationToImage(ImageI image) {
+        applyCalibrationToImagePlus(image.getImagePlus());
     }
 
-    public void applyCalibrationFromImagePlus(ImagePlus ipl) {
+    public void applyCalibrationToImagePlus(ImagePlus ipl) {
         ObjI obj = getFirst();
         if (obj == null)
             return;
@@ -364,7 +401,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
         calibration.pixelWidth = obj.getDppXY();
         calibration.pixelHeight = obj.getDppXY();
         calibration.pixelDepth = obj.getDppZ();
-        calibration.setUnit(obj.getUnits());
+        calibration.setUnit(obj.getSpatialUnits());
 
         calibration.frameInterval = frameInterval;
         calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval, UNITS.SECOND);
@@ -373,8 +410,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
 
     public ImageI createImage(String outputName, int bitDepth) {
         // Creating a new image
-        ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
-                spatCal.getNSlices(), nFrames, bitDepth);
+        ImagePlus ipl = IJ.createHyperStack(outputName, getWidth(), getHeight(), 1, getNSlices(), nFrames, bitDepth);
 
         return ImageFactory.createImage(outputName, ipl);
 
@@ -676,15 +712,14 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
     }
 
     public ObjsI getObjectsInFrame(String outputObjectsName, int frame) {
-        ObjsI outputObjects = new DefaultObjs(outputObjectsName, this);
-
-        // Setting output objects collection to have one frame
-        outputObjects.setNFrames(1);
+        ObjsI outputObjects = new DefaultObjsFactory().createObjs(outputObjectsName, getWidth(), getHeight(),
+                getNSlices(), getDppXY(), getDppZ(), getSpatialUnits(), 1, getFrameInterval(), getTemporalUnit());
 
         // Iterating over objects, getting those in this frame
         for (ObjI obj : values()) {
             if (obj.getT() == frame) {
-                ObjI outputObject = ObjFactories.getDefaultFactory().createObj(outputObjects, obj.getCoordinateSetFactory(), obj.getID());
+                ObjI outputObject = ObjFactories.getDefaultFactory().createObjWithID(obj.getCoordinateSetFactory(),
+                        outputObjects, obj.getID());
                 outputObject.setCoordinateSet(obj.getCoordinateSet().duplicate());
                 outputObject.setT(0);
                 outputObjects.add(outputObject);
@@ -699,21 +734,32 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
         return nFrames;
     }
 
+    @Override
+    public void setNFrames(int nFrames) {
+        this.nFrames = nFrames;
+    }
+
     public double getFrameInterval() {
         return frameInterval;
+    }
+
+    @Override
+    public void setFrameInterval(double frameInterval) {
+        this.frameInterval = frameInterval;
     }
 
     public Unit<Time> getTemporalUnit() {
         return temporalUnit;
     }
 
-    public void setNFrames(int nFrames) {
-        this.nFrames = nFrames;
+    @Override
+    public void setTemporalUnit(Unit<Time> temporalUnit) {
+        this.temporalUnit = temporalUnit;
     }
 
     public ObjsI duplicate(String newObjectsName, boolean duplicateRelationships, boolean duplicateMeasurement,
             boolean duplicateMetadata, boolean addOriginalDuplicateRelationship) {
-        ObjsI newObjs = new DefaultObjs(newObjectsName, this);
+        ObjsI newObjs = new DefaultObjsFactory().createFromExample(newObjectsName, this);
 
         for (ObjI obj : values()) {
             ObjI newObj = obj.duplicate(newObjs, duplicateRelationships, duplicateMeasurement, duplicateMetadata);
@@ -730,6 +776,16 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI  
 
         return newObjs;
 
+    }
+
+    @Override
+    public void setCalibrationFromExample(SpatioTemporallyCalibrated example, boolean updateAllObjects) {
+        setSpatioTemporalCalibrationFromExample(example);
+        
+        if (updateAllObjects)
+            for (ObjI obj : values())
+                obj.setSpatialCalibrationFromExample(example);
+            
     }
 }
 

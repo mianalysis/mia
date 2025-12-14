@@ -111,7 +111,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static int getNOverlappingPoints(ObjI inputObject1, ObjsI inputObjects2, boolean linkInSameFrame) {
-        VolumeI overlap = VolumeFactories.getDefaultFactory().createVolume(inputObject1.getCoordinateSetFactory(), inputObject1.getSpatialCalibration());
+        VolumeI overlap = VolumeFactories.getDefaultFactory().createVolumeFromExample(inputObject1.getCoordinateSetFactory(), inputObject1);
 
         // Running through each object, getting a list of overlapping pixels
         for (ObjI obj2 : inputObjects2.values()) {

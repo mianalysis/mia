@@ -27,9 +27,10 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        
+
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -61,7 +62,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -93,7 +95,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -132,7 +135,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -171,7 +175,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -209,7 +214,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -247,8 +253,10 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", 1, 1, 1, dppXY, dppZ, calibratedUnits,
+                1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -284,8 +292,10 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", 1, 1, 1, dppXY, dppZ, calibratedUnits,
+                1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -321,7 +331,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -354,7 +365,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -387,7 +399,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -427,7 +440,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -467,7 +481,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -506,7 +521,8 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -539,8 +555,10 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", 1, 1, 1, dppXY, dppZ, calibratedUnits,
+                1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -577,8 +595,10 @@ public class ColourFactoryTest {
         String calibratedUnits = "µm";
 
         // Creating the Objs
-        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
-        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", dppXY, dppZ, calibratedUnits, 1, 1, 1, 1, 0.02, UNITS.SECOND);
+        ObjsI collection = ObjsFactories.getDefaultFactory().createObjs("Obj", 1, 1, 1, dppXY, dppZ, calibratedUnits, 1,
+                0.02, UNITS.SECOND);
+        ObjsI parents = ObjsFactories.getDefaultFactory().createObjs("Parents", 1, 1, 1, dppXY, dppZ, calibratedUnits,
+                1, 0.02, UNITS.SECOND);
 
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);

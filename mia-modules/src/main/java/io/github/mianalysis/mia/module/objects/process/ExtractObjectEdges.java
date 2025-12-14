@@ -274,7 +274,7 @@ public class ExtractObjectEdges extends Module {
 
         ImagePlus distIpl = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
                 (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2 * zPad), 1, 8);
-        inputObject.getObjectCollection().applyCalibrationFromImagePlus(distIpl);
+        inputObject.applyCalibrationToImage(distIpl);
 
         // Setting pixels corresponding to the parent object to 1
         for (Point<Integer> point : inputObject.getCoordinateSet()) {
@@ -358,7 +358,7 @@ public class ExtractObjectEdges extends Module {
         ObjsI edgeObjects = null;
         if (createEdgeObjects) {
             edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS, workspace);
-            edgeObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(edgeObjectName, inputObjects);
+            edgeObjects = ObjsFactories.getDefaultFactory().createFromExample(edgeObjectName, inputObjects);
             workspace.addObjects(edgeObjects);
         }
 
@@ -367,7 +367,7 @@ public class ExtractObjectEdges extends Module {
         ObjsI interiorObjects = null;
         if (createInteriorObjects) {
             interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS, workspace);
-            interiorObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs(interiorObjectName, inputObjects);
+            interiorObjects = ObjsFactories.getDefaultFactory().createFromExample(interiorObjectName, inputObjects);
             workspace.addObjects(interiorObjects);
         }
 

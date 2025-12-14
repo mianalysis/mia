@@ -197,7 +197,7 @@ public class FilterByProximity extends AbstractObjectFilter {
         if (inputObjects == null)
             return Status.PASS;
 
-        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExampleObjs(outputObjectsName, inputObjects) : null;
+        ObjsI outputObjects = moveObjects ? ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects) : null;
 
         // Ordering objects based on their measurement
         MeasurementComparator comparator = getComparator(filterMethod, measName);

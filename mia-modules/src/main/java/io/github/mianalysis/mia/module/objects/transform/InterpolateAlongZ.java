@@ -104,13 +104,13 @@ public class InterpolateAlongZ extends Module {
 
         double scale = inputZCalibration / outputZCalibration;
         int outputNSlices = (int) Math.ceil(inputNSlices * scale);
-        outputObjects.getSpatialCalibration().nSlices = outputNSlices;
-        outputObjects.getSpatialCalibration().dppZ = outputZCalibration;
+        outputObjects.setNSlices(outputNSlices);
+        outputObjects.setDppZ(outputZCalibration);
 
         // Iterating over each coordinate, moving it to a new slice
         for (ObjI outputObject : outputObjects.values()) {
-            outputObject.getSpatialCalibration().nSlices = outputNSlices;
-            outputObject.getSpatialCalibration().dppZ = outputZCalibration;
+            outputObject.setNSlices(outputNSlices);
+            outputObject.setDppZ(outputZCalibration);
 
             CoordinateSetI inputCoords = outputObject.getCoordinateSet();
             outputObject.setCoordinateSet(new QuadtreeCoordinates());

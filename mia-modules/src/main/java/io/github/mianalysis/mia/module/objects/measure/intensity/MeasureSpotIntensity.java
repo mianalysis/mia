@@ -220,7 +220,7 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
-        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExampleObjs("Temp", inputObjects);
+        ObjsI tempObjects = ObjsFactories.getDefaultFactory().createFromExample("Temp", inputObjects);
         for (ObjI inputObject : inputObjects.values()) {
             switch (radiusSource) {
                 case RadiusSources.MEASUREMENT:

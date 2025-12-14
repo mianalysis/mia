@@ -11,7 +11,6 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -87,13 +86,8 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         ObjsI inputObjects = workspace.getObjects(inputObjectsName);
-        SpatCal calIn = inputObjects.getSpatialCalibration();
-        SpatCal calOut = new SpatCal(calIn.getDppXY(), calIn.getDppZ(), calIn.getUnits(), calIn.getWidth(),
-                calIn.getHeight(), 1);
-        double frameInterval = inputObjects.getFrameInterval();
-        Unit<Time> temporalUnit = inputObjects.getTemporalUnit();
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromSpatCal(outputObjectsName, calOut, inputObjects.getNFrames(),
-                frameInterval, temporalUnit);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromExample(outputObjectsName, inputObjects);
+        outputObjects.setNSlices(1);
 
         for (ObjI inputObject:inputObjects.values()) {
             try {

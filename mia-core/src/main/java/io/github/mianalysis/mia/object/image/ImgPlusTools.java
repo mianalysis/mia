@@ -6,7 +6,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.volume.SpatCal;
+import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
@@ -196,14 +196,14 @@ public class ImgPlusTools {
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> createNewImgPlus(SpatCal spatCal, int nChannels,
+    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> createNewImgPlus(SpatiallyCalibrated spatiallyCalibrated, int nChannels,
             int nFrames, T type) {
-        int w = spatCal.getWidth();
-        int h = spatCal.getHeight();
-        int nSlices = spatCal.getNSlices();
-        double dppXY = spatCal.getDppXY();
-        double dppZ = spatCal.getDppZ();
-        String units = spatCal.getUnits();
+        int w = spatiallyCalibrated.getWidth();
+        int h = spatiallyCalibrated.getHeight();
+        int nSlices = spatiallyCalibrated.getNSlices();
+        double dppXY = spatiallyCalibrated.getDppXY();
+        double dppZ = spatiallyCalibrated.getDppZ();
+        String units = spatiallyCalibrated.getSpatialUnits();
 
         return createNewImgPlus(w, h, nChannels, nSlices, nFrames, dppXY, dppZ, units, type);
 
