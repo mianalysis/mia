@@ -322,6 +322,13 @@ public class NormaliseIntensity extends Module {
         // Set brightness/contrast
         IntensityMinMax.run(inputImagePlus, true);
 
+		if (inputImagePlus.getBitDepth() == 8)
+            SetDisplayRange.setDisplayRangeManual(inputImagePlus,new double[]{0,255});
+        else if (inputImagePlus.getBitDepth() == 16)
+            SetDisplayRange.setDisplayRangeManual(inputImagePlus,new double[]{0,65535});
+        else if (inputImagePlus.getBitDepth() == 32)
+            SetDisplayRange.setDisplayRangeManual(inputImagePlus,new double[]{0,1});
+
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
