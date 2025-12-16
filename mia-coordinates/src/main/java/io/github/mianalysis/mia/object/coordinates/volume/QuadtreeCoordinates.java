@@ -1,12 +1,9 @@
 package io.github.mianalysis.mia.object.coordinates.volume;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.math3.exception.OutOfRangeException;
 
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.quadtree.Quadtree;
@@ -14,7 +11,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.quadtree.Quadtree;
 /**
  * Created by sc13967 on 28/07/2017.
  */
-public class QuadtreeCoordinates implements CoordinateSetI {
+public class QuadtreeCoordinates extends Quadtree implements CoordinateSetI {
     private final Map<Integer, Quadtree> quadTrees;
 
     public QuadtreeCoordinates() {
@@ -228,87 +225,5 @@ public class QuadtreeCoordinates implements CoordinateSetI {
             return null;
 
         }
-    }
-
-    @Override
-    public boolean isEmpty() {
-        for (Quadtree quadTree : quadTrees.values())
-            if (!quadTree.isEmpty())
-                return false;
-
-        return true;
-
-    }
-
-    @Override
-    public Object[] toArray() {
-        long pointCount = 0;
-        for (Quadtree quadTree : quadTrees.values())
-            pointCount += quadTree.getPointCount();
-
-        if (pointCount > Long.MAX_VALUE)
-            throw new OutOfRangeException(pointCount, 0, Integer.MAX_VALUE);
-
-        Object[] array = new Object[(int) pointCount];
-
-        int count = 0;
-        for (Point<Integer> point : this)
-            array[count++] = point;
-
-        return array;
-
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        int count = 0;
-        for (Point<Integer> point : this)
-            a[count++] = (T) point;
-
-        return a;
-
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsAll'");
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends Point<Integer>> c) {
-        for (Point<Integer> point : c)
-            if (!add(point))
-                return false;
-
-        return true;
-
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retainAll'");
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        Collection<Point<Integer>> cc = (Collection<Point<Integer>>) c;
-        for (Point<Integer> point : cc)
-            if (!remove(point))
-                return false;
-
-        return true;
-
-    }
-
-    @Override
-    public boolean contains(Point<Integer> point) {
-        for (Quadtree quadTree : quadTrees.values())
-            if (quadTree.contains(point))
-                return true;
-
-        return false;
-
     }
 }

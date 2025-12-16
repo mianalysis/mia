@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import ij.gui.Roi;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
@@ -41,6 +42,8 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     public DefaultObj(CoordinateSetFactoryI factory, ObjsI objCollection) {
         super(factory, objCollection);
 
+        this.objCollection = objCollection;
+
         this.nFrames = objCollection.getNFrames();
         this.frameInterval = objCollection.getFrameInterval();
         this.temporalUnit = objCollection.getTemporalUnit();
@@ -51,6 +54,8 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
     public DefaultObj(CoordinateSetFactoryI factory, ObjsI objCollection, int ID) {
         super(factory, objCollection);
+
+        this.objCollection = objCollection;
 
         this.nFrames = objCollection.getNFrames();
         this.frameInterval = objCollection.getFrameInterval();
@@ -292,23 +297,13 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
     @Override
     public boolean equals(Object obj) {
-        int T = getT();
-
-        if (!super.equals(obj))
-            return false;
-
-        if (obj == this)
-            return true;
-        if (!(obj instanceof ObjI))
-            return false;
-
         if (ID != ((ObjI) obj).getID())
             return false;
 
-        if (T != ((ObjI) obj).getT())
+        if (!getName().equals(((ObjI) obj).getName()))
             return false;
 
-        return (getName().equals(((ObjI) obj).getName()));
+        return equalsIgnoreNameAndID(obj);
 
     }
 
@@ -318,9 +313,10 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
         if (!super.equals(obj))
             return false;
-
+        
         if (obj == this)
             return true;
+
         if (!(obj instanceof ObjI))
             return false;
 

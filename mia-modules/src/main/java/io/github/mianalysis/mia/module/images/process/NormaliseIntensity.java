@@ -17,12 +17,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.object.ObjsI;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -323,6 +322,13 @@ public class NormaliseIntensity extends Module {
         // Set brightness/contrast
         IntensityMinMax.run(inputImagePlus, true);
 
+        if (inputImagePlus.getBitDepth() == 8)
+            SetDisplayRange.setDisplayRangeManual(inputImagePlus,new double[]{0,255});
+        else if (inputImagePlus.getBitDepth() == 16)
+            SetDisplayRange.setDisplayRangeManual(inputImagePlus,new double[]{0,65535});
+        else if (inputImagePlus.getBitDepth() == 32)
+            SetDisplayRange.setDisplayRangeManual(inputImagePlus,new double[]{0,1});
+        
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
