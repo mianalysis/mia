@@ -18,7 +18,6 @@ import org.scijava.plugin.Plugin;
 
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -214,7 +213,7 @@ public class SaveObjectsAsMOC extends AbstractSaver {
         for (Measurement currObjectMeasurement : inputObject.getMeasurements().values()) {
             JSONObject measurementJSON = new JSONObject();
             measurementJSON.put(RefKeys.NAME.toString(), currObjectMeasurement.getName());
-            measurementJSON.put(RefKeys.VALUE.toString(), currObjectMeasurement.getValue());
+            measurementJSON.put(RefKeys.VALUE.toString(), String.valueOf(currObjectMeasurement.getValue()));
             measurementArray.put(measurementJSON);
         }
         jsonObject.put(FieldKeys.MEASUREMENTS.toString(), measurementArray);
