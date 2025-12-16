@@ -363,7 +363,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
                     if (currExportedMeasurements == null || !currExportedMeasurements.contains(measurementName))
                         return;
 
-                    double measurementValue = ((JSONObject) v).getDouble(RefKeys.VALUE.toString());
+                    double measurementValue = Double.parseDouble(((JSONObject) v).getString(RefKeys.VALUE.toString()));
                     outputObject.addMeasurement(new Measurement(measurementName, measurementValue));
                 });
 
@@ -530,7 +530,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         double frameInterval = objJSON.getDouble(FieldKeys.FRAME_INTERVAL.toString());
         String temporalUnitString = objJSON.getString(FieldKeys.TEMPORAL_UNIT.toString());
         Unit<Time> temporalUnit = TemporalUnit.getOMEUnit(temporalUnitString);
-        
+
         return new Objs(objectsName, dppXY, dppZ, units, width, height, nSlices, nFrames, frameInterval, temporalUnit);
 
     }
