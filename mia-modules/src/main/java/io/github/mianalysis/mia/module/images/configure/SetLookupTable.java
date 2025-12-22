@@ -150,6 +150,7 @@ public class SetLookupTable extends Module {
         String MAGENTA = "Magenta";
         String YELLOW = "Yellow";
         String FIRE = "Fire";
+        String HONMOON = "Honmoon";
         String ICE = "Ice";
         String JET = "Jet";
         String PHYSICS = "Physics";
@@ -158,8 +159,7 @@ public class SetLookupTable extends Module {
         String THERMAL = "Thermal";
 
         String[] ALL = new String[] { FROM_RGB, FROM_WAVELENGTH, GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE,
-                ICE, JET,
-                PHYSICS, RANDOM, SPECTRUM, THERMAL };
+                HONMOON, ICE, JET, PHYSICS, RANDOM, SPECTRUM, THERMAL };
 
     }
 
@@ -182,6 +182,8 @@ public class SetLookupTable extends Module {
                 return LUT.createLutFromColor(Color.YELLOW);
             case LookupTables.FIRE:
                 return LUTs.BlackFire();
+            case LookupTables.HONMOON:
+                return LUTs.Honmoon();
             case LookupTables.ICE:
                 return LUTs.Ice();
             case LookupTables.JET:
@@ -198,7 +200,7 @@ public class SetLookupTable extends Module {
                 float r = (float) (rgbComponents[0]);
                 float g = (float) (rgbComponents[1]);
                 float b = (float) (rgbComponents[2]);
-                Color colour = new Color(r,g,b);
+                Color colour = new Color(r, g, b);
                 return LUT.createLutFromColor(colour);
             case LookupTables.FROM_WAVELENGTH:
                 colour = WavelengthToColorConverter.convert(wavelengthNM);

@@ -33,6 +33,7 @@ public class ColourFactory {
 
     public interface ColourMaps {
         String BLACK_FIRE = "Black fire";
+        String HONMOON = "Honmoon";
         String ICE = "Ice";
         String JET = "Jet";
         String PHYSICS = "Physics";
@@ -41,7 +42,7 @@ public class ColourFactory {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, RANDOM_VIBRANT,
+        String[] ALL = new String[] { BLACK_FIRE, HONMOON, ICE, JET, PHYSICS, RANDOM, RANDOM_VIBRANT,
                 SPECTRUM, THERMAL };
 
     }
@@ -118,7 +119,7 @@ public class ColourFactory {
                 H = -1f;
             else
                 H = (float) object.getParent(parentObjectsName).getID();
-            
+
             if (normalised & object.getParent(parentObjectsName) != null)
                 H = (H * 1048576 % 255) / 255;
 
@@ -369,7 +370,7 @@ public class ColourFactory {
                 continue;
             }
 
-            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode()* 2000*31).nextFloat());
+            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode() * 2000 * 31).nextFloat());
 
         }
 
@@ -496,6 +497,9 @@ public class ColourFactory {
             switch (colourMode) {
                 case ColourMaps.BLACK_FIRE:
                     cm = LUTs.BlackFire().getColorModel();
+                    break;
+                case ColourMaps.HONMOON:
+                    cm = LUTs.Honmoon().getColorModel();
                     break;
                 case ColourMaps.ICE:
                     cm = LUTs.Ice().getColorModel();
