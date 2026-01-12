@@ -1,17 +1,15 @@
 package io.github.mianalysis.mia.module.images.process;
 
-import java.util.Arrays;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.plugin.RGBStackConverter;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -19,6 +17,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -27,7 +26,6 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -39,6 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
+import net.imagej.lut.ApplyLookupTable;
 
 /**
  * Uses <a href="https://deepimagej.github.io/deepimagej/">DeepImageJ</a> to run
@@ -241,12 +240,12 @@ public class ApplyDeepImageJModel extends Module {
 
                     }
 
-                    ImageTypeConverter.process(tempOutputIpl, bitDepth, ImageTypeConverter.ScalingModes.SCALE);
+                    setBitDepth(tempOutputIpl, bitDepth);
 
                     ImageStack tempIst = tempOutputIpl.getStack();
                     if (outputSubsetOfClasses) {
                         for (int cIdx = 0; cIdx < classList.length; cIdx++) {
-                            int tempOutputIdx = tempOutputIpl.getStackIndex(classList[cIdx] + 1, 1, 1);
+                            int tempOutputIdx = tempOutputIpl.getStackIndex(classList[cIdx], 1, 1);
                             int outputIdx = outputIpl.getStackIndex(cIdx + 1, z + 1, t + 1);
                             outputIst.setProcessor(tempIst.getProcessor(tempOutputIdx), outputIdx);
                         }
@@ -289,7 +288,7 @@ public class ApplyDeepImageJModel extends Module {
         if (outputType.equals("image")) {
             // It seems necessary to reapply the ImageStack
             outputIpl.setStack(outputIst);
-
+            
             // Storing output image
             Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
             workspace.addImage(outputImage);
@@ -302,6 +301,29 @@ public class ApplyDeepImageJModel extends Module {
         }
 
         return Status.PASS;
+
+    }
+
+    private void setBitDepth(ImagePlus inputImagePlus, int outputBitDepth) {
+        int bitDepth = inputImagePlus.getBitDepth();
+
+        // If the image is already the output bit depth, skip this
+        if (bitDepth == outputBitDepth) return;
+
+        // Setting input image scaling
+        switch (bitDepth) {
+            case 8:
+            case 16:
+                inputImagePlus.setDisplayRange(0,Math.pow(2, bitDepth)-1);
+                break;
+
+            case 32:
+                inputImagePlus.setDisplayRange(0,1);
+                break;
+        }
+
+        // Converting to requested type
+        IJ.run(inputImagePlus,String.valueOf(outputBitDepth)+"-bit",null);
 
     }
 

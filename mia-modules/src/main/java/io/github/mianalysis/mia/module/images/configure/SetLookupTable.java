@@ -116,7 +116,6 @@ public class SetLookupTable extends Module {
     public static final String INVERT_LUT = "Invert LUT";
 
     TreeMap<String, String> imageJLUTs;
-    // TreeMap<String, String> allLUTs;
 
     public SetLookupTable(Modules modules) {
         super("Set lookup table", modules);
@@ -311,7 +310,7 @@ public class SetLookupTable extends Module {
             case ChannelModes.SPECIFIC_CHANNELS:
                 LUT lut;
                 if (imageJLUTs.keySet().contains(lookupTableName))
-                    lut = LutLoader.openLut(IJ.getDir("luts") + lookupTableName + ".lut");
+                    lut = LutLoader.openLut(IJ.getDir("luts") + imageJLUTs.get(lookupTableName));
                 else
                     lut = getLUT(lookupTableName, wavelengthNM,
                             new double[] { redComponent, greenComponent, blueComponent });
