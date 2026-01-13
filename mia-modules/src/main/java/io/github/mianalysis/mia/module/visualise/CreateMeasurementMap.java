@@ -355,7 +355,7 @@ public class CreateMeasurementMap extends Module {
 
         // Creating ImagePlus
         ImagePlus outputIpl = IJ.createHyperStack(outputImageName, width, height, 1, nSlices, nFrames, 32);
-        calibrated.applyCalibrationToImage(outputIpl);
+        calibrated.applySpatioTemporalCalibrationToImage(outputIpl);
 
         // Iterating over all points in the image
         for (int z = 0; z < nSlices; z++) {

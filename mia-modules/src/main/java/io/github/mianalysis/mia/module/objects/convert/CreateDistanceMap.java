@@ -128,7 +128,7 @@ public class CreateDistanceMap extends Module {
         // Creating a blank image (8-bit, so binary operations work)
         ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
         ImageI distanceMap = ImageFactory.createImage(outputImageName, distanceMapIpl);
-        inputObjects.applyCalibrationToImage(distanceMap.getImagePlus());
+        inputObjects.applySpatioTemporalCalibrationToImage(distanceMap.getImagePlus());
 
         // Adding a spot to the centre of each object
         for (ObjI inputObj : inputObjects.values()) {

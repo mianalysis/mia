@@ -15,7 +15,6 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -147,7 +146,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
         }
 
         // Assigning the spatial cal from the cal
-        applyCalibrationToImage(image.getImagePlus());
+        applySpatioTemporalCalibrationToImage(image.getImagePlus());
 
         return image;
 
@@ -222,7 +221,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
             object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        applyCalibrationToImage(image.getImagePlus());
+        applySpatioTemporalCalibrationToImage(image.getImagePlus());
 
         return image;
 

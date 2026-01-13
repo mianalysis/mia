@@ -303,7 +303,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
         }
 
         // Assigning the spatial cal from the cal
-        applyCalibrationToImage(image.getImagePlus());
+        applySpatioTemporalCalibrationToImage(image.getImagePlus());
 
         return image;
 
@@ -382,7 +382,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
             object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        applyCalibrationToImage(image.getImagePlus());
+        applySpatioTemporalCalibrationToImage(image.getImagePlus());
 
         return image;
 

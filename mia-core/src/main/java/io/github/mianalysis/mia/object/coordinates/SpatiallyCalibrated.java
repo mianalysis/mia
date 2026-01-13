@@ -27,7 +27,7 @@ public interface SpatiallyCalibrated {
 
     public void setSpatialUnits(String spatialUnits);
 
-    public default void applyCalibrationToImage(ImagePlus ipl) {
+    public default void applySpatialCalibrationToImage(ImagePlus ipl) {
         ipl.getCalibration().pixelWidth = getDppXY();
         ipl.getCalibration().pixelHeight = getDppXY();
         ipl.getCalibration().pixelDepth = getNSlices() == 1 ? 1 : getDppZ();

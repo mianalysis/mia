@@ -297,7 +297,7 @@ public class ConvertObjectsToImage extends Module {
       InvertIntensity.process(outputImage);
 
     // Applying spatial calibration to output image
-    inputObjects.applyCalibrationToImage(outputImage.getImagePlus());
+    inputObjects.applySpatioTemporalCalibrationToImage(outputImage.getImagePlus());
 
     // Adding image to workspace
     workspace.addImage(outputImage);

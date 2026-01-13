@@ -230,7 +230,8 @@ public class Quadtree extends AbstractSet<Point<Integer>> {
         getEdgePoints3D(root, points, above, below, z, rootSize, rootMinX, rootMinY);
     }
 
-    private void getEdgePoints3D(QuadtreeNode node, CoordinateSetI points, Quadtree a, Quadtree b, int z, int size, int minX,
+    private void getEdgePoints3D(QuadtreeNode node, CoordinateSetI points, Quadtree a, Quadtree b, int z, int size,
+            int minX,
             int minY) {
         if (node.isDivided()) {
             final int halfSize = size / 2;

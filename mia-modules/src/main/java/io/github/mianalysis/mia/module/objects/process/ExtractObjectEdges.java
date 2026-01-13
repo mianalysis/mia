@@ -274,7 +274,7 @@ public class ExtractObjectEdges extends Module {
 
         ImagePlus distIpl = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
                 (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2 * zPad), 1, 8);
-        inputObject.applyCalibrationToImage(distIpl);
+        inputObject.applySpatioTemporalCalibrationToImage(distIpl);
 
         // Setting pixels corresponding to the parent object to 1
         for (Point<Integer> point : inputObject.getCoordinateSet()) {

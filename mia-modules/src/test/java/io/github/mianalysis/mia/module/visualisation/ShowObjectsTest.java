@@ -42,9 +42,6 @@ public class ShowObjectsTest extends ModuleTest {
     @ParameterizedTest
     @EnumSource(VolumeTypes.class)
     public void testConvertObjectsToImagebit3D(VolumeTypes volumeType) throws Exception {
-        // Initialising parameters
-        String colourMode = ConvertObjectsToImage.ColourModes.ID;
-
         // Setting object parameters
         String objectName = "Test objects";
         double dppXY = 0.02;

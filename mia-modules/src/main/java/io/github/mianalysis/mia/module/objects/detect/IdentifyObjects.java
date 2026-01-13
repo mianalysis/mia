@@ -418,7 +418,7 @@ public class IdentifyObjects extends Module {
 
                 // If processing each slice separately, offsetting it to the correct Z-position
                 if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
-                    currOutputObjects.applyCalibrationToImage(inputIpl);
+                    currOutputObjects.applySpatioTemporalCalibrationToImage(inputIpl);
                     for (ObjI currOutputObj : currOutputObjects.values())
                         currOutputObj.translateCoords(0, 0, z - 1);
                 }

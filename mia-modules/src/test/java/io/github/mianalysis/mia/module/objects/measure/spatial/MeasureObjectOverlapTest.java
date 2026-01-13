@@ -3,9 +3,11 @@ package io.github.mianalysis.mia.module.objects.measure.spatial;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.jruby.RubyProcess.Sys;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import clojure.lang.Obj;
 import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -13,6 +15,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
+import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import ome.units.UNITS;
 
@@ -37,7 +40,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -51,7 +55,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -80,7 +85,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         @ParameterizedTest
         @EnumSource(VolumeTypes.class)
         public void testGetNOverlappingPointsPartialSingleObjectOverlap(VolumeTypes volumeType)
-                        throws PointOutOfRangeException {
+                        throws PointOutOfRangeException {                               
                 // Setting object parameters
                 String objectsName1 = "Test objects 1";
                 String objectsName2 = "Test objects 2";
@@ -90,7 +95,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -104,7 +110,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -146,7 +153,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -160,7 +168,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -210,7 +219,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -224,7 +234,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -267,7 +278,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -281,7 +293,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -330,7 +343,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -344,7 +358,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -441,7 +456,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -455,7 +471,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -555,7 +572,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -569,7 +587,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -671,7 +690,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -685,7 +705,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -787,7 +808,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.addCoord(10, 12, 32);
                 object1_1.addCoord(11, 12, 32);
@@ -801,7 +823,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.addCoord(20, 12, 32);
                 object2_1.addCoord(20, 11, 32);
@@ -907,7 +930,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 String calibratedUnits = "µm";
 
                 // Creating a single test object
-                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects1 = ObjsFactories.getDefaultFactory().createObjs(objectsName1, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object1_1 = objects1.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object1_1.setT(2);
                 object1_1.addCoord(10, 12, 32);
@@ -922,7 +946,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
                 object1_1.addCoord(10, 12, 34);
 
                 // Creating a collection of multiple objects to test against
-                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
+                ObjsI objects2 = ObjsFactories.getDefaultFactory().createObjs(objectsName2, 30, 50, 50, dppXY, dppZ,
+                                calibratedUnits, 1, 0.02, UNITS.SECOND);
                 ObjI object2_1 = objects2.createAndAddNewObjectWithID(VolumeTypes.getFactory(volumeType), 1);
                 object2_1.setT(2);
                 object2_1.addCoord(20, 12, 32);

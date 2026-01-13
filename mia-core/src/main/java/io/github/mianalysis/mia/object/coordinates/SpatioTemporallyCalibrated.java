@@ -19,8 +19,9 @@ public interface SpatioTemporallyCalibrated extends SpatiallyCalibrated {
 
     public void setTemporalUnit(Unit<Time> temporalUnit);
 
-    @Override
-    public default void applyCalibrationToImage(ImagePlus ipl) {
+    public default void applySpatioTemporalCalibrationToImage(ImagePlus ipl) {
+        applySpatialCalibrationToImage(ipl);
+        
         ipl.getCalibration().frameInterval = getFrameInterval();
         ipl.getCalibration().fps = 1 / TemporalUnit.getOMEUnit().convertValue(getFrameInterval(), UNITS.SECOND);
         

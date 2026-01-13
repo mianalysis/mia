@@ -44,17 +44,15 @@ public class QuadtreeCoordinates extends Quadtree implements CoordinateSetI {
         return new QuadtreeCoordinates();
     }
 
-    public boolean contains(Object o) {
-        Point<Integer> point = (Point<Integer>) o;
-
+    public boolean contains(Point<Integer> point) {
         if (!quadTrees.containsKey(point.z))
             return false;
+        
         return quadTrees.get(point.z).contains(point.x, point.y);
+
     }
 
-    public boolean remove(Object o) {
-        Point<Integer> point = (Point<Integer>) o;
-
+    public boolean remove(Point<Integer> point) {
         if (!quadTrees.containsKey(point.z))
             return false;
         quadTrees.get(point.z).remove(point.x, point.y);

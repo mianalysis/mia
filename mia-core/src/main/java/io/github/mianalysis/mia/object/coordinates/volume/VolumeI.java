@@ -221,7 +221,7 @@ public interface VolumeI extends SpatiallyCalibrated {
 
     public default ImageI getAsImage(String imageName, int t, int nFrames) {
         ImagePlus ipl = IJ.createHyperStack(imageName, getWidth(), getHeight(), 1, getNSlices(), nFrames, 8);
-        applyCalibrationToImage(ipl);
+        applySpatialCalibrationToImage(ipl);
 
         for (Point<Integer> point : getCoordinateSet()) {
             int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
@@ -258,7 +258,7 @@ public interface VolumeI extends SpatiallyCalibrated {
                 + borderWidths[2][1] + 1;
 
         ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
-        applyCalibrationToImage(ipl);
+        applySpatialCalibrationToImage(ipl);
 
         // Populating ipl
         for (Point<Integer> point : getCoordinateSet()) {
