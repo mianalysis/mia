@@ -32,6 +32,7 @@ import elki.database.relation.Relation;
 import elki.datasource.ArrayAdapterDatabaseConnection;
 import elki.distance.minkowski.EuclideanDistance;
 import ij.ImagePlus;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -214,6 +215,9 @@ public class SingleClassCluster extends Module {
     }
 
     public static Objs runDBSCAN(Objs outputObjects, List<LocationWrapper> locations, double eps, int minPoints) {
+        if (locations.size() == 0)
+            return outputObjects;
+
         double[][] data = new double[locations.size()][2];
         for (int i = 0; i < locations.size(); i++)
             data[i] = locations.get(i).getPoint();
