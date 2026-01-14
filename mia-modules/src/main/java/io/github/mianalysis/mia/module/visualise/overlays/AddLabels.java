@@ -393,8 +393,7 @@ public class AddLabels extends AbstractOverlay {
 
     public static void addOverlay(ImagePlus ipl, Objs inputObjects, String labelPosition,
             HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, boolean centreText,
-            HashMap<Integer, Color> colours,
-            boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread,
+            HashMap<Integer, Color> colours, boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread,
             @Nullable String[] measurementNames, @Nullable int[] positions) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -422,7 +421,8 @@ public class AddLabels extends AbstractOverlay {
                     Color colour = colours.get(object.getID());
                     String label = labels == null ? "" : labels.get(object.getID());
 
-                    double[] location = getLocation(object, labelPosition, xOffset, yOffset, positions, measurementNames);
+                    double[] location = getLocation(object, labelPosition, xOffset, yOffset, positions,
+                            measurementNames);
 
                     for (int t = t1; t <= t2; t++) {
                         if (renderInAllSlices) {

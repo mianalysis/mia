@@ -126,7 +126,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         jsonString = jsonString.substring(jsonString.indexOf("{"));
         jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
         jsonString = jsonString.replaceAll("[\\x00-\\x1F&&[^\\n\\t]]", "");
-
+        
         return new JSONObject(jsonString);
 
     }

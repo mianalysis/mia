@@ -50,123 +50,195 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
 import io.github.mianalysis.mia.process.math.CumStat;
 
-
 /**
-* Adds overlay contour lines (and optional labels) to an image.  Lines correspond to contours of constant intensity in the input image.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Adds overlay contour lines (and optional labels) to an image. Lines
+ * correspond to contours of constant intensity in the input image.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddContourLines extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
-	*/
+    /**
+     * Image onto which overlay will be rendered. Input image will only be updated
+     * if "Apply to input image" is enabled, otherwise the image containing the
+     * overlay will be stored as a new image with name specified by "Output image".
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
-	*/
+    /**
+     * Determines if the modifications made to the input image (added overlay
+     * elements) will be applied to that image or directed to a new image. When
+     * selected, the input image will be updated.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
-	*/
+    /**
+     * If the modifications (overlay) aren't being applied directly to the input
+     * image, this control will determine if a separate image containing the overlay
+     * should be saved to the workspace.
+     */
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
 
-	/**
-	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
-	*/
+    /**
+     * The name of the new image to be saved to the workspace (if not applying the
+     * changes directly to the input image).
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String COLOUR_SEPARATOR = "Contour colours";
 
-	/**
-	* Minimum contour magnitude to display.
-	*/
+    /**
+     * Minimum contour magnitude to display.
+     */
     public static final String MINIMUM_INTENSITY = "Minimum intensity";
 
-	/**
-	* Maximum contour magnitude to display.
-	*/
+    /**
+     * Maximum contour magnitude to display.
+     */
     public static final String MAXIMUM_INTENSITY = "Maximum intensity";
 
-	/**
-	* Number of different contour magnitudes to display.  Contour lines are equally spaced in magnitude between "Minimum intensity" and "Maximum intensity".
-	*/
+    /**
+     * Number of different contour magnitudes to display. Contour lines are equally
+     * spaced in magnitude between "Minimum intensity" and "Maximum intensity".
+     */
     public static final String NUMBER_OF_CONTOURS = "Number of contours";
 
-	/**
-	* Determines the colour look-up table to use when rendering the contours.  Colour corresponds to the magnitude of that contour line:<br><br>- "Black fire" Standard ImageJ "Fire" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Ice" Standard ImageJ "Ice" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Jet" Look-up table with colour progression blue, cyan, green, yellow, orange, red.<br><br>- "Physics" Standard Fiji "Physics" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/physics.lut".<br><br>- "Random" Random sequence of colours.<br><br>- "Single colour" All contour lines have the same colour, determined by the "Contour colour" parameter.<br><br>- "Single colour gradient" Single colour gradient from the colour determined by the "Contour colour" parameter (lowest magnitude contour line) and white (highest magnitude contour line).<br><br>- "Spectrum" Standard ImageJ "Spectrum" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Thermal" Standard Fiji "Thermal" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/Thermal.lut".<br>
-	*/
+    /**
+     * Determines the colour look-up table to use when rendering the contours.
+     * Colour corresponds to the magnitude of that contour line:<br>
+     * <br>
+     * - "Black fire" Standard ImageJ "Fire" look-up table. Values taken from
+     * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br>
+     * <br>
+     * - "Ice" Standard ImageJ "Ice" look-up table. Values taken from
+     * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br>
+     * <br>
+     * - "Jet" Look-up table with colour progression blue, cyan, green, yellow,
+     * orange, red.<br>
+     * <br>
+     * - "Physics" Standard Fiji "Physics" look-up table. Values taken from
+     * "https://github.com/fiji/fiji/tree/master/luts/physics.lut".<br>
+     * <br>
+     * - "Random" Random sequence of colours.<br>
+     * <br>
+     * - "Single colour" All contour lines have the same colour, determined by the
+     * "Contour colour" parameter.<br>
+     * <br>
+     * - "Single colour gradient" Single colour gradient from the colour determined
+     * by the "Contour colour" parameter (lowest magnitude contour line) and white
+     * (highest magnitude contour line).<br>
+     * <br>
+     * - "Spectrum" Standard ImageJ "Spectrum" look-up table. Values taken from
+     * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br>
+     * <br>
+     * - "Thermal" Standard Fiji "Thermal" look-up table. Values taken from
+     * "https://github.com/fiji/fiji/tree/master/luts/Thermal.lut".<br>
+     */
     public static final String CONTOUR_COLOUR_MODE = "Contour colour mode";
 
-	/**
-	* Contour colour used when "Contour colour mode" is set to either "Single colour" or "Single colour gradient".  Choices are: White, Black, Red, Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
-	*/
+    /**
+     * Contour colour used when "Contour colour mode" is set to either "Single
+     * colour" or "Single colour gradient". Choices are: White, Black, Red, Orange,
+     * Yellow, Green, Cyan, Blue, Violet, Magenta.
+     */
     public static final String CONTOUR_COLOUR = "Contour colour";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RENDERING_SEPARATOR = "Contour rendering";
 
-	/**
-	* Width of the rendered lines.  Specified in pixel units.
-	*/
+    /**
+     * Width of the rendered lines. Specified in pixel units.
+     */
     public static final String LINE_WIDTH = "Line width";
 
-	/**
-	* Specifies the interval between plotted points on the contour line.  This is useful when there are a lot of contour lines in an image and where a reduction in line precision isn't problematic.  Plotting fewer points will reduce the memory required to store/display overlays.
-	*/
+    /**
+     * Specifies the interval between plotted points on the contour line. This is
+     * useful when there are a lot of contour lines in an image and where a
+     * reduction in line precision isn't problematic. Plotting fewer points will
+     * reduce the memory required to store/display overlays.
+     */
     public static final String DRAW_EVERY_N_POINTS = "Draw every N points";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String LABEL_SEPARATOR = "Label rendering";
 
-	/**
-	* Display magnitude values as text on each contour line.  Labels are placed randomly on each contour and are oriented in line with the local contour line.
-	*/
+    /**
+     * Display magnitude values as text on each contour line. Labels are placed
+     * randomly on each contour and are oriented in line with the local contour
+     * line.
+     */
     public static final String SHOW_LABELS = "Show labels";
 
-	/**
-	* Number of decimal places to use when displaying numeric values.
-	*/
+    /**
+     * Number of decimal places to use when displaying numeric values.
+     */
     public static final String DECIMAL_PLACES = "Decimal places";
 
-	/**
-	* When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.
-	*/
+    /**
+     * When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.
+     * Otherwise, the same value would appear as <i>0.00123</i>.
+     */
     public static final String USE_SCIENTIFIC = "Use scientific notation";
 
-	/**
-	* Determines the colour look-up table to use when rendering the contour labels.  Colour corresponds to the magnitude of that contour line:<br><br>- "Black fire" Standard ImageJ "Fire" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Ice" Standard ImageJ "Ice" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Jet" Look-up table with colour progression blue, cyan, green, yellow, orange, red.<br><br>- "Physics" Standard Fiji "Physics" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/physics.lut".<br><br>- "Random" Random sequence of colours.<br><br>- "Single colour" All contour line labels have the same colour, determined by the "Contour colour" parameter.<br><br>- "Single colour gradient" Single colour gradient from the colour determined by the "Contour colour" parameter (lowest magnitude contour line label) and white (highest magnitude contour line label).<br><br>- "Spectrum" Standard ImageJ "Spectrum" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Thermal" Standard Fiji "Thermal" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/Thermal.lut".<br>
-	*/
+    /**
+     * Determines the colour look-up table to use when rendering the contour labels.
+     * Colour corresponds to the magnitude of that contour line:<br>
+     * <br>
+     * - "Black fire" Standard ImageJ "Fire" look-up table. Values taken from
+     * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br>
+     * <br>
+     * - "Ice" Standard ImageJ "Ice" look-up table. Values taken from
+     * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br>
+     * <br>
+     * - "Jet" Look-up table with colour progression blue, cyan, green, yellow,
+     * orange, red.<br>
+     * <br>
+     * - "Physics" Standard Fiji "Physics" look-up table. Values taken from
+     * "https://github.com/fiji/fiji/tree/master/luts/physics.lut".<br>
+     * <br>
+     * - "Random" Random sequence of colours.<br>
+     * <br>
+     * - "Single colour" All contour line labels have the same colour, determined by
+     * the "Contour colour" parameter.<br>
+     * <br>
+     * - "Single colour gradient" Single colour gradient from the colour determined
+     * by the "Contour colour" parameter (lowest magnitude contour line label) and
+     * white (highest magnitude contour line label).<br>
+     * <br>
+     * - "Spectrum" Standard ImageJ "Spectrum" look-up table. Values taken from
+     * "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br>
+     * <br>
+     * - "Thermal" Standard Fiji "Thermal" look-up table. Values taken from
+     * "https://github.com/fiji/fiji/tree/master/luts/Thermal.lut".<br>
+     */
     public static final String LABEL_COLOUR_MODE = "Label colour mode";
 
-	/**
-	* Contour line label colour used when "Contour colour mode" is set to either "Single colour" or "Single colour gradient".  Choices are: White, Black, Red, Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
-	*/
+    /**
+     * Contour line label colour used when "Contour colour mode" is set to either
+     * "Single colour" or "Single colour gradient". Choices are: White, Black, Red,
+     * Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
+     */
     public static final String LABEL_COLOUR = "Label colour";
 
-	/**
-	* Font size of the text label.
-	*/
+    /**
+     * Font size of the text label.
+     */
     public static final String LABEL_SIZE = "Label size";
 
     public interface ColourModes {
         String BLACK_FIRE = "Black fire";
+        String HONMOON = "Honmoon";
         String ICE = "Ice";
         String JET = "Jet";
         String PHYSICS = "Physics";
@@ -176,7 +248,8 @@ public class AddContourLines extends Module {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR,
+        String[] ALL = new String[] { BLACK_FIRE, HONMOON, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT,
+                SINGLE_COLOUR,
                 SPECTRUM, THERMAL };
 
     }
@@ -211,6 +284,9 @@ public class AddContourLines extends Module {
             case ColourModes.BLACK_FIRE:
                 cm = LUTs.BlackFire().getColorModel();
                 break;
+            case ColourModes.HONMOON:
+                cm = LUTs.Honmoon().getColorModel();
+                break;
             case ColourModes.ICE:
                 cm = LUTs.Ice().getColorModel();
                 break;
@@ -238,6 +314,7 @@ public class AddContourLines extends Module {
 
             switch (colourMode) {
                 case ColourModes.BLACK_FIRE:
+                case ColourModes.HONMOON:    
                 case ColourModes.ICE:
                 case ColourModes.PHYSICS:
                 case ColourModes.RANDOM:
@@ -588,7 +665,6 @@ public class AddContourLines extends Module {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.VISUALISATION_OVERLAYS;
@@ -607,29 +683,29 @@ public class AddContourLines extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double minIntensity = parameters.getValue(MINIMUM_INTENSITY,workspace);
-        double maxIntensity = parameters.getValue(MAXIMUM_INTENSITY,workspace);
-        int nContours = parameters.getValue(NUMBER_OF_CONTOURS,workspace);
-        String contourColourMode = parameters.getValue(CONTOUR_COLOUR_MODE,workspace);
-        String contourColour = parameters.getValue(CONTOUR_COLOUR,workspace);
-        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
-        int drawEveryNPoints = parameters.getValue(DRAW_EVERY_N_POINTS,workspace);
+        double minIntensity = parameters.getValue(MINIMUM_INTENSITY, workspace);
+        double maxIntensity = parameters.getValue(MAXIMUM_INTENSITY, workspace);
+        int nContours = parameters.getValue(NUMBER_OF_CONTOURS, workspace);
+        String contourColourMode = parameters.getValue(CONTOUR_COLOUR_MODE, workspace);
+        String contourColour = parameters.getValue(CONTOUR_COLOUR, workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH, workspace);
+        int drawEveryNPoints = parameters.getValue(DRAW_EVERY_N_POINTS, workspace);
 
-        boolean showLabels = parameters.getValue(SHOW_LABELS,workspace);
-        int decimalPlaces = parameters.getValue(DECIMAL_PLACES,workspace);
-        boolean useScientific = parameters.getValue(USE_SCIENTIFIC,workspace);
-        String labelColourMode = parameters.getValue(LABEL_COLOUR_MODE,workspace);
-        String labelColour = parameters.getValue(LABEL_COLOUR,workspace);
-        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
+        boolean showLabels = parameters.getValue(SHOW_LABELS, workspace);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES, workspace);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC, workspace);
+        String labelColourMode = parameters.getValue(LABEL_COLOUR_MODE, workspace);
+        String labelColour = parameters.getValue(LABEL_COLOUR, workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE, workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -702,16 +778,16 @@ public class AddContourLines extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -722,7 +798,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(MAXIMUM_INTENSITY));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_CONTOURS));
         returnedParameters.add(parameters.getParameter(CONTOUR_COLOUR_MODE));
-        switch ((String) parameters.getValue(CONTOUR_COLOUR_MODE,workspace)) {
+        switch ((String) parameters.getValue(CONTOUR_COLOUR_MODE, workspace)) {
             case ColourModes.SINGLE_COLOUR:
             case ColourModes.SINGLE_COLOUR_GRADIENT:
                 returnedParameters.add(parameters.getParameter(CONTOUR_COLOUR));
@@ -735,11 +811,11 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(LABEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_LABELS));
-        if ((boolean) parameters.getValue(SHOW_LABELS,workspace)) {
+        if ((boolean) parameters.getValue(SHOW_LABELS, workspace)) {
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
             returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
             returnedParameters.add(parameters.getParameter(LABEL_COLOUR_MODE));
-            switch ((String) parameters.getValue(LABEL_COLOUR_MODE,workspace)) {
+            switch ((String) parameters.getValue(LABEL_COLOUR_MODE, workspace)) {
                 case ColourModes.SINGLE_COLOUR:
                 case ColourModes.SINGLE_COLOUR_GRADIENT:
                     returnedParameters.add(parameters.getParameter(LABEL_COLOUR));
@@ -754,32 +830,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -816,6 +892,9 @@ return null;
 
                         + "<br>- \"" + ColourModes.BLACK_FIRE
                         + "\" Standard ImageJ \"Fire\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+
+                        + "<br>- \"" + ColourModes.HONMOON
+                        + "\" Similar to inverted \"Ice\" look-up table, going from neon pink to blue.<br>"
 
                         + "<br>- \"" + ColourModes.ICE
                         + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
@@ -867,6 +946,9 @@ return null;
                         + "<br>- \"" + ColourModes.BLACK_FIRE
                         + "\" Standard ImageJ \"Fire\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
 
+                        + "<br>- \"" + ColourModes.HONMOON
+                        + "\" Similar to inverted \"Ice\" look-up table, going from neon pink to blue.<br>"
+                        
                         + "<br>- \"" + ColourModes.ICE
                         + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
 

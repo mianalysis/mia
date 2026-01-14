@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -146,7 +147,8 @@ public class SaveObjectsAsMOC extends AbstractSaver {
                 JSONObject objTemplateJSON = getObjectTemplate(modules, availableObject.getObjectsName(), exportModule,
                         exportedObjects);
                 zos.putNextEntry(new ZipEntry(availableObject.getObjectsName() + ".objtemplate"));
-                out.writeUTF(objTemplateJSON.toString());
+                byte[] bytes = objTemplateJSON.toString().getBytes(StandardCharsets.UTF_8);
+                out.write(bytes);
                 out.flush();
             }
 
@@ -171,7 +173,8 @@ public class SaveObjectsAsMOC extends AbstractSaver {
                     JSONObject objMetadataJSON = getObjectMetadata(inputObject, rois, modules, exportModule);
                     zos.putNextEntry(
                             new ZipEntry(inputObject.getName() + "_ID" + inputObject.getID() + ".objmetadata"));
-                    out.writeUTF(objMetadataJSON.toString());
+                    byte[] bytes = objMetadataJSON.toString().getBytes(StandardCharsets.UTF_8);
+                    out.write(bytes);
                     out.flush();
                 }
 

@@ -131,7 +131,7 @@ public abstract class AbstractOverlay extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(COLOUR_SEPARATOR, this));
         parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
-        parameters.add(new ChoiceP(COLOUR_MAP, this, ColourMaps.SPECTRUM, ColourMaps.ALL));
+        parameters.add(new ChoiceP(COLOUR_MAP, this, ColourMaps.SPECTRUM, (String[]) ColourFactory.getColourMaps().keySet().stream().toArray(String[]::new)));
         parameters.add(new ChoiceP(SINGLE_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, this));
@@ -292,7 +292,7 @@ public abstract class AbstractOverlay extends Module {
                 .setDescription("Colourmap used for colour gradients.  This parameter is used if \""
                         + COLOUR_MODE
                         + "\" is set to any mode which yields a range of colours (e.g. measurements or IDs).  Choices are: "
-                        + String.join(", ", ColourMaps.ALL) + ".");
+                        + String.join(", ", ColourFactory.getColourMaps().keySet()) + ".");
 
         parameters.get(SINGLE_COLOUR)
                 .setDescription("Colour for all object overlays to be rendered using.  This parameter is used if \""

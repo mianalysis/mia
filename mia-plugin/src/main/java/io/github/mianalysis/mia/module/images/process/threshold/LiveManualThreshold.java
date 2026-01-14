@@ -16,7 +16,6 @@ import org.scijava.plugin.Plugin;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -42,7 +41,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import net.imagej.ImageJ;
 
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
@@ -134,8 +132,18 @@ public class LiveManualThreshold extends Module {
         });
         frame.add(thresholdTextField);
 
+        JButton previewButton = new JButton();
+        previewButton.setText("Preview");
+        previewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                testThreshold(inputIpl, testIpl, thresholdTextField, binaryLogic);
+            }
+        });
+        frame.add(previewButton);
+
         JButton acceptButton = new JButton();
-        acceptButton.setText("Accept");
+        acceptButton.setText("Accept and continue");
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

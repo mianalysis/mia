@@ -4,12 +4,12 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.plugin.RGBStackConverter;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -36,6 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
+import net.imagej.lut.ApplyLookupTable;
 
 /**
  * Uses <a href="https://deepimagej.github.io/deepimagej/">DeepImageJ</a> to run
@@ -67,6 +69,19 @@ public class ApplyDeepImageJModel extends Module {
      * this name.
      */
     public static final String OUTPUT_IMAGE = "Output image";
+
+    /**
+     * By default images will be saved as floating point 32-bit (probabilities in
+     * the range 0-1); however, they can be converted to 8-bit (probabilities in the
+     * range 0-255) or 16-bit (probabilities in the range 0-65535). This is useful
+     * for saving memory or if the output probability map will be passed to image
+     * threshold module.
+     */
+    public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
+
+    public static final String OUTPUT_SUBSET_OF_CLASSES = "Output subset of classes";
+
+    public static final String OUTPUT_CLASSES = "Output classes";
 
     /**
     * 
@@ -104,6 +119,15 @@ public class ApplyDeepImageJModel extends Module {
 
     }
 
+    public interface OutputBitDepths {
+        String EIGHT = "8";
+        String SIXTEEN = "16";
+        String THIRTY_TWO = "32";
+
+        String[] ALL = new String[] { EIGHT, SIXTEEN, THIRTY_TWO };
+
+    }
+
     public interface FormatsBoth {
         String PYTORCH = "Pytorch";
         String TENSORFLOW = "Tensorflow";
@@ -132,15 +156,26 @@ public class ApplyDeepImageJModel extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH, workspace);
+        boolean outputSubsetOfClasses = parameters.getValue(OUTPUT_SUBSET_OF_CLASSES, workspace);
+        String outputClasses = parameters.getValue(OUTPUT_CLASSES, workspace);
         String modelName = parameters.getValue(MODEL, workspace);
-        // String preprocessing = parameters.getValue(PREPROCESSING, workspace);
         boolean usePostprocessing = parameters.getValue(USE_POSTPROCESSING, workspace);
-        // String postprocessing = parameters.getValue(POSTPROCESSING, workspace);
         String patchSize = parameters.getValue(PATCH_SIZE, workspace);
 
         // Get input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
+
+        int bitDepth = Integer.parseInt(outputBitDepth);
+        int[] classList = null;
+        if (outputSubsetOfClasses) {
+            outputClasses = outputClasses.trim();
+            String[] strClassList = outputClasses.split(",");
+            classList = new int[strClassList.length];
+            for (int i = 0; i < strClassList.length; i++)
+                classList[i] = Integer.parseInt(strClassList[i]);
+        }
 
         // Converting to RGB if requested
         if (convertToRGB) {
@@ -151,7 +186,6 @@ public class ApplyDeepImageJModel extends Module {
         // Running deep learning model
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
         String outputType = model.params.outputList.get(0).tensorType;
-        MIA.log.writeDebug(model);
 
         // Updating pre and post processing options
         boolean usePreprocessing = true;
@@ -166,8 +200,6 @@ public class ApplyDeepImageJModel extends Module {
         ImageStack inputIst = inputIpl.getStack();
         ImagePlus outputIpl = null;
         ImageStack outputIst = null;
-
-        // PrepareDeepImageJ.getOutputDimensions(modelName, outputIpl);
 
         int count = 0;
         for (int z = 0; z < inputIpl.getNSlices(); z++) {
@@ -185,12 +217,13 @@ public class ApplyDeepImageJModel extends Module {
                     if (outputIpl == null) {
                         int width = tempOutputIpl.getWidth();
                         int height = tempOutputIpl.getHeight();
-                        int nChannels = tempOutputIpl.getNChannels();
+                        int nChannels = outputSubsetOfClasses && classList != null ? classList.length
+                                : tempOutputIpl.getNChannels();
                         int nSlices = inputIpl.getNSlices();
                         int nFrames = inputIpl.getNFrames();
 
                         outputIpl = IJ.createHyperStack(outputImageName, width, height, nChannels, nSlices, nFrames,
-                                32);
+                                bitDepth);
 
                         Calibration inputCal = inputIpl.getCalibration();
                         Calibration outputCal = new Calibration();
@@ -207,11 +240,21 @@ public class ApplyDeepImageJModel extends Module {
 
                     }
 
+                    setBitDepth(tempOutputIpl, bitDepth);
+
                     ImageStack tempIst = tempOutputIpl.getStack();
-                    for (int c = 0; c < tempOutputIpl.getNChannels(); c++) {
-                        int tempOutputIdx = tempOutputIpl.getStackIndex(c + 1, 1, 1);
-                        int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, t + 1);
-                        outputIst.setProcessor(tempIst.getProcessor(tempOutputIdx), outputIdx);
+                    if (outputSubsetOfClasses) {
+                        for (int cIdx = 0; cIdx < classList.length; cIdx++) {
+                            int tempOutputIdx = tempOutputIpl.getStackIndex(classList[cIdx], 1, 1);
+                            int outputIdx = outputIpl.getStackIndex(cIdx + 1, z + 1, t + 1);
+                            outputIst.setProcessor(tempIst.getProcessor(tempOutputIdx), outputIdx);
+                        }
+                    } else {
+                        for (int c = 0; c < tempOutputIpl.getNChannels(); c++) {
+                            int tempOutputIdx = tempOutputIpl.getStackIndex(c + 1, 1, 1);
+                            int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, t + 1);
+                            outputIst.setProcessor(tempIst.getProcessor(tempOutputIdx), outputIdx);
+                        }
                     }
                 } else if (outputType.equals("list")) {
                     float[] modelOutputArray = (float[]) modelOutput;
@@ -245,7 +288,7 @@ public class ApplyDeepImageJModel extends Module {
         if (outputType.equals("image")) {
             // It seems necessary to reapply the ImageStack
             outputIpl.setStack(outputIst);
-
+            
             // Storing output image
             Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
             workspace.addImage(outputImage);
@@ -261,6 +304,29 @@ public class ApplyDeepImageJModel extends Module {
 
     }
 
+    private void setBitDepth(ImagePlus inputImagePlus, int outputBitDepth) {
+        int bitDepth = inputImagePlus.getBitDepth();
+
+        // If the image is already the output bit depth, skip this
+        if (bitDepth == outputBitDepth) return;
+
+        // Setting input image scaling
+        switch (bitDepth) {
+            case 8:
+            case 16:
+                inputImagePlus.setDisplayRange(0,Math.pow(2, bitDepth)-1);
+                break;
+
+            case 32:
+                inputImagePlus.setDisplayRange(0,1);
+                break;
+        }
+
+        // Converting to requested type
+        IJ.run(inputImagePlus,String.valueOf(outputBitDepth)+"-bit",null);
+
+    }
+
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
@@ -268,6 +334,10 @@ public class ApplyDeepImageJModel extends Module {
         parameters.add(new BooleanP(CONVERT_TO_RGB, this, false,
                 "Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH, this, OutputBitDepths.THIRTY_TWO, OutputBitDepths.ALL,
+                "By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module."));
+        parameters.add(new BooleanP(OUTPUT_SUBSET_OF_CLASSES, this, false));
+        parameters.add(new StringP(OUTPUT_CLASSES, this));
 
         parameters.add(new SeparatorP(MODEL_SEPARATOR, this));
         parameters.add(new ChoiceP(MODEL, this, "", Models.ALL));
@@ -292,8 +362,13 @@ public class ApplyDeepImageJModel extends Module {
 
         if (model != null) {
             String outputType = model.params.outputList.get(0).tensorType;
-            if (outputType.equals("image"))
+            if (outputType.equals("image")) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+                returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
+                returnedParameters.add(parameters.getParameter(OUTPUT_SUBSET_OF_CLASSES));
+                if ((boolean) parameters.getValue(OUTPUT_SUBSET_OF_CLASSES, workspace))
+                    returnedParameters.add(parameters.getParameter(OUTPUT_CLASSES));
+            }
         }
 
         returnedParameters.add(parameters.getParameter(MODEL_SEPARATOR));
@@ -314,8 +389,6 @@ public class ApplyDeepImageJModel extends Module {
         ((MessageP) parameters.get(AXES_ORDER))
                 .setValue("Selected model requires input image axes to be in the order: "
                         + PrepareDeepImageJ.getAxes(modelName));
-
-        // PrepareDeepImageJ.getOutputDimensions(modelName);
 
         currModelName = modelName;
 

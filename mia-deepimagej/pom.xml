@@ -130,6 +130,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- <dependency>
+            <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-modules</artifactId>
+            <version>${project.version}</version>
+        </dependency> -->
+
         <dependency>
             <groupId>com.github.deepimagej</groupId>
             <artifactId>deepimagej-plugin</artifactId>
@@ -157,6 +163,4 @@
             <version>0.3.10</version>
         </dependency> -->
     </dependencies>
-
-
 </project>

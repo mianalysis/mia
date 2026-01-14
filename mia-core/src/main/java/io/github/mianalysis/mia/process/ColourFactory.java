@@ -2,9 +2,17 @@ package io.github.mianalysis.mia.process;
 
 import java.awt.Color;
 import java.awt.image.IndexColorModel;
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.TreeMap;
 
+import org.apache.commons.lang.WordUtils;
+
+import ij.IJ;
+import ij.plugin.LutLoader;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
@@ -14,6 +22,8 @@ import io.github.mianalysis.mia.process.math.CumStat;
 
 public class ColourFactory {
     private static long randomSeed = 1;
+    private static TreeMap<String,String> imageJLUTs = null;
+    private static TreeMap<String,String> allLUTs = null;
 
     public interface ColourModes {
         String CHILD_COUNT = "Child count";
@@ -33,6 +43,7 @@ public class ColourFactory {
 
     public interface ColourMaps {
         String BLACK_FIRE = "Black fire";
+        String HONMOON = "Honmoon";
         String ICE = "Ice";
         String JET = "Jet";
         String PHYSICS = "Physics";
@@ -41,7 +52,7 @@ public class ColourFactory {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, RANDOM_VIBRANT,
+        String[] ALL = new String[] { BLACK_FIRE, HONMOON, ICE, JET, PHYSICS, RANDOM, RANDOM_VIBRANT,
                 SPECTRUM, THERMAL };
 
     }
@@ -118,7 +129,7 @@ public class ColourFactory {
                 H = -1f;
             else
                 H = (float) object.getParent(parentObjectsName).getID();
-            
+
             if (normalised & object.getParent(parentObjectsName) != null)
                 H = (H * 1048576 % 255) / 255;
 
@@ -369,7 +380,7 @@ public class ColourFactory {
                 continue;
             }
 
-            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode()* 2000*31).nextFloat());
+            hues.put(object.getID(), new Random(metadataItem.getValue().hashCode() * 2000 * 31).nextFloat());
 
         }
 
@@ -493,32 +504,39 @@ public class ColourFactory {
             value = value + 1E-8f;
 
             IndexColorModel cm = null;
-            switch (colourMode) {
-                case ColourMaps.BLACK_FIRE:
-                    cm = LUTs.BlackFire().getColorModel();
-                    break;
-                case ColourMaps.ICE:
-                    cm = LUTs.Ice().getColorModel();
-                    break;
-                case ColourMaps.PHYSICS:
-                    cm = LUTs.Physics().getColorModel();
-                    break;
-                case ColourMaps.RANDOM:
-                    cm = LUTs.Random(false, false).getColorModel();
-                    break;
-                case ColourMaps.RANDOM_VIBRANT:
-                    cm = LUTs.RandomVibrant(false, false).getColorModel();
-                    break;
-                case ColourMaps.JET:
-                    cm = LUTs.Jet().getColorModel();
-                    break;
-                case ColourMaps.SPECTRUM:
-                default:
-                    cm = LUTs.Spectrum().getColorModel();
-                    break;
-                case ColourMaps.THERMAL:
-                    cm = LUTs.Thermal().getColorModel();
-                    break;
+            if (imageJLUTs.keySet().contains(colourMode)) {
+                cm = LutLoader.openLut(IJ.getDir("luts") + imageJLUTs.get(colourMode)).getColorModel();
+            } else {
+                switch (colourMode) {
+                    case ColourMaps.BLACK_FIRE:
+                        cm = LUTs.BlackFire().getColorModel();
+                        break;
+                    case ColourMaps.HONMOON:
+                        cm = LUTs.Honmoon().getColorModel();
+                        break;
+                    case ColourMaps.ICE:
+                        cm = LUTs.Ice().getColorModel();
+                        break;
+                    case ColourMaps.PHYSICS:
+                        cm = LUTs.Physics().getColorModel();
+                        break;
+                    case ColourMaps.RANDOM:
+                        cm = LUTs.Random(false, false).getColorModel();
+                        break;
+                    case ColourMaps.RANDOM_VIBRANT:
+                        cm = LUTs.RandomVibrant(false, false).getColorModel();
+                        break;
+                    case ColourMaps.JET:
+                        cm = LUTs.Jet().getColorModel();
+                        break;
+                    case ColourMaps.SPECTRUM:
+                    default:
+                        cm = LUTs.Spectrum().getColorModel();
+                        break;
+                    case ColourMaps.THERMAL:
+                        cm = LUTs.Thermal().getColorModel();
+                        break;
+                }
             }
 
             int idx = (int) Math.round(value * 255);
@@ -547,6 +565,26 @@ public class ColourFactory {
             colours.put(key, getColour(hues.get(key), colourMap, opacity));
 
         return colours;
+
+    }
+
+    public static TreeMap<String,String> getColourMaps() {
+        if (allLUTs != null)
+            return allLUTs;
+
+        allLUTs = new TreeMap<>();
+        imageJLUTs = new TreeMap<>();
+
+        String[] lutFiles = new File(IJ.getDirectory("luts")).list();
+        if (lutFiles != null)
+            Arrays.stream(lutFiles).forEach(v -> imageJLUTs.put(WordUtils.capitalize(v.replace(".lut", "")), v));
+
+        allLUTs.putAll(imageJLUTs);
+        Arrays.stream(ColourMaps.ALL).forEach(v -> allLUTs.put(v,v));
+
+        MIA.log.writeDebug(allLUTs);
+
+        return allLUTs;
 
     }
 }
