@@ -582,8 +582,6 @@ public class ColourFactory {
         allLUTs.putAll(imageJLUTs);
         Arrays.stream(ColourMaps.ALL).forEach(v -> allLUTs.put(v,v));
 
-        MIA.log.writeDebug(allLUTs);
-
         return allLUTs;
 
     }
