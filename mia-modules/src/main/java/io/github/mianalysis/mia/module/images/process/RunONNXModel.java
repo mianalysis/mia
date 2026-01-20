@@ -1,189 +1,218 @@
-// package io.github.mianalysis.mia.module.images.process;
+package io.github.mianalysis.mia.module.images.process;
 
-// import java.util.HashMap;
-// import java.util.Map;
+import java.util.HashMap;
 
-// import org.scijava.Priority;
-// import org.scijava.plugin.Plugin;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
-// import ai.onnxruntime.NodeInfo;
-// import ai.onnxruntime.OnnxTensor;
-// import ai.onnxruntime.OrtEnvironment;
-// import ai.onnxruntime.OrtException;
-// import ai.onnxruntime.OrtSession;
-// import ai.onnxruntime.OrtSession.Result;
-// import ai.onnxruntime.TensorInfo;
-// import ij.IJ;
-// import ij.ImagePlus;
-// import ij.process.ImageProcessor;
-// import io.github.mianalysis.mia.MIA;
-// import io.github.mianalysis.mia.module.Categories;
-// import io.github.mianalysis.mia.module.Category;
-// import io.github.mianalysis.mia.module.Module;
-// import io.github.mianalysis.mia.module.Modules;
-// import io.github.mianalysis.mia.object.Workspace;
-// import io.github.mianalysis.mia.object.image.Image;
-// import io.github.mianalysis.mia.object.image.ImageFactory;
-// import io.github.mianalysis.mia.object.parameters.InputImageP;
-// import io.github.mianalysis.mia.object.parameters.OutputImageP;
-// import io.github.mianalysis.mia.object.parameters.Parameters;
-// import io.github.mianalysis.mia.object.parameters.SeparatorP;
-// import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
-// import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
-// import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-// import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
-// import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
-// import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-// import io.github.mianalysis.mia.object.system.Status;
+import ai.onnxruntime.OnnxTensor;
+import ai.onnxruntime.OrtEnvironment;
+import ai.onnxruntime.OrtException;
+import ai.onnxruntime.OrtSession;
+import ai.onnxruntime.OrtSession.Result;
+import ai.onnxruntime.TensorInfo;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.parameters.FilePathP;
+import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
+import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
-// @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-// public class RunONNXModel extends Module {
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+public class RunONNXModel extends Module {
 
-//     public static final String INPUT_SEPARATOR = "Image input/output";
+    public static final String INPUT_SEPARATOR = "Image input";
 
-//     public static final String INPUT_IMAGE = "Input image";
+    public static final String INPUT_IMAGE = "Input image";
 
-//     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String INPUT_NOTE = "Input note";
 
-//     public RunONNXModel(Modules modules) {
-//         super("Run ONNX model", modules);
-//     }
+    public static final String OUTPUT_SEPARATOR = "Image output";
 
-//     @Override
-//     public String getVersionNumber() {
-//         return "1.0.0";
-//     }
+    public static final String OUTPUT_IMAGE = "Output image";
 
-//     @Override
-//     public String getDescription() {
-//         return "";
-//     }
+    public static final String MODEL_SEPARATOR = "Model controls";
 
-//     @Override
-//     public Category getCategory() {
-//         return Categories.IMAGES_PROCESS;
-//     }
+    public static final String MODEL_PATH = "Model path";
 
-//     @Override
-//     public Status process(Workspace workspace) {
-//         // Getting input image
-//         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-//         Image inputImage = workspace.getImages().get(inputImageName);
-//         ImagePlus inputIpl = inputImage.getImagePlus();
+    public RunONNXModel(Modules modules) {
+        super("Run ONNX model", modules);
+    }
 
-//         // Getting parameters
-//         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+    @Override
+    public String getVersionNumber() {
+        return "1.0.0";
+    }
 
-//         String modelPath = "/Users/sc13967/Library/CloudStorage/OneDrive-UniversityofBristol/People/Erika Kague/2025-04-04 RAMAN cell analysis/ONNX models/2025-09-01_4class.onnx.zip";
+    @Override
+    public String getDescription() {
+        return "";
+    }
 
-//         ImagePlus outputIpl;
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGES_PROCESS;
+    }
 
-//         try {
-//             OrtEnvironment environment = OrtEnvironment.getEnvironment();
+    public static OnnxTensor getInputTensor(OrtEnvironment environment, OrtSession session, Image inputImage)
+            throws OrtException {
+        ImagePlus inputIpl = inputImage.getImagePlus();
 
-//             OrtSession session = environment.createSession(modelPath);
-//             MIA.log.writeDebug("Num inputs: "+session.getNumInputs());
-//             MIA.log.writeDebug("Input names: "+session.getInputNames());
-//             MIA.log.writeDebug("Num outputs: "+session.getNumOutputs());
-//             MIA.log.writeDebug("Output names: "+session.getOutputNames());
-            
-//             Map<String,NodeInfo> m = session.getInputInfo();
-//             for (String s:m.keySet()) {
-//                 MIA.log.writeDebug(s+"_"+m.get(s));
-//             }
-//             String inputName = session.getInputNames().iterator().next();
-//             String outputName = session.getOutputNames().iterator().next();
+        TensorInfo inputInfo = (TensorInfo) session.getInputInfo().get("input").getInfo();
+        long[] inputShape = inputInfo.getShape();
+        int inputChannels = (int) inputShape[1];
+        int inputWidth = (int) inputShape[2];
+        int inputHeight = (int) inputShape[3];
 
-//             int width = inputIpl.getWidth();
-//             int height = inputIpl.getHeight();
+        float[][][][] floatArray = new float[1][inputChannels][inputWidth][inputHeight];
+        for (int c = 0; c < inputChannels; c++) {
+            inputIpl.setC(c + 1);
+            ImageProcessor inputIpr = inputIpl.getProcessor();
+            for (int x = 0; x < inputWidth; x++)
+                for (int y = 0; y < inputHeight; y++)
+                    floatArray[0][0][x][y] = inputIpr.getPixelValue(x, y);
+        }
 
-//             ImageProcessor inputIpr = inputIpl.getProcessor();
-//             float[][][][] floatArray = new float[1][width][height][1];
-//             for (int x = 0; x < width; x++)
-//                 for (int y = 0; y < height; y++)
-//                     floatArray[0][x][y][0] = inputIpr.getPixelValue(x, y);
+        return OnnxTensor.createTensor(environment, floatArray);
 
-//             OnnxTensor tensor = OnnxTensor.createTensor(environment, floatArray);
+    }
 
-//             HashMap<String, OnnxTensor> inputMap = new HashMap<>();
-//             inputMap.put(inputName, tensor);
+    public static Image getOutputImage(OrtSession session, Result outputMap, String outputImageName) throws OrtException {
+        TensorInfo outputInfo = (TensorInfo) session.getOutputInfo().get("target").getInfo();
+        long[] outputShape = outputInfo.getShape();
+        int outputChannels = (int) outputShape[1];
+        int outputWidth = (int) outputShape[2];
+        int outputHeight = (int) outputShape[3];
 
-//             Result outputMap = session.run(inputMap);
-//             float[][][][] output = (float[][][][]) outputMap.get(0).getValue();
+        float[][][][] output = (float[][][][]) outputMap.get(0).getValue();
 
-//             long[] shape = ((TensorInfo) session.getOutputInfo().get(outputName).getInfo()).getShape();
-//             outputIpl = IJ.createHyperStack(outputName, width, height, (int) shape[3], 1, 1, 32);
+        ImagePlus outputIpl = IJ.createHyperStack(outputImageName, outputWidth, outputHeight, outputChannels, 1, 1,
+                32);
 
-//             for (int c = 0; c < shape[3]; c++) {
-//                 outputIpl.setC(c + 1);
-//                 ImageProcessor outputIpr = outputIpl.getProcessor();
-//                 for (int x = 0; x < width; x++)
-//                     for (int y = 0; y < height; y++)
-//                         outputIpr.setf(x, y, output[0][x][y][c]);
-//             }
+        for (int c = 0; c < outputChannels; c++) {
+            outputIpl.setC(c + 1);
+            ImageProcessor outputIpr = outputIpl.getProcessor();
+            for (int x = 0; x < outputWidth; x++)
+                for (int y = 0; y < outputHeight; y++)
+                    outputIpr.setf(x, y, output[0][c][x][y]);
+        }
 
-//         } catch (OrtException e) {
-//             MIA.log.writeError(e);
-//             return Status.FAIL;
-//         }
+        return ImageFactory.createImage(outputImageName, outputIpl);
 
-//         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
-//         workspace.addImage(outputImage);
+    }
 
-//         // If the image is being saved as a new image, adding it to the workspace
-//         if (showOutput)
-//             outputImage.show();
+    @Override
+    public Status process(Workspace workspace) {
+        // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String modelPath = parameters.getValue(MODEL_PATH, workspace);
 
-//         return Status.PASS;
+        // Getting input image
+        Image inputImage = workspace.getImages().get(inputImageName);
 
-//     }
+        try {
+            OrtEnvironment environment = OrtEnvironment.getEnvironment();
+            OrtSession session = environment.createSession(modelPath);
 
-//     @Override
-//     protected void initialiseParameters() {
-//         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-//         parameters.add(new InputImageP(INPUT_IMAGE, this));
-//         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+            // Preparing input data
+            String inputName = session.getInputNames().iterator().next();
+            OnnxTensor inputTensor = getInputTensor(environment, session, inputImage);
 
-//     }
+            // Running model
+            HashMap<String, OnnxTensor> inputMap = new HashMap<>();
+            inputMap.put(inputName, inputTensor);
+            Result outputMap = session.run(inputMap);
 
-//     @Override
-//     public Parameters updateAndGetParameters() {
-//         return parameters;
+            // Preparing output data
+            Image outputImage = getOutputImage(session, outputMap, outputImageName);
+            workspace.addImage(outputImage);
 
-//     }
+            // If the image is being saved as a new image, adding it to the workspace
+            if (showOutput)
+                outputImage.show();
 
-//     @Override
-//     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-//         return null;
-//     }
+            return Status.PASS;
 
-//     @Override
-//     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-//         return null;
-//     }
+        } catch (OrtException e) {
+            MIA.log.writeError(e);
+            return Status.FAIL;
+        }
 
-//     @Override
-//     public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
-//         return null;
-//     }
+    }
 
-//     @Override
-//     public MetadataRefs updateAndGetMetadataReferences() {
-//         return null;
-//     }
+    @Override
+    protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new MessageP(INPUT_NOTE, this, "Input images are expected to be 32-bit with values in the range 0-1.", ParameterState.MESSAGE));
 
-//     @Override
-//     public ParentChildRefs updateAndGetParentChildRefs() {
-//         return null;
-//     }
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-//     @Override
-//     public PartnerRefs updateAndGetPartnerRefs() {
-//         return null;
-//     }
+        parameters.add(new SeparatorP(MODEL_SEPARATOR, this));
+        parameters.add(new FilePathP(MODEL_PATH, this));
+        
 
-//     @Override
-//     public boolean verify() {
-//         return true;
-//     }
-// }
+    }
+
+    @Override
+    public Parameters updateAndGetParameters() {
+        return parameters;
+
+    }
+
+    @Override
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
+    }
+
+    @Override
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefs updateAndGetPartnerRefs() {
+        return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
+}

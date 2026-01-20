@@ -53,7 +53,12 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
     /**
     * 
     */
-    public static final String TILE_SEPARATOR = "Tile selection";
+    public static final String TILE_SEPARATOR = "Tile controls";
+
+    /**
+    * 
+    */
+    public static final String TILE_MODE = "Tile mode";
 
     /**
     * 
@@ -64,6 +69,16 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
     * 
     */
     public static final String Y_NUM_TILES = "y-axis number of tiles";
+
+    /**
+    * 
+    */
+    public static final String X_AXIS_SIZE_PX = "x-axis tile size (px)";
+
+    /**
+    * 
+    */
+    public static final String Y_AXIS_SIZE_PX = "y-axis tile size (px)";
 
     /**
     * 
@@ -79,6 +94,14 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
     * 
     */
     public static final String TILE_AXIS = "Tile axis";
+
+    public interface TileModes {
+        String FIXED_NUMBER_AND_OVERLAP = "Fixed number and overlap";
+        String FIXED_SIZE_AND_OVERLAP = "Fixed size and overlap";
+
+        String[] ALL = new String[] { FIXED_NUMBER_AND_OVERLAP, FIXED_SIZE_AND_OVERLAP };
+
+    }
 
     public interface TileAxes extends ImageTiler.TileAxes {
     };
@@ -107,8 +130,11 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String tileMode = parameters.getValue(TILE_MODE, workspace);
         int xNumTiles = parameters.getValue(X_NUM_TILES, workspace);
         int yNumTiles = parameters.getValue(Y_NUM_TILES, workspace);
+        int xTileSize = parameters.getValue(X_AXIS_SIZE_PX, workspace);
+        int yTileSize = parameters.getValue(Y_AXIS_SIZE_PX, workspace);
         int xOverlapPx = parameters.getValue(X_OVERLAP_PX, workspace);
         int yOverlapPx = parameters.getValue(Y_OVERLAP_PX, workspace);
         String tileAxis = parameters.getValue(TILE_AXIS, workspace);
@@ -116,10 +142,21 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        ImagePlus outputIpl = ImageTiler.tile(inputIpl, xNumTiles, yNumTiles, xOverlapPx, yOverlapPx, tileAxis);
+        switch (tileMode) {
+            case TileModes.FIXED_NUMBER_AND_OVERLAP:
+                xTileSize = ImageTiler.getTileSize(inputIpl.getWidth(), xOverlapPx, xNumTiles);
+                yTileSize = ImageTiler.getTileSize(inputIpl.getHeight(), yOverlapPx, yNumTiles);
+                break;
+            case TileModes.FIXED_SIZE_AND_OVERLAP:
+                xNumTiles = ImageTiler.getTileCount(inputIpl.getWidth(), xOverlapPx, xTileSize);
+                yNumTiles = ImageTiler.getTileCount(inputIpl.getHeight(), yOverlapPx, yTileSize);
+                break;
+        }
+
+        ImagePlus outputIpl = ImageTiler.tile(inputIpl, xNumTiles, yNumTiles, xTileSize, yTileSize, xOverlapPx, yOverlapPx, tileAxis);
         outputIpl.setTitle(outputImageName);
         outputIpl = outputIpl.duplicate();
-        
+
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
         SetLookupTable.copyLUTFromImage(outputImage, inputImage);
 
@@ -136,9 +173,13 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
         parameters.add(new SeparatorP(TILE_SEPARATOR, this));
+        parameters.add(new ChoiceP(TILE_MODE, this, TileModes.FIXED_NUMBER_AND_OVERLAP, TileModes.ALL));
         parameters.add(new IntegerP(X_NUM_TILES, this, 4));
         parameters.add(new IntegerP(Y_NUM_TILES, this, 4));
+        parameters.add(new IntegerP(X_AXIS_SIZE_PX, this, 512));
+        parameters.add(new IntegerP(Y_AXIS_SIZE_PX, this, 512));
         parameters.add(new IntegerP(X_OVERLAP_PX, this, 32));
         parameters.add(new IntegerP(Y_OVERLAP_PX, this, 32));
         parameters.add(new ChoiceP(TILE_AXIS, this, TileAxes.Z, TileAxes.ALL));
@@ -147,7 +188,32 @@ public class TileStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(TILE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(TILE_MODE));
+
+        switch ((String) parameters.getValue(TILE_MODE, null)) {
+            case TileModes.FIXED_NUMBER_AND_OVERLAP:
+                returnedParameters.add(parameters.getParameter(X_NUM_TILES));
+                returnedParameters.add(parameters.getParameter(Y_NUM_TILES));
+                break;
+
+            case TileModes.FIXED_SIZE_AND_OVERLAP:
+                returnedParameters.add(parameters.getParameter(X_AXIS_SIZE_PX));
+                returnedParameters.add(parameters.getParameter(Y_AXIS_SIZE_PX));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(X_OVERLAP_PX));
+        returnedParameters.add(parameters.getParameter(Y_OVERLAP_PX));
+        returnedParameters.add(parameters.getParameter(TILE_AXIS));
+
+        return returnedParameters;
 
     }
 

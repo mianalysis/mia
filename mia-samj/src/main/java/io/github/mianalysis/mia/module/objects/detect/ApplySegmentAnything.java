@@ -183,7 +183,7 @@ public class ApplySegmentAnything extends Module {
 
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
 
-        } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
+        } catch (IOException | RuntimeException | InterruptedException | URISyntaxException
                 | MambaInstallException e) {
             e.printStackTrace();
         }

@@ -5,11 +5,13 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
+import io.github.mianalysis.mia.module.images.transform.TileStack.TileModes;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -58,12 +60,27 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
     /**
     * 
     */
+    public static final String TILE_MODE = "Tile mode";
+
+    /**
+    * 
+    */
     public static final String X_NUM_TILES = "x-axis number of tiles";
 
     /**
     * 
     */
     public static final String Y_NUM_TILES = "y-axis number of tiles";
+
+    /**
+    * 
+    */
+    public static final String X_AXIS_SIZE_PX = "x-axis tile size (px)";
+
+    /**
+    * 
+    */
+    public static final String Y_AXIS_SIZE_PX = "y-axis tile size (px)";
 
     /**
     * 
@@ -90,8 +107,11 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
     */
     public static final String TILE_AXIS = "Tile axis";
 
+    public interface TileModes extends TileStack.TileModes {
+    }
+
     public interface TileAxes extends ImageTiler.TileAxes {
-    };
+    }
 
     public StitchTiles(Modules modules) {
         super("Stitch tiles", modules);
@@ -117,8 +137,11 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String tileMode = parameters.getValue(TILE_MODE, workspace);
         int xNumTiles = parameters.getValue(X_NUM_TILES, workspace);
         int yNumTiles = parameters.getValue(Y_NUM_TILES, workspace);
+        int xTileSize = parameters.getValue(X_AXIS_SIZE_PX, workspace);
+        int yTileSize = parameters.getValue(Y_AXIS_SIZE_PX, workspace);
         int xOverlapPx = parameters.getValue(X_OVERLAP_PX, workspace);
         int yOverlapPx = parameters.getValue(Y_OVERLAP_PX, workspace);
         int outputWidthPx = parameters.getValue(OUTPUT_WIDTH_PX, workspace);
@@ -128,7 +151,19 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        ImagePlus outputIpl = ImageTiler.stitch(inputIpl, xNumTiles, yNumTiles, xOverlapPx, yOverlapPx, outputWidthPx, outputHeightPx, tileAxis);
+        switch (tileMode) {
+            case TileModes.FIXED_NUMBER_AND_OVERLAP:
+                xTileSize = ImageTiler.getTileSize(outputWidthPx, xOverlapPx, xNumTiles);
+                yTileSize = ImageTiler.getTileSize(outputHeightPx, yOverlapPx, yNumTiles);
+                break;
+            case TileModes.FIXED_SIZE_AND_OVERLAP:
+                xNumTiles = ImageTiler.getTileCount(outputWidthPx, xOverlapPx, xTileSize);
+                yNumTiles = ImageTiler.getTileCount(outputHeightPx, yOverlapPx, yTileSize);
+                break;
+        }
+
+        ImagePlus outputIpl = ImageTiler.stitch(inputIpl, xNumTiles, yNumTiles, xTileSize, yTileSize, xOverlapPx,
+                yOverlapPx, outputWidthPx, outputHeightPx, tileAxis);
         outputIpl.setTitle(outputImageName);
         outputIpl = outputIpl.duplicate();
 
@@ -148,9 +183,13 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
         parameters.add(new SeparatorP(TILE_SEPARATOR, this));
+        parameters.add(new ChoiceP(TILE_MODE, this, TileModes.FIXED_NUMBER_AND_OVERLAP, TileModes.ALL));
         parameters.add(new IntegerP(X_NUM_TILES, this, 4));
         parameters.add(new IntegerP(Y_NUM_TILES, this, 4));
+        parameters.add(new IntegerP(X_AXIS_SIZE_PX, this, 512));
+        parameters.add(new IntegerP(Y_AXIS_SIZE_PX, this, 512));
         parameters.add(new IntegerP(X_OVERLAP_PX, this, 32));
         parameters.add(new IntegerP(Y_OVERLAP_PX, this, 32));
         parameters.add(new IntegerP(OUTPUT_WIDTH_PX, this, 512));
@@ -161,7 +200,34 @@ public class StitchTiles<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(TILE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(TILE_MODE));
+
+        switch ((String) parameters.getValue(TILE_MODE, null)) {
+            case TileModes.FIXED_NUMBER_AND_OVERLAP:
+                returnedParameters.add(parameters.getParameter(X_NUM_TILES));
+                returnedParameters.add(parameters.getParameter(Y_NUM_TILES));
+                break;
+
+            case TileModes.FIXED_SIZE_AND_OVERLAP:
+                returnedParameters.add(parameters.getParameter(X_AXIS_SIZE_PX));
+                returnedParameters.add(parameters.getParameter(Y_AXIS_SIZE_PX));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(X_OVERLAP_PX));
+        returnedParameters.add(parameters.getParameter(Y_OVERLAP_PX));
+        returnedParameters.add(parameters.getParameter(OUTPUT_WIDTH_PX));
+        returnedParameters.add(parameters.getParameter(OUTPUT_HEIGHT_PX));
+        returnedParameters.add(parameters.getParameter(TILE_AXIS));
+
+        return returnedParameters;
 
     }
 

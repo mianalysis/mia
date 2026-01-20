@@ -22,7 +22,7 @@ public class ImageTiler {
         // Applying new calibration
         Calibration inputCal = inputIpl.getCalibration();
         Calibration outputCal = outputIpl.getCalibration();
-        
+
         outputCal.pixelWidth = inputCal.pixelWidth;
         outputCal.pixelHeight = inputCal.pixelHeight;
         outputCal.pixelDepth = inputCal.pixelDepth;
@@ -32,17 +32,22 @@ public class ImageTiler {
 
     }
 
-    public static ImagePlus tile(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xOverlapPx, int yOverlapPx,
-            String tileAxis) {
+    public static int getNumberOfTiles() {
+        return -1;
+    }
+
+    public static int getTileSize(int imageSize, int overlap, int nTiles) {
+        return (int) Math.ceil(Math.ceil((double) (imageSize - overlap) / (double) nTiles)) + overlap;
+    }
+
+    public static int getTileCount(int imageSize, int overlap, int tileSize) {
+        return (int) Math.ceil(Math.ceil((double) (imageSize - overlap) / (double) tileSize));
+    }
+
+    public static ImagePlus tile(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xTileSize, int yTileSize,
+            int xOverlapPx, int yOverlapPx, String tileAxis) {
         inputIpl = inputIpl.duplicate();
         String title = "Tiled_" + inputIpl.getTitle();
-
-        int coreTileWidth = (int) Math
-                .round(Math.round((double) (inputIpl.getWidth() - xOverlapPx) / (double) xNumTiles));
-        int tileWidth = coreTileWidth + xOverlapPx;
-        int coreTileHeight = (int) Math
-                .round(Math.round((double) (inputIpl.getHeight() - yOverlapPx) / (double) yNumTiles));
-        int tileHeight = coreTileHeight + yOverlapPx;
 
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
@@ -67,19 +72,21 @@ public class ImageTiler {
                 break;
         }
 
-        ImagePlus outputIpl = IJ.createHyperStack(title, tileWidth, tileHeight, nChannels, nSlices, nFrames, bitDepth);
+        ImagePlus outputIpl = IJ.createHyperStack(title, xTileSize, yTileSize, nChannels, nSlices, nFrames,
+                bitDepth);
 
         ImageStack outputIst = outputIpl.getStack();
         int count = 0;
         for (int y = 0; y < yNumTiles; y++) {
             for (int x = 0; x < xNumTiles; x++) {
-                int x0 = x * coreTileWidth;
-                int y0 = y * coreTileHeight;
-                inputIpl.setRoi(new Roi(x0, y0, tileWidth, tileHeight));
+                int x0 = x * (xTileSize - xOverlapPx);
+                int y0 = y * (yTileSize - yOverlapPx);
+                inputIpl.setRoi(new Roi(x0, y0, xTileSize, yTileSize));
 
                 ImagePlus tileIpl = inputIpl.crop("stack");
-                if (tileIpl.getWidth() < tileWidth || tileIpl.getHeight() < tileHeight)
-                    tileIpl.setStack(new CanvasResizer().expandStack(tileIpl.getStack(), tileWidth, tileHeight, 0, 0));
+                if (tileIpl.getWidth() < xTileSize || tileIpl.getHeight() < yTileSize)
+                    tileIpl.setStack(
+                            new CanvasResizer().expandStack(tileIpl.getStack(), xTileSize, yTileSize, 0, 0));
 
                 ImageStack tileIst = tileIpl.getStack();
                 for (int c = 0; c < inputIpl.getNChannels(); c++) {
@@ -107,16 +114,10 @@ public class ImageTiler {
 
     }
 
-    public static ImagePlus stitch(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xOverlapPx, int yOverlapPx,
-            int outputWidth, int outputHeight,
-            String tileAxis) {
+    public static ImagePlus stitch(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xTileSize, int yTileSize,
+            int xOverlapPx, int yOverlapPx, int outputWidth, int outputHeight, String tileAxis) {
         inputIpl = inputIpl.duplicate();
         String title = "Stitched_" + inputIpl.getTitle();
-
-        int tileWidth = inputIpl.getWidth();
-        int coreTileWidth = tileWidth - xOverlapPx;
-        int tileHeight = inputIpl.getHeight();
-        int coreTileHeight = tileHeight - yOverlapPx;
 
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
@@ -153,8 +154,8 @@ public class ImageTiler {
         int count = 0;
         for (int y = 0; y < yNumTiles; y++) {
             for (int x = 0; x < xNumTiles; x++) {
-                int x0 = x * coreTileWidth;
-                int y0 = y * coreTileHeight;
+                int x0 = x * (xTileSize-xOverlapPx);
+                int y0 = y * (yTileSize-yOverlapPx);
 
                 for (int c = 0; c < nChannels; c++) {
                     for (int z = 0; z < nSlices; z++) {
@@ -167,11 +168,11 @@ public class ImageTiler {
                             ImageProcessor inputIpr = inputIst.getProcessor(inputIdx);
                             ImageProcessor outputIpr = outputIst.getProcessor(outputIdx);
 
-                            for (int xx = 0; xx < tileWidth; xx++) {
+                            for (int xx = 0; xx < xTileSize; xx++) {
                                 if (xx + x0 >= outputWidth)
                                     break;
 
-                                for (int yy = 0; yy < tileHeight; yy++) {
+                                for (int yy = 0; yy < yTileSize; yy++) {
                                     if (yy + y0 >= outputHeight)
                                         break;
 
@@ -180,14 +181,14 @@ public class ImageTiler {
                                     if (xx < xOverlapPx && x != 0)
                                         multiplier *= (1 - (xOverlapPx - xx) / (float) xOverlapPx);
 
-                                    if (xx >= coreTileWidth && x != xNumTiles - 1)
-                                        multiplier *= (tileWidth - xx) / (float) xOverlapPx;
+                                    if (xx >= (xTileSize-xOverlapPx) && x != xNumTiles - 1)
+                                        multiplier *= (xTileSize - xx) / (float) xOverlapPx;
 
                                     if (yy < yOverlapPx && y != 0)
                                         multiplier *= (1 - (yOverlapPx - yy) / (float) yOverlapPx);
 
-                                    if (yy >= coreTileHeight && y != yNumTiles - 1)
-                                        multiplier *= (tileHeight - yy) / (float) yOverlapPx;
+                                    if (yy >= (yTileSize-yOverlapPx) && y != yNumTiles - 1)
+                                        multiplier *= (yTileSize - yy) / (float) yOverlapPx;
 
                                     outputIpr.setf(xx + x0, yy + y0,
                                             outputIpr.getf(xx + x0, yy + y0) + inputIpr.getf(xx, yy) * multiplier);

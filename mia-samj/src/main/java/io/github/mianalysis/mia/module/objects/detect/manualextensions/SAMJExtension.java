@@ -120,7 +120,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
             SamEnvManagerAbstract envManager = SAMJUtils.installSAMJ(environmentPath);
             loadedSamJ = EfficientSamJ.initializeSam(envManager);
 
-        } catch (IOException | RuntimeException | InterruptedException | ArchiveException | URISyntaxException
+        } catch (IOException | RuntimeException | InterruptedException | URISyntaxException
                 | MambaInstallException e) {
             e.printStackTrace();
         }
