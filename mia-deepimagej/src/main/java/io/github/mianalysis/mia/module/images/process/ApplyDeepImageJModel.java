@@ -4,7 +4,6 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
-import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -17,7 +16,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -37,7 +35,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
-import net.imagej.lut.ApplyLookupTable;
 
 /**
  * Uses <a href="https://deepimagej.github.io/deepimagej/">DeepImageJ</a> to run
