@@ -52,8 +52,11 @@ public class Splash extends JFrame {
     static String getSpecialSuffix() {
         Date date = new Date();
         switch (new SimpleDateFormat("dd-MM").format(date)) {
+            case "01-04":
+                return "_0104";
             case "31-10":
-                if (Integer.parseInt(new SimpleDateFormat("HH").format(date)) >= 18) return "_3110";
+                // if (Integer.parseInt(new SimpleDateFormat("HH").format(date)) >= 18) return "_3110";
+                return "_3110";
         }
 
         return "";

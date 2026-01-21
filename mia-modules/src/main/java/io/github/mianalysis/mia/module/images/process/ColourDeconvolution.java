@@ -1,18 +1,10 @@
 package io.github.mianalysis.mia.module.images.process;
 
-import java.util.LinkedHashMap;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.RGBStackConverter;
-import ij.plugin.SubHyperstackMaker;
-import ij.process.ImageProcessor;
-import ij.process.LUT;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -35,7 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import sc.fiji.colourDeconvolution.StainMatrix;
+import io.github.mianalysis.mia.thirdparty.Colour_Deconvolution2;
 
 /**
  * Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour
@@ -63,6 +55,11 @@ public class ColourDeconvolution extends Module {
     * 
     */
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+    /**
+    * 
+    */
+    public static final String OUTPUT_TYPE = "Output type";
 
     /**
      * When selected, the first stain in the stain matrix will be output to the
@@ -110,6 +107,7 @@ public class ColourDeconvolution extends Module {
      * PAS,Masson Trichrome,Methyl Green DAB,RGB,Custom (user values)
      */
     public static final String STAIN_MODEL = "Stain model";
+
     public static final String R1 = "Stain 1 (red)";
     public static final String G1 = "Stain 1 (green)";
     public static final String B1 = "Stain 1 (blue)";
@@ -120,213 +118,373 @@ public class ColourDeconvolution extends Module {
     public static final String G3 = "Stain 3 (green)";
     public static final String B3 = "Stain 3 (blue)";
 
+    public static final String CROSS_PRODUCT_FOR_COLOUR_3 = "Cross product for colour 3";
+
     public ColourDeconvolution(Modules modules) {
         super("Colour deconvolution", modules);
     }
 
+    public interface OutputTypes {
+        String ABSORBANCE_32 = "32-bit absorbance";
+        String TRANSMITTANCE_8 = "8-bit transmittance";
+        String TRANSMITTANCE_32 = "32-bit transmittance";
+
+        String[] ALL = new String[] { ABSORBANCE_32, TRANSMITTANCE_8, TRANSMITTANCE_32 };
+
+    }
+
     public interface StainModels {
-        String ALCIAN_BLUE_H = "Alcian blue & H";
+        String ALCIAN_BLUE_H = "Alcian Blue & H";
+        String ASTRABLUE_FUCHSIN = "AstraBlue Fuchsin";
         String AZAN_MALLORY = "Azan-Mallory";
-        String BRILLIANT_BLUE = "Brilliant_Blue";
+        String BRILLIANT_BLUE = "Brilliant Blue";
         String CMY = "CMY";
-        String FLG = "Feulgen Light Green";
         String FR_FB_DAB = "FastRed FastBlue DAB";
+        String FLG = "Feulgen LightGreen";
         String GIEMSA = "Giemsa";
         String H_AEC = "H AEC";
         String H_AND_E = "H&E";
         String H_AND_E_2 = "H&E 2";
-        String H_AND_E_DAB = "H&E DAB";
         String H_DAB = "H DAB";
+        String H_AND_E_DAB = "H&E DAB";
+        String H_DAB_FUCHSIN = "H DAB NewFuchsin";
         String H_PAS = "H PAS";
+        String H_HRP_GREEN_FUCHSIN = "H HRP-Green NewFuchsin";
         String MASSON_TRICHROME = "Masson Trichrome";
         String METHYL_GREEN_DAB = "Methyl Green DAB";
+        String NBT = "NBT/BCIP Red Counterstain II";
         String RGB = "RGB";
         String CUSTOM = "Custom (user values)";
 
-        String[] ALL = new String[] { ALCIAN_BLUE_H, AZAN_MALLORY, BRILLIANT_BLUE, CMY, FR_FB_DAB, FLG, GIEMSA, H_AEC,
-                H_AND_E, H_AND_E_2, H_AND_E_DAB, H_DAB, H_PAS, MASSON_TRICHROME, METHYL_GREEN_DAB, RGB, CUSTOM };
+        String[] ALL = new String[] { ALCIAN_BLUE_H, ASTRABLUE_FUCHSIN, AZAN_MALLORY, BRILLIANT_BLUE, CMY, FR_FB_DAB,
+                FLG, GIEMSA, H_AEC, H_AND_E, H_AND_E_2, H_DAB, H_AND_E_DAB, H_DAB_FUCHSIN, H_PAS, H_HRP_GREEN_FUCHSIN,
+                MASSON_TRICHROME, METHYL_GREEN_DAB, NBT, RGB, CUSTOM };
 
     }
 
-    public static StainMatrix getCustomStainMatrix(double r1, double g1, double b1, double r2, double g2, double b2,
+    public static double[][] getStainVectors(String myStain) {
+        double[] MODx = new double[3];
+        double[] MODy = new double[3];
+        double[] MODz = new double[3];
+
+        // Stains are defined after this line ------------------------
+        if (myStain.equals(StainModels.H_AND_E)) {
+            // GL Haem matrix
+            MODx[0] = 0.644211;
+            MODy[0] = 0.716556;
+            MODz[0] = 0.266844;
+            // GL Eos matrix
+            MODx[1] = 0.092789;
+            MODy[1] = 0.954111;
+            MODz[1] = 0.283111;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.H_AND_E_2)) {
+            // GL Haem matrix
+            MODx[0] = 0.49015734;
+            MODy[0] = 0.76897085;
+            MODz[0] = 0.41040173;
+            // GL Eos matrix
+            MODx[1] = 0.04615336;
+            MODy[1] = 0.8420684;
+            MODz[1] = 0.5373925;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.H_DAB)) {
+            // Haem matrix
+            MODx[0] = 0.650;
+            MODy[0] = 0.704;
+            MODz[0] = 0.286;
+            // DAB matrix 3,3-diamino-benzidine tetrahydrochloride
+            MODx[1] = 0.268;
+            MODy[1] = 0.570;
+            MODz[1] = 0.776;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.NBT)) {
+            // Used in HR-HPV ISH (INFORM HPV III, Roche Ventana)
+            // NBT.BCIP
+            MODx[0] = 0.62302786;
+            MODy[0] = 0.697869;
+            MODz[0] = 0.3532918;
+            // Red Counterstain II
+            MODx[1] = 0.073615186;
+            MODy[1] = 0.79345673;
+            MODz[1] = 0.6041582;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.H_DAB_FUCHSIN)) {
+            // mutilple immunostains labelling from J Isola's lab
+            // Haematoxylin
+            MODx[0] = 0.5625407925;
+            MODy[0] = 0.70450559;
+            MODz[0] = 0.4308375625;
+            // DAB
+            MODx[1] = 0.26503363;
+            MODy[1] = 0.68898016;
+            MODz[1] = 0.674584;
+            // NewFuchsin
+            MODx[2] = 0.0777851125;
+            MODy[2] = 0.804293475;
+            MODz[2] = 0.5886050475;
+        }
+
+        if (myStain.equals(StainModels.H_HRP_GREEN_FUCHSIN)) {
+            // mutilple immunostains labelling from J Isola's lab
+            // HRP-Green
+            MODx[0] = 0.8098939567;
+            MODy[0] = 0.4488181033;
+            MODz[0] = 0.3714423567;
+            // NewFuchsin
+            MODx[1] = 0.0777851125;
+            MODy[1] = 0.804293475;
+            MODz[1] = 0.5886050475;
+            // Zero matrix
+            MODx[2] = 0;
+            MODy[2] = 0;
+            MODz[2] = 0;
+        }
+
+        if (myStain.equals(StainModels.FLG)) {
+            // Feulgen
+            MODx[0] = 0.46420921;
+            MODy[0] = 0.83008335;
+            MODz[0] = 0.30827187;
+            // Light Green
+            MODx[1] = 0.94705542;
+            MODy[1] = 0.25373821;
+            MODz[1] = 0.19650764;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.GIEMSA)) {
+            // GL Methylene Blue
+            MODx[0] = 0.834750233;
+            MODy[0] = 0.513556283;
+            MODz[0] = 0.196330403;
+            // GL Eosin matrix
+            MODx[1] = 0.092789;
+            MODy[1] = 0.954111;
+            MODz[1] = 0.283111;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.FR_FB_DAB)) {
+            // GL Fast red
+            MODx[0] = 0.21393921;
+            MODy[0] = 0.85112669;
+            MODz[0] = 0.47794022;
+            // GL Fast blue
+            MODx[1] = 0.74890292;
+            MODy[1] = 0.60624161;
+            MODz[1] = 0.26731082;
+            // DAB
+            MODx[2] = 0.268;
+            MODy[2] = 0.570;
+            MODz[2] = 0.776;
+        }
+
+        if (myStain.equals(StainModels.METHYL_GREEN_DAB)) {
+            // GL Methyl Green matrix
+            MODx[0] = 0.98003;
+            MODy[0] = 0.144316;
+            MODz[0] = 0.133146;
+            // DAB matrix
+            MODx[1] = 0.268;
+            MODy[1] = 0.570;
+            MODz[1] = 0.776;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.H_AND_E_DAB)) {
+            // Haematoxylin matrix
+            MODx[0] = 0.650;
+            MODy[0] = 0.704;
+            MODz[0] = 0.286;
+            // Eosin matrix
+            MODx[1] = 0.072;
+            MODy[1] = 0.990;
+            MODz[1] = 0.105;
+            // DAB matrix
+            MODx[2] = 0.268;
+            MODy[2] = 0.570;
+            MODz[2] = 0.776;
+        }
+
+        if (myStain.equals(StainModels.H_AEC)) {
+            // Haematoxylin matrix
+            MODx[0] = 0.650;
+            MODy[0] = 0.704;
+            MODz[0] = 0.286;
+            // AEC 3-amino-9-ethylcarbazole
+            MODx[1] = 0.2743;
+            MODy[1] = 0.6796;
+            MODz[1] = 0.6803;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.AZAN_MALLORY)) {
+            // Azocarmine and Aniline Blue (AZAN)
+            // GL Aniline Blue
+            MODx[0] = 0.853033;
+            MODy[0] = 0.508733;
+            MODz[0] = 0.112656;
+            // GL Azocarmine
+            MODx[1] = 0.09289875;
+            MODy[1] = 0.8662008;
+            MODz[1] = 0.49098468;
+            // GL Orange-G
+            MODx[2] = 0.10732849;
+            MODy[2] = 0.36765403;
+            MODz[2] = 0.9237484;
+        }
+
+        if (myStain.equals(StainModels.MASSON_TRICHROME)) {
+            // GL Methyl blue
+            MODx[0] = 0.7995107;
+            MODy[0] = 0.5913521;
+            MODz[0] = 0.10528667;
+            // GL Ponceau-Fuchsin has 2 hues, really this is only approximate
+            MODx[1] = 0.09997159;
+            MODy[1] = 0.73738605;
+            MODz[1] = 0.6680326;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+            // GL Iron Haematoxylin, but this does not seem to work well because it gets
+            // confused with the other 2 components
+            // MODx[2]=0.6588232; MODy[2]=0.66414213; MODz[2]=0.3533655;
+        }
+
+        if (myStain.equals(StainModels.ALCIAN_BLUE_H)) {
+            // GL Alcian Blue matrix
+            MODx[0] = 0.874622;
+            MODy[0] = 0.457711;
+            MODz[0] = 0.158256;
+            // GL Haematox after PAS matrix
+            MODx[1] = 0.552556;
+            MODy[1] = 0.7544;
+            MODz[1] = 0.353744;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.H_PAS)) {
+            // GL Haem matrix
+            MODx[0] = 0.644211;
+            MODy[0] = 0.716556;
+            MODz[0] = 0.266844;
+            // GL PAS matrix
+            MODx[1] = 0.175411;
+            MODy[1] = 0.972178;
+            MODz[1] = 0.154589;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.BRILLIANT_BLUE)) {
+            MODx[0] = 0.31465548;
+            MODy[0] = 0.6602395;
+            MODz[0] = 0.68196464;
+
+            MODx[1] = 0.383573;
+            MODy[1] = 0.5271141;
+            MODz[1] = 0.7583024;
+
+            MODx[2] = 0.7433543;
+            MODy[2] = 0.51731443;
+            MODz[2] = 0.4240403;
+        }
+
+        if (myStain.equals(StainModels.ASTRABLUE_FUCHSIN)) {
+            // GL AstraBlue
+            MODx[0] = 0.92045766;
+            MODy[0] = 0.35425216;
+            MODz[0] = 0.16511545;
+            // GL Basic Fuchsin
+            MODx[1] = 0.13336428;
+            MODy[1] = 0.8301452;
+            MODz[1] = 0.5413621;
+            // Zero matrix
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 0.0;
+        }
+
+        if (myStain.equals(StainModels.RGB)) {
+            // R
+            MODx[0] = 0.001;
+            MODy[0] = 1.0;
+            MODz[0] = 1.0;
+            // G
+            MODx[1] = 1.0;
+            MODy[1] = 0.001;
+            MODz[1] = 1.0;
+            // B
+            MODx[2] = 1.0;
+            MODy[2] = 1.0;
+            MODz[2] = 0.001;
+        }
+
+        if (myStain.equals(StainModels.CMY)) {
+            // C
+            MODx[0] = 1.0;
+            MODy[0] = 0.0;
+            MODz[0] = 0.0;
+            // M
+            MODx[1] = 0.0;
+            MODy[1] = 1.0;
+            MODz[1] = 0.0;
+            // Y
+            MODx[2] = 0.0;
+            MODy[2] = 0.0;
+            MODz[2] = 1.0;
+        }
+
+        return new double[][] { MODx, MODy, MODz };
+
+    }
+
+    public static double[][] getCustomStainVectors(double r1, double g1, double b1, double r2, double g2, double b2,
             double r3, double g3, double b3) {
-        StainMatrix sm = new StainMatrix();
-        sm.setMODx(new double[] { r1, r2, r3 });
-        sm.setMODy(new double[] { g1, g2, g3 });
-        sm.setMODz(new double[] { b1, b2, b3 });
+        double[] MODx = new double[] { r1, r2, r3 };
+        double[] MODy = new double[] { g1, g2, g3 };
+        double[] MODz = new double[] { b1, b2, b3 };
 
-        return sm;
-
-    }
-
-    public static LUT[] getLUTs(StainMatrix sm) {
-        byte[] rLUT = new byte[256];
-        byte[] gLUT = new byte[256];
-        byte[] bLUT = new byte[256];
-
-        double[] len = new double[3];
-        double[] cosx = new double[3];
-        double[] cosy = new double[3];
-        double[] cosz = new double[3];
-
-        double leng = Math.log(255.0);
-
-        // Start
-        for (int i = 0; i < 3; i++) {
-            // Normalise vector length
-            cosx[i] = cosy[i] = cosz[i] = 0.0;
-            len[i] = Math.sqrt(sm.getMODx()[i] * sm.getMODx()[i] + sm.getMODy()[i] * sm.getMODy()[i]
-                    + sm.getMODz()[i] * sm.getMODz()[i]);
-            if (len[i] != 0.0) {
-                cosx[i] = sm.getMODx()[i] / len[i];
-                cosy[i] = sm.getMODy()[i] / len[i];
-                cosz[i] = sm.getMODz()[i] / len[i];
-            }
-        }
-
-        // Translation Matrix
-        if (cosx[1] == 0.0) { // 2nd colour is unspecified
-            if (cosy[1] == 0.0) {
-                if (cosz[1] == 0.0) {
-                    cosx[1] = cosz[0];
-                    cosy[1] = cosx[0];
-                    cosz[1] = cosy[0];
-                }
-            }
-        }
-
-        if (cosx[2] == 0.0) { // 3rd colour is unspecified
-            if (cosy[2] == 0.0) {
-                if (cosz[2] == 0.0) {
-                    if ((cosx[0] * cosx[0] + cosx[1] * cosx[1]) > 1)
-                        cosx[2] = 0.0;
-                    else
-                        cosx[2] = Math.sqrt(1.0 - (cosx[0] * cosx[0]) - (cosx[1] * cosx[1]));
-
-                    if ((cosy[0] * cosy[0] + cosy[1] * cosy[1]) > 1)
-                        cosy[2] = 0.0;
-                    else
-                        cosy[2] = Math.sqrt(1.0 - (cosy[0] * cosy[0]) - (cosy[1] * cosy[1]));
-
-                    if ((cosz[0] * cosz[0] + cosz[1] * cosz[1]) > 1)
-                        cosz[2] = 0.0;
-                    else
-                        cosz[2] = Math.sqrt(1.0 - (cosz[0] * cosz[0]) - (cosz[1] * cosz[1]));
-
-                }
-            }
-        }
-
-        leng = Math.sqrt(cosx[2] * cosx[2] + cosy[2] * cosy[2] + cosz[2] * cosz[2]);
-        cosx[2] = cosx[2] / leng;
-        cosy[2] = cosy[2] / leng;
-        cosz[2] = cosz[2] / leng;
-
-        for (int i = 0; i < 3; i++) {
-            if (cosx[i] == 0.0)
-                cosx[i] = 0.001;
-            if (cosy[i] == 0.0)
-                cosy[i] = 0.001;
-            if (cosz[i] == 0.0)
-                cosz[i] = 0.001;
-        }
-
-        // Initialize 3 output colour stacks
-        ImageStack[] outputstack = new ImageStack[3];
-        LUT[] luts = new LUT[3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 256; j++) { // LUT[1]
-                rLUT[255 - j] = (byte) (255.0 - (double) j * cosx[i]);
-                gLUT[255 - j] = (byte) (255.0 - (double) j * cosy[i]);
-                bLUT[255 - j] = (byte) (255.0 - (double) j * cosz[i]);
-            }
-
-            luts[i] = new LUT(rLUT, gLUT, bLUT);
-
-        }
-
-        return luts;
-
-    }
-
-    public static ImagePlus[] process(ImagePlus ipl, String[] outputImageNames, StainMatrix stainMatrix) {
-        String moduleName = new ColourDeconvolution(null).getName();
-        LUT[] luts = getLUTs(stainMatrix);
-
-        int width = ipl.getWidth();
-        int height = ipl.getHeight();
-        int nChannels = ipl.getNChannels();
-        int nSlices = ipl.getNSlices();
-        int nFrames = ipl.getNFrames();
-
-        // Creating the output image
-        ImagePlus deconvolved1 = IJ.createHyperStack(outputImageNames[0], width, height, 1, nSlices, nFrames, 8);
-        deconvolved1.setCalibration(ipl.getCalibration());
-                
-        ImagePlus deconvolved2 = IJ.createHyperStack(outputImageNames[1], width, height, 1, nSlices, nFrames, 8);
-        deconvolved2.setCalibration(ipl.getCalibration());
-
-        ImagePlus deconvolved3 = IJ.createHyperStack(outputImageNames[2], width, height, 1, nSlices, nFrames, 8);
-        deconvolved3.setCalibration(ipl.getCalibration());
-
-
-        // Iterating over all timepoints
-        int count = 0;
-        for (int t = 1; t <= nFrames; t++) {
-            ImagePlus iplSingle = SubHyperstackMaker.makeSubhyperstack(ipl, "1-" + nChannels, "1-" + nSlices,
-                    t + "-" + t);
-
-            // If not already an RGB image, convert to one
-            if (iplSingle.getBitDepth() != 24) {
-                SetDisplayRange.setDisplayRangeManual(iplSingle, new double[]{0,Math.pow(2, iplSingle.getBitDepth())-1});
-                RGBStackConverter.convertToRGB(iplSingle);
-            }
-
-            ImageStack[] iplOut = stainMatrix.compute(false, true, iplSingle);
-
-            for (int z = 1; z <= nSlices; z++) {
-                deconvolved1.setPosition(1, z, t);
-                deconvolved2.setPosition(1, z, t);
-                deconvolved3.setPosition(1, z, t);
-
-                ImageProcessor iprDeconvolved1 = deconvolved1.getProcessor();
-                ImageProcessor iprDeconvolved2 = deconvolved2.getProcessor();
-                ImageProcessor iprDeconvolved3 = deconvolved3.getProcessor();
-
-                ImageProcessor iprOut1 = iplOut[0].getProcessor(z);
-                ImageProcessor iprOut2 = iplOut[1].getProcessor(z);
-                ImageProcessor iprOut3 = iplOut[2].getProcessor(z);
-
-                for (int x = 0; x < width; x++) {
-                    for (int y = 0; y < height; y++) {
-                        iprDeconvolved1.setf(x, y, iprOut1.getf(x, y));
-                        iprDeconvolved2.setf(x, y, iprOut2.getf(x, y));
-                        iprDeconvolved3.setf(x, y, iprOut3.getf(x, y));
-                    }
-                }
-            }
-
-            writeProgressStatus(++count, nFrames, "stacks", moduleName);
-
-        }
-
-        deconvolved1.setPosition(1, 1, 1);
-        deconvolved2.setPosition(1, 1, 1);
-        deconvolved3.setPosition(1, 1, 1);
-
-        deconvolved1.setLut(luts[0]);
-        deconvolved2.setLut(luts[1]);
-        deconvolved3.setLut(luts[2]);
-
-        deconvolved1.setDisplayRange(0, 255);
-        deconvolved2.setDisplayRange(0, 255);
-        deconvolved3.setDisplayRange(0, 255);
-
-        deconvolved1.updateChannelAndDraw();
-        deconvolved2.updateChannelAndDraw();
-        deconvolved3.updateChannelAndDraw();
-
-        return new ImagePlus[] { deconvolved1, deconvolved2, deconvolved3 };
+        return new double[][] { MODx, MODy, MODz };
 
     }
 
@@ -347,12 +505,9 @@ public class ColourDeconvolution extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String outputType = parameters.getValue(OUTPUT_TYPE, workspace);
         boolean outputImage1 = parameters.getValue(ENABLE_IM1_OUTPUT, workspace);
         String outputImageName1 = parameters.getValue(OUTPUT_IMAGE_1, workspace);
         boolean outputImage2 = parameters.getValue(ENABLE_IM2_OUTPUT, workspace);
@@ -369,34 +524,73 @@ public class ColourDeconvolution extends Module {
         double r3 = parameters.getValue(R3, workspace);
         double g3 = parameters.getValue(G3, workspace);
         double b3 = parameters.getValue(B3, workspace);
+        boolean doIcross = parameters.getValue(CROSS_PRODUCT_FOR_COLOUR_3, workspace);
+
+        // Getting input image
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus inputIpl = inputImage.getImagePlus();
+
+        String outputTypeConverted = "";
+        boolean doILUTs = true;
+        switch (outputType) {
+            case OutputTypes.ABSORBANCE_32:
+                outputTypeConverted = "32bit_Absorbance";
+                doILUTs = false;
+                break;
+            case OutputTypes.TRANSMITTANCE_8:
+                outputTypeConverted = "8bit_Transmittance";
+                break;
+            case OutputTypes.TRANSMITTANCE_32:
+                outputTypeConverted = "32bit_Transmittance";
+                break;
+        }
+
+        switch (stainModel) {
+            case StainModels.H_DAB_FUCHSIN:
+            case StainModels.FR_FB_DAB:
+            case StainModels.H_AND_E_DAB:
+            case StainModels.AZAN_MALLORY:
+            case StainModels.BRILLIANT_BLUE:
+            case StainModels.RGB:
+            case StainModels.CMY:
+                doIcross = false;
+                break;
+        }
 
         // Running the deconvolution
-        StainMatrix stainMatrix;
+        double[][] stainMatrix;
         if (stainModel.equals(StainModels.CUSTOM))
-            stainMatrix = getCustomStainMatrix(r1, g1, b1, r2, g2, b2, r3, g3, b3);
+            stainMatrix = getCustomStainVectors(r1, g1, b1, r2, g2, b2, r3, g3, b3);
         else
-            stainMatrix = getStainMatrices().get(stainModel);
+            stainMatrix = getStainVectors(stainModel);
 
-        String[] outputImageNames = new String[] { outputImageName1, outputImageName2, outputImageName3 };
-        ImagePlus[] outputImagePluses = process(inputImagePlus, outputImageNames, stainMatrix);
+        if (inputIpl.getBitDepth() != 24) {
+            inputIpl = inputIpl.duplicate();
+            SetDisplayRange.setDisplayRangeManual(inputIpl,
+                    new double[] { 0, Math.pow(2, inputIpl.getBitDepth()) - 1 });
+            RGBStackConverter.convertToRGB(inputIpl);
+        }
+
+        Object[] result = new Colour_Deconvolution2().exec(inputIpl, inputIpl.getTitle(), stainModel,
+                outputTypeConverted, doILUTs, doIcross, false, true, stainMatrix[0], stainMatrix[1], stainMatrix[2]);
 
         // If selected, displaying the image
         if (outputImage1) {
-            Image outImage1 = ImageFactory.createImage(outputImageName1, outputImagePluses[0]);
+            Image outImage1 = ImageFactory.createImage(outputImageName1, (ImagePlus) result[1]);
             workspace.addImage(outImage1);
             if (showOutput)
                 outImage1.show(false);
         }
 
         if (outputImage2) {
-            Image outImage2 = ImageFactory.createImage(outputImageName2, outputImagePluses[1]);
+            Image outImage2 = ImageFactory.createImage(outputImageName2, (ImagePlus) result[2]);
             workspace.addImage(outImage2);
             if (showOutput)
                 outImage2.show(false);
         }
 
         if (outputImage3) {
-            Image outImage3 = ImageFactory.createImage(outputImageName3, outputImagePluses[2]);
+            Image outImage3 = ImageFactory.createImage(outputImageName3, (ImagePlus) result[3]);
             workspace.addImage(outImage3);
             if (showOutput)
                 outImage3.show(false);
@@ -412,6 +606,7 @@ public class ColourDeconvolution extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.TRANSMITTANCE_8, OutputTypes.ALL));
         parameters.add(new BooleanP(ENABLE_IM1_OUTPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE_1, this));
         parameters.add(new BooleanP(ENABLE_IM2_OUTPUT, this, true));
@@ -431,6 +626,10 @@ public class ColourDeconvolution extends Module {
         parameters.add(new DoubleP(G3, this, 0d));
         parameters.add(new DoubleP(B3, this, 0d));
 
+        // The following is enabled by default in the main Colour_Deconvolution2 plugin,
+        // but disabled here as this gives closer results to the original plugin.
+        parameters.add(new BooleanP(CROSS_PRODUCT_FOR_COLOUR_3, this, false));
+
         addParameterDescriptions();
 
     }
@@ -444,6 +643,7 @@ public class ColourDeconvolution extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(OUTPUT_TYPE));
         returnedParameters.add(parameters.getParameter(ENABLE_IM1_OUTPUT));
         if ((boolean) parameters.getValue(ENABLE_IM1_OUTPUT, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE_1));
@@ -471,6 +671,24 @@ public class ColourDeconvolution extends Module {
                 returnedParameters.add(parameters.getParameter(G3));
                 returnedParameters.add(parameters.getParameter(B3));
 
+                if ((double) parameters.getValue(R3, workspace) == 0 && (double) parameters.getValue(G3, workspace) == 0
+                        && (double) parameters.getValue(B3, workspace) == 0)
+                    returnedParameters.add(parameters.getParameter(CROSS_PRODUCT_FOR_COLOUR_3));
+                break;
+            case StainModels.H_AND_E:
+            case StainModels.H_AND_E_2:
+            case StainModels.H_DAB:
+            case StainModels.NBT:
+            case StainModels.H_HRP_GREEN_FUCHSIN:
+            case StainModels.FLG:
+            case StainModels.GIEMSA:
+            case StainModels.METHYL_GREEN_DAB:
+            case StainModels.H_AEC:
+            case StainModels.MASSON_TRICHROME:
+            case StainModels.ALCIAN_BLUE_H:
+            case StainModels.H_PAS:
+            case StainModels.ASTRABLUE_FUCHSIN:
+                returnedParameters.add(parameters.getParameter(CROSS_PRODUCT_FOR_COLOUR_3));
                 break;
         }
 
@@ -555,109 +773,6 @@ public class ColourDeconvolution extends Module {
         parameters.get(G3).setDescription("Green component of stain 3.  Value specified in range 0-1.");
 
         parameters.get(B3).setDescription("Blue component of stain 3.  Value specified in range 0-1.");
-
-    }
-
-    public static LinkedHashMap<String, StainMatrix> getStainMatrices() {
-        LinkedHashMap<String, StainMatrix> matrices = new LinkedHashMap<>();
-
-        StainMatrix sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.644211, 0.092789, 0 });
-        sm.setMODy(new double[] { 0.716556, 0.954111, 0 });
-        sm.setMODz(new double[] { 0.266844, 0.283111, 0 });
-        matrices.put(StainModels.H_AND_E, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.49015734, 0.04615336, 0 });
-        sm.setMODy(new double[] { 0.76897085, 0.8420684, 0 });
-        sm.setMODz(new double[] { 0.41040173, 0.5373925, 0 });
-        matrices.put(StainModels.H_AND_E_2, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.65, 0.268, 0 });
-        sm.setMODy(new double[] { 0.704, 0.57, 0 });
-        sm.setMODz(new double[] { 0.286, 0.776, 0 });
-        matrices.put(StainModels.H_DAB, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.4642092, 0.94705542, 0 });
-        sm.setMODy(new double[] { 0.83008335, 0.25373821, 0 });
-        sm.setMODz(new double[] { 0.30827187, 0.19650764, 0 });
-        matrices.put(StainModels.FLG, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.834750233, 0.092789, 0 });
-        sm.setMODy(new double[] { 0.513556283, 0.954111, 0 });
-        sm.setMODz(new double[] { 0.196330403, 0.283111, 0 });
-        matrices.put(StainModels.GIEMSA, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.21393921, 0.74890292, 0.268 });
-        sm.setMODy(new double[] { 0.85112669, 0.60624161, 0.57 });
-        sm.setMODz(new double[] { 0.47794022, 0.26731082, 0.776 });
-        matrices.put(StainModels.FR_FB_DAB, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.98, 0.268, 0 });
-        sm.setMODy(new double[] { 0.144316, 0.57, 0 });
-        sm.setMODz(new double[] { 0.133146, 0.776, 0 });
-        matrices.put(StainModels.METHYL_GREEN_DAB, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.65, 0.072, 0.268 });
-        sm.setMODy(new double[] { 0.704, 0.99, 0.57 });
-        sm.setMODz(new double[] { 0.286, 0.105, 0.776 });
-        matrices.put(StainModels.H_AND_E_DAB, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.65, 0.2743, 0 });
-        sm.setMODy(new double[] { 0.704, 0.6796, 0 });
-        sm.setMODz(new double[] { 0.286, 0.6803, 0 });
-        matrices.put(StainModels.H_AEC, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.853033, 0.09289875, 0.10732849 });
-        sm.setMODy(new double[] { 0.508733, 0.8662008, 0.36765403 });
-        sm.setMODz(new double[] { 0.112656, 0.49098468, 0.9237484 });
-        matrices.put(StainModels.AZAN_MALLORY, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.7995107, 0.09997159, 0 });
-        sm.setMODy(new double[] { 0.5913521, 0.73738605, 0 });
-        sm.setMODz(new double[] { 0.10528667, 0.6680326, 0 });
-        matrices.put(StainModels.MASSON_TRICHROME, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.874622, 0.552556, 0 });
-        sm.setMODy(new double[] { 0.457711, 0.7544, 0 });
-        sm.setMODz(new double[] { 0.158256, 0.353744, 0 });
-        matrices.put(StainModels.ALCIAN_BLUE_H, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.644211, 0.175411, 0 });
-        sm.setMODy(new double[] { 0.716556, 0.972178, 0 });
-        sm.setMODz(new double[] { 0.266844, 0.154589, 0 });
-        matrices.put(StainModels.H_PAS, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0.31465548, 0.383573, 0.7433543 });
-        sm.setMODy(new double[] { 0.6602395, 0.5271141, 0.51731443 });
-        sm.setMODz(new double[] { 0.68196464, 0.7583024, 0.4240403 });
-        matrices.put(StainModels.BRILLIANT_BLUE, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 0, 1, 1 });
-        sm.setMODy(new double[] { 1, 0, 1 });
-        sm.setMODz(new double[] { 1, 1, 0 });
-        matrices.put(StainModels.RGB, sm);
-
-        sm = new StainMatrix();
-        sm.setMODx(new double[] { 1, 0, 0 });
-        sm.setMODy(new double[] { 0, 1, 0 });
-        sm.setMODz(new double[] { 0, 0, 1 });
-        matrices.put(StainModels.CMY, sm);
-
-        return matrices;
 
     }
 
