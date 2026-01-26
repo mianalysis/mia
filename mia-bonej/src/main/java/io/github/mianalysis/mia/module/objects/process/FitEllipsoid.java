@@ -159,7 +159,7 @@ public class FitEllipsoid extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    Objs tempObjects = new Objs("Edge", outputObjects);
+                    Objs tempObjects = new Objs("Edge", inputObject.getObjectCollection());
                     Obj edgeObject = GetObjectSurface.getSurface(inputObject, tempObjects, false);
                     calculator = new EllipsoidCalculator(edgeObject, maxAxisLength);
                     break;

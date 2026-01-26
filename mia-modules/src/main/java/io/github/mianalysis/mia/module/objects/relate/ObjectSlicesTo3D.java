@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.objects.transform.InterpolateAlongZ;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -41,6 +42,7 @@ public class ObjectSlicesTo3D extends Module {
     public static final String LINKING_DISTANCE_XY = "Linking distance XY";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String MAX_MISSING_SLICES = "Max number of missing slices";
+    public static final String INTERPOLATE_MISSING_SLICES = "Interpolate missing slices";
 
     public ObjectSlicesTo3D(Modules modules) {
         super("Object slices to 3D", modules);
@@ -69,6 +71,7 @@ public class ObjectSlicesTo3D extends Module {
         double linkingDistance = parameters.getValue(LINKING_DISTANCE_XY, workspace);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
         int maxMissingSlices = parameters.getValue(MAX_MISSING_SLICES, workspace);
+        boolean interpolateMissingSlices = parameters.getValue(INTERPOLATE_MISSING_SLICES, workspace);
 
         Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
@@ -212,6 +215,9 @@ public class ObjectSlicesTo3D extends Module {
 
         }
 
+        if (interpolateMissingSlices)
+            outputObjects = InterpolateAlongZ.process(outputObjects, inputObjects.getDppZ(), outputObjectsName);
+
         workspace.addObjects(outputObjects);
 
         if (showOutput)
@@ -231,6 +237,7 @@ public class ObjectSlicesTo3D extends Module {
         parameters.add(new DoubleP(LINKING_DISTANCE_XY, this, 1.0));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new IntegerP(MAX_MISSING_SLICES, this, 0));
+        parameters.add(new BooleanP(INTERPOLATE_MISSING_SLICES, this, false));
 
     }
 
