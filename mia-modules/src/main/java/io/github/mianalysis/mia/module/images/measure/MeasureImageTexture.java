@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -131,20 +132,20 @@ public class MeasureImageTexture extends Module {
         textureCalculator.calculate(inputImagePlus.getStack(), xOffs, yOffs, zOffs);
 
         // Acquiring measurements
-        MeasurementI ASMMeasurement = new MeasurementI(Measurements.ASM, textureCalculator.getASM());
+        MeasurementI ASMMeasurement = MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ASM, textureCalculator.getASM());
         inputImage.addMeasurement(ASMMeasurement);
         writeStatus("ASM = " + ASMMeasurement.getValue());
 
-        MeasurementI contrastMeasurement = new MeasurementI(Measurements.CONTRAST, textureCalculator.getContrast());
+        MeasurementI contrastMeasurement = MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.CONTRAST, textureCalculator.getContrast());
         inputImage.addMeasurement(contrastMeasurement);
         writeStatus("Contrast = " + contrastMeasurement.getValue());
 
-        MeasurementI correlationMeasurement = new MeasurementI(Measurements.CORRELATION,
+        MeasurementI correlationMeasurement = MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.CORRELATION,
                 textureCalculator.getCorrelation());
         inputImage.addMeasurement(correlationMeasurement);
         writeStatus("Correlation = " + correlationMeasurement.getValue());
 
-        MeasurementI entropyMeasurement = new MeasurementI(Measurements.ENTROPY, textureCalculator.getEntropy());
+        MeasurementI entropyMeasurement = MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ENTROPY, textureCalculator.getEntropy());
         inputImage.addMeasurement(entropyMeasurement);
         writeStatus("Entropy = " + entropyMeasurement.getValue());
 

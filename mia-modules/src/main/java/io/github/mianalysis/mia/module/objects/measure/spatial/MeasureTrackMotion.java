@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.tracks.Timepoint;
 import io.github.mianalysis.mia.object.coordinates.tracks.Track;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -249,13 +250,13 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
     public static void calculateTemporalMeasurements(ObjI trackObject, Track track, boolean averageSubtracted) {
         if (track.size() == 0) {
             String name = getFullName(Measurements.DURATION, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.FIRST_FRAME, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.LAST_FRAME, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.DETECTION_FRACTION, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
         } else {
             Timepoint<Double> firstPoint = track.values().iterator().next();
@@ -266,37 +267,37 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
             int duration = track.getDuration();
             String name = getFullName(Measurements.DURATION, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, duration));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, duration));
             name = getFullName(Measurements.FIRST_FRAME, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, firstPoint.getF()));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, firstPoint.getF()));
             name = getFullName(Measurements.LAST_FRAME, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, lastPoint.getF()));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, lastPoint.getF()));
 
             int nSpots = track.values().size();
             double detectionFraction = (double) nSpots / ((double) duration + 1);
             name = getFullName(Measurements.DETECTION_FRACTION, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, detectionFraction));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, detectionFraction));
         }
     }
 
     public static void calculateVelocity(ObjI trackObject, Track track, boolean averageSubtracted) {
         if (track.size() <= 1) {
             String name = getFullName(Measurements.MEAN_X_VELOCITY_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_X_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Y_VELOCITY_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Y_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
         } else {
             // Calculating track motion
@@ -327,25 +328,25 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             }
 
             String name = getFullName(Measurements.MEAN_X_VELOCITY_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatX.getMean()));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatX.getMean()));
             name = getFullName(Measurements.MEAN_X_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatX.getMean() * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatX.getMean() * distPerPxXY));
             name = getFullName(Measurements.MEAN_Y_VELOCITY_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatY.getMean()));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatY.getMean()));
             name = getFullName(Measurements.MEAN_Y_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatY.getMean() * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatY.getMean() * distPerPxXY));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatZ.getMean() * distPerPxXY / distPerPxZ));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatZ.getMean() * distPerPxXY / distPerPxZ));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatZ.getMean() * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatZ.getMean() * distPerPxXY));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatZ.getMean() * distPerPxXY / distPerPxZ));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatZ.getMean() * distPerPxXY / distPerPxZ));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatZ.getMean() * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatZ.getMean() * distPerPxXY));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatSpeed.getMean()));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatSpeed.getMean()));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, cumStatSpeed.getMean() * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cumStatSpeed.getMean() * distPerPxXY));
 
         }
     }
@@ -360,7 +361,7 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         for (ObjI spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
             int currentTimepoint = spotObject.getT();
             String name = getFullName(Measurements.RELATIVE_FRAME, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, currentTimepoint - firstTimepoint));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, currentTimepoint - firstTimepoint));
 
         }
     }
@@ -369,15 +370,15 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
         if (track.size() == 0) {
             // Adding measurements to track objects
             String name = getFullName(Measurements.EUCLIDEAN_DISTANCE_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.EUCLIDEAN_DISTANCE_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             name = getFullName(Measurements.DIRECTIONALITY_RATIO, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
         } else {
             // If the track has a single time-point there's no velocity to measure
@@ -386,15 +387,15 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             double totalPathLength = new TotalPathLengthCalculator().calculate(track);
 
             String name = getFullName(Measurements.EUCLIDEAN_DISTANCE_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, euclideanDistance));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, euclideanDistance));
             name = getFullName(Measurements.EUCLIDEAN_DISTANCE_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, euclideanDistance * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, euclideanDistance * distPerPxXY));
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_PX, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, totalPathLength));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, totalPathLength));
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_CAL, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, totalPathLength * distPerPxXY));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, totalPathLength * distPerPxXY));
             name = getFullName(Measurements.DIRECTIONALITY_RATIO, averageSubtracted);
-            trackObject.addMeasurement(new MeasurementI(name, euclideanDistance / totalPathLength));
+            trackObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, euclideanDistance / totalPathLength));
 
         }
     }
@@ -436,39 +437,39 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             // (rather than zero)
             if (t == minT) {
                 String name = getFullName(Measurements.X_VELOCITY_PX, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.X_VELOCITY_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.Y_VELOCITY_PX, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.Y_VELOCITY_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.Z_VELOCITY_SLICES, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.Z_VELOCITY_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_PX, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, Double.NaN));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             } else {
                 String name = getFullName(Measurements.X_VELOCITY_PX, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, xVelocity.get(t)));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, xVelocity.get(t)));
                 name = getFullName(Measurements.X_VELOCITY_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, xVelocity.get(t) * distPerPxXY));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, xVelocity.get(t) * distPerPxXY));
                 name = getFullName(Measurements.Y_VELOCITY_PX, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, yVelocity.get(t)));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, yVelocity.get(t)));
                 name = getFullName(Measurements.Y_VELOCITY_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, yVelocity.get(t) * distPerPxXY));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, yVelocity.get(t) * distPerPxXY));
                 name = getFullName(Measurements.Z_VELOCITY_SLICES, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, zVelocity.get(t) * distPerPxXY / distPerPxZ));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, zVelocity.get(t) * distPerPxXY / distPerPxZ));
                 name = getFullName(Measurements.Z_VELOCITY_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, zVelocity.get(t) * distPerPxXY));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, zVelocity.get(t) * distPerPxXY));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_PX, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, speed.get(t)));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, speed.get(t)));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_CAL, averageSubtracted);
-                spotObject.addMeasurement(new MeasurementI(name, speed.get(t) * distPerPxXY));
+                spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, speed.get(t) * distPerPxXY));
 
             }
         }
@@ -491,17 +492,17 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             // The remaining measurements are unaffected by whether it's the first
             // time-point
             String name = getFullName(Measurements.CUMULATIVE_PATH_LENGTH_PX, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, pathLength.get(t)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, pathLength.get(t)));
             name = getFullName(Measurements.CUMULATIVE_PATH_LENGTH_CAL, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, pathLength.get(t) * distPerPxXY));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, pathLength.get(t) * distPerPxXY));
             name = getFullName(Measurements.ROLLING_EUCLIDEAN_DISTANCE_PX, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, euclidean.get(t)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, euclidean.get(t)));
             name = getFullName(Measurements.ROLLING_EUCLIDEAN_DISTANCE_CAL, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, euclidean.get(t) * distPerPxXY));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, euclidean.get(t) * distPerPxXY));
             name = getFullName(Measurements.ROLLING_DIRECTIONALITY_RATIO, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, dirRatio.get(t)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, dirRatio.get(t)));
             name = getFullName(Measurements.ANGULAR_PERSISTENCE, averageSubtracted);
-            spotObject.addMeasurement(new MeasurementI(name, angularPersistence.get(t)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, angularPersistence.get(t)));
 
         }
     }
@@ -513,9 +514,9 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             double angle = getInstantaneousOrientationRads(obj, objects, orientationMode);
 
             if (Double.isNaN(angle))
-                obj.addMeasurement(new MeasurementI(name, Double.NaN));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
             else
-                obj.addMeasurement(new MeasurementI(name, Math.toDegrees(angle)));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Math.toDegrees(angle)));
 
         }
     }
@@ -565,13 +566,13 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
             if (Double.isNaN(angle)) {
                 // Adding furthest point coordinates to measurements
                 name = getFullName(Measurements.LEADING_X_PX, averageSubtracted);
-                obj.addMeasurement(new MeasurementI(name, Double.NaN));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
                 name = getFullName(Measurements.LEADING_Y_PX, averageSubtracted);
-                obj.addMeasurement(new MeasurementI(name, Double.NaN));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
                 name = getFullName(Measurements.LEADING_Z_PX, averageSubtracted);
-                obj.addMeasurement(new MeasurementI(name, Double.NaN));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             } else {
                 double xCent = obj.getXMean(true);
@@ -607,13 +608,13 @@ public class MeasureTrackMotion extends Module implements MeasurementPositionPro
 
                 // Adding furthest point coordinates to measurements
                 name = getFullName(Measurements.LEADING_X_PX, averageSubtracted);
-                obj.addMeasurement(new MeasurementI(name, furthestPoint.getX()));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, furthestPoint.getX()));
 
                 name = getFullName(Measurements.LEADING_Y_PX, averageSubtracted);
-                obj.addMeasurement(new MeasurementI(name, furthestPoint.getY()));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, furthestPoint.getY()));
 
                 name = getFullName(Measurements.LEADING_Z_PX, averageSubtracted);
-                obj.addMeasurement(new MeasurementI(name, 0));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, 0));
 
             }
         }

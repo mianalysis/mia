@@ -21,6 +21,8 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -392,7 +394,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
 
             // Setting the measurements from the Module
             for (String measName : metadataNames) {
-                ObjMetadata metadataItem = obj.getMetadataItem(measName);
+                DefaultObjMetadata metadataItem = obj.getMetadataItem(measName);
                 String value = metadataItem == null ? "" : metadataItem.getValue();
 
                 // Setting value
@@ -429,7 +431,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
             // Setting the measurements from the Module
             Set<String> metadataNames = obj.getMetadata().keySet();
             for (String metadataName : metadataNames) {
-                ObjMetadata metadataItem = obj.getMetadataItem(metadataName);
+                DefaultObjMetadata metadataItem = obj.getMetadataItem(metadataName);
                 String value = metadataItem == null ? "" : metadataItem.getValue();
 
                 // Setting value

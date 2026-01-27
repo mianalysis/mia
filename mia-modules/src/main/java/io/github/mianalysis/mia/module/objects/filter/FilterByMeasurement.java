@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -106,7 +107,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             // Adding measurements
             if (storeIndividual) {
                 String measurementName = getIndividualMeasurementName(measName, workspace);
-                inputObject.addMeasurement(new MeasurementI(measurementName, conditionMet ? 1 : 0));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, conditionMet ? 1 : 0));
             }
 
             if (conditionMet) {

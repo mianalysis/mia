@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -309,9 +310,9 @@ public class CreateSkeleton extends Module {
 
                 // Adding edge length measurements
                 double calLength = edge.getLength();
-                MeasurementI lengthPx = new MeasurementI(Measurements.EDGE_LENGTH_PX, calLength / dppXY);
+                MeasurementI lengthPx = MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.EDGE_LENGTH_PX, calLength / dppXY);
                 edgeObj.addMeasurement(lengthPx);
-                MeasurementI lengthCal = new MeasurementI(Measurements.EDGE_LENGTH_CAL, calLength);
+                MeasurementI lengthCal = MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.EDGE_LENGTH_CAL, calLength);
                 edgeObj.addMeasurement(lengthCal);
 
             }
@@ -544,8 +545,8 @@ public class CreateSkeleton extends Module {
         }
 
         double dppXY = inputObject.getDppXY();
-        inputObject.addMeasurement(new MeasurementI(Measurements.SUM_LENGTH_PX, length / dppXY));
-        inputObject.addMeasurement(new MeasurementI(Measurements.SUM_LENGTH_CAL, length));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SUM_LENGTH_PX, length / dppXY));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SUM_LENGTH_CAL, length));
 
     }
 

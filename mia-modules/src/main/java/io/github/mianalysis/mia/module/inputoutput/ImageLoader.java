@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.IncuCyteShortFilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -1275,10 +1276,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     private void addCropMeasurements(ImageI image, int[] crop) {
-        image.addMeasurement(new MeasurementI(Measurements.ROI_LEFT, crop[0]));
-        image.addMeasurement(new MeasurementI(Measurements.ROI_TOP, crop[1]));
-        image.addMeasurement(new MeasurementI(Measurements.ROI_WIDTH, crop[2]));
-        image.addMeasurement(new MeasurementI(Measurements.ROI_HEIGHT, crop[3]));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ROI_LEFT, crop[0]));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ROI_TOP, crop[1]));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ROI_WIDTH, crop[2]));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ROI_HEIGHT, crop[3]));
     }
 
     @Override

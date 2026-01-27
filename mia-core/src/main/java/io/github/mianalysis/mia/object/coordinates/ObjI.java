@@ -4,13 +4,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.poi.ss.formula.functions.T;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
@@ -18,6 +15,7 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imagej.ImgPlus;
@@ -220,15 +218,15 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     }
 
-    public default void addMetadataItem(ObjMetadata metadataItem) {
+    public default void addMetadataItem(DefaultObjMetadata metadataItem) {
         if (metadataItem == null)
             return;
         getMetadata().put(metadataItem.getName(), metadataItem);
 
     }
 
-    public default ObjMetadata getMetadataItem(String name) {
-        LinkedHashMap<String, ObjMetadata> metadata = getMetadata();
+    public default DefaultObjMetadata getMetadataItem(String name) {
+        LinkedHashMap<String, DefaultObjMetadata> metadata = getMetadata();
 
         if (metadata.get(name) == null)
             return null;
@@ -402,9 +400,9 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     public void removeRelationships();
     
-    public LinkedHashMap<String, ObjMetadata> getMetadata();
+    public LinkedHashMap<String, DefaultObjMetadata> getMetadata();
 
-    public void setMetadata(LinkedHashMap<String, ObjMetadata> metadata);
+    public void setMetadata(LinkedHashMap<String, DefaultObjMetadata> metadata);
 
     public HashMap<Integer, Roi> getRois();
 

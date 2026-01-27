@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -278,19 +279,19 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         String inputImageName = inputImage.getName();
         String name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.DIRECTION, includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, Math.toDegrees(results[0])));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Math.toDegrees(results[0])));
 
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.DISPERSION, includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, Math.toDegrees(results[1])));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Math.toDegrees(results[1])));
 
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.AMOUNT, includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, results[2]));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, results[2]));
 
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.GOODNESS, includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, results[3]));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, results[3]));
 
         histograms = directionality.getHistograms();
         double[] hist = histograms.iterator().next();
@@ -300,16 +301,16 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.ALIGNMENT_INDEX, includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, extra_results[0]));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, extra_results[0]));
 
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.ALIGNMENT_INDEX_BG_SUB,
                 includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, extra_results[1]));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, extra_results[1]));
 
         name = getFullName(binStart, binEnd, nBins, inputImageName, Measurements.BACKGROUND, includeBinRange,
                 includeBinNumber);
-        obj.addMeasurement(new MeasurementI(name, extra_results[2]));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, extra_results[2]));
 
         return directionality;
 

@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -370,7 +371,7 @@ public class MeasureRelativeOrientation extends Module {
 
                 // Adding the measurement
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, measurementReference);
-                object.addMeasurement(new MeasurementI(measurementName, xyAngle));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, xyAngle));
 
                 break;
         }
@@ -381,7 +382,7 @@ public class MeasureRelativeOrientation extends Module {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, measurementReference);
-                object.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
 
                 break;
         }

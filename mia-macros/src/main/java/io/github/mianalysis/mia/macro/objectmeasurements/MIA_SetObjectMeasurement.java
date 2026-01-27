@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_SetObjectMeasurement extends MacroOperation {
@@ -41,7 +42,7 @@ public class MIA_SetObjectMeasurement extends MacroOperation {
         // Getting the measurement
         MeasurementI measurement = obj.getMeasurement(measurementName);
         if (measurement == null) {
-            measurement = new MeasurementI(measurementName, measurementValue);
+            measurement = MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, measurementValue);
             obj.addMeasurement(measurement);
         } else {
             measurement.setValue(measurementValue);

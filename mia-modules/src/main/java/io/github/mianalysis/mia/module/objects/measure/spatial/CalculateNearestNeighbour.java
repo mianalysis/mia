@@ -32,6 +32,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -337,23 +338,23 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             }
 
             String name = getFullName(Measurements.NN_ID, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new MeasurementI(name, nearestNeighbour.getID()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, nearestNeighbour.getID()));
 
             name = getFullName(Measurements.NN_DISTANCE_PX, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new MeasurementI(name, minDist));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, minDist));
 
             name = getFullName(Measurements.NN_DISTANCE_CAL, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new MeasurementI(name, minDist * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, minDist * dppXY));
 
         } else {
             String name = getFullName(Measurements.NN_ID, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.NN_DISTANCE_PX, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.NN_DISTANCE_CAL, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
         }
     }

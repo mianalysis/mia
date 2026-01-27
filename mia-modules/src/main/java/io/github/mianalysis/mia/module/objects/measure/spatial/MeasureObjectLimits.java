@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.*;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -94,20 +95,20 @@ public class MeasureObjectLimits extends Module {
             double dppXY = inputObject.getDppXY();
             double dppZ = inputObject.getDppZ();
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_X_PX, extentsPx[0][0]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_X_CAL, extentsPx[0][0] * dppXY));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_X_PX, extentsPx[0][1]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_X_CAL, extentsPx[0][1] * dppXY));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_Y_PX, extentsPx[1][0]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_Y_CAL, extentsPx[1][0] * dppXY));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_Y_PX, extentsPx[1][1]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_Y_CAL, extentsPx[1][1] * dppXY));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_Z_PX, extentsPx[2][0]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_Z_PX, extentsPx[2][1]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_Z_SLICE, extentsSlice[2][0]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_Z_CAL, extentsSlice[2][0] * dppZ));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_Z_SLICE, extentsSlice[2][1]));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_Z_CAL, extentsSlice[2][1] * dppZ));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_X_PX, extentsPx[0][0]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_X_CAL, extentsPx[0][0] * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_X_PX, extentsPx[0][1]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_X_CAL, extentsPx[0][1] * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_Y_PX, extentsPx[1][0]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_Y_CAL, extentsPx[1][0] * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_Y_PX, extentsPx[1][1]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_Y_CAL, extentsPx[1][1] * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_Z_PX, extentsPx[2][0]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_Z_PX, extentsPx[2][1]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_Z_SLICE, extentsSlice[2][0]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_Z_CAL, extentsSlice[2][0] * dppZ));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_Z_SLICE, extentsSlice[2][1]));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_Z_CAL, extentsSlice[2][1] * dppZ));
 
         }
 

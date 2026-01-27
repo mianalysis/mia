@@ -42,6 +42,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -341,21 +342,21 @@ public class RunTrackMate extends Module {
         double dppXY = spotObject.getDppXY();
         double dppZ = spotObject.getDppZ();
 
-        spotObject.addMeasurement(new MeasurementI(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
-        spotObject.addMeasurement(new MeasurementI(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
+        spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
+        spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
 
         if (doSubpixel) {
-            spotObject.addMeasurement(new MeasurementI(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
             spotObject.addMeasurement(
-                    new MeasurementI(Measurements.X_CENTROID_CAL, spot.getFeature(Spot.POSITION_X) * dppXY));
+                    MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTROID_CAL, spot.getFeature(Spot.POSITION_X) * dppXY));
 
-            spotObject.addMeasurement(new MeasurementI(Measurements.Y_CENTROID_PX, spot.getFeature(Spot.POSITION_Y)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTROID_PX, spot.getFeature(Spot.POSITION_Y)));
             spotObject.addMeasurement(
-                    new MeasurementI(Measurements.Y_CENTROID_CAL, spot.getFeature(Spot.POSITION_Y) * dppXY));
+                    MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTROID_CAL, spot.getFeature(Spot.POSITION_Y) * dppXY));
 
-            spotObject.addMeasurement(new MeasurementI(Measurements.Z_CENTROID_SLICE, spot.getFeature(Spot.POSITION_Z)));
+            spotObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z_CENTROID_SLICE, spot.getFeature(Spot.POSITION_Z)));
             spotObject.addMeasurement(
-                    new MeasurementI(Measurements.Z_CENTROID_CAL, spot.getFeature(Spot.POSITION_Z) * dppZ));
+                    MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z_CENTROID_CAL, spot.getFeature(Spot.POSITION_Z) * dppZ));
         }
     }
 

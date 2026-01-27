@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -348,7 +349,8 @@ public class RelateObjects extends Module {
                     ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 
-            parentObject.addMeasurement(new MeasurementI("MAX_DIST", maxDist));
+            parentObject
+                    .addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("MAX_DIST", maxDist));
 
         }
 
@@ -356,7 +358,7 @@ public class RelateObjects extends Module {
         double maxDist = parentObject.getMeasurement("MAX_DIST").getValue();
         double frac = Math.abs(minDist / maxDist);
         String measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObject.getName());
-        childObject.addMeasurement(new MeasurementI(measurementName, frac));
+        childObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, frac));
 
     }
 
@@ -372,25 +374,31 @@ public class RelateObjects extends Module {
             switch (referenceMode) {
                 case ReferenceModes.CENTROID: {
                     String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, minDist));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, minDist));
                     measurementName = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, minDist * dpp));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, minDist * dpp));
 
                     break;
                 }
                 case ReferenceModes.SURFACE: {
                     String measurementName = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, minDist));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, minDist));
                     measurementName = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, minDist * dpp));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, minDist * dpp));
 
                     break;
                 }
                 case ReferenceModes.CENTROID_TO_SURFACE: {
                     String measurementName = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, minDist));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, minDist));
                     measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, minDist * dpp));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, minDist * dpp));
 
                     break;
                 }
@@ -400,25 +408,31 @@ public class RelateObjects extends Module {
             switch (referenceMode) {
                 case ReferenceModes.CENTROID: {
                     String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
                     measurementName = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
 
                     break;
                 }
                 case ReferenceModes.SURFACE: {
                     String measurementName = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
                     measurementName = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
 
                     break;
                 }
                 case ReferenceModes.CENTROID_TO_SURFACE: {
                     String measurementName = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
                     measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
-                    childObject.addMeasurement(new MeasurementI(measurementName, Double.NaN));
+                    childObject.addMeasurement(
+                            MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, Double.NaN));
 
                     break;
                 }
@@ -483,8 +497,8 @@ public class RelateObjects extends Module {
                 childObject.addParent(parentObject);
 
                 // Adding the overlap as a measurement
-                MeasurementI measurement = new MeasurementI(getFullName(Measurements.OVERLAP_PC, parentObject.getName()));
-                measurement.setValue(overlap);
+                MeasurementI measurement = MeasurementFactories.getDefaultFactory()
+                        .createMeasurement(getFullName(Measurements.OVERLAP_PC, parentObject.getName()), overlap);
                 childObject.addMeasurement(measurement);
 
             }

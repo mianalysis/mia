@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -200,19 +201,19 @@ public class MeasureSpotIntensity extends Module {
             for (ObjI inputObject : inputObjects.values()) {
                 if ((boolean) parameters.getValue(MEASURE_MEAN,workspace))
                     inputObject.getParent(inputObjectsName).addMeasurement(
-                            new MeasurementI(getFullName(inputImageName, Measurements.MEAN), Double.NaN));
+                            MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.MEAN), Double.NaN));
                 if ((boolean) parameters.getValue(MEASURE_MIN,workspace))
                     inputObject.getParent(inputObjectsName)
-                            .addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.MIN), Double.NaN));
+                            .addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.MIN), Double.NaN));
                 if ((boolean) parameters.getValue(MEASURE_MAX,workspace))
                     inputObject.getParent(inputObjectsName)
-                            .addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.MAX), Double.NaN));
+                            .addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.MAX), Double.NaN));
                 if ((boolean) parameters.getValue(MEASURE_STDEV,workspace))
                     inputObject.getParent(inputObjectsName).addMeasurement(
-                            new MeasurementI(getFullName(inputImageName, Measurements.STDEV), Double.NaN));
+                            MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.STDEV), Double.NaN));
                 if ((boolean) parameters.getValue(MEASURE_SUM,workspace))
                     inputObject.getParent(inputObjectsName)
-                            .addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.SUM), Double.NaN));
+                            .addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.SUM), Double.NaN));
 
             }
 
@@ -254,16 +255,16 @@ public class MeasureSpotIntensity extends Module {
 
             if ((boolean) parameters.getValue(MEASURE_MEAN,workspace))
                 inputObject
-                        .addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.MEAN), cs.getMean()));
+                        .addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.MEAN), cs.getMean()));
             if ((boolean) parameters.getValue(MEASURE_MIN,workspace))
-                inputObject.addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.MIN), cs.getMin()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.MIN), cs.getMin()));
             if ((boolean) parameters.getValue(MEASURE_MAX,workspace))
-                inputObject.addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.MAX), cs.getMax()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.MAX), cs.getMax()));
             if ((boolean) parameters.getValue(MEASURE_STDEV,workspace))
                 inputObject.addMeasurement(
-                        new MeasurementI(getFullName(inputImageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
+                        MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
             if ((boolean) parameters.getValue(MEASURE_SUM,workspace))
-                inputObject.addMeasurement(new MeasurementI(getFullName(inputImageName, Measurements.SUM), cs.getSum()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(inputImageName, Measurements.SUM), cs.getSum()));
 
         }
 

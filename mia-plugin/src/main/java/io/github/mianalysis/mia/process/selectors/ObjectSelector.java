@@ -81,7 +81,6 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.parametercontrols.WiderDropDownCombo;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -91,6 +90,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -1185,7 +1185,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 }
 
                 if (objRoi.getAssignedClass() != null)
-                    outputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, objRoi.getAssignedClass()));
+                    outputObject.addMetadataItem(new DefaultObjMetadata(ObjMetadataItems.CLASS, objRoi.getAssignedClass()));
 
             }
         }
@@ -1509,7 +1509,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         for (ObjI inputObject : inputObjects.values()) {
             String assignedClass = null;
             if (metadataForClass != null) {
-                ObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
+                DefaultObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
                 if (metadataItem == null)
                     assignedClass = "None";
                 else

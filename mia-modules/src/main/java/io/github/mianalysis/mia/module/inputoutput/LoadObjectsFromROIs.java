@@ -24,13 +24,13 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -269,7 +269,7 @@ public class LoadObjectsFromROIs extends Module {
             }
 
             if (assignClass && matcher.groupCount() >= 5)
-                outputObject.addMetadataItem(new ObjMetadata(ObjMetadataItems.CLASS, matcher.group(5)));
+                outputObject.addMetadataItem(new DefaultObjMetadata(ObjMetadataItems.CLASS, matcher.group(5)));
 
             outputObject.addPointsFromRoi(roi, z);
             outputObject.setT(t);

@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -239,38 +240,38 @@ public class FitEllipse extends Module {
         double dppXY = inputObject.getDppXY();
 
         double xCent = calculator.getXCentre();
-        inputObject.addMeasurement(new MeasurementI(Measurements.X_CENTRE_PX, xCent));
-        inputObject.addMeasurement(new MeasurementI(Measurements.X_CENTRE_CAL, xCent *
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTRE_PX, xCent));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTRE_CAL, xCent *
                 dppXY));
 
         double yCent = calculator.getYCentre();
-        inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENTRE_PX, yCent));
-        inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENTRE_CAL, yCent *
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTRE_PX, yCent));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTRE_CAL, yCent *
                 dppXY));
 
         double semiMajor = calculator.getSemiMajorAxis();
-        inputObject.addMeasurement(new MeasurementI(Measurements.SEMI_MAJOR_PX,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SEMI_MAJOR_PX,
                 semiMajor));
-        inputObject.addMeasurement(new MeasurementI(Measurements.SEMI_MAJOR_CAL,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SEMI_MAJOR_CAL,
                 semiMajor * dppXY));
 
         double semiMinor = calculator.getSemiMinorAxis();
-        inputObject.addMeasurement(new MeasurementI(Measurements.SEMI_MINOR_PX,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SEMI_MINOR_PX,
                 semiMinor));
-        inputObject.addMeasurement(new MeasurementI(Measurements.SEMI_MINOR_CAL,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SEMI_MINOR_CAL,
                 semiMinor * dppXY));
 
         double eccentricity = Math.sqrt(1 - (semiMinor * semiMinor) / (semiMajor *
                 semiMajor));
-        inputObject.addMeasurement(new MeasurementI(Measurements.ECCENTRICITY,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ECCENTRICITY,
                 eccentricity));
 
         double ratio = semiMajor / semiMinor;
-        inputObject.addMeasurement(new MeasurementI(Measurements.MAJOR_MINOR_RATIO,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAJOR_MINOR_RATIO,
                 ratio));
 
         double theta = Math.toDegrees(calculator.getEllipseThetaRads());
-        inputObject.addMeasurement(new MeasurementI(Measurements.ORIENTATION_DEGS,
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ORIENTATION_DEGS,
                 theta));
 
     }

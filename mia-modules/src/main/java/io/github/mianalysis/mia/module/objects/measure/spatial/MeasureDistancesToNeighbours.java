@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -169,61 +170,61 @@ public class MeasureDistancesToNeighbours extends Module {
         // Adding details of the nearest neighbour to the input object's measurements
         if (cs == null) {
             String name = getFullName(Measurements.MAX_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.MAX_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.MEAN_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.MEAN_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.MIN_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.MIN_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.STD_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.STD_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
             name = getFullName(Measurements.N_NEIGHBOURS, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, Double.NaN));
 
         } else {
             double dppXY = inputObject.getDppXY();
 
             String name = getFullName(Measurements.MAX_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getMax() * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMax() * dppXY));
 
             name = getFullName(Measurements.MAX_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getMax()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMax()));
 
             name = getFullName(Measurements.MEAN_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getMean() * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMean() * dppXY));
 
             name = getFullName(Measurements.MEAN_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getMean()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMean()));
 
             name = getFullName(Measurements.MIN_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getMin() * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMin() * dppXY));
 
             name = getFullName(Measurements.MIN_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getMin()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMin()));
 
             name = getFullName(Measurements.STD_DISTANCE_CAL, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getStd() * dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getStd() * dppXY));
 
             name = getFullName(Measurements.STD_DISTANCE_PX, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getStd()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getStd()));
 
             name = getFullName(Measurements.N_NEIGHBOURS, nearestNeighbourName, referenceMode, nNeighbours);
-            inputObject.addMeasurement(new MeasurementI(name, cs.getN()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getN()));
 
         }
     }

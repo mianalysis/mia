@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -255,31 +256,31 @@ public class FitCircle extends Module {
 
     public void addMeasurements(ObjI inputObject, Roi circleRoi) {
         if (circleRoi == null) {
-            inputObject.addMeasurement(new MeasurementI(Measurements.X_CENTRE_PX, Double.NaN));
-            inputObject.addMeasurement(new MeasurementI(Measurements.X_CENTRE_CAL, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTRE_PX, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTRE_CAL, Double.NaN));
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENTRE_PX, Double.NaN));
-            inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENTRE_CAL, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTRE_PX, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTRE_CAL, Double.NaN));
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_PX, Double.NaN));
-            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_CAL, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RADIUS_PX, Double.NaN));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RADIUS_CAL, Double.NaN));
 
         } else {
             double dppXY = inputObject.getDppXY();
 
             double xCent = circleRoi.getContourCentroid()[0];
-            inputObject.addMeasurement(new MeasurementI(Measurements.X_CENTRE_PX, xCent));
-            inputObject.addMeasurement(new MeasurementI(Measurements.X_CENTRE_CAL, xCent *
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTRE_PX, xCent));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X_CENTRE_CAL, xCent *
                     dppXY));
 
             double yCent = circleRoi.getContourCentroid()[1];
-            inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENTRE_PX, yCent));
-            inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENTRE_CAL, yCent *
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTRE_PX, yCent));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y_CENTRE_CAL, yCent *
                     dppXY));
 
             double radius = circleRoi.getFloatWidth() / 2;
-            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_PX, radius));
-            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_CAL, radius *
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RADIUS_PX, radius));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RADIUS_CAL, radius *
                     dppXY));
 
         }

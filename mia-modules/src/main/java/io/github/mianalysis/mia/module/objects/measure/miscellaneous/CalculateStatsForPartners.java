@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -160,27 +161,27 @@ public class CalculateStatsForPartners extends Module {
 
             if (statsToCalculate[0]) {
                 String name = getFullName(partnerObjectsName, measurement, Measurements.MEAN);
-                inputObject.addMeasurement(new MeasurementI(name, cs.getMean()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMean()));
             }
 
             if (statsToCalculate[1]) {
                 String name = getFullName(partnerObjectsName, measurement, Measurements.STD);
-                inputObject.addMeasurement(new MeasurementI(name, cs.getStd()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getStd()));
             }
 
             if (statsToCalculate[2]) {
                 String name = getFullName(partnerObjectsName, measurement, Measurements.MIN);
-                inputObject.addMeasurement(new MeasurementI(name, cs.getMin()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMin()));
             }
 
             if (statsToCalculate[3]) {
                 String name = getFullName(partnerObjectsName, measurement, Measurements.MAX);
-                inputObject.addMeasurement(new MeasurementI(name, cs.getMax()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getMax()));
             }
 
             if (statsToCalculate[4]) {
                 String name = getFullName(partnerObjectsName, measurement, Measurements.SUM);
-                inputObject.addMeasurement(new MeasurementI(name, cs.getSum()));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, cs.getSum()));
             }
         }
 
@@ -188,7 +189,7 @@ public class CalculateStatsForPartners extends Module {
             double median = calculateMedian(inputObject, partnerObjectsName, measurement);
             String name = getFullName(partnerObjectsName, measurement,
                     Measurements.MEDIAN);
-            inputObject.addMeasurement(new MeasurementI(name, median));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(name, median));
         }
     }
 

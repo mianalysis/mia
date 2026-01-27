@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -193,7 +194,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
 
                         // Adding measurements
                         outputObject.setT(t);
-                        outputObject.addMeasurement(new MeasurementI(Measurements.SCORE, score));
+                        outputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SCORE, score));
 
                     }
 

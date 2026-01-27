@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;

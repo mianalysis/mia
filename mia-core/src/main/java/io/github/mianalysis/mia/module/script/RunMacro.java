@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -254,7 +255,7 @@ public class RunMacro extends AbstractMacroRunner {
         if (provideInputImage) {
             for (String expectedMeasurement : expectedMeasurements) {
                 double value = interpreter.getVariable(expectedMeasurement);
-                MeasurementI measurement = new MeasurementI(getFullName(expectedMeasurement), value);
+                MeasurementI measurement = MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(expectedMeasurement), value);
                 inputImage.addMeasurement(measurement);
             }
 

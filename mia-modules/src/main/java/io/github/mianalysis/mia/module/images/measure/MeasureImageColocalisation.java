@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -279,7 +280,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             String imageName2) {
         for (String measurementName : measurements.keySet()) {
             String fullName = getFullName(imageName1, imageName2, measurementName);
-            image.addMeasurement(new MeasurementI(fullName, measurements.get(measurementName)));
+            image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(fullName, measurements.get(measurementName)));
         }
     }
 

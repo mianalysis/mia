@@ -3,10 +3,11 @@ package io.github.mianalysis.mia.process;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 
 public class LabelFactory {
     public interface LabelModes {
@@ -124,7 +125,7 @@ public class LabelFactory {
             return IDs;
 
         for (ObjI object : objects.values()) {
-            ObjMetadata metadataItem = object.getMetadataItem(metadataName);
+            DefaultObjMetadata metadataItem = object.getMetadataItem(metadataName);
             if (metadataItem != null)
                 IDs.put(object.getID(), metadataItem.getValue());
         }

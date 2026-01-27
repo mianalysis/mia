@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -138,7 +139,7 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
 
         double giniCoeff = calculateGiniCoefficient(inputImage, maskImage);
 
-        inputImage.addMeasurement(new MeasurementI(Measurements.GINI_COEFFICIENT, giniCoeff));
+        inputImage.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.GINI_COEFFICIENT, giniCoeff));
 
         if (showOutput)
             inputImage.showMeasurements(this);

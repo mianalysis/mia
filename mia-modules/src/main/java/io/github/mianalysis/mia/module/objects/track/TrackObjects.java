@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -542,8 +543,8 @@ public class TrackObjects extends Module {
         currObj.addPartner(prevObj);
 
         // Adding references to each other
-        prevObj.addMeasurement(new MeasurementI(Measurements.TRACK_NEXT_ID, currObj.getID()));
-        currObj.addMeasurement(new MeasurementI(Measurements.TRACK_PREV_ID, prevObj.getID()));
+        prevObj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
+        currObj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
 
     }
 

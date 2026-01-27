@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -295,7 +296,7 @@ public class ThresholdImage extends Module {
     public void addGlobalThresholdMeasurement(ImageI image, double threshold, String algorithm) {
         String measurementName = getFullName(Measurements.GLOBAL_VALUE, algorithm);
 
-        image.addMeasurement(new MeasurementI(measurementName, threshold));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, threshold));
 
     }
 

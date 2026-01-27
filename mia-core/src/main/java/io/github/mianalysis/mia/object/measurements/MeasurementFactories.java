@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.measurements;
 
 import java.util.HashMap;
 
-public class ObjsFactories {
+public class MeasurementFactories {
     private static MeasurementFactoryI defaultFactory = new DefaultMeasurementFactory();
 
     private static HashMap<String, MeasurementFactoryI> factories = new HashMap<>();

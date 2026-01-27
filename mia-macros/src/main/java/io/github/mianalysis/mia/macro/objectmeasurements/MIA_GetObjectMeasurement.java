@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectMeasurement extends MacroOperation {

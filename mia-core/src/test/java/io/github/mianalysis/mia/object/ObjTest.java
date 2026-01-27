@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.UNITS;
 
@@ -35,7 +36,7 @@ public class ObjTest {
         ObjI obj = objects.createAndAddNewObject(factory);
         assertEquals(0, obj.getMeasurements().size());
 
-        obj.addMeasurement(new MeasurementI("Meas", -12.4));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -12.4));
 
         assertEquals(1, obj.getMeasurements().size());
         assertNotNull(obj.getMeasurement("Meas"));
@@ -54,8 +55,8 @@ public class ObjTest {
         ObjI obj = objects.createAndAddNewObject(factory);
         assertEquals(0, obj.getMeasurements().size());
 
-        obj.addMeasurement(new MeasurementI("Meas", -12.4));
-        obj.addMeasurement(new MeasurementI("Meas", 3.2));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -12.4));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2));
 
         assertEquals(1, obj.getMeasurements().size());
         assertNotNull(obj.getMeasurement("Meas"));

@@ -15,12 +15,13 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -177,7 +178,7 @@ public class ApplyWekaObjectClassification extends Module {
     public static void addProbabilityMeasurements(ObjI inputObject, Instances instances, double[] classification) {
         for (int i = 0; i < instances.numClasses(); i++) {
             String measName = getProbabilityMeasurementName(instances.classAttribute().value(i));
-            MeasurementI measurement = new MeasurementI(measName, classification[i]);
+            MeasurementI measurement = MeasurementFactories.getDefaultFactory().createMeasurement(measName, classification[i]);
             inputObject.addMeasurement(measurement);
         }
     }
@@ -248,9 +249,9 @@ public class ApplyWekaObjectClassification extends Module {
                 addProbabilityMeasurements(inputObject, instances, classification);
 
                 int classIndex = (int) classifier.classifyInstance(instances.get(i));
-                inputObject.addMeasurement(new MeasurementI(classMeasName, classIndex));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(classMeasName, classIndex));
                 inputObject.addMetadataItem(
-                        new ObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
+                        new DefaultObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
 
             }
         } catch (Exception e) {

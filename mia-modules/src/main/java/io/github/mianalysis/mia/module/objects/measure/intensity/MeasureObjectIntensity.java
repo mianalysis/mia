@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -154,16 +155,16 @@ public class MeasureObjectIntensity extends Module {
 
         // Calculating mean, std, min and max intensity
         if (addMeasurements) {
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.MEAN), cs.getMean()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.MIN), cs.getMin()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.MAX), cs.getMax()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.MEAN), cs.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.MIN), cs.getMin()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.MAX), cs.getMax()));
             object.addMeasurement(
-                    new MeasurementI(getFullName(imageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.SUM), cs.getSum()));
+                    MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.SUM), cs.getSum()));
 
             if (measureMedian)
                 object.addMeasurement(
-                        new MeasurementI(getFullName(imageName, Measurements.MEDIAN), new Median().evaluate(vals)));
+                        MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.MEDIAN), new Median().evaluate(vals)));
         }
 
         return cs;
@@ -194,12 +195,12 @@ public class MeasureObjectIntensity extends Module {
         }
 
         if (addMeasurements) {
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.X_CENT_MEAN), csX.getMean()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.X_CENT_STDEV), csX.getStd()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.Y_CENT_MEAN), csY.getMean()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.Y_CENT_STDEV), csY.getStd()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.Z_CENT_MEAN), csZ.getMean()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.Z_CENT_STDEV), csZ.getStd()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.X_CENT_MEAN), csX.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.X_CENT_STDEV), csX.getStd()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.Y_CENT_MEAN), csY.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.Y_CENT_STDEV), csY.getStd()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.Z_CENT_MEAN), csZ.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.Z_CENT_STDEV), csZ.getStd()));
         }
 
         return new CumStat[] { csX, csY, csZ };
@@ -245,9 +246,9 @@ public class MeasureObjectIntensity extends Module {
         }
 
         if (addMeasurements) {
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.X_PEAK), csX.getMean()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.Y_PEAK), csY.getMean()));
-            object.addMeasurement(new MeasurementI(getFullName(imageName, Measurements.Z_PEAK), csZ.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.X_PEAK), csX.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.Y_PEAK), csY.getMean()));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(imageName, Measurements.Z_PEAK), csZ.getMean()));
         }
 
         return new CumStat[] { csX, csY, csZ };

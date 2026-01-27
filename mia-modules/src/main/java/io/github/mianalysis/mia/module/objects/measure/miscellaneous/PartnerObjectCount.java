@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.measurements.PartnerCountMeasurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -33,9 +33,7 @@ import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Calculates the number of partners from a specific class. Measurements are
- * assigned to all objects in the input collection. Unlike normal measurements,
- * this value can optionally be evaluated at the time of use, so should always
- * be up to date.
+ * assigned to all objects in the input collection.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class PartnerObjectCount extends Module {
@@ -48,9 +46,7 @@ public class PartnerObjectCount extends Module {
     /**
      * For each object in this collection the number of associated partner objects
      * (from the collection specified by "Partner objects") will be calculated. The
-     * count is stored as a measurement associated with each input object. The
-     * measurement is evaluated at the time of access (unlike "normal" measurements
-     * which have fixed values), so should always be correct.
+     * count is stored as a measurement associated with each input object.
      */
     public static final String INPUT_OBJECTS = "Input objects";
 
@@ -58,10 +54,6 @@ public class PartnerObjectCount extends Module {
      * Partner objects to be counted.
      */
     public static final String PARTNER_OBJECTS = "Partner objects";
-
-    public static final String COUNT_SEPARATOR = "Count controls";
-
-    public static final String LIVE_MEASUREMENT = "Live measurement";
 
     public PartnerObjectCount(Modules modules) {
         super("Partner object count", modules);
@@ -83,7 +75,7 @@ public class PartnerObjectCount extends Module {
 
     @Override
     public String getDescription() {
-        return "Calculates the number of partners from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value can optionally be evaluated at the time of use, so should always be up to date.";
+        return "Calculates the number of partners from a specific class.  Measurements are assigned to all objects in the input collection.";
 
     }
 
@@ -92,7 +84,6 @@ public class PartnerObjectCount extends Module {
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
-        boolean liveMeasurement = parameters.getValue(LIVE_MEASUREMENT, workspace);
 
         ObjsI objects = workspace.getObjects(objectName);
         String measurementName = getFullName(partnerObjectsName);
@@ -100,13 +91,10 @@ public class PartnerObjectCount extends Module {
         if (objects == null)
             return Status.PASS;
 
-        for (ObjI obj : objects.values())
-            if (liveMeasurement)
-                obj.addMeasurement(new PartnerCountMeasurement(measurementName, obj, partnerObjectsName));
-            else {
+        for (ObjI obj : objects.values()) {
                 ObjsI partners = obj.getPartners(partnerObjectsName);
                 int count = partners == null ? 0 : partners.size();
-                obj.addMeasurement(new MeasurementI(measurementName, count));
+                obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, count));
             }
 
         if (showOutput)
@@ -121,9 +109,6 @@ public class PartnerObjectCount extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));
-
-        parameters.add(new SeparatorP(COUNT_SEPARATOR, this));
-        parameters.add(new BooleanP(LIVE_MEASUREMENT, this, true));
 
         addParameterDescriptions();
 
@@ -192,14 +177,9 @@ public class PartnerObjectCount extends Module {
         parameters.get(INPUT_OBJECTS).setDescription(
                 "For each object in this collection the number of associated partner objects (from the collection specified by \""
                         + PARTNER_OBJECTS
-                        + "\") will be calculated.  The count is stored as a measurement associated with each input object.  "
-                        +"Depending on the \""+LIVE_MEASUREMENT+"\" parameters, the measurement can be evaluated at the time of access "
-                        +"(unlike \"normal\" measurements which have fixed values), so should always be correct.");
+                        + "\") will be calculated.  The count is stored as a measurement associated with each input object.");
 
         parameters.get(PARTNER_OBJECTS).setDescription("Partner objects to be counted.");
-
-        parameters.get(LIVE_MEASUREMENT).setDescription("When selected, the partner object count will be evaluated at the time of access, "
-        + "so will always be up to date.  When not selected it is fixed at the time of evaluation.");
 
     }
 }

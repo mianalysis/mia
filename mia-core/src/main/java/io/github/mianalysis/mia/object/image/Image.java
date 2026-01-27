@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 

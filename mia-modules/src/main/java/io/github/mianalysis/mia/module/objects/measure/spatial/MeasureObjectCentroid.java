@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -87,12 +88,12 @@ public class MeasureObjectCentroid extends Module {
         int count = 0;
         int total = inputObjects.size();
         for (ObjI object : inputObjects.values()) {
-            object.addMeasurement(new MeasurementI(Measurements.MEAN_X_PX, object.getXMean(true)));
-            object.addMeasurement(new MeasurementI(Measurements.MEAN_X_CAL, object.getXMean(false)));
-            object.addMeasurement(new MeasurementI(Measurements.MEAN_Y_PX, object.getYMean(true)));
-            object.addMeasurement(new MeasurementI(Measurements.MEAN_Y_CAL, object.getYMean(false)));
-            object.addMeasurement(new MeasurementI(Measurements.MEAN_Z_SLICE, object.getZMean(true, false)));
-            object.addMeasurement(new MeasurementI(Measurements.MEAN_Z_CAL, object.getZMean(false, false)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_X_PX, object.getXMean(true)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_X_CAL, object.getXMean(false)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_Y_PX, object.getYMean(true)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_Y_CAL, object.getYMean(false)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_Z_SLICE, object.getZMean(true, false)));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_Z_CAL, object.getZMean(false, false)));
 
             writeProgressStatus(++count, total, "objects");
 

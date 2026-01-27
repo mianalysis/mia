@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -118,17 +119,17 @@ public class MeasureObjectWidth extends Module {
 
             CumStat cs = MeasureObjectIntensity.measureIntensity(skeleton, distanceMap, false, false);
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_WIDTH_PX,cs.getMean()));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_WIDTH_CAL,cs.getMean()*dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_WIDTH_PX,cs.getMean()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_WIDTH_CAL,cs.getMean()*dppXY));
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_WIDTH_PX,cs.getMin()));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_WIDTH_CAL,cs.getMin()*dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_WIDTH_PX,cs.getMin()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_WIDTH_CAL,cs.getMin()*dppXY));
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_WIDTH_PX,cs.getMax()));
-            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_WIDTH_CAL,cs.getMax()*dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_WIDTH_PX,cs.getMax()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_WIDTH_CAL,cs.getMax()*dppXY));
 
-            inputObject.addMeasurement(new MeasurementI(Measurements.STDEV_WIDTH_PX,cs.getStd()));
-            inputObject.addMeasurement(new MeasurementI(Measurements.STDEV_WIDTH_CAL,cs.getStd()*dppXY));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STDEV_WIDTH_PX,cs.getStd()));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STDEV_WIDTH_CAL,cs.getStd()*dppXY));
 
         }
 

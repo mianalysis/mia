@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -559,12 +560,12 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     static void addManualMeasurements(ImageI image, AbstractAffineModel2D model) {
         AffineTransform transform = model.createAffine();
 
-        image.addMeasurement(new MeasurementI(Measurements.TRANSLATE_X, transform.getTranslateX()));
-        image.addMeasurement(new MeasurementI(Measurements.TRANSLATE_Y, transform.getTranslateY()));
-        image.addMeasurement(new MeasurementI(Measurements.SCALE_X, transform.getScaleX()));
-        image.addMeasurement(new MeasurementI(Measurements.SCALE_Y, transform.getScaleY()));
-        image.addMeasurement(new MeasurementI(Measurements.SHEAR_X, transform.getShearX()));
-        image.addMeasurement(new MeasurementI(Measurements.SHEAR_Y, transform.getShearY()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.TRANSLATE_X, transform.getTranslateX()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.TRANSLATE_Y, transform.getTranslateY()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SCALE_X, transform.getScaleX()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SCALE_Y, transform.getScaleY()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SHEAR_X, transform.getShearX()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SHEAR_Y, transform.getShearY()));
 
     }
 

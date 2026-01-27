@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -93,12 +94,12 @@ public abstract class AbstractMacroRunner extends Module {
 
     public static MeasurementI interceptMeasurement(ResultsTable table, String heading) {
         if (table == null || table.getColumn(0) == null)
-            return new MeasurementI(getFullName(heading), Double.NaN);
+            return MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(heading), Double.NaN);
 
         int nRows = table.getColumn(0).length;
         double value = table.getValue(heading, nRows - 1);
 
-        return new MeasurementI(getFullName(heading), value);
+        return MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(heading), value);
 
     }
 

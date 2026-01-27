@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.math.CumStat;

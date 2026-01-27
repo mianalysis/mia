@@ -9,10 +9,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -108,12 +108,12 @@ public class AdoptParentMetadata extends Module {
 
             for (Parameters collection : collections.values()) {
                 String metadataItemName = collection.getValue(METADATA_ITEM, workspace);
-                ObjMetadata parentMetadataItem = parentObj.getMetadataItem(metadataItemName);
+                DefaultObjMetadata parentMetadataItem = parentObj.getMetadataItem(metadataItemName);
                 if (parentMetadataItem == null)
                     continue;
 
                 obj.addMetadataItem(
-                        new ObjMetadata(getFullName(parentObjectsName, metadataItemName), parentMetadataItem.getValue()));
+                        new DefaultObjMetadata(getFullName(parentObjectsName, metadataItemName), parentMetadataItem.getValue()));
 
             }
 

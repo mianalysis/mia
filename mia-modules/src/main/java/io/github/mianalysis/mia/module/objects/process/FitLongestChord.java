@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -118,35 +119,35 @@ public class FitLongestChord extends Module {
                 object.getDppZ());
 
         double longestChordLength = calculator.getLCLength();
-        object.addMeasurement(new MeasurementI(Measurements.LENGTH_PX, longestChordLength));
-        object.addMeasurement(new MeasurementI(Measurements.LENGTH_CAL, longestChordLength * dppXY));
+        object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.LENGTH_PX, longestChordLength));
+        object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.LENGTH_CAL, longestChordLength * dppXY));
 
         if (storeEndPoints) {
             double[][] LC = calculator.getLC();
-            object.addMeasurement(new MeasurementI(Measurements.X1_PX, LC[0][0]));
-            object.addMeasurement(new MeasurementI(Measurements.Y1_PX, LC[0][1]));
-            object.addMeasurement(new MeasurementI(Measurements.Z1_SLICE, LC[0][2]));
-            object.addMeasurement(new MeasurementI(Measurements.X2_PX, LC[1][0]));
-            object.addMeasurement(new MeasurementI(Measurements.Y2_PX, LC[1][1]));
-            object.addMeasurement(new MeasurementI(Measurements.Z2_SLICE, LC[1][2]));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X1_PX, LC[0][0]));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y1_PX, LC[0][1]));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z1_SLICE, LC[0][2]));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X2_PX, LC[1][0]));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y2_PX, LC[1][1]));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z2_SLICE, LC[1][2]));
         }
 
         if (measureWidth) {
             CumStat cumStat = calculator.calculateAverageDistanceFromLC();
             if (cumStat == null) {
-                object.addMeasurement(new MeasurementI(Measurements.MEAN_SURF_DIST_PX, Double.NaN));
-                object.addMeasurement(new MeasurementI(Measurements.MEAN_SURF_DIST_CAL, Double.NaN));
-                object.addMeasurement(new MeasurementI(Measurements.STD_SURF_DIST_PX, Double.NaN));
-                object.addMeasurement(new MeasurementI(Measurements.STD_SURF_DIST_CAL, Double.NaN));
-                object.addMeasurement(new MeasurementI(Measurements.MAX_SURF_DIST_PX, Double.NaN));
-                object.addMeasurement(new MeasurementI(Measurements.MAX_SURF_DIST_CAL, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_SURF_DIST_PX, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_SURF_DIST_CAL, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STD_SURF_DIST_PX, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STD_SURF_DIST_CAL, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_SURF_DIST_PX, Double.NaN));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_SURF_DIST_CAL, Double.NaN));
             } else {
-                object.addMeasurement(new MeasurementI(Measurements.MEAN_SURF_DIST_PX, cumStat.getMean()));
-                object.addMeasurement(new MeasurementI(Measurements.MEAN_SURF_DIST_CAL, cumStat.getMean() * dppXY));
-                object.addMeasurement(new MeasurementI(Measurements.STD_SURF_DIST_PX, cumStat.getStd()));
-                object.addMeasurement(new MeasurementI(Measurements.STD_SURF_DIST_CAL, cumStat.getStd() * dppXY));
-                object.addMeasurement(new MeasurementI(Measurements.MAX_SURF_DIST_PX, cumStat.getMax()));
-                object.addMeasurement(new MeasurementI(Measurements.MAX_SURF_DIST_CAL, cumStat.getMax() * dppXY));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_SURF_DIST_PX, cumStat.getMean()));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_SURF_DIST_CAL, cumStat.getMean() * dppXY));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STD_SURF_DIST_PX, cumStat.getStd()));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STD_SURF_DIST_CAL, cumStat.getStd() * dppXY));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_SURF_DIST_PX, cumStat.getMax()));
+                object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_SURF_DIST_CAL, cumStat.getMax() * dppXY));
             }
         }
 
@@ -160,7 +161,7 @@ public class FitLongestChord extends Module {
             // Fitting to range -90 to + 90 degrees
             orientationDegs = (orientationDegs + 90) % 180 - 90;
 
-            object.addMeasurement(new MeasurementI(Measurements.ORIENTATION_XY_DEGS, orientationDegs));
+            object.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ORIENTATION_XY_DEGS, orientationDegs));
 
         }
     }

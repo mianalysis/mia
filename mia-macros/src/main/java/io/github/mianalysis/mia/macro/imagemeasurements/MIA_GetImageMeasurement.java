@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetImageMeasurement extends MacroOperation {

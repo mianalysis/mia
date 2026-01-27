@@ -16,12 +16,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromROIs.ObjMetadataItems;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
@@ -112,7 +112,7 @@ public class ExportVOCAnnotations extends AbstractSaver {
             writer.addOther("segmented", "0");
 
             for (ObjI inputObject:inputObjects.values()) {
-                ObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
+                DefaultObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
                 String metadataValue = metadataItem == null ? "Null" : metadataItem.getValue();
 
                 double[][] extentsD = inputObject.getExtents(true, false);

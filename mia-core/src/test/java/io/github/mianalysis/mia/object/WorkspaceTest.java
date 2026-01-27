@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
 public class WorkspaceTest {
@@ -60,12 +61,12 @@ public class WorkspaceTest {
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
         ImageI image = ImageFactory.createImage("Test im", imagePlus);
-        image.addMeasurement(new MeasurementI("Test meas", 4.6));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
         imagePlus = new ImagePlus();
         image = ImageFactory.createImage("Test im2", imagePlus);
-        image.addMeasurement(new MeasurementI("Test meas", 4.6));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
         // Checking workspace
@@ -96,12 +97,12 @@ public class WorkspaceTest {
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
         ImageI image = ImageFactory.createImage("Test im", imagePlus);
-        image.addMeasurement(new MeasurementI("Test meas", 4.6));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
         imagePlus = new ImagePlus();
         image = ImageFactory.createImage("Test im2", imagePlus);
-        image.addMeasurement(new MeasurementI("Test meas", 4.6));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
         // Checking workspace
@@ -140,13 +141,13 @@ public class WorkspaceTest {
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
 
         obj = objects.createAndAddNewObjectWithID(factory, 1);
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
         workspace.addObjects(objects);
 
         ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1, 0.02,
@@ -155,13 +156,13 @@ public class WorkspaceTest {
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
 
         obj = otherObjects.createAndAddNewObjectWithID(factory, 1);
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
         workspace.addObjects(otherObjects);
 
         // Checking current state of the workspace
@@ -208,13 +209,13 @@ public class WorkspaceTest {
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
 
         obj = objects.createAndAddNewObjectWithID(factory, 1);
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
         workspace.addObjects(objects);
 
         ObjsI otherObjects = ObjsFactories.getDefaultFactory().createObjs("Other obj", 20, 10, 5, dppXY, dppZ, calibratedUnits, 1, 0.02, UNITS.SECOND);
@@ -222,13 +223,13 @@ public class WorkspaceTest {
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
 
         obj = otherObjects.createAndAddNewObjectWithID(factory, 1);
         obj.addCoord(12, 5, 2);
         obj.addCoord(12, 5, 3);
         obj.addCoord(12, 6, 2);
-        obj.addMeasurement(new MeasurementI("Test meas", 1.5));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 1.5));
         workspace.addObjects(otherObjects);
 
         // Checking current state of the workspace

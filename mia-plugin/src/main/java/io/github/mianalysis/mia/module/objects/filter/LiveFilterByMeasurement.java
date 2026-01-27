@@ -29,6 +29,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -210,7 +211,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
 
             // Adding measurements
             if (storeIndividual)
-                inputObject.addMeasurement(new MeasurementI(measurementName, conditionMet ? 1 : 0));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, conditionMet ? 1 : 0));
 
             if (conditionMet) {
                 count++;

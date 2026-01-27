@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -112,7 +113,7 @@ public class AdoptParentMeasurement extends Module {
                     continue;
 
                 obj.addMeasurement(
-                        new MeasurementI(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
+                        MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
 
             }
 

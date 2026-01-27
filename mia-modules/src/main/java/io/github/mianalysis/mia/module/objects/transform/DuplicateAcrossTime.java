@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;

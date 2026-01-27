@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -253,23 +254,23 @@ public class FitGaussian2D extends Module {
     }
 
     static void assignMissingMeasurements(ObjI obj) {
-        obj.addMeasurement(new MeasurementI(Measurements.X0_PX, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.Y0_PX, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.Z0_SLICE, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_X_PX, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_Y_PX, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_MEAN_PX, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.X0_CAL, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.Y0_CAL, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.Z0_CAL, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_X_CAL, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_Y_CAL, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_MEAN_CAL, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.A_0, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.A_BG, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.THETA, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.ELLIPTICITY, Double.NaN));
-        obj.addMeasurement(new MeasurementI(Measurements.RESIDUAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X0_PX, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y0_PX, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z0_SLICE, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_X_PX, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_Y_PX, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_MEAN_PX, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X0_CAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y0_CAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z0_CAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_X_CAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_Y_CAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_MEAN_CAL, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.A_0, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.A_BG, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.THETA, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ELLIPTICITY, Double.NaN));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RESIDUAL, Double.NaN));
 
     }
 
@@ -290,23 +291,23 @@ public class FitGaussian2D extends Module {
         double sm = (sx + sy) / 2;
 
         // Storing the results as measurements
-        obj.addMeasurement(new MeasurementI(Measurements.X0_PX, x0));
-        obj.addMeasurement(new MeasurementI(Measurements.Y0_PX, y0));
-        obj.addMeasurement(new MeasurementI(Measurements.Z0_SLICE, z0));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_X_PX, sx));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_Y_PX, sy));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_MEAN_PX, sm));
-        obj.addMeasurement(new MeasurementI(Measurements.X0_CAL, x0 * distPerPxXY));
-        obj.addMeasurement(new MeasurementI(Measurements.Y0_CAL, y0 * distPerPxXY));
-        obj.addMeasurement(new MeasurementI(Measurements.Z0_CAL, z0 * distPerPxZ));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_X_CAL, sx * distPerPxXY));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_Y_CAL, sy * distPerPxXY));
-        obj.addMeasurement(new MeasurementI(Measurements.SIGMA_MEAN_CAL, sm * distPerPxXY));
-        obj.addMeasurement(new MeasurementI(Measurements.A_0, A0));
-        obj.addMeasurement(new MeasurementI(Measurements.A_BG, ABG));
-        obj.addMeasurement(new MeasurementI(Measurements.THETA, th));
-        obj.addMeasurement(new MeasurementI(Measurements.ELLIPTICITY, ellipticity));
-        obj.addMeasurement(new MeasurementI(Measurements.RESIDUAL, residual));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X0_PX, x0));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y0_PX, y0));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z0_SLICE, z0));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_X_PX, sx));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_Y_PX, sy));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_MEAN_PX, sm));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.X0_CAL, x0 * distPerPxXY));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Y0_CAL, y0 * distPerPxXY));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.Z0_CAL, z0 * distPerPxZ));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_X_CAL, sx * distPerPxXY));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_Y_CAL, sy * distPerPxXY));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SIGMA_MEAN_CAL, sm * distPerPxXY));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.A_0, A0));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.A_BG, ABG));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.THETA, th));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.ELLIPTICITY, ellipticity));
+        obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.RESIDUAL, residual));
 
     }
 

@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -370,12 +371,12 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
             double maxDist = val * bandWidthPx * sign;
             double centDist = (minDist + maxDist) / 2;
 
-            obj.addMeasurement(new MeasurementI(getFullName(Measurements.CENTRAL_DISTANCE_PX), centDist));
-            obj.addMeasurement(new MeasurementI(getFullName(Measurements.CENTRAL_DISTANCE_CAL), centDist * dppXY));
-            obj.addMeasurement(new MeasurementI(getFullName(Measurements.MIN_DISTANCE_PX), minDist));
-            obj.addMeasurement(new MeasurementI(getFullName(Measurements.MIN_DISTANCE_CAL), minDist * dppXY));
-            obj.addMeasurement(new MeasurementI(getFullName(Measurements.MAX_DISTANCE_PX), maxDist));
-            obj.addMeasurement(new MeasurementI(getFullName(Measurements.MAX_DISTANCE_CAL), maxDist * dppXY));
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(Measurements.CENTRAL_DISTANCE_PX), centDist));
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(Measurements.CENTRAL_DISTANCE_CAL), centDist * dppXY));
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(Measurements.MIN_DISTANCE_PX), minDist));
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(Measurements.MIN_DISTANCE_CAL), minDist * dppXY));
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(Measurements.MAX_DISTANCE_PX), maxDist));
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(Measurements.MAX_DISTANCE_CAL), maxDist * dppXY));
 
         }
     }
@@ -469,7 +470,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
                 tempBandObject.setID(bandObjects.getAndIncrementID());
                 for (MeasurementI measurement : tempBandObject.getMeasurements().values())
-                    tempBandObject.addMeasurement(new MeasurementI(measurement.getName(), measurement.getValue()));
+                    tempBandObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurement.getName(), measurement.getValue()));
 
                 tempBandObject.setT(inputObject.getT());
 

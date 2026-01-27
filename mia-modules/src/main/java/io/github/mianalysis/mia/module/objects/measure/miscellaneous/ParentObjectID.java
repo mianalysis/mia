@@ -10,10 +10,9 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjsI;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.ParentIDMeasurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
@@ -32,24 +31,30 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 
 /**
-* Stores the ID number of an associated parent from a specific class.  Associated IDs are stored as measurements and are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Stores the ID number of an associated parent from a specific class.
+ * Associated IDs are stored as measurements and are assigned to all objects in
+ * the input collection.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ParentObjectID extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* For each object in this collection the ID number of an associated parent object (from the collection specified by "Parent object") will be stored as a measurement.  This measurement will be associated with each input object.  The measurement is evaluated at the time of access (unlike "normal" measurements which have fixed values), so should always be correct.
-	*/
+    /**
+     * For each object in this collection the ID number of an associated parent
+     * object (from the collection specified by "Parent object") will be stored as a
+     * measurement. This measurement will be associated with each input object. The
+     * measurement is evaluated at the time of access (unlike "normal" measurements
+     * which have fixed values), so should always be correct.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Associated parent object collection.
-	*/
+    /**
+     * Associated parent object collection.
+     */
     public static final String PARENT_OBJECT = "Parent object";
 
     public ParentObjectID(Modules modules) {
@@ -57,9 +62,8 @@ public class ParentObjectID extends Module {
     }
 
     public static String getFullName(String parentObjectsName) {
-        return "PARENT_ID // "+ parentObjectsName;
+        return "PARENT_ID // " + parentObjectsName;
     }
-
 
     @Override
     public Category getCategory() {
@@ -73,25 +77,26 @@ public class ParentObjectID extends Module {
 
     @Override
     public String getDescription() {
-        return "Stores the ID number of an associated parent from a specific class.  Associated IDs are stored as measurements and are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.";
+        return "Stores the ID number of an associated parent from a specific class.  Associated IDs are stored as measurements and are assigned to all objects in the input collection.";
     }
 
     @Override
     public Status process(WorkspaceI workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
 
         ObjsI objects = workspace.getObjects(objectName);
         String measurementName = getFullName(parentObjectsName);
 
         if (objects == null)
             return Status.PASS;
-            
+
         for (ObjI obj : objects.values())
-            obj.addMeasurement(new ParentIDMeasurement(measurementName, obj, parentObjectsName));
-        
-        if (showOutput) objects.showMeasurements(this,modules);
+            obj.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, obj.getParent(parentObjectsName).getID()));
+
+        if (showOutput)
+            objects.showMeasurements(this, modules);
 
         return Status.PASS;
 
@@ -109,8 +114,8 @@ public class ParentObjectID extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-WorkspaceI workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        WorkspaceI workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ParentObjectsP) parameters.get(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
 
         return parameters;
@@ -119,23 +124,23 @@ WorkspaceI workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-WorkspaceI workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        WorkspaceI workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
-        
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT, workspace);
+
         String measurementName = getFullName(parentObjectsName);
 
         // We don't want statistics for this measurement
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
         ref.setObjectsName(inputObjectsName);
-        ref.setDescription("ID number of associated \""+parentObjectsName+"\" parent object.");
+        ref.setDescription("ID number of associated \"" + parentObjectsName + "\" parent object.");
         ref.setExportMax(false);
         ref.setExportMean(false);
         ref.setExportMin(false);
@@ -149,23 +154,23 @@ WorkspaceI workspace = null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

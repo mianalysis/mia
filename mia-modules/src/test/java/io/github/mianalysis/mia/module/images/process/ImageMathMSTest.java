@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class ImageMathMSTest {
@@ -237,7 +238,7 @@ public class ImageMathMSTest {
                 case SIMAGE:
                     // We can still use the fixed value from the arguments, it's just assigned to
                     // the image.
-                    image.addMeasurement(new MeasurementI("MATH_VAL", value));
+                    image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("MATH_VAL", value));
                     imageMath.updateParameterValue(ImageMath.VALUE_SOURCE, ImageMath.ValueSources.MEASUREMENT);
                     imageMath.updateParameterValue(ImageMath.IMAGE_FOR_MEASUREMENT, "Test_image");
                     imageMath.updateParameterValue(ImageMath.MEASUREMENT, "MATH_VAL");

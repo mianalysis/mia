@@ -8,6 +8,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -328,7 +329,7 @@ public abstract class MeasurementCalculator extends Module {
             double result = doCalculation(value1, value2, calculationMode);
 
             // Assigning measurement
-            inputImageObject.addMeasurement(new MeasurementI(outputMeasurementName, result));
+            inputImageObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(outputMeasurementName, result));
 
         }
 

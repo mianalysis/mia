@@ -9,12 +9,13 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -86,7 +87,7 @@ public class FilterByMetadata extends AbstractTextObjectFilter {
             ObjI inputObject = iterator.next();
 
             // Skipping this object if it doesn't have the measurement
-            ObjMetadata metadata = inputObject.getMetadataItem(metadataName);
+            DefaultObjMetadata metadata = inputObject.getMetadataItem(metadataName);
             if (metadata == null)
                 continue;
 
@@ -98,7 +99,7 @@ public class FilterByMetadata extends AbstractTextObjectFilter {
             // Adding measurements
             if (storeIndividual) {
                 String measurementName = getIndividualFullName(filterMethod, metadataName, refValue);
-                inputObject.addMeasurement(new MeasurementI(measurementName, conditionMet ? 1 : 0));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(measurementName, conditionMet ? 1 : 0));
             }
 
             if (conditionMet) {

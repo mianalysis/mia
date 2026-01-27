@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -219,7 +220,7 @@ public class LiveManualThreshold extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            inputImage.addMeasurement(new MeasurementI("THRESHOLD", thresholdValue));
+            inputImage.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("THRESHOLD", thresholdValue));
 
             if (showOutput) {
                 inputImage.showAsIs();
@@ -231,7 +232,7 @@ public class LiveManualThreshold extends Module {
             ImageI outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
 
-            outputImage.addMeasurement(new MeasurementI("THRESHOLD", thresholdValue));
+            outputImage.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("THRESHOLD", thresholdValue));
 
             if (showOutput) {
                 outputImage.showAsIs();

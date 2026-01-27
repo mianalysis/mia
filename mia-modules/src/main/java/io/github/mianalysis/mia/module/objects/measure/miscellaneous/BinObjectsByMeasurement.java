@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -117,7 +118,7 @@ public class BinObjectsByMeasurement extends Module {
         for (ObjI inputObject : inputObjects.values()) {
             MeasurementI measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
-                inputObject.addMeasurement(new MeasurementI(getFullName(measurementName), Double.NaN));
+                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(measurementName), Double.NaN));
                 continue;
             }
 
@@ -128,7 +129,7 @@ public class BinObjectsByMeasurement extends Module {
             bin = Math.min(bin, largestBin);
             bin = Math.max(bin, smallestBin);
 
-            inputObject.addMeasurement(new MeasurementI(getFullName(measurementName), bin));
+            inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(getFullName(measurementName), bin));
 
             writeProgressStatus(++count, total, "objects");
 

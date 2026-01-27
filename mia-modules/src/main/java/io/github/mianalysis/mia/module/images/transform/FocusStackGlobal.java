@@ -51,6 +51,7 @@ import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -648,11 +649,11 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         double[] doubleSlices = Arrays.stream(slices).asDoubleStream().toArray();
         double median = new Median().evaluate(doubleSlices);
 
-        image.addMeasurement(new MeasurementI(Measurements.MEAN_SLICE, cs.getMean()));
-        image.addMeasurement(new MeasurementI(Measurements.MEDIAN_SLICE, median));
-        image.addMeasurement(new MeasurementI(Measurements.MIN_SLICE, cs.getMin()));
-        image.addMeasurement(new MeasurementI(Measurements.MAX_SLICE, cs.getMax()));
-        image.addMeasurement(new MeasurementI(Measurements.STDEV_SLICE, cs.getStd()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_SLICE, cs.getMean()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEDIAN_SLICE, median));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MIN_SLICE, cs.getMin()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MAX_SLICE, cs.getMax()));
+        image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.STDEV_SLICE, cs.getStd()));
 
     }
 

@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import ome.units.UNITS;
 
 public class ColourFactoryTest {
@@ -101,17 +102,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
@@ -141,17 +142,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
@@ -181,17 +182,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
@@ -220,17 +221,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
@@ -405,17 +406,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
@@ -446,17 +447,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
@@ -487,17 +488,17 @@ public class ColourFactoryTest {
         // Adding objects
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
         ObjI obj = collection.createAndAddNewObjectWithID(factory, 0);
-        MeasurementI meas = new MeasurementI("Meas", 3.2);
+        MeasurementI meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", 3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 1);
-        meas = new MeasurementI("Meas", -0.1);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", -0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
         obj = collection.createAndAddNewObjectWithID(factory, 2);
-        meas = new MeasurementI("Meas", Double.NaN);
+        meas = MeasurementFactories.getDefaultFactory().createMeasurement("Meas", Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
 
