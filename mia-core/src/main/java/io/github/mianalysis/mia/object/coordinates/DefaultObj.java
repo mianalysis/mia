@@ -8,7 +8,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
@@ -33,7 +33,7 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     private LinkedHashMap<String, ObjsI> children = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjsI> partners = new LinkedHashMap<>();
     private LinkedHashMap<String, MeasurementI> measurements = new LinkedHashMap<>();
-    private LinkedHashMap<String, DefaultObjMetadata> metadata = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjMetadataI> metadata = new LinkedHashMap<>();
     private HashMap<Integer, Roi> rois = new HashMap<>();
 
     // CONSTRUCTORS
@@ -183,12 +183,12 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     }
 
     @Override
-    public LinkedHashMap<String, DefaultObjMetadata> getMetadata() {
+    public LinkedHashMap<String, ObjMetadataI> getMetadata() {
         return metadata;
     }
 
     @Override
-    public void setMetadata(LinkedHashMap<String, DefaultObjMetadata> metadata) {
+    public void setMetadata(LinkedHashMap<String, ObjMetadataI> metadata) {
         this.metadata = metadata;
 
     }
@@ -280,7 +280,7 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
         // Duplicating metadata
         if (duplicateMetadata)
-            for (DefaultObjMetadata metadataItem : metadata.values())
+            for (ObjMetadataI metadataItem : metadata.values())
                 newObj.addMetadataItem(metadataItem.duplicate());
 
         return newObj;

@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -140,7 +140,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
 
                 String classStr = "";
                 if (metadataItem != null) {
-                    DefaultObjMetadata metadata = inputObject.getMetadataItem(metadataItem);
+                    ObjMetadataI metadata = inputObject.getMetadataItem(metadataItem);
                     if (metadata != null)
                         classStr = "_" + metadata.getValue();
                 }

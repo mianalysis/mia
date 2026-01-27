@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -152,7 +152,7 @@ public class CombineObjectSets extends Module {
             newObj.setMeasurements(measurements);
 
             // Transferring measurements
-            LinkedHashMap<String, DefaultObjMetadata> metadata = obj.getMetadata();
+            LinkedHashMap<String, ObjMetadataI> metadata = obj.getMetadata();
             newObj.setMetadata(metadata);
 
         }

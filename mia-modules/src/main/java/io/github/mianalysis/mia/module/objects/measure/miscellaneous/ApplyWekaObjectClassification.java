@@ -20,7 +20,8 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataFactories;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -157,7 +158,8 @@ public class ApplyWekaObjectClassification extends Module {
 
     }
 
-    AbstractClassifier getClassifier(String classifierPath) throws FileNotFoundException, IOException, ClassNotFoundException {
+    AbstractClassifier getClassifier(String classifierPath)
+            throws FileNotFoundException, IOException, ClassNotFoundException {
         if (currClassifierPath.equals(classifierPath) && currInstances != null)
             return currClassifier;
 
@@ -178,7 +180,8 @@ public class ApplyWekaObjectClassification extends Module {
     public static void addProbabilityMeasurements(ObjI inputObject, Instances instances, double[] classification) {
         for (int i = 0; i < instances.numClasses(); i++) {
             String measName = getProbabilityMeasurementName(instances.classAttribute().value(i));
-            MeasurementI measurement = MeasurementFactories.getDefaultFactory().createMeasurement(measName, classification[i]);
+            MeasurementI measurement = MeasurementFactories.getDefaultFactory().createMeasurement(measName,
+                    classification[i]);
             inputObject.addMeasurement(measurement);
         }
     }
@@ -224,7 +227,7 @@ public class ApplyWekaObjectClassification extends Module {
                     continue;
 
                 objAttr[i] = measurement.getValue();
-                
+
             }
 
             processedObjects.add(inputObject);
@@ -249,9 +252,10 @@ public class ApplyWekaObjectClassification extends Module {
                 addProbabilityMeasurements(inputObject, instances, classification);
 
                 int classIndex = (int) classifier.classifyInstance(instances.get(i));
-                inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(classMeasName, classIndex));
-                inputObject.addMetadataItem(
-                        new DefaultObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
+                inputObject.addMeasurement(
+                        MeasurementFactories.getDefaultFactory().createMeasurement(classMeasName, classIndex));
+                inputObject.addMetadataItem(ObjMetadataFactories.getDefaultFactory()
+                        .createMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
 
             }
         } catch (Exception e) {
@@ -304,7 +308,7 @@ public class ApplyWekaObjectClassification extends Module {
 
             Instances instances = getInstances(currClassifierPath);
             if (instances == null)
-                return returnedRefs;            
+                return returnedRefs;
 
             for (int i = 0; i < instances.numClasses(); i++) {
                 String className = instances.classAttribute().value(i);

@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imagej.ImgPlus;
@@ -218,15 +218,15 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     }
 
-    public default void addMetadataItem(DefaultObjMetadata metadataItem) {
+    public default void addMetadataItem(ObjMetadataI metadataItem) {
         if (metadataItem == null)
             return;
         getMetadata().put(metadataItem.getName(), metadataItem);
 
     }
 
-    public default DefaultObjMetadata getMetadataItem(String name) {
-        LinkedHashMap<String, DefaultObjMetadata> metadata = getMetadata();
+    public default ObjMetadataI getMetadataItem(String name) {
+        LinkedHashMap<String, ObjMetadataI> metadata = getMetadata();
 
         if (metadata.get(name) == null)
             return null;
@@ -400,9 +400,9 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     public void removeRelationships();
     
-    public LinkedHashMap<String, DefaultObjMetadata> getMetadata();
+    public LinkedHashMap<String, ObjMetadataI> getMetadata();
 
-    public void setMetadata(LinkedHashMap<String, DefaultObjMetadata> metadata);
+    public void setMetadata(LinkedHashMap<String, ObjMetadataI> metadata);
 
     public HashMap<Integer, Roi> getRois();
 

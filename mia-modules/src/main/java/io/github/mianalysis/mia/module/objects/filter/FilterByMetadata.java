@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -87,7 +87,7 @@ public class FilterByMetadata extends AbstractTextObjectFilter {
             ObjI inputObject = iterator.next();
 
             // Skipping this object if it doesn't have the measurement
-            DefaultObjMetadata metadata = inputObject.getMetadataItem(metadataName);
+            ObjMetadataI metadata = inputObject.getMetadataItem(metadataName);
             if (metadata == null)
                 continue;
 

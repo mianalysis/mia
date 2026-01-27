@@ -15,7 +15,6 @@ import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
 
-import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.io.RoiDecoder;
 import io.github.mianalysis.mia.MIA;
@@ -30,7 +29,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -51,7 +50,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.system.FileTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -269,7 +267,7 @@ public class LoadObjectsFromROIs extends Module {
             }
 
             if (assignClass && matcher.groupCount() >= 5)
-                outputObject.addMetadataItem(new DefaultObjMetadata(ObjMetadataItems.CLASS, matcher.group(5)));
+                outputObject.addMetadataItem(ObjMetadataFactories.getDefaultFactory().createMetadata(ObjMetadataItems.CLASS, matcher.group(5)));
 
             outputObject.addPointsFromRoi(roi, z);
             outputObject.setT(t);

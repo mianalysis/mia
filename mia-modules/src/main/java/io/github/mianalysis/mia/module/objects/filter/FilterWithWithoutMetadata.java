@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
@@ -131,7 +131,7 @@ public class FilterWithWithoutMetadata extends AbstractObjectFilter {
             ObjI inputObject = iterator.next();
 
             // Removing the object if it has no children
-            DefaultObjMetadata metadataItem = inputObject.getMetadataItem(metaName);
+            ObjMetadataI metadataItem = inputObject.getMetadataItem(metaName);
             switch (filterMethod) {
                 case FilterMethods.WITHOUT_METADATA:
                     if (metadataItem == null) {

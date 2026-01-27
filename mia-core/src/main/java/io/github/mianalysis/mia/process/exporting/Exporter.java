@@ -54,7 +54,7 @@ import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -948,7 +948,7 @@ public class Exporter {
                             for (int column : objMetadataNames.get(objectName).keySet()) {
                                 Cell metadataValueCell = objectValueRow.createCell(column);
                                 String measurementName = objMetadataNames.get(objectName).get(column);
-                                DefaultObjMetadata metadataItem = object.getMetadataItem(measurementName);
+                                ObjMetadataI metadataItem = object.getMetadataItem(measurementName);
 
                                 // If there isn't a corresponding value for this object, set a blank cell
                                 if (metadataItem == null) {

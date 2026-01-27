@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
@@ -112,7 +112,7 @@ public class ExportVOCAnnotations extends AbstractSaver {
             writer.addOther("segmented", "0");
 
             for (ObjI inputObject:inputObjects.values()) {
-                DefaultObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
+                ObjMetadataI metadataItem = inputObject.getMetadataItem(metadataForClass);
                 String metadataValue = metadataItem == null ? "Null" : metadataItem.getValue();
 
                 double[][] extentsD = inputObject.getExtents(true, false);

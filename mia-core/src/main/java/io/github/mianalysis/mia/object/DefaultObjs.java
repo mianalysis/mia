@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -582,7 +582,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
 
             // Setting the measurements from the Module
             for (String measName : metadataNames) {
-                DefaultObjMetadata metadataItem = obj.getMetadataItem(measName);
+                ObjMetadataI metadataItem = obj.getMetadataItem(measName);
                 String value = metadataItem == null ? "" : metadataItem.getValue();
 
                 // Setting value
@@ -619,7 +619,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
             // Setting the measurements from the Module
             Set<String> metadataNames = obj.getMetadata().keySet();
             for (String metadataName : metadataNames) {
-                DefaultObjMetadata metadataItem = obj.getMetadataItem(metadataName);
+                ObjMetadataI metadataItem = obj.getMetadataItem(metadataName);
                 String value = metadataItem == null ? "" : metadataItem.getValue();
 
                 // Setting value

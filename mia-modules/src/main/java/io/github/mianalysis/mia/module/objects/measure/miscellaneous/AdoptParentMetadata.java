@@ -12,7 +12,8 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataFactories;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -61,7 +62,6 @@ public class AdoptParentMetadata extends Module {
     */
     public static final String METADATA_ITEM = "Metadata item";
 
-
     public static String getFullName(String parentObjectName, String metadataItem) {
         return "PARENT_STATS // " + parentObjectName + " // [" + metadataItem + "]";
     }
@@ -108,12 +108,12 @@ public class AdoptParentMetadata extends Module {
 
             for (Parameters collection : collections.values()) {
                 String metadataItemName = collection.getValue(METADATA_ITEM, workspace);
-                DefaultObjMetadata parentMetadataItem = parentObj.getMetadataItem(metadataItemName);
+                ObjMetadataI parentMetadataItem = parentObj.getMetadataItem(metadataItemName);
                 if (parentMetadataItem == null)
                     continue;
 
-                obj.addMetadataItem(
-                        new DefaultObjMetadata(getFullName(parentObjectsName, metadataItemName), parentMetadataItem.getValue()));
+                obj.addMetadataItem(ObjMetadataFactories.getDefaultFactory().createMetadata(
+                        getFullName(parentObjectsName, metadataItemName), parentMetadataItem.getValue()));
 
             }
 

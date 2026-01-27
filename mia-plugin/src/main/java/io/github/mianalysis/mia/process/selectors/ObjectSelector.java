@@ -90,7 +90,8 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.metadata.DefaultObjMetadata;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataFactories;
+import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -264,9 +265,11 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         updateOverlay();
 
         // Initialising output objects
-        outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ImageFactory.createImage(inputIpl.getTitle(), inputIpl));
+        outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName,
+                ImageFactory.createImage(inputIpl.getTitle(), inputIpl));
         if (outputTrackObjectsName != null)
-            outputTrackObjects = ObjsFactories.getDefaultFactory().createFromImage(outputTrackObjectsName, ImageFactory.createImage(inputIpl.getTitle(), inputIpl));
+            outputTrackObjects = ObjsFactories.getDefaultFactory().createFromImage(outputTrackObjectsName,
+                    ImageFactory.createImage(inputIpl.getTitle(), inputIpl));
 
         // Displaying the image and showing the control
         createControlPanel(instructionText);
@@ -361,7 +364,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         JMenuItem toolMenuItem = new JMenuItem(SELECT_EMPTY_SPACE_AT_CLICK);
         toolMenuItem.addActionListener(this);
         toolsMenu.add(toolMenuItem);
- 
+
         toolMenuItem = new JMenuItem(SELECT_EMPTY_SPACE_IN_REGION);
         toolMenuItem.addActionListener(this);
         toolsMenu.add(toolMenuItem);
@@ -1185,7 +1188,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 }
 
                 if (objRoi.getAssignedClass() != null)
-                    outputObject.addMetadataItem(new DefaultObjMetadata(ObjMetadataItems.CLASS, objRoi.getAssignedClass()));
+                    outputObject.addMetadataItem(ObjMetadataFactories.getDefaultFactory()
+                            .createMetadata(ObjMetadataItems.CLASS, objRoi.getAssignedClass()));
 
             }
         }
@@ -1509,7 +1513,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         for (ObjI inputObject : inputObjects.values()) {
             String assignedClass = null;
             if (metadataForClass != null) {
-                DefaultObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
+                ObjMetadataI metadataItem = inputObject.getMetadataItem(metadataForClass);
                 if (metadataItem == null)
                     assignedClass = "None";
                 else
