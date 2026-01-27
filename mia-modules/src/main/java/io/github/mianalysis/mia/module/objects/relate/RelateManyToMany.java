@@ -105,7 +105,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -481,9 +481,9 @@ public class RelateManyToMany extends Module {
             String linkedObjectName) {
         for (ObjI object : objCollection.values())
             if (object.getPartners(linkedObjectName) != null && object.getPartners(linkedObjectName).size() > 0)
-                object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 1));
+                object.addMeasurement(new MeasurementI(getFullName(linkedObjectName, Measurements.WAS_LINKED), 1));
             else
-                object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 0));
+                object.addMeasurement(new MeasurementI(getFullName(linkedObjectName, Measurements.WAS_LINKED), 0));
     }
 
     public RelateManyToMany(Modules modules) {

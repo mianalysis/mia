@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.ChildCountMeasurement;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -107,7 +107,7 @@ public class ChildObjectCount extends Module {
             else {
                 ObjsI children = obj.getChildren(childObjectsName);
                 int count = children == null ? 0 : children.size();
-                obj.addMeasurement(new Measurement(measurementName, count));
+                obj.addMeasurement(new MeasurementI(measurementName, count));
             }
 
         if (showOutput)

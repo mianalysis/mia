@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -224,10 +224,10 @@ public class MeasureObjectShape extends Module {
         Map<Integer, Result> results = new IntrinsicVolumesAnalyzer3D().analyzeRegions(tightIpl);
         Result result = results.values().iterator().next();
 
-        inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_CAL, result.surfaceArea));
-        inputObject.addMeasurement(new Measurement(Measurements.MEAN_BREADTH_CAL, result.meanBreadth));
-        inputObject.addMeasurement(new Measurement(Measurements.EULER_NUMBER, result.eulerNumber));
-        inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY,
+        inputObject.addMeasurement(new MeasurementI(Measurements.SURFACE_AREA_CAL, result.surfaceArea));
+        inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_BREADTH_CAL, result.meanBreadth));
+        inputObject.addMeasurement(new MeasurementI(Measurements.EULER_NUMBER, result.eulerNumber));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SPHERICITY,
                 IntrinsicVolumes3D.sphericity(result.volume, result.surfaceArea)));
 
     }
@@ -279,25 +279,25 @@ public class MeasureObjectShape extends Module {
                 // Adding the volume measurements
                 if (measureVolume) {
                     int nVoxels = inputObject.size();
-                    inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS, nVoxels));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.N_VOXELS, nVoxels));
 
                     double containedVolumePx = inputObject.getContainedVolume(true);
-                    inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.VOLUME_PX, containedVolumePx));
 
                     double containedVolumeCal = inputObject.getContainedVolume(false);
-                    inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.VOLUME_CAL, containedVolumeCal));
 
                     double baseAreaPx = calculateBaseAreaPx(inputObject);
-                    inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_PX, baseAreaPx));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.BASE_AREA_PX, baseAreaPx));
 
                     double dppXY = inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
 
                     double heightSlice = inputObject.getVolumeHeight(true, false);
-                    inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_SLICE, heightSlice));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.HEIGHT_SLICE, heightSlice));
 
                     double heightCal = inputObject.getVolumeHeight(false, false);
-                    inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_CAL, heightCal));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.HEIGHT_CAL, heightCal));
                 }
 
                 // If necessary analyses are included
@@ -323,8 +323,8 @@ public class MeasureObjectShape extends Module {
                 if (measureProjectedArea) {
                     double areaPx = projectedObject.size();
                     double areaCal = areaPx * projectedObject.getDppXY() * projectedObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_AREA_PX, areaPx));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_AREA_CAL, areaCal));
 
                 }
 
@@ -332,13 +332,13 @@ public class MeasureObjectShape extends Module {
                 if (measureProjectedDiameter) {
                     double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
                     double maxDistanceCal = maxDistancePx * inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_DIA_PX, maxDistancePx));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_DIA_CAL, maxDistanceCal));
 
                     double minFeretPx = projectedObject.getRoi(0).getFeretValues()[2];
                     double minFeretCal = minFeretPx * inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
 
                 }
 
@@ -347,11 +347,11 @@ public class MeasureObjectShape extends Module {
                     double areaPx = projectedObject.size();
                     double perimeterPx = projectedObject.getRoi(0).getLength();
                     double perimeterCal = perimeterPx * inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX, perimeterPx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_CAL, perimeterCal));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_PERIM_PX, perimeterPx));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_PERIM_CAL, perimeterCal));
 
                     double circularity = 4 * Math.PI * areaPx / (perimeterPx * perimeterPx);
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity));
+                    inputObject.addMeasurement(new MeasurementI(Measurements.PROJ_CIRCULARITY, circularity));
 
                 }
 

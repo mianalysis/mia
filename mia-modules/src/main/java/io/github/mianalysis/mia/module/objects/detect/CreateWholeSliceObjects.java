@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -126,14 +126,14 @@ public class CreateWholeSliceObjects extends Module {
                 connectivity, factory, false, 60, false);
 
         for (ObjI outputObject : outputObjects.values()) {
-            outputObject.addMeasurement(new Measurement(Measurements.TIMEPOINT, outputObject.getT()));
+            outputObject.addMeasurement(new MeasurementI(Measurements.TIMEPOINT, outputObject.getT()));
 
             switch (outputMode) {
                 case OutputModes.PER_SLICE:
                 default:
                     Point<Integer> pt = outputObject.getCoordinateIterator().next();
                     if (pt != null)
-                        outputObject.addMeasurement(new Measurement(Measurements.SLICE, pt.z));
+                        outputObject.addMeasurement(new MeasurementI(Measurements.SLICE, pt.z));
                     break;
             }
         }

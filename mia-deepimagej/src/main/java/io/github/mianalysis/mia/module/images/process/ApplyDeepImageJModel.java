@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -235,9 +235,9 @@ public class ApplyDeepImageJModel extends Module {
                         classificationClass = (int) Math.round(modelOutputArray[0]);
                     }
 
-                    inputImage.addMeasurement(new Measurement(Measurements.CLASSIFICATION_CLASS, classificationClass));
+                    inputImage.addMeasurement(new MeasurementI(Measurements.CLASSIFICATION_CLASS, classificationClass));
                     inputImage.addMeasurement(
-                            new Measurement(Measurements.CLASSIFICATION_PROBABILITY, classificationProbability));
+                            new MeasurementI(Measurements.CLASSIFICATION_PROBABILITY, classificationProbability));
 
                 }
 

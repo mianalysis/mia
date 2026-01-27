@@ -10,7 +10,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.math.CumStat;
@@ -136,7 +136,7 @@ public abstract class TextType extends Parameter {
                 if (image == null)
                     break;
 
-                Measurement measurement = image.getMeasurement(imMeasMatcher.group(2));
+                MeasurementI measurement = image.getMeasurement(imMeasMatcher.group(2));
                 if (measurement == null)
                     break;
 
@@ -167,7 +167,7 @@ public abstract class TextType extends Parameter {
                 String statistic = objMeasMatcher.group(3).toUpperCase();
                 CumStat cs = new CumStat();
                 for (ObjI obj : objs.values()) {
-                    Measurement measurement = obj.getMeasurement(measurementName);
+                    MeasurementI measurement = obj.getMeasurement(measurementName);
                     if (measurement == null)
                         continue;
 

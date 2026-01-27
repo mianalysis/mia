@@ -6,7 +6,7 @@ import java.util.HashMap;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 
 public class LabelFactory {
     public interface LabelModes {
@@ -106,7 +106,7 @@ public class LabelFactory {
             return IDs;
 
         for (ObjI object : objects.values()) {
-            Measurement measurement = object.getMeasurement(measurementName);
+            MeasurementI measurement = object.getMeasurement(measurementName);
             if (measurement == null || Double.isNaN(measurement.getValue()))
                 IDs.put(object.getID(), "NA");
             else

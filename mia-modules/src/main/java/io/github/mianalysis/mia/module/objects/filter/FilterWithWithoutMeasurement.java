@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -131,7 +131,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
             ObjI inputObject = iterator.next();
 
             // Removing the object if it has no children
-            Measurement measurement = inputObject.getMeasurement(measName);
+            MeasurementI measurement = inputObject.getMeasurement(measName);
             switch (filterMethod) {
                 case FilterMethods.WITHOUT_MEASUREMENT:
                     if (measurement == null || Double.isNaN(measurement.getValue())) {

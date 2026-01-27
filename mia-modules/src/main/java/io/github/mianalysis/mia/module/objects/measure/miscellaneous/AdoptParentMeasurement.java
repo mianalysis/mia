@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -107,12 +107,12 @@ public class AdoptParentMeasurement extends Module {
 
             for (Parameters collection : collections.values()) {
                 String measurementName = collection.getValue(MEASUREMENT, workspace);
-                Measurement parentMeasurement = parentObj.getMeasurement(measurementName);
+                MeasurementI parentMeasurement = parentObj.getMeasurement(measurementName);
                 if (parentMeasurement == null)
                     continue;
 
                 obj.addMeasurement(
-                        new Measurement(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
+                        new MeasurementI(getFullName(parentObjectsName, measurementName), parentMeasurement.getValue()));
 
             }
 

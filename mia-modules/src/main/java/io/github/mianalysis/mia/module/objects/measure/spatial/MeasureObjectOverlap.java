@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -202,13 +202,13 @@ public class MeasureObjectOverlap extends Module {
 
                 // Adding the measurements
                 obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOX_1), overlap));
+                        new MeasurementI(getFullName(inputObjects2Name, Measurements.OVERLAP_VOX_1), overlap));
                 obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_PX_1), overlapVolPx));
+                        new MeasurementI(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_PX_1), overlapVolPx));
                 obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_CAL_1), overlapVolCal));
+                        new MeasurementI(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_CAL_1), overlapVolCal));
                 obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_PERCENT_1), overlapPC));
+                        new MeasurementI(getFullName(inputObjects2Name, Measurements.OVERLAP_PERCENT_1), overlapPC));
 
                 writeProgressStatus(count.getAndIncrement(), total, "objects");
             };
@@ -232,13 +232,13 @@ public class MeasureObjectOverlap extends Module {
 
                 // Adding the measurements
                 obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOX_2), overlap));
+                        new MeasurementI(getFullName(inputObjects1Name, Measurements.OVERLAP_VOX_2), overlap));
                 obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_PX_2), overlapVolPx));
+                        new MeasurementI(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_PX_2), overlapVolPx));
                 obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_CAL_2), overlapVolCal));
+                        new MeasurementI(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_CAL_2), overlapVolCal));
                 obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_PERCENT_2), overlapPC));
+                        new MeasurementI(getFullName(inputObjects1Name, Measurements.OVERLAP_PERCENT_2), overlapPC));
 
                 writeProgressStatus(count.getAndIncrement(), total, "objects");
             };

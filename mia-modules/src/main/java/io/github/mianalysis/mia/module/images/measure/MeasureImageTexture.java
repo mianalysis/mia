@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -131,20 +131,20 @@ public class MeasureImageTexture extends Module {
         textureCalculator.calculate(inputImagePlus.getStack(), xOffs, yOffs, zOffs);
 
         // Acquiring measurements
-        Measurement ASMMeasurement = new Measurement(Measurements.ASM, textureCalculator.getASM());
+        MeasurementI ASMMeasurement = new MeasurementI(Measurements.ASM, textureCalculator.getASM());
         inputImage.addMeasurement(ASMMeasurement);
         writeStatus("ASM = " + ASMMeasurement.getValue());
 
-        Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST, textureCalculator.getContrast());
+        MeasurementI contrastMeasurement = new MeasurementI(Measurements.CONTRAST, textureCalculator.getContrast());
         inputImage.addMeasurement(contrastMeasurement);
         writeStatus("Contrast = " + contrastMeasurement.getValue());
 
-        Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,
+        MeasurementI correlationMeasurement = new MeasurementI(Measurements.CORRELATION,
                 textureCalculator.getCorrelation());
         inputImage.addMeasurement(correlationMeasurement);
         writeStatus("Correlation = " + correlationMeasurement.getValue());
 
-        Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY, textureCalculator.getEntropy());
+        MeasurementI entropyMeasurement = new MeasurementI(Measurements.ENTROPY, textureCalculator.getEntropy());
         inputImage.addMeasurement(entropyMeasurement);
         writeStatus("Entropy = " + entropyMeasurement.getValue());
 

@@ -16,13 +16,15 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 public interface ImageI<T extends RealType<T> & NativeType<T>> extends MeasurementProvider {
 
@@ -45,15 +47,25 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public void show(String title, @Nullable LUT lut, boolean normalise, String displayMode, @Nullable Overlay overlay);
 
-    public long getWidth();
+    public int getWidth();
 
-    public long getHeight();
+    public int getHeight();
 
-    public long getNChannels();
+    public int getNChannels();
 
-    public long getNSlices();
+    public int getNSlices();
 
-    public long getNFrames();
+    public int getNFrames();
+
+    public double getDppXY();
+
+    public double getDppZ();
+
+    public String getSpatialUnits();
+
+    public double getFrameInterval();
+
+    public Unit<Time> getTemporalUnit();
 
     public ImagePlus getImagePlus();
 
@@ -100,9 +112,9 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public ObjsI convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground);
 
-    public void addMeasurement(Measurement measurement);
+    public void addMeasurement(MeasurementI measurement);
 
-    public Measurement getMeasurement(String name);
+    public MeasurementI getMeasurement(String name);
 
     /**
      * Displays measurement values from a specific Module
@@ -127,7 +139,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
         // Setting the measurements from the Module
         for (String measName : measNames) {
-            Measurement measurement = getMeasurement(measName);
+            MeasurementI measurement = getMeasurement(measName);
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             // Setting value
@@ -150,7 +162,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
         // Setting the measurements from the Module
         int row = 0;
         for (String measName : measNames) {
-            Measurement measurement = getMeasurement(measName);
+            MeasurementI measurement = getMeasurement(measName);
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             // Setting value
@@ -187,9 +199,9 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
 
     public String getName();
 
-    public LinkedHashMap<String, Measurement> getMeasurements();
+    public LinkedHashMap<String, MeasurementI> getMeasurements();
 
-    public void setMeasurements(LinkedHashMap<String, Measurement> measurements);
+    public void setMeasurements(LinkedHashMap<String, MeasurementI> measurements);
 
     class GlobalImageRenderer {
         private static ImageRenderer globalImageRenderer = new ImagePlusRenderer();

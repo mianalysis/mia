@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.refs.collections;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -46,6 +46,6 @@ public class ObjMeasurementRefs extends TreeMap<String, ObjMeasurementRef>
 
     public void addBlankMeasurements(ObjI obj) {
         for (ObjMeasurementRef ref : values())
-            obj.addMeasurement(new Measurement(ref.getName(), Double.NaN));
+            obj.addMeasurement(new MeasurementI(ref.getName(), Double.NaN));
     }
 }

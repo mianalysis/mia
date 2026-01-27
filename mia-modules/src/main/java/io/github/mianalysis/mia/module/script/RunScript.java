@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -278,7 +278,7 @@ public class RunScript extends Module {
         
         movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
         
-        movedClasses.put("io.github.mianalysis.mia.object.Measurement", Measurement.class.getName());
+        movedClasses.put("io.github.mianalysis.mia.object.Measurement", MeasurementI.class.getName());
 
         for (String oldLocation : movedClasses.keySet()) {
             String newLocation = movedClasses.get(oldLocation);

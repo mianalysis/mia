@@ -52,7 +52,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -673,7 +673,7 @@ public class Exporter {
                 if (!imageMeasurement.isExportGlobal())
                     continue;
 
-                Measurement measurement = image.getMeasurement(imageMeasurement.getName());
+                MeasurementI measurement = image.getMeasurement(imageMeasurement.getName());
 
                 String headerName = getImageString(imageName, imageMeasurement.getNickname());
                 if (!colNumbers.containsKey(headerName))
@@ -725,7 +725,7 @@ public class Exporter {
                 // object
                 CumStat cs = new CumStat();
                 for (ObjI obj : objCollection.values()) {
-                    Measurement measurement = obj.getMeasurement(objectMeasurement.getName());
+                    MeasurementI measurement = obj.getMeasurement(objectMeasurement.getName());
                     if (measurement != null)
                         cs.addMeasure(measurement.getValue());
                 }
@@ -967,7 +967,7 @@ public class Exporter {
                         for (int column : measurementNames.get(objectName).keySet()) {
                             Cell measValueCell = objectValueRow.createCell(column);
                             String measurementName = measurementNames.get(objectName).get(column);
-                            Measurement measurement = object.getMeasurement(measurementName);
+                            MeasurementI measurement = object.getMeasurement(measurementName);
 
                             // If there isn't a corresponding value for this object, set a blank cell
                             if (measurement == null) {

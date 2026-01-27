@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -337,23 +337,23 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             }
 
             String name = getFullName(Measurements.NN_ID, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new Measurement(name, nearestNeighbour.getID()));
+            inputObject.addMeasurement(new MeasurementI(name, nearestNeighbour.getID()));
 
             name = getFullName(Measurements.NN_DISTANCE_PX, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new Measurement(name, minDist));
+            inputObject.addMeasurement(new MeasurementI(name, minDist));
 
             name = getFullName(Measurements.NN_DISTANCE_CAL, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new Measurement(name, minDist * dppXY));
+            inputObject.addMeasurement(new MeasurementI(name, minDist * dppXY));
 
         } else {
             String name = getFullName(Measurements.NN_ID, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new Measurement(name, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
 
             name = getFullName(Measurements.NN_DISTANCE_PX, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new Measurement(name, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
 
             name = getFullName(Measurements.NN_DISTANCE_CAL, nearestNeighbourName, referenceMode);
-            inputObject.addMeasurement(new Measurement(name, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(name, Double.NaN));
 
         }
     }

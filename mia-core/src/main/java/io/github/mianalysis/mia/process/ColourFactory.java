@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.process.math.CumStat;
 
 public class ColourFactory {
@@ -331,7 +331,7 @@ public class ColourFactory {
             // Default hue value in case none is assigned
             float H = 0f;
 
-            Measurement measurement = object.getMeasurement(measurementName);
+            MeasurementI measurement = object.getMeasurement(measurementName);
             if (measurement == null) {
                 hues.put(ID, -1f);
                 continue;

@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.object;
 
-import ij.ImagePlus;
 import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
+import io.github.mianalysis.mia.object.image.ImageI;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
@@ -24,7 +24,7 @@ public class DefaultObjsFactory implements ObjsFactoryI {
     }
 
     @Override
-    public ObjsI createFromImage(String name, ImagePlus imageForCalibration) {
+    public ObjsI createFromImage(String name, ImageI imageForCalibration) {
         return new DefaultObjs(name, imageForCalibration);
     }
 

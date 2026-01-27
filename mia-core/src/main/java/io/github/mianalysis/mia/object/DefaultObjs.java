@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -80,18 +80,18 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
 
     }
 
-    public DefaultObjs(String name, ImagePlus imageForCalibration) {
-        Calibration calibration = imageForCalibration.getCalibration();
+    public DefaultObjs(String name, ImageI imageForCalibration) {
+        // Calibration calibration = imageForCalibration.getCalibration();
 
         this.name = name;
         this.width = imageForCalibration.getWidth();
         this.height = imageForCalibration.getHeight();
         this.nSlices = imageForCalibration.getNSlices();
-        this.dppXY = calibration.getX(1);
-        this.dppZ = calibration.getZ(1);
-        this.spatialUnits = calibration.getUnits();
+        this.dppXY = imageForCalibration.getDppXY();
+        this.dppZ = imageForCalibration.getDppZ();
+        this.spatialUnits = imageForCalibration.getSpatialUnits();
         this.nFrames = imageForCalibration.getNFrames();
-        this.frameInterval = imageForCalibration.getCalibration().frameInterval;
+        this.frameInterval = imageForCalibration.getFrameInterval();
         this.temporalUnit = TemporalUnit.getOMEUnit();
 
     }
@@ -490,7 +490,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
 
             // Setting the measurements from the Module
             for (String measName : measNames) {
-                Measurement measurement = obj.getMeasurement(measName);
+                MeasurementI measurement = obj.getMeasurement(measName);
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
                 // Setting value
@@ -527,7 +527,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
             // Setting the measurements from the Module
             Set<String> measNames = obj.getMeasurements().keySet();
             for (String measName : measNames) {
-                Measurement measurement = obj.getMeasurement(measName);
+                MeasurementI measurement = obj.getMeasurement(measName);
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
                 // Setting value

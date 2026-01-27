@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -115,9 +115,9 @@ public class BinObjectsByMeasurement extends Module {
         int count = 0;
         int total = inputObjects.size();
         for (ObjI inputObject : inputObjects.values()) {
-            Measurement measurement = inputObject.getMeasurement(measurementName);
+            MeasurementI measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
-                inputObject.addMeasurement(new Measurement(getFullName(measurementName), Double.NaN));
+                inputObject.addMeasurement(new MeasurementI(getFullName(measurementName), Double.NaN));
                 continue;
             }
 
@@ -128,7 +128,7 @@ public class BinObjectsByMeasurement extends Module {
             bin = Math.min(bin, largestBin);
             bin = Math.max(bin, smallestBin);
 
-            inputObject.addMeasurement(new Measurement(getFullName(measurementName), bin));
+            inputObject.addMeasurement(new MeasurementI(getFullName(measurementName), bin));
 
             writeProgressStatus(++count, total, "objects");
 

@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -301,7 +301,7 @@ public class GetLocalObjectRegion extends Module {
                 if (parentObject == null)
                     return -1;
                 else {
-                    Measurement measurement = parentObject.getMeasurement(radiusMeasurement);
+                    MeasurementI measurement = parentObject.getMeasurement(radiusMeasurement);
                     if (measurement == null)
                         return -1;
                     radius = measurement.getValue();
@@ -336,9 +336,9 @@ public class GetLocalObjectRegion extends Module {
 
         switch (centroidSource) {
             case CentroidSources.MEASUREMENT:
-                Measurement xMeasurement = inputObject.getMeasurement(xMeasurementName);
-                Measurement yMeasurement = inputObject.getMeasurement(yMeasurementName);
-                Measurement zMeasurement = inputObject.getMeasurement(zMeasurementName);
+                MeasurementI xMeasurement = inputObject.getMeasurement(xMeasurementName);
+                MeasurementI yMeasurement = inputObject.getMeasurement(yMeasurementName);
+                MeasurementI zMeasurement = inputObject.getMeasurement(zMeasurementName);
 
                 if (xMeasurement == null || yMeasurement == null || (!inputObject.is2D() && zMeasurement == null))
                     return null;

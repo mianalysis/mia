@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -303,11 +303,11 @@ public class RelateManyToOne extends Module {
                     childObject.addParent(minLink);
                     minLink.addChild(childObject);
 
-                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                    childObject.addMeasurement(new MeasurementI(measurementNamePx, minDist));
+                    childObject.addMeasurement(new MeasurementI(measurementNameCal, minDist * dpp));
                 } else {
-                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                    childObject.addMeasurement(new MeasurementI(measurementNamePx, Double.NaN));
+                    childObject.addMeasurement(new MeasurementI(measurementNameCal, Double.NaN));
                 }
 
                 writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
@@ -374,11 +374,11 @@ public class RelateManyToOne extends Module {
                 if (minLink != null) {
                     childObject.addParent(minLink);
                     minLink.addChild(childObject);
-                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                    childObject.addMeasurement(new MeasurementI(measurementNamePx, minDist));
+                    childObject.addMeasurement(new MeasurementI(measurementNameCal, minDist * dpp));
                 } else {
-                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                    childObject.addMeasurement(new MeasurementI(measurementNamePx, Double.NaN));
+                    childObject.addMeasurement(new MeasurementI(measurementNameCal, Double.NaN));
                 }
                 writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
             };
@@ -466,12 +466,12 @@ public class RelateManyToOne extends Module {
                     childObject.addParent(minLink);
                     minLink.addChild(childObject);
 
-                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                    childObject.addMeasurement(new MeasurementI(measurementNamePx, minDist));
+                    childObject.addMeasurement(new MeasurementI(measurementNameCal, minDist * dpp));
 
                 } else {
-                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                    childObject.addMeasurement(new MeasurementI(measurementNamePx, Double.NaN));
+                    childObject.addMeasurement(new MeasurementI(measurementNameCal, Double.NaN));
 
                 }
 
@@ -500,7 +500,7 @@ public class RelateManyToOne extends Module {
                     ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 
-            parentObject.addMeasurement(new Measurement("MAX_DIST", maxDist));
+            parentObject.addMeasurement(new MeasurementI("MAX_DIST", maxDist));
 
         }
 
@@ -508,7 +508,7 @@ public class RelateManyToOne extends Module {
         double maxDist = parentObject.getMeasurement("MAX_DIST").getValue();
         double frac = Math.abs(minDist / maxDist);
         String measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObject.getName());
-        childObject.addMeasurement(new Measurement(measurementName, frac));
+        childObject.addMeasurement(new MeasurementI(measurementName, frac));
 
     }
 
@@ -570,7 +570,7 @@ public class RelateManyToOne extends Module {
                 childObject.addParent(parentObject);
 
                 // Adding the overlap as a measurement
-                Measurement measurement = new Measurement(getFullName(Measurements.OVERLAP_PC, parentObject.getName()));
+                MeasurementI measurement = new MeasurementI(getFullName(Measurements.OVERLAP_PC, parentObject.getName()));
                 measurement.setValue(overlap);
                 childObject.addMeasurement(measurement);
 
@@ -635,17 +635,17 @@ public class RelateManyToOne extends Module {
 
         for (ObjI parentObject : parentObjects.values()) {
             if (parentObject.getChildren(childObjects.getName()).size() == 0) {
-                parentObject.addMeasurement(new Measurement(parentMeasurementName, 0));
+                parentObject.addMeasurement(new MeasurementI(parentMeasurementName, 0));
             } else {
-                parentObject.addMeasurement(new Measurement(parentMeasurementName, 1));
+                parentObject.addMeasurement(new MeasurementI(parentMeasurementName, 1));
             }
         }
 
         for (ObjI childObject : childObjects.values()) {
             if (childObject.getParent(parentObjects.getName()) == null) {
-                childObject.addMeasurement(new Measurement(childMeasurementName, 0));
+                childObject.addMeasurement(new MeasurementI(childMeasurementName, 0));
             } else {
-                childObject.addMeasurement(new Measurement(childMeasurementName, 1));
+                childObject.addMeasurement(new MeasurementI(childMeasurementName, 1));
             }
         }
     }

@@ -34,7 +34,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -421,8 +421,8 @@ public class TrackObjects extends Module {
     }
 
     public static double getMeasurementCost(ObjI prevObj, ObjI currObj, String measurementName) {
-        Measurement currMeasurement = currObj.getMeasurement(measurementName);
-        Measurement prevMeasurement = prevObj.getMeasurement(measurementName);
+        MeasurementI currMeasurement = currObj.getMeasurement(measurementName);
+        MeasurementI prevMeasurement = prevObj.getMeasurement(measurementName);
 
         if (currMeasurement == null || prevMeasurement == null)
             return Double.NaN;
@@ -468,7 +468,7 @@ public class TrackObjects extends Module {
 
     public static double getPreviousStepDirectionCost(ObjI prevObj, ObjI currObj, ObjsI inputObjects) {
         // Get direction of previous object
-        Measurement prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
+        MeasurementI prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
 
         // If the previous object doesn't have a previous object (i.e. it was the
         // first), return a score of 0
@@ -542,8 +542,8 @@ public class TrackObjects extends Module {
         currObj.addPartner(prevObj);
 
         // Adding references to each other
-        prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
-        currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
+        prevObj.addMeasurement(new MeasurementI(Measurements.TRACK_NEXT_ID, currObj.getID()));
+        currObj.addMeasurement(new MeasurementI(Measurements.TRACK_PREV_ID, prevObj.getID()));
 
     }
 

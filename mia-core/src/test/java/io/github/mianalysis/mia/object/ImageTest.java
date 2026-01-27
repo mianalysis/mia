@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.type.NativeType;
@@ -170,9 +170,9 @@ public class ImageTest<T extends RealType<T> & NativeType<T>> {
         ImageI image = ImageFactory.createImage("Test_image", ipl);
 
         // Adding a couple of measurements
-        image.addMeasurement(new Measurement("Meas 1", 1.2));
-        image.addMeasurement(new Measurement("Second meas", -9));
-        image.addMeasurement(new Measurement("Meas 3.0", 3.0));
+        image.addMeasurement(new MeasurementI("Meas 1", 1.2));
+        image.addMeasurement(new MeasurementI("Second meas", -9));
+        image.addMeasurement(new MeasurementI("Meas 3.0", 3.0));
 
         // Checking the measurements are there
         assertEquals(3, image.getMeasurements().size());

@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -128,8 +128,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
     }
 
     public default ImageI convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
-            boolean nanBackground,
-            boolean verbose) {
+            boolean nanBackground, boolean verbose) {
         // Create output image
         ImageI image = createImage(outputName, bitDepth);
 
@@ -302,7 +301,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
 
             // Setting the measurements from the Module
             for (String measName : measNames) {
-                Measurement measurement = obj.getMeasurement(measName);
+                MeasurementI measurement = obj.getMeasurement(measName);
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
                 // Setting value
@@ -339,7 +338,7 @@ public interface ObjsI extends Map<Integer, ObjI>, SpatioTemporallyCalibrated {
             // Setting the measurements from the Module
             Set<String> measNames = obj.getMeasurements().keySet();
             for (String measName : measNames) {
-                Measurement measurement = obj.getMeasurement(measName);
+                MeasurementI measurement = obj.getMeasurement(measName);
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
                 // Setting value

@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
@@ -115,7 +115,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         int labelSize = parameters.getValue(LABEL_SIZE, workspace);
 
         // Storing the image calibration
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ipl);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         xRange = resampleRange(xRange, samplingRate);
         yRange = resampleRange(yRange, samplingRate);
@@ -209,7 +209,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
 
                         // Adding measurements
                         outputObject.setT(t);
-                        outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
+                        outputObject.addMeasurement(new MeasurementI(Measurements.SCORE, score));
 
                     }
 

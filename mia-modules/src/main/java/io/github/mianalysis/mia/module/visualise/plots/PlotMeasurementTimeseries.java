@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -165,7 +165,7 @@ public class PlotMeasurementTimeseries extends Module {
             yValues.put(xValue, Double.NaN);
 
         for (ObjI inputObject : trackObject.getChildren(objectsName).values()) {
-            Measurement measurement = inputObject.getMeasurement(measurementName);
+            MeasurementI measurement = inputObject.getMeasurement(measurementName);
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             yValues.put(inputObject.getT(), value);

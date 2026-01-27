@@ -37,6 +37,8 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
     private static ImageRenderer renderer = new ImgPlusRenderer();
@@ -479,27 +481,57 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     @Override
-    public long getWidth() {
-        return img.dimension(img.dimensionIndex(Axes.X));
+    public int getWidth() {
+        return (int) img.dimension(img.dimensionIndex(Axes.X));
     }
 
     @Override
-    public long getHeight() {
-        return img.dimension(img.dimensionIndex(Axes.Y));
+    public int getHeight() {
+        return (int) img.dimension(img.dimensionIndex(Axes.Y));
     }
 
     @Override
-    public long getNChannels() {
-        return img.dimension(img.dimensionIndex(Axes.CHANNEL));
+    public int getNChannels() {
+        return (int) img.dimension(img.dimensionIndex(Axes.CHANNEL));
     }
 
     @Override
-    public long getNSlices() {
-        return img.dimension(img.dimensionIndex(Axes.Z));
+    public int getNSlices() {
+        return (int) img.dimension(img.dimensionIndex(Axes.Z));
     }
 
     @Override
-    public long getNFrames() {
-        return img.dimension(img.dimensionIndex(Axes.TIME));
+    public String getSpatialUnits() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSpatialUnits'");
+    }
+
+    @Override
+    public int getNFrames() {
+        return (int) img.dimension(img.dimensionIndex(Axes.TIME));
+    }
+
+    @Override
+    public double getDppXY() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDppXY'");
+    }
+
+    @Override
+    public double getDppZ() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDppZ'");
+    }
+
+    @Override
+    public double getFrameInterval() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFrameInterval'");
+    }
+
+    @Override
+    public Unit<Time> getTemporalUnit() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTemporalUnit'");
     }
 }

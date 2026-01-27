@@ -361,7 +361,7 @@ public class IdentifyObjects extends Module {
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
 
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         if (detectionMode.equals(DetectionModes.THREE_D))
             nSlices = 1;

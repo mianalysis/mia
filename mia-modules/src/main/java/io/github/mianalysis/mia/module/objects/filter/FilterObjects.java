@@ -33,7 +33,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -398,7 +398,7 @@ public class FilterObjects extends Module implements ActionListener {
             ObjI inputObject = iterator.next();
 
             // Removing the object if it has no children
-            Measurement measurement = inputObject.getMeasurement(measurementName);
+            MeasurementI measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
                 if (remove)
                     processRemoval(inputObject, outputObjects, iterator);
@@ -426,7 +426,7 @@ public class FilterObjects extends Module implements ActionListener {
         while (iterator.hasNext()) {
             ObjI inputObject = iterator.next();
 
-            Measurement measurement = inputObject.getMeasurement(measurementName);
+            MeasurementI measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
                 if (remove)
                     processRemoval(inputObject, outputObjects, iterator);

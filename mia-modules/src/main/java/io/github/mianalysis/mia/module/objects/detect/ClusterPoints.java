@@ -253,7 +253,7 @@ public class ClusterPoints extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         // Getting parameters
         String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);

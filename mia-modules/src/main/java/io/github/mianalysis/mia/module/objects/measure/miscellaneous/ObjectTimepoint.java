@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -75,7 +75,7 @@ public class ObjectTimepoint extends Module {
             return Status.PASS;
 
         for (ObjI obj : objects.values())
-            obj.addMeasurement(new Measurement("TIMEPOINT", obj.getT()));
+            obj.addMeasurement(new MeasurementI("TIMEPOINT", obj.getT()));
 
         if (showOutput)
             objects.showMeasurements(this, modules);

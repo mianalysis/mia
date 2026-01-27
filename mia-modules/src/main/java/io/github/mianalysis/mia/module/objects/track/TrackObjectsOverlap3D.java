@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.objects.track.trackmate.OverlapTracker3DF
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -75,7 +75,7 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
             double iou = Double.NaN;
             if (spot.getFeatures().containsKey(Features.IoU))
                 iou = spot.getFeature(Features.IoU);
-            inputObject.addMeasurement(new Measurement(Measurements.IOU, iou));
+            inputObject.addMeasurement(new MeasurementI(Measurements.IOU, iou));
 
         }
     }

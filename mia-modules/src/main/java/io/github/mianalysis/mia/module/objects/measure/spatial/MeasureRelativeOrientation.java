@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -359,7 +359,7 @@ public class MeasureRelativeOrientation extends Module {
             Point<Double> referencePoint, String orientationMode, String measurementReference) {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
-                Measurement measurement = object.getMeasurement(xyOriMeasName);
+                MeasurementI measurement = object.getMeasurement(xyOriMeasName);
                 if (measurement == null) {
                     assignMissingMeasurements(object, xyOriMeasName, xzOriMeasName, orientationMode,
                             measurementReference);
@@ -370,7 +370,7 @@ public class MeasureRelativeOrientation extends Module {
 
                 // Adding the measurement
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, measurementReference);
-                object.addMeasurement(new Measurement(measurementName, xyAngle));
+                object.addMeasurement(new MeasurementI(measurementName, xyAngle));
 
                 break;
         }
@@ -381,7 +381,7 @@ public class MeasureRelativeOrientation extends Module {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, measurementReference);
-                object.addMeasurement(new Measurement(measurementName, Double.NaN));
+                object.addMeasurement(new MeasurementI(measurementName, Double.NaN));
 
                 break;
         }

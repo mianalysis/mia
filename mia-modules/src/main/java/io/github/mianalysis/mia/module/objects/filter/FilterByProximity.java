@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -365,11 +365,11 @@ class MeasurementComparator implements Comparator<ObjI> {
         Double val1 = Double.NaN;
         Double val2 = Double.NaN;
 
-        Measurement meas1 = o1.getMeasurement(measurementName);
+        MeasurementI meas1 = o1.getMeasurement(measurementName);
         if (meas1 != null)
             val1 = meas1.getValue();
 
-        Measurement meas2 = o2.getMeasurement(measurementName);
+        MeasurementI meas2 = o2.getMeasurement(measurementName);
         if (meas2 != null)
             val2 = meas2.getValue();
 

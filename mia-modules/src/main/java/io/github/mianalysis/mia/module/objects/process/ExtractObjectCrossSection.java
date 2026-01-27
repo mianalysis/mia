@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -122,7 +122,7 @@ public class ExtractObjectCrossSection extends Module {
         return "Extracts XY-plane cross-sections of specified objects.  The extracted cross-sections are stored as separate objects, which are children of the associated input object.  Slice indicies can be specified as fixed values or relative to image/object measurements (e.g. relative to the object centroids).";
     }
 
-    static int[] applyIndexOffset(int[] inputIndices, Measurement measurement) {
+    static int[] applyIndexOffset(int[] inputIndices, MeasurementI measurement) {
         int[] outputIndices = new int[inputIndices.length];
 
         int referencePoint = (int) Math.round(measurement.getValue());
@@ -189,7 +189,7 @@ public class ExtractObjectCrossSection extends Module {
         switch (referenceMode) {
             case ReferenceModes.IMAGE_MEASUREMENT:
                 ImageI imageForMeasurement = workspace.getImage(imageForMeasurementName);
-                Measurement imageMeasurement = imageForMeasurement.getMeasurement(imageMeasurementName);
+                MeasurementI imageMeasurement = imageForMeasurement.getMeasurement(imageMeasurementName);
                 indices = applyIndexOffset(indices, imageMeasurement);
                 break;
         }
@@ -198,7 +198,7 @@ public class ExtractObjectCrossSection extends Module {
             int[] finalIndices = indices;
             switch (referenceMode) {
                 case ReferenceModes.OBJECT_MEASUREMENT:
-                    Measurement objectMeasurement = inputObject.getMeasurement(objectMeasurementName);
+                    MeasurementI objectMeasurement = inputObject.getMeasurement(objectMeasurementName);
                     finalIndices = applyIndexOffset(indices, objectMeasurement);
                     break;
             }

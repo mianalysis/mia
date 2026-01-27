@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -243,14 +243,14 @@ public class MeasureSpecificWidth extends Module {
     }
 
     static void addMeasurements(ObjI obj, WidthMeasurementResult result, String prefix) {
-        obj.addMeasurement(new Measurement(getFullName(Measurements.WIDTH_PX, prefix), result.calculateWidth(true)));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.WIDTH_CAL, prefix), result.calculateWidth(false)));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.X1_PX, prefix), result.getEnd1().x));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.Y1_PX, prefix), result.getEnd1().y));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.Z1_SLICE, prefix), result.getEnd1().z));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.X2_PX, prefix), result.getEnd2().x));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.Y2_PX, prefix), result.getEnd2().y));
-        obj.addMeasurement(new Measurement(getFullName(Measurements.Z2_SLICE, prefix), result.getEnd2().z));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.WIDTH_PX, prefix), result.calculateWidth(true)));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.WIDTH_CAL, prefix), result.calculateWidth(false)));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.X1_PX, prefix), result.getEnd1().x));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.Y1_PX, prefix), result.getEnd1().y));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.Z1_SLICE, prefix), result.getEnd1().z));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.X2_PX, prefix), result.getEnd2().x));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.Y2_PX, prefix), result.getEnd2().y));
+        obj.addMeasurement(new MeasurementI(getFullName(Measurements.Z2_SLICE, prefix), result.getEnd2().z));
 
     }
 

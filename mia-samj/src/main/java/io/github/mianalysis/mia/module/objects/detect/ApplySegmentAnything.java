@@ -271,7 +271,7 @@ public class ApplySegmentAnything extends Module {
         }
 
         // Creating output objects
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage.getImagePlus());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         int count = 0;
         int total = inputObjects.size();

@@ -188,7 +188,7 @@ public class CellposeDetection extends Module {
 
         int nFrames = inputImage.getImagePlus().getNFrames();
         int nSlices = inputImage.getImagePlus().getNSlices();
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage.getImagePlus());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         if (dimensionMode.equals(DimensionModes.TWOD)) {
             int count = 0;

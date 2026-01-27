@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -233,7 +233,7 @@ public class DuplicateAcrossTime extends Module {
         // Getting start and end frames
         switch (startFrameMode) {
             case FrameModes.IMAGE_MEASUREMENT:
-                Measurement startMeas = workspace.getImage(startImageName).getMeasurement(startImageMeasurementName);
+                MeasurementI startMeas = workspace.getImage(startImageName).getMeasurement(startImageMeasurementName);
                 startFrame = (int) Math.round(startMeas.getValue());
                 startFrame = startFrame + startOffset;
                 break;
@@ -241,7 +241,7 @@ public class DuplicateAcrossTime extends Module {
 
         switch (endMode) {
             case FrameModes.IMAGE_MEASUREMENT:
-                Measurement endMeas = workspace.getImage(endImageName).getMeasurement(endImageMeasurementName);
+                MeasurementI endMeas = workspace.getImage(endImageName).getMeasurement(endImageMeasurementName);
                 endFrame = (int) Math.round(endMeas.getValue());
                 endFrame = endFrame + endOffset;
                 break;

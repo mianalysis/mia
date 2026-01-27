@@ -53,7 +53,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import net.imagej.Dataset;
@@ -288,11 +287,11 @@ public class StarDistDetection extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
-        ImageI image = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = image.getImagePlus();
+        ImageI inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Creating output object collection
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ipl);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         ImageJ ij = new ImageJ();
         Context context = MIA.getIJService().context();
@@ -325,10 +324,10 @@ public class StarDistDetection extends Module {
         paramsNMS.put("outputType", "Polygons");
 
         int count = 0;
-        int total = ipl.getNFrames() * ipl.getNSlices();
-        for (int t = 0; t < ipl.getNFrames(); t++) {
-            for (int z = 0; z < ipl.getNSlices(); z++) {
-                ImageI subs = ExtractSubstack.extractSubstack(image, "Subs", "1-end", String.valueOf(z + 1),
+        int total = inputIpl.getNFrames() * inputIpl.getNSlices();
+        for (int t = 0; t < inputIpl.getNFrames(); t++) {
+            for (int z = 0; z < inputIpl.getNSlices(); z++) {
+                ImageI subs = ExtractSubstack.extractSubstack(inputImage, "Subs", "1-end", String.valueOf(z + 1),
                         String.valueOf(t + 1));
                 ImgPlus img = subs.getImgPlus();
                 DefaultDataset dataset = new DefaultDataset(context, img);
@@ -373,7 +372,7 @@ public class StarDistDetection extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput) {
-            ImagePlus overlayIpl = image.getImagePlus().duplicate();
+            ImagePlus overlayIpl = inputImage.getImagePlus().duplicate();
 
             HashMap<Integer, Float> hues = ColourFactory.getIDHues(outputObjects, true);
             HashMap<Integer, Color> colours = ColourFactory.getColours(hues);

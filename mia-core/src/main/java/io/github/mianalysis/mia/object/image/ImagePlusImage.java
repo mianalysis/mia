@@ -27,6 +27,8 @@ import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
     private static ImageRenderer renderer = new ImagePlusRenderer();
@@ -53,7 +55,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     // PUBLIC METHODS
 
     public ObjsI initialiseEmptyObjs(String outputObjectsName) {
-        return ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, imagePlus);
+        return ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, this);
 
     }
 
@@ -396,27 +398,52 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     @Override
-    public long getWidth() {
+    public int getWidth() {
         return imagePlus.getWidth();
     }
 
     @Override
-    public long getHeight() {
+    public int getHeight() {
         return imagePlus.getHeight();
     }
 
     @Override
-    public long getNChannels() {
+    public int getNChannels() {
         return imagePlus.getNChannels();
     }
 
     @Override
-    public long getNSlices() {
+    public int getNSlices() {
         return imagePlus.getNSlices();
     }
 
     @Override
-    public long getNFrames() {
+    public int getNFrames() {
         return imagePlus.getNFrames();
+    }
+
+    @Override
+    public double getDppXY() {
+        return imagePlus.getCalibration().pixelWidth;
+    }
+
+    @Override
+    public double getDppZ() {
+        return imagePlus.getCalibration().pixelDepth;
+    }
+
+    @Override
+    public String getSpatialUnits() {
+        return imagePlus.getCalibration().getUnits();
+    }
+
+    @Override
+    public double getFrameInterval() {
+        return imagePlus.getCalibration().frameInterval;
+    }
+
+    @Override
+    public Unit<Time> getTemporalUnit() {
+        return TemporalUnit.getOMEUnit();
     }
 }

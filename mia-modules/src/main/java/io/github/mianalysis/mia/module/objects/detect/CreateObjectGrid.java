@@ -93,7 +93,7 @@ public class CreateObjectGrid extends Module {
 
         // Creating output objects
         ImageI inputImage = workspace.getImages().get(inputImageName);
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage.getImagePlus());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         double imageW = inputImage.getWidth();
         double imageH = inputImage.getHeight();

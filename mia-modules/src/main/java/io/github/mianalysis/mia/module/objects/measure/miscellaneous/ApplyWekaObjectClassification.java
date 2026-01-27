@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -177,7 +177,7 @@ public class ApplyWekaObjectClassification extends Module {
     public static void addProbabilityMeasurements(ObjI inputObject, Instances instances, double[] classification) {
         for (int i = 0; i < instances.numClasses(); i++) {
             String measName = getProbabilityMeasurementName(instances.classAttribute().value(i));
-            Measurement measurement = new Measurement(measName, classification[i]);
+            MeasurementI measurement = new MeasurementI(measName, classification[i]);
             inputObject.addMeasurement(measurement);
         }
     }
@@ -216,7 +216,7 @@ public class ApplyWekaObjectClassification extends Module {
         for (ObjI inputObject : inputObjects.values()) {
             double[] objAttr = new double[measurementNames.size() - 1];
             for (int i = 0; i < measurementNames.size() - 1; i++) {
-                Measurement measurement = inputObject.getMeasurement(measurementNames.get(i));
+                MeasurementI measurement = inputObject.getMeasurement(measurementNames.get(i));
 
                 // Objects with missing measurements will cause problems for normalisation
                 if (measurement == null || Double.isNaN(measurement.getValue()))
@@ -248,7 +248,7 @@ public class ApplyWekaObjectClassification extends Module {
                 addProbabilityMeasurements(inputObject, instances, classification);
 
                 int classIndex = (int) classifier.classifyInstance(instances.get(i));
-                inputObject.addMeasurement(new Measurement(classMeasName, classIndex));
+                inputObject.addMeasurement(new MeasurementI(classMeasName, classIndex));
                 inputObject.addMetadataItem(
                         new ObjMetadata(ObjMetadataItems.CLASS, instances.classAttribute().value(classIndex)));
 

@@ -316,12 +316,12 @@ public class LoadObjectsFromROIs extends Module {
         }
 
         // Creating output objects
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, refImage.getImagePlus());
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, refImage);
         workspace.addObjects(outputObjects);
 
         ObjsI trackObjects = null;
         if (assignTracks) {
-            trackObjects = ObjsFactories.getDefaultFactory().createFromImage(trackObjectsName, refImage.getImagePlus());
+            trackObjects = ObjsFactories.getDefaultFactory().createFromImage(trackObjectsName, refImage);
             workspace.addObjects(trackObjects);
         }
 

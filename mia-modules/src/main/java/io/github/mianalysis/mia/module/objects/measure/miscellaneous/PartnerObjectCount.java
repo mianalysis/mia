@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.PartnerCountMeasurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -106,7 +106,7 @@ public class PartnerObjectCount extends Module {
             else {
                 ObjsI partners = obj.getPartners(partnerObjectsName);
                 int count = partners == null ? 0 : partners.size();
-                obj.addMeasurement(new Measurement(measurementName, count));
+                obj.addMeasurement(new MeasurementI(measurementName, count));
             }
 
         if (showOutput)

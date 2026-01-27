@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -86,13 +86,13 @@ public class MeasureImageIntensity extends Module {
         StackStatistics statistics = new StackStatistics(inputImagePlus);
 
         // Adding measurements to image
-        inputImage.addMeasurement(new Measurement(Measurements.MEAN, statistics.mean));
-        inputImage.addMeasurement(new Measurement(Measurements.MEDIAN, statistics.median));
-        inputImage.addMeasurement(new Measurement(Measurements.MODE, statistics.mode));
-        inputImage.addMeasurement(new Measurement(Measurements.MIN, statistics.min));
-        inputImage.addMeasurement(new Measurement(Measurements.MAX, statistics.max));
-        inputImage.addMeasurement(new Measurement(Measurements.STDEV, statistics.stdDev));
-        inputImage.addMeasurement(new Measurement(Measurements.SUM, statistics.mean * statistics.longPixelCount));
+        inputImage.addMeasurement(new MeasurementI(Measurements.MEAN, statistics.mean));
+        inputImage.addMeasurement(new MeasurementI(Measurements.MEDIAN, statistics.median));
+        inputImage.addMeasurement(new MeasurementI(Measurements.MODE, statistics.mode));
+        inputImage.addMeasurement(new MeasurementI(Measurements.MIN, statistics.min));
+        inputImage.addMeasurement(new MeasurementI(Measurements.MAX, statistics.max));
+        inputImage.addMeasurement(new MeasurementI(Measurements.STDEV, statistics.stdDev));
+        inputImage.addMeasurement(new MeasurementI(Measurements.SUM, statistics.mean * statistics.longPixelCount));
 
         if (showOutput)
             inputImage.showMeasurements(this);

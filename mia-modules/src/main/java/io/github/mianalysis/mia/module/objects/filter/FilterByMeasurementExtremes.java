@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -122,7 +122,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         Iterator<ObjI> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             ObjI inputObject = iterator.next();
-            Measurement measurement = inputObject.getMeasurement(measName);
+            MeasurementI measurement = inputObject.getMeasurement(measName);
             if (measurement == null)
                 continue;
 
@@ -155,7 +155,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
                 if (perTimepoint && obj.getT() != t)
                     continue;
 
-                Measurement measurement = obj.getMeasurement(measurementName);
+                MeasurementI measurement = obj.getMeasurement(measurementName);
                 if (measurement == null)
                     continue;
 

@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectMeasurement extends MacroOperation {
@@ -37,7 +37,7 @@ public class MIA_GetObjectMeasurement extends MacroOperation {
         ObjI obj = objCollection.get(objectID);
 
         // Getting the measurement
-        Measurement measurement = obj.getMeasurement(measurementName);
+        MeasurementI measurement = obj.getMeasurement(measurementName);
         if (measurement == null) return "";
 
         // Returning measurement value

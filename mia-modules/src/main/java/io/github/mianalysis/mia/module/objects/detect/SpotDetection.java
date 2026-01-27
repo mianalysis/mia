@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -250,22 +250,22 @@ public class SpotDetection extends Module {
         double dppXY = spotObject.getDppXY();
         double dppZ = spotObject.getDppZ();
 
-        spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
-        spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
-        spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
+        spotObject.addMeasurement(new MeasurementI(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
+        spotObject.addMeasurement(new MeasurementI(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
+        spotObject.addMeasurement(new MeasurementI(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
 
         if (doSubpixel) {
-            spotObject.addMeasurement(new Measurement(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
+            spotObject.addMeasurement(new MeasurementI(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
             spotObject.addMeasurement(
-                    new Measurement(Measurements.X_CENTROID_CAL, spot.getFeature(Spot.POSITION_X) * dppXY));
+                    new MeasurementI(Measurements.X_CENTROID_CAL, spot.getFeature(Spot.POSITION_X) * dppXY));
 
-            spotObject.addMeasurement(new Measurement(Measurements.Y_CENTROID_PX, spot.getFeature(Spot.POSITION_Y)));
+            spotObject.addMeasurement(new MeasurementI(Measurements.Y_CENTROID_PX, spot.getFeature(Spot.POSITION_Y)));
             spotObject.addMeasurement(
-                    new Measurement(Measurements.Y_CENTROID_CAL, spot.getFeature(Spot.POSITION_Y) * dppXY));
+                    new MeasurementI(Measurements.Y_CENTROID_CAL, spot.getFeature(Spot.POSITION_Y) * dppXY));
 
-            spotObject.addMeasurement(new Measurement(Measurements.Z_CENTROID_SLICE, spot.getFeature(Spot.POSITION_Z)));
+            spotObject.addMeasurement(new MeasurementI(Measurements.Z_CENTROID_SLICE, spot.getFeature(Spot.POSITION_Z)));
             spotObject.addMeasurement(
-                    new Measurement(Measurements.Z_CENTROID_CAL, spot.getFeature(Spot.POSITION_Z) * dppZ));
+                    new MeasurementI(Measurements.Z_CENTROID_CAL, spot.getFeature(Spot.POSITION_Z) * dppZ));
         }
     }
 
@@ -343,7 +343,7 @@ public class SpotDetection extends Module {
         ImageI inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromImage(spotObjectsName, ipl);
+        ObjsI spotObjects = ObjsFactories.getDefaultFactory().createFromImage(spotObjectsName, inputImage);
         workspace.addObjects(spotObjects);
 
         switch (detectionMode) {

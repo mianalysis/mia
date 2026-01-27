@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
@@ -101,7 +101,7 @@ public abstract class ExpectedObjects {
                     HashMap<String, Double> measurement = measurements.get(ID);
 
                     for (String measurementName : measurement.keySet()) {
-                        testObject.addMeasurement(new Measurement(measurementName, measurement.get(measurementName)));
+                        testObject.addMeasurement(new MeasurementI(measurementName, measurement.get(measurementName)));
                     }
                 }
             }

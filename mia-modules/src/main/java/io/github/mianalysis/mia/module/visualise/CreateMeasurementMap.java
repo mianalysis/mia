@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -194,7 +194,7 @@ public class CreateMeasurementMap extends Module {
         int nTotal = objects.size();
         for (ObjI object : objects.values()) {
             // Getting measurement value. Skip if null or NaN.
-            Measurement measurement = object.getMeasurement(measurementName);
+            MeasurementI measurement = object.getMeasurement(measurementName);
             if (measurement == null)
                 continue;
             double measurementValue = measurement.getValue();
@@ -231,7 +231,7 @@ public class CreateMeasurementMap extends Module {
                 continue;
 
             // Getting measurement value. Skip if null or NaN.
-            Measurement measurement = parentObject.getMeasurement(measurementName);
+            MeasurementI measurement = parentObject.getMeasurement(measurementName);
             if (measurement == null)
                 continue;
 

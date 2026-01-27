@@ -108,7 +108,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -312,8 +312,8 @@ public class RelateOneToOne extends Module {
             ObjI object2 = inputObjects2.get(ID2);
 
             // Adding measurements
-            object1.addMeasurement(new Measurement(getFullName(object2.getName(), Measurements.WAS_LINKED1), 1));
-            object2.addMeasurement(new Measurement(getFullName(object1.getName(), Measurements.WAS_LINKED1), 1));
+            object1.addMeasurement(new MeasurementI(getFullName(object2.getName(), Measurements.WAS_LINKED1), 1));
+            object2.addMeasurement(new MeasurementI(getFullName(object1.getName(), Measurements.WAS_LINKED1), 1));
 
             // Adding partnerships
             object1.addPartner(object2);
@@ -334,13 +334,13 @@ public class RelateOneToOne extends Module {
         String name = getFullName(inputObjects2.getName(), Measurements.WAS_LINKED1);
         for (ObjI object1 : inputObjects1.values()) {
             if (object1.getMeasurement(name) == null)
-                object1.addMeasurement(new Measurement(name, 0));
+                object1.addMeasurement(new MeasurementI(name, 0));
         }
 
         name = getFullName(inputObjects1.getName(), Measurements.WAS_LINKED1);
         for (ObjI object2 : inputObjects2.values()) {
             if (object2.getMeasurement(name) == null)
-                object2.addMeasurement(new Measurement(name, 0));
+                object2.addMeasurement(new MeasurementI(name, 0));
         }
     }
 
@@ -362,13 +362,13 @@ public class RelateOneToOne extends Module {
         double fraction2 = nPoints2 / nTotalPoints;
 
         String name = getFullName(object1.getName(), Measurements.FRACTION_1);
-        outputObject.addMeasurement(new Measurement(name, fraction1));
+        outputObject.addMeasurement(new MeasurementI(name, fraction1));
         name = getFullName(object1.getName(), Measurements.N_VOXELS1);
-        outputObject.addMeasurement(new Measurement(name, nPoints1));
+        outputObject.addMeasurement(new MeasurementI(name, nPoints1));
         name = getFullName(object1.getName(), Measurements.FRACTION_2);
-        outputObject.addMeasurement(new Measurement(name, fraction2));
+        outputObject.addMeasurement(new MeasurementI(name, fraction2));
         name = getFullName(object2.getName(), Measurements.N_VOXELS2);
-        outputObject.addMeasurement(new Measurement(name, nPoints2));
+        outputObject.addMeasurement(new MeasurementI(name, nPoints2));
 
         return outputObject;
 

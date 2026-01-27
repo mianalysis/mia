@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -366,36 +366,36 @@ public class MeasureObjectCurvature extends Module {
         // Adding measurements
         if (absoluteCurvature) {
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMean()));
+                    new MeasurementI(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMean()));
             inputObject
-                    .addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMin()));
+                    .addMeasurement(new MeasurementI(Measurements.MIN_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMin()));
             inputObject
-                    .addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMax()));
+                    .addMeasurement(new MeasurementI(Measurements.MAX_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMax()));
             inputObject
-                    .addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getStd()));
+                    .addMeasurement(new MeasurementI(Measurements.STD_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getStd()));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMean() / dppXY));
+                    new MeasurementI(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMean() / dppXY));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMin() / dppXY));
+                    new MeasurementI(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMin() / dppXY));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMax() / dppXY));
+                    new MeasurementI(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMax() / dppXY));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getStd() / dppXY));
+                    new MeasurementI(Measurements.STD_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getStd() / dppXY));
         }
 
         if (signedCurvature) {
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_PX, cumStatSigned.getMean()));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, cumStatSigned.getMin()));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, cumStatSigned.getMax()));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, cumStatSigned.getStd()));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_SIGNED_CURVATURE_PX, cumStatSigned.getMean()));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_SIGNED_CURVATURE_PX, cumStatSigned.getMin()));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_SIGNED_CURVATURE_PX, cumStatSigned.getMax()));
+            inputObject.addMeasurement(new MeasurementI(Measurements.STD_SIGNED_CURVATURE_PX, cumStatSigned.getStd()));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, cumStatSigned.getMean() / dppXY));
+                    new MeasurementI(Measurements.MEAN_SIGNED_CURVATURE_CAL, cumStatSigned.getMean() / dppXY));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, cumStatSigned.getMin() / dppXY));
+                    new MeasurementI(Measurements.MIN_SIGNED_CURVATURE_CAL, cumStatSigned.getMin() / dppXY));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, cumStatSigned.getMax() / dppXY));
+                    new MeasurementI(Measurements.MAX_SIGNED_CURVATURE_CAL, cumStatSigned.getMax() / dppXY));
             inputObject.addMeasurement(
-                    new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, cumStatSigned.getStd() / dppXY));
+                    new MeasurementI(Measurements.STD_SIGNED_CURVATURE_CAL, cumStatSigned.getStd() / dppXY));
         }
     }
 
@@ -428,16 +428,16 @@ public class MeasureObjectCurvature extends Module {
             }
         }
 
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX, pathLength));
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL, pathLength * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SPLINE_LENGTH_PX, pathLength));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SPLINE_LENGTH_CAL, pathLength * dppXY));
 
         if (useReference) {
             Point<Integer> firstPoint = longestPath.iterator().next();
 
-            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, firstPoint.getX()));
-            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, firstPoint.getY()));
-            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, (posMin / pathLength)));
-            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, (posMax / pathLength)));
+            inputObject.addMeasurement(new MeasurementI(Measurements.FIRST_POINT_X_PX, firstPoint.getX()));
+            inputObject.addMeasurement(new MeasurementI(Measurements.FIRST_POINT_Y_PX, firstPoint.getY()));
+            inputObject.addMeasurement(new MeasurementI(Measurements.REL_LOC_OF_MIN_CURVATURE, (posMin / pathLength)));
+            inputObject.addMeasurement(new MeasurementI(Measurements.REL_LOC_OF_MAX_CURVATURE, (posMax / pathLength)));
 
         }
     }
@@ -474,45 +474,45 @@ public class MeasureObjectCurvature extends Module {
 
         double angle = Math.toDegrees(Math.atan2(x1 * y2 - y1 * x2, x1 * x2 + y1 * y2));
 
-        inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS, angle));
+        inputObject.addMeasurement(new MeasurementI(Measurements.HEAD_TAIL_ANGLE_DEGS, angle));
 
     }
 
     private void initialiseObjectMeasurements(ObjI inputObject, boolean absoluteCurvature, boolean signedCurvature,
             boolean useReference) {
         if (absoluteCurvature) {
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.STD_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
         }
 
         if (signedCurvature) {
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.STD_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MEAN_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MIN_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.MAX_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.STD_SIGNED_CURVATURE_CAL, Double.NaN));
         }
 
         if (useReference) {
-            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.FIRST_POINT_X_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.FIRST_POINT_Y_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.REL_LOC_OF_MIN_CURVATURE, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.REL_LOC_OF_MAX_CURVATURE, Double.NaN));
 
         }
 
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX, Double.NaN));
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL, Double.NaN));
-        inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS, Double.NaN));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SPLINE_LENGTH_PX, Double.NaN));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SPLINE_LENGTH_CAL, Double.NaN));
+        inputObject.addMeasurement(new MeasurementI(Measurements.HEAD_TAIL_ANGLE_DEGS, Double.NaN));
 
     }
 
@@ -582,8 +582,8 @@ public class MeasureObjectCurvature extends Module {
                     splineObject.addCoord(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);
-                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_PX,spline.get(vertex)));
-                    splineObject.addMeasurement(new Measurement(Measurements.ABSOLUTE_CURVATURE_CAL,spline.get(vertex)/inputObject.getDppXY()));
+                    splineObject.addMeasurement(new MeasurementI(Measurements.ABSOLUTE_CURVATURE_PX,spline.get(vertex)));
+                    splineObject.addMeasurement(new MeasurementI(Measurements.ABSOLUTE_CURVATURE_CAL,spline.get(vertex)/inputObject.getDppXY()));
                     
                     inputObject.addChild(splineObject);
                 }

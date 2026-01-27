@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeExcepti
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -106,7 +106,7 @@ public class LineHoughDetection extends AbstractHoughDetection {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Storing the image calibration
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, ipl);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
 
         String rRange = resampleRange("-end-end", samplingRate);
 
@@ -192,8 +192,8 @@ public class LineHoughDetection extends AbstractHoughDetection {
 
                         // Adding measurements
                         outputObject.setT(t);
-                        outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
-                        outputObject.addMeasurement(new Measurement(Measurements.ORIENTATION, thetaD));
+                        outputObject.addMeasurement(new MeasurementI(Measurements.SCORE, score));
+                        outputObject.addMeasurement(new MeasurementI(Measurements.ORIENTATION, thetaD));
 
                     }
 

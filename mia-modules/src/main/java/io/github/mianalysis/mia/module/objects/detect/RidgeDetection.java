@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -433,19 +433,19 @@ public class RidgeDetection extends Module {
         double dppXY = object.getDppXY();
 
         // Setting single values for the current contour
-        object.addMeasurement(new Measurement(Measurements.LENGTH_PX, estimatedLength));
-        object.addMeasurement(new Measurement(Measurements.LENGTH_CAL, estimatedLength * dppXY));
+        object.addMeasurement(new MeasurementI(Measurements.LENGTH_PX, estimatedLength));
+        object.addMeasurement(new MeasurementI(Measurements.LENGTH_CAL, estimatedLength * dppXY));
 
         if (width == null) {
-            object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_PX, Double.NaN));
-            object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_PX, Double.NaN));
-            object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_CAL, Double.NaN));
-            object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_CAL, Double.NaN));
+            object.addMeasurement(new MeasurementI(Measurements.MEAN_HALFWIDTH_PX, Double.NaN));
+            object.addMeasurement(new MeasurementI(Measurements.STDEV_HALFWIDTH_PX, Double.NaN));
+            object.addMeasurement(new MeasurementI(Measurements.MEAN_HALFWIDTH_CAL, Double.NaN));
+            object.addMeasurement(new MeasurementI(Measurements.STDEV_HALFWIDTH_CAL, Double.NaN));
         } else {
-            object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_PX, width.getMean()));
-            object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_PX, width.getStd()));
-            object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_CAL, width.getMean() * dppXY));
-            object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_CAL, width.getStd() * dppXY));
+            object.addMeasurement(new MeasurementI(Measurements.MEAN_HALFWIDTH_PX, width.getMean()));
+            object.addMeasurement(new MeasurementI(Measurements.STDEV_HALFWIDTH_PX, width.getStd()));
+            object.addMeasurement(new MeasurementI(Measurements.MEAN_HALFWIDTH_CAL, width.getMean() * dppXY));
+            object.addMeasurement(new MeasurementI(Measurements.STDEV_HALFWIDTH_CAL, width.getStd() * dppXY));
         }
     }
 
@@ -515,7 +515,7 @@ public class RidgeDetection extends Module {
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         LineDetector lineDetector = new LineDetector();
-        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputIpl);
+        ObjsI outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName, inputImage);
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack

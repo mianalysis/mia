@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -253,25 +253,25 @@ public class FitEllipsoid extends Module {
 
     public void addMeasurements(ObjI inputObject, EllipsoidCalculator calculator) {
         if (calculator == null || calculator.getCentroid() == null) {
-            inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.X_CENT_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1, Math.toDegrees(Double.NaN)));
-            inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2, Math.toDegrees(Double.NaN)));
-            inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.X_CENT_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.X_CENT_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENT_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENT_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.Z_CENT_SLICE, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.Z_CENT_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_1_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_1_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_2_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_2_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_3_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_3_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.SURFACE_AREA_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.SURFACE_AREA_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.VOLUME_PX, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.VOLUME_CAL, Double.NaN));
+            inputObject.addMeasurement(new MeasurementI(Measurements.ORIENTATION_1, Math.toDegrees(Double.NaN)));
+            inputObject.addMeasurement(new MeasurementI(Measurements.ORIENTATION_2, Math.toDegrees(Double.NaN)));
+            inputObject.addMeasurement(new MeasurementI(Measurements.SPHERICITY, Double.NaN));
 
             return;
 
@@ -281,35 +281,35 @@ public class FitEllipsoid extends Module {
         double dppZ = inputObject.getDppZ();
 
         double[] centres = calculator.getCentroid();
-        inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX, centres[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.X_CENT_CAL, centres[0] * dppXY));
-        inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX, centres[1]));
-        inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_CAL, centres[1] * dppXY));
-        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE, centres[2] * dppXY / dppZ));
-        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL, centres[2] * dppZ));
+        inputObject.addMeasurement(new MeasurementI(Measurements.X_CENT_PX, centres[0]));
+        inputObject.addMeasurement(new MeasurementI(Measurements.X_CENT_CAL, centres[0] * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENT_PX, centres[1]));
+        inputObject.addMeasurement(new MeasurementI(Measurements.Y_CENT_CAL, centres[1] * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.Z_CENT_SLICE, centres[2] * dppXY / dppZ));
+        inputObject.addMeasurement(new MeasurementI(Measurements.Z_CENT_CAL, centres[2] * dppZ));
 
         double[] radii = calculator.getRadii();
-        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_PX, radii[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_CAL, radii[0] * dppXY));
-        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_PX, radii[1]));
-        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_CAL, radii[1] * dppXY));
-        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_PX, radii[2]));
-        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_CAL, radii[2] * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_1_PX, radii[0]));
+        inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_1_CAL, radii[0] * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_2_PX, radii[1]));
+        inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_2_CAL, radii[1] * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_3_PX, radii[2]));
+        inputObject.addMeasurement(new MeasurementI(Measurements.RADIUS_3_CAL, radii[2] * dppXY));
 
         double surfaceArea = calculator.getSurfaceArea();
-        inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_PX, surfaceArea));
-        inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_CAL, surfaceArea * dppXY * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SURFACE_AREA_PX, surfaceArea));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SURFACE_AREA_CAL, surfaceArea * dppXY * dppXY));
 
         double volume = calculator.getVolume();
-        inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, volume));
-        inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, volume * dppXY * dppXY * dppXY));
+        inputObject.addMeasurement(new MeasurementI(Measurements.VOLUME_PX, volume));
+        inputObject.addMeasurement(new MeasurementI(Measurements.VOLUME_CAL, volume * dppXY * dppXY * dppXY));
 
         double[] orientations = calculator.getOrientationRads();
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1, Math.toDegrees(orientations[0])));
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2, Math.toDegrees(orientations[1])));
+        inputObject.addMeasurement(new MeasurementI(Measurements.ORIENTATION_1, Math.toDegrees(orientations[0])));
+        inputObject.addMeasurement(new MeasurementI(Measurements.ORIENTATION_2, Math.toDegrees(orientations[1])));
 
         double sphericity = calculator.getSphericity();
-        inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY, sphericity));
+        inputObject.addMeasurement(new MeasurementI(Measurements.SPHERICITY, sphericity));
 
     }
 

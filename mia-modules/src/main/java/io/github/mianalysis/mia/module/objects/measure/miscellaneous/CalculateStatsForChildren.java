@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -160,27 +160,27 @@ public class CalculateStatsForChildren extends Module {
 
             if (statsToCalculate[0]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.MEAN);
-                parentObject.addMeasurement(new Measurement(name, cs.getMean()));
+                parentObject.addMeasurement(new MeasurementI(name, cs.getMean()));
             }
 
             if (statsToCalculate[1]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.STD);
-                parentObject.addMeasurement(new Measurement(name, cs.getStd()));
+                parentObject.addMeasurement(new MeasurementI(name, cs.getStd()));
             }
 
             if (statsToCalculate[2]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.MIN);
-                parentObject.addMeasurement(new Measurement(name, cs.getMin()));
+                parentObject.addMeasurement(new MeasurementI(name, cs.getMin()));
             }
             
             if (statsToCalculate[3]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.MAX);
-                parentObject.addMeasurement(new Measurement(name, cs.getMax()));
+                parentObject.addMeasurement(new MeasurementI(name, cs.getMax()));
             }
 
             if (statsToCalculate[4]) {
                 String name = getFullName(childObjectsName, measurement, Measurements.SUM);
-                parentObject.addMeasurement(new Measurement(name, cs.getSum()));
+                parentObject.addMeasurement(new MeasurementI(name, cs.getSum()));
             }
         }
 
@@ -188,7 +188,7 @@ public class CalculateStatsForChildren extends Module {
             double median = calculateMedian(parentObject, childObjectsName, measurement);
             String name = getFullName(childObjectsName, measurement,
                     Measurements.MEDIAN);
-            parentObject.addMeasurement(new Measurement(name, median));
+            parentObject.addMeasurement(new MeasurementI(name, median));
         }
     }
 

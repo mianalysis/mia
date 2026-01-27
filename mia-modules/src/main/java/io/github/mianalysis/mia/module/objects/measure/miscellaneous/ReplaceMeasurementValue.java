@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -134,7 +134,7 @@ public class ReplaceMeasurementValue extends Module {
         double replacementValue = parameters.getValue(REPLACEMENT_VALUE,workspace);
 
         for (ObjI inputObject : inputObjects.values()) {
-            Measurement measurement = inputObject.getMeasurement(measurementName);
+            MeasurementI measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null)
                 continue;
 

@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -99,7 +99,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
             // Adding measurements
             if (storeIndividual) {
                 String measurementName = getIndividualMeasurementName(partnerObjectsName, workspace);
-                inputObject.addMeasurement(new Measurement(measurementName, conditionMet ? 1 : 0));
+                inputObject.addMeasurement(new MeasurementI(measurementName, conditionMet ? 1 : 0));
             }
 
             // Removing the object if it has too few partners

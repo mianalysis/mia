@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import ij.gui.Roi;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.DefaultVolume;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
@@ -33,7 +32,7 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     private LinkedHashMap<String, ObjI> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjsI> children = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjsI> partners = new LinkedHashMap<>();
-    private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
+    private LinkedHashMap<String, MeasurementI> measurements = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     private HashMap<Integer, Roi> rois = new HashMap<>();
 
@@ -173,12 +172,12 @@ public class DefaultObj extends DefaultVolume implements ObjI {
     }
 
     @Override
-    public LinkedHashMap<String, Measurement> getMeasurements() {
+    public LinkedHashMap<String, MeasurementI> getMeasurements() {
         return measurements;
     }
 
     @Override
-    public void setMeasurements(LinkedHashMap<String, Measurement> measurements) {
+    public void setMeasurements(LinkedHashMap<String, MeasurementI> measurements) {
         this.measurements = measurements;
 
     }
@@ -276,7 +275,7 @@ public class DefaultObj extends DefaultVolume implements ObjI {
 
         // Duplicating measurements
         if (duplicateMeasurement)
-            for (Measurement measurement : measurements.values())
+            for (MeasurementI measurement : measurements.values())
                 newObj.addMeasurement(measurement.duplicate());
 
         // Duplicating metadata

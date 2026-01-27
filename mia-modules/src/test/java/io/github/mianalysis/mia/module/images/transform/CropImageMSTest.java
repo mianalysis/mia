@@ -192,7 +192,7 @@ public class CropImageMSTest extends ModuleTest {
                 cropImage.updateParameterValue(CropImage.HEIGHT, 0);
                 cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
 
-                ObjsI limitsObjects = ObjsFactories.getDefaultFactory().createFromImage("LimitsObjects", ipl);
+                ObjsI limitsObjects = ObjsFactories.getDefaultFactory().createFromImage("LimitsObjects", image);
                 limitsObjects.setNFrames(1);
                 limitsObjects.setFrameInterval(1);
                 limitsObjects.setTemporalUnit(null);

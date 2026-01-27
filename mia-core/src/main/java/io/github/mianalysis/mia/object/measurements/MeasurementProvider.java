@@ -3,14 +3,14 @@ package io.github.mianalysis.mia.object.measurements;
 import java.util.LinkedHashMap;
 
 public interface MeasurementProvider {
-    public void addMeasurement(Measurement measurement);
+    public void addMeasurement(MeasurementI measurement);
 
-    public Measurement getMeasurement(String name);
+    public MeasurementI getMeasurement(String name);
 
     public void removeMeasurement(String name);
     
-    public LinkedHashMap<String, Measurement> getMeasurements();
+    public LinkedHashMap<String, MeasurementI> getMeasurements();
 
-    public void setMeasurements(LinkedHashMap<String, Measurement> measurements);
+    public void setMeasurements(LinkedHashMap<String, MeasurementI> measurements);
     
 }

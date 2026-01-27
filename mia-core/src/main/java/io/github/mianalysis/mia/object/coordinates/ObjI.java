@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -248,15 +248,15 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     }
 
-    public default void addMeasurement(Measurement measurement) {
+    public default void addMeasurement(MeasurementI measurement) {
         if (measurement == null)
             return;
         getMeasurements().put(measurement.getName(), measurement);
 
     }
 
-    public default Measurement getMeasurement(String name) {
-        HashMap<String, Measurement> measurements = getMeasurements();
+    public default MeasurementI getMeasurement(String name) {
+        HashMap<String, MeasurementI> measurements = getMeasurements();
 
         if (measurements.get(name) == null)
             return null;

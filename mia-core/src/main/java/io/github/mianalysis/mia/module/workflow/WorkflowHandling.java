@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -340,7 +340,7 @@ public class WorkflowHandling extends Module {
     public static boolean testImageMeasurement(ImageI inputImage, String measurementName, String referenceMode,
             double referenceValue) {
         // Getting the measurement
-        Measurement measurement = inputImage.getMeasurement(measurementName);
+        MeasurementI measurement = inputImage.getMeasurement(measurementName);
 
         // If this measurement doesn't exist, fail the test
         if (measurement == null)

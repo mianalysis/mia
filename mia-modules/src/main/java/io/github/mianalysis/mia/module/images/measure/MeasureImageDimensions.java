@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -85,34 +85,34 @@ public class MeasureImageDimensions extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         int width = inputImagePlus.getWidth();
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.WIDTH), width));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.WIDTH), width));
 
         int height = inputImagePlus.getHeight();
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.HEIGHT), height));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.HEIGHT), height));
 
         int nChannels = inputImagePlus.getNChannels();
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.N_CHANNELS), nChannels));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.N_CHANNELS), nChannels));
 
         int nSlices = inputImagePlus.getNSlices();
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.N_SLICES), nSlices));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.N_SLICES), nSlices));
 
         int nFrames = inputImagePlus.getNFrames();
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.N_FRAMES), nFrames));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.N_FRAMES), nFrames));
 
         double distXY = inputImagePlus.getCalibration().pixelWidth;
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.DIST_PER_PX_XY), distXY));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.DIST_PER_PX_XY), distXY));
 
         double distZ = inputImagePlus.getCalibration().pixelDepth;
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.DIST_PER_SLICE_Z), distZ));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.DIST_PER_SLICE_Z), distZ));
 
         double frameIntervalSecs = inputImagePlus.getCalibration().frameInterval;
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.FRAME_INTERVAL), frameIntervalSecs));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.FRAME_INTERVAL), frameIntervalSecs));
 
         double fps = inputImagePlus.getCalibration().fps;
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.FPS), fps));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.FPS), fps));
 
         int bitDepth = inputImagePlus.getBitDepth();
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.BIT_DEPTH), bitDepth));
+        inputImage.addMeasurement(new MeasurementI(getFullName(Measurements.BIT_DEPTH), bitDepth));
 
         if (showOutput)
             inputImage.showMeasurements(this);

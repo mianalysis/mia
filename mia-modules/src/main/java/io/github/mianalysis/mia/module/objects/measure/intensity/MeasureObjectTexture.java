@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -140,16 +140,16 @@ public class MeasureObjectTexture extends Module {
 
         // Acquiring measurements
         String name = getFullName(image.getName(), Measurements.ASM, offs, calibratedOffset);
-        object.addMeasurement(new Measurement(name, textureCalculator.getASM()));
+        object.addMeasurement(new MeasurementI(name, textureCalculator.getASM()));
 
         name = getFullName(image.getName(), Measurements.CONTRAST, offs, calibratedOffset);
-        object.addMeasurement(new Measurement(name, textureCalculator.getContrast()));
+        object.addMeasurement(new MeasurementI(name, textureCalculator.getContrast()));
 
         name = getFullName(image.getName(), Measurements.CORRELATION, offs, calibratedOffset);
-        object.addMeasurement(new Measurement(name, textureCalculator.getCorrelation()));
+        object.addMeasurement(new MeasurementI(name, textureCalculator.getCorrelation()));
 
         name = getFullName(image.getName(), Measurements.ENTROPY, offs, calibratedOffset);
-        object.addMeasurement(new Measurement(name, textureCalculator.getEntropy()));
+        object.addMeasurement(new MeasurementI(name, textureCalculator.getEntropy()));
 
     }
 

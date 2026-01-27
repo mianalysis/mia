@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -89,7 +89,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             ObjI inputObject = iterator.next();
 
             // Skipping this object if it doesn't have the measurement
-            Measurement measurement = inputObject.getMeasurement(measName);
+            MeasurementI measurement = inputObject.getMeasurement(measName);
             if (measurement == null)
                 continue;
 
@@ -106,7 +106,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             // Adding measurements
             if (storeIndividual) {
                 String measurementName = getIndividualMeasurementName(measName, workspace);
-                inputObject.addMeasurement(new Measurement(measurementName, conditionMet ? 1 : 0));
+                inputObject.addMeasurement(new MeasurementI(measurementName, conditionMet ? 1 : 0));
             }
 
             if (conditionMet) {
