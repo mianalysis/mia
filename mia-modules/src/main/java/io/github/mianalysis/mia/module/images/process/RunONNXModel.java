@@ -23,7 +23,7 @@
 // import io.github.mianalysis.mia.module.Modules;
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.image.Image;
-// import io.github.mianalysis.mia.object.image.ImageFactory;
+// import io.github.mianalysis.mia.object.image.ImageFactories;
 // import io.github.mianalysis.mia.object.parameters.InputImageP;
 // import io.github.mianalysis.mia.object.parameters.OutputImageP;
 // import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -127,7 +127,7 @@
 //             return Status.FAIL;
 //         }
 
-//         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+//         Image outputImage = ImageFactories.getDefaultFactory().create(outputImageName, outputIpl);
 //         workspace.addImage(outputImage);
 
 //         // If the image is being saved as a new image, adding it to the workspace

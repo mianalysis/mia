@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -197,7 +197,7 @@ public class ScaleObjectSet extends Module {
             outputCal.frameInterval = inputObjects.getFrameInterval();
             outputCal.fps = 1 / TemporalUnit.getOMEUnit().convertValue(inputObjects.getFrameInterval(), UNITS.SECOND);
 
-            ImageI objectImage = ImageFactory.createImage("Object image", outputIpl);
+            ImageI objectImage = ImageFactories.getDefaultFactory().create("Object image", outputIpl);
             ObjsI tempObjects = objectImage.convertImageToObjects(inputObject.getCoordinateSetFactory(),
                     outputObjectsName, true);
 

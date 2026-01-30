@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 
 
 public class MeasureImageIntensityTest extends ModuleTest {
@@ -38,7 +38,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
@@ -68,7 +68,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
@@ -98,7 +98,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
@@ -128,7 +128,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
@@ -158,7 +158,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity

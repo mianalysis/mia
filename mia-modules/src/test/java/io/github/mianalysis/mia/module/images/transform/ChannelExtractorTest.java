@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 
 /**
@@ -38,11 +38,11 @@ public class ChannelExtractorTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image_5D",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image_5D",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor(new Modules());
@@ -74,11 +74,11 @@ public class ChannelExtractorTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image_5D",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image_5D",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_ZT_8bit_C2.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor(new Modules());
@@ -110,11 +110,11 @@ public class ChannelExtractorTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image_5D",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image_5D",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_16bit_C1.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor(new Modules());
@@ -146,11 +146,11 @@ public class ChannelExtractorTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image_5D",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image_5D",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_16bit_C2.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor(new Modules());
@@ -182,11 +182,11 @@ public class ChannelExtractorTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image_5D",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image_5D",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_32bit_C1.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor(new Modules());
@@ -218,11 +218,11 @@ public class ChannelExtractorTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image_5D",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image_5D",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_32bit_C2.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor(new Modules());

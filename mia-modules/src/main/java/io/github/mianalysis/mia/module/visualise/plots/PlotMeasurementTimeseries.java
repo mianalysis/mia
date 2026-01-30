@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -253,7 +253,7 @@ public class PlotMeasurementTimeseries extends Module {
         if (ipl == null)
             ipl = new Plot(inputTracksName + " (ID 0)", "Frame", yLabel).getImagePlus();
         
-        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)

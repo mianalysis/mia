@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -317,7 +317,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
         ImageStatistics stats = new StackStatistics(imp, bins.length, bins[0], bins[bins.length - 1]);
         ImagePlus histIpl = new HistogramWindow("Histogram", imp, stats).getImagePlus();
 
-        return ImageFactory.createImage("Histogram",histIpl);
+        return ImageFactories.getDefaultFactory().create("Histogram",histIpl);
 
     }
 
@@ -342,7 +342,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
         frame.dispose();
         
-        return ImageFactory.createImage("Histogram", histIpl);
+        return ImageFactories.getDefaultFactory().create("Histogram", histIpl);
 
     }
 
@@ -439,7 +439,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
 
         if (outputOrientationMap) {
             ImagePlus oriIpl = new ImagePlus(orientationMapName, directionality.getOrientationMap());
-            ImageI oriImage = ImageFactory.createImage(orientationMapName, oriIpl);
+            ImageI oriImage = ImageFactories.getDefaultFactory().create(orientationMapName, oriIpl);
             workspace.addImage(oriImage);
 
             if (showOutput)

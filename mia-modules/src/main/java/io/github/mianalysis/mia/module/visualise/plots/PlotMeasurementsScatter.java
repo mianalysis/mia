@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -215,7 +215,7 @@ public class PlotMeasurementsScatter extends Module {
 
         plot.setLimits(cs[0].getMin(), cs[0].getMax(), cs[1].getMin(), cs[1].getMax());
 
-        ImageI outputImage = ImageFactory.createImage(outputImageName, plot.getImagePlus());
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, plot.getImagePlus());
         workspace.addImage(outputImage);
 
         if (showOutput)

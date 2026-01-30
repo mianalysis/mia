@@ -8,11 +8,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImgPlusImageFactory;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -25,6 +24,7 @@ import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
+import net.imagej.ops.Ops.Convert.ImageType;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -93,7 +93,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         // ((FloatType) c.get()).set(c.getFloatPosition(0));
         // }
 
-        ImageI image = ImageFactory.createImage(outputImageName, img, ImageType.IMGLIB2);
+        ImageI image = new ImgPlusImageFactory().create(outputImageName, img);
         workspace.addImage(image);
 
         if (showOutput)

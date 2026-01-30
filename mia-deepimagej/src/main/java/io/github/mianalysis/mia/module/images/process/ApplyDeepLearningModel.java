@@ -30,7 +30,7 @@
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.image.ImageI;
-// import io.github.mianalysis.mia.object.image.ImageFactory;
+// import io.github.mianalysis.mia.object.image.ImageFactories;
 // import io.github.mianalysis.mia.object.parameters.ChoiceP;
 // import io.github.mianalysis.mia.object.parameters.InputImageP;
 // import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -155,7 +155,7 @@
 //             ImagePlus iplOut = ImagePlus2TensorNew.tensor2ImagePlus(outputTensor.getData(), "bcyx");
 
 //             // Storing output image
-//             ImageI outputImage = ImageFactory.createImage(outputImageName, iplOut);
+//             ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, iplOut);
 //             workspace.addImage(outputImage);
 
 //             if (showOutput)

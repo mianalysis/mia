@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -202,7 +202,7 @@ public class CellposeDetection extends Module {
                     cellpose.setImagePlus(currImage.getImagePlus());
                     cellpose.run();
 
-                    ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                    ImageI cellsImage = ImageFactories.getDefaultFactory().create("Objects", cellpose.getLabels());
                     ObjsI currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);
 
                     for (ObjI currOutputObject : currOutputObjects.values()) {
@@ -225,7 +225,7 @@ public class CellposeDetection extends Module {
                 cellpose.setImagePlus(currImage.getImagePlus());
                 cellpose.run();
 
-                ImageI cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+                ImageI cellsImage = ImageFactories.getDefaultFactory().create("Objects", cellpose.getLabels());
                 ObjsI currOutputObjects = cellsImage.convertImageToObjects(new QuadtreeFactory(),
                         outputObjectsName, false);
 

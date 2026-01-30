@@ -21,9 +21,9 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class FlipStackMSTest extends ModuleTest {
@@ -43,8 +43,8 @@ public class FlipStackMSTest extends ModuleTest {
         for (Dimension dimension : Dimension.values())
             for (Axis axis : Axis.values())
                 for (OutputMode outputMode : OutputMode.values())
-                    for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(dimension, axis, outputMode, imageType));
+                    for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                        argumentBuilder.add(Arguments.of(dimension, axis, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -57,8 +57,8 @@ public class FlipStackMSTest extends ModuleTest {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (BitDepth bitDepth : BitDepth.values())
             for (OutputMode outputMode : OutputMode.values())
-                for (ImageType imageType : ImageType.values())
-                    argumentBuilder.add(Arguments.of(bitDepth, outputMode, imageType));
+                for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                    argumentBuilder.add(Arguments.of(bitDepth, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -72,9 +72,9 @@ public class FlipStackMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit(Dimension dimension, Axis axis, OutputMode outputMode, ImageType imageType)
+    void test8Bit(Dimension dimension, Axis axis, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, axis, outputMode, imageType);
+        runTest(dimension, BitDepth.B8, axis, outputMode, imageFactory);
     }
 
     /**
@@ -85,9 +85,9 @@ public class FlipStackMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT(BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
+    void testAllBitDepths_D4ZT(BitDepth bitDepth, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, Axis.AZ, outputMode, imageType);
+        runTest(Dimension.D4ZT, bitDepth, Axis.AZ, outputMode, imageFactory);
     }
 
     /**
@@ -95,7 +95,7 @@ public class FlipStackMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, BitDepth bitDepth, Axis axis, OutputMode outputMode, ImageType imageType)
+    public static void runTest(Dimension dimension, BitDepth bitDepth, Axis axis, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -112,7 +112,7 @@ public class FlipStackMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(FlipStackMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = imageFactory.create("Test_image", ipl);
         workspace.addImage(image);
 
         // Loading the expected image
@@ -120,7 +120,7 @@ public class FlipStackMSTest extends ModuleTest {
         assumeTrue(FlipStackMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(FlipStackMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = imageFactory.create("Expected", IJ.openImage(expectedPath));
 
         // Initialising module and setting parameters
         FlipStack flipStack = new FlipStack(new Modules());

@@ -22,9 +22,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImgPlusImageFactory;
 import io.github.mianalysis.mia.object.metadata.Metadata;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -53,6 +53,7 @@ import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
+import net.imagej.ops.Ops.Convert.ImageType;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -246,7 +247,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
                 zAxis.setUnit("μm");
         }
 
-        return ImageFactory.createImage(outputImageName, img, ImageType.IMGLIB2);
+        return new ImgPlusImageFactory().create(outputImageName, img);
 
     }
 

@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -375,7 +375,7 @@ public class CreateMeasurementMap extends Module {
             }
         }
 
-        return ImageFactory.createImage(outputImageName, outputIpl);
+        return ImageFactories.getDefaultFactory().create(outputImageName, outputIpl);
 
     }
 

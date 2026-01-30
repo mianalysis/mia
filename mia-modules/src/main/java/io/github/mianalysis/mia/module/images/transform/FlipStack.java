@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -123,7 +123,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
         if (axisIndex == -1)
-            return ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
+            return ImageFactories.getDefaultFactory().create(outputImageName, inputImage.getImagePlus());
         
         long[] offsetIn = new long[inputImg.numDimensions()];
         long[] offsetOut = new long[outputImg.numDimensions()];
@@ -149,7 +149,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         dcImage.shutdown();
         
-        return ImageFactory.createImage(outputImageName,outputImagePlus);
+        return ImageFactories.getDefaultFactory().create(outputImageName,outputImagePlus);
 
     }
 

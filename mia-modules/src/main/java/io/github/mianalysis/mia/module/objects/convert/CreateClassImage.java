@@ -19,10 +19,8 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -129,7 +127,7 @@ public class CreateClassImage extends Module {
 
             if (outputImage == null) {
                 ImagePlus ipl = IJ.createHyperStack(outputImageName, currInputObjects.getWidth(), currInputObjects.getHeight(), 1, currInputObjects.getNSlices(), currInputObjects.getNFrames(), 32);
-                outputImage = ImageFactory.createImage(outputImageName, ipl);
+                outputImage = ImageFactories.getDefaultFactory().create(outputImageName, ipl);
             }
 
             for (ObjI inputObject:currInputObjects.values())

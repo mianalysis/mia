@@ -33,7 +33,7 @@
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.image.ImageI;
-// import io.github.mianalysis.mia.object.image.ImageFactory;
+// import io.github.mianalysis.mia.object.image.ImageFactories;
 // import io.github.mianalysis.mia.object.parameters.BooleanP;
 // import io.github.mianalysis.mia.object.parameters.ChoiceP;
 // import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -460,7 +460,7 @@
 //         try {
 //             // First first, testing new loader
 //             ImagePlus outputIpl = getVideo(pathName, frameRange, channelRange, crop, scaleFactors, scaleMode);
-//             outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+//             outputImage = ImageFactories.getDefaultFactory().create(outputImageName, outputIpl);
 
 //         } catch (FrameOutOfRangeException e1) {
 //             MIA.log.writeWarning(e1.getMessage());

@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -105,7 +105,7 @@ public class CreateWholeSliceObjects extends Module {
     }
 
     public static ObjsI process(ImageI inputImage, String outputObjectsName, String outputMode) {
-        ImageI blankImage = ImageFactory.createImage("Temp", inputImage.getImagePlus().duplicate());
+        ImageI blankImage = ImageFactories.getDefaultFactory().create("Temp", inputImage.getImagePlus().duplicate());
         ImageMath.process(blankImage, ImageMath.CalculationModes.MULTIPLY, 0);
         ImageTypeConverter.process(blankImage, 8, ImageTypeConverter.ScalingModes.CLIP);
 

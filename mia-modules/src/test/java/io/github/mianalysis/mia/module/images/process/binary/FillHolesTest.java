@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 
 
 public class FillHolesTest extends ModuleTest {
@@ -37,11 +37,11 @@ public class FillHolesTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_fillHoles3D.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         FillHoles binaryOperations = new FillHoles(new Modules());

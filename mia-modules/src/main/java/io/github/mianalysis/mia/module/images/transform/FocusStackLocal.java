@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -122,7 +122,7 @@ public class FocusStackLocal extends Module {
         // If necessary, creating the height image
         ImagePlus heightIpl = createEmptyImage(inputIpl, outputHeightImageName, 16);
         heightIpl.setCalibration(inputIpl.getCalibration());
-        ImageI heightImage = ImageFactory.createImage(outputHeightImageName, heightIpl);
+        ImageI heightImage = ImageFactories.getDefaultFactory().create(outputHeightImageName, heightIpl);
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -179,7 +179,7 @@ public class FocusStackLocal extends Module {
         // Creating array to hold [0] the focused image and [1] the height map
         ImagePlus outputIpl = createEmptyImage(inputIpl, outputImageName, inputIpl.getBitDepth());
         outputIpl.setCalibration(inputIpl.getCalibration());
-        ImageI outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, outputIpl);
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -283,7 +283,7 @@ public class FocusStackLocal extends Module {
         if (useExisting) {
             // Duplicating the image, so the addition doesn't affect it
             heightMap = workspace.getImage(inputHeightImageName);
-            heightMap = ImageFactory.createImage(heightMap.getName(), heightMap.getImagePlus().duplicate());
+            heightMap = ImageFactories.getDefaultFactory().create(heightMap.getName(), heightMap.getImagePlus().duplicate());
 
             // StackFocuser plugin wants height image indices 1-based, but they're output to
             // the workspace as 0-based for consistency with MIA.

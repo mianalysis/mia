@@ -26,7 +26,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -297,7 +297,7 @@ public class AddObjectOutline extends AbstractOverlay {
         if (inputObjects != null)
             addOverlay(ipl, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
 
-        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.

@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
@@ -57,7 +57,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Ref_image", ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Ref_image", ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module
@@ -112,7 +112,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Ref_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Ref_image",ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module
@@ -176,7 +176,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Ref_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Ref_image",ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module

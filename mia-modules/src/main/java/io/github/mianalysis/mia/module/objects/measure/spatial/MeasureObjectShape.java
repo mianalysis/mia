@@ -48,71 +48,89 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
  */
 
 /**
-* Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.  3D metrics are calculated using the "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>" plugin.
-*/
+ * Measures various spatial metrics for each object in a specified object
+ * collection from the workspace. Measurements are associated with the relevant
+ * input object. When dealing with 3D objects (those with coordinates spanning
+ * multiple Z-slices) a 2D projection into the XY plane will be used. 3D metrics
+ * are calculated using the
+ * "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>" plugin.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectShape extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* Input objects from workspace.  Shape metrics will be calculated for each object and stored as measurements associated with that object.
-	*/
+    /**
+     * Input objects from workspace. Shape metrics will be calculated for each
+     * object and stored as measurements associated with that object.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
 
-	/**
-	* When selected, 3D volume metrics will be calculated for each input object.  Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base area (px²), base area (calibrated_units²), height (n_slices) and height (calibrated_units).
-	*/
+    /**
+     * When selected, 3D volume metrics will be calculated for each input object.
+     * Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base
+     * area (px²), base area (calibrated_units²), height (n_slices) and height
+     * (calibrated_units).
+     */
     public static final String MEASURE_VOLUME = "Measure volume";
 
-	/**
-	* When selected, 2D area metrics will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: area (px²) and area (calibrated_units²).
-	*/
+    /**
+     * When selected, 2D area metrics will be calculated for each input object. For
+     * 3D objects, a 2D projection in the XY plane is used for measurements. This
+     * projection includes all XY coordinates present in any Z-slice. Metrics are:
+     * area (px²) and area (calibrated_units²).
+     */
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
 
-	/**
-	* When selected, the diameter of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: diameter (px) and diameter (calibrated_units).
-	*/
+    /**
+     * When selected, the diameter of 2D objects will be calculated for each input
+     * object. For 3D objects, a 2D projection in the XY plane is used for
+     * measurements. This projection includes all XY coordinates present in any
+     * Z-slice. Metrics are: diameter (px) and diameter (calibrated_units).
+     */
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
 
-	/**
-	* When selected, the perimeter and circularity of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: perimeter (px), perimeter (calibrated_units) and circularity.
-	*/
+    /**
+     * When selected, the perimeter and circularity of 2D objects will be calculated
+     * for each input object. For 3D objects, a 2D projection in the XY plane is
+     * used for measurements. This projection includes all XY coordinates present in
+     * any Z-slice. Metrics are: perimeter (px), perimeter (calibrated_units) and
+     * circularity.
+     */
     public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MEASURE_3D_METRICS = "Measure 3D metrics";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CONNECTIVITY = "Connectivity";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String SURFACE_AREA_METHOD = "Surface area method";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple input objects simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public MeasureObjectShape(Modules modules) {
@@ -157,28 +175,11 @@ public class MeasureObjectShape extends Module {
     public static int getSurfaceAreaMethod(String surfaceAreaMethod) {
         switch (surfaceAreaMethod) {
             case SurfaceAreaMethods.THIRTEEN:
-            return 13;
+                return 13;
             case SurfaceAreaMethods.THREE:
             default:
-            return 3;
+                return 3;
         }
-    }
-
-    public double calculateBaseAreaPx(ObjI object) {
-        // Getting the lowest slice
-        double[][] extents = object.getExtents(true, false);
-        int baseZ = (int) Math.round(extents[2][0]);
-
-        // Counting the number of pixels in this slice
-        int count = 0;
-        for (Point<Integer> point : object.getCoordinateSet()) {
-            if (point.getZ() == baseZ)
-                count++;
-        }
-
-        // The area in px² is simply the number of pixels
-        return count;
-
     }
 
     /*
@@ -224,9 +225,12 @@ public class MeasureObjectShape extends Module {
         Map<Integer, Result> results = new IntrinsicVolumesAnalyzer3D().analyzeRegions(tightIpl);
         Result result = results.values().iterator().next();
 
-        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SURFACE_AREA_CAL, result.surfaceArea));
-        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.MEAN_BREADTH_CAL, result.meanBreadth));
-        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.EULER_NUMBER, result.eulerNumber));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                .createMeasurement(Measurements.SURFACE_AREA_CAL, result.surfaceArea));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                .createMeasurement(Measurements.MEAN_BREADTH_CAL, result.meanBreadth));
+        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.EULER_NUMBER,
+                result.eulerNumber));
         inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.SPHERICITY,
                 IntrinsicVolumes3D.sphericity(result.volume, result.surfaceArea)));
 
@@ -276,94 +280,114 @@ public class MeasureObjectShape extends Module {
         // Running through each object, making the measurements
         for (ObjI inputObject : inputObjects.values()) {
             Runnable task = () -> {
-                // Adding the volume measurements
-                if (measureVolume) {
-                    int nVoxels = inputObject.size();
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.N_VOXELS, nVoxels));
+                try {
+                    // Adding the volume measurements
+                    if (measureVolume) {
+                        int nVoxels = inputObject.size();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.N_VOXELS, nVoxels));
 
-                    double containedVolumePx = inputObject.getContainedVolume(true);
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.VOLUME_PX, containedVolumePx));
+                        double containedVolumePx = inputObject.getContainedVolume(true);
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.VOLUME_PX, containedVolumePx));
 
-                    double containedVolumeCal = inputObject.getContainedVolume(false);
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.VOLUME_CAL, containedVolumeCal));
+                        double containedVolumeCal = inputObject.getContainedVolume(false);
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.VOLUME_CAL, containedVolumeCal));
 
-                    double baseAreaPx = calculateBaseAreaPx(inputObject);
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.BASE_AREA_PX, baseAreaPx));
+                        double baseAreaPx = inputObject.calculateBaseAreaPx();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.BASE_AREA_PX, baseAreaPx));
 
-                    double dppXY = inputObject.getDppXY();
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
+                        double dppXY = inputObject.getDppXY();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
 
-                    double heightSlice = inputObject.getVolumeHeight(true, false);
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.HEIGHT_SLICE, heightSlice));
+                        double heightSlice = inputObject.getVolumeHeight(true, false);
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.HEIGHT_SLICE, heightSlice));
 
-                    double heightCal = inputObject.getVolumeHeight(false, false);
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.HEIGHT_CAL, heightCal));
-                }
+                        double heightCal = inputObject.getVolumeHeight(false, false);
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.HEIGHT_CAL, heightCal));
+                    }
 
-                // If necessary analyses are included
-                ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExample("Projected", inputObjects);
-                ObjI projectedObject = null;
-                if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
-                    if (inputObject.is2D()) {
-                        projectedObject = inputObject;
-                    } else {
-                        try {
-                            if (inputObject.is2D())
-                                projectedObject = inputObject;
-                            else
-                                projectedObject = ProjectObjects.process(inputObject, projectedObjects, false);
-                        } catch (IntegerOverflowException e) {
-                            MIA.log.writeWarning(e);
-                            return;
+                    // If necessary analyses are included
+                    ObjsI projectedObjects = ObjsFactories.getDefaultFactory().createFromExample("Projected",
+                            inputObjects);
+                    ObjI projectedObject = null;
+                    if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
+                        if (inputObject.is2D()) {
+                            projectedObject = inputObject;
+                        } else {
+                            try {
+                                if (inputObject.is2D())
+                                    projectedObject = inputObject;
+                                else
+                                    projectedObject = ProjectObjects.process(inputObject, projectedObjects, false);
+                            } catch (IntegerOverflowException e) {
+                                MIA.log.writeWarning(e);
+                                return;
+                            }
                         }
                     }
+
+                    // Adding the projected-object area measurements
+                    if (measureProjectedArea) {
+                        double areaPx = projectedObject.size();
+                        double areaCal = areaPx * projectedObject.getDppXY() * projectedObject.getDppXY();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_AREA_PX, areaPx));
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_AREA_CAL, areaCal));
+
+                    }
+
+                    // Adding the projected-object diameter measurements
+                    if (measureProjectedDiameter) {
+                        double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
+                        double maxDistanceCal = maxDistancePx * inputObject.getDppXY();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_DIA_PX, maxDistancePx));
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
+
+                        double minFeretPx = projectedObject.getRoi(0).getFeretValues()[2];
+                        double minFeretCal = minFeretPx * inputObject.getDppXY();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
+
+                    }
+
+                    // Adding the projected-object perimeter measurements
+                    if (measureProjectedPerimeter) {
+                        double areaPx = projectedObject.size();
+                        double perimeterPx = projectedObject.getRoi(0).getLength();
+                        double perimeterCal = perimeterPx * inputObject.getDppXY();
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_PERIM_PX, perimeterPx));
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_PERIM_CAL, perimeterCal));
+
+                        double circularity = 4 * Math.PI * areaPx / (perimeterPx * perimeterPx);
+                        inputObject.addMeasurement(MeasurementFactories.getDefaultFactory()
+                                .createMeasurement(Measurements.PROJ_CIRCULARITY, circularity));
+
+                    }
+
+                    if (measure3dMetrics)
+                        measure3DMetrics(inputObject, connectivity, surfaceAreaMethodInt);
+
+                    // Clearing the projected object from memory to save some space
+                    if (projectedObject != null & !inputObject.is2D())
+                        inputObject.clearProjected();
+
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                } catch (Exception e) {
+                    MIA.log.writeError(e);
                 }
-
-                // Adding the projected-object area measurements
-                if (measureProjectedArea) {
-                    double areaPx = projectedObject.size();
-                    double areaCal = areaPx * projectedObject.getDppXY() * projectedObject.getDppXY();
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_AREA_PX, areaPx));
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_AREA_CAL, areaCal));
-
-                }
-
-                // Adding the projected-object diameter measurements
-                if (measureProjectedDiameter) {
-                    double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
-                    double maxDistanceCal = maxDistancePx * inputObject.getDppXY();
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_DIA_PX, maxDistancePx));
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
-
-                    double minFeretPx = projectedObject.getRoi(0).getFeretValues()[2];
-                    double minFeretCal = minFeretPx * inputObject.getDppXY();
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
-
-                }
-
-                // Adding the projected-object perimeter measurements
-                if (measureProjectedPerimeter) {
-                    double areaPx = projectedObject.size();
-                    double perimeterPx = projectedObject.getRoi(0).getLength();
-                    double perimeterCal = perimeterPx * inputObject.getDppXY();
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_PERIM_PX, perimeterPx));
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_PERIM_CAL, perimeterCal));
-
-                    double circularity = 4 * Math.PI * areaPx / (perimeterPx * perimeterPx);
-                    inputObject.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement(Measurements.PROJ_CIRCULARITY, circularity));
-
-                }
-
-                if (measure3dMetrics)
-                    measure3DMetrics(inputObject, connectivity, surfaceAreaMethodInt);
-
-                // Clearing the projected object from memory to save some space
-                if (projectedObject != null & !inputObject.is2D())
-                    inputObject.clearProjected();
-
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-
             };
             pool.submit(task);
         }
@@ -520,7 +544,7 @@ public class MeasureObjectShape extends Module {
                     + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") "
                     + "units.");
 
-                    reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_MIN_FERET_PX);
+            reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_MIN_FERET_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Minimum caliper distance of the 2D Z-projection of the object, \""
@@ -587,8 +611,8 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -213,7 +213,7 @@ public class AffineFixedTransform extends Module {
         // separately
         ImageI inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImage.getImagePlus().duplicate());
 
         // Applying the transformation
         try {

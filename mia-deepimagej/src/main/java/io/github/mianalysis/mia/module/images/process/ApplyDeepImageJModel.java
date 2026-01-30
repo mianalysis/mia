@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -252,7 +252,7 @@ public class ApplyDeepImageJModel extends Module {
             outputIpl.setStack(outputIst);
 
             // Storing output image
-            ImageI outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+            ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, outputIpl);
             workspace.addImage(outputImage);
 
             if (showOutput)

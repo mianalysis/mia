@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -113,7 +113,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
         hist.addData(intervals);
         
-        ImageI outputImage = ImageFactory.createImage(outputImageName, ImageJFunctions.wrapFloat(hist, outputImageName));
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, ImageJFunctions.wrapFloat(hist, outputImageName));
         workspace.addImage(outputImage);
 
         if (showOutput)

@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.coordinates.SpatioTemporallyCalibrated;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
@@ -413,7 +413,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
         // Creating a new image
         ImagePlus ipl = IJ.createHyperStack(outputName, getWidth(), getHeight(), 1, getNSlices(), nFrames, bitDepth);
 
-        return ImageFactory.createImage(outputName, ipl);
+        return ImageFactories.getDefaultFactory().create(outputName, ipl);
 
     }
 

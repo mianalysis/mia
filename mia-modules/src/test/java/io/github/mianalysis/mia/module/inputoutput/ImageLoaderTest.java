@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
@@ -723,7 +723,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/cropimage/NoisyGradient5D_8bit_3-12-52-49.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -1094,7 +1094,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0-11.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -1130,7 +1130,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq3-11-2.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -1166,7 +1166,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq4-8-2.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());

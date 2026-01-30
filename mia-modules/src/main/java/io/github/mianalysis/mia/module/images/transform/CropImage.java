@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -171,7 +171,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         outputImagePlus.setCalibration(calibration);
         ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
-        ImageI outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, outputImagePlus);
         SetLookupTable.copyLUTFromImage(outputImage,inputImage);
         
         dcImage.shutdown();

@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
@@ -318,7 +318,7 @@ public class FitGaussian2D extends Module {
         // Create blank image
         ObjI firstObject = objects.getFirst();
         ImagePlus ipl = IJ.createImage(outputImageName, firstObject.getWidth(), firstObject.getHeight(), 1, 32);
-        ImageI image = ImageFactory.createImage(outputImageName, ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create(outputImageName, ipl);
 
         // Get the image for the first object. Not adding the background to any object,
         // as the average background will
@@ -468,7 +468,7 @@ public class FitGaussian2D extends Module {
 
             // Cropping image
             inputImagePlus.setPosition(1, z + 1, t + 1);
-            ImageI preCropImage = ImageFactory.createImage("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
+            ImageI preCropImage = ImageFactories.getDefaultFactory().create("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
             ImageProcessor iprCrop = CropImage
                     .cropImage(preCropImage, "Crop", x - halfW, y - halfW, halfW * 2 + 1, halfW * 2 + 1).getImagePlus()
                     .getProcessor();

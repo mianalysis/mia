@@ -28,9 +28,10 @@ import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImagePlusImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class CropImageMSTest extends ModuleTest {
@@ -46,8 +47,8 @@ public class CropImageMSTest extends ModuleTest {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (Dimension dimension : Dimension.values())
             for (OutputMode outputMode : OutputMode.values())
-                for (ImageType imageType : ImageType.values())
-                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageType));
+                for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -61,8 +62,8 @@ public class CropImageMSTest extends ModuleTest {
         for (Dimension dimension : Dimension.values())
             for (LimitsMode limitsMode : LimitsMode.values())
                 for (OutputMode outputMode : OutputMode.values())
-                    for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(dimension, limitsMode, outputMode, imageType));
+                    for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                        argumentBuilder.add(Arguments.of(dimension, limitsMode, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -76,8 +77,8 @@ public class CropImageMSTest extends ModuleTest {
         for (BitDepth bitDepth : BitDepth.values())
             for (LimitsMode limitsMode : LimitsMode.values())
                 for (OutputMode outputMode : OutputMode.values())
-                    for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(bitDepth, limitsMode, outputMode, imageType));
+                    for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                        argumentBuilder.add(Arguments.of(bitDepth, limitsMode, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -88,9 +89,9 @@ public class CropImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimInputProvider")
-    void test8Bit_X12Y15W23H6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
+    void test8Bit_X12Y15W23H6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, 6, outputMode, imageType);
+        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, 6, outputMode, imageFactory);
     }
 
     /*
@@ -99,9 +100,9 @@ public class CropImageMSTest extends ModuleTest {
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
     void testAllBitDepths_D4ZT_X12Y15W23H6(BitDepth bitDepth, LimitsMode limitsMode, OutputMode outputMode,
-            ImageType imageType)
+            ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, limitsMode, 12, 15, 23, 6, outputMode, imageType);
+        runTest(Dimension.D4ZT, bitDepth, limitsMode, 12, 15, 23, 6, outputMode, imageFactory);
     }
 
     /*
@@ -109,9 +110,9 @@ public class CropImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimProvider")
-    void test8Bit_Xm12Y15W23H6(Dimension dimension, OutputMode outputMode, ImageType imageType)
+    void test8Bit_Xm12Y15W23H6(Dimension dimension, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, LimitsMode.LFIXED, -12, 15, 23, 6, outputMode, imageType);
+        runTest(dimension, BitDepth.B8, LimitsMode.LFIXED, -12, 15, 23, 6, outputMode, imageFactory);
     }
 
     /*
@@ -119,9 +120,9 @@ public class CropImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimProvider")
-    void test8Bit_X12Y15W23H90(Dimension dimension, OutputMode outputMode, ImageType imageType)
+    void test8Bit_X12Y15W23H90(Dimension dimension, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, 90, outputMode, imageType);
+        runTest(dimension, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, 90, outputMode, imageFactory);
     }
 
     /*
@@ -131,7 +132,7 @@ public class CropImageMSTest extends ModuleTest {
     void test8Bit_X12Y15W23Hm6()
             throws UnsupportedEncodingException {
         runTest(Dimension.D2, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, -6, OutputMode.CREATE_NEW,
-                ImageType.IMAGEPLUS);
+                new ImagePlusImageFactory());
     }
 
     /**
@@ -140,7 +141,7 @@ public class CropImageMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     public static void runTest(Dimension dimension, BitDepth bitDepth, LimitsMode limitsMode, int x, int y, int w,
-            int h, OutputMode outputMode, ImageType imageType)
+            int h, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -157,7 +158,7 @@ public class CropImageMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(CropImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = imageFactory.create("Test_image", ipl);
         workspace.addImage(image);
 
         // Loading the expected image (if we're expecting one)
@@ -167,7 +168,7 @@ public class CropImageMSTest extends ModuleTest {
                     + "_W" + w + "_H" + h + ".zip";
             assumeTrue(CropImageMSTest.class.getResource(expectedName) != null);
             String expectedPath = URLDecoder.decode(CropImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-            expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+            expectedImage = imageFactory.create("Expected", IJ.openImage(expectedPath));
         }
 
         // Initialising module and setting parameters

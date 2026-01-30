@@ -35,7 +35,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.metadata.CV7000FilenameExtractor;
@@ -1567,7 +1567,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
-        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)

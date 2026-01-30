@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -37,7 +37,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 
         int actual = FocusStackGlobal.getOptimalStatSlice(image,0,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(5,actual);
@@ -58,7 +58,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 
         int actual = FocusStackGlobal.getOptimalStatSlice(image,0,1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(0,actual);
@@ -79,7 +79,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 
         int actual = FocusStackGlobal.getOptimalStatSlice(image,0,-1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(0,actual);
@@ -100,7 +100,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI image = ImageFactory.createImage("Test_image",ipl);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 
         int actual = FocusStackGlobal.getOptimalStatSlice(image,0,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(5,actual);
@@ -123,7 +123,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
@@ -151,7 +151,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,0);
@@ -179,7 +179,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,4);
@@ -207,7 +207,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
@@ -232,7 +232,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-5,-2);
@@ -257,7 +257,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
@@ -285,7 +285,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
@@ -310,7 +310,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
@@ -338,7 +338,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
@@ -363,7 +363,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
@@ -391,7 +391,7 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
         ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
@@ -422,11 +422,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -460,11 +460,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C2_belowabove.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -498,11 +498,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_bothC_belowabove.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -535,11 +535,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_bothbelow.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -573,11 +573,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_singleplane.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -611,11 +611,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -649,11 +649,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_C1.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -687,11 +687,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_T1.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
@@ -725,11 +725,11 @@ public class FocusStackGlobalTest extends ModuleTest {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ImageI inputImage = ImageFactory.createImage("Test_image",ipl);
+        ImageI inputImage = ImageFactories.getDefaultFactory().create("Test_image",ipl);
         workspace.addImage(inputImage);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+        ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
         FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
         bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");

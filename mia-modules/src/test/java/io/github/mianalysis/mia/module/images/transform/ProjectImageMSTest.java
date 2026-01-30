@@ -22,7 +22,7 @@
 // import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.Workspaces;
 // import io.github.mianalysis.mia.object.image.ImageI;
-// import io.github.mianalysis.mia.object.image.ImageFactory;
+// import io.github.mianalysis.mia.object.image.ImageFactories;
 // import io.github.mianalysis.mia.object.image.ImageType;
 // import io.github.mianalysis.mia.object.system.Status;
 
@@ -52,7 +52,7 @@
 //         for (Dimension dimension : Dimension.values())
 //             for (Axis axis : Axis.values())
 //                 for (Mode mode : Mode.values())
-//                     for (ImageType imageType : ImageType.values())
+//                     for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
 //                         argumentBuilder.add(Arguments.of(dimension, axis, mode, imageType));
 
 //         return argumentBuilder.build();
@@ -65,7 +65,7 @@
 //     public static Stream<Arguments> bitdepthInputProvider() {
 //         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
 //         for (BitDepth bitDepth : BitDepth.values())
-//             for (ImageType imageType : ImageType.values())
+//             for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
 //                 argumentBuilder.add(Arguments.of(bitDepth, imageType));
 
 //         return argumentBuilder.build();
@@ -141,7 +141,7 @@
 //         // Loading the test image and adding to workspace
 //         String inputPath = URLDecoder.decode(ProjectImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
 //         ImagePlus ipl = IJ.openImage(inputPath);
-//         ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+//         ImageI image = ImageFactories.getDefaultFactory().create("Test_image", ipl, imageType);
 //         workspace.addImage(image);
 
 //         // Loading the expected image
@@ -150,7 +150,7 @@
 //         assumeTrue(ProjectImageMSTest.class.getResource(expectedName) != null);
 
 //         String expectedPath = URLDecoder.decode(ProjectImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-//         ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+//         ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(expectedPath), imageType);
 
 //         // When loading a 2D image (but not a single-slice hyperstack), ImageJ will
 //         // disregard any Z-axis spatial calibration. Since this calibration will be

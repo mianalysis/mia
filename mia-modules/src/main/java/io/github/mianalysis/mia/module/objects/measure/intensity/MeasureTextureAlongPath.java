@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -168,7 +168,7 @@ public class MeasureTextureAlongPath extends Module {
                     "Texture analysis requires an 8-bit image.  Converting to 8-bit with scaling enabled.");
             inputImagePlus = inputImagePlus.duplicate();
             ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.SCALE);
-            inputImage = ImageFactory.createImage(inputImage.getName(), inputImagePlus);
+            inputImage = ImageFactories.getDefaultFactory().create(inputImage.getName(), inputImagePlus);
         }
 
         // Getting input objects

@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactories;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeFactoryI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
@@ -260,7 +260,7 @@ public class VolumeAdaptor {
     //         // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
     //     }
 
-    //     return ImageFactory.createImage(imageName, ipl);
+    //     return ImageFactories.getDefaultFactory().create(imageName, ipl);
 
     // }
 
@@ -296,7 +296,7 @@ public class VolumeAdaptor {
     //         ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
     //     }
 
-    //     return ImageFactory.createImage("Tight", ipl);
+    //     return ImageFactories.getDefaultFactory().create("Tight", ipl);
 
     // }
 

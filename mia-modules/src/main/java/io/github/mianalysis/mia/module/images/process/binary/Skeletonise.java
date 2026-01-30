@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.Ab
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -146,7 +146,7 @@ public class Skeletonise extends Module {
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
-            inputImage = ImageFactory.createImage(outputImageName, inputImagePlus.duplicate());
+            inputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImagePlus.duplicate());
 
         process(inputImage,blackBackground);
 

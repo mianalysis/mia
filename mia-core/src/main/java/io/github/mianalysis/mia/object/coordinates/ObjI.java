@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.volume.VolumeI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementProvider;
@@ -299,7 +299,7 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
         int idx = ipl.getStackIndex(1, z + 1, t + 1);
         ipl.getStack().getProcessor(idx).set(x, y, 255);
 
-        return ImageFactory.createImage(imageName, ipl);
+        return ImageFactories.getDefaultFactory().create(imageName, ipl);
 
     }
 

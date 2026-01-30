@@ -109,7 +109,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
     }
 
     public ObjsI convertImageToObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean singleObject);
-
+                                       
     public ObjsI convertImageToSingleObjects(CoordinateSetFactoryI factory, String outputObjectsName, boolean blackBackground);
 
     public void addMeasurement(MeasurementI measurement);

@@ -1,26 +1,19 @@
 package io.github.mianalysis.mia.module.images.transform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
-import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -109,7 +102,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     //     // Loading the test image and adding to workspace
     //     // String inputPath = URLDecoder.decode(ProjectImage.class.getResource(inputName).getPath(), "UTF-8");
     //     ImagePlus ipl = IJ.openImage(inputPath);
-    //     ImageI image = ImageFactory.createImage("Test_image", ipl, ImageType.IMAGEPLUS);
+    //     ImageI image = ImageFactories.getDefaultFactory().create("Test_image", ipl, ImageType.IMAGEPLUS);
     //     workspace.addImage(image);
 
     //     Modules modules = new Modules();
@@ -274,7 +267,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         CalibratedAxis axOut = new DefaultLinearAxis(axIn.type(), axIn.unit(), axIn.calibratedValue(1));
         proj.setAxis(axOut, proj.numDimensions() - 1);
 
-        ImageI projectedImage = ImageFactory.createImage(outputImageName, proj);
+        ImageI projectedImage = ImageFactories.getDefaultFactory().create(outputImageName, proj);
 
         SetLookupTable.copyLUTFromImage(projectedImage,inputImage);
         
@@ -334,7 +327,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
         dcImage.shutdown();
 
-        return ImageFactory.createImage(outputImageName, outImg);
+        return ImageFactories.getDefaultFactory().create(outputImageName, outImg);
 
     }
 

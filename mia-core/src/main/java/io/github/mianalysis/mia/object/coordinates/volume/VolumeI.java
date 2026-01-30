@@ -14,9 +14,11 @@ import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.process.coordinates.PointSurfaceSeparatorCalculator;
 import io.github.mianalysis.mia.process.coordinates.SurfaceSeparationCalculator;
@@ -230,7 +232,7 @@ public interface VolumeI extends SpatiallyCalibrated {
             // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
         }
 
-        return ImageFactory.createImage(imageName, ipl);
+        return ImageFactories.getDefaultFactory().create(imageName, ipl);
 
     }
 
@@ -266,7 +268,7 @@ public interface VolumeI extends SpatiallyCalibrated {
             ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
         }
 
-        return ImageFactory.createImage("Tight", ipl);
+        return ImageFactories.getDefaultFactory().create("Tight", ipl);
 
     }
 
@@ -404,6 +406,23 @@ public interface VolumeI extends SpatiallyCalibrated {
 
     public default double getZMean(boolean pixelDistances, boolean matchXY) {
         return getMeanCentroid(pixelDistances, matchXY).getZ();
+
+    }
+
+    public default double calculateBaseAreaPx() {
+        // Getting the lowest slice
+        double[][] extents = getExtents(true, false);
+        int baseZ = (int) Math.round(extents[2][0]);
+
+        // Counting the number of pixels in this slice
+        int count = 0;
+        for (Point<Integer> point : getCoordinateSet()) {
+            if (point.getZ() == baseZ)
+                count++;
+        }
+
+        // The area in px² is simply the number of pixels
+        return count;
 
     }
 

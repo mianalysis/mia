@@ -1,6 +1,7 @@
 package io.github.mianalysis.mia.object.image;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.drew.lang.annotations.Nullable;
 
@@ -20,6 +21,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -40,10 +42,12 @@ import net.imglib2.view.Views;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
-public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
+public class ImgPlusImage<T extends RealType<T> & NativeType<T>> implements ImageI {
     private static ImageRenderer renderer = new ImgPlusRenderer();
     private ImgPlus<T> img;
     private Overlay overlay = new Overlay();
+    private String name;
+    private LinkedHashMap<String, MeasurementI> measurements = new LinkedHashMap<>();
 
     // CONSTRUCTORS
 
@@ -61,6 +65,11 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     // PUBLIC METHODS
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     public ObjsI initialiseEmptyObjs(String outputObjectsName) {
         int xIdx = img.dimensionIndex(Axes.X);
@@ -391,10 +400,10 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        if (!(obj instanceof Image))
+        if (!(obj instanceof ImageI))
             return false;
 
-        ImageI image = (Image) obj;
+        ImageI image = (ImageI) obj;
         ImagePlus imagePlus2 = image.getImagePlus();
 
         // Comparing calibrations
@@ -533,5 +542,30 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     public Unit<Time> getTemporalUnit() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTemporalUnit'");
+    }
+
+    @Override
+    public void removeMeasurement(String name) {
+        measurements.remove(name);
+    }
+
+    @Override
+    public void addMeasurement(MeasurementI measurement) {
+        measurements.put(measurement.getName(), measurement);
+    }
+
+    @Override
+    public MeasurementI getMeasurement(String name) {
+        return measurements.get(name);
+    }
+
+    @Override
+    public LinkedHashMap<String, MeasurementI> getMeasurements() {
+        return measurements;
+    }
+
+    @Override
+    public void setMeasurements(LinkedHashMap measurements) {
+        this.measurements = measurements;
     }
 }

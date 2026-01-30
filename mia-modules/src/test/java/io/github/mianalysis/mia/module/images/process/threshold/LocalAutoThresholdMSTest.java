@@ -22,9 +22,9 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
+import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
@@ -53,8 +53,8 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
             for (Logic logic : Logic.values())
                 for (Calibration calibration : Calibration.values())
                     for (OutputMode outputMode : OutputMode.values())
-                        for (ImageType imageType : ImageType.values())
-                            argumentBuilder.add(Arguments.of(threshold, logic, calibration, outputMode, imageType));
+                        for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                            argumentBuilder.add(Arguments.of(threshold, logic, calibration, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -69,8 +69,8 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
             for (Logic logic : Logic.values())
                 for (Calibration calibration : Calibration.values())
                     for (OutputMode outputMode : OutputMode.values())
-                        for (ImageType imageType : ImageType.values())
-                            argumentBuilder.add(Arguments.of(dimension, logic, calibration, outputMode, imageType));
+                        for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                            argumentBuilder.add(Arguments.of(dimension, logic, calibration, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -85,13 +85,13 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
     @ParameterizedTest
     @MethodSource("thresholdLogicInputProvider")
     void testAllD3T(Threshold threshold, Logic logic, Calibration calibration, OutputMode outputMode,
-            ImageType imageType) throws UnsupportedEncodingException {
+            ImageFactoryI imageFactory) throws UnsupportedEncodingException {
         switch (calibration) {
             case CALIBRATED:
-                runTest(Dimension.D3T, threshold, logic, 0.48, calibration, outputMode, imageType);
+                runTest(Dimension.D3T, threshold, logic, 0.48, calibration, outputMode, imageFactory);
                 break;
             case UNCALIBRATED:
-                runTest(Dimension.D3T, threshold, logic, 24, calibration, outputMode, imageType);
+                runTest(Dimension.D3T, threshold, logic, 24, calibration, outputMode, imageFactory);
                 break;
         }
     }
@@ -105,13 +105,13 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
     @ParameterizedTest
     @MethodSource("dimLogicInputProvider")
     void testAllTPHANSALKAR(Dimension dimension, Logic logic, Calibration calibration, OutputMode outputMode,
-            ImageType imageType) throws UnsupportedEncodingException {
+            ImageFactoryI imageFactory) throws UnsupportedEncodingException {
         switch (calibration) {
             case CALIBRATED:
-                runTest(dimension, Threshold.TPHANSALKAR, logic, 0.48, calibration, outputMode, imageType);
+                runTest(dimension, Threshold.TPHANSALKAR, logic, 0.48, calibration, outputMode, imageFactory);
                 break;
             case UNCALIBRATED:
-                runTest(dimension, Threshold.TPHANSALKAR, logic, 24, calibration, outputMode, imageType);
+                runTest(dimension, Threshold.TPHANSALKAR, logic, 24, calibration, outputMode, imageFactory);
                 break;
         }
     }
@@ -122,7 +122,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
     // runTest(Dimension.D3T, Threshold.TNIBLACK, Logic.LW, 24,
-    // OutputMode.CREATE_NEW, ImageType.IMAGEPLUS);
+    // OutputMode.CREATE_NEW, ImageFactoryI.IMAGEPLUS);
     // }
 
     /**
@@ -131,7 +131,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     public static void runTest(Dimension dimension, Threshold threshold, Logic logic, double radius,
-            Calibration calibration, OutputMode outputMode, ImageType imageType) throws UnsupportedEncodingException {
+            Calibration calibration, OutputMode outputMode, ImageFactoryI imageFactory) throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
         // Checks input image and expected images are available. If not found, the test
@@ -147,7 +147,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(LocalAutoThresholdMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = imageFactory.create("Test_image", ipl);
         workspace.addImage(image);
 
         String radiusStr = Integer.toString((int) (calibration == Calibration.CALIBRATED ? radius / ipl.getCalibration().pixelWidth : radius));
@@ -157,7 +157,7 @@ public class LocalAutoThresholdMSTest extends ModuleTest {
 
         String expectedPath = URLDecoder.decode(LocalAutoThresholdMSTest.class.getResource(expectedName).getPath(),
                 "UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = imageFactory.create("Expected", IJ.openImage(expectedPath));
 
         // Initialising module and setting parameters
         LocalAutoThreshold module = new LocalAutoThreshold(new Modules());

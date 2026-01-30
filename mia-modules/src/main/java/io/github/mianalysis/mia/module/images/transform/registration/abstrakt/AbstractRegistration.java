@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -481,7 +481,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         // separately
         ImageI inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImage.getImagePlus().duplicate());
 
         // If comparing to a fixed image, get this now
         ImageI reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
@@ -510,7 +510,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             inputIpl.setStack(new CanvasResizer().expandStack(inputIpl.getImageStack(), outW, outH, 0, 0));
             calculationIpl.setStack(new CanvasResizer().expandStack(calculationIpl.getImageStack(), outW, outH, 0, 0));
 
-            reference = ImageFactory.createImage(reference.getName(), reference.getImagePlus().duplicate());
+            reference = ImageFactories.getDefaultFactory().create(reference.getName(), reference.getImagePlus().duplicate());
             referenceIpl = reference.getImagePlus();
             referenceIpl.setStack(new CanvasResizer().expandStack(referenceIpl.getImageStack(), outW, outH, 0, 0));
         }

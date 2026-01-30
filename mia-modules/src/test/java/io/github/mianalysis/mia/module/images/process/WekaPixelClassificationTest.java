@@ -18,7 +18,7 @@
 // import io.github.mianalysis.mia.object.WorkspaceI;
 // import io.github.mianalysis.mia.object.Workspaces;
 // import io.github.mianalysis.mia.object.image.ImageI;
-// import io.github.mianalysis.mia.object.image.ImageFactory;
+// import io.github.mianalysis.mia.object.image.ImageFactories;
 // import io.github.mianalysis.mia.object.system.Status;
 
 // public class WekaPixelClassificationTest extends ModuleTest {
@@ -42,12 +42,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new Modules());
@@ -81,12 +81,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_16bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -120,12 +120,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_32bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -159,12 +159,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -198,12 +198,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -237,12 +237,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -276,12 +276,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -315,12 +315,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -354,12 +354,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -394,12 +394,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -434,12 +434,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -474,12 +474,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -513,12 +513,12 @@
 //     String pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.zip").getPath(),"UTF-8");
 //     ImagePlus ipl = IJ.openImage(pathToImage);
-//     ImageI image = ImageFactory.createImage("Test_image",ipl);
+//     ImageI image = ImageFactories.getDefaultFactory().create("Test_image",ipl);
 //     workspace.addImage(image);
 
 //     pathToImage =
 //     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.zip").getPath(),"UTF-8");
-//     ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
+//     ImageI expectedImage = ImageFactories.getDefaultFactory().create("Expected", IJ.openImage(pathToImage));
 
 //     // Initialising BinaryOperations
 //     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new

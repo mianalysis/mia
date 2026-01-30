@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -413,29 +413,29 @@ public class IdentifyObjects extends Module {
                 }
 
                 // Converting image to objects
-                ImageI tempImage = ImageFactory.createImage("Temp image", currStack);
+                ImageI tempImage = ImageFactories.getDefaultFactory().create("Temp image", currStack);
                 ObjsI currOutputObjects = tempImage.convertImageToObjects(factory, outputObjectsName, singleObject);
 
-                // If processing each slice separately, offsetting it to the correct Z-position
-                if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
-                    currOutputObjects.applySpatioTemporalCalibrationToImage(inputIpl);
-                    for (ObjI currOutputObj : currOutputObjects.values())
-                        currOutputObj.translateCoords(0, 0, z - 1);
-                }
+        //         // If processing each slice separately, offsetting it to the correct Z-position
+        //         if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
+        //             currOutputObjects.applySpatioTemporalCalibrationToImage(inputIpl);
+        //             for (ObjI currOutputObj : currOutputObjects.values())
+        //                 currOutputObj.translateCoords(0, 0, z - 1);
+        //         }
 
-                // Updating the current objects (setting the real frame number and offsetting
-                // the ID)
-                int maxID = 0;
-                for (ObjI object : outputObjects.values())
-                    maxID = Math.max(object.getID(), maxID);
+        //         // Updating the current objects (setting the real frame number and offsetting
+        //         // the ID)
+        //         int maxID = 0;
+        //         for (ObjI object : outputObjects.values())
+        //             maxID = Math.max(object.getID(), maxID);
 
-                for (ObjI object : currOutputObjects.values()) {
-                    object.setID(object.getID() + maxID + 1);
-                    object.setT(t - 1);
-                    outputObjects.put(object.getID(), object);
-                }
+        //         for (ObjI object : currOutputObjects.values()) {
+        //             object.setID(object.getID() + maxID + 1);
+        //             object.setT(t - 1);
+        //             outputObjects.put(object.getID(), object);
+        //         }
 
-                writeProgressStatus(++count, total, "images", name);
+        //         writeProgressStatus(++count, total, "images", name);
 
             }
         }

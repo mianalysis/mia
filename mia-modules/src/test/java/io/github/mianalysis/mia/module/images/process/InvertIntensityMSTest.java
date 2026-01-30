@@ -22,9 +22,9 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
+import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class InvertIntensityMSTest extends ModuleTest {
@@ -35,8 +35,8 @@ public class InvertIntensityMSTest extends ModuleTest {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (Dimension dimension : Dimension.values())
             for (OutputMode outputMode : OutputMode.values())
-                for (ImageType imageType : ImageType.values())
-                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageType));
+                for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -49,8 +49,8 @@ public class InvertIntensityMSTest extends ModuleTest {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (BitDepth bitDepth : BitDepth.values())
             for (OutputMode outputMode : OutputMode.values())
-                for (ImageType imageType : ImageType.values())
-                    argumentBuilder.add(Arguments.of(bitDepth, outputMode, imageType));
+                for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                    argumentBuilder.add(Arguments.of(bitDepth, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -64,9 +64,9 @@ public class InvertIntensityMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit(Dimension dimension, OutputMode outputMode, ImageType imageType)
+    void test8Bit(Dimension dimension, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, outputMode, imageType);
+        runTest(dimension, BitDepth.B8, outputMode, imageFactory);
     }
 
     /**
@@ -77,10 +77,10 @@ public class InvertIntensityMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT(BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
+    void testAllBitDepths_D4ZT(BitDepth bitDepth, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         assumeFalse(bitDepth == BitDepth.B32);
-        runTest(Dimension.D4ZT, bitDepth, outputMode, imageType);
+        runTest(Dimension.D4ZT, bitDepth, outputMode, imageFactory);
     }
 
     // /*
@@ -89,7 +89,7 @@ public class InvertIntensityMSTest extends ModuleTest {
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
     // runTest(Dimension.D4ZT, BitDepth.B32, OutputMode.APPLY_TO_INPUT,
-    // ImageType.IMGLIB2);
+    // ImageFactoryI.IMGLIB2);
     // }
 
     /**
@@ -97,7 +97,7 @@ public class InvertIntensityMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
+    public static void runTest(Dimension dimension, BitDepth bitDepth, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -114,7 +114,7 @@ public class InvertIntensityMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(InvertIntensityMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = imageFactory.create("Test_image", ipl);
         workspace.addImage(image);
 
         // Loading the expected image
@@ -123,7 +123,7 @@ public class InvertIntensityMSTest extends ModuleTest {
 
         String expectedPath = URLDecoder.decode(InvertIntensityMSTest.class.getResource(expectedName).getPath(),
                 "UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = imageFactory.create("Expected", IJ.openImage(expectedPath));
 
         // Initialising module and setting parameters
         InvertIntensity invertIntensity = new InvertIntensity(new Modules());

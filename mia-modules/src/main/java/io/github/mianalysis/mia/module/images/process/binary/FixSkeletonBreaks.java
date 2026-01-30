@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -170,7 +170,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {
-            inputImage = ImageFactory.createImage("Temp", inputImagePlus.duplicate());
+            inputImage = ImageFactories.getDefaultFactory().create("Temp", inputImagePlus.duplicate());
         }
 
         // Running skeleton break fixing
@@ -180,7 +180,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            ImageI outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
+            ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImage.getImagePlus());
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showAsIs();

@@ -88,7 +88,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointListFactory;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.ObjMetadataFactories;
 import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
@@ -266,10 +266,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Initialising output objects
         outputObjects = ObjsFactories.getDefaultFactory().createFromImage(outputObjectsName,
-                ImageFactory.createImage(inputIpl.getTitle(), inputIpl));
+                ImageFactories.getDefaultFactory().create(inputIpl.getTitle(), inputIpl));
         if (outputTrackObjectsName != null)
             outputTrackObjects = ObjsFactories.getDefaultFactory().createFromImage(outputTrackObjectsName,
-                    ImageFactory.createImage(inputIpl.getTitle(), inputIpl));
+                    ImageFactories.getDefaultFactory().create(inputIpl.getTitle(), inputIpl));
 
         // Displaying the image and showing the control
         createControlPanel(instructionText);

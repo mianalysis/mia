@@ -20,12 +20,11 @@ import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.OutputMode;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.ImageFactories;
+import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class FilterImageMSTest extends ModuleTest {
@@ -59,8 +58,8 @@ public class FilterImageMSTest extends ModuleTest {
             for (Filter filter : Filter.values())
                 for (Calibration calibration : Calibration.values())
                     for (OutputMode outputMode : OutputMode.values())
-                        for (ImageType imageType : ImageType.values())
-                            argumentBuilder.add(Arguments.of(dimension, filter, calibration, outputMode, imageType));
+                        for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                            argumentBuilder.add(Arguments.of(dimension, filter, calibration, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -74,8 +73,8 @@ public class FilterImageMSTest extends ModuleTest {
         for (BitDepth bitDepth : BitDepth.values())
             for (Calibration calibration : Calibration.values())
                 for (OutputMode outputMode : OutputMode.values())
-                    for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(bitDepth, calibration, outputMode, imageType));
+                    for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                        argumentBuilder.add(Arguments.of(bitDepth, calibration, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -90,14 +89,14 @@ public class FilterImageMSTest extends ModuleTest {
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
     void test8Bit(Dimension dimension, Filter filter, Calibration calibration, OutputMode outputMode,
-            ImageType imageType)
+            ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         switch (calibration) {
             case CALIBRATED:
-                runTest(dimension, BitDepth.B8, filter, 0.06, true, outputMode, imageType);
+                runTest(dimension, BitDepth.B8, filter, 0.06, true, outputMode, imageFactory);
                 break;
             case UNCALIBRATED:
-                runTest(dimension, BitDepth.B8, filter, 3, false, outputMode, imageType);
+                runTest(dimension, BitDepth.B8, filter, 3, false, outputMode, imageFactory);
                 break;
         }
     }
@@ -111,14 +110,14 @@ public class FilterImageMSTest extends ModuleTest {
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
     void testAllBitDepths_D4ZT_FMEAN(BitDepth bitDepth, Calibration calibration, OutputMode outputMode,
-            ImageType imageType)
+            ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         switch (calibration) {
             case CALIBRATED:
-                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, outputMode, imageType);
+                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, outputMode, imageFactory);
                 break;
             case UNCALIBRATED:
-                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, outputMode, imageType);
+                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, outputMode, imageFactory);
                 break;
         }
     }
@@ -129,7 +128,7 @@ public class FilterImageMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     public static void runTest(Dimension dimension, BitDepth bitDepth, Filter filter, double radius,
-            boolean calibrated, OutputMode outputMode, ImageType imageType)
+            boolean calibrated, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -146,7 +145,7 @@ public class FilterImageMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(FilterImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = imageFactory.create("Test_image", ipl);
         workspace.addImage(image);
 
         // Loading the expected image
@@ -156,7 +155,7 @@ public class FilterImageMSTest extends ModuleTest {
         assumeTrue(FilterImageMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(FilterImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = imageFactory.create("Expected", IJ.openImage(expectedPath));
 
         // Initialising module and setting parameters
         FilterImage filterImage = new FilterImage(new Modules());

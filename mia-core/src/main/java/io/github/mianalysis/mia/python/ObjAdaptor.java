@@ -285,7 +285,7 @@ public class ObjAdaptor {
     //     int idx = ipl.getStackIndex(1, z + 1, t + 1);
     //     ipl.getStack().getProcessor(idx).set(x, y, 255);
 
-    //     return ImageFactory.createImage(imageName, ipl);
+    //     return ImageFactories.getDefaultFactory().create(imageName, ipl);
 
     // }
 

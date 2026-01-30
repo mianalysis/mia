@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.selectors.Interactable;
@@ -157,8 +157,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ArrayList<PointPair> pairs = null;
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
-                pairs = PointPairSelector.getPreselectedPoints(ImageFactory.createImage("Warped", warpedIpl),
-                        ImageFactory.createImage("Reference", referenceIpl));
+                pairs = PointPairSelector.getPreselectedPoints(ImageFactories.getDefaultFactory().create("Warped", warpedIpl),
+                        ImageFactories.getDefaultFactory().create("Reference", referenceIpl));
                 break;
             case PointSelectionModes.RUNTIME:
             default:
@@ -250,8 +250,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
         // Duplicating image
-        ImageI<T> image1 = ImageFactory.createImage("Registered", ipl1);
-        ImageI<T> image2 = ImageFactory.createImage("Reference", ipl2);
+        ImageI<T> image1 = ImageFactories.getDefaultFactory().create("Registered", ipl1);
+        ImageI<T> image2 = ImageFactories.getDefaultFactory().create("Reference", ipl2);
 
         ArrayList<Stack<Point>> points = convertPointPairsToPointStacks(pairs);
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipl1.getProcessor(),

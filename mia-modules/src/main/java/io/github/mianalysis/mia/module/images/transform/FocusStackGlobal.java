@@ -48,7 +48,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
@@ -499,7 +499,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             writeProgressStatus(f + 1, (int) nFrames, "frames", "Focus stack (global)");
         }
 
-        return ImageFactory.createImage(outputImageName, outputImg);
+        return ImageFactories.getDefaultFactory().create(outputImageName, outputImg);
         // ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
         // outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
         // if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z)) == 1)
@@ -507,7 +507,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         // ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         // // Adding the new image to the Workspace
-        // return ImageFactory.createImage(outputImageName, outputImagePlus);
+        // return ImageFactories.getDefaultFactory().create(outputImageName, outputImagePlus);
 
     }
 
@@ -701,7 +701,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             updateAndGetImageMeasurementRefs().addBlankMeasurements(inputImage);
 
             if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
-                ImageI outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
+                ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImage.getImagePlus().duplicate());
                 workspace.addImage(outputImage);
 
                 if (showOutput)

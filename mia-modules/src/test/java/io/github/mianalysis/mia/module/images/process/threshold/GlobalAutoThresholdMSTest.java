@@ -21,9 +21,9 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
+import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
@@ -57,8 +57,8 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
         for (Threshold threshold : Threshold.values())
             for (Logic logic : Logic.values())
                 for (OutputMode outputMode : OutputMode.values())
-                    for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(threshold, logic, outputMode, imageType));
+                    for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                        argumentBuilder.add(Arguments.of(threshold, logic, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -73,8 +73,8 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
             for (Logic logic : Logic.values())
 
                 for (OutputMode outputMode : OutputMode.values())
-                    for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(dimension, logic, outputMode, imageType));
+                    for (ImageFactoryI imageFactory : ImageFactories.getFactories().values())
+                        argumentBuilder.add(Arguments.of(dimension, logic, outputMode, imageFactory));
 
         return argumentBuilder.build();
 
@@ -88,9 +88,9 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("thresholdLogicInputProvider")
-    void testAll(Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
+    void testAll(Threshold threshold, Logic logic, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D3T, threshold, logic, outputMode, imageType);
+        runTest(Dimension.D3T, threshold, logic, outputMode, imageFactory);
 
     }
 
@@ -102,9 +102,9 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimLogicInputProvider")
-    void testAllTHUANG(Dimension dimension, Logic logic, OutputMode outputMode, ImageType imageType)
+    void testAllTHUANG(Dimension dimension, Logic logic, OutputMode outputMode, ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
-        runTest(dimension, Threshold.THUANG, logic, outputMode, imageType);
+        runTest(dimension, Threshold.THUANG, logic, outputMode, imageFactory);
 
     }
 
@@ -114,7 +114,7 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     public static void runTest(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode,
-            ImageType imageType)
+            ImageFactoryI imageFactory)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -135,12 +135,12 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(GlobalAutoThresholdMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        ImageI image = ImageFactory.createImage("Test_image", ipl, imageType);
+        ImageI image = imageFactory.create("Test_image", ipl);
         workspace.addImage(image);
 
         String expectedPath = URLDecoder.decode(GlobalAutoThresholdMSTest.class.getResource(expectedName).getPath(),
                 "UTF-8");
-        ImageI expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        ImageI expectedImage = imageFactory.create("Expected", IJ.openImage(expectedPath));
 
         // Initialising module and setting parameters
         GlobalAutoThreshold module = new GlobalAutoThreshold(new Modules());

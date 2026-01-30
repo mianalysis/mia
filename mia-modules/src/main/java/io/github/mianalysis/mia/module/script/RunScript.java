@@ -35,9 +35,8 @@ import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
-import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -275,7 +274,7 @@ public class RunScript extends Module {
         movedClasses.put("io.github.sjcross.common.exceptions.IntegerOverflowException",
                 IntegerOverflowException.class.getName());
         
-        movedClasses.put("io.github.mianalysis.mia.object.Image", Image.class.getName());
+        movedClasses.put("io.github.mianalysis.mia.object.Image", ImageI.class.getName());
         
         movedClasses.put("io.github.sjcross.common.object.Point", Point.class.getName());
         

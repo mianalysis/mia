@@ -18,11 +18,10 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImgPlusImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -42,6 +41,7 @@ import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
+import net.imagej.ops.Ops.Convert.ImageType;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
@@ -190,7 +190,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
         dcImage.shutdown();
         
-        return ImageFactory.createImage(outputImageName, outputImagePlus);
+        return ImageFactories.getDefaultFactory().create(outputImageName, outputImagePlus);
 
     }
 
@@ -319,7 +319,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
         // otherwise do concatenation.
         ImageI outputImage;
         if (inputImages.size() == 1)
-            outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
+            outputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImages.get(0).getImagePlus());
         else {
             if (removeInputImages) {
                 ArrayList<RandomAccessibleInterval<T>> inputImgs = new ArrayList<>();
@@ -331,7 +331,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
                 ImgPlus<T> outputImgPlus = convertService.convert(outputRAI, ImgPlus.class);
                 ImgPlusTools.initialiseXYCZTAxes(outputImgPlus);
                 ImgPlusTools.applyAxes(inputImages.get(0).getImgPlus(), outputImgPlus);
-                outputImage = ImageFactory.createImage(outputImageName, outputImgPlus, ImageType.IMGLIB2);
+                outputImage = new ImgPlusImageFactory().create(outputImageName, outputImgPlus);
 
             } else {
                 outputImage = process(inputImages, axisMode, outputImageName);

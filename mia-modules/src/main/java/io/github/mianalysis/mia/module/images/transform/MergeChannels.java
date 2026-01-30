@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -183,7 +183,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
         dcImage.shutdown();
         
-        return ImageFactory.createImage(outputImageName, ipl);
+        return ImageFactories.getDefaultFactory().create(outputImageName, ipl);
 
     }
 
@@ -224,7 +224,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
-                ImageI outputImage = ImageFactory.createImage(outputImageName, mergedImage.getImagePlus());
+                ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, mergedImage.getImagePlus());
                 workspace.addImage(outputImage);
                 break;
 

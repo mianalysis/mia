@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -264,7 +264,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
         // Adding image to workspace
         ImagePlus outputImagePlus = ImageJFunctions.wrap(orthoImg, outputImageName);
-        ImageI outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, outputImagePlus);
         workspace.addImage(outputImage);
 
         // Displaying the image

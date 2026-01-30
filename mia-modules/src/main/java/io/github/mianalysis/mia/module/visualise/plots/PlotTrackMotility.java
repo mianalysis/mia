@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -134,7 +134,7 @@ public class PlotTrackMotility extends AbstractOverlay {
         double[] limits = setPlotLimits(plot, csX, csY, rangeModes, ranges);
         setPlotSize(plot, limits);
 
-        return ImageFactory.createImage(outputImageName, plot.getImagePlus());
+        return ImageFactories.getDefaultFactory().create(outputImageName, plot.getImagePlus());
 
     }
 
@@ -189,7 +189,7 @@ public class PlotTrackMotility extends AbstractOverlay {
         if (ipl == null)
             ipl = new Plot(trackObjects.getName() + " (ID 0)", "x-position (px)", "y-position (px)").getImagePlus();
         
-        return ImageFactory.createImage(outputImageName, ipl);
+        return ImageFactories.getDefaultFactory().create(outputImageName, ipl);
 
     }
 

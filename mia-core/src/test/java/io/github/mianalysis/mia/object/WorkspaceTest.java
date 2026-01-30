@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -60,12 +60,12 @@ public class WorkspaceTest {
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
-        ImageI image = ImageFactory.createImage("Test im", imagePlus);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test im", imagePlus);
         image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
         imagePlus = new ImagePlus();
-        image = ImageFactory.createImage("Test im2", imagePlus);
+        image = ImageFactories.getDefaultFactory().create("Test im2", imagePlus);
         image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
@@ -96,12 +96,12 @@ public class WorkspaceTest {
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
-        ImageI image = ImageFactory.createImage("Test im", imagePlus);
+        ImageI image = ImageFactories.getDefaultFactory().create("Test im", imagePlus);
         image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 
         imagePlus = new ImagePlus();
-        image = ImageFactory.createImage("Test im2", imagePlus);
+        image = ImageFactories.getDefaultFactory().create("Test im2", imagePlus);
         image.addMeasurement(MeasurementFactories.getDefaultFactory().createMeasurement("Test meas", 4.6));
         workspace.addImage(image);
 

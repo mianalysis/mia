@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -590,7 +590,7 @@ public class AddLabels extends AbstractOverlay {
                 renderInAllSlices,
                 renderInAllFrames, multithread, measurementNames, positions);
 
-        ImageI outputImage = ImageFactory.createImage(outputImageName, ipl);
+        ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.

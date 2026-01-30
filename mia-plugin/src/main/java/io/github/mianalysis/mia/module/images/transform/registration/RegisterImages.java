@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -602,7 +602,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        ImageI<T> dupImage = ImageFactory.createImage("Registered", dupIpl);
+        ImageI<T> dupImage = ImageFactories.getDefaultFactory().create("Registered", dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -695,7 +695,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactories.getDefaultFactory().create(outputImageName, inputImage.getImagePlus().duplicate());
 
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
@@ -721,7 +721,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
                 // Getting external source image
                 ImageI externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
-                        ? ImageFactory.createImage(externalSourceName,
+                        ? ImageFactories.getDefaultFactory().create(externalSourceName,
                                 workspace.getImage(externalSourceName).getImagePlus().duplicate())
                         : null;
 

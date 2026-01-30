@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.QuadtreeFactory;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -183,7 +183,7 @@ public class GrowObjects extends Module {
                 segmentedIpl = Watershed.computeWatershed(intensityImage.getImagePlus(),
                         markerImage.getImagePlus(), maskImage.getImagePlus(), connectivity, true, false);
 
-            ImageI segmentedImage = ImageFactory.createImage("Segmented", segmentedIpl);
+            ImageI segmentedImage = ImageFactories.getDefaultFactory().create("Segmented", segmentedIpl);
 
             // Get objects and create new object collection
             ObjsI segmentedObjects = segmentedImage.convertImageToObjects(new QuadtreeFactory(), outputObjectsName, false);

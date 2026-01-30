@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -197,7 +197,7 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
             default:
-                return ImageFactory.createImage(outputImageName, iplOut);
+                return ImageFactories.getDefaultFactory().create(outputImageName, iplOut);
             case OverwriteModes.OVERWRITE_IMAGE1:
                 return inputImage1;
             case OverwriteModes.OVERWRITE_IMAGE2:
@@ -465,7 +465,7 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
                 newIpl.updateChannelAndDraw();
-                ImageI outputImage = ImageFactory.createImage(outputImageName, newIpl);
+                ImageI outputImage = ImageFactories.getDefaultFactory().create(outputImageName, newIpl);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.showAsIs();
