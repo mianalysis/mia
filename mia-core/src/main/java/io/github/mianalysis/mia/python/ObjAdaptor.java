@@ -122,7 +122,7 @@ public class ObjAdaptor {
 
     // public default void removeChild(Obj child) {
     //     String childName = child.getName();
-    //     getAllChildren().get(childName).values().remove(child);
+    //     getAllChildren().get(childName).remove(child.getID());
 
     // }
 
@@ -143,7 +143,7 @@ public class ObjAdaptor {
 
     // public default void removePartner(Obj partner) {
     //     String partnerName = partner.getName();
-    //     getAllPartners().get(partnerName).values().remove(partner);
+    //     getAllPartners().get(partnerName).remove(partner.getID());
 
     // }
 

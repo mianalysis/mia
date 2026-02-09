@@ -568,7 +568,7 @@ public class RelateObjects extends Module {
                 relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
 
                 // Removing the child object from its original collection
-                childObjects.values().remove(childObject);
+                childObjects.remove(childObject.getID());
 
             }
 

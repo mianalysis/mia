@@ -135,7 +135,7 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     public default void removeChild(ObjI child) {
         String childName = child.getName();
-        getAllChildren().get(childName).values().remove(child);
+        getAllChildren().get(childName).remove(child.getID());
 
     }
 
@@ -156,7 +156,7 @@ public interface ObjI extends MeasurementProvider, VolumeI, SpatioTemporallyCali
 
     public default void removePartner(ObjI partner) {
         String partnerName = partner.getName();
-        getAllPartners().get(partnerName).values().remove(partner);
+        getAllPartners().get(partnerName).remove(partner.getID());
 
     }
 

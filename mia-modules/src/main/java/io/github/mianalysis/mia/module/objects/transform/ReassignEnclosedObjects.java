@@ -28,16 +28,24 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
-
 /**
-* Any objects entirely enclosed by another object in the same collection are reassigned as being part of the enclosing object.  This operation removes the enclosed object as a separate entity.<br><br>Note: MIA objects do not permit duplication of the same coordinate within a single object, so any duplicate coordinates will be ignored (i.e. only one copy will be stored).
-*/
+ * Any objects entirely enclosed by another object in the same collection are
+ * reassigned as being part of the enclosing object. This operation removes the
+ * enclosed object as a separate entity.<br>
+ * <br>
+ * Note: MIA objects do not permit duplication of the same coordinate within a
+ * single object, so any duplicate coordinates will be ignored (i.e. only one
+ * copy will be stored).
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ReassignEnclosedObjects extends Module {
 
-	/**
-	* Object collection to process for enclosed objects.  Objects in this collection will be updated as a result of this module (enclosed objects will be removed as separate entities and their coordinates will be added to the enclosing object).
-	*/
+    /**
+     * Object collection to process for enclosed objects. Objects in this collection
+     * will be updated as a result of this module (enclosed objects will be removed
+     * as separate entities and their coordinates will be added to the enclosing
+     * object).
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
     public ReassignEnclosedObjects(Modules modules) {
@@ -50,13 +58,13 @@ public class ReassignEnclosedObjects extends Module {
             return;
 
         // Creating a binary image of the input object
-        ImageI binaryImage = object.getAsImage("Binary",false);
+        ImageI binaryImage = object.getAsImage("Binary", false);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
 
         // Filling holes in the binary image
         InvertIntensity.process(binaryIpl);
-        BinaryOperations2D.process(binaryIpl,BinaryOperations2D.OperationModes.FILL_HOLES,1,1,
-        false);
+        BinaryOperations2D.process(binaryIpl, BinaryOperations2D.OperationModes.FILL_HOLES, 1, 1,
+                false);
 
         // Iterating over each object in the collection, testing if the centroid is
         // present in the filled object
@@ -77,14 +85,15 @@ public class ReassignEnclosedObjects extends Module {
             // Checking if this centroid is within the input object
             binaryIpl.setPosition(1, zCent + 1, testObject.getT() + 1);
             int val = binaryIpl.getProcessor().get(xCent, yCent);
-            if (val == 255) continue;
-
+            if (val == 255)
+                continue;
 
             // Expanding the test object by 1 px to fill the gap
-            // Obj expanded = ExpandShrinkObjects.processObject(testObject, ExpandShrinkObjects.Methods.EXPAND_2D, 1);
+            // Obj expanded = ExpandShrinkObjects.processObject(testObject,
+            // ExpandShrinkObjects.Methods.EXPAND_2D, 1);
 
             // if (expanded == null)
-            //     expanded = testObject;
+            // expanded = testObject;
 
             for (Point<Integer> point : testObject.getCoordinateSet()) {
                 try {
@@ -127,13 +136,15 @@ public class ReassignEnclosedObjects extends Module {
                 writeProgressStatus(++count, inputObjects.size(), "objects");
             }
 
-            inputObjects.values().removeIf(object -> object.getID() == -1);
+            for (ObjI object : inputObjects.values())
+                if (object.getID() == -1)
+                    inputObjects.remove(object.getID());
 
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }
 
-            // Showing objects
+        // Showing objects
         if (showOutput)
             inputObjects.convertToImageIDColours().showWithNormalisation(false);
 
@@ -166,8 +177,8 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
