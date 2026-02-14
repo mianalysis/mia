@@ -312,11 +312,7 @@ public class ExtractObjectEdges extends Module {
     static void showObjects(ObjsI objects, String parentObjectsName, LUT lut) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(objects, parentObjectsName, true);
         ImageI dispImage = objects.convertToImage(objects.getName(), hues, 8, false, false);
-        ImagePlus dispIpl = dispImage.getImagePlus();
-        dispIpl.setLut(lut);
-        dispIpl.setPosition(1, 1, 1);
-        dispIpl.updateChannelAndDraw();
-        dispIpl.show();
+        dispImage.showWithLUT(lut);
 
     }
 
