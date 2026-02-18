@@ -682,7 +682,7 @@ public class MeasureObjectCurvature extends Module {
             if (useReference) {
                 double xRef = inputObject.getMeasurement(xReference).getValue();
                 double yRef = inputObject.getMeasurement(yReference).getValue();
-
+                MIA.log.writeDebug("XREF "+xRef);
                 
                 if (testForPathInversion(longestPath, xRef, yRef)) {
                     // Store the longest path in a list, then iterate through this backwards

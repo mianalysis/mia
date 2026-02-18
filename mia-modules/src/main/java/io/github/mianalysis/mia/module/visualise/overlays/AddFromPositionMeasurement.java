@@ -182,24 +182,24 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
             PointRoi pointRoi = new PointRoi(xMean,yMean);
             pointRoi.setPointType(typeVal);
             pointRoi.setSize(sizeVal);
-            if (ipl.isHyperStack()) {
-                pointRoi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1,z),t);
-                pointRoi.setPosition(pos);
-            }
+            // if (ipl.isHyperStack()) {
+            pointRoi.setPosition(1, z, t);
+            // } else {
+            //     int pos = Math.max(Math.max(1,z),t);
+            //     pointRoi.setPosition(pos);
+            // }
             pointRoi.setStrokeColor(colour);
             ipl.getOverlay().addElement(pointRoi);
 
         } else {
             double r = object.getMeasurement(radiusMeasurement).getValue();
             OvalRoi ovalRoi = new OvalRoi(xMean - r, yMean - r, 2 * r, 2 * r);
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 ovalRoi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1, z), t);
-                ovalRoi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z), t);
+            //     ovalRoi.setPosition(pos);
+            // }
             ovalRoi.setStrokeColor(colour);
             ovalRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(ovalRoi);

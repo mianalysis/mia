@@ -325,12 +325,12 @@ public class AddObjectsOverlay extends Module {
             roi.setStrokeColor(colour);
             roi.setStrokeWidth(lineWidth);
 
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 roi.setPosition(1, (int) zz[i] + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, (int) zz[i] + 1), t);
-                roi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, (int) zz[i] + 1), t);
+            //     roi.setPosition(pos);
+            // }
             ipl.getOverlay().addElement(roi);
 
         }
@@ -360,12 +360,12 @@ public class AddObjectsOverlay extends Module {
         arrow.setStrokeColor(colour);
         arrow.setStrokeWidth(lineWidth);
 
-        if (ipl.isHyperStack()) {
+        // if (ipl.isHyperStack()) {
             arrow.setPosition(1, (int) z, t);
-        } else {
-            int pos = Math.max(Math.max(1, (int) z), t);
-            arrow.setPosition(pos);
-        }
+        // } else {
+        //     int pos = Math.max(Math.max(1, (int) z), t);
+        //     arrow.setPosition(pos);
+        // }
         ipl.getOverlay().addElement(arrow);
 
     }
@@ -389,12 +389,12 @@ public class AddObjectsOverlay extends Module {
         // Adding circles where the object centroids are
         PointRoi pointRoi = new PointRoi(xMean + 0.5, yMean + 0.5);
         pointRoi.setPointType(PointRoi.NORMAL);
-        if (ipl.isHyperStack()) {
+        // if (ipl.isHyperStack()) {
             pointRoi.setPosition(1, z, t);
-        } else {
-            int pos = Math.max(Math.max(1, z), t);
-            pointRoi.setPosition(pos);
-        }
+        // } else {
+        //     int pos = Math.max(Math.max(1, z), t);
+        //     pointRoi.setPosition(pos);
+        // }
         pointRoi.setStrokeColor(colour);
         pointRoi.setStrokeWidth(lineWidth);
         ipl.getOverlay().addElement(pointRoi);
@@ -420,12 +420,12 @@ public class AddObjectsOverlay extends Module {
             if (polyRoi == null)
                 continue;
 
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 polyRoi.setPosition(1, z + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z + 1), t);
-                polyRoi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z + 1), t);
+            //     polyRoi.setPosition(pos);
+            // }
 
             polyRoi.setStrokeColor(colour);
             polyRoi.setStrokeWidth(lineWidth);
@@ -452,12 +452,12 @@ public class AddObjectsOverlay extends Module {
         if (posMeasurements[3].equals("")) {
             PointRoi pointRoi = new PointRoi(xMean + 0.5, yMean + 0.5);
             pointRoi.setPointType(PointRoi.NORMAL);
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 pointRoi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1, z), t);
-                pointRoi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z), t);
+            //     pointRoi.setPosition(pos);
+            // }
             pointRoi.setStrokeColor(colour);
             pointRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(pointRoi);
@@ -465,12 +465,12 @@ public class AddObjectsOverlay extends Module {
         } else {
             double r = object.getMeasurement(posMeasurements[3]).getValue();
             OvalRoi ovalRoi = new OvalRoi(xMean + 0.5 - r, yMean + 0.5 - r, 2 * r, 2 * r);
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 ovalRoi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1, z), t);
-                ovalRoi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z), t);
+            //     ovalRoi.setPosition(pos);
+            // }
             ovalRoi.setStrokeColor(colour);
             ovalRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(ovalRoi);
@@ -505,14 +505,14 @@ public class AddObjectsOverlay extends Module {
                 for (int t = p2.getT(); t <= maxFrame - 1; t++) {
                     Line line = new Line(x1, y1, x2, y2);
 
-                    if (ipl.isHyperStack()) {
+                    // if (ipl.isHyperStack()) {
                         ipl.setPosition(1, 1, t + 1);
                         line.setPosition(1, 1, t + 1);
-                    } else {
-                        int pos = Math.max(1, t + 1);
-                        ipl.setPosition(pos);
-                        line.setPosition(pos);
-                    }
+                    // } else {
+                    //     int pos = Math.max(1, t + 1);
+                    //     ipl.setPosition(pos);
+                    //     line.setPosition(pos);
+                    // }
 
                     line.setStrokeWidth(lineWidth);
                     line.setStrokeColor(colour);
@@ -537,11 +537,11 @@ public class AddObjectsOverlay extends Module {
         text.setJustification(TextRoi.CENTER);
         text.setStrokeColor(colour);
 
-        if (ipl.isHyperStack()) {
+        // if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);
-        } else {
-            text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
-        }
+        // } else {
+        //     text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
+        // }
         ipl.getOverlay().addElement(text);
 
     }

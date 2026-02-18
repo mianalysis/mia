@@ -399,14 +399,14 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         for (int z = 0; z < nSlices; z++) {
             Line line = new Line(x1, y1, x2, y2);
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 ipl.setPosition(1, z + 1, t);
                 line.setPosition(1, z + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z + 1), t);
-                ipl.setPosition(pos);
-                line.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z + 1), t);
+            //     ipl.setPosition(pos);
+            //     line.setPosition(pos);
+            // }
 
             line.setStrokeColor(colour);
             line.setStrokeWidth(lineWidth);
@@ -435,14 +435,14 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         for (int z = 0; z < nSlices; z++) {
             Line line = new Line(x1, y1, x1p5, y1p5);
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 ipl.setPosition(1, z + 1, t);
                 line.setPosition(1, z + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z + 1), t);
-                ipl.setPosition(pos);
-                line.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z + 1), t);
+            //     ipl.setPosition(pos);
+            //     line.setPosition(pos);
+            // }
 
             line.setStrokeColor(colour);
             line.setStrokeWidth(lineWidth);
@@ -477,14 +477,14 @@ public class AddRelationshipConnection extends AbstractOverlay {
             pointRoi.setPointType(typeVal);
             pointRoi.setSize(sizeVal);
 
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 ipl.setPosition(1, z + 1, t);
                 pointRoi.setPosition(1, z + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z + 1), t);
-                ipl.setPosition(pos);
-                pointRoi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z + 1), t);
+            //     ipl.setPosition(pos);
+            //     pointRoi.setPosition(pos);
+            // }
 
             pointRoi.setStrokeColor(colour);
             ipl.getOverlay().addElement(pointRoi);

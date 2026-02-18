@@ -199,12 +199,12 @@ public class AddArrows extends AbstractOverlay {
         arrow.setStrokeColor(colour);
         arrow.setStrokeWidth(lineWidth);
 
-        if (ipl.isHyperStack()) {
+        // if (ipl.isHyperStack()) {
             arrow.setPosition(1, (int) z, t);
-        } else {
-            int pos = Math.max(Math.max(1, (int) z), t);
-            arrow.setPosition(pos);
-        }
+        // } else {
+        //     int pos = Math.max(Math.max(1, (int) z), t);
+        //     arrow.setPosition(pos);
+        // }
         ipl.getOverlay().addElement(arrow);
 
     }

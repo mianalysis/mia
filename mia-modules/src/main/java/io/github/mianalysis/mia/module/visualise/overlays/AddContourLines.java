@@ -379,13 +379,13 @@ public class AddContourLines extends Module {
             for (int z = 0; z < ipl.getNSlices(); z++) {
                 for (int t = 0; t < ipl.getNFrames(); t++) {
                     int[] pos = null;
-                    if (ipl.isHyperStack()) {
+                    // if (ipl.isHyperStack()) {
                         pos = new int[] { c + 1, z + 1, t + 1 };
                         ipl.setPosition(pos[0], pos[1], pos[2]);
-                    } else {
-                        pos = new int[] { Math.max(Math.max(c, z), t) + 1 };
-                        ipl.setPosition(pos[0]);
-                    }
+                    // } else {
+                    //     pos = new int[] { Math.max(Math.max(c, z), t) + 1 };
+                    //     ipl.setPosition(pos[0]);
+                    // }
 
                     if (labelColours == null) {
                         addOverlay(ipl.getProcessor(), ipl.getOverlay(), pos, levels, contourColours, lineWidth,
