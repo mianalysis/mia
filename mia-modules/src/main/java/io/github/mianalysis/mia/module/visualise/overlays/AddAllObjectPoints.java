@@ -126,12 +126,12 @@ public class AddAllObjectPoints extends AbstractOverlay {
             roi.setSize(0);
             roi.setStrokeColor(colour);
 
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 roi.setPosition(1, (int) zz[i]+1, t);
-            } else {
-                int pos = Math.max(Math.max(1,(int) zz[i]+1),t);
-                roi.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1,(int) zz[i]+1),t);
+            //     roi.setPosition(pos);
+            // }
             ipl.getOverlay().addElement(roi);
 
         }

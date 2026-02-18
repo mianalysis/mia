@@ -196,14 +196,14 @@ public class AddLine extends AbstractOverlay {
             // Creating the line
             Line line = new Line(pos1.x, pos1.y, pos2.x, pos2.y);
     
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 ipl.setPosition(1, 1, t);
                 line.setPosition(1, 1, t);
-            } else {
-                int pos = Math.max(1, t);
-                ipl.setPosition(pos);
-                line.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(1, t);
+            //     ipl.setPosition(pos);
+            //     line.setPosition(pos);
+            // }
     
             line.setStrokeWidth(lineWidth);
             line.setStrokeColor(colour);

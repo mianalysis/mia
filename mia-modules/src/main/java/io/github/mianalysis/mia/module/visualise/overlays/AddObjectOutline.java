@@ -229,14 +229,14 @@ public class AddObjectOutline extends AbstractOverlay {
                 roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, true), roi.getType());
             }
 
-            if (ipl.isHyperStack()) {
+            // if (ipl.isHyperStack()) {
                 roi.setPosition(1, z + 1, t);
                 ipl.setPosition(1, z + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z + 1), t);
-                roi.setPosition(pos);
-                ipl.setPosition(pos);
-            }
+            // } else {
+            //     int pos = Math.max(Math.max(1, z + 1), t);
+            //     roi.setPosition(pos);
+            //     ipl.setPosition(pos);
+            // }
 
             roi.setStrokeColor(colour);
             roi.setStrokeWidth(lineWidth);

@@ -460,11 +460,11 @@ public class AddLabels extends AbstractOverlay {
         text.setStrokeColor(colour);
         text.setAntialiased(true);
 
-        if (ipl.isHyperStack()) {
+        // if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], t);
-        } else {
-            text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), t));
-        }
+        // } else {
+        //     text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), t));
+        // }
 
         if (centreText) {
             text.setLocation(text.getXBase() - text.getFloatWidth() / 2 + 1,

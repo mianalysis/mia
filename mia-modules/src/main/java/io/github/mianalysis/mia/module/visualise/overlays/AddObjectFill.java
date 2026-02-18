@@ -192,14 +192,14 @@ public class AddObjectFill extends AbstractOverlay {
                 if (polyRoi == null)
                     continue;
 
-                if (ipl.isHyperStack()) {
+                // if (ipl.isHyperStack()) {
                     polyRoi.setPosition(1, z + 1, t);
                     ipl.setPosition(1, z + 1, t);
-                } else {
-                    int pos = Math.max(Math.max(1, z + 1), t);
-                    polyRoi.setPosition(pos);
-                    ipl.setPosition(pos);
-                }
+                // } else {
+                //     int pos = Math.max(Math.max(1, z + 1), t);
+                //     polyRoi.setPosition(pos);
+                //     ipl.setPosition(pos);
+                // }
 
                 polyRoi.setFillColor(colour);
 

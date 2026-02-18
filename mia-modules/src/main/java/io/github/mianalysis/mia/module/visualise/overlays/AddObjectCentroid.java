@@ -197,12 +197,12 @@ public class AddObjectCentroid extends AbstractOverlay {
         pointRoi.setPointType(typeVal);
         pointRoi.setSize(sizeVal);
 
-        if (ipl.isHyperStack()) {
+        // if (ipl.isHyperStack()) {
             pointRoi.setPosition(1, z, t);
-        } else {
-            int pos = Math.max(Math.max(1, z), t);
-            pointRoi.setPosition(pos);
-        }
+        // } else {
+        //     int pos = Math.max(Math.max(1, z), t);
+        //     pointRoi.setPosition(pos);
+        // }
         pointRoi.setStrokeColor(colour);
         ipl.getOverlay().addElement(pointRoi);
 

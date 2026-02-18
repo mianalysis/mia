@@ -172,10 +172,10 @@ public class SetDisplayRange extends Module {
     public static void setDisplayRangeManual(ImagePlus ipl, double[] intRange) {
         // Get min max values for whole stack
         for (int c = 1; c <= ipl.getNChannels(); c++) {
-            if (ipl.isHyperStack())
+            // if (ipl.isHyperStack())
                 ipl.setPosition(c, 1, 1);
-            else
-                ipl.setPosition(c);
+            // else
+            //     ipl.setPosition(c);
 
             ipl.setDisplayRange(intRange[0], intRange[1]);
 
