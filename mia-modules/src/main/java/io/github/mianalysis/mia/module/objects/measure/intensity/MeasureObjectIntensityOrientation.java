@@ -76,17 +76,17 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
     /**
     * 
     */
-    public static final String INPUT_SEPARATOR = "Image input/output";
-
-    /**
-    * 
-    */
-    public static final String INPUT_IMAGE = "Input image";
+    public static final String INPUT_SEPARATOR = "Image/object input/output";
 
     /**
     * 
     */
     public static final String INPUT_OBJECTS = "Input objects";
+
+    /**
+    * 
+    */
+    public static final String INPUT_IMAGE = "Input image";
 
     /**
     * 
@@ -366,8 +366,8 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String methodString = parameters.getValue(METHOD, workspace);
         int nBins = parameters.getValue(NUMBER_OF_BINS, workspace);
         double binStart = parameters.getValue(HISTOGRAM_START, workspace);
@@ -464,8 +464,8 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         super.initialiseParameters();
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(ORIENTATION_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.FOURIER, Methods.ALL));
@@ -495,8 +495,8 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(ORIENTATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(METHOD));

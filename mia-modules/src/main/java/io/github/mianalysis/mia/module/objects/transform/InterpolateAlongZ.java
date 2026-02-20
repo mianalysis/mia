@@ -102,7 +102,7 @@ public class InterpolateAlongZ extends Module {
         int inputNSlices = outputObjects.getNSlices();
 
         double scale = inputZCalibration/outputZCalibration;
-        int outputNSlices = (int) Math.ceil(inputNSlices*scale);
+        int outputNSlices = (int) Math.round(inputNSlices*scale);
         outputObjects.getSpatialCalibration().nSlices = outputNSlices;
         outputObjects.getSpatialCalibration().dppZ = outputZCalibration;
         
@@ -128,7 +128,6 @@ public class InterpolateAlongZ extends Module {
         return outputObjects;
 
     }
-
 
     @Override
     public Status process(Workspace workspace) {

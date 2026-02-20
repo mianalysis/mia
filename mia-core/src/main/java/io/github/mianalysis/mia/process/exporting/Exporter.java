@@ -97,7 +97,7 @@ public class Exporter {
     // PUBLIC METHODS
 
     public void exportResults(Workspaces workspaces, Modules modules, String exportFilePath) throws IOException {
-        
+
         switch (exportMode) {
             case ALL_TOGETHER:
                 export(workspaces, modules, exportFilePath);
@@ -109,9 +109,10 @@ public class Exporter {
                 for (Workspace workspace : workspaces) {
                     if (!workspace.exportWorkspace())
                         continue;
-                    if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
+
+                    if (workspace.getMetadata().containsKey(metadataItemForGrouping))
                         metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
-                    }
+
                 }
 
                 for (String metadataValue : metadataValues) {
@@ -123,9 +124,9 @@ public class Exporter {
                             continue;
                         if (!workspace.getMetadata().containsKey(metadataItemForGrouping))
                             continue;
-                        if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
+                        if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue))
                             currentWorkspaces.add(workspace);
-                        }
+
                     }
 
                     String name = exportFilePath + "_" + metadataItemForGrouping + "-" + metadataValue;
@@ -398,11 +399,15 @@ public class Exporter {
             case GROUP_BY_METADATA:
                 HashMap<String, Workspace> metadataWorkspaces = workspaces
                         .getMetadataWorkspaces(metadataItemForSummary);
+
                 for (String metadataValue : metadataWorkspaces.keySet()) {
                     Workspace currentWorkspace = metadataWorkspaces.get(metadataValue);
+
                     if (!currentWorkspace.exportWorkspace())
                         continue;
+
                     Row summaryValueRow = summarySheet.createRow(summaryRow++);
+
                     populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, metadataItemForSummary,
                             metadataValue);
 
@@ -467,6 +472,8 @@ public class Exporter {
 
         // Add a column to record the timepoint
         switch (summaryType) {
+            case PER_FILE:
+                break;
             case PER_TIMEPOINT_PER_FILE:
                 String timepointDataName = getMetadataString("TIMEPOINT");
                 Cell cell = summaryHeaderRow.createCell(headerCol.get());
@@ -731,67 +738,67 @@ public class Exporter {
 
                 if (objectMeasurement.isExportMean()) {
                     headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getNickname());
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMean();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
+                    if (colNumbers.containsKey(headerName)) {
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMean();
+                        if (Double.isNaN(val))
+                            summaryCell.setCellValue("");
+                        else
+                            summaryCell.setCellValue(val);
+                    }
                 }
 
                 if (objectMeasurement.isExportMin()) {
                     headerName = getObjectString(objSetName, "MIN", objectMeasurement.getNickname());
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMin();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
+                    if (colNumbers.containsKey(headerName)) {
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMin();
+                        if (Double.isNaN(val))
+                            summaryCell.setCellValue("");
+                        else
+                            summaryCell.setCellValue(val);
+                    }
                 }
 
                 if (objectMeasurement.isExportMax()) {
                     headerName = getObjectString(objSetName, "MAX", objectMeasurement.getNickname());
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMax();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
+                    if (colNumbers.containsKey(headerName)) {
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMax();
+                        if (Double.isNaN(val))
+                            summaryCell.setCellValue("");
+                        else
+                            summaryCell.setCellValue(val);
+                    }
                 }
 
                 if (objectMeasurement.isExportStd()) {
                     headerName = getObjectString(objSetName, "STD", objectMeasurement.getNickname());
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getStd();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
+                    if (colNumbers.containsKey(headerName)) {
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getStd();
+                        if (Double.isNaN(val))
+                            summaryCell.setCellValue("");
+                        else
+                            summaryCell.setCellValue(val);
+                    }
                 }
 
                 if (objectMeasurement.isExportSum()) {
                     headerName = getObjectString(objSetName, "SUM", objectMeasurement.getNickname());
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getSum();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
+                    if (colNumbers.containsKey(headerName)) {
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getSum();
+                        if (Double.isNaN(val))
+                            summaryCell.setCellValue("");
+                        else
+                            summaryCell.setCellValue(val);
+                    }
                 }
             }
         }
