@@ -13,6 +13,7 @@ import org.scijava.ui.UIService;
 
 import ij.plugin.frame.Recorder;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
@@ -117,7 +118,7 @@ public class MIAHeadless extends MIA implements Command {
                 modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH, inputPath);
             }
 
-            for (Module module:modules)
+            for (ModuleI module:modules)
                 module.setVerbose(verbose);
 
             // Inserting variables
@@ -145,7 +146,7 @@ public class MIAHeadless extends MIA implements Command {
             String newVariableName = splitVariables[0].trim();
             String newVariableValue = splitVariables[1].trim();
 
-            for (Module module : modules.values()) {
+            for (ModuleI module : modules.values()) {
                 if (module instanceof GlobalVariables && module.isEnabled()) {
                     ParameterGroup group = module.getAllParameters().getParameter(GlobalVariables.ADD_NEW_VARIABLE);
                     if (group == null)

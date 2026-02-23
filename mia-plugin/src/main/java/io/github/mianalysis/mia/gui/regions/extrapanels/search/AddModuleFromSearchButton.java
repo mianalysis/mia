@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.gui.regions.extrapanels.search;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,15 +9,15 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JButton;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 
 public class AddModuleFromSearchButton extends JButton implements ActionListener {
-    private Module module;
+    private ModuleI module;
 
-    public AddModuleFromSearchButton(Module module) {
+    public AddModuleFromSearchButton(ModuleI module) {
         this.module = module;
 
         setText("+");
@@ -34,7 +33,7 @@ public class AddModuleFromSearchButton extends JButton implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         // Adding it after the currently-selected module
-        Module newModule = null;
+        ModuleI newModule = null;
         try {
             ModulesI modules = GUI.getModules();
             newModule = module.getClass().getConstructor(ModulesI.class).newInstance(modules);
@@ -43,19 +42,19 @@ public class AddModuleFromSearchButton extends JButton implements ActionListener
             e1.printStackTrace();
         }
 
-        Module activeModule = GUI.getFirstSelectedModule();
+        ModuleI activeModule = GUI.getFirstSelectedModule();
         ModulesI modules = GUI.getModules();
         if (activeModule == null || activeModule.getClass().isInstance(new InputControl(modules))
                 || activeModule.getClass().isInstance(new OutputControl(modules))) {
             GUI.getModules().add(newModule);
         } else {
-            Module[] activeModules = GUI.getSelectedModules();
+            ModuleI[] activeModules = GUI.getSelectedModules();
             int idx = GUI.getModules().indexOf(activeModules[activeModules.length - 1]);
             GUI.getModules().addAtIndex(++idx, newModule);
         }
 
         // Adding to the list of modules
-        GUI.setSelectedModules(new Module[] { newModule });
+        GUI.setSelectedModules(new ModuleI[] { newModule });
         GUI.updateModules(true, activeModule);
         GUI.updateParameters(false, null);
 

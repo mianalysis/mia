@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public abstract class ExportableRef extends Ref {
+public abstract class ExportableRef extends AbstractRef {
     private boolean exportIndividual = true;
     private boolean exportGlobal = true; // This is mainly for the GUI
 

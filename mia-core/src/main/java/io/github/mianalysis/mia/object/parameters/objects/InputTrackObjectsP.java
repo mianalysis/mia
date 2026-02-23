@@ -4,19 +4,19 @@ import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 
 public class InputTrackObjectsP extends InputObjectsP {
-    public InputTrackObjectsP(String name, Module module) {
+    public InputTrackObjectsP(String name, ModuleI module) {
         super(name, module);
     }
 
-    public InputTrackObjectsP(String name, Module module, @NotNull String choice) {
+    public InputTrackObjectsP(String name, ModuleI module, @NotNull String choice) {
         super(name, module, choice);
     }
 
-    public InputTrackObjectsP(String name, Module module, @NotNull String choice, String description) {
+    public InputTrackObjectsP(String name, ModuleI module, @NotNull String choice, String description) {
         super(name, module, choice, description);
     }
 

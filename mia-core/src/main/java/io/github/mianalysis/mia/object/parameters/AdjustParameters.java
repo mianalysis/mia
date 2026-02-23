@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.object.parameters;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -14,7 +14,7 @@ public class AdjustParameters extends Parameter {
     private ParameterGroup group;
     private int collectionIndex;
 
-    public AdjustParameters(String name, Module module, ParameterGroup group, int collectionIndex) {
+    public AdjustParameters(String name, ModuleI module, ParameterGroup group, int collectionIndex) {
         super(name, module);
         this.group = group;
         this.collectionIndex = collectionIndex;
@@ -51,7 +51,7 @@ public class AdjustParameters extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         return null;
     }
 

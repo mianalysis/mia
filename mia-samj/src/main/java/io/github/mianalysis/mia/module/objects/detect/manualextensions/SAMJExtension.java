@@ -35,7 +35,7 @@ import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
@@ -55,7 +55,7 @@ import net.imagej.patcher.LegacyInjector;
 @Plugin(type = ManualExtension.class, priority = Priority.LOW, visible = true)
 public class SAMJExtension implements ManualExtension, MouseListener {
     private Parameters parameters = new Parameters();
-    private Module module;
+    private ModuleI module;
 
     public static final String SAMJ_SEPARATOR = "Segment Anything (SAMJ) controls";
     public static final String USE_SAM = "Enable Segment Anything";
@@ -96,7 +96,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
         }
     }
 
-    public SAMJExtension(Module module) {
+    public SAMJExtension(ModuleI module) {
         setModule(module);
         initialiseParameters();
     }
@@ -107,7 +107,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
     }
 
     @Override
-    public void setModule(Module module) {
+    public void setModule(ModuleI module) {
         this.module = module;
     }
 
@@ -215,7 +215,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
                 Thread t = new Thread(() -> {
                     // Running modules up to this point
                     ModulesI modules = module.getModules();
-                    for (Module currModule : modules) {
+                    for (ModuleI currModule : modules) {
                         if (currModule == module)
                             break;
                         currModule.execute(dummyWorkspace);

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -70,7 +70,7 @@ public class AnalysisRunner {
 
         // Set verbose if showing the GUI
         if (!MIA.isHeadless())
-            for (Module module:modules)
+            for (ModuleI module:modules)
                 module.setVerbose(jobs.size() == 1);
 
         // Setting up the pool

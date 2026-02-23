@@ -21,8 +21,8 @@ import org.w3c.dom.Element;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -114,7 +114,7 @@ public class AnalysisWriter {
         Element modulesElement = doc.createElement("MODULES");
 
         // Running through each parameter set (one for each module)
-        for (Module module : modules) {
+        for (ModuleI module : modules) {
             Element moduleElement = doc.createElement("MODULE");
 
             // Adding module details

@@ -7,13 +7,13 @@ import org.scijava.plugin.SciJavaPlugin;
 import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.system.Status;
 
 public interface ManualExtension extends SciJavaPlugin {
-    public void setModule(Module module);
+    public void setModule(ModuleI module);
     
     public Status initialiseBeforeImageShown(WorkspaceI workspace);
 

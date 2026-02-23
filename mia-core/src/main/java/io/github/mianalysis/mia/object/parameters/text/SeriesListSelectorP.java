@@ -2,22 +2,22 @@ package io.github.mianalysis.mia.object.parameters.text;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;
 
 public class SeriesListSelectorP extends StringP {
-    public SeriesListSelectorP(String name, Module module) {
+    public SeriesListSelectorP(String name, ModuleI module) {
         super(name, module);
     }
 
-    public SeriesListSelectorP(String name, Module module, @NotNull String value) {
+    public SeriesListSelectorP(String name, ModuleI module, @NotNull String value) {
         super(name, module, value);
     }
 
-    public SeriesListSelectorP(String name, Module module, @NotNull String value, String description) {
+    public SeriesListSelectorP(String name, ModuleI module, @NotNull String value, String description) {
         super(name, module, value, description);
     }
 
@@ -27,7 +27,7 @@ public class SeriesListSelectorP extends StringP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         SeriesListSelectorP newParameter = new SeriesListSelectorP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());

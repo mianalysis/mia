@@ -1,21 +1,20 @@
 package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
-import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.ModulesI;
-import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.module.core.OutputControl;
-
 import java.awt.Font;
-import java.awt.font.TextAttribute;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.ModuleI;
+import io.github.mianalysis.mia.module.ModulesI;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -26,9 +25,9 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
      */
     private static final long serialVersionUID = 1887880493849213179L;
     private JPopupMenu moduleListMenu;
-    private Module module;
+    private ModuleI module;
 
-    public PopupMenuItem(Module module, JPopupMenu moduleListMenu) {
+    public PopupMenuItem(ModuleI module, JPopupMenu moduleListMenu) {
         this.module = module;
         this.moduleListMenu = moduleListMenu;
 
@@ -46,7 +45,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
     }
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 
@@ -57,7 +56,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         if (module == null) return;
 
         // Adding it after the currently-selected module
-        Module newModule = null;
+        ModuleI newModule = null;
         try {
             ModulesI modules = GUI.getModules();
             newModule = module.getClass().getConstructor(ModulesI.class).newInstance(modules);
@@ -65,20 +64,20 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
             e1.printStackTrace();
         }
 
-        Module activeModule = GUI.getFirstSelectedModule();
+        ModuleI activeModule = GUI.getFirstSelectedModule();
         ModulesI modules = GUI.getModules();
         if (activeModule == null
                 || activeModule.getClass().isInstance(new InputControl(modules))
                 || activeModule.getClass().isInstance(new OutputControl(modules))) {
             GUI.getModules().add(newModule);
         } else {
-            Module[] activeModules = GUI.getSelectedModules();
+            ModuleI[] activeModules = GUI.getSelectedModules();
             int idx = GUI.getModules().indexOf(activeModules[activeModules.length-1]);
             GUI.getModules().addAtIndex(++idx,newModule);
         }
 
         // Adding to the list of modules
-        GUI.setSelectedModules(new Module[]{newModule});
+        GUI.setSelectedModules(new ModuleI[]{newModule});
         GUI.updateModules(true, activeModule);
         GUI.updateParameters(true, activeModule);
 

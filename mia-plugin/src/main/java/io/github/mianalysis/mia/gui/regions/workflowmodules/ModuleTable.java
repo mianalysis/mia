@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
@@ -42,10 +43,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
 
     private static final long serialVersionUID = 3722736203899254351L;
     private ModulesI modules;
-    private HashMap<Module, ModuleName> moduleNames = new HashMap<>();
-    private HashMap<Module, RowItems> rowItems;
+    private HashMap<ModuleI, ModuleName> moduleNames = new HashMap<>();
+    private HashMap<ModuleI, RowItems> rowItems;
 
-    public ModuleTable(TableModel tableModel, ModulesI modules, HashMap<Module, Boolean> expandedStatus, HashMap<Module, RowItems> rowItems) {
+    public ModuleTable(TableModel tableModel, ModulesI modules, HashMap<ModuleI, Boolean> expandedStatus, HashMap<ModuleI, RowItems> rowItems) {
         super(tableModel);
 
         this.modules = modules;
@@ -99,10 +100,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         registerKeyboardAction(this, ENABLE, enable, JComponent.WHEN_FOCUSED);
 
         // Adding selection(s)
-        Module[] selectedModules = GUI.getSelectedModules();
+        ModuleI[] selectedModules = GUI.getSelectedModules();
         clearSelection();
         if (selectedModules != null) {
-            for (Module selectedModule : selectedModules) {
+            for (ModuleI selectedModule : selectedModules) {
                 // Getting index in table
                 for (int row = 0; row < getRowCount(); row++) {
                     if (getValueAt(row, 0) == selectedModule) {
@@ -159,7 +160,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             int row, int column) {
 
         if (value instanceof Module) {
-            Module module = (Module) value;
+            ModuleI module = (Module) value;
             moduleNames.putIfAbsent(module, new ModuleName(module, table, isSelected));
             ModuleName moduleName = moduleNames.get(module);
             moduleName.setSelected(isSelected);
@@ -222,7 +223,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case MouseEvent.BUTTON3:
-                Module module = (Module) getValueAt(rowAtPoint(e.getPoint()), 0);
+                ModuleI module = (Module) getValueAt(rowAtPoint(e.getPoint()), 0);
                 ReferenceEditingMenu refEditingMenu = new ReferenceEditingMenu(module);
                 refEditingMenu.show(GUI.getFrame(), 0, 0);
                 refEditingMenu.setLocation(MouseInfo.getPointerInfo().getLocation());

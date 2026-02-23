@@ -5,8 +5,9 @@ import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -62,7 +63,7 @@ public class GUISeparator extends Module {
             return processingModules;
 
         boolean record = false;
-        for (Module module : modules.values()) {
+        for (ModuleI module : modules.values()) {
             // Start recording until another visible GUI Separator is found
             if (module == this) {
                 record = true;
@@ -95,7 +96,7 @@ public class GUISeparator extends Module {
         ModulesI editingModules = new Modules();
 
         boolean record = false;
-        for (Module module : modules.values()) {
+        for (ModuleI module : modules.values()) {
             // Start recording until another GUI Separator is found
             if (module == this) {
                 record = true;

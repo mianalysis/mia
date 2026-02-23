@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.ParentChildRef;
 import io.github.mianalysis.mia.object.refs.PartnerRef;
-import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.AbstractRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -39,7 +39,7 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
  * defined action such as image filtering, object detection or adding a
  * component to an overlay
  */
-public abstract class Module extends Ref implements Comparable, ModuleI {
+public abstract class Module extends AbstractRef implements Comparable, ModuleI {
     protected ModulesI modules;
 
     protected Parameters parameters = new Parameters();
@@ -72,7 +72,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
      * @param modules The module constructor, when called from within MIA, provides
      *                all the modules currently in the workflow as an argument.
      */
-    public Module(String name, ModulesI modules) {        
+    public Module(String name, ModulesI modules) {
         super(name);
         this.modules = modules;
         initialiseParameters();
@@ -137,6 +137,10 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
         objectMetadataRefs.add(ref);
     }
 
+    public ImageMeasurementRefs getImageMeasurementRefs() {
+        return imageMeasurementRefs;
+    }
+
     public ImageMeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);
     }
@@ -145,12 +149,24 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
         imageMeasurementRefs.add(ref);
     }
 
+    public ObjMeasurementRefs getObjectMeasurementRefs() {
+        return objectMeasurementRefs;
+    }
+
     public ObjMeasurementRef getObjectMeasurementRef(String name) {
         return objectMeasurementRefs.getOrPut(name);
     }
 
+    public ObjMetadataRefs getObjectMetadataRefs() {
+        return objectMetadataRefs;
+    }
+
     public ObjMetadataRef getObjectMetadataRef(String name) {
         return objectMetadataRefs.getOrPut(name);
+    }
+
+    public MetadataRefs getMetadataRefs() {
+        return metadataRefs;
     }
 
     public MetadataRef getMetadataRef(String name) {
@@ -161,12 +177,20 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
         metadataRefs.add(ref);
     }
 
+    public ParentChildRefs getParentChildRefs() {
+        return parentChildRefs;
+    }
+
     public ParentChildRef getParentChildRef(String parentName, String childName) {
         return parentChildRefs.getOrPut(parentName, childName);
     }
 
     public void addParentChildRef(ParentChildRef ref) {
         parentChildRefs.add(ref);
+    }
+
+    public PartnerRefs getPartnerRefs() {
+        return partnerRefs;
     }
 
     public void addPartnerRef(PartnerRef ref) {
@@ -177,7 +201,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
         return parameters.getParameter(name);
     }
 
-    public Module updateParameterValue(String name, Object value) {
+    public ModuleI updateParameterValue(String name, Object value) {
         parameters.updateValue(name, value);
         return this;
 
@@ -360,12 +384,12 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
 
     }
 
-    public Module duplicate(ModulesI newModules, boolean copyID) {
+    public ModuleI duplicate(ModulesI newModules, boolean copyID) {
         Constructor constructor;
-        Module newModule;
+        ModuleI newModule;
         try {
             constructor = this.getClass().getDeclaredConstructor(ModulesI.class);
-            newModule = (Module) constructor.newInstance(newModules);
+            newModule = (ModuleI) constructor.newInstance(newModules);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
                 | InvocationTargetException e) {
             MIA.log.writeError(e);
@@ -394,7 +418,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
             newParameters.add(newParameter);
         }
 
-        ObjMeasurementRefs newObjMeasurementRefs = newModule.objectMeasurementRefs;
+        ObjMeasurementRefs newObjMeasurementRefs = newModule.getObjectMeasurementRefs();
         for (ObjMeasurementRef ref : objectMeasurementRefs.values()) {
             ObjMeasurementRef newRef = ref.duplicate();
             if (newRef == null)
@@ -402,7 +426,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
             newObjMeasurementRefs.add(newRef);
         }
 
-        ObjMetadataRefs newObjMetadataRefs = newModule.objectMetadataRefs;
+        ObjMetadataRefs newObjMetadataRefs = newModule.getObjectMetadataRefs();
         for (ObjMetadataRef ref : objectMetadataRefs.values()) {
             ObjMetadataRef newRef = ref.duplicate();
             if (newRef == null)
@@ -410,7 +434,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
             newObjMetadataRefs.add(newRef);
         }
 
-        ImageMeasurementRefs newImageMeasurementRefs = newModule.imageMeasurementRefs;
+        ImageMeasurementRefs newImageMeasurementRefs = newModule.getImageMeasurementRefs();
         for (ImageMeasurementRef ref : imageMeasurementRefs.values()) {
             ImageMeasurementRef newRef = ref.duplicate();
             if (newRef == null)
@@ -418,7 +442,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
             newImageMeasurementRefs.add(newRef);
         }
 
-        MetadataRefs newMetadataRefs = newModule.metadataRefs;
+        MetadataRefs newMetadataRefs = newModule.getMetadataRefs();
         for (MetadataRef ref : metadataRefs.values()) {
             MetadataRef newRef = ref.duplicate();
             if (newRef == null)
@@ -426,7 +450,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
             newMetadataRefs.add(newRef);
         }
 
-        ParentChildRefs newParentChildRefs = newModule.parentChildRefs;
+        ParentChildRefs newParentChildRefs = newModule.getParentChildRefs();
         for (ParentChildRef ref : parentChildRefs.values()) {
             ParentChildRef newRef = ref.duplicate();
             if (newRef == null)
@@ -434,7 +458,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
             newParentChildRefs.add(newRef);
         }
 
-        PartnerRefs newPartnerRefs = newModule.partnerRefs;
+        PartnerRefs newPartnerRefs = newModule.getPartnerRefs();
         for (PartnerRef ref : newPartnerRefs.values()) {
             PartnerRef newRef = ref.duplicate();
             if (newRef == null)
@@ -475,7 +499,6 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
 
     }
 
-    @Override
     public void appendXMLAttributes(Element element) {
         super.appendXMLAttributes(element);
 
@@ -490,7 +513,6 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
 
     }
 
-    @Override
     public void setAttributesFromXML(Node node) {
         super.setAttributesFromXML(node);
 

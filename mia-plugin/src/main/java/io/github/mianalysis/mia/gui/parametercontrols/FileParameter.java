@@ -15,7 +15,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.process.system.FileCrawler;
@@ -92,7 +92,7 @@ public class FileParameter extends TextSwitchableParameterControl implements Act
         Prefs.set("MIA.PreviousPath", fileChooser.getSelectedFile().getAbsolutePath());
         Prefs.savePreferences();
 
-        Module module = parameter.getModule();
+        ModuleI module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);

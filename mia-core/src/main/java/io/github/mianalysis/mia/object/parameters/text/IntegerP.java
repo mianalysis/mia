@@ -1,9 +1,7 @@
 package io.github.mianalysis.mia.object.parameters.text;
 
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
@@ -11,22 +9,22 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 public class IntegerP extends TextType {
     protected String value;
 
-    public IntegerP(String name, Module module, int value) {
+    public IntegerP(String name, ModuleI module, int value) {
         super(name, module);
         this.value = String.valueOf(value);
     }
 
-    public IntegerP(String name, Module module, String value) {
+    public IntegerP(String name, ModuleI module, String value) {
         super(name, module);
         this.value = value;
     }
 
-    public IntegerP(String name, Module module, int value, String description) {
+    public IntegerP(String name, ModuleI module, int value, String description) {
         super(name, module, description);
         this.value = String.valueOf(value);
     }
 
-    public IntegerP(String name, Module module, String value, String description) {
+    public IntegerP(String name, ModuleI module, String value, String description) {
         super(name, module, description);
         this.value = value;
     }
@@ -93,7 +91,7 @@ public class IntegerP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         IntegerP newParameter = new IntegerP(name, newModule, value, getDescription());
 
         newParameter.setNickname(getNickname());

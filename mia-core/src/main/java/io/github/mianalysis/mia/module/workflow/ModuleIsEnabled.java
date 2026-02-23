@@ -6,8 +6,8 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
@@ -66,7 +66,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     public boolean testDoRedirect(WorkspaceI workspace) {
         String testMode = parameters.getValue(TEST_MODE,workspace);
-        Module testModule = modules.getModuleByID(parameters.getValue(TEST_MODULE,workspace));
+        ModuleI testModule = modules.getModuleByID(parameters.getValue(TEST_MODULE,workspace));
 
         if (testModule == null)
             return false;

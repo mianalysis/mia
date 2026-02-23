@@ -2,15 +2,15 @@ package io.github.mianalysis.mia.object.parameters.abstrakt;
 
 import java.util.LinkedHashSet;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 
 public abstract class ImageNamesType extends ChoiceType {
-    public ImageNamesType(String name, Module module) {
+    public ImageNamesType(String name, ModuleI module) {
         super(name, module);
     }
 
-    public ImageNamesType(String name, Module module, String description) {
+    public ImageNamesType(String name, ModuleI module, String description) {
         super(name, module, description);
     }
 

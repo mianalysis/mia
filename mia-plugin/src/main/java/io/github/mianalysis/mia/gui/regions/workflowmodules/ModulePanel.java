@@ -7,7 +7,6 @@ import java.awt.Insets;
 
 import javax.swing.JPanel;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;

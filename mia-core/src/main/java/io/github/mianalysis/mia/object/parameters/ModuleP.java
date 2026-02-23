@@ -1,8 +1,8 @@
 package io.github.mianalysis.mia.object.parameters;
 
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -12,18 +12,18 @@ public class ModuleP extends Parameter {
     protected String selectedModuleID = "";
     protected boolean showNonRunnable = true;
 
-    public ModuleP(String name, Module module, boolean showNonRunnable) {
+    public ModuleP(String name, ModuleI module, boolean showNonRunnable) {
         super(name, module);
         this.showNonRunnable = showNonRunnable;
     }
 
-    public ModuleP(String name, Module module, boolean showNonRunnable, String selectedModuleID) {
+    public ModuleP(String name, ModuleI module, boolean showNonRunnable, String selectedModuleID) {
         super(name, module);
         this.selectedModuleID = selectedModuleID;
         this.showNonRunnable = showNonRunnable;
     }
 
-    public ModuleP(String name, Module module, boolean showNonRunnable, String selectedModuleID, String description) {
+    public ModuleP(String name, ModuleI module, boolean showNonRunnable, String selectedModuleID, String description) {
         super(name, module, description);
         this.selectedModuleID = selectedModuleID;
         this.showNonRunnable = showNonRunnable;
@@ -37,17 +37,17 @@ public class ModuleP extends Parameter {
         this.selectedModuleID = selectedModuleID;
     }
 
-    public Module[] getModules() {
+    public ModuleI[] getModules() {
         ModulesI modules = module.getModules();
         int nAvailable = 0;
-        for (Module module : modules) {
+        for (ModuleI module : modules) {
             if (module.isEnabled() && (module.isRunnable() || showNonRunnable))
                 nAvailable++;
         }
 
-        Module[] moduleArray = new Module[nAvailable];
+        ModuleI[] moduleArray = new Module[nAvailable];
         int count = 0;
-        for (Module module : modules) {
+        for (ModuleI module : modules) {
             if (module.isEnabled() && (module.isRunnable() || showNonRunnable))
                 moduleArray[count++] = module;
         }
@@ -64,7 +64,7 @@ public class ModuleP extends Parameter {
 
     @Override
     public String getAlternativeString() {
-        Module selectedModule = module.getModules().getModuleByID(getSelectedModuleID());
+        ModuleI selectedModule = module.getModules().getModuleByID(getSelectedModuleID());
         if (selectedModule == null)
             return "";
 
@@ -108,7 +108,7 @@ public class ModuleP extends Parameter {
 
         // Checking if the selected module is in the module list. It doesn't need to be
         // enabled or runnable
-        for (Module testModule : module.getModules()) {
+        for (ModuleI testModule : module.getModules()) {
             if (testModule.getModuleID().equals(selectedModuleID)) {
                 return true;
             }
@@ -119,8 +119,8 @@ public class ModuleP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
-        ModuleP newParameter = new ModuleP(name, newModule, showNonRunnable, selectedModuleID, getDescription());
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
+        ModuleP newParameter = new ModuleP(getName(), newModule, showNonRunnable, selectedModuleID, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

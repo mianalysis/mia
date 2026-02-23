@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
@@ -77,7 +77,7 @@ public class ModuleSearcher {
         // Getting individual target words and phrases
         HashMap<String, Boolean> targets = splitTargets(target);
 
-        HashMap<Module, SearchMatch> matches = new HashMap<>();
+        HashMap<ModuleI, SearchMatch> matches = new HashMap<>();
 
         addNameMatches(matches, targets);
         if (includeModuleDescriptions)
@@ -93,8 +93,8 @@ public class ModuleSearcher {
 
     }
 
-    protected void addNameMatches(HashMap<Module, SearchMatch> matches, HashMap<String, Boolean> targets) {
-        for (Module module : modules) {
+    protected void addNameMatches(HashMap<ModuleI, SearchMatch> matches, HashMap<String, Boolean> targets) {
+        for (ModuleI module : modules) {
             for (String target : targets.keySet()) {
                 if (module.getName().toLowerCase().contains(target)) {
                     matches.putIfAbsent(module, new SearchMatch(module));
@@ -105,12 +105,12 @@ public class ModuleSearcher {
         }
     }
 
-    protected void addDescriptionMatches(HashMap<Module, SearchMatch> matches, HashMap<String, Boolean> targets) {
+    protected void addDescriptionMatches(HashMap<ModuleI, SearchMatch> matches, HashMap<String, Boolean> targets) {
         ArrayList<Pattern> patterns = new ArrayList<>();
         for (String target : targets.keySet())
             patterns.add(Pattern.compile(target));
 
-        for (Module module : modules) {
+        for (ModuleI module : modules) {
             String moduleDescription = module.getDescription();
 
             for (Pattern pattern : patterns) {
@@ -132,12 +132,12 @@ public class ModuleSearcher {
         }
     }
 
-    protected void addParameterMatches(HashMap<Module, SearchMatch> matches, HashMap<String, Boolean> targets) {
+    protected void addParameterMatches(HashMap<ModuleI, SearchMatch> matches, HashMap<String, Boolean> targets) {
         ArrayList<Pattern> patterns = new ArrayList<>();
         for (String target : targets.keySet())
             patterns.add(Pattern.compile(target));
 
-        for (Module module : modules) {
+        for (ModuleI module : modules) {
             for (Parameter parameter : module.getAllParameters().values()) {
                 for (Pattern pattern : patterns) {
                     Matcher matcher = pattern.matcher(parameter.getDescription());
@@ -239,16 +239,16 @@ public class ModuleSearcher {
         private final int DESCRIPTION_SCORE = 3;
         private final int PARAMETER_SCORE = 1;
 
-        private final Module module;
+        private final ModuleI module;
         private final ArrayList<String> nameMatches = new ArrayList<>();
         private final ArrayList<String> descriptionMatches = new ArrayList<>();
         private final ArrayList<String> parameterMatches = new ArrayList<>();
 
-        public SearchMatch(Module module) {
+        public SearchMatch(ModuleI module) {
             this.module = module;
         }
 
-        public Module getModule() {
+        public ModuleI getModule() {
             return module;
         }
 

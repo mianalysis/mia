@@ -1,10 +1,11 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
+import javax.swing.table.DefaultTableModel;
+
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
-
-import javax.swing.table.DefaultTableModel;
 
 public class DraggableTableModel extends DefaultTableModel {
     /**
@@ -25,7 +26,7 @@ public class DraggableTableModel extends DefaultTableModel {
             toMove[i] = (Module) getValueAt(fromIndices[i],0);
         }
 
-        Module moduleToFollow;
+        ModuleI moduleToFollow;
         if (toIndex == 0) moduleToFollow = null;
         else moduleToFollow = (Module) getValueAt(toIndex-1,0);
 

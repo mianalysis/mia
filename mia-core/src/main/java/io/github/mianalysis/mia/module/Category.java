@@ -2,9 +2,9 @@ package io.github.mianalysis.mia.module;
 
 import java.util.TreeSet;
 
-import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.AbstractRef;
 
-public class Category extends Ref implements Comparable {
+public class Category extends AbstractRef implements Comparable {
     private final Category parent;
     private final TreeSet<Category> children = new TreeSet<>();
     private final boolean showInMenu;

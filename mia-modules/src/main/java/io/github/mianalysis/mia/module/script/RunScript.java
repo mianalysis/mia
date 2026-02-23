@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -827,7 +828,7 @@ public class RunScript extends Module {
 
     class InputObjectsInclusiveP extends InputObjectsP {
 
-        public InputObjectsInclusiveP(String name, Module module) {
+        public InputObjectsInclusiveP(String name, ModuleI module) {
             super(name, module);
         }
 
@@ -871,7 +872,7 @@ public class RunScript extends Module {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
+        public <T extends Parameter> T duplicate(ModuleI newModule) {
             InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
                     newModule);
 

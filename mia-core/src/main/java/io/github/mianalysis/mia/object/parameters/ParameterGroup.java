@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -33,7 +33,7 @@ public class ParameterGroup extends Parameter {
 
     // CONSTRUCTORS
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters,
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters,
             ParameterUpdaterAndGetter updaterAndGetter) {
         super(name, module);
         this.templateParameters = templateParameters;
@@ -41,7 +41,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters,
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters,
             ParameterUpdaterAndGetter updaterAndGetter, String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
@@ -49,7 +49,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters, int count,
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters, int count,
             ParameterUpdaterAndGetter updaterAndGetter) {
         super(name, module);
         this.templateParameters = templateParameters;
@@ -61,7 +61,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters, int count,
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters, int count,
             ParameterUpdaterAndGetter updaterAndGetter, String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
@@ -73,21 +73,21 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters) {
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters) {
         super(name, module);
         this.templateParameters = templateParameters;
         this.updaterAndGetter = getFullUpdaterAndGetter();
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters, String description) {
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters, String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
         this.updaterAndGetter = getFullUpdaterAndGetter();
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters, int count) {
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters, int count) {
         super(name, module);
         this.templateParameters = templateParameters;
         this.updaterAndGetter = getFullUpdaterAndGetter();
@@ -98,7 +98,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, Parameters templateParameters, int count,
+    public ParameterGroup(String name, ModuleI module, Parameters templateParameters, int count,
             String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
@@ -184,7 +184,7 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         ParameterGroup newParameter = new ParameterGroup(name, newModule, templateParameters.duplicate(),
                 updaterAndGetter, getDescription());
 

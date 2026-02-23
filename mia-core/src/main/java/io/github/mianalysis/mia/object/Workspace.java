@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.Metadata;
@@ -123,7 +123,7 @@ public class Workspace implements WorkspaceI {
 
     }
 
-    public void showMetadata(Module module) {
+    public void showMetadata(ModuleI module) {
         // Getting MeasurementReferences
         MetadataRefs metadataRefs = module.updateAndGetMetadataReferences();
 

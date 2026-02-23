@@ -4,7 +4,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
@@ -12,11 +12,11 @@ import io.github.mianalysis.mia.process.ParameterControlFactory;
 public abstract class ChoiceType extends TextSwitchableParameter {
     protected String choice = "";
 
-    public ChoiceType(String name, Module module) {
+    public ChoiceType(String name, ModuleI module) {
         super(name, module);
     }
 
-    public ChoiceType(String name, Module module, String description) {
+    public ChoiceType(String name, ModuleI module, String description) {
         super(name, module, description);
     }
 

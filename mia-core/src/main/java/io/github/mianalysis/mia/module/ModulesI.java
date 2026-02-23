@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.module;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.Nullable;
@@ -23,10 +22,10 @@ import io.github.mianalysis.mia.object.refs.collections.Refs;
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public interface ModulesI extends Refs<Module>, Iterable<Module> {
+public interface ModulesI extends Refs<ModuleI>, Iterable<ModuleI> {
     public boolean execute(WorkspaceI workspace, boolean clearMemoryAtEnd);
 
-    public ArrayList<Module> getModules();
+    public ArrayList<ModuleI> getModules();
 
     public void removeAllModules();
 
@@ -34,38 +33,38 @@ public interface ModulesI extends Refs<Module>, Iterable<Module> {
 
     public void setAnalysisFilename(String analysisFilename);
 
-    public Module getModuleByID(String ID);
+    public ModuleI getModuleByID(String ID);
 
-    public Parameter getImageSource(String imageName, Module cutoffModule);
+    public Parameter getImageSource(String imageName, ModuleI cutoffModule);
 
-    public Parameter getObjectSource(String objectName, Module cutoffModule);
+    public Parameter getObjectSource(String objectName, ModuleI cutoffModule);
 
     public boolean objectsExportMeasurements(String objectName);
 
     public boolean objectsExportMetadata(String objectName);
 
-    public boolean hasModuleMatchingType(Class<? extends Module> clazz);
+    public boolean hasModuleMatchingType(Class<? extends ModuleI> clazz);
 
-    public ImageMeasurementRefs getImageMeasurementRefs(String imageName, @Nullable Module cutoffModule);
+    public ImageMeasurementRefs getImageMeasurementRefs(String imageName, @Nullable ModuleI cutoffModule);
 
-    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, @Nullable Module cutoffModule);
+    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, @Nullable ModuleI cutoffModule);
     
-    public ObjMetadataRefs getObjectMetadataRefs(String objectName, @Nullable Module cutoffModule);
+    public ObjMetadataRefs getObjectMetadataRefs(String objectName, @Nullable ModuleI cutoffModule);
 
-    public MetadataRefs getMetadataRefs(@Nullable Module cutoffModule);
+    public MetadataRefs getMetadataRefs(@Nullable ModuleI cutoffModule);
 
-    public ParentChildRefs getParentChildRefs(@Nullable Module cutoffModule);
+    public ParentChildRefs getParentChildRefs(@Nullable ModuleI cutoffModule);
 
-    public PartnerRefs getPartnerRefs(@Nullable Module cutoffModule);
+    public PartnerRefs getPartnerRefs(@Nullable ModuleI cutoffModule);
 
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, @Nullable Module cutoffModule);
+    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, @Nullable ModuleI cutoffModule);
 
-    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjectsMatchingClass(Module cutoffModule,
+    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjectsMatchingClass(ModuleI cutoffModule,
             Class<T> objectClass, boolean ignoreRemoved);
 
-    public LinkedHashSet<OutputObjectsP> getAvailableObjects(@Nullable Module cutoffModule, boolean ignoreRemoved);
+    public LinkedHashSet<OutputObjectsP> getAvailableObjects(@Nullable ModuleI cutoffModule, boolean ignoreRemoved);
 
-    public LinkedHashSet<OutputImageP> getAvailableImages(@Nullable Module cutoffModule, boolean ignoreRemoved);
+    public LinkedHashSet<OutputImageP> getAvailableImages(@Nullable ModuleI cutoffModule, boolean ignoreRemoved);
 
     public boolean hasVisibleParameters();
 
@@ -79,7 +78,7 @@ public interface ModulesI extends Refs<Module>, Iterable<Module> {
 
     public void reorder(int[] fromIndices, int toIndex);
 
-    // public void reorderByModules(Module[] modulesToMove, Module moduleToFollow);
+    // public void reorderByModules(Module[] modulesToMove, ModuleI moduleToFollow);
 
     public void insert(ModulesI modulesToInsert, int toIndex);
 
@@ -92,18 +91,18 @@ public interface ModulesI extends Refs<Module>, Iterable<Module> {
 
     public boolean removeAll(ModulesI modules);
 
-    public boolean remove(Module module);
+    public boolean remove(ModuleI module);
 
     public int size();
 
-    public void addAtIndex(int index, Module module);
+    public void addAtIndex(int index, ModuleI module);
 
-    public Module getAtIndex(int idx);
+    public ModuleI getAtIndex(int idx);
 
-    public Module removeAtIndex(int idx);
+    public ModuleI removeAtIndex(int idx);
 
     public void clear();
 
-    public int indexOf(Module module);
+    public int indexOf(ModuleI module);
 
 }

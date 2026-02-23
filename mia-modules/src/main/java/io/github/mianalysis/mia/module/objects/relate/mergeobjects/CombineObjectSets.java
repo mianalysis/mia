@@ -10,6 +10,7 @@ import com.drew.lang.annotations.NotNull;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -17,7 +18,6 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
-import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -389,17 +389,17 @@ public class CombineObjectSets extends Module {
     class CustomInputObjectsP extends InputObjectsP {
         private boolean allowMissingObjects = false;
 
-        public CustomInputObjectsP(String name, Module module) {
+        public CustomInputObjectsP(String name, ModuleI module) {
             super(name, module);
         }
 
-        public CustomInputObjectsP(String name, Module module, @NotNull String choice) {
+        public CustomInputObjectsP(String name, ModuleI module, @NotNull String choice) {
             super(name, module);
             this.choice = choice;
 
         }
 
-        public CustomInputObjectsP(String name, Module module, @NotNull String choice, String description) {
+        public CustomInputObjectsP(String name, ModuleI module, @NotNull String choice, String description) {
             super(name, module, description);
             this.choice = choice;
 
@@ -422,7 +422,7 @@ public class CombineObjectSets extends Module {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
+        public <T extends Parameter> T duplicate(ModuleI newModule) {
             CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(),
                     getDescription());
 

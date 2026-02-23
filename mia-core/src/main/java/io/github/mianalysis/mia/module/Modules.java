@@ -43,7 +43,7 @@ public class Modules implements ModulesI {
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
     private String analysisFilename = "";
-    private ArrayList<Module> modules = new ArrayList<Module>();
+    private ArrayList<ModuleI> modules = new ArrayList<>();
 
     /*
      * The method that gets called by the AnalysisRunner. This shouldn't have any
@@ -65,7 +65,7 @@ public class Modules implements ModulesI {
         Status status = Status.PASS;
 
         for (int i = 0; i < size(); i++) {
-            Module module = getAtIndex(i);
+            ModuleI module = getAtIndex(i);
 
             if (Thread.currentThread().isInterrupted())
                 break;
@@ -84,7 +84,7 @@ public class Modules implements ModulesI {
                         break;
                     case REDIRECT:
                         // Getting index of module before one to move to
-                        Module redirectModule = getModuleByID(module.getRedirectModuleID(workspace));
+                        ModuleI redirectModule = getModuleByID(module.getRedirectModuleID(workspace));
                         if (redirectModule == null)
                             break;
                         i = indexOf(redirectModule) - 1;
@@ -154,8 +154,8 @@ public class Modules implements ModulesI {
         this.analysisFilename = analysisFilename;
     }
 
-    public Module getModuleByID(String ID) {
-        for (Module module : this) {
+    public ModuleI getModuleByID(String ID) {
+        for (ModuleI module : this) {
             if (module.getModuleID().equals(ID))
                 return module;
         }
@@ -165,14 +165,14 @@ public class Modules implements ModulesI {
 
     }
 
-    public ImageMeasurementRefs getImageMeasurementRefs(String imageName, Module cutoffModule) {
+    public ImageMeasurementRefs getImageMeasurementRefs(String imageName, ModuleI cutoffModule) {
         ImageMeasurementRefs measurementRefs = new ImageMeasurementRefs();
 
         addImageMeasurementRefs(inputControl, measurementRefs, imageName);
         addImageMeasurementRefs(outputControl, measurementRefs, imageName);
 
         // Iterating over all modules, collecting any measurements for the current image
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
             if (!module.isEnabled() | !module.isRunnable())
@@ -184,7 +184,7 @@ public class Modules implements ModulesI {
 
     }
 
-    void addImageMeasurementRefs(Module module, ImageMeasurementRefs measurementRefs, String imageName) {
+    void addImageMeasurementRefs(ModuleI module, ImageMeasurementRefs measurementRefs, String imageName) {
         if (!module.isEnabled())
             return;
         ImageMeasurementRefs currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
@@ -201,7 +201,7 @@ public class Modules implements ModulesI {
         }
     }
 
-    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, Module cutoffModule) {
+    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, ModuleI cutoffModule) {
         ObjMeasurementRefs measurementRefs = new ObjMeasurementRefs();
 
         // If this is a distant relative there will be "//" in the name that need to be
@@ -214,7 +214,7 @@ public class Modules implements ModulesI {
 
         // Iterating over all modules, collecting any measurements for the current
         // objects
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
             if (!module.isEnabled() | !module.isRunnable())
@@ -238,7 +238,7 @@ public class Modules implements ModulesI {
 
     }
 
-    void addObjectMeasurementRefs(Module module, ObjMeasurementRefs measurementRefs, String objectName) {
+    void addObjectMeasurementRefs(ModuleI module, ObjMeasurementRefs measurementRefs, String objectName) {
         if (!module.isEnabled())
             return;
         ObjMeasurementRefs currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
@@ -254,7 +254,7 @@ public class Modules implements ModulesI {
         }
     }
 
-    public ObjMetadataRefs getObjectMetadataRefs(String objectName, Module cutoffModule) {
+    public ObjMetadataRefs getObjectMetadataRefs(String objectName, ModuleI cutoffModule) {
         ObjMetadataRefs metadataRefs = new ObjMetadataRefs();
 
         // If this is a distant relative there will be "//" in the name that need to be
@@ -267,7 +267,7 @@ public class Modules implements ModulesI {
 
         // Iterating over all modules, collecting any measurements for the current
         // objects
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
             if (!module.isEnabled() | !module.isRunnable())
@@ -291,7 +291,7 @@ public class Modules implements ModulesI {
 
     }
 
-    void addObjectMetadataRefs(Module module, ObjMetadataRefs metadataRefs, String objectName) {
+    void addObjectMetadataRefs(ModuleI module, ObjMetadataRefs metadataRefs, String objectName) {
         if (!module.isEnabled())
             return;
         ObjMetadataRefs currentMetadataRefs = module.updateAndGetObjectMetadataRefs();
@@ -312,7 +312,7 @@ public class Modules implements ModulesI {
 
     }
 
-    public MetadataRefs getMetadataRefs(Module cutoffModule) {
+    public MetadataRefs getMetadataRefs(ModuleI cutoffModule) {
         MetadataRefs metadataRefs = new MetadataRefs();
 
         addMetadataRefs(inputControl, metadataRefs);
@@ -320,7 +320,7 @@ public class Modules implements ModulesI {
 
         // Iterating over all modules, collecting any measurements for the current
         // objects
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
             addMetadataRefs(module, metadataRefs);
@@ -330,7 +330,7 @@ public class Modules implements ModulesI {
 
     }
 
-    void addMetadataRefs(Module module, MetadataRefs metadataRefs) {
+    void addMetadataRefs(ModuleI module, MetadataRefs metadataRefs) {
         if (!module.isEnabled())
             return;
 
@@ -342,13 +342,13 @@ public class Modules implements ModulesI {
 
     }
 
-    public ParentChildRefs getParentChildRefs(@Nullable Module cutoffModule) {
+    public ParentChildRefs getParentChildRefs(@Nullable ModuleI cutoffModule) {
         ParentChildRefs parentChildRefs = new ParentChildRefs();
 
         addParentChildRefs(inputControl, parentChildRefs);
         addParentChildRefs(outputControl, parentChildRefs);
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
             if (!module.isEnabled() | !module.isRunnable())
@@ -362,7 +362,7 @@ public class Modules implements ModulesI {
 
     }
 
-    void addParentChildRefs(Module module, ParentChildRefs parentChildRefs) {
+    void addParentChildRefs(ModuleI module, ParentChildRefs parentChildRefs) {
         if (!module.isEnabled())
             return;
 
@@ -379,13 +379,13 @@ public class Modules implements ModulesI {
 
     }
 
-    public PartnerRefs getPartnerRefs(Module cutoffModule) {
+    public PartnerRefs getPartnerRefs(ModuleI cutoffModule) {
         PartnerRefs partnerRefs = new PartnerRefs();
 
         addPartnerRefs(inputControl, partnerRefs);
         addPartnerRefs(outputControl, partnerRefs);
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
             if (!module.isEnabled() | !module.isRunnable())
@@ -399,7 +399,7 @@ public class Modules implements ModulesI {
 
     }
 
-    void addPartnerRefs(Module module, PartnerRefs partnerRefs) {
+    void addPartnerRefs(ModuleI module, PartnerRefs partnerRefs) {
         if (!module.isEnabled())
             return;
 
@@ -414,10 +414,10 @@ public class Modules implements ModulesI {
     /*
      * Returns an LinkedHashSet of all parameters of a specific type
      */
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, Module cutoffModule) {
+    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, ModuleI cutoffModule) {
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             // If the current module is the cutoff the loop terminates. This prevents the
             // system offering measurements
             // that are created after this module or are currently unavailable.
@@ -445,10 +445,10 @@ public class Modules implements ModulesI {
         return getParametersMatchingType(type, null);
     }
 
-    public Parameter getObjectSource(String objectName, Module cutoffModule) {
+    public Parameter getObjectSource(String objectName, ModuleI cutoffModule) {
         Parameter sourceParameter = null;
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
 
@@ -468,11 +468,11 @@ public class Modules implements ModulesI {
 
     }
 
-    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjectsMatchingClass(Module cutoffModule,
+    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjectsMatchingClass(ModuleI cutoffModule,
             Class<T> objectClass, boolean ignoreRemoved) {
         LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
 
@@ -498,14 +498,14 @@ public class Modules implements ModulesI {
 
     }
 
-    public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
+    public LinkedHashSet<OutputObjectsP> getAvailableObjects(ModuleI cutoffModule, boolean ignoreRemoved) {
         return getAvailableObjectsMatchingClass(cutoffModule, OutputObjectsP.class, ignoreRemoved);
     }
 
-    public Parameter getImageSource(String imageName, Module cutoffModule) {
+    public Parameter getImageSource(String imageName, ModuleI cutoffModule) {
         Parameter sourceParameter = null;
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
 
@@ -523,10 +523,10 @@ public class Modules implements ModulesI {
 
     }
 
-    public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
+    public LinkedHashSet<OutputImageP> getAvailableImages(ModuleI cutoffModule, boolean ignoreRemoved) {
         LinkedHashSet<OutputImageP> images = new LinkedHashSet<>();
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module == cutoffModule)
                 break;
 
@@ -562,8 +562,8 @@ public class Modules implements ModulesI {
 
     }
 
-    public boolean hasModuleMatchingType(Class<? extends Module> clazz) {
-        for (Module module : this) {
+    public boolean hasModuleMatchingType(Class<? extends ModuleI> clazz) {
+        for (ModuleI module : this) {
             if (clazz.isAssignableFrom(module.getClass()))
                 return true;
         }
@@ -578,7 +578,7 @@ public class Modules implements ModulesI {
         if (outputControl.hasVisibleParameters())
             return true;
 
-        for (Module module : this) {
+        for (ModuleI module : this) {
             if (module.hasVisibleParameters())
                 return true;
         }
@@ -637,7 +637,7 @@ public class Modules implements ModulesI {
 
     }
 
-    // public void reorderByModules(Module[] modulesToMove, Module moduleToFollow) {
+    // public void reorderByModules(Module[] modulesToMove, ModuleI moduleToFollow) {
     //     int[] fromIndices = new int[modulesToMove.length];
     //     for (int i = 0; i < modulesToMove.length; i++) {
     //         fromIndices[i] = indexOf(modulesToMove[i]);
@@ -657,7 +657,7 @@ public class Modules implements ModulesI {
         // Iterating over all input indices, when we get to the target index, add the
         // moved values
         ModulesI newModules = new Modules();
-        for (Module module : this) {
+        for (ModuleI module : this) {
             int idx = indexOf(module);
 
             // Adding in the module at this location
@@ -681,26 +681,26 @@ public class Modules implements ModulesI {
         copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules, copyIDs));
         copyModules.setAnalysisFilename(analysisFilename);
 
-        for (Module module : values())
+        for (ModuleI module : values())
             copyModules.add((Module) module.duplicate(copyModules, copyIDs));
         
         return copyModules;
 
     }
 
-    public Collection<Module> values() {
+    public Collection<ModuleI> values() {
         return modules;
     }
 
-    public ArrayList<Module> getModules() {
+    public ArrayList<ModuleI> getModules() {
         return modules;
     }
 
-    public boolean add(Module module) {
+    public boolean add(ModuleI module) {
         return modules.add(module);
     }
 
-    public Iterator<Module> iterator() {
+    public Iterator<ModuleI> iterator() {
         return modules.iterator();
     }
 
@@ -708,11 +708,11 @@ public class Modules implements ModulesI {
         return modules.size();
     }
 
-    public Module getAtindex(int idx) {
+    public ModuleI getAtindex(int idx) {
         return modules.get(idx);
     }
 
-    public int indexOf(Module module) {
+    public int indexOf(ModuleI module) {
         return modules.indexOf(module);
     }
 
@@ -724,11 +724,11 @@ public class Modules implements ModulesI {
         return modules.removeAll(modulesToRemove.getModules());
     }
 
-    public Module getAtIndex(int idx) {
+    public ModuleI getAtIndex(int idx) {
         return modules.get(idx);
     }
 
-    public Module removeAtIndex(int idx) {
+    public ModuleI removeAtIndex(int idx) {
         return modules.remove(idx);
     }
 
@@ -737,12 +737,12 @@ public class Modules implements ModulesI {
     }
 
     @Override
-    public boolean remove(Module module) {
+    public boolean remove(ModuleI module) {
         return modules.remove(module);
     }
 
     @Override
-    public void addAtIndex(int index, Module module) {
+    public void addAtIndex(int index, ModuleI module) {
         modules.add(index, module);
     }
 }

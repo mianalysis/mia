@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
@@ -97,7 +97,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
     private static JMenu createImageMeasurementsMenu(Parameter parameter) {
         JMenu measurementsMenu = new JMenu(IMAGE_MEASUREMENTS);
 
-        Module module = parameter.getModule();
+        ModuleI module = parameter.getModule();
 
         LinkedHashSet<OutputImageP> availableImages = module.getModules().getAvailableImages(module, true);
         for (OutputImageP availableImage : availableImages) {
@@ -134,7 +134,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
     private static JMenu createMetadataMenu(Parameter parameter) {
         JMenu measurementsMenu = new JMenu(METADATA_ITEM);
 
-        Module module = parameter.getModule();
+        ModuleI module = parameter.getModule();
 
         MetadataRefs availableMetadata = module.getModules().getMetadataRefs(module);
         for (MetadataRef availableMetadataItem : availableMetadata.values()) {
@@ -158,7 +158,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
     private static JMenu createObjectCountsMenu(Parameter parameter) {
         JMenu measurementsMenu = new JMenu(OBJECT_COUNTS);
 
-        Module module = parameter.getModule();
+        ModuleI module = parameter.getModule();
 
         LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module, true);
         
@@ -183,7 +183,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
     private static JMenu createObjectMeasurementsMenu(Parameter parameter) {
         JMenu measurementsMenu = new JMenu(OBJECT_MEASUREMENTS);
 
-        Module module = parameter.getModule();
+        ModuleI module = parameter.getModule();
 
         LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module, true);
         for (OutputObjectsP availableObject : availableObjects) {

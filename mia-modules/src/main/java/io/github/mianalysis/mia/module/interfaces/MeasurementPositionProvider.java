@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.module.interfaces;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -40,7 +39,7 @@ public interface MeasurementPositionProvider {
         String[] ALL = new String[] { OBJECT_CENTROID, OBJECT_MEASUREMENTS };
     }
 
-    default Parameters initialisePositionParameters(Module module) {
+    default Parameters initialisePositionParameters(ModuleI module) {
         Parameters parameters = new Parameters();
 
         parameters.add(new ChoiceP(POSITION_MODE, module, PositionModes.OBJECT_CENTROID, PositionModes.ALL));

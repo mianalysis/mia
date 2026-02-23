@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +16,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
@@ -29,12 +29,12 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
      *
      */
     private static final long serialVersionUID = -7386345086449867288L;
-    private Module module;
+    private ModuleI module;
     private Color defaultColour;
 
     // CONSTRUCTOR
 
-    public ModuleButton(Module module) {
+    public ModuleButton(ModuleI module) {
         putClientProperty( FlatClientProperties.STYLE, "arc: 12" );
 
         this.module = module;
@@ -72,13 +72,13 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
 
     // GETTERS
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        GUI.setSelectedModules(new Module[] { module });
+        GUI.setSelectedModules(new ModuleI[] { module });
         GUI.updateModules(false, null);
         GUI.updateParameters(false, null);
     }

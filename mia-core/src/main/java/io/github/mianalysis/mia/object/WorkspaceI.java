@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.system.Status;
@@ -35,7 +35,7 @@ public interface WorkspaceI {
 
     public void clearMetadata();
 
-    public void showMetadata(Module module);
+    public void showMetadata(ModuleI module);
 
     public void showMetadata();
 

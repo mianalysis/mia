@@ -10,7 +10,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,8 +23,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.system.GUISeparator;
@@ -122,14 +121,14 @@ public class GUIAnalysisHandler {
 
     public static void enableAllModules() {
         GUI.addUndo();
-        for (Module module : GUI.getModules())
+        for (ModuleI module : GUI.getModules())
             module.setEnabled(true);
         GUI.updateModules(true, null);
         GUI.updateParameters(false, null);
     }
 
     public static void disableAllModules() {
-        for (Module module : GUI.getModules())
+        for (ModuleI module : GUI.getModules())
             module.setEnabled(false);
         GUI.updateModules(true, null);
         GUI.updateParameters(false, null);
@@ -137,7 +136,7 @@ public class GUIAnalysisHandler {
 
     public static void enableAllModulesOutput() {
         GUI.addUndo();
-        for (Module module : GUI.getModules())
+        for (ModuleI module : GUI.getModules())
             module.setShowOutput(true);
         GUI.updateModules(false, null);
         GUI.updateParameters(false, null);
@@ -145,7 +144,7 @@ public class GUIAnalysisHandler {
 
     public static void disableAllModulesOutput() {
         GUI.addUndo();
-        for (Module module : GUI.getModules())
+        for (ModuleI module : GUI.getModules())
             module.setShowOutput(false);
         GUI.updateModules(false, null);
         GUI.updateParameters(false, null);
@@ -154,7 +153,7 @@ public class GUIAnalysisHandler {
     public static void removeModules() {
         GUI.addUndo();
 
-        Module[] activeModules = GUI.getSelectedModules();
+        ModuleI[] activeModules = GUI.getSelectedModules();
         int lastModuleEval = GUI.getLastModuleEval();
 
         if (activeModules == null)
@@ -167,7 +166,7 @@ public class GUIAnalysisHandler {
             GUI.setLastModuleEval(lowestIdx - 1);
 
         // Removing modules
-        for (Module activeModule : activeModules)
+        for (ModuleI activeModule : activeModules)
             modules.remove(activeModule);
         
         GUI.setSelectedModules(null);
@@ -180,7 +179,7 @@ public class GUIAnalysisHandler {
         GUI.addUndo();
 
         ModulesI modules = GUI.getModules();
-        Module[] selectedModules = GUI.getSelectedModules();
+        ModuleI[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
 
@@ -205,7 +204,7 @@ public class GUIAnalysisHandler {
         GUI.addUndo();
 
         ModulesI modules = GUI.getModules();
-        Module[] selectedModules = GUI.getSelectedModules();
+        ModuleI[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
 
@@ -227,14 +226,14 @@ public class GUIAnalysisHandler {
     }
 
     public static void copyModules() {
-        Module[] selectedModules = GUI.getSelectedModules();
+        ModuleI[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
         if (selectedModules.length == 0)
             return;
 
         ModulesI copyModules = new Modules();
-        for (Module selectedModule: selectedModules)
+        for (ModuleI selectedModule: selectedModules)
             copyModules.add(selectedModule);
 
         try {
@@ -254,14 +253,14 @@ public class GUIAnalysisHandler {
 
     public static void pasteModules() {
         try {
-            Module[] selectedModules = GUI.getSelectedModules();
+            ModuleI[] selectedModules = GUI.getSelectedModules();
             if (selectedModules == null)
                 return;
             if (selectedModules.length == 0)
                 return;
 
             GUI.addUndo();
-            Module toModule = selectedModules[selectedModules.length - 1];
+            ModuleI toModule = selectedModules[selectedModules.length - 1];
             ModulesI modules = GUI.getModules();
             int toIdx = modules.indexOf(toModule);
 
@@ -273,7 +272,7 @@ public class GUIAnalysisHandler {
 
             // Ensuring the copied modules are linked to the present Modules and
             // have a unique ID
-            for (Module module : pasteModules.values()) {
+            for (ModuleI module : pasteModules.values()) {
                 module.setModules(modules);
                 module.setModuleID(String.valueOf(module.hashCode()));
             }
@@ -295,13 +294,13 @@ public class GUIAnalysisHandler {
     }
 
     public static void toggleOutput() {
-        Module[] selectedModules = GUI.getSelectedModules();
+        ModuleI[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
         if (selectedModules.length == 0)
             return;
 
-        for (Module selectedModule : selectedModules)
+        for (ModuleI selectedModule : selectedModules)
             selectedModule.setShowOutput(!selectedModule.canShowOutput());
 
         GUI.updateModules(false,null);
@@ -310,13 +309,13 @@ public class GUIAnalysisHandler {
     }
 
     public static void toggleEnableDisable() {
-        Module[] selectedModules = GUI.getSelectedModules();
+        ModuleI[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
         if (selectedModules.length == 0)
             return;
 
-        for (Module selectedModule : selectedModules)
+        for (ModuleI selectedModule : selectedModules)
             selectedModule.setEnabled(!selectedModule.isEnabled());
 
         int lastModuleEval = GUI.getLastModuleEval();

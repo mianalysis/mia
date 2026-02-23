@@ -15,13 +15,13 @@ import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 public class ModuleName extends JLabel {
-    private Module module;
+    private ModuleI module;
     private JTable table;
     private boolean isSelected;
     private Color defaultColour;
@@ -35,7 +35,7 @@ public class ModuleName extends JLabel {
     private static final ImageIcon warningIconDM = new ImageIcon(
             ModuleName.class.getResource("/icons/warning_redDM_12px.png"), "");
 
-    public ModuleName(Module module, JTable table, boolean isSelected) {
+    public ModuleName(ModuleI module, JTable table, boolean isSelected) {
         this.module = module;
         this.table = table;
         this.isSelected = isSelected;

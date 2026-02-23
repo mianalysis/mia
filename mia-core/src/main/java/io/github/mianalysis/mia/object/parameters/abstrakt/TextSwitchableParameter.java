@@ -4,17 +4,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 
 public abstract class TextSwitchableParameter extends Parameter {
     protected boolean showText = false; // When true GUI shows a text entry for the raw string
 
-    public TextSwitchableParameter(String name, Module module) {
+    public TextSwitchableParameter(String name, ModuleI module) {
         super(name,module);
     }
 
-    public TextSwitchableParameter(String name, Module module, String description) {
+    public TextSwitchableParameter(String name, ModuleI module, String description) {
         super(name,module,description);
     }
 

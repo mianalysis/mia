@@ -4,6 +4,8 @@ import java.util.LinkedHashSet;
 
 import org.scijava.plugin.SciJavaPlugin;
 
+import com.drew.metadata.Metadata;
+
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -14,6 +16,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
 import io.github.mianalysis.mia.object.refs.ParentChildRef;
 import io.github.mianalysis.mia.object.refs.PartnerRef;
+import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -22,7 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-public interface ModuleI extends SciJavaPlugin {
+public interface ModuleI extends Ref, SciJavaPlugin {
     // ABSTRACT METHODS
 
     /**
@@ -163,27 +166,39 @@ public interface ModuleI extends SciJavaPlugin {
 
     public void addObjectMetadataRef(ObjMetadataRef ref);
 
+    public ImageMeasurementRefs getImageMeasurementRefs();
+
     public ImageMeasurementRef getImageMeasurementRef(String name);
 
     public void addImageMeasurementRef(ImageMeasurementRef ref);
 
+    public ObjMeasurementRefs getObjectMeasurementRefs();
+
     public ObjMeasurementRef getObjectMeasurementRef(String name);
 
+    public ObjMetadataRefs getObjectMetadataRefs();
+
     public ObjMetadataRef getObjectMetadataRef(String name);
+
+    public MetadataRefs getMetadataRefs();
 
     public MetadataRef getMetadataRef(String name);
 
     public void addMetadataRef(MetadataRef ref);
 
+    public ParentChildRefs getParentChildRefs();
+
     public ParentChildRef getParentChildRef(String parentName, String childName);
 
     public void addParentChildRef(ParentChildRef ref);
+
+    public PartnerRefs getPartnerRefs();
 
     public void addPartnerRef(PartnerRef ref);
 
     public <T extends Parameter> T getParameter(String name);
 
-    public Module updateParameterValue(String name, Object value);
+    public ModuleI updateParameterValue(String name, Object value);
 
     public <T> T getParameterValue(String name, WorkspaceI workspace);
 
@@ -254,7 +269,7 @@ public interface ModuleI extends SciJavaPlugin {
 
     public boolean hasVisibleParameters();
 
-    public Module duplicate(ModulesI newModules, boolean copyID);
+    public ModuleI duplicate(ModulesI newModules, boolean copyID);
 
     // PROTECTED METHODS
 

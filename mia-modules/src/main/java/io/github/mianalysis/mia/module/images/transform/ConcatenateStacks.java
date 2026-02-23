@@ -15,12 +15,12 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -480,16 +480,16 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     class CustomInputImageP extends InputImageP {
         private boolean allowMissingImages = false;
 
-        private CustomInputImageP(String name, Module module) {
+        private CustomInputImageP(String name, ModuleI module) {
             super(name, module);
 
         }
 
-        public CustomInputImageP(String name, Module module, @NotNull String imageName) {
+        public CustomInputImageP(String name, ModuleI module, @NotNull String imageName) {
             super(name, module, imageName);
         }
 
-        public CustomInputImageP(String name, Module module, @NotNull String imageName, String description) {
+        public CustomInputImageP(String name, ModuleI module, @NotNull String imageName, String description) {
             super(name, module, imageName, description);
         }
 
@@ -510,7 +510,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         }
 
         @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
+        public <T extends Parameter> T duplicate(ModuleI newModule) {
             CustomInputImageP newParameter = new CustomInputImageP(name, module, getImageName(), getDescription());
 
             newParameter.setNickname(getNickname());

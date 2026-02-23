@@ -1,24 +1,24 @@
 package io.github.mianalysis.mia.object.parameters.text;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class SeriesSingleSelectorP extends IntegerP {
-    public SeriesSingleSelectorP(String name, Module module, int value) {
+    public SeriesSingleSelectorP(String name, ModuleI module, int value) {
         super(name, module, value);
     }
 
-    public SeriesSingleSelectorP(String name, Module module, String value) {
+    public SeriesSingleSelectorP(String name, ModuleI module, String value) {
         super(name, module, value);
     }
 
-    public SeriesSingleSelectorP(String name, Module module, int value, String description) {
+    public SeriesSingleSelectorP(String name, ModuleI module, int value, String description) {
         super(name, module, value, description);
     }
 
-    public SeriesSingleSelectorP(String name, Module module, String value, String description) {
+    public SeriesSingleSelectorP(String name, ModuleI module, String value, String description) {
         super(name, module, value, description);
     }
 
@@ -28,7 +28,7 @@ public class SeriesSingleSelectorP extends IntegerP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name, newModule, value, getDescription());
 
         newParameter.setNickname(getNickname());

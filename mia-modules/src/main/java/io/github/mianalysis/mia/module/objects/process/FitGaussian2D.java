@@ -17,6 +17,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
@@ -27,7 +28,6 @@ import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -311,7 +311,7 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static ImageI createGaussianImage(ObjsI objects, String outputImageName, @Nullable Module module) {
+    static ImageI createGaussianImage(ObjsI objects, String outputImageName, @Nullable ModuleI module) {
         if (objects.size() == 0)
             return null;
 

@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -13,15 +13,15 @@ import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.system.FileTools.FileTypes;
 
 public class FolderPathP extends FileFolderType {
-    public FolderPathP(String name, Module module) {
+    public FolderPathP(String name, ModuleI module) {
         super(name, module);
     }
 
-    public FolderPathP(String name, Module module, @NotNull String filePath) {
+    public FolderPathP(String name, ModuleI module, @NotNull String filePath) {
         super(name, module, filePath);
     }
 
-    public FolderPathP(String name, Module module, @NotNull String filePath, String description) {
+    public FolderPathP(String name, ModuleI module, @NotNull String filePath, String description) {
         super(name, module, filePath, description);
     }
 
@@ -31,8 +31,8 @@ public class FolderPathP extends FileFolderType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
-        FolderPathP newParameter = new FolderPathP(name, newModule, getPath(), getDescription());
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
+        FolderPathP newParameter = new FolderPathP(getName(), newModule, getPath(), getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -24,8 +24,9 @@ import org.xml.sax.SAXException;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -133,7 +134,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
             // Creating an empty Module matching the input type. If none was found the loop
             // skips to the next Module
-            Module module = initialiseModule(moduleNode, modules, availableModules);
+            ModuleI module = initialiseModule(moduleNode, modules, availableModules);
             if (module == null)
                 continue;
 
@@ -166,7 +167,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModulesI modules, List<String> availableModules)
+    public static ModuleI initialiseModule(Node moduleNode, ModulesI modules, List<String> availableModules)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -176,7 +177,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
         for (String availableModule : availableModules) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
-                Module module;
+                ModuleI module;
                 try {
                     module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModulesI.class)
                             .newInstance(modules);
@@ -237,7 +238,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
     }
 
-    public static void addSingleInstanceSpecificComponents(Module module, Node moduleNode) {
+    public static void addSingleInstanceSpecificComponents(ModuleI module, Node moduleNode) {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
 
         if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
@@ -255,7 +256,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void addStandardModuleSpecificComponents(Module module, Node moduleNode) {
+    public static void addStandardModuleSpecificComponents(ModuleI module, Node moduleNode) {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
 
         if (moduleAttributes.getNamedItem("ENABLED") != null) {
@@ -287,7 +288,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateModuleParameters(Node moduleNode, Parameters parameters, Module module) {
+    public static void populateModuleParameters(Node moduleNode, Parameters parameters, ModuleI module) {
         String moduleName = module.getName();
 
         NodeList parameterNodes = moduleNode.getChildNodes();
@@ -396,7 +397,7 @@ public class AnalysisReader_Pre_0p10p0 {
     }
 
     @Deprecated
-    public static void populateModuleMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateModuleMeasurementRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -422,7 +423,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateModuleMetadataRefs(Node moduleNode, Module module) {
+    public static void populateModuleMetadataRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -433,7 +434,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateImageMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateImageMeasurementRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -444,7 +445,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateObjMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateObjMeasurementRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -456,7 +457,7 @@ public class AnalysisReader_Pre_0p10p0 {
     }
 
     public static void populateModuleParameterGroups(Node parameterNode, Parameters parameters,
-            Module module) {
+            ModuleI module) {
         NodeList collectionNodes = parameterNode.getChildNodes();
         String groupName = parameterNode.getAttributes().getNamedItem("NAME").getNodeValue();
 

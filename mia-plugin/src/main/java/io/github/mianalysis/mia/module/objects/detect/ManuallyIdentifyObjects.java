@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
@@ -799,17 +800,17 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     class CustomInputObjectsP extends InputObjectsP {
         private boolean allowMissingObjects = false;
 
-        public CustomInputObjectsP(String name, Module module) {
+        public CustomInputObjectsP(String name, ModuleI module) {
             super(name, module);
         }
 
-        public CustomInputObjectsP(String name, Module module, @NotNull String choice) {
+        public CustomInputObjectsP(String name, ModuleI module, @NotNull String choice) {
             super(name, module);
             this.choice = choice;
 
         }
 
-        public CustomInputObjectsP(String name, Module module, @NotNull String choice, String description) {
+        public CustomInputObjectsP(String name, ModuleI module, @NotNull String choice, String description) {
             super(name, module, description);
             this.choice = choice;
 
@@ -832,7 +833,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
+        public <T extends Parameter> T duplicate(ModuleI newModule) {
             CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(),
                     getDescription());
 
@@ -857,22 +858,22 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     public class CustomObjectMetadataP extends ObjectMetadataP {
         private boolean allowMissingObjects = false;
 
-        public CustomObjectMetadataP(String name, Module module) {
+        public CustomObjectMetadataP(String name, ModuleI module) {
             super(name, module);
         }
 
-        public CustomObjectMetadataP(String name, Module module, String description) {
+        public CustomObjectMetadataP(String name, ModuleI module, String description) {
             super(name, module, description);
         }
 
-        public CustomObjectMetadataP(String name, Module module, @NotNull String choice, @NotNull String objectName) {
+        public CustomObjectMetadataP(String name, ModuleI module, @NotNull String choice, @NotNull String objectName) {
             super(name, module);
             this.objectName = objectName;
             this.choice = choice;
 
         }
 
-        public CustomObjectMetadataP(String name, Module module, @NotNull String choice, @NotNull String objectName,
+        public CustomObjectMetadataP(String name, ModuleI module, @NotNull String choice, @NotNull String objectName,
                 String description) {
             super(name, module, description);
             this.objectName = objectName;
@@ -897,7 +898,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
+        public <T extends Parameter> T duplicate(ModuleI newModule) {
             CustomObjectMetadataP newParameter = new CustomObjectMetadataP(name, newModule, choice, objectName,
                     getDescription());
 

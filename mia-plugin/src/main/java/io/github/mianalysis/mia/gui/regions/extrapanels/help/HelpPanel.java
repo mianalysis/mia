@@ -14,7 +14,7 @@ import javax.swing.JTextPane;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 
 public class HelpPanel extends JPanel {
@@ -28,7 +28,7 @@ public class HelpPanel extends JPanel {
     }
 
     public void updatePanel() {
-        Module activeModule = GUI.getFirstSelectedModule();
+        ModuleI activeModule = GUI.getFirstSelectedModule();
         ModulesI modules = GUI.getModules();
 
         removeAll();

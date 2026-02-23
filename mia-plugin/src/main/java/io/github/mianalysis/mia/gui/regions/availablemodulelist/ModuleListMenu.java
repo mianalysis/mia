@@ -9,6 +9,7 @@ import javax.swing.JPopupMenu;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
 /**
@@ -27,14 +28,14 @@ public class ModuleListMenu extends JMenu implements Comparable {
 
         setText(name);
         
-        for (Module module : modules)
+        for (ModuleI module : modules)
             add(new PopupMenuItem(module, topLevelMenu));
 
         setFont(GUI.getDefaultFont().deriveFont(14f));
 
     }
 
-    public void addMenuItem(Module module) {
+    public void addMenuItem(ModuleI module) {
         boolean showDeprecated = ((SwingPreferences) MIA.getPreferences()).showDeprecated();
         if (!module.isDeprecated() || showDeprecated)
             add(new PopupMenuItem(module, topLevelMenu));

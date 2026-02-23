@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.script.RunMacro;
 import io.github.mianalysis.mia.module.script.RunMacroOnObjects;
@@ -527,7 +528,7 @@ public class InputControl extends Module {
         // If a the RunMacro module is present, this analysis must be run as a single
         // job
         if ((int) parameters.getValue(SIMULTANEOUS_JOBS, workspace) > 1) {
-            for (Module module : modules) {
+            for (ModuleI module : modules) {
                 if (module instanceof RunMacro || module instanceof RunMacroOnObjects) {
                     returnedParameters.add(parameters.getParameter(MACRO_WARNING));
                     parameters.getParameter(SIMULTANEOUS_JOBS).setValid(false);

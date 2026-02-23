@@ -26,8 +26,9 @@ import org.xml.sax.SAXException;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.AvailableModules;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -115,7 +116,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
             // Creating an empty Module matching the input type. If none was found the loop
             // skips to the next Module
-            Module module = initialiseModule(moduleNode, modules, availableModuleNames);
+            ModuleI module = initialiseModule(moduleNode, modules, availableModuleNames);
             if (module == null)
                 continue;
 
@@ -135,7 +136,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModulesI modules, List<String> availableModuleNames)
+    public static ModuleI initialiseModule(Node moduleNode, ModulesI modules, List<String> availableModuleNames)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -159,7 +160,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModulesI modules, String availableModuleName)
+    public static ModuleI initialiseModule(Node moduleNode, ModulesI modules, String availableModuleName)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
@@ -167,7 +168,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
         }
-        Module module = (Module) clazz.getDeclaredConstructor(ModulesI.class).newInstance(modules);
+        ModuleI module = (Module) clazz.getDeclaredConstructor(ModulesI.class).newInstance(modules);
 
         // Populating parameters
         NodeList moduleChildNodes = moduleNode.getChildNodes();
@@ -199,7 +200,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static void populateParameters(Node moduleNode, Module module) {
+    public static void populateParameters(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -231,7 +232,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void populateLegacyMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateLegacyMeasurementRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -256,7 +257,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void populateModuleMetadataRefs(Node moduleNode, Module module) {
+    public static void populateModuleMetadataRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -267,7 +268,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void populateImageMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateImageMeasurementRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -278,7 +279,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void populateObjMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateObjMeasurementRefs(Node moduleNode, ModuleI module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type

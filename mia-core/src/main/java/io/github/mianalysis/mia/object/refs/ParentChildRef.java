@@ -5,9 +5,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.AbstractRef;
 
-public class ParentChildRef extends Ref {
+public class ParentChildRef extends AbstractRef {
     private final String parentName;
     private final String childName;
 

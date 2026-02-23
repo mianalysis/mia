@@ -32,8 +32,9 @@ import io.github.mianalysis.mia.gui.regions.processingpanel.ProcessingPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusTextField;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.AvailableModules;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -60,7 +61,7 @@ public class GUI {
 
     private static ModulesI modules = new Modules();
     private static AnalysisRunner analysisRunner = new AnalysisRunner();
-    private static Module[] selectedModules = null;
+    private static ModuleI[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static WorkspaceI testWorkspace = new Workspaces().getNewWorkspace(null, 1);
@@ -101,8 +102,8 @@ public class GUI {
         // Creating main Frame
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
-        
-        frameHeight = Math.min(frameHeight, (int) Math.floor(screenSize.height*0.8));
+
+        frameHeight = Math.min(frameHeight, (int) Math.floor(screenSize.height * 0.8));
         frameHeight = Math.max(frameHeight, minimumFrameHeight);
 
         // Detecting modules
@@ -188,7 +189,7 @@ public class GUI {
                         continue;
 
                     Constructor constructor = clazz.getDeclaredConstructor(ModulesI.class);
-                    Module module = (Module) constructor.newInstance(availableModules);
+                    ModuleI module = (Module) constructor.newInstance(availableModules);
                     availableModules.add(module);
 
                 }
@@ -207,7 +208,8 @@ public class GUI {
         try {
             System.out.println(GUI.class);
             System.out.println(GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
-            defaultFont = Font.createFont(Font.TRUETYPE_FONT, GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
+            defaultFont = Font.createFont(Font.TRUETYPE_FONT,
+                    GUI.class.getResourceAsStream("/fonts/Quicksand-Medium.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(defaultFont);
             return defaultFont;
         } catch (FontFormatException | IOException e) {
@@ -235,7 +237,7 @@ public class GUI {
         for (Parameter parameter : MIA.getPreferences().getAllParameters().values())
             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
-        for (Module module : getModules())
+        for (ModuleI module : getModules())
             for (Parameter parameter : module.getAllParameters().values())
                 SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
@@ -277,19 +279,19 @@ public class GUI {
         mainPanel.updateAvailableModules();
     }
 
-    public static void updateModules(boolean testAnalysis, @Nullable Module startModule) {
+    public static void updateModules(boolean testAnalysis, @Nullable ModuleI startModule) {
         mainPanel.updateModules(testAnalysis, startModule);
 
     }
 
-    public static void updateModuleStates(boolean testAnalysis, @Nullable Module startModule) {
+    public static void updateModuleStates(boolean testAnalysis, @Nullable ModuleI startModule) {
         if (testAnalysis)
             AnalysisTester.testModules(getModules(), testWorkspace, startModule);
 
         mainPanel.updateModuleStates();
     }
 
-    public static void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
+    public static void updateParameters(boolean testAnalysis, @Nullable ModuleI startModule) {
         mainPanel.updateParameters(testAnalysis, startModule);
     }
 
@@ -398,13 +400,13 @@ public class GUI {
         GUI.moduleBeingEval = moduleBeingEval;
     }
 
-    public static Module getFirstSelectedModule() {
+    public static ModuleI getFirstSelectedModule() {
         if (selectedModules == null || selectedModules.length == 0)
             return null;
         return selectedModules[0];
     }
 
-    public static Module[] getSelectedModules() {
+    public static ModuleI[] getSelectedModules() {
         return selectedModules;
     }
 
@@ -416,7 +418,7 @@ public class GUI {
         ModulesI modules = getModules();
 
         for (int i = 0; i < selectedModules.length; i++) {
-            Module selectedModule = selectedModules[i];
+            ModuleI selectedModule = selectedModules[i];
             if (selectedModule instanceof InputControl) {
                 selectedIndices[i] = -1;
             } else if (selectedModule instanceof OutputControl) {
@@ -436,20 +438,20 @@ public class GUI {
 
         // The input and output controls are special cases
         if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -1) {
-            selectedModules = new Module[] { modules.getInputControl() };
+            selectedModules = new ModuleI[] { modules.getInputControl() };
             return;
         } else if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -2) {
-            selectedModules = new Module[] { modules.getOutputControl() };
+            selectedModules = new ModuleI[] { modules.getOutputControl() };
             return;
         }
 
         // If the largest index is out of range disable all selections
         if (selectedModuleIndices[selectedModuleIndices.length - 1] >= modules.size()) {
-            selectedModules = new Module[0];
+            selectedModules = new ModuleI[0];
             return;
         }
 
-        selectedModules = new Module[selectedModuleIndices.length];
+        selectedModules = new ModuleI[selectedModuleIndices.length];
         for (int i = 0; i < selectedModuleIndices.length; i++) {
             if (selectedModuleIndices[i] == -1) {
                 selectedModules[i] = modules.getInputControl();
@@ -459,7 +461,7 @@ public class GUI {
         }
     }
 
-    public static void setSelectedModules(Module[] selectedModules) {
+    public static void setSelectedModules(ModuleI[] selectedModules) {
         GUI.selectedModules = selectedModules;
     }
 

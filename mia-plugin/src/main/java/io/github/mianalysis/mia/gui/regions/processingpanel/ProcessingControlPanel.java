@@ -18,7 +18,7 @@ import com.drew.lang.annotations.Nullable;
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -73,7 +73,7 @@ public class ProcessingControlPanel extends JPanel {
         
     }
 
-    public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
+    public void updatePanel(boolean testAnalysis, @Nullable ModuleI startModule) {
         InputControl inputControl = GUI.getModules().getInputControl();
         OutputControl outputControl = GUI.getModules().getOutputControl();
 
@@ -120,7 +120,7 @@ public class ProcessingControlPanel extends JPanel {
 
         // Adding module buttons
         GUISeparator separator = loadSeparator;
-        for (Module module : modules) {
+        for (ModuleI module : modules) {
             // If the module is the special-case GUISeparator, create this module, then
             // return
             JPanel modulePanel = null;

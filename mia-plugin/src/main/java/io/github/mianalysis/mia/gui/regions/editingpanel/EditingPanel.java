@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.editingpanel;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,7 +19,7 @@ import io.github.mianalysis.mia.gui.regions.extrapanels.ExtraPanel;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModulePanel;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
@@ -38,7 +37,7 @@ public class EditingPanel extends AbstractPanel {
     private final StatusPanel statusPanel = new StatusPanel();
     private final JSplitPane splitPane;
 
-    private Module lastHelpNotesModule = null;
+    private ModuleI lastHelpNotesModule = null;
 
     public EditingPanel() {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
@@ -125,7 +124,7 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
+    public void updatePanel(boolean testAnalysis, @Nullable ModuleI startModule) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
@@ -203,7 +202,7 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateModules(boolean testAnalysis, @Nullable Module startModule) {
+    public void updateModules(boolean testAnalysis, @Nullable ModuleI startModule) {
         if (testAnalysis)
             AnalysisTester.testModules(GUI.getModules(), GUI.getTestWorkspace(), startModule);
 
@@ -218,7 +217,7 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
+    public void updateParameters(boolean testAnalysis, @Nullable ModuleI startModule) {
         parametersPanel.updatePanel(GUI.getFirstSelectedModule());
     }
 
@@ -235,12 +234,12 @@ public class EditingPanel extends AbstractPanel {
     }
 
     @Override
-    public Module getLastHelpNotesModule() {
+    public ModuleI getLastHelpNotesModule() {
         return lastHelpNotesModule;
     }
 
     @Override
-    public void setLastHelpNotesModule(Module module) {
+    public void setLastHelpNotesModule(ModuleI module) {
         lastHelpNotesModule = module;
     }
 }

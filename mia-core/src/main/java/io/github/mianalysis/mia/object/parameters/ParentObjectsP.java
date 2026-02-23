@@ -1,31 +1,31 @@
 package io.github.mianalysis.mia.object.parameters;
 
-import io.github.mianalysis.mia.module.Module;
+import com.drew.lang.annotations.NotNull;
+
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 
-import com.drew.lang.annotations.NotNull;
-
 public class ParentObjectsP extends ChoiceType {
     private String childObjectsName = "";
 
-    public ParentObjectsP(String name, Module module) {
+    public ParentObjectsP(String name, ModuleI module) {
         super(name,module);
     }
 
-    public ParentObjectsP(String name, Module module, String description) {
+    public ParentObjectsP(String name, ModuleI module, String description) {
         super(name,module,description);
     }
 
-    public ParentObjectsP(String name, Module module, @NotNull String choice, @NotNull String childObjectsName) {
+    public ParentObjectsP(String name, ModuleI module, @NotNull String choice, @NotNull String childObjectsName) {
         super(name,module);
         this.choice = choice;
         this.childObjectsName = childObjectsName;
     }
 
-    public ParentObjectsP(String name, Module module, @NotNull String choice, @NotNull String childObjectsName, String description) {
+    public ParentObjectsP(String name, ModuleI module, @NotNull String choice, @NotNull String childObjectsName, String description) {
         super(name,module,description);
         this.choice = choice;
         this.childObjectsName = childObjectsName;
@@ -50,7 +50,7 @@ public class ParentObjectsP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         ParentObjectsP newParameter = new ParentObjectsP(name,newModule,choice,childObjectsName,getDescription());
 
         newParameter.setNickname(getNickname());

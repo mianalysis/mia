@@ -14,8 +14,8 @@ import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
-import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
+import io.github.mianalysis.mia.object.measurements.MeasurementI;
 import ome.units.UNITS;
 
 public class ColourFactoryTest {

@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.svg.SVGButton;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
@@ -32,7 +33,7 @@ public class EvalButton extends SVGButton implements ActionListener {
 
     private static Thread t;
 
-    private Module module;
+    private ModuleI module;
     // private static final ImageIcon blackIcon = new ImageIcon(
     //         EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
     // private static final ImageIcon blackIconDM = new ImageIcon(
@@ -58,7 +59,7 @@ public class EvalButton extends SVGButton implements ActionListener {
 
     // CONSTRUCTOR
 
-    public EvalButton(Module module) {
+    public EvalButton(ModuleI module) {
         super(new String[] { "/icons/arrowdownopen.svg", "/icons/arrowdownclosed.svg", "/icons/stop.svg"}, size, 0);
 
         this.module = module;
@@ -144,7 +145,7 @@ public class EvalButton extends SVGButton implements ActionListener {
 
     // GETTERS
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 
@@ -221,7 +222,7 @@ public class EvalButton extends SVGButton implements ActionListener {
 
         // If this is the first (non-GUI separator) module, reset the workspace
         int firstIdx = 0;
-        for (Module module : modules.values()) {
+        for (ModuleI module : modules.values()) {
             if (!(module instanceof GUISeparator))
                 break;
             firstIdx++;
@@ -268,7 +269,7 @@ public class EvalButton extends SVGButton implements ActionListener {
             t = new Thread(() -> {
                 while (idx > GUI.getLastModuleEval()) {
                     int i = GUI.getLastModuleEval() + 1;
-                    Module module = GUI.getModules().getAtIndex(i);
+                    ModuleI module = GUI.getModules().getAtIndex(i);
                     if (module.isEnabled() && module.isRunnable()) {
                         try {
                             if (!evaluateModule(module)) {
@@ -290,7 +291,7 @@ public class EvalButton extends SVGButton implements ActionListener {
         }
     }
 
-    public boolean evaluateModule(Module module) {
+    public boolean evaluateModule(ModuleI module) {
         ModulesI modules = GUI.getModules();
         WorkspaceI testWorkspace = GUI.getTestWorkspace();
 
@@ -310,7 +311,7 @@ public class EvalButton extends SVGButton implements ActionListener {
                 break;
             case REDIRECT:
                 // Getting index of module before one to move to
-                Module redirectModule = modules.getModuleByID(module.getRedirectModuleID(testWorkspace));
+                ModuleI redirectModule = modules.getModuleByID(module.getRedirectModuleID(testWorkspace));
                 
                 if (redirectModule == null)
                     status = true;

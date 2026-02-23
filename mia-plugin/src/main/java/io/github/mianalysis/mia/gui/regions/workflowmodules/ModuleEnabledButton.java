@@ -1,23 +1,18 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
-import java.awt.Insets;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
-import com.formdev.flatlaf.FlatClientProperties;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.svg.SVGButton;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
-import java.awt.Color;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -25,7 +20,7 @@ import java.awt.Color;
 public class ModuleEnabledButton extends SVGButton implements ActionListener {
     private static final int size = 18;
 
-    private Module module;
+    private ModuleI module;
     // private static final ImageIcon blackIcon = new ImageIcon(
     // ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"),
     // "");
@@ -50,7 +45,7 @@ public class ModuleEnabledButton extends SVGButton implements ActionListener {
     // ModuleEnabledButton.class.getResource("/icons/power_darkblueDM_12px.png"),
     // "");
 
-    public ModuleEnabledButton(Module module) {
+    public ModuleEnabledButton(ModuleI module) {
         super(new String[] { "/icons/poweron.svg", "/icons/poweroff.svg" }, size, module.isEnabled() ? 0 : 1);
 
         this.module = module;
@@ -79,7 +74,7 @@ public class ModuleEnabledButton extends SVGButton implements ActionListener {
 
     }
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 
@@ -99,7 +94,7 @@ public class ModuleEnabledButton extends SVGButton implements ActionListener {
         ModulesI modules = GUI.getModules();
         if (module.getClass().isInstance(new GUISeparator(modules))) {
             for (int i = idx + 1; i < modules.size(); i++) {
-                Module currentModule = modules.getAtIndex(i);
+                ModuleI currentModule = modules.getAtIndex(i);
                 if (currentModule.getClass().isInstance(new GUISeparator(modules))) {
                     break;
                 } else {

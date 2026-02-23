@@ -7,13 +7,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.AbstractRef;
 
-public abstract class Parameter extends Ref {
-    protected Module module;
+public abstract class Parameter extends AbstractRef {
+    protected ModuleI module;
     private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
@@ -22,13 +21,13 @@ public abstract class Parameter extends Ref {
 
     // CONSTRUCTORS
 
-    public Parameter(String name, Module module) {
+    public Parameter(String name, ModuleI module) {
         super(name);
         this.module = module;
 
     }
 
-    public Parameter(String name, Module module, String description) {
+    public Parameter(String name, ModuleI module, String description) {
         super(name);
         this.module = module;
         this.description = description;
@@ -48,7 +47,7 @@ public abstract class Parameter extends Ref {
 
     public abstract boolean verify();
 
-    public abstract <T extends Parameter> T duplicate(Module newModule);
+    public abstract <T extends Parameter> T duplicate(ModuleI newModule);
 
     // PUBLIC METHODS
 
@@ -62,7 +61,7 @@ public abstract class Parameter extends Ref {
         return getRawStringValue();
     }
 
-    public Parameter createNewInstance(String name, Module module)
+    public Parameter createNewInstance(String name, ModuleI module)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Constructor[] constructors = this.getClass().getConstructors();
 
@@ -72,7 +71,7 @@ public abstract class Parameter extends Ref {
                 continue;
 
             Class[] parameterTypes = constructor.getParameterTypes();
-            if (parameterTypes[0] == String.class && parameterTypes[1] == Module.class)
+            if (parameterTypes[0] == String.class && parameterTypes[1] == ModuleI.class)
                 return (Parameter) constructor.newInstance(name, module);
         }
 
@@ -82,11 +81,11 @@ public abstract class Parameter extends Ref {
 
     // GETTERS AND SETTERS
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 
-    public void setModule(Module module) {
+    public void setModule(ModuleI module) {
         this.module = module;
     }
 

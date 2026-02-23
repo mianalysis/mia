@@ -6,7 +6,7 @@ import java.awt.Insets;
 
 import javax.swing.JPanel;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 
 public class InputOutputPanel extends JPanel {
     /**
@@ -26,7 +26,7 @@ public class InputOutputPanel extends JPanel {
 
     }
 
-    public void updatePanel(Module module) {
+    public void updatePanel(ModuleI module) {
         removeAll();
 
         GridBagConstraints c = new GridBagConstraints();

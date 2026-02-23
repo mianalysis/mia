@@ -3,8 +3,8 @@ package io.github.mianalysis.mia.object.parameters.text;
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -17,48 +17,48 @@ public class TextAreaP extends TextType {
     private ParameterControl control = null;
     private int controlHeight = 250;
 
-    public TextAreaP(String name, Module module, boolean editable) {
+    public TextAreaP(String name, ModuleI module, boolean editable) {
         super(name, module);
         this.editable = editable;
     }
 
-    public TextAreaP(String name, Module module, boolean editable, String description) {
+    public TextAreaP(String name, ModuleI module, boolean editable, String description) {
         super(name, module, description);
         this.editable = editable;
     }
 
-    public TextAreaP(String name, Module module, @NotNull String value, boolean editable) {
+    public TextAreaP(String name, ModuleI module, @NotNull String value, boolean editable) {
         super(name, module);
         this.value = value;
         this.editable = editable;
     }
 
-    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, String description) {
+    public TextAreaP(String name, ModuleI module, @NotNull String value, boolean editable, String description) {
         super(name, module, description);
         this.value = value;
         this.editable = editable;
     }
 
-    public TextAreaP(String name, Module module, boolean editable, int controlHeight) {
+    public TextAreaP(String name, ModuleI module, boolean editable, int controlHeight) {
         super(name, module);
         this.editable = editable;
         this.controlHeight = controlHeight;
     }
 
-    public TextAreaP(String name, Module module, boolean editable, String description, int controlHeight) {
+    public TextAreaP(String name, ModuleI module, boolean editable, String description, int controlHeight) {
         super(name, module, description);
         this.editable = editable;
         this.controlHeight = controlHeight;
     }
 
-    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, int controlHeight) {
+    public TextAreaP(String name, ModuleI module, @NotNull String value, boolean editable, int controlHeight) {
         super(name, module);
         this.value = value;
         this.editable = editable;
         this.controlHeight = controlHeight;
     }
 
-    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, String description,
+    public TextAreaP(String name, ModuleI module, @NotNull String value, boolean editable, String description,
             int controlHeight) {
         super(name, module, description);
         this.value = value;
@@ -123,7 +123,7 @@ public class TextAreaP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         TextAreaP newParameter = new TextAreaP(name, newModule, value, editable, getDescription());
 
         newParameter.setNickname(getNickname());

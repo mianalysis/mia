@@ -4,25 +4,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.math.CumStat;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public abstract class TextType extends Parameter {
-    public TextType(String name, Module module) {
+    public TextType(String name, ModuleI module) {
         super(name, module);
     }
 
-    public TextType(String name, Module module, String description) {
+    public TextType(String name, ModuleI module, String description) {
         super(name, module, description);
     }
 

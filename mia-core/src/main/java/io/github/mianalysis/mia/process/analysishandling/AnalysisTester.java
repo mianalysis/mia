@@ -2,18 +2,17 @@ package io.github.mianalysis.mia.process.analysishandling;
 
 import com.drew.lang.annotations.Nullable;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.module.workflow.FixedTextCondition;
 import io.github.mianalysis.mia.module.workflow.GUICondition;
 import io.github.mianalysis.mia.module.workflow.ModuleIsEnabled;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AnalysisTester {
-    public static int testModules(ModulesI modules, WorkspaceI workspace, @Nullable Module startModule) {
+    public static int testModules(ModulesI modules, WorkspaceI workspace, @Nullable ModuleI startModule) {
         GlobalVariables.updateVariables(modules);
         
         // Iterating over all modules, checking if they are runnable
@@ -21,14 +20,14 @@ public class AnalysisTester {
         
         // Setting all module runnable states to false
         for (int i = startIdx; i < modules.size(); i++) {
-            Module module = modules.getAtIndex(i);
+            ModuleI module = modules.getAtIndex(i);
             module.setRunnable(false);
             module.setReachable(false);
         }
 
         int nRunnable = 0;
         for (int i = startIdx; i < modules.size(); i++) {
-            Module module = modules.getAtIndex(i);
+            ModuleI module = modules.getAtIndex(i);
             module.setReachable(true);
             module.setRunnable(testModule(module, modules));
 
@@ -42,14 +41,14 @@ public class AnalysisTester {
                     if (!((ModuleIsEnabled) module).testDoRedirect(workspace))
                         continue;
 
-                Module redirectModule = modules.getModuleByID(module.getRedirectModuleID(workspace));
+                ModuleI redirectModule = modules.getModuleByID(module.getRedirectModuleID(workspace));
 
                 // If null, the analysis was terminated
                 if (redirectModule == null)
                     break;
 
                 // Setting the index of the next module to be evaluated
-                for (Module testModule : modules)
+                for (ModuleI testModule : modules)
                     if (testModule.getModuleID().equals(redirectModule.getModuleID()))
                         i = modules.indexOf(testModule) - 1;
 
@@ -64,7 +63,7 @@ public class AnalysisTester {
 
     }
 
-    public static boolean testModule(Module module, ModulesI modules) {
+    public static boolean testModule(ModuleI module, ModulesI modules) {
         boolean runnable = true;
 
         if (module == null)

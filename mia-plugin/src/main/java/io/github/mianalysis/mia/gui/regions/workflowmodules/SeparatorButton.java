@@ -10,7 +10,7 @@ import javax.swing.JButton;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
@@ -23,7 +23,7 @@ public class SeparatorButton extends JButton implements ActionListener {
      *
      */
     private static final long serialVersionUID = -4790928465048201014L;
-    private Module module;
+    private ModuleI module;
     private boolean left;
     private static final ImageIcon expandedIcon = new ImageIcon(
             SeparatorButton.class.getResource("/icons/downarrow_darkblue_12px.png"), "");
@@ -38,7 +38,7 @@ public class SeparatorButton extends JButton implements ActionListener {
     private static final ImageIcon collapsedRightIconDM = new ImageIcon(
             SeparatorButton.class.getResource("/icons/leftarrow_darkblueDM_12px.png"), "");
 
-    public SeparatorButton(Module module, boolean left) {
+    public SeparatorButton(ModuleI module, boolean left) {
         this.module = module;
         this.left = left;
 
@@ -79,7 +79,7 @@ public class SeparatorButton extends JButton implements ActionListener {
         }
     }
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 

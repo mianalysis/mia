@@ -7,7 +7,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 
 /**
  * Created by Stephen on 28/07/2017.
@@ -17,9 +17,9 @@ public class NotesArea extends JTextArea implements FocusListener {
      *
      */
     private static final long serialVersionUID = -2361836535673525320L;
-    Module module;
+    ModuleI module;
 
-    public NotesArea(Module module) {
+    public NotesArea(ModuleI module) {
         this.module = module;
 
         setFont(GUI.getDefaultFont().deriveFont(14f));

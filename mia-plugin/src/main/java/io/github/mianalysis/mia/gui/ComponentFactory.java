@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.gui.regions.parameterlist.ShowProcessingTitleChe
 import io.github.mianalysis.mia.gui.regions.parameterlist.VisibleCheck;
 import io.github.mianalysis.mia.gui.regions.processingpanel.ModuleTitle;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -79,7 +79,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModulesI modules, Module module, boolean editable) {
+    public JPanel createParameterControl(Parameter parameter, ModulesI modules, ModuleI module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         paramPanel.setOpaque(false);
 
@@ -171,7 +171,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createParametersTopRow(Module activeModule) {
+    public JPanel createParametersTopRow(ModuleI activeModule) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         paramPanel.setOpaque(false);
 
@@ -234,7 +234,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createProcessingModuleHeading(Module module) {
+    public JPanel createProcessingModuleHeading(ModuleI module) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -265,7 +265,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createProcessingSeparator(Module module) {
+    public JPanel createProcessingSeparator(ModuleI module) {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -389,7 +389,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createProcessingModuleControl(Module module) {
+    public JPanel createProcessingModuleControl(ModuleI module) {
         // Only displaying the module title if it has at least one visible parameter
         if (!module.hasVisibleParameters() & !module.canBeDisabled())
             return null;
@@ -423,7 +423,7 @@ public class ComponentFactory {
 
     }
 
-    private void addProcessingParameters(Module module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
+    private void addProcessingParameters(ModuleI module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
             boolean editable) {
         for (Parameter parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {

@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.extrapanels.ExtraPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -39,7 +40,7 @@ public class ProcessingPanel extends AbstractPanel {
     private final StatusPanel statusPanel = new StatusPanel();
     private final JSplitPane splitPane;
 
-    private static Module lastHelpNotesModule = null;
+    private static ModuleI lastHelpNotesModule = null;
 
     public ProcessingPanel() {
         boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
@@ -162,7 +163,7 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updatePanel(boolean testAnalysis, @Nullable Module startModule) {
+    public void updatePanel(boolean testAnalysis, @Nullable ModuleI startModule) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -189,7 +190,7 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateModules(boolean testAnalysis, @Nullable Module startModule) {
+    public void updateModules(boolean testAnalysis, @Nullable ModuleI startModule) {
         controlPanel.updatePanel(testAnalysis, startModule);
     }
 
@@ -200,7 +201,7 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public void updateParameters(boolean testAnalysis, @Nullable Module startModule) {
+    public void updateParameters(boolean testAnalysis, @Nullable ModuleI startModule) {
         controlPanel.updatePanel(testAnalysis, startModule);
     }
 
@@ -264,12 +265,12 @@ public class ProcessingPanel extends AbstractPanel {
     }
 
     @Override
-    public Module getLastHelpNotesModule() {
+    public ModuleI getLastHelpNotesModule() {
         return lastHelpNotesModule;
     }
 
     @Override
-    public void setLastHelpNotesModule(Module module) {
+    public void setLastHelpNotesModule(ModuleI module) {
         lastHelpNotesModule = module;
     }
 }

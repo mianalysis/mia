@@ -1,12 +1,9 @@
 package io.github.mianalysis.mia.module.images.process;
 
-import java.util.Arrays;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
-import deepimagej.tools.DijTensor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -17,11 +14,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModulesI;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
-import io.github.mianalysis.mia.object.measurements.MeasurementI;
+import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;

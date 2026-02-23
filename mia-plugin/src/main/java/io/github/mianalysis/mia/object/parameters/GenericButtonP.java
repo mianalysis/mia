@@ -5,9 +5,8 @@ import java.awt.event.ActionListener;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.parametercontrols.SwingParameterControlFactory;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -20,7 +19,7 @@ public class GenericButtonP extends Parameter {
     protected String buttonLabel;
     protected ActionListener actionListener = null;
 
-    public GenericButtonP(String name, Module module, String buttonLabel, DefaultModes defaultMode) {
+    public GenericButtonP(String name, ModuleI module, String buttonLabel, DefaultModes defaultMode) {
         super(name, module);
         this.buttonLabel = buttonLabel;
 
@@ -40,7 +39,7 @@ public class GenericButtonP extends Parameter {
 
     }
 
-    public GenericButtonP(String name, Module module, String buttonLabel, ActionListener actionListener) {
+    public GenericButtonP(String name, ModuleI module, String buttonLabel, ActionListener actionListener) {
         super(name, module);
         this.buttonLabel = buttonLabel;
         this.actionListener = actionListener;
@@ -48,7 +47,7 @@ public class GenericButtonP extends Parameter {
 
     }
 
-    public GenericButtonP(String name, Module module, String buttonLabel, DefaultModes defaultMode,
+    public GenericButtonP(String name, ModuleI module, String buttonLabel, DefaultModes defaultMode,
             String description) {
         super(name, module, description);
         this.buttonLabel = buttonLabel;
@@ -68,7 +67,7 @@ public class GenericButtonP extends Parameter {
         setExported(false);
     }
 
-    public GenericButtonP(String name, Module module, String buttonLabel, ActionListener actionListener,
+    public GenericButtonP(String name, ModuleI module, String buttonLabel, ActionListener actionListener,
             String description) {
         super(name, module, description);
         this.buttonLabel = buttonLabel;
@@ -117,7 +116,7 @@ public class GenericButtonP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         GenericButtonP newParameter = new GenericButtonP(name, newModule, buttonLabel, actionListener,
                 getDescription());
 

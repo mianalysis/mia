@@ -1,13 +1,12 @@
 package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.svg.SVGButton;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -17,10 +16,10 @@ import io.github.mianalysis.mia.object.system.SwingPreferences;
 public class ShowOutputButton extends SVGButton implements ActionListener {
     private static final int size = 18;
     
-    private Module module;
+    private ModuleI module;
     private boolean showOutput = true;
 
-    public ShowOutputButton(Module module) {
+    public ShowOutputButton(ModuleI module) {
         super(new String[] { "/icons/eyeopen.svg", "/icons/eyeclosed.svg" }, size, module.canShowOutput() ? 0 : 1);
 
         this.module = module;
@@ -54,7 +53,7 @@ public class ShowOutputButton extends SVGButton implements ActionListener {
 
     }
 
-    public Module getModule() {
+    public ModuleI getModule() {
         return module;
     }
 

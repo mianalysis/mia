@@ -6,8 +6,7 @@ import java.util.regex.Pattern;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
@@ -22,16 +21,16 @@ public class ObjMeasurementSelectorP extends Parameter {
     private String objectName = "";
     private TreeMap<String, Boolean> measurementStates = new TreeMap<>();
 
-    public ObjMeasurementSelectorP(String name, Module module) {
+    public ObjMeasurementSelectorP(String name, ModuleI module) {
         super(name, module);
     }
 
-    public ObjMeasurementSelectorP(String name, Module module, @NotNull String objectName) {
+    public ObjMeasurementSelectorP(String name, ModuleI module, @NotNull String objectName) {
         super(name, module);
         this.objectName = objectName;
     }
 
-    public ObjMeasurementSelectorP(String name, Module module, @NotNull String objectName, String description) {
+    public ObjMeasurementSelectorP(String name, ModuleI module, @NotNull String objectName, String description) {
         super(name, module, description);
         this.objectName = objectName;
     }
@@ -86,7 +85,7 @@ public class ObjMeasurementSelectorP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
+    public <T extends Parameter> T duplicate(ModuleI newModule) {
         return null;
     }
 

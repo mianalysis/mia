@@ -14,6 +14,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
@@ -218,16 +219,16 @@ public class CreateClassImage extends Module {
     class CustomInputObjectsP extends InputObjectsP {
         private boolean allowMissingObjects = false;
 
-        private CustomInputObjectsP(String name, Module module) {
+        private CustomInputObjectsP(String name, ModuleI module) {
             super(name, module);
 
         }
 
-        public CustomInputObjectsP(String name, Module module, @NotNull String choice) {
+        public CustomInputObjectsP(String name, ModuleI module, @NotNull String choice) {
             super(name, module, choice);
         }
 
-        public CustomInputObjectsP(String name, Module module, @NotNull String choice, String description) {
+        public CustomInputObjectsP(String name, ModuleI module, @NotNull String choice, String description) {
             super(name, module, choice, description);
         }
 
@@ -248,7 +249,7 @@ public class CreateClassImage extends Module {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(Module newModule) {
+        public <T extends Parameter> T duplicate(ModuleI newModule) {
             CustomInputObjectsP newParameter = new CustomInputObjectsP(name, module, getRawStringValue(),
                     getDescription());
 

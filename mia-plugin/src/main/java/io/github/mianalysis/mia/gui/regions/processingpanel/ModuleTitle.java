@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.gui.regions.processingpanel;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -8,16 +7,16 @@ import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 
 public class ModuleTitle extends JLabel implements MouseListener {
     /**
      *
      */
     private static final long serialVersionUID = 5328769382022849737L;
-    private final Module module;
+    private final ModuleI module;
 
-    public ModuleTitle(Module module) {
+    public ModuleTitle(ModuleI module) {
         this.module = module;
 
         setText(module.getNickname());
@@ -33,7 +32,7 @@ public class ModuleTitle extends JLabel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        GUI.setSelectedModules(new Module[] { module });
+        GUI.setSelectedModules(new ModuleI[] { module });
 
     }
 

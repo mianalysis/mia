@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,6 +15,7 @@ import javax.swing.ListCellRenderer;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
@@ -34,17 +34,17 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
 
         // Choices may have not been initialised when this first runs, so a blank list
         // is created
-        Module[] choices = parameter.getModules();
+        ModuleI[] choices = parameter.getModules();
         control = new JComboBox(choices);
 
-        for (Module choice:choices)
+        for (ModuleI choice : choices)
             if (choice.getModuleID().equals(parameter.getSelectedModuleID()))
                 control.setSelectedItem(choice);
 
         control.setFont(GUI.getDefaultFont().deriveFont(14f));
         control.setSelectedItem(parameter.getSelectedModuleID());
         control.addActionListener(this);
-        
+
         control.setRenderer(new ModuleListRenderer(control.getRenderer()));
 
     }
@@ -74,13 +74,13 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
 
     @Override
     public void updateControl() {
-        Module[] choices = ((ModuleP) parameter).getModules();
+        ModuleI[] choices = ((ModuleP) parameter).getModules();
 
         // Getting previously-selected item
-        Module selected = (Module) control.getSelectedItem();
+        ModuleI selected = (Module) control.getSelectedItem();
 
         // Creating a new model
-        DefaultComboBoxModel<Module> model = new DefaultComboBoxModel(choices);
+        DefaultComboBoxModel<ModuleI> model = new DefaultComboBoxModel(choices);
         model.setSelectedItem(selected);
 
         // Updating the control

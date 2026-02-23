@@ -1,21 +1,22 @@
 package io.github.mianalysis.mia.object.parameters.objects;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.parameters.InputObjectsP;
-
-import com.drew.lang.annotations.NotNull;
 import java.util.LinkedHashSet;
 
+import com.drew.lang.annotations.NotNull;
+
+import io.github.mianalysis.mia.module.ModuleI;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+
 public class InputJunctionObjectsP extends InputObjectsP {
-    public InputJunctionObjectsP(String name, Module module) {
+    public InputJunctionObjectsP(String name, ModuleI module) {
         super(name, module);
     }
 
-    public InputJunctionObjectsP(String name, Module module, @NotNull String choice) {
+    public InputJunctionObjectsP(String name, ModuleI module, @NotNull String choice) {
         super(name, module, choice);
     }
 
-    public InputJunctionObjectsP(String name, Module module, @NotNull String choice, String description) {
+    public InputJunctionObjectsP(String name, ModuleI module, @NotNull String choice, String description) {
         super(name, module, choice, description);
     }
 

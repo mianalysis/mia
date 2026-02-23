@@ -1,20 +1,19 @@
 package io.github.mianalysis.mia.object.parameters.abstrakt;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public abstract class BooleanType extends TextSwitchableParameter {
     protected String value = "false";
 
-    public BooleanType(String name, Module module, boolean selected) {
+    public BooleanType(String name, ModuleI module, boolean selected) {
         super(name,module);
         this.setSelected(selected);
     }
 
-    public BooleanType(String name, Module module, boolean selected, String description) {
+    public BooleanType(String name, ModuleI module, boolean selected, String description) {
         super(name,module,description);
         this.setSelected(selected);
     }

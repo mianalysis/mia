@@ -16,7 +16,7 @@ import javax.swing.JTextPane;
 
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -73,7 +73,7 @@ public class ParametersPanel extends JPanel {
 
     }
 
-    public void updatePanel(Module module) {
+    public void updatePanel(ModuleI module) {
         ModulesI modules = GUI.getModules();
 
         ComponentFactory componentFactory = GUI.getComponentFactory();
@@ -200,7 +200,7 @@ public class ParametersPanel extends JPanel {
 
     public void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        Module activeModule = GUI.getFirstSelectedModule();
+        ModuleI activeModule = GUI.getFirstSelectedModule();
 
         c.insets = new Insets(2, 10, 0, 10);
         c.gridx = 0;
@@ -213,7 +213,7 @@ public class ParametersPanel extends JPanel {
 
     }
 
-    public void addAdvancedParameterGroupControl(ParameterGroup group, Module module, GridBagConstraints c) {
+    public void addAdvancedParameterGroupControl(ParameterGroup group, ModuleI module, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 

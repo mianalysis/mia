@@ -10,7 +10,7 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
@@ -121,7 +121,7 @@ public interface ImageI<T extends RealType<T> & NativeType<T>> extends Measureme
      *
      * @param module Module for which to display measurements
      */
-    public default void showMeasurements(Module module) {
+    public default void showMeasurements(ModuleI module) {
         String name = getName();
         
         // Getting MeasurementReferences

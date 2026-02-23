@@ -4,24 +4,23 @@ import java.io.File;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 
 public abstract class FileFolderType extends TextSwitchableParameter {
     protected String path = "";
 
-    public FileFolderType(String name, Module module) {
+    public FileFolderType(String name, ModuleI module) {
         super(name, module);
     }
 
-    public FileFolderType(String name, Module module, @NotNull String path) {
+    public FileFolderType(String name, ModuleI module, @NotNull String path) {
         super(name, module);
         this.path = path;
     }
 
-    public FileFolderType(String name, Module module, @NotNull String path, String description) {
+    public FileFolderType(String name, ModuleI module, @NotNull String path, String description) {
         super(name, module, description);
         this.path = path;
     }

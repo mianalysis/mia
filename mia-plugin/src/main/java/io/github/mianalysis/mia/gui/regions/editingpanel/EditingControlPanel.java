@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -20,7 +18,7 @@ import io.github.mianalysis.mia.gui.regions.availablemodulelist.ModuleListMenu;
 import io.github.mianalysis.mia.gui.regions.availablemodulelist.SearchForModuleItem;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleI;
 
 public class EditingControlPanel extends JPanel {
     /**
@@ -133,22 +131,22 @@ public class EditingControlPanel extends JPanel {
         }
 
         // Adding modules
-        TreeMap<String,Module> sortedModules = new TreeMap<String,Module>();
+        TreeMap<String,ModuleI> sortedModules = new TreeMap<>();
         if (parentMenu == null)
             return;
 
-        for (Module module : GUI.getAvailableModules())
+        for (ModuleI module : GUI.getAvailableModules())
             if (module.getCategory() == category)
                 sortedModules.put(module.getName(),module);
         
-        for (Module module:sortedModules.values())
+        for (ModuleI module:sortedModules.values())
             parentMenu.addMenuItem(module);
 
     }
 
     public void listAvailableModules() {
         // Making sure the available modules have been loaded
-        for (Module module:GUI.getAvailableModules())
+        for (ModuleI module:GUI.getAvailableModules())
             module.getCategory();
         
         Category root = Categories.getRootCategory();

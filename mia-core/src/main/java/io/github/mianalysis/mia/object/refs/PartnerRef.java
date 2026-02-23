@@ -5,9 +5,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import io.github.mianalysis.mia.object.coordinates.ObjI;
-import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.AbstractRef;
 
-public class PartnerRef extends Ref implements Comparable {
+public class PartnerRef extends AbstractRef implements Comparable {
     private final String object1Name;
     private final String object2Name;
     
