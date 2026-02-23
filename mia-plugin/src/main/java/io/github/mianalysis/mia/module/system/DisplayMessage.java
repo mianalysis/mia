@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -49,7 +49,7 @@ public class DisplayMessage extends AbstractSaver {
 
     }
 
-    public DisplayMessage(Modules modules) {
+    public DisplayMessage(ModulesI modules) {
         super("Display message", modules);
     }
 

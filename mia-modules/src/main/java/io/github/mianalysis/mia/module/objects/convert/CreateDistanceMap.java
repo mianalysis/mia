@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
@@ -94,7 +94,7 @@ public class CreateDistanceMap extends Module {
 	*/
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
-    public CreateDistanceMap(Modules modules) {
+    public CreateDistanceMap(ModulesI modules) {
         super("Create distance map", modules);
     }
 

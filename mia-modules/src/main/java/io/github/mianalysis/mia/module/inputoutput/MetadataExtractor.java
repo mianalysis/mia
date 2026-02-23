@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.metadata.CV1000FilenameExtractor;
 import io.github.mianalysis.mia.object.metadata.CV1000FoldernameExtractor;
@@ -218,7 +218,7 @@ public class MetadataExtractor extends Module {
      */
     public static final String METADATA_VALUE_NAME = "Metadata value name";
 
-    public MetadataExtractor(Modules modules) {
+    public MetadataExtractor(ModulesI modules) {
         super("Extract metadata", modules);
     }
 

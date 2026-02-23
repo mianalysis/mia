@@ -17,7 +17,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -152,7 +152,7 @@ public class FitGaussian2D extends Module {
 	*/
     public static final String GAUSSIAN_IMAGE = "Gaussian image name";
 
-    public FitGaussian2D(Modules modules) {
+    public FitGaussian2D(ModulesI modules) {
         super("Fit Gaussian 2D", modules);
     }
 

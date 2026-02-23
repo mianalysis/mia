@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.script.RunMacro;
 import io.github.mianalysis.mia.module.script.RunMacroOnObjects;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -168,7 +168,7 @@ public class InputControl extends Module {
     // A special store for timepoint references for all objects
     private HashMap<String, ObjMeasurementRef> objectTimepointRefs = new HashMap<>();
 
-    public InputControl(Modules modules) {
+    public InputControl(ModulesI modules) {
         super("Input control", modules);
     }
 

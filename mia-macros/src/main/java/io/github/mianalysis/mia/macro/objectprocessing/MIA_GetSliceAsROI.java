@@ -7,7 +7,7 @@ import ij.gui.Roi;
 import ij.macro.MacroExtension;
 import ij.plugin.frame.RoiManager;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -25,7 +25,7 @@ public class MIA_GetSliceAsROI extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
         int slice = (int) Math.round((Double) objects[2]);        

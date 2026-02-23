@@ -10,7 +10,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.visualise.ShowImage;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -71,7 +71,7 @@ public class ManuallyEditImage extends Module {
     public interface ChannelModes extends ShowImage.ChannelModes {
     }
 
-    public ManuallyEditImage(Modules modules) {
+    public ManuallyEditImage(ModulesI modules) {
         super("Manually edit image", modules);
     }
 

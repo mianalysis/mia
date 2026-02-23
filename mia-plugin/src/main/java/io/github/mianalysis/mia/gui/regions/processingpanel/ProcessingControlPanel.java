@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
@@ -83,7 +83,7 @@ public class ProcessingControlPanel extends JPanel {
             AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace(),startModule);
         }
 
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         ComponentFactory componentFactory = GUI.getComponentFactory();
 
         panel.removeAll();

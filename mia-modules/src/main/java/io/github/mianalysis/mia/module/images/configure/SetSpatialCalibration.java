@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -119,7 +119,7 @@ public class SetSpatialCalibration extends Module {
 
     }
 
-    public SetSpatialCalibration(Modules modules) {
+    public SetSpatialCalibration(ModulesI modules) {
         super("Set spatial calibration", modules);
     }
 

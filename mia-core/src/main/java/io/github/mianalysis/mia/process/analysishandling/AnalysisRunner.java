@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
@@ -44,11 +44,11 @@ public class AnalysisRunner {
 
     // PUBLIC METHODS
 
-    public void run(Modules modules) throws InterruptedException, IOException {
+    public void run(ModulesI modules) throws InterruptedException, IOException {
         run(modules, true);
     }
 
-    public void run(Modules modules, boolean clearMemoryAtEnd) throws InterruptedException, IOException {
+    public void run(ModulesI modules, boolean clearMemoryAtEnd) throws InterruptedException, IOException {
         MIA.clearLogHistory();
         counter = 0;
 
@@ -139,7 +139,7 @@ public class AnalysisRunner {
         }
     }
 
-    public LinkedHashSet<Job> getJobs(Modules modules) {
+    public LinkedHashSet<Job> getJobs(ModulesI modules) {
         LinkedHashSet<Job> jobs = new LinkedHashSet<>();
 
         InputControl inputControl = modules.getInputControl();
@@ -302,7 +302,7 @@ public class AnalysisRunner {
 
     }
 
-    Runnable createRunnable(Modules modules, WorkspaceI workspace, Exporter exporter, boolean clearMemoryAtEnd) {
+    Runnable createRunnable(ModulesI modules, WorkspaceI workspace, Exporter exporter, boolean clearMemoryAtEnd) {
         return () -> {
             File file = workspace.getMetadata().getFile();
             int seriesNumber = workspace.getMetadata().getSeriesNumber();

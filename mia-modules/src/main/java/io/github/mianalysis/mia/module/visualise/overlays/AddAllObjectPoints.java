@@ -18,7 +18,7 @@ import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -104,7 +104,7 @@ public class AddAllObjectPoints extends AbstractOverlay {
 	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddAllObjectPoints(Modules modules) {
+    public AddAllObjectPoints(ModulesI modules) {
         super("Add all object points",modules);
     }
 

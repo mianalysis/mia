@@ -21,7 +21,7 @@ public class InputSkeletonObjectsP extends InputObjectsP {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,OutputSkeletonObjectsP.class);
+        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjectsMatchingClass(module, OutputSkeletonObjectsP.class, true);
         return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
     }
 }

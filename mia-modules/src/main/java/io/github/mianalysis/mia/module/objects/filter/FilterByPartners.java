@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -45,7 +45,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
      */
     public static final String PARTNER_OBJECTS = "Partner objects";
 
-    public FilterByPartners(Modules modules) {
+    public FilterByPartners(ModulesI modules) {
         super("Number of partners", modules);
     }
 

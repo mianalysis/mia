@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.module.workflow.FixedTextCondition;
 import io.github.mianalysis.mia.module.workflow.GUICondition;
@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AnalysisTester {
-    public static int testModules(Modules modules, WorkspaceI workspace, @Nullable Module startModule) {
+    public static int testModules(ModulesI modules, WorkspaceI workspace, @Nullable Module startModule) {
         GlobalVariables.updateVariables(modules);
         
         // Iterating over all modules, checking if they are runnable
@@ -21,14 +21,14 @@ public class AnalysisTester {
         
         // Setting all module runnable states to false
         for (int i = startIdx; i < modules.size(); i++) {
-            Module module = modules.get(i);
+            Module module = modules.getAtIndex(i);
             module.setRunnable(false);
             module.setReachable(false);
         }
 
         int nRunnable = 0;
         for (int i = startIdx; i < modules.size(); i++) {
-            Module module = modules.get(i);
+            Module module = modules.getAtIndex(i);
             module.setReachable(true);
             module.setRunnable(testModule(module, modules));
 
@@ -64,7 +64,7 @@ public class AnalysisTester {
 
     }
 
-    public static boolean testModule(Module module, Modules modules) {
+    public static boolean testModule(Module module, ModulesI modules) {
         boolean runnable = true;
 
         if (module == null)

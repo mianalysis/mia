@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
@@ -173,7 +173,7 @@ public class ImageSaver extends AbstractSaver {
 
     }
 
-    public ImageSaver(Modules modules) {
+    public ImageSaver(ModulesI modules) {
         super("Save image", modules);
     }
 

@@ -9,7 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -38,7 +38,7 @@ public abstract class AbstractSaver extends Module {
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
 
-    public AbstractSaver(String name, Modules modules) {
+    public AbstractSaver(String name, ModulesI modules) {
         super(name, modules);
     }
 
@@ -111,7 +111,7 @@ public abstract class AbstractSaver extends Module {
         }
     }
 
-    public String getOutputPath(Modules modules, WorkspaceI workspace) {
+    public String getOutputPath(ModulesI modules, WorkspaceI workspace) {
         String saveLocation = parameters.getValue(SAVE_LOCATION, workspace);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT, workspace);
         String filePath = parameters.getValue(SAVE_FILE_PATH, workspace);
@@ -183,7 +183,7 @@ public abstract class AbstractSaver extends Module {
         }
     }
 
-    public String getOutputName(Modules modules, WorkspaceI workspace) {
+    public String getOutputName(ModulesI modules, WorkspaceI workspace) {
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
         try {

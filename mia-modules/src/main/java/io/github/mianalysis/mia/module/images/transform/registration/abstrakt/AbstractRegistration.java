@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -75,7 +75,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
 
-    public AbstractRegistration(String name, Modules modules) {
+    public AbstractRegistration(String name, ModulesI modules) {
         super(name, modules);
     }
 

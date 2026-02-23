@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -108,7 +108,7 @@ public class ExportACCDataset extends Module {
 	*/
     public static final String MEASUREMENTS = "Measurements";
 
-    public ExportACCDataset(Modules modules) {
+    public ExportACCDataset(ModulesI modules) {
         super("Export ACC dataset", modules);
     }
 
@@ -301,7 +301,7 @@ public class ExportACCDataset extends Module {
 
         // Getting measurements for input objects
         String folderName2 = getFolderName(rootFolder, "anal2", plateName);
-        ObjMeasurementRefs measurementRefs = modules.getObjectMeasurementRefs(inputObjectsName);
+        ObjMeasurementRefs measurementRefs = modules.getObjectMeasurementRefs(inputObjectsName, null);
         if (!saveFeatureNames(measurementRefs, states, folderName2)) {
             MIA.log.writeWarning("Could not write feature names to file");
             return Status.FAIL;

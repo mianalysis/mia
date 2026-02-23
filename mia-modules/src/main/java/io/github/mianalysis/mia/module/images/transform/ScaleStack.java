@@ -9,7 +9,7 @@ import ij.plugin.Scaler;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -98,7 +98,7 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String Z_ADOPT_CALIBRATION = "Adopt calibration (z-axis)";
     public static final String Z_SCALE_FACTOR = "Scale factor (z-axis)";
 
-    public ScaleStack(Modules modules) {
+    public ScaleStack(ModulesI modules) {
         super("Scale stack", modules);
     }
 

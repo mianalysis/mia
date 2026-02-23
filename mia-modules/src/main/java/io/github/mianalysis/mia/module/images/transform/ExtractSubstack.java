@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -125,7 +125,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     private int elementHeight = 40;
     private boolean active = false;
 
-    public ExtractSubstack(Modules modules) {
+    public ExtractSubstack(ModulesI modules) {
         super("Extract substack",modules);
     }
 

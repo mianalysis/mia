@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -71,7 +71,7 @@ public class MeasureTextureAlongPath extends Module {
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
     public static final String OFFSET = "Offset (px)";
 
-    public MeasureTextureAlongPath(Modules modules) {
+    public MeasureTextureAlongPath(ModulesI modules) {
         super("Measure texture along path", modules);
     }
 

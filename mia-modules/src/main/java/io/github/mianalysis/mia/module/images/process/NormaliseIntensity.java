@@ -14,7 +14,7 @@ import ij.process.LUT;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -119,7 +119,7 @@ public class NormaliseIntensity extends Module {
 	*/
     public static final String MAX_RANGE = "Maximum range value";
 
-    public NormaliseIntensity(Modules modules) {
+    public NormaliseIntensity(ModulesI modules) {
         super("Normalise intensity", modules);
     }
 

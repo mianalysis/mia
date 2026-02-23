@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -24,7 +24,7 @@ public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 

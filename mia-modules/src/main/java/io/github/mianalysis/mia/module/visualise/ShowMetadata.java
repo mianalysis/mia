@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
@@ -35,7 +35,7 @@ public class ShowMetadata extends Module {
     */
     public static final String MESSAGE = "Message";
 
-    public ShowMetadata(Modules modules) {
+    public ShowMetadata(ModulesI modules) {
         super("Show metadata", modules);
 
         // This module likely wants to have this enabled (otherwise it does nothing)

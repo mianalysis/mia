@@ -12,7 +12,7 @@ import ij.Prefs;
 import ij.gui.Arrow;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -155,7 +155,7 @@ public class AddArrows extends AbstractOverlay {
 	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddArrows(Modules modules) {
+    public AddArrows(ModulesI modules) {
         super("Add arrows", modules);
     }
 

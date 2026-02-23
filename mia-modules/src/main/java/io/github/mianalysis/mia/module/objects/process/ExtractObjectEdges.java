@@ -13,7 +13,7 @@ import ij.process.StackStatistics;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -206,7 +206,7 @@ public class ExtractObjectEdges extends Module {
         INTERIOR, EDGE
     }
 
-    public ExtractObjectEdges(Modules modules) {
+    public ExtractObjectEdges(ModulesI modules) {
         super("Extract object edges", modules);
     }
 

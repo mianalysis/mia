@@ -9,7 +9,7 @@ import ij.Prefs;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.binary.DilateErode;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -97,7 +97,7 @@ public class ExpandShrinkObjects extends Module {
 	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-    public ExpandShrinkObjects(Modules modules) {
+    public ExpandShrinkObjects(ModulesI modules) {
         super("Expand and shrink objects", modules);
     }
 

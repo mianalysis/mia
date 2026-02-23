@@ -10,7 +10,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.filter.AbstractNumericObjectFilter;
 import io.github.mianalysis.mia.module.objects.filter.AbstractTextObjectFilter;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -225,7 +225,7 @@ public class WorkflowHandling extends Module {
      */
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
-    public WorkflowHandling(Modules modules) {
+    public WorkflowHandling(ModulesI modules) {
         super("Workflow handling", modules);
     }
 

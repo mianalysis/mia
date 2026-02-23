@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -65,7 +65,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
     public static final String ADD_CHOICE = "Add choice";
     public static final String CHOICE_NAME = "Choice name";
 
-    public GUICondition(Modules modules) {
+    public GUICondition(ModulesI modules) {
         super("GUI condition", modules);
         deprecated = true;
     }
@@ -76,7 +76,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
         if (idx >= modules.size())
             redirectModuleID = null;
         else
-        redirectModuleID = modules.get(idx).getModuleID();
+        redirectModuleID = modules.getAtIndex(idx).getModuleID();
 
         String choice = parameters.getValue(CHOICE, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE, workspace);

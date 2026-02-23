@@ -14,7 +14,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -74,7 +74,7 @@ public class CreateClassImage extends Module {
      */
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public CreateClassImage(Modules modules) {
+    public CreateClassImage(ModulesI modules) {
         super("Create class image", modules);
     }
 

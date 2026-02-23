@@ -10,7 +10,7 @@ import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -30,12 +30,12 @@ public class MIA_RunWorkflow extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         File workflowPath = new File((String) objects[0]);
         String inputPath = (String) objects[1];
 
         try {
-            Modules loadedModules = AnalysisReader.loadModules(workflowPath);
+            ModulesI loadedModules = AnalysisReader.loadModules(workflowPath);
             if (inputPath != null)
                 loadedModules.getInputControl().updateParameterValue(InputControl.INPUT_PATH, inputPath);
                     

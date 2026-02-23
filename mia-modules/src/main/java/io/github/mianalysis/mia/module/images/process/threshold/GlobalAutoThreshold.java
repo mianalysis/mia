@@ -12,7 +12,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -145,7 +145,7 @@ public class GlobalAutoThreshold extends Module {
     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-    public GlobalAutoThreshold(Modules modules) {
+    public GlobalAutoThreshold(ModulesI modules) {
         super("Global auto-threshold", modules);
     }
 

@@ -12,7 +12,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.measure.MeasureGreyscaleKFunction;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -69,7 +69,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
 
-    public MeasureObjectGreyscaleKFunction(Modules modules) {
+    public MeasureObjectGreyscaleKFunction(ModulesI modules) {
         super("Measure object greyscale K-function", modules);
     }
 

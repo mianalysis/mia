@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
@@ -21,7 +21,7 @@ public class MIA_SetActiveWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         int workspaceID = (int) Math.round((Double) objects[0]);
 
         // Getting this workspace

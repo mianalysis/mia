@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -197,7 +197,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     private ImageI inputImage;
     private ImageI reference;
 
-    public RegisterImages(Modules modules) {
+    public RegisterImages(ModulesI modules) {
         super("Register images", modules);
         deprecated = true;
     }

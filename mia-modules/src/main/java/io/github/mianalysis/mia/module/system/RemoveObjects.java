@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -48,7 +48,7 @@ public class RemoveObjects extends Module {
      */
     public static final String REMOVE_ANOTHER_OBJECT_SET = "Remove another object set";
 
-    public RemoveObjects(Modules modules) {
+    public RemoveObjects(ModulesI modules) {
         super("Remove objects", modules);
     }
 

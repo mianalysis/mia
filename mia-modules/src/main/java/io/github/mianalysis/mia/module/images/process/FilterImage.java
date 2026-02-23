@@ -24,7 +24,7 @@ import inra.ijpb.morphology.strel.DiskStrel;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -153,7 +153,7 @@ public class FilterImage extends Module {
      */
     public static final String CONTOUR_CONTRAST = "Contour contrast";
 
-    public FilterImage(Modules modules) {
+    public FilterImage(ModulesI modules) {
         super("Filter image", modules);
     }
 

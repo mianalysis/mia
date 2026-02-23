@@ -15,6 +15,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.testmodules.ExtractObjectEdges;
 import io.github.mianalysis.mia.module.testmodules.IdentifyObjects;
 import io.github.mianalysis.mia.module.testmodules.ImageLoader;
@@ -23,7 +24,7 @@ import io.github.mianalysis.mia.module.testmodules.ProjectObjects;
 public class ChildObjectsPTest {
     @Test
     public void testDuplicate() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
@@ -37,7 +38,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetRawStringValueBlank() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
@@ -48,7 +49,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetRawStringValue() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
@@ -60,7 +61,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetRawStringValueNull() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
@@ -72,7 +73,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetChoicesWithChoices() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -111,7 +112,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetChoicesWithChoicesMultiGeneration() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -150,7 +151,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetChoicesNoChoices() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -177,7 +178,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testGetChoicesDisabledModule() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -217,7 +218,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testVerifyPresent() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -253,7 +254,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testVerifyPresentMultiGeneration() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -289,7 +290,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testVerifyDisabledModule() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -326,7 +327,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testVerifyNoChildren() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -349,7 +350,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testVerifyMissingChild() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -386,7 +387,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void testVerifyNoParentSpecified() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -421,7 +422,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void appendXMLAttributes() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ParamTest paramTest = new ParamTest(modules);
         modules.add(paramTest);
@@ -452,7 +453,7 @@ public class ChildObjectsPTest {
 
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         ParamTest paramTest = new ParamTest(modules);
         modules.add(paramTest);

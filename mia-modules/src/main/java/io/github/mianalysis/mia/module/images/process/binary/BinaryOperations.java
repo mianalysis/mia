@@ -23,7 +23,7 @@ import inra.ijpb.watershed.Watershed;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
@@ -113,7 +113,7 @@ public class BinaryOperations extends Module {
     public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
-    public BinaryOperations(Modules modules) {
+    public BinaryOperations(ModulesI modules) {
         super("Binary operations (legacy)", modules);
         deprecated = true;
     }

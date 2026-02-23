@@ -26,7 +26,7 @@ import ij.measure.Calibration;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectFill;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -221,7 +221,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public RidgeDetection(Modules modules) {
+    public RidgeDetection(ModulesI modules) {
         super("Ridge detection", modules);
     }
 

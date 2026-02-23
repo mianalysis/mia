@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.documentation.DocumentationPanel;
 import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -85,7 +85,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
             case EXPORT_TEST_WORKSPACE:
                 WorkspaceI workspace = GUI.getTestWorkspace();
-                Modules modules = GUI.getModules();
+                ModulesI modules = GUI.getModules();
                 OutputControl outputControl = modules.getOutputControl();
                 Exporter exporter = AnalysisRunner.initialiseExporter(outputControl);
                 String name = outputControl.getIndividualOutputPath(workspace.getMetadata());

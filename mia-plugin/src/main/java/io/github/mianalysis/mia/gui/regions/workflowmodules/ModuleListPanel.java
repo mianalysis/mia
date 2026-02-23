@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 
 public class ModuleListPanel extends JScrollPane {
@@ -58,7 +58,7 @@ public class ModuleListPanel extends JScrollPane {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         HashMap<Module, Boolean> expandedStatus = getExpandedModules(modules);
         // Get number of visible modules
         int expandedCount = (int) expandedStatus.values().stream().filter(p -> p).count();
@@ -69,9 +69,10 @@ public class ModuleListPanel extends JScrollPane {
 
         int count = 0;
         for (int i = 0; i < modules.size(); i++) {
-            if (expandedStatus.get(modules.get(i)))
-                data[count++][0] = modules.get(i);
+            if (expandedStatus.get(modules.getAtIndex(i)))
+                data[count++][0] = modules.getAtIndex(i);
         }
+        
         DraggableTableModel tableModel = new DraggableTableModel(data, columnNames, modules);
         ModuleTable moduleNameTable = new ModuleTable(tableModel, modules, expandedStatus, rowItems);
         moduleNameTable.setBorder(BorderFactory.createEmptyBorder());
@@ -169,7 +170,7 @@ public class ModuleListPanel extends JScrollPane {
      * 
      * @return
      */
-    private HashMap<Module, Boolean> getExpandedModules(Modules modules) {
+    private HashMap<Module, Boolean> getExpandedModules(ModulesI modules) {
         HashMap<Module, Boolean> expandedStatus = new HashMap<>();
         boolean expanded = true;
 

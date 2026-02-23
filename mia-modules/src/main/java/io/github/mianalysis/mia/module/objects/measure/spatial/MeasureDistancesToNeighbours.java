@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
@@ -103,7 +103,7 @@ public class MeasureDistancesToNeighbours extends Module {
 
     }
 
-    public MeasureDistancesToNeighbours(Modules modules) {
+    public MeasureDistancesToNeighbours(ModulesI modules) {
         super("Measure distances to neighbours", modules);
     }
 

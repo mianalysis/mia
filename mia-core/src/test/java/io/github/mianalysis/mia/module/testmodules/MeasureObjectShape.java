@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.testmodules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -35,7 +35,7 @@ public class MeasureObjectShape extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public MeasureObjectShape(Modules modules) {
+    public MeasureObjectShape(ModulesI modules) {
         super("Measure object shape", modules);
     }
 

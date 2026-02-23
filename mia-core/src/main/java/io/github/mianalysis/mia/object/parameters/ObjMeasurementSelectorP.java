@@ -105,7 +105,7 @@ public class ObjMeasurementSelectorP extends Parameter {
      */
     public void validateStates() {
         // Getting list of all available measurements for selected object.
-        ObjMeasurementRefs refs = module.getModules().getObjectMeasurementRefs(objectName);
+        ObjMeasurementRefs refs = module.getModules().getObjectMeasurementRefs(objectName, null);
 
         // If no object is assigned, clear the state collection
         if (refs == null) {

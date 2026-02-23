@@ -23,7 +23,7 @@ import ij.gui.Roi;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageIntensityOrientation;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
@@ -192,7 +192,7 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
     }
 
-    public MeasureObjectIntensityOrientation(Modules modules) {
+    public MeasureObjectIntensityOrientation(ModulesI modules) {
         super("Measure object intensity orientation", modules);
     }
 

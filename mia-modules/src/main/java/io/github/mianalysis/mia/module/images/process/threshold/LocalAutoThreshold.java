@@ -9,7 +9,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -105,7 +105,7 @@ public class LocalAutoThreshold extends Module {
     public static final String BINARY_LOGIC = "Binary logic";
 
 
-    public LocalAutoThreshold(Modules modules) {
+    public LocalAutoThreshold(ModulesI modules) {
         super("Local auto-threshold",modules);
     }
 

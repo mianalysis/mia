@@ -20,7 +20,7 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -160,7 +160,7 @@ public class IdentifyObjects extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
-    public IdentifyObjects(Modules modules) {
+    public IdentifyObjects(ModulesI modules) {
         super("Identify objects", modules);
     }
 

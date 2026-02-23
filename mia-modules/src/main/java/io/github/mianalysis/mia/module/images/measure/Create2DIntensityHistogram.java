@@ -9,7 +9,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -65,7 +65,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
     public static final String N_BINS_2 = "Number of bins (image 2)";
     public static final String INCLUDE_TAIL_BIN_2 = "Include tail bin (image 2)";
 
-    public Create2DIntensityHistogram(Modules modules) {
+    public Create2DIntensityHistogram(ModulesI modules) {
         super("Create 2D intensity histogram", modules);
     }
 

@@ -23,7 +23,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -110,7 +110,7 @@ public class ClusterPoints extends Module {
 	*/
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
-    public ClusterPoints(Modules modules) {
+    public ClusterPoints(ModulesI modules) {
         super("Cluster points", modules);
     }
 

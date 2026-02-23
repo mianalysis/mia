@@ -14,7 +14,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -51,7 +51,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
     public static final String LENGTH_RANGE = "Length range (px)";
     public static final String ORIENTATION_RANGE = "Orientation range (degs)";
 
-    public RectangleHoughDetection(Modules modules) {
+    public RectangleHoughDetection(ModulesI modules) {
         super("Rectangle detection", modules);
     }
 

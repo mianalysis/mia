@@ -22,7 +22,7 @@ import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -283,11 +283,11 @@ public class AddLabels extends AbstractOverlay {
      */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddLabels(Modules modules) {
+    public AddLabels(ModulesI modules) {
         super("Add labels", modules);
     }
 
-    public AddLabels(String moduleName, Modules modules) {
+    public AddLabels(String moduleName, ModulesI modules) {
         super(moduleName, modules);
     }
 

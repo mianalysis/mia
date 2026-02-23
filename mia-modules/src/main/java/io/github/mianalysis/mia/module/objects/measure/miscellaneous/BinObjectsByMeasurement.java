@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -72,7 +72,7 @@ public class BinObjectsByMeasurement extends Module {
 	*/
     public static final String NUMBER_OF_BINS = "Number of bins";
 
-    public BinObjectsByMeasurement(Modules modules) {
+    public BinObjectsByMeasurement(ModulesI modules) {
         super("Bin objects by measurement", modules);
     }
 

@@ -7,7 +7,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -48,7 +48,7 @@ public class ReassignEnclosedObjects extends Module {
      */
     public static final String INPUT_OBJECTS = "Input objects";
 
-    public ReassignEnclosedObjects(Modules modules) {
+    public ReassignEnclosedObjects(ModulesI modules) {
         super("Reassign enclosed objects", modules);
     }
 

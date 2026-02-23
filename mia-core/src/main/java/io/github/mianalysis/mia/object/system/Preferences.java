@@ -7,7 +7,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -158,7 +158,7 @@ public class Preferences extends Module {
     // parameters.get(CACHE_DIRECTORY).setValue(cacheDirectory);
     // }
 
-    public Preferences(Modules modules) {
+    public Preferences(ModulesI modules) {
         super("Preferences", modules);
         // il2Support = IL2Support.FULL;
     }

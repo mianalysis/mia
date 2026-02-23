@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -68,7 +68,7 @@ public class LiveFilterByMeasurement extends AbstractObjectFilter {
     public interface FilterMethods extends AbstractNumericObjectFilter.FilterMethods {
     }
 
-    public LiveFilterByMeasurement(Modules modules) {
+    public LiveFilterByMeasurement(ModulesI modules) {
         // The first argument is the name by which the module will be seen in the GUI.
         super("Live measurement filter", modules);
     }

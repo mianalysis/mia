@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -49,7 +49,7 @@ public class MeasureObjectCentroid extends Module {
      */
     public static final String INPUT_OBJECTS = "Input objects";
 
-    public MeasureObjectCentroid(Modules modules) {
+    public MeasureObjectCentroid(ModulesI modules) {
         super("Measure object centroid", modules);
     }
 

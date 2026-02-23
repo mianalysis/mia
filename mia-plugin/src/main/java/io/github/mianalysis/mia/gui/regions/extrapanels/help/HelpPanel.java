@@ -15,7 +15,7 @@ import javax.swing.JTextPane;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 
 public class HelpPanel extends JPanel {
     private static final long serialVersionUID = 3704479016316750858L;
@@ -29,7 +29,7 @@ public class HelpPanel extends JPanel {
 
     public void updatePanel() {
         Module activeModule = GUI.getFirstSelectedModule();
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
 
         removeAll();
 

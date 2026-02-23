@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromROIs.ObjMetadataItems;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -63,7 +63,7 @@ public class ExportVOCAnnotations extends AbstractSaver {
     */
     public static final String METADATA_FOR_CLASS = "Metadata item for class";
 
-    public ExportVOCAnnotations(Modules modules) {
+    public ExportVOCAnnotations(ModulesI modules) {
         super("Export VOC annotations", modules);
     }
 

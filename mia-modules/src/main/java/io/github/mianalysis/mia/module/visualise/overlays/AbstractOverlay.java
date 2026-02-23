@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -36,7 +36,7 @@ public abstract class AbstractOverlay extends Module {
     public static final String MAXIMUM_VALUE = "Maximum value";
     public static final String HIDE_OBJECTS_MISSING_VALUE = "Hide objects missing value";
 
-    public AbstractOverlay(String name, Modules modules) {
+    public AbstractOverlay(String name, ModulesI modules) {
         super(name, modules);
     }
 

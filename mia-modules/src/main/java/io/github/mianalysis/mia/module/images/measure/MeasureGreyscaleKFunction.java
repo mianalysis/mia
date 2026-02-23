@@ -19,7 +19,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -79,7 +79,7 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
 
-    public MeasureGreyscaleKFunction(Modules modules) {
+    public MeasureGreyscaleKFunction(ModulesI modules) {
         super("Measure greyscale K-function", modules);
     }
 

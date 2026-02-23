@@ -1,7 +1,3 @@
-// TODO: Could addRef optional argument to getParametersMatchingType for the removal type (i.e. if it matches type 1 addRef
-// to the list, but if it matches type 2 remove the same parameter from the list.  Would need to compare Parameters for
-// value.
-
 package io.github.mianalysis.mia.module;
 
 import java.text.DecimalFormat;
@@ -9,7 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+
+import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.macro.MacroHandler;
@@ -33,7 +32,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.refs.collections.Refs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.ProgressBar;
@@ -41,18 +39,11 @@ import io.github.mianalysis.mia.process.logging.ProgressBar;
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class Modules extends ArrayList<Module> implements Refs<Module> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -2862089290555674650L;
+public class Modules implements ModulesI {
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
     private String analysisFilename = "";
-
-    public boolean execute(WorkspaceI workspace) {
-        return execute(workspace, true);
-    }
+    private ArrayList<Module> modules = new ArrayList<Module>();
 
     /*
      * The method that gets called by the AnalysisRunner. This shouldn't have any
@@ -74,7 +65,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
         Status status = Status.PASS;
 
         for (int i = 0; i < size(); i++) {
-            Module module = get(i);
+            Module module = getAtIndex(i);
 
             if (Thread.currentThread().isInterrupted())
                 break;
@@ -174,10 +165,6 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
-    public ImageMeasurementRefs getImageMeasurementRefs(String imageName) {
-        return getImageMeasurementRefs(imageName, null);
-    }
-
     public ImageMeasurementRefs getImageMeasurementRefs(String imageName, Module cutoffModule) {
         ImageMeasurementRefs measurementRefs = new ImageMeasurementRefs();
 
@@ -214,11 +201,6 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
         }
     }
 
-    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName) {
-        return getObjectMeasurementRefs(objectName, null);
-
-    }
-
     public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, Module cutoffModule) {
         ObjMeasurementRefs measurementRefs = new ObjMeasurementRefs();
 
@@ -245,7 +227,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     }
 
     public boolean objectsExportMeasurements(String objectName) {
-        ObjMeasurementRefs refCollection = getObjectMeasurementRefs(objectName);
+        ObjMeasurementRefs refCollection = getObjectMeasurementRefs(objectName, null);
 
         for (ObjMeasurementRef ref : refCollection.values()) {
             if (ref.isExportIndividual() && ref.isExportGlobal())
@@ -270,11 +252,6 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                 measurementRefs.put(ref.getName(), ref);
 
         }
-    }
-
-    public ObjMetadataRefs getObjectMetadataRefs(String objectName) {
-        return getObjectMetadataRefs(objectName, null);
-
     }
 
     public ObjMetadataRefs getObjectMetadataRefs(String objectName, Module cutoffModule) {
@@ -303,7 +280,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     }
 
     public boolean objectsExportMetadata(String objectName) {
-        ObjMetadataRefs refCollection = getObjectMetadataRefs(objectName);
+        ObjMetadataRefs refCollection = getObjectMetadataRefs(objectName, null);
 
         for (ObjMetadataRef ref : refCollection.values()) {
             if (ref.isExportIndividual() && ref.isExportGlobal())
@@ -365,12 +342,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
-    public ParentChildRefs getParentChildRefs() {
-        return getParentChildRefs(null);
-
-    }
-
-    public ParentChildRefs getParentChildRefs(Module cutoffModule) {
+    public ParentChildRefs getParentChildRefs(@Nullable Module cutoffModule) {
         ParentChildRefs parentChildRefs = new ParentChildRefs();
 
         addParentChildRefs(inputControl, parentChildRefs);
@@ -496,7 +468,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
-    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,
+    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjectsMatchingClass(Module cutoffModule,
             Class<T> objectClass, boolean ignoreRemoved) {
         LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
 
@@ -526,17 +498,8 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
-    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,
-            Class<T> objectClass) {
-        return getAvailableObjects(cutoffModule, objectClass, true);
-    }
-
     public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
-        return getAvailableObjects(cutoffModule, OutputObjectsP.class, ignoreRemoved);
-    }
-
-    public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule) {
-        return getAvailableObjects(cutoffModule, OutputObjectsP.class, true);
+        return getAvailableObjectsMatchingClass(cutoffModule, OutputObjectsP.class, ignoreRemoved);
     }
 
     public Parameter getImageSource(String imageName, Module cutoffModule) {
@@ -558,10 +521,6 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         return sourceParameter;
 
-    }
-
-    public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule) {
-        return getAvailableImages(cutoffModule, true);
     }
 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
@@ -660,16 +619,16 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
         // Iterating over all input indices, when we get to the target index, add the
         // moved values
-        Modules newModules = new Modules();
+        ModulesI newModules = new Modules();
         for (int idx = 0; idx < inIdx.size() + fromIndices.length + 1; idx++) {
             // If this is the target, move the relevant indices, else move the current value
             if (idx == toIndex) {
                 for (int toMoveIdx : toMove)
-                    newModules.add(get(toMoveIdx));
+                    newModules.add(getAtIndex(toMoveIdx));
             }
 
             if (idx < size() & !toMove.contains(idx)) {
-                newModules.add(get(idx));
+                newModules.add(getAtIndex(idx));
             }
         }
 
@@ -678,31 +637,31 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
-    public void reorder(Module[] modulesToMove, Module moduleToFollow) {
-        int[] fromIndices = new int[modulesToMove.length];
-        for (int i = 0; i < modulesToMove.length; i++) {
-            fromIndices[i] = indexOf(modulesToMove[i]);
-        }
+    // public void reorderByModules(Module[] modulesToMove, Module moduleToFollow) {
+    //     int[] fromIndices = new int[modulesToMove.length];
+    //     for (int i = 0; i < modulesToMove.length; i++) {
+    //         fromIndices[i] = indexOf(modulesToMove[i]);
+    //     }
 
-        int toIndex;
-        if (moduleToFollow == null)
-            toIndex = 0;
-        else
-            toIndex = indexOf(moduleToFollow) + 1;
+    //     int toIndex;
+    //     if (moduleToFollow == null)
+    //         toIndex = 0;
+    //     else
+    //         toIndex = indexOf(moduleToFollow) + 1;
 
-        reorder(fromIndices, toIndex);
+    //     reorder(fromIndices, toIndex);
 
-    }
+    // }
 
-    public void insert(Modules modulesToInsert, int toIndex) {
+    public void insert(ModulesI modulesToInsert, int toIndex) {
         // Iterating over all input indices, when we get to the target index, add the
         // moved values
-        Modules newModules = new Modules();
+        ModulesI newModules = new Modules();
         for (Module module : this) {
             int idx = indexOf(module);
 
             // Adding in the module at this location
-            newModules.add(module);
+            newModules.add((Module) module);
 
             // If this is where the modules should go, add them in
             if (idx == toIndex)
@@ -715,22 +674,75 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
 
     }
 
-    public Modules duplicate(boolean copyIDs) {
-        Modules copyModules = new Modules();
+    public ModulesI duplicate(boolean copyIDs) {
+        ModulesI copyModules = new Modules();
 
         copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules, copyIDs));
         copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules, copyIDs));
         copyModules.setAnalysisFilename(analysisFilename);
 
         for (Module module : values())
-            copyModules.add(module.duplicate(copyModules, copyIDs));
+            copyModules.add((Module) module.duplicate(copyModules, copyIDs));
         
         return copyModules;
 
     }
 
-    @Override
     public Collection<Module> values() {
-        return this;
+        return modules;
+    }
+
+    public ArrayList<Module> getModules() {
+        return modules;
+    }
+
+    public boolean add(Module module) {
+        return modules.add(module);
+    }
+
+    public Iterator<Module> iterator() {
+        return modules.iterator();
+    }
+
+    public int size() {
+        return modules.size();
+    }
+
+    public Module getAtindex(int idx) {
+        return modules.get(idx);
+    }
+
+    public int indexOf(Module module) {
+        return modules.indexOf(module);
+    }
+
+    public boolean addAll(ModulesI modulesToAdd) {
+        return modules.addAll(modulesToAdd.getModules());
+    }
+
+    public boolean removeAll(ModulesI modulesToRemove) {
+        return modules.removeAll(modulesToRemove.getModules());
+    }
+
+    public Module getAtIndex(int idx) {
+        return modules.get(idx);
+    }
+
+    public Module removeAtIndex(int idx) {
+        return modules.remove(idx);
+    }
+
+    public void clear() {
+        modules.clear();
+    }
+
+    @Override
+    public boolean remove(Module module) {
+        return modules.remove(module);
+    }
+
+    @Override
+    public void addAtIndex(int index, Module module) {
+        modules.add(index, module);
     }
 }

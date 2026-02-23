@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.testmodules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -35,7 +35,7 @@ public class SingleClassCluster extends Module {
     public static final String MIN_POINTS = "Minimum number of points per cluster";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-    public SingleClassCluster(Modules modules) {
+    public SingleClassCluster(ModulesI modules) {
         super("Single class cluster", modules);
     }
 

@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.parameters;
 
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class ParamTest extends Module {
-    public ParamTest(Modules modules) {
+    public ParamTest(ModulesI modules) {
         super("Parameter test module", modules);
     }
 

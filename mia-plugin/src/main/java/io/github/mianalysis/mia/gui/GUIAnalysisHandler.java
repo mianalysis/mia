@@ -1,29 +1,37 @@
 package io.github.mianalysis.mia.gui;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
-import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
-import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
-import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
+import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModulesI;
+import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
+import io.github.mianalysis.mia.module.system.GUISeparator;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
 
 public class GUIAnalysisHandler {
     public static void newAnalysis() {
@@ -38,7 +46,7 @@ public class GUIAnalysisHandler {
                 break;
         }
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         GUISeparator guiSeparator = new GUISeparator(modules);
         guiSeparator.setNickname("File loading");
         modules.add(guiSeparator);
@@ -53,7 +61,7 @@ public class GUIAnalysisHandler {
     }
 
     public static void loadModules() {
-        Modules newModules = null;
+        ModulesI newModules = null;
         try {
             newModules = AnalysisReader.loadModules();
         } catch (SAXException | IllegalAccessException | IOException | InstantiationException
@@ -153,7 +161,7 @@ public class GUIAnalysisHandler {
             return;
 
         // Getting lowest index
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         int lowestIdx = modules.indexOf(activeModules[0]);
         if (lowestIdx <= lastModuleEval)
             GUI.setLastModuleEval(lowestIdx - 1);
@@ -171,7 +179,7 @@ public class GUIAnalysisHandler {
     public static void moveModuleUp() {
         GUI.addUndo();
 
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
@@ -188,7 +196,7 @@ public class GUIAnalysisHandler {
             GUI.setLastModuleEval(toIndex - 1);
 
         int startIdx = Math.min(fromIndices[0],toIndex);
-        GUI.updateModules(true,modules.get(startIdx));
+        GUI.updateModules(true,modules.getAtIndex(startIdx));
         GUI.updateParameters(false,null);
 
     }
@@ -196,7 +204,7 @@ public class GUIAnalysisHandler {
     public static void moveModuleDown() {
         GUI.addUndo();
 
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
@@ -213,7 +221,7 @@ public class GUIAnalysisHandler {
             GUI.setLastModuleEval(fromIndices[0] - 1);
 
         int startIdx = Math.min(fromIndices[0],toIndex);
-        GUI.updateModules(true,modules.get(startIdx));
+        GUI.updateModules(true,modules.getAtIndex(startIdx));
         GUI.updateParameters(false,null);
 
     }
@@ -225,8 +233,9 @@ public class GUIAnalysisHandler {
         if (selectedModules.length == 0)
             return;
 
-        Modules copyModules = new Modules();
-        copyModules.addAll(Arrays.asList(selectedModules));
+        ModulesI copyModules = new Modules();
+        for (Module selectedModule: selectedModules)
+            copyModules.add(selectedModule);
 
         try {
             Document doc = AnalysisWriter.prepareAnalysisDocument(copyModules);
@@ -253,14 +262,14 @@ public class GUIAnalysisHandler {
 
             GUI.addUndo();
             Module toModule = selectedModules[selectedModules.length - 1];
-            Modules modules = GUI.getModules();
+            ModulesI modules = GUI.getModules();
             int toIdx = modules.indexOf(toModule);
 
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             // DataFlavor dataFlavor = new ModulesDataFlavor();
             Transferable contents = clipboard.getContents(null);
             String copyString = (String) contents.getTransferData(DataFlavor.stringFlavor);
-            Modules pasteModules = AnalysisReader.loadModules(copyString);
+            ModulesI pasteModules = AnalysisReader.loadModules(copyString);
 
             // Ensuring the copied modules are linked to the present Modules and
             // have a unique ID

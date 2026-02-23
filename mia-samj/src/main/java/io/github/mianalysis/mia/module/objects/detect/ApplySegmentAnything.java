@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.detect.manualextensions.SAMJExtension.EnvironmentPathModes;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -151,7 +151,7 @@ public class ApplySegmentAnything extends Module {
         }
     }
 
-    public ApplySegmentAnything(Modules modules) {
+    public ApplySegmentAnything(ModulesI modules) {
         super("Apply Segment Anything", modules);
     }
 

@@ -12,7 +12,7 @@ import ij.gui.Roi;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.Workspace;
@@ -60,7 +60,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     }
 
-    public AffineManual(Modules modules) {
+    public AffineManual(ModulesI modules) {
         super("Affine (manual)", modules);
     }
 

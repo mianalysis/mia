@@ -5,7 +5,7 @@ import org.scijava.plugin.Plugin;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectTexture;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -23,7 +23,7 @@ public class MIA_MeasureObjectTexture extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(modules);
 
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS,objects[0]);

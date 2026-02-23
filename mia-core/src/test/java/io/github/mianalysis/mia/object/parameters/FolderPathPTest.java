@@ -1,19 +1,25 @@
 package io.github.mianalysis.mia.object.parameters;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+
 import io.github.mianalysis.mia.module.Modules;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.mianalysis.mia.module.ModulesI;
 
 public class FolderPathPTest {
     @Test
@@ -21,7 +27,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -40,7 +46,7 @@ public class FolderPathPTest {
     public void isDirectoryDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -52,7 +58,7 @@ public class FolderPathPTest {
 
     @Test
     public void isDirectoryMissing() throws IOException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -64,7 +70,7 @@ public class FolderPathPTest {
 
     @Test
     public void isDirectoryNull() throws IOException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -79,7 +85,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -95,7 +101,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -110,7 +116,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -124,7 +130,7 @@ public class FolderPathPTest {
     public void getRawStringValueDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -140,7 +146,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -154,7 +160,7 @@ public class FolderPathPTest {
     public void setValueFromStringDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -170,7 +176,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -184,7 +190,7 @@ public class FolderPathPTest {
     public void verifyDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -200,7 +206,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -214,7 +220,7 @@ public class FolderPathPTest {
 
     @Test
     public void verifyMissing() throws IOException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -226,7 +232,7 @@ public class FolderPathPTest {
 
     @Test
     public void verifyNull() throws IOException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -241,7 +247,7 @@ public class FolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);
@@ -268,7 +274,7 @@ public class FolderPathPTest {
 
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FolderPathP folderPathP = new FolderPathP("Demo file",paramTest);

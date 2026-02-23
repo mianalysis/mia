@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.module.visualise;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
@@ -39,7 +39,7 @@ public class ShowObjectMeasurements extends Module {
 	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
-    public ShowObjectMeasurements(Modules modules) {
+    public ShowObjectMeasurements(ModulesI modules) {
         super("Show object measurements", modules);
 
         // This module likely wants to have this enabled (otherwise it does nothing)

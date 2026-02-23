@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.SaveObjectsAsROIs.FileModes;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
@@ -53,7 +53,7 @@ public class SaveOverlayAsROIs extends AbstractSaver {
 
     public static final String INPUT_IMAGE = "Input image";
 
-    public SaveOverlayAsROIs(Modules modules) {
+    public SaveOverlayAsROIs(ModulesI modules) {
         super("Save overlay as ROIs", modules);
     }
 

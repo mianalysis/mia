@@ -12,7 +12,7 @@ import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreato
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
@@ -54,7 +54,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 	*/
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public AffineCentroids(Modules modules) {
+    public AffineCentroids(ModulesI modules) {
         super("Affine (object centroids)", modules);
     }
 

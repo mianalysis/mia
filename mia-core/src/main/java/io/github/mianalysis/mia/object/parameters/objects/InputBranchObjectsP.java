@@ -21,7 +21,7 @@ public class InputBranchObjectsP extends InputObjectsP {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,OutputBranchObjectsP.class);
+        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjectsMatchingClass(module, OutputBranchObjectsP.class, true);
         return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
     }
 }

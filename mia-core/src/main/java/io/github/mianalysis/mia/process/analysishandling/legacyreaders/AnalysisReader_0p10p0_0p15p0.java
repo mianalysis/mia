@@ -26,8 +26,9 @@ import org.xml.sax.SAXException;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.AvailableModules;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -41,7 +42,7 @@ import io.github.mianalysis.mia.process.logging.ProgressBar;
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisReader_0p10p0_0p15p0 {
-    public static Modules loadModules()
+    public static ModulesI loadModules()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         String previousPath = Prefs.get("MIA.PreviousPath", "");
@@ -59,7 +60,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
         Prefs.savePreferences();
 
-        Modules analysis = loadModules(file);
+        ModulesI analysis = loadModules(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
         MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
@@ -69,7 +70,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Modules loadModules(File file)
+    public static ModulesI loadModules(File file)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         String xml = FileUtils.readFileToString(file, "UTF-8");
@@ -78,7 +79,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Modules loadModules(String xml)
+    public static ModulesI loadModules(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
@@ -100,9 +101,9 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Modules loadModules(Document doc)
+    public static ModulesI loadModules(Document doc)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
         // Reflections tool
@@ -126,7 +127,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
                 modules.setOutputControl((OutputControl) module);
             } else {
-                modules.add(module);
+                modules.add((Module) module);
             }
         }
 
@@ -134,7 +135,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModuleNames)
+    public static Module initialiseModule(Node moduleNode, ModulesI modules, List<String> availableModuleNames)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -158,7 +159,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, Modules modules, String availableModuleName)
+    public static Module initialiseModule(Node moduleNode, ModulesI modules, String availableModuleName)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
@@ -166,7 +167,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
         }
-        Module module = (Module) clazz.getDeclaredConstructor(Modules.class).newInstance(modules);
+        Module module = (Module) clazz.getDeclaredConstructor(ModulesI.class).newInstance(modules);
 
         // Populating parameters
         NodeList moduleChildNodes = moduleNode.getChildNodes();

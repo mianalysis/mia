@@ -16,7 +16,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -108,7 +108,7 @@ public class RunSingleCommand extends Module {
      */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public RunSingleCommand(Modules modules) {
+    public RunSingleCommand(ModulesI modules) {
         super("Run single command", modules);
     }
 

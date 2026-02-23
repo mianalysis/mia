@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
@@ -56,7 +56,7 @@ public class ModulePanel extends JPanel {
     }
 
     public void updatePanel() {
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         InputControl inputControl = modules.getInputControl();
         OutputControl outputControl = modules.getOutputControl();
 

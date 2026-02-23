@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.module.workflow;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -29,7 +29,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     }
 
-    public AbstractWorkspaceHandler(String name, Modules modules) {
+    public AbstractWorkspaceHandler(String name, ModulesI modules) {
         super(name, modules);
     }
 

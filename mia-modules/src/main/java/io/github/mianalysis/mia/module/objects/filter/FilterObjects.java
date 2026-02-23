@@ -25,7 +25,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -166,7 +166,7 @@ public class FilterObjects extends Module implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
-    public FilterObjects(Modules modules) {
+    public FilterObjects(ModulesI modules) {
         super("Filter objects", modules);
         deprecated = true;
     }

@@ -12,7 +12,7 @@ import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.coordinates.ObjFactories;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -460,7 +460,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
      * @param module  The module for which measurements will be displayed
      * @param modules The collection of modules in which this module resides
      */
-    public void showMeasurements(Module module, Modules modules) {
+    public void showMeasurements(Module module, ModulesI modules) {
         // Getting MeasurementReferences
         ObjMeasurementRefs measRefs = module.updateAndGetObjectMeasurementRefs();
         if (measRefs == null)
@@ -551,7 +551,7 @@ public class DefaultObjs extends LinkedHashMap<Integer, ObjI> implements ObjsI {
      * @param module  The module for which metadata will be displayed
      * @param modules The collection of modules in which this module resides
      */
-    public void showMetadata(Module module, Modules modules) {
+    public void showMetadata(Module module, ModulesI modules) {
         // Getting metadata references
         ObjMetadataRefs metadataRefs = module.updateAndGetObjectMetadataRefs();
         if (metadataRefs == null)

@@ -13,7 +13,7 @@ import org.scijava.ui.UIService;
 
 import ij.plugin.frame.Recorder;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -109,7 +109,7 @@ public class MIAHeadless extends MIA implements Command {
 
             registerCoordinateSetFactories();
 
-            Modules modules;
+            ModulesI modules;
             if (inputPath == null) {
                 modules = AnalysisReader.loadModules(workflowPath);
             } else {
@@ -135,7 +135,7 @@ public class MIAHeadless extends MIA implements Command {
         }
     }
 
-    private void applyGlobalVariables(Modules modules, String variables) {
+    private void applyGlobalVariables(ModulesI modules, String variables) {
         String[] variablesArray = variables.split(";");
         for (String variable : variablesArray) {
             String[] splitVariables = variable.split(":");

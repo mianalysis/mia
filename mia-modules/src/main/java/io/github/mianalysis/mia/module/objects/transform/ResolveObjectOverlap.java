@@ -8,7 +8,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.objects.process.GrowObjects;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -46,7 +46,7 @@ public class ResolveObjectOverlap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
 
-    public ResolveObjectOverlap(Modules modules) {
+    public ResolveObjectOverlap(ModulesI modules) {
         super("Resolve object overlap", modules);
     }
 

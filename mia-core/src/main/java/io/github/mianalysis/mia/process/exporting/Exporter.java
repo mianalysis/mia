@@ -44,7 +44,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
@@ -98,7 +98,7 @@ public class Exporter {
 
     // PUBLIC METHODS
 
-    public void exportResults(Workspaces workspaces, Modules modules, String exportFilePath) throws IOException {
+    public void exportResults(Workspaces workspaces, ModulesI modules, String exportFilePath) throws IOException {
         
         switch (exportMode) {
             case ALL_TOGETHER:
@@ -141,7 +141,7 @@ public class Exporter {
         }
     }
 
-    public void exportResults(WorkspaceI workspace, Modules modules, String name) throws IOException {
+    public void exportResults(WorkspaceI workspace, ModulesI modules, String name) throws IOException {
         Workspaces currentWorkspaces = new Workspaces();
         currentWorkspaces.add(workspace);
 
@@ -149,7 +149,7 @@ public class Exporter {
 
     }
 
-    public void export(Workspaces workspaces, Modules modules, String name) throws IOException {
+    public void export(Workspaces workspaces, ModulesI modules, String name) throws IOException {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
 
@@ -205,7 +205,7 @@ public class Exporter {
         return inputName + "_(" + dateTime + ").xlsx";
     }
 
-    private int appendConfigurationReport(Sheet sheet, Modules modules, int rowIdx) {
+    private int appendConfigurationReport(Sheet sheet, ModulesI modules, int rowIdx) {
         Workbook workbook = sheet.getWorkbook();
 
         // Creating bold font
@@ -257,7 +257,7 @@ public class Exporter {
 
     }
 
-    private void prepareConfiguration(SXSSFWorkbook workbook, Modules modules) {
+    private void prepareConfiguration(SXSSFWorkbook workbook, ModulesI modules) {
         // Creating a sheet for parameters
         Sheet paramSheet = workbook.createSheet("Configuration");
 
@@ -353,7 +353,7 @@ public class Exporter {
         }
     }
 
-    private void prepareSummary(SXSSFWorkbook workbook, Workspaces workspaces, Modules modules,
+    private void prepareSummary(SXSSFWorkbook workbook, Workspaces workspaces, ModulesI modules,
             SummaryMode summaryType) {
         AtomicInteger headerCol = new AtomicInteger(0);
 
@@ -413,7 +413,7 @@ public class Exporter {
         }
     }
 
-    private void addSummaryMetadataHeaders(Row summaryHeaderRow, Modules modules, HashMap<String, Integer> colNumbers,
+    private void addSummaryMetadataHeaders(Row summaryHeaderRow, ModulesI modules, HashMap<String, Integer> colNumbers,
             AtomicInteger headerCol, SummaryMode summaryType) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
@@ -486,7 +486,7 @@ public class Exporter {
         }
     }
 
-    private void addSummaryImageHeaders(Row summaryHeaderRow, Modules modules, HashMap<String, Integer> colNumbers,
+    private void addSummaryImageHeaders(Row summaryHeaderRow, ModulesI modules, HashMap<String, Integer> colNumbers,
             AtomicInteger headerCol) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
@@ -501,7 +501,7 @@ public class Exporter {
             for (OutputImageP availableImage : availableImages) {
                 String availableImageName = availableImage.getImageName();
 
-                ImageMeasurementRefs availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
+                ImageMeasurementRefs availableMeasurements = modules.getImageMeasurementRefs(availableImageName, null);
 
                 // Sorting by nickname
                 TreeMap<String, ImageMeasurementRef> sortedRefs = new TreeMap<>();
@@ -525,7 +525,7 @@ public class Exporter {
         }
     }
 
-    private void addSummaryObjectHeaders(Row summaryHeaderRow, Modules modules, HashMap<String, Integer> colNumbers,
+    private void addSummaryObjectHeaders(Row summaryHeaderRow, ModulesI modules, HashMap<String, Integer> colNumbers,
             AtomicInteger headerCol) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
@@ -554,7 +554,7 @@ public class Exporter {
                     colNumbers.put(summaryDataName, headerCol.getAndIncrement());
                 }
 
-                ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
+                ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName, null);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementRefs == null)
@@ -639,7 +639,7 @@ public class Exporter {
 
     }
 
-    private void populateSummaryRow(Row summaryValueRow, WorkspaceI workspace, Modules modules,
+    private void populateSummaryRow(Row summaryValueRow, WorkspaceI workspace, ModulesI modules,
             HashMap<String, Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
 
         // Adding metadata values
@@ -663,7 +663,7 @@ public class Exporter {
         for (ImageI image : images.values()) {
             String imageName = image.getName();
 
-            ImageMeasurementRefs imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
+            ImageMeasurementRefs imageMeasurementRefs = modules.getImageMeasurementRefs(imageName, null);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (imageMeasurementRefs == null)
@@ -711,7 +711,7 @@ public class Exporter {
                 summaryCell.setCellValue(objCollection.size());
             }
 
-            ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
+            ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName, null);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementRefs == null)
@@ -799,7 +799,7 @@ public class Exporter {
         }
     }
 
-    private void prepareObjectsXLS(SXSSFWorkbook workbook, Workspaces workspaces, Modules modules) {
+    private void prepareObjectsXLS(SXSSFWorkbook workbook, Workspaces workspaces, ModulesI modules) {
         // Creating bold font
         CellStyle cellStyle = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -871,7 +871,7 @@ public class Exporter {
             }
 
             // Running through all the object metadata values, adding them as new columns
-            ObjMetadataRefs objectMetadataRefs = modules.getObjectMetadataRefs(objectName);
+            ObjMetadataRefs objectMetadataRefs = modules.getObjectMetadataRefs(objectName, null);
 
             // Sorting by nickname
             TreeMap<String, ObjMetadataRef> sortedObjMetadataRefs = new TreeMap<>();
@@ -894,7 +894,7 @@ public class Exporter {
             }
 
             // Running through all the object measurement values, adding them as new columns
-            ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
+            ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName, null);
 
             // Sorting by nickname
             TreeMap<String, ObjMeasurementRef> sortedObjMeasurementRefs = new TreeMap<>();

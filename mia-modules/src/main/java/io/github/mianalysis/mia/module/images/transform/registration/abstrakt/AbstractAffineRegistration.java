@@ -16,7 +16,7 @@ import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.registration.AffineFixedTransform;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -47,7 +47,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     public static final String SHOW_TRANSFORMATION = "Show transformation(s)";
     public static final String CLEAR_BETWEEN_IMAGES = "Clear between images";
 
-    public AbstractAffineRegistration(String name, Modules modules) {
+    public AbstractAffineRegistration(String name, ModulesI modules) {
         super(name, modules);
     }
 

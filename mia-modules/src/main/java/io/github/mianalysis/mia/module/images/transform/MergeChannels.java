@@ -12,7 +12,7 @@ import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -70,7 +70,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
-    public MergeChannels(Modules modules) {
+    public MergeChannels(ModulesI modules) {
         super("Merge channels", modules);
         deprecated = true;
     }

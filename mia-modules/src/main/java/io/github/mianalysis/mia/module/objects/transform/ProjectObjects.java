@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -24,8 +24,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
-import ome.units.quantity.Time;
-import ome.units.unit.Unit;
 
 
 
@@ -50,7 +48,7 @@ public class ProjectObjects extends Module {
 	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public ProjectObjects(Modules modules) {
+    public ProjectObjects(ModulesI modules) {
         super("Project objects",modules);
     }
 

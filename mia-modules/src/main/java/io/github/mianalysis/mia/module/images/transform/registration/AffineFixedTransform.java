@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -88,7 +88,7 @@ public class AffineFixedTransform extends Module {
     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AffineFixedTransform(Modules modules) {
+    public AffineFixedTransform(ModulesI modules) {
         super("Affine (fixed transform)", modules);
     }
 

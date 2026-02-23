@@ -12,7 +12,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -100,7 +100,7 @@ public class ImageMath extends Module {
 	*/
     public static final String MATH_VALUE = "Value";
 
-    public ImageMath(Modules modules) {
+    public ImageMath(ModulesI modules) {
         super("Image math", modules);
     }
 

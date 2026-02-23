@@ -21,7 +21,7 @@ import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -160,7 +160,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
     public interface PointTypes extends AddObjectCentroid.PointTypes {}
 
-    public AddFromPositionMeasurement(Modules modules) {
+    public AddFromPositionMeasurement(ModulesI modules) {
         super("Add from position measurement",modules);
     }
 

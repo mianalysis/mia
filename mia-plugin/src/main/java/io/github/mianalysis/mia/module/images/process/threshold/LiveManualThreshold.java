@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -91,7 +91,7 @@ public class LiveManualThreshold extends Module {
     public interface BinaryLogic extends BinaryLogicInterface {
     }
 
-    public LiveManualThreshold(Modules modules) {
+    public LiveManualThreshold(ModulesI modules) {
         // The first argument is the name by which the module will be seen in the GUI.
         super("Live manual threshold", modules);
     }

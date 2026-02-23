@@ -198,9 +198,9 @@ public interface ModuleI extends SciJavaPlugin {
     public <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters);
 
-    public Modules getModules();
+    public ModulesI getModules();
 
-    public void setModules(Modules modules);
+    public void setModules(ModulesI modules);
 
     public boolean hasParameter(String parameterName);
 
@@ -254,7 +254,7 @@ public interface ModuleI extends SciJavaPlugin {
 
     public boolean hasVisibleParameters();
 
-    public Module duplicate(Modules newModules, boolean copyID);
+    public Module duplicate(ModulesI newModules, boolean copyID);
 
     // PROTECTED METHODS
 

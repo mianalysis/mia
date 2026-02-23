@@ -10,7 +10,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.NormaliseIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -145,7 +145,7 @@ public class SetDisplayRange extends Module {
      */
     public static final String MAX_RANGE = "Maximum range value";
 
-    public SetDisplayRange(Modules modules) {
+    public SetDisplayRange(ModulesI modules) {
         super("Set intensity display range", modules);
     }
 

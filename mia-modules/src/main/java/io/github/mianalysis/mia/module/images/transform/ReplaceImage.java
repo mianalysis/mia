@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.module.images.transform;
 
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -36,7 +36,7 @@ public class ReplaceImage extends Module {
 	*/
     public static final String INPUT_IMAGE2 = "Input image 2";
 
-    public ReplaceImage(Modules modules) {
+    public ReplaceImage(ModulesI modules) {
         super("Replace image",modules);
     }
 

@@ -14,7 +14,7 @@ import ij.plugin.Scaler;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -70,7 +70,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
     public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
     public static final String RADIUS_RESIZE = "Output radius resize (px)";
 
-    public SphereHoughDetection(Modules modules) {
+    public SphereHoughDetection(ModulesI modules) {
         super("Sphere detection", modules);
     }
 

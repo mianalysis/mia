@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -94,7 +94,7 @@ public class BleachingCorrection extends Module {
 
     }
 
-    public BleachingCorrection(Modules modules) {
+    public BleachingCorrection(ModulesI modules) {
         super("Bleaching correction", modules);
     }
 

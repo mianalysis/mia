@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.testmodules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -36,7 +36,7 @@ public class FilterImage extends Module {
     public static final String WINDOW_INDICES = "Window indices";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
 
-    public FilterImage(Modules modules) {
+    public FilterImage(ModulesI modules) {
         super("Filter image", modules);
     }
 

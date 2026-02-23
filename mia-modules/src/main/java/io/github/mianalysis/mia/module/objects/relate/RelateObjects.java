@@ -9,7 +9,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
@@ -177,7 +177,7 @@ public class RelateObjects extends Module {
      */
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
-    public RelateObjects(Modules modules) {
+    public RelateObjects(ModulesI modules) {
         super("Relate objects", modules);
         deprecated = true;
     }

@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
@@ -90,7 +90,7 @@ public class MeasureObjectTexture extends Module {
 	*/
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
-    public MeasureObjectTexture(Modules modules) {
+    public MeasureObjectTexture(ModulesI modules) {
         super("Measure object texture", modules);
     }
 

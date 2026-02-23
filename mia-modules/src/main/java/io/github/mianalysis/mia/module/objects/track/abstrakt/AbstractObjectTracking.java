@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -59,7 +59,7 @@ public abstract class AbstractObjectTracking extends Module {
      */
     public static final String TRACK_OBJECTS = "Output track objects";
 
-    public AbstractObjectTracking(String name, Modules modules) {
+    public AbstractObjectTracking(String name, ModulesI modules) {
         super(name, modules);
     }
 

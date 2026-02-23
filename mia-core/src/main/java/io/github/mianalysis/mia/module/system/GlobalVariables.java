@@ -11,7 +11,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -74,15 +74,15 @@ public class GlobalVariables extends Module {
 
     }
 
-    protected GlobalVariables(String name, Modules modules) {
+    protected GlobalVariables(String name, ModulesI modules) {
         super(name, modules);
     }
 
-    public GlobalVariables(Modules modules) {
+    public GlobalVariables(ModulesI modules) {
         super("Global variables", modules);
     }
 
-    public static String convertString(String string, Modules modules) {
+    public static String convertString(String string, ModulesI modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
@@ -103,7 +103,7 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static boolean variablesPresent(String string, Modules modules) {
+    public static boolean variablesPresent(String string, ModulesI modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
@@ -141,7 +141,7 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static void updateVariables(Modules modules) {
+    public static void updateVariables(ModulesI modules) {
         // Reset global variables
         globalVariables.clear();
         for (Module module : modules.values()) {

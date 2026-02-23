@@ -9,7 +9,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -85,7 +85,7 @@ public class BinaryOperations2D extends Module {
 	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
-    public BinaryOperations2D(Modules modules) {
+    public BinaryOperations2D(ModulesI modules) {
         super("Binary operations 2D", modules);
     }
 

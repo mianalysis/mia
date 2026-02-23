@@ -14,7 +14,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -108,7 +108,7 @@ public class ColourDeconvolution extends Module {
     public static final String G3 = "Stain 3 (green)";
     public static final String B3 = "Stain 3 (blue)";
 
-    public ColourDeconvolution(Modules modules) {
+    public ColourDeconvolution(ModulesI modules) {
         super("Colour deconvolution", modules);
     }
 

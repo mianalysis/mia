@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.images.measure.abstrakt;
 import java.util.Collection;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -124,7 +124,7 @@ public abstract class MeasurementCalculator extends Module {
 
     }
 
-    public MeasurementCalculator(String name, Modules modules) {
+    public MeasurementCalculator(String name, ModulesI modules) {
         super(name, modules);
     }
 

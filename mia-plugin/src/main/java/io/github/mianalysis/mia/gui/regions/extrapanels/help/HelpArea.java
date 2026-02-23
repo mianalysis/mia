@@ -5,7 +5,7 @@ import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -19,7 +19,7 @@ public class HelpArea extends JTextPane {
      */
     private static final long serialVersionUID = 1232662621405470033L;
 
-    public HelpArea(Module module, Modules modules) {
+    public HelpArea(Module module, ModulesI modules) {
         setContentType("text/html");
         addHyperlinkListener(new HyperlinkOpener());
 
@@ -39,7 +39,7 @@ public class HelpArea extends JTextPane {
 
     }
 
-    private static String getHelpText(Module module, Modules modules) {
+    private static String getHelpText(Module module, ModulesI modules) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<b>DESCRIPTION</b><br>").append(module.getDescription()).append("<br><br><br>")

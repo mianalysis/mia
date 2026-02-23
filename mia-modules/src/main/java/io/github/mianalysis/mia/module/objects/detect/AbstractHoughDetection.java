@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -58,7 +58,7 @@ public abstract class AbstractHoughDetection extends Module {
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
-    public AbstractHoughDetection(String name, Modules modules) {
+    public AbstractHoughDetection(String name, ModulesI modules) {
         super(name, modules);
     }
 

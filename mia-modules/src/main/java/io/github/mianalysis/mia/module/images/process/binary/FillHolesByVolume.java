@@ -20,7 +20,7 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
@@ -134,7 +134,7 @@ public class FillHolesByVolume extends Module {
     public interface BinaryLogic extends BinaryLogicInterface {
     }
 
-    public FillHolesByVolume(Modules modules) {
+    public FillHolesByVolume(ModulesI modules) {
         super("Fill holes by volume", modules);
     }
 

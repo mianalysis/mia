@@ -11,7 +11,7 @@ import ij.gui.Plot;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -99,7 +99,7 @@ public class PlotMeasurementsScatter extends Module {
      */
     public static final String SHOW_AS_INTERACTIVE_PLOT = "Show as interactive plot";
 
-    public PlotMeasurementsScatter(Modules modules) {
+    public PlotMeasurementsScatter(ModulesI modules) {
         super("Plot measurements as scatter", modules);
     }
 

@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -421,7 +421,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
      */
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
 
-    public ImageLoader(Modules modules) {
+    public ImageLoader(ModulesI modules) {
         super("Load image", modules);
     }
 

@@ -11,7 +11,7 @@ import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -113,7 +113,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String MAX_ABS_LOCAL_DISPLACEMENT = "Maximal absolute local displacement (px)";
     public static final String MAX_REL_LOCAL_DISPLACEMENT = "Maximal relative local displacement (px)";
 
-    public AffineBlockMatching(Modules modules) {
+    public AffineBlockMatching(ModulesI modules) {
         super("Affine (block matching)", modules);
     }
 

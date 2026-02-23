@@ -20,7 +20,7 @@ import ij.process.LUT;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -119,7 +119,7 @@ public class SetLookupTable extends Module {
     TreeMap<String, String> imageJLUTs;
     // TreeMap<String, String> allLUTs;
 
-    public SetLookupTable(Modules modules) {
+    public SetLookupTable(ModulesI modules) {
         super("Set lookup table", modules);
     }
 

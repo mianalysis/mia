@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.measure.MeasureGiniCoefficient;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -61,7 +61,7 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
     public interface Measurements extends MeasureGiniCoefficient.Measurements {
     };
 
-    public MeasureObjectGiniCoefficient(Modules modules) {
+    public MeasureObjectGiniCoefficient(ModulesI modules) {
         super("Measure object Gini coefficient", modules);
     }
 

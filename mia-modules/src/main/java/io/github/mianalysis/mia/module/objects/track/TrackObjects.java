@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -194,7 +194,7 @@ public class TrackObjects extends Module {
 	*/
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
 
-    public TrackObjects(Modules modules) {
+    public TrackObjects(ModulesI modules) {
         super("Track objects", modules);
     }
 

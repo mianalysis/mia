@@ -32,8 +32,9 @@ import io.github.mianalysis.mia.gui.regions.processingpanel.ProcessingPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusTextField;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.AvailableModules;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
@@ -57,7 +58,7 @@ import io.github.mianalysis.mia.process.system.FileCrawler;
 public class GUI {
     public static boolean initialised = false;
 
-    private static Modules modules = new Modules();
+    private static ModulesI modules = new Modules();
     private static AnalysisRunner analysisRunner = new AnalysisRunner();
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
@@ -82,7 +83,7 @@ public class GUI {
     private static ProcessingPanel processingPanel = new ProcessingPanel();
     private static EditingPanel editingPanel;
     private static AbstractPanel mainPanel;
-    private static Modules availableModules = new Modules();
+    private static ModulesI availableModules = new Modules();
 
     public GUI() throws Exception {
         // Only create a GUI if one hasn't already been created
@@ -186,7 +187,7 @@ public class GUI {
                     if (Modifier.isAbstract(clazz.getModifiers()))
                         continue;
 
-                    Constructor constructor = clazz.getDeclaredConstructor(Modules.class);
+                    Constructor constructor = clazz.getDeclaredConstructor(ModulesI.class);
                     Module module = (Module) constructor.newInstance(availableModules);
                     availableModules.add(module);
 
@@ -304,12 +305,12 @@ public class GUI {
         return mainPanel == processingPanel;
     }
 
-    public static void setModules(Modules modules) {
+    public static void setModules(ModulesI modules) {
         GUI.modules = modules;
         MacroHandler.setModules(modules);
     }
 
-    public static Modules getModules() {
+    public static ModulesI getModules() {
         return modules;
     }
 
@@ -412,7 +413,7 @@ public class GUI {
             return new int[0];
 
         int[] selectedIndices = new int[selectedModules.length];
-        Modules modules = getModules();
+        ModulesI modules = getModules();
 
         for (int i = 0; i < selectedModules.length; i++) {
             Module selectedModule = selectedModules[i];
@@ -453,7 +454,7 @@ public class GUI {
             if (selectedModuleIndices[i] == -1) {
                 selectedModules[i] = modules.getInputControl();
             } else {
-                selectedModules[i] = modules.get(selectedModuleIndices[i]);
+                selectedModules[i] = modules.getAtIndex(selectedModuleIndices[i]);
             }
         }
     }
@@ -513,7 +514,7 @@ public class GUI {
         mainPanel.resetJobNumbers();
     }
 
-    public static Modules getAvailableModules() {
+    public static ModulesI getAvailableModules() {
         return availableModules;
     }
 
@@ -529,7 +530,7 @@ public class GUI {
     public static void undo() {
         int[] selectedIndices = getSelectedModuleIndices();
 
-        Modules newModules = undoRedoStore.getNextUndo(modules);
+        ModulesI newModules = undoRedoStore.getNextUndo(modules);
 
         if (newModules == null)
             return;
@@ -548,7 +549,7 @@ public class GUI {
     public static void redo() {
         int[] selectedIndices = getSelectedModuleIndices();
 
-        Modules newModules = undoRedoStore.getNextRedo(modules);
+        ModulesI newModules = undoRedoStore.getNextRedo(modules);
         if (newModules == null)
             return;
 

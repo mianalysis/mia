@@ -13,7 +13,7 @@ import ij.process.AutoThresholder;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
@@ -128,7 +128,7 @@ public class ThresholdImage extends Module {
 	*/
     public static final String WHITE_BACKGROUND = "Black objects/white background";
 
-    public ThresholdImage(Modules modules) {
+    public ThresholdImage(ModulesI modules) {
         super("Threshold image", modules);
         deprecated = true;
     }

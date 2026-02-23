@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -142,7 +142,7 @@ public class MeasureRelativeOrientation extends Module {
      */
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
 
-    public MeasureRelativeOrientation(Modules modules) {
+    public MeasureRelativeOrientation(ModulesI modules) {
         super("Measure relative orientation", modules);
     }
 

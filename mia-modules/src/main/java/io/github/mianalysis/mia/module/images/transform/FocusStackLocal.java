@@ -13,7 +13,7 @@ import ij.process.ShortProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.object.Workspace;
@@ -109,7 +109,7 @@ public class FocusStackLocal extends Module {
 
     }
 
-    public FocusStackLocal(Modules modules) {
+    public FocusStackLocal(ModulesI modules) {
         super("Focus stack (local)", modules);
     }
 

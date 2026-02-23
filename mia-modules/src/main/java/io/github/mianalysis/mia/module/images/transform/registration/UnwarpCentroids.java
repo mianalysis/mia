@@ -18,7 +18,7 @@ import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreato
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
@@ -74,7 +74,7 @@ public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
      */
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public UnwarpCentroids(Modules modules) {
+    public UnwarpCentroids(ModulesI modules) {
         super("Unwarp (centroids)", modules);
     }
 

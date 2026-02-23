@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -91,7 +91,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 	*/
     public static final String AXIS_MODE = "Axis mode";
 
-    public ConcatenateStacks(Modules modules) {
+    public ConcatenateStacks(ModulesI modules) {
         super("Concatenate stacks", modules);
     }
 

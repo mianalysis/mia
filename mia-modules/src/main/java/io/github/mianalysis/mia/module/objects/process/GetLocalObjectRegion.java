@@ -7,7 +7,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -222,7 +222,7 @@ public class GetLocalObjectRegion extends Module {
     public interface SpatialUnits extends SpatialUnitsInterface {
     }
 
-    public GetLocalObjectRegion(Modules modules) {
+    public GetLocalObjectRegion(ModulesI modules) {
         super("Get local object region", modules);
     }
 

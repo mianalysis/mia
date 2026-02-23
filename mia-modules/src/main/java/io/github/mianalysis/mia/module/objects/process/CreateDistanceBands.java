@@ -8,7 +8,7 @@ import com.drew.lang.annotations.Nullable;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
@@ -150,7 +150,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     */
     public static final String MAXIMUM_BAND_DISTANCE = "Maximum band distance";
 
-    public CreateDistanceBands(Modules modules) {
+    public CreateDistanceBands(ModulesI modules) {
         super("Create distance bands", modules);
     }
 

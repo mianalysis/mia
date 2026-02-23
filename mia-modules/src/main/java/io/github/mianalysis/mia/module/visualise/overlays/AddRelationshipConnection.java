@@ -12,7 +12,7 @@ import ij.gui.Line;
 import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -194,7 +194,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
     public interface PointTypes extends AddObjectCentroid.PointTypes {
     }
 
-    public AddRelationshipConnection(Modules modules) {
+    public AddRelationshipConnection(ModulesI modules) {
         super("Add relationship connection", modules);
     }
 

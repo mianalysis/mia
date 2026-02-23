@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
@@ -96,7 +96,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
      */
     public static final String AXIS_MODE = "Axis mode";
 
-    public ConcatenateStacks2(Modules modules) {
+    public ConcatenateStacks2(ModulesI modules) {
         super("Concatenate stacks 2", modules);
         deprecated = true; // Marked as deprecated to hide until ready to replace main ConcatenateStacks
                            // code

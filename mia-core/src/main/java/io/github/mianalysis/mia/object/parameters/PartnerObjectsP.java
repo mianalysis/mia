@@ -4,7 +4,7 @@ package io.github.mianalysis.mia.object.parameters;
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
@@ -55,7 +55,7 @@ public class PartnerObjectsP extends ChoiceType {
     public String[] getChoices() {
         if (partnerObjectsName == null) return null;
 
-        Modules modules = module.getModules();
+        ModulesI modules = module.getModules();
         PartnerRefs relationships = modules.getPartnerRefs(module);
 
         return relationships.getPartnerNamesArray(partnerObjectsName);

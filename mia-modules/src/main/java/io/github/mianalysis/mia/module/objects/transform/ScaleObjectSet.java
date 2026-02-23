@@ -9,7 +9,7 @@ import ij.plugin.Scaler;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ScaleStack;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -79,7 +79,7 @@ public class ScaleObjectSet extends Module {
 
     }
 
-    public ScaleObjectSet(Modules modules) {
+    public ScaleObjectSet(ModulesI modules) {
         super("Scale object set", modules);
     }
 

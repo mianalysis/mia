@@ -23,7 +23,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -90,7 +90,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     private int elementHeight = 30;
     private boolean active = false;
 
-    public FilterSpecificObjectIDs(Modules modules) {
+    public FilterSpecificObjectIDs(ModulesI modules) {
         super("Objects with specific IDs", modules);
     }
 

@@ -12,7 +12,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -113,7 +113,7 @@ public class ImageCalculator extends Module {
      */
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
-    public ImageCalculator(Modules modules) {
+    public ImageCalculator(ModulesI modules) {
         super("ImageI calculator", modules);
     }
 

@@ -10,7 +10,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
@@ -93,7 +93,7 @@ public class MeasureObjectIntensity extends Module {
      */
     public static final String MEASURE_PEAK_LOCATION = "Measure peak brightness location";
 
-    public MeasureObjectIntensity(Modules modules) {
+    public MeasureObjectIntensity(ModulesI modules) {
         super("Measure object intensity", modules);
     }
 

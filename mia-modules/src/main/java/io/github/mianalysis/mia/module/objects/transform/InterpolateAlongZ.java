@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -77,7 +77,7 @@ public class InterpolateAlongZ extends Module {
     */
     public static final String OUTPUT_Z_SPATIAL_CALIBRATION = "Output spatial calibration";
 
-    public InterpolateAlongZ(Modules modules) {
+    public InterpolateAlongZ(ModulesI modules) {
         super("Interpolate along Z", modules);
     }
 

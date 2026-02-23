@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
@@ -83,7 +83,7 @@ public class ConvertImageToObjects extends Module {
 	*/
     public static final String TRACK_OBJECTS_NAME = "Output track objects name";
 
-    public ConvertImageToObjects(Modules modules) {
+    public ConvertImageToObjects(ModulesI modules) {
         super("Convert image to objects", modules);
     }
 

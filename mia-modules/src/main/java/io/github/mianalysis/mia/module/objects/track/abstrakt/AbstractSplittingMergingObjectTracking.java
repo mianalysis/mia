@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.module.objects.track.abstrakt;
 
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.SpotTracker;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -21,7 +21,7 @@ public abstract class AbstractSplittingMergingObjectTracking extends AbstractObj
 
     public static final String TRACK_SEGMENT_OBJECTS = "Track segment objects";
 
-    public AbstractSplittingMergingObjectTracking(String name, Modules modules) {
+    public AbstractSplittingMergingObjectTracking(String name, ModulesI modules) {
         super(name, modules);
     }
 

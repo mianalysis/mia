@@ -33,7 +33,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetAvailableImages() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String im1Name = "Im 1";
         String im2Name = "New_image";
@@ -56,7 +56,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         collection.updateValue(RemoveImages.INPUT_IMAGE, im1Name);
         modules.add(removeImage);
 
-        LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null);
+        LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null, true);
         assertEquals(1, availableImages.size());
 
     }
@@ -64,7 +64,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetImageMeasurementRefsNoCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String im1Name = "Im 1";
         String im2Name = "New_image";
@@ -84,7 +84,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         modules.add(measureImageTexture);
 
         // Checking the values for "Im1"
-        ImageMeasurementRefs references1 = modules.getImageMeasurementRefs(im1Name);
+        ImageMeasurementRefs references1 = modules.getImageMeasurementRefs(im1Name, null);
         assertEquals(7, references1.size());
 
         String[] expectedNames1 = new String[] { MeasureImageIntensity.Measurements.MEAN,
@@ -96,7 +96,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         }
 
         // Checking the values for "New_image"
-        ImageMeasurementRefs references2 = modules.getImageMeasurementRefs(im2Name);
+        ImageMeasurementRefs references2 = modules.getImageMeasurementRefs(im2Name, null);
         assertEquals(11, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureImageIntensity.Measurements.MEAN,
@@ -113,7 +113,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetImageMeasurementRefsWithCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String im1Name = "Im 1";
         String im2Name = "New_image";
@@ -153,7 +153,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetObjectMeasurementRefsNoCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
@@ -180,7 +180,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         modules.add(measureObjectTexture);
 
         // Checking the values for "Im1"
-        ObjMeasurementRefs references1 = modules.getObjectMeasurementRefs(obj1Name);
+        ObjMeasurementRefs references1 = modules.getObjectMeasurementRefs(obj1Name, null);
         assertEquals(10, references1.size());
 
         double[] offs = new double[] { 1, 0, 0 };
@@ -199,7 +199,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         }
 
         // Checking the values for the second object set
-        ObjMeasurementRefs references2 = modules.getObjectMeasurementRefs(obj2Name);
+        ObjMeasurementRefs references2 = modules.getObjectMeasurementRefs(obj2Name, null);
         assertEquals(9, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureObjectShape.Measurements.PROJ_DIA_PX,
@@ -219,7 +219,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetObjectMeasurementRefsWithCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
@@ -268,7 +268,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetParametersMatchingTypeNoCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
@@ -298,7 +298,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         modules.add(measureObjectTexture);
 
         // Checking for booleans
-        LinkedHashSet<BooleanP> actualParams = modules.getParametersMatchingType(BooleanP.class);
+        LinkedHashSet<BooleanP> actualParams = modules.getParametersMatchingType(BooleanP.class, null);
 
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
@@ -329,7 +329,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetParametersMatchingTypeWithCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
@@ -388,7 +388,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetRelationshipsNoCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String spotsName = "Spot objects";
         String tracksName = "Tracks";
@@ -411,7 +411,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         modules.add(singleClassCluster);
 
         // Getting actual relationships
-        ParentChildRefs actualRelationships = modules.getParentChildRefs();
+        ParentChildRefs actualRelationships = modules.getParentChildRefs(null);
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName, false);
@@ -516,7 +516,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetRelationshipsWithCutoff() {
         // Creating a Modules to hold the Modules
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
 
         String spotsName = "Spot objects";
         String tracksName = "Tracks";

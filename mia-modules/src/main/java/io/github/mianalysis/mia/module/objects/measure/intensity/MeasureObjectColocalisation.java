@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageColocalisation;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -170,7 +170,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
      */
     public static final String MEASURE_SPEARMANS_RANK = "Measure Spearman's Rank Correlation";
 
-    public MeasureObjectColocalisation(Modules modules) {
+    public MeasureObjectColocalisation(ModulesI modules) {
         super("Measure object colocalisation", modules);
     }
 

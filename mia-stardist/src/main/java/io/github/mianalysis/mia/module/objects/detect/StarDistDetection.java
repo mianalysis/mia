@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
@@ -199,7 +199,7 @@ public class StarDistDetection extends Module {
 
     }
 
-    public StarDistDetection(Modules modules) {
+    public StarDistDetection(ModulesI modules) {
         super("StarDist detection", modules);
 
     }

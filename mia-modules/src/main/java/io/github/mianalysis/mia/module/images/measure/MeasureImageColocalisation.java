@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectColocalisation;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -159,7 +159,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 	*/
     public static final String MEASURE_SPEARMANS_RANK = "Measure Spearman's Rank Correlation";
 
-    public MeasureImageColocalisation(Modules modules) {
+    public MeasureImageColocalisation(ModulesI modules) {
         super("Measure image colocalisation", modules);
     }
 

@@ -17,7 +17,7 @@ import inra.ijpb.morphology.MinimaAndMaxima3D;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -107,7 +107,7 @@ public class ExtendedMinima extends Module {
 	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public ExtendedMinima(Modules modules) {
+    public ExtendedMinima(ModulesI modules) {
         super("Extended minima/maxima", modules);
     }
 

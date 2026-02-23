@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -11,9 +11,9 @@ public class DraggableTableModel extends DefaultTableModel {
      *
      */
     private static final long serialVersionUID = 3569731151635741445L;
-    private Modules modules;
+    private ModulesI modules;
 
-    public DraggableTableModel(Object[][] data, Object[] columnNames, Modules modules) {
+    public DraggableTableModel(Object[][] data, Object[] columnNames, ModulesI modules) {
         super(data, columnNames);
         this.modules = modules;
 
@@ -29,7 +29,8 @@ public class DraggableTableModel extends DefaultTableModel {
         if (toIndex == 0) moduleToFollow = null;
         else moduleToFollow = (Module) getValueAt(toIndex-1,0);
 
-        modules.reorder(toMove,moduleToFollow);
+        modules.reorder(fromIndices, toIndex);
+        // modules.reorderByModules(toMove,moduleToFollow);
 
         GUI.updateModules(true, moduleToFollow);
         GUI.updateParameters(false, null);

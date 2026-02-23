@@ -11,7 +11,7 @@ import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractObjectTracking;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -28,7 +28,7 @@ public class TrackObjectsKalman extends AbstractObjectTracking {
     public static final String MAXIMUM_FRAME_GAP = "Maximum frame gap";
 
 
-    public TrackObjectsKalman(Modules modules) {
+    public TrackObjectsKalman(ModulesI modules) {
         super("Kalman tracking", modules);
     }
 

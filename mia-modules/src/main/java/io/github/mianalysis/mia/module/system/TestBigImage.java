@@ -7,7 +7,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -37,7 +37,7 @@ import net.imglib2.type.numeric.real.FloatType;
 public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public TestBigImage(Modules modules) {
+    public TestBigImage(ModulesI modules) {
         super("Test big image", modules);
         il2Support = IL2Support.FULL;
 

@@ -5,7 +5,7 @@ import org.scijava.plugin.Plugin;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.RemoveImages;
 import io.github.mianalysis.mia.object.WorkspaceI;
 
@@ -21,7 +21,7 @@ public class MIA_RemoveImageFromWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         RemoveImages removeImage = new RemoveImages(modules);
 
         removeImage.updateParameterValue(RemoveImages.INPUT_IMAGE,objects[0]);

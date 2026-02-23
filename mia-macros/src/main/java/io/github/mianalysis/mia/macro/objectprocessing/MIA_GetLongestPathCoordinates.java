@@ -7,7 +7,7 @@ import org.scijava.plugin.Plugin;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -26,7 +26,7 @@ public class MIA_GetLongestPathCoordinates extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, WorkspaceI workspace, Modules modules) {
+    public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 

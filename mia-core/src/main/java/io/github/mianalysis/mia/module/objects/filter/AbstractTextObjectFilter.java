@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -26,7 +26,7 @@ public abstract class AbstractTextObjectFilter extends AbstractObjectFilter {
 
     }
 
-    protected AbstractTextObjectFilter(String name, Modules modules) {
+    protected AbstractTextObjectFilter(String name, ModulesI modules) {
         super(name, modules);
     }
 

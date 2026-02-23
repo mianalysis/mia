@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 
@@ -59,14 +59,14 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         // Adding it after the currently-selected module
         Module newModule = null;
         try {
-            Modules modules = GUI.getModules();
-            newModule = module.getClass().getConstructor(Modules.class).newInstance(modules);
+            ModulesI modules = GUI.getModules();
+            newModule = module.getClass().getConstructor(ModulesI.class).newInstance(modules);
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
             e1.printStackTrace();
         }
 
         Module activeModule = GUI.getFirstSelectedModule();
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         if (activeModule == null
                 || activeModule.getClass().isInstance(new InputControl(modules))
                 || activeModule.getClass().isInstance(new OutputControl(modules))) {
@@ -74,7 +74,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         } else {
             Module[] activeModules = GUI.getSelectedModules();
             int idx = GUI.getModules().indexOf(activeModules[activeModules.length-1]);
-            GUI.getModules().add(++idx,newModule);
+            GUI.getModules().addAtIndex(++idx,newModule);
         }
 
         // Adding to the list of modules

@@ -12,7 +12,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.visualise.overlays.AbstractOverlay;
 import io.github.mianalysis.mia.module.visualise.overlays.AddAllObjectPoints;
@@ -179,7 +179,7 @@ public class ConvertObjectsToImage extends Module {
 
   public static final String METADATA_ITEM_FOR_COLOUR = "Metadata item for colour";
 
-  public ConvertObjectsToImage(Modules modules) {
+  public ConvertObjectsToImage(ModulesI modules) {
     super("Convert objects to image", modules);
   }
 

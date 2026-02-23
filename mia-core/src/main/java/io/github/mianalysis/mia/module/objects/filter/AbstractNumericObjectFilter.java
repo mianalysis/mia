@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -56,7 +56,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     }
 
-    protected AbstractNumericObjectFilter(String name, Modules modules) {
+    protected AbstractNumericObjectFilter(String name, ModulesI modules) {
         super(name, modules);
     }
 

@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -103,7 +103,7 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
 	*/
     public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
 
-    public MeasureIntensityAlongPath(Modules modules) {
+    public MeasureIntensityAlongPath(ModulesI modules) {
         super("Measure intensity along path", modules);
     }
 

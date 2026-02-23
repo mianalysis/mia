@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
@@ -36,7 +36,7 @@ public abstract class AbstractMacroRunner extends Module {
 
     }
 
-    protected AbstractMacroRunner(String name, Modules modules) {
+    protected AbstractMacroRunner(String name, ModulesI modules) {
         super(name, modules);
     }
 

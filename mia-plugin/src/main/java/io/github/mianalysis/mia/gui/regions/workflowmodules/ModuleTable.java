@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.ReferenceEditingMenu;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -41,11 +41,11 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     private static final String ENABLE = "enable";
 
     private static final long serialVersionUID = 3722736203899254351L;
-    private Modules modules;
+    private ModulesI modules;
     private HashMap<Module, ModuleName> moduleNames = new HashMap<>();
     private HashMap<Module, RowItems> rowItems;
 
-    public ModuleTable(TableModel tableModel, Modules modules, HashMap<Module, Boolean> expandedStatus, HashMap<Module, RowItems> rowItems) {
+    public ModuleTable(TableModel tableModel, ModulesI modules, HashMap<Module, Boolean> expandedStatus, HashMap<Module, RowItems> rowItems) {
         super(tableModel);
 
         this.modules = modules;

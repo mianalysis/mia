@@ -5,12 +5,12 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 
 public class ModuleTransfer implements Transferable, ClipboardOwner {
-    private Modules modules;
+    private ModulesI modules;
 
-    public ModuleTransfer(Modules modules) {
+    public ModuleTransfer(ModulesI modules) {
         this.modules = modules;
     }
 

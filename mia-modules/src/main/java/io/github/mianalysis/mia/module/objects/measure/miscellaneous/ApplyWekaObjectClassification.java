@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -100,7 +100,7 @@ public class ApplyWekaObjectClassification extends Module {
 
     }
 
-    public ApplyWekaObjectClassification(Modules modules) {
+    public ApplyWekaObjectClassification(ModulesI modules) {
         super("Apply Weka object classification", modules);
     }
 

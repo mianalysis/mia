@@ -13,7 +13,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -242,7 +242,7 @@ public class MeasureObjectCurvature extends Module {
     public static final String LINE_WIDTH = "Line width";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
 
-    public MeasureObjectCurvature(Modules modules) {
+    public MeasureObjectCurvature(ModulesI modules) {
         super("Measure object curvature", modules);
     }
 

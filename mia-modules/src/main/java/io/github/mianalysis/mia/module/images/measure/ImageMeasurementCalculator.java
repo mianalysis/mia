@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.measure.abstrakt.MeasurementCalculator;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -54,7 +54,7 @@ public class ImageMeasurementCalculator extends MeasurementCalculator {
     public interface StatisticModes extends MeasurementCalculator.StatisticModes{};
     
 
-    public ImageMeasurementCalculator(Modules modules) {
+    public ImageMeasurementCalculator(ModulesI modules) {
         super("Image measurement calculator", modules);
     }
 

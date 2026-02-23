@@ -19,7 +19,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
@@ -150,7 +150,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public LoadImage(Modules modules) {
+    public LoadImage(ModulesI modules) {
         super("Load image 2", modules);
         il2Support = IL2Support.FULL;
 

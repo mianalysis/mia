@@ -13,7 +13,7 @@ import ij.Prefs;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetDisplayRange;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
@@ -243,7 +243,7 @@ public class RelateManyToOne extends Module {
 
     }
 
-    public RelateManyToOne(Modules modules) {
+    public RelateManyToOne(ModulesI modules) {
         super("Relate many-to-one", modules);
     }
 

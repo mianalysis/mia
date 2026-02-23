@@ -8,7 +8,7 @@ import ij.process.StackStatistics;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
@@ -45,7 +45,7 @@ public class MeasureImageIntensity extends Module {
 	*/
     public static final String INPUT_IMAGE = "Input image";
 
-    public MeasureImageIntensity(Modules modules) {
+    public MeasureImageIntensity(ModulesI modules) {
         super("Measure image intensity", modules);
     }
 

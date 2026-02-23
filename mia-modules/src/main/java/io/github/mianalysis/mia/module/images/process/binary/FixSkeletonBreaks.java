@@ -7,7 +7,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -108,7 +108,7 @@ public class FixSkeletonBreaks extends Module {
     public interface BinaryLogic extends BinaryLogicInterface {
     }
 
-    public FixSkeletonBreaks(Modules modules) {
+    public FixSkeletonBreaks(ModulesI modules) {
         super("Fix skeleton breaks", modules);
     }
 

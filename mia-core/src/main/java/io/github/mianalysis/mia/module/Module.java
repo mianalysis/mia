@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-import org.scijava.plugin.SciJavaPlugin;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -41,7 +40,7 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
  * component to an overlay
  */
 public abstract class Module extends Ref implements Comparable, ModuleI {
-    protected Modules modules;
+    protected ModulesI modules;
 
     protected Parameters parameters = new Parameters();
     protected ImageMeasurementRefs imageMeasurementRefs = new ImageMeasurementRefs();
@@ -73,7 +72,7 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
      * @param modules The module constructor, when called from within MIA, provides
      *                all the modules currently in the workflow as an argument.
      */
-    public Module(String name, Modules modules) {        
+    public Module(String name, ModulesI modules) {        
         super(name);
         this.modules = modules;
         initialiseParameters();
@@ -238,11 +237,11 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
         }
     }
 
-    public Modules getModules() {
+    public ModulesI getModules() {
         return modules;
     }
 
-    public void setModules(Modules modules) {
+    public void setModules(ModulesI modules) {
         this.modules = modules;
     }
 
@@ -361,11 +360,11 @@ public abstract class Module extends Ref implements Comparable, ModuleI {
 
     }
 
-    public Module duplicate(Modules newModules, boolean copyID) {
+    public Module duplicate(ModulesI newModules, boolean copyID) {
         Constructor constructor;
         Module newModule;
         try {
-            constructor = this.getClass().getDeclaredConstructor(Modules.class);
+            constructor = this.getClass().getDeclaredConstructor(ModulesI.class);
             newModule = (Module) constructor.newInstance(newModules);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
                 | InvocationTargetException e) {

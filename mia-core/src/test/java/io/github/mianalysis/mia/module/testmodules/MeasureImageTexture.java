@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.testmodules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -29,7 +29,7 @@ public class MeasureImageTexture extends Module {
     public static final String Z_OFFSET = "Z-offset";
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
-    public MeasureImageTexture(Modules modules) {
+    public MeasureImageTexture(ModulesI modules) {
         super("Measure image texture", modules);
     }
 

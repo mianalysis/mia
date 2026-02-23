@@ -26,7 +26,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependencies;
@@ -252,7 +252,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
     protected HashSet<ManualExtension> extensions = new HashSet<>();
     protected ObjectSelector objectSelector = null;
 
-    public ManuallyIdentifyObjects(String name, Modules modules) {
+    public ManuallyIdentifyObjects(String name, ModulesI modules) {
         super(name, modules);
 
         // Getting extensions and adding their parameters to this collection, so they
@@ -263,7 +263,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     }
 
-    public ManuallyIdentifyObjects(Modules modules) {
+    public ManuallyIdentifyObjects(ModulesI modules) {
         this("Manually identify objects", modules);
     }
 

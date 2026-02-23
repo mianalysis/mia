@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.Point;
@@ -208,12 +208,12 @@ public class RunScript extends Module {
 
     }
 
-    public RunScript(Modules modules) {
+    public RunScript(ModulesI modules) {
         super("Run script", modules);
     }
 
     // This is just so other modules can extend this class
-    protected RunScript(String name, Modules modules) {
+    protected RunScript(String name, ModulesI modules) {
         super(name, modules);
     }
 
@@ -833,7 +833,7 @@ public class RunScript extends Module {
 
         @Override
         public String[] getChoices() {
-            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,
+            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjectsMatchingClass(module,
                     OutputObjectsP.class,
                     true);
 
@@ -850,7 +850,7 @@ public class RunScript extends Module {
 
         @Override
         public boolean verify() {
-            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,
+            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjectsMatchingClass(module,
                     OutputObjectsP.class, true);
 
             for (OutputObjectsP currChoice : objects)

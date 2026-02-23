@@ -21,8 +21,9 @@ import org.w3c.dom.Element;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
@@ -35,7 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.Refs;
  * Created by Stephen on 22/06/2018.
  */
 public class AnalysisWriter {
-    public static void saveModulesAs(Modules modules, String outputFileName)
+    public static void saveModulesAs(ModulesI modules, String outputFileName)
             throws IOException, ParserConfigurationException, TransformerException {
         if (outputFileName == null || outputFileName.equals("")) {
             saveModules(modules);
@@ -58,7 +59,7 @@ public class AnalysisWriter {
 
     }
 
-    public static void saveModules(Modules modules)
+    public static void saveModules(ModulesI modules)
             throws IOException, ParserConfigurationException, TransformerException {
         JFileChooser fileChooser = new JFileChooser(modules.getAnalysisFilename());
         fileChooser.setPreferredSize(new Dimension(800,640));
@@ -84,7 +85,7 @@ public class AnalysisWriter {
 
     }
 
-    public static Document prepareAnalysisDocument(Modules modules) throws ParserConfigurationException {
+    public static Document prepareAnalysisDocument(ModulesI modules) throws ParserConfigurationException {
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = doc.createElement("ROOT");
@@ -96,7 +97,7 @@ public class AnalysisWriter {
 
         // Creating a module collection holding the single-instance modules (input,
         // output and global variables)
-        Modules singleModules = new Modules();
+        ModulesI singleModules = new Modules();
         singleModules.add(modules.getInputControl());
         singleModules.add(modules.getOutputControl());
 
@@ -109,7 +110,7 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareModulesXML(Document doc, Modules modules) {
+    public static Element prepareModulesXML(Document doc, ModulesI modules) {
         Element modulesElement = doc.createElement("MODULES");
 
         // Running through each parameter set (one for each module)

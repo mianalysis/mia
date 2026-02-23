@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -57,7 +57,7 @@ public class ParentObjectID extends Module {
      */
     public static final String PARENT_OBJECT = "Parent object";
 
-    public ParentObjectID(Modules modules) {
+    public ParentObjectID(ModulesI modules) {
         super("Parent object ID", modules);
     }
 

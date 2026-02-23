@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
@@ -89,7 +89,7 @@ public class ShowImage extends Module {
 
     public interface ChannelModes extends ImageI.DisplayModes {}
 
-    public ShowImage(Modules modules) {
+    public ShowImage(ModulesI modules) {
         super("Show image", modules);
 
         // This module likely wants to have this enabled (otherwise it does nothing)

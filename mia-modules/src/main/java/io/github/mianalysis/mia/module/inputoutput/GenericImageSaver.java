@@ -11,7 +11,7 @@ import ij.process.ImageConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver.ChannelModes;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver.CompressionModes;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver.FileFormats;
@@ -108,7 +108,7 @@ public class GenericImageSaver extends Module {
 	*/
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
-    public GenericImageSaver(Modules modules) {
+    public GenericImageSaver(ModulesI modules) {
         super("Save image (generic)", modules);
         deprecated = true;
     }

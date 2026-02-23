@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
@@ -87,7 +87,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 	*/
     public static final String PROJECTION_MODE = "Projection mode";
 
-    public ProjectImage(Modules modules) {
+    public ProjectImage(ModulesI modules) {
         super("Project image", modules);
     }
 

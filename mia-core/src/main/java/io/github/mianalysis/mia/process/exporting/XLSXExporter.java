@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 
 public class XLSXExporter {
 
-    public void exportSummary(String path, Workspaces workspaces, Modules modules) {
+    public void exportSummary(String path, Workspaces workspaces, ModulesI modules) {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Summary");
@@ -34,7 +34,7 @@ public class XLSXExporter {
         }
     }
 
-    public void addMetadataSummary(Sheet sheet, LinkedHashMap<Integer,WorkspaceI> workspaces, Modules modules) {
+    public void addMetadataSummary(Sheet sheet, LinkedHashMap<Integer,WorkspaceI> workspaces, ModulesI modules) {
         MetadataRefs metadataRefs = modules.getMetadataRefs(null);
 
         // Iterating over each metadata value, adding values

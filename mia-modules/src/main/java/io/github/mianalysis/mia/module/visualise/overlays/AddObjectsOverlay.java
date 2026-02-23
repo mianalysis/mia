@@ -32,7 +32,7 @@ import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -242,7 +242,7 @@ public class AddObjectsOverlay extends Module {
 	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddObjectsOverlay(Modules modules) {
+    public AddObjectsOverlay(ModulesI modules) {
         super("Add overlay", modules);
         deprecated = true;
     }

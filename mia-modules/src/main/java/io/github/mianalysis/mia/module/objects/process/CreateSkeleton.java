@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.binary.Skeletonise;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
@@ -238,7 +238,7 @@ public class CreateSkeleton extends Module {
 
     }
 
-    public CreateSkeleton(Modules modules) {
+    public CreateSkeleton(ModulesI modules) {
         super("Create skeleton", modules);
     }
 

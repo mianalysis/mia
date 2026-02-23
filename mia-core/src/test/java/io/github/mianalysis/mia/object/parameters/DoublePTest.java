@@ -1,23 +1,29 @@
 package io.github.mianalysis.mia.object.parameters;
 
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.parameters.text.DoubleP;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 
 public class DoublePTest {
     private static double tolerance = 1E-10;
 
     @Test
     public void getRawStringValueProvidedInteger() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,2);
@@ -28,7 +34,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvided4DP() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,3.142);
@@ -39,7 +45,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvided10DP() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,1.2345678901);
@@ -50,7 +56,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvidedScientific() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,6.46E-42);
@@ -61,7 +67,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvidedBlank() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -72,7 +78,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvidedInteger() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,2);
@@ -83,7 +89,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvided4dp() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,3.142);
@@ -94,7 +100,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvided10DP() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,1.2345678901);
@@ -105,7 +111,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvidedScientific() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,6.46E-42);
@@ -116,7 +122,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvidedBlank() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -128,7 +134,7 @@ public class DoublePTest {
 
     @Test
     public void duplicate() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,42.54);
@@ -143,7 +149,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvidedInteger() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -155,7 +161,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvided4dp() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -167,7 +173,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvided10DP() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -179,7 +185,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvidedScientific() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -191,7 +197,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvidedBlank() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,12);
@@ -205,7 +211,7 @@ public class DoublePTest {
     @Test
     public void verifyDouble() {
         // It shouldn't be possible to get a false value here.
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,-23.5423423);
@@ -216,7 +222,7 @@ public class DoublePTest {
 
     @Test
     public void appendXMLAttributes() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,-23.5423423);
@@ -242,7 +248,7 @@ public class DoublePTest {
 
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,-23.5423423);

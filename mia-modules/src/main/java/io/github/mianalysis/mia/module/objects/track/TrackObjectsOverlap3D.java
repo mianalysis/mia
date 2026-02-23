@@ -10,7 +10,7 @@ import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractObjectTracking;
 import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractSplittingMergingObjectTracking;
 import io.github.mianalysis.mia.module.objects.track.trackmate.OverlapTracker3DFactory;
@@ -39,7 +39,7 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
         String IoU = "IoU";
     }
 
-    public TrackObjectsOverlap3D(Modules modules) {
+    public TrackObjectsOverlap3D(ModulesI modules) {
         super("Overlap tracking 3D", modules);
     }
 

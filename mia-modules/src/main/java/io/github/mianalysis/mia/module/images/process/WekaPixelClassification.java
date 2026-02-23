@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -140,7 +140,7 @@ public class WekaPixelClassification extends Module {
 	*/
     public static final String TILE_FACTOR = "Tile factor";
 
-    public WekaPixelClassification(Modules modules) {
+    public WekaPixelClassification(ModulesI modules) {
         super("Weka pixel classification", modules);
     }
 

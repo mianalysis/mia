@@ -12,7 +12,7 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -195,7 +195,7 @@ public class FitActiveContours extends Module {
      */
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
-    public FitActiveContours(Modules modules) {
+    public FitActiveContours(ModulesI modules) {
         super("Fit active contours", modules);
     }
 

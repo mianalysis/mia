@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.gui.regions.parameterlist.VisibleCheck;
 import io.github.mianalysis.mia.gui.regions.processingpanel.ModuleTitle;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
@@ -79,7 +79,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, Modules modules, Module module, boolean editable) {
+    public JPanel createParameterControl(Parameter parameter, ModulesI modules, Module module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         paramPanel.setOpaque(false);
 

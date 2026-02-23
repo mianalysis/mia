@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -76,7 +76,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     */
     public static final String RESULT_SEPARATOR = "Result";
 
-    public FixedTextCondition(Modules modules) {
+    public FixedTextCondition(ModulesI modules) {
         super("Fixed text condition", modules);
     }
 
@@ -110,7 +110,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
         if (idx >= modules.size())
             redirectModuleID = null;
         else
-            redirectModuleID = modules.get(idx).getModuleID();
+            redirectModuleID = modules.getAtIndex(idx).getModuleID();
 
         String testValue = parameters.getValue(TEST_VALUE, workspace);
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION, workspace);

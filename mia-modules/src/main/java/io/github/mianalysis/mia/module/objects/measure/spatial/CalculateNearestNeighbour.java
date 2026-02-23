@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
 import io.github.mianalysis.mia.object.ObjsI;
@@ -252,7 +252,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
         String NN_ID = "NN_NEIGHBOUR_ID";
     }
 
-    public CalculateNearestNeighbour(Modules modules) {
+    public CalculateNearestNeighbour(ModulesI modules) {
         super("Calculate nearest neighbour", modules);
     }
 

@@ -1,21 +1,26 @@
 package io.github.mianalysis.mia.object.parameters;
 
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.mia.module.Modules;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 
 public class BooleanPTest {
 
     @Test
     public void testDuplicate() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -29,7 +34,7 @@ public class BooleanPTest {
 
     @Test
     public void testFlipBoolean() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -45,7 +50,7 @@ public class BooleanPTest {
 
     @Test
     public void testGetRawStringValueTrue() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -56,7 +61,7 @@ public class BooleanPTest {
 
     @Test
     public void testGetRawStringValueFalse() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
@@ -67,7 +72,7 @@ public class BooleanPTest {
 
     @Test
     public void testSetValueFromStringTrue() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
@@ -80,7 +85,7 @@ public class BooleanPTest {
 
     @Test
     public void testSetValueFromStringFalse() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -93,7 +98,7 @@ public class BooleanPTest {
 
     @Test
     public void testVerifyTrue() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -104,7 +109,7 @@ public class BooleanPTest {
 
     @Test
     public void testVerifyFalse() {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
@@ -115,7 +120,7 @@ public class BooleanPTest {
 
     @Test
     public void testAppendXMLAttributes() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -141,7 +146,7 @@ public class BooleanPTest {
 
     @Test
     public void testSetAttributesFromXML() throws ParserConfigurationException {
-        Modules modules = new Modules();
+        ModulesI modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);

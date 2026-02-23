@@ -16,7 +16,7 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractRegistration;
 import io.github.mianalysis.mia.object.Workspace;
@@ -48,7 +48,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
 
     public static final String SPLINE_GRID_SPACING = "Spline grid spacing";
 
-    public ElastixRegistration(Modules modules) {
+    public ElastixRegistration(ModulesI modules) {
         super("Elastix registration", modules);
     }
 

@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -86,7 +86,7 @@ public class FitLongestChord extends Module {
      */
     public static final String STORE_END_POINTS = "Store end points";
 
-    public FitLongestChord(Modules modules) {
+    public FitLongestChord(ModulesI modules) {
         super("Fit longest chord", modules);
     }
 

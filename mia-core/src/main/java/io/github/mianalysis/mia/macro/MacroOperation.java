@@ -4,7 +4,7 @@ import org.scijava.plugin.SciJavaPlugin;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 
 public abstract class MacroOperation extends ExtensionDescriptor implements SciJavaPlugin {
@@ -26,7 +26,7 @@ public abstract class MacroOperation extends ExtensionDescriptor implements SciJ
     }
     
     public abstract int[] getArgumentTypes();
-    public abstract String action(Object[] objects, WorkspaceI workspace, Modules modules);
+    public abstract String action(Object[] objects, WorkspaceI workspace, ModulesI modules);
     public abstract String getArgumentsDescription();
     public abstract String getVersionNumber();
     public abstract String getDescription();

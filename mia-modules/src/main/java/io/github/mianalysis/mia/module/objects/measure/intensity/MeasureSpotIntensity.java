@@ -7,7 +7,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -148,7 +148,7 @@ public class MeasureSpotIntensity extends Module {
         return "SPOT_INTENSITY // " + imageName + "_" + measurement;
     }
 
-    public MeasureSpotIntensity(Modules modules) {
+    public MeasureSpotIntensity(ModulesI modules) {
         super("Measure spot intensity", modules);
         deprecated = true;
     }

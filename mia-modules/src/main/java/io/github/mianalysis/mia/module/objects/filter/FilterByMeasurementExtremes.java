@@ -11,7 +11,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -96,7 +96,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
      */
     public static final String N_MEASUREMENTS = "Number of measurements";
 
-    public FilterByMeasurementExtremes(Modules modules) {
+    public FilterByMeasurementExtremes(ModulesI modules) {
         super("Measurement extremes", modules);
     }
 

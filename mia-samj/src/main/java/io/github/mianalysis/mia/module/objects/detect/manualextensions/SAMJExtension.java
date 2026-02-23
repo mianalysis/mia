@@ -36,7 +36,7 @@ import ij.gui.Roi;
 import io.bioimage.modelrunner.apposed.appose.MambaInstallException;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -214,7 +214,7 @@ public class SAMJExtension implements ManualExtension, MouseListener {
                 
                 Thread t = new Thread(() -> {
                     // Running modules up to this point
-                    Modules modules = module.getModules();
+                    ModulesI modules = module.getModules();
                     for (Module currModule : modules) {
                         if (currModule == module)
                             break;

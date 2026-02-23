@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.images.transform.registration.abstrakt;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -59,7 +59,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
 
     }
 
-    public AbstractBUnwarpJRegistration(String name, Modules modules) {
+    public AbstractBUnwarpJRegistration(String name, ModulesI modules) {
         super(name, modules);
     }
 

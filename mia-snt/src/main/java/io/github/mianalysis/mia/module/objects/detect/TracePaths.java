@@ -11,7 +11,7 @@ import ij.process.ImageStatistics;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.process.CreateSkeleton;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -74,7 +74,7 @@ public class TracePaths<T extends RealType<T> & NativeType<T>> extends Module {
 
     public static final String NODE_INTERVAL = "Node interval";
 
-    public TracePaths(Modules modules) {
+    public TracePaths(ModulesI modules) {
         super("Trace paths", modules);
     }
 

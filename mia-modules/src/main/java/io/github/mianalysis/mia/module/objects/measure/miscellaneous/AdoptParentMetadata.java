@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -66,7 +66,7 @@ public class AdoptParentMetadata extends Module {
         return "PARENT_STATS // " + parentObjectName + " // [" + metadataItem + "]";
     }
 
-    public AdoptParentMetadata(Modules modules) {
+    public AdoptParentMetadata(ModulesI modules) {
         super("Adopt parent metadata", modules);
     }
 

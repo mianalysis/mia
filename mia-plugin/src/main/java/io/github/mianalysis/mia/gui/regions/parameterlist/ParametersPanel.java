@@ -17,7 +17,7 @@ import javax.swing.JTextPane;
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
@@ -74,7 +74,7 @@ public class ParametersPanel extends JPanel {
     }
 
     public void updatePanel(Module module) {
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
 
         ComponentFactory componentFactory = GUI.getComponentFactory();
         InputControl inputControl = modules.getInputControl();
@@ -121,22 +121,22 @@ public class ParametersPanel extends JPanel {
         // If selected, adding the measurement selector for output control
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE,null);
         if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
-            MetadataRefs metadataRefs = modules.getMetadataRefs();
+            MetadataRefs metadataRefs = modules.getMetadataRefs(null);
             addRefExportControls(metadataRefs,"Workspace metadata",componentFactory,c);
 
             LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null,false);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
-                ImageMeasurementRefs measurementReferences = modules.getImageMeasurementRefs(imageName);
+                ImageMeasurementRefs measurementReferences = modules.getImageMeasurementRefs(imageName, null);
                 addRefExportControls(measurementReferences,"\""+imageName+"\" image measurements",componentFactory,c);
             }
 
             LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null,false);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
-                ObjMetadataRefs objectMetadataReferences = modules.getObjectMetadataRefs(objectName);
+                ObjMetadataRefs objectMetadataReferences = modules.getObjectMetadataRefs(objectName, null);
                 addRefExportControls(objectMetadataReferences,"\""+objectName+"\" object metadata",componentFactory,c);
-                ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName);
+                ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName, null);
                 addSummaryRefExportControls(measurementReferences,"\""+objectName+"\" object measurements",componentFactory,c);
             }            
         }

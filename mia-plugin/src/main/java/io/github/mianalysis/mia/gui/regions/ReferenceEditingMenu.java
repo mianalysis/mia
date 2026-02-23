@@ -99,7 +99,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
         Module module = parameter.getModule();
 
-        LinkedHashSet<OutputImageP> availableImages = module.getModules().getAvailableImages(module);
+        LinkedHashSet<OutputImageP> availableImages = module.getModules().getAvailableImages(module, true);
         for (OutputImageP availableImage : availableImages) {
             // Getting measurements
             ImageMeasurementRefs measurements = module.getModules().getImageMeasurementRefs(
@@ -160,7 +160,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
         Module module = parameter.getModule();
 
-        LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module);
+        LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module, true);
         
         for (OutputObjectsP availableObject : availableObjects) {
             JMenuItem objectItem = new JMenuItem(availableObject.getObjectsName());
@@ -185,7 +185,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
         Module module = parameter.getModule();
 
-        LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module);
+        LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module, true);
         for (OutputObjectsP availableObject : availableObjects) {
             // Getting measurements
             ObjMeasurementRefs measurements = module.getModules()

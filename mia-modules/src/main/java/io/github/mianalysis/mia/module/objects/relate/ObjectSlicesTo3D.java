@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -43,7 +43,7 @@ public class ObjectSlicesTo3D extends Module {
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String MAX_MISSING_SLICES = "Max number of missing slices";
 
-    public ObjectSlicesTo3D(Modules modules) {
+    public ObjectSlicesTo3D(ModulesI modules) {
         super("Object slices to 3D", modules);
     }
 

@@ -12,7 +12,7 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -66,7 +66,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
     public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
     public static final String RADIUS_RESIZE = "Output radius resize (px)";
 
-    public CircleHoughDetection(Modules modules) {
+    public CircleHoughDetection(ModulesI modules) {
         super("Circle detection", modules);
     }
 

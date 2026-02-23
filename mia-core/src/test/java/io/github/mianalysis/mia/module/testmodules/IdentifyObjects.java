@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.testmodules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactories;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -37,7 +37,7 @@ public class IdentifyObjects extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
-    public IdentifyObjects(Modules modules) {
+    public IdentifyObjects(ModulesI modules) {
         super("Identify objects", modules);
     }
 

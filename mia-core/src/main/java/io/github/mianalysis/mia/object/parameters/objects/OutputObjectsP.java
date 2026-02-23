@@ -73,7 +73,7 @@ public class OutputObjectsP extends TextType {
             return false;
 
         if (module.isEnabled()) {
-            LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module);
+            LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module, true);
             for (OutputObjectsP availableObject : availableObjects)
                 if (availableObject.getObjectsName().equals(objectsName))
                     return false;

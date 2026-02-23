@@ -1,10 +1,11 @@
 package io.github.mianalysis.mia.object.parameters.objects;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.NotNull;
-import java.util.LinkedHashSet;
+
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 
 public class InputTrackObjectsP extends InputObjectsP {
     public InputTrackObjectsP(String name, Module module) {
@@ -21,7 +22,8 @@ public class InputTrackObjectsP extends InputObjectsP {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,OutputTrackObjectsP.class);
+        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjectsMatchingClass(module,
+                OutputTrackObjectsP.class, true);
         return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
     }
 }

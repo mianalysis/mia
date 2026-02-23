@@ -6,7 +6,7 @@ import ij.IJ;
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -21,7 +21,7 @@ public class SwingPreferences extends Preferences {
     public interface Themes extends io.github.mianalysis.mia.gui.Themes {
     };
 
-    public SwingPreferences(Modules modules) {
+    public SwingPreferences(ModulesI modules) {
         super(modules);
     }
 

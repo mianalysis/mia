@@ -23,7 +23,7 @@ import ij.process.StackStatistics;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
@@ -142,7 +142,7 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
     */
     public static final String SAVE_HISTOGRAM = "Save histogram";
 
-    public MeasureImageIntensityOrientation(Modules modules) {
+    public MeasureImageIntensityOrientation(ModulesI modules) {
         super("Measure image intensity orientation", modules);
     }
 

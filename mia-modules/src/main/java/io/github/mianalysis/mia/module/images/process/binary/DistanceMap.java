@@ -15,7 +15,7 @@ import inra.ijpb.binary.distmap.ChamferMasks3D;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
@@ -140,7 +140,7 @@ public class DistanceMap extends Module {
     public interface BinaryLogic extends BinaryLogicInterface {
     }
 
-    public DistanceMap(Modules modules) {
+    public DistanceMap(ModulesI modules) {
         super("Calculate distance map", modules);
     }
 

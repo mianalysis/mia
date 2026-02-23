@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.FillHoles;
 import io.github.mianalysis.mia.object.ObjsFactories;
@@ -74,7 +74,7 @@ public class FillHolesInObjects extends Module {
 	*/
     public static final String METHOD = "Method";
 
-    public FillHolesInObjects(Modules modules) {
+    public FillHolesInObjects(ModulesI modules) {
         super("Fill holes in objects", modules);
     }
 

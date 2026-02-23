@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
@@ -66,7 +66,7 @@ public class AdoptParentMeasurement extends Module {
         return "PARENT_STATS // " + parentObjectName + " // [" + measurement + "]";
     }
 
-    public AdoptParentMeasurement(Modules modules) {
+    public AdoptParentMeasurement(ModulesI modules) {
         super("Adopt parent measurement", modules);
     }
 

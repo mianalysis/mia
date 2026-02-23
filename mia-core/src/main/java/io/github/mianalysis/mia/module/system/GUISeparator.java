@@ -5,9 +5,9 @@ import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -50,12 +50,12 @@ public class GUISeparator extends Module {
 	*/
     public static final String EXPANDED_EDITING = "Expanded in editing view";
 
-    public GUISeparator(Modules modules) {
+    public GUISeparator(ModulesI modules) {
         super("GUI separator", modules);
     }
 
-    public Modules getProcessingViewModules() {
-        Modules processingModules = new Modules();
+    public ModulesI getProcessingViewModules() {
+        ModulesI processingModules = new Modules();
 
         // If this separator isn't visible in the processing view it contains no modules
         if (!((boolean) parameters.getValue(SHOW_PROCESSING,null)))
@@ -91,8 +91,8 @@ public class GUISeparator extends Module {
 
     }
 
-    public Modules getEditingModules() {
-        Modules editingModules = new Modules();
+    public ModulesI getEditingModules() {
+        ModulesI editingModules = new Modules();
 
         boolean record = false;
         for (Module module : modules.values()) {
@@ -111,7 +111,7 @@ public class GUISeparator extends Module {
 
             // If currently recording, add the module
             if (record)
-                editingModules.add(module);
+                editingModules.add((Module) module);
 
         }
 

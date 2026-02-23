@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
@@ -81,19 +81,19 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                 }
                 break;
             case ALL:
-                Modules modules = GUI.getModules();
+                ModulesI modules = GUI.getModules();
 
-                for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
-                    ObjMeasurementRefs refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
+                for (OutputObjectsP objectName:modules.getAvailableObjects(null, true)) {
+                    ObjMeasurementRefs refs = modules.getObjectMeasurementRefs(objectName.getObjectsName(), null);
                     for (SummaryRef ref:refs.values()) setStates(ref);
                 }
 
-                for (OutputImageP imageName:modules.getAvailableImages(null)) {
-                    ImageMeasurementRefs refs = modules.getImageMeasurementRefs(imageName.getImageName());
+                for (OutputImageP imageName:modules.getAvailableImages(null, true)) {
+                    ImageMeasurementRefs refs = modules.getImageMeasurementRefs(imageName.getImageName(), null);
                     for (ExportableRef ref:refs.values()) ref.setExportIndividual(isSelected());
                 }
 
-                MetadataRefs metadataRefs = modules.getMetadataRefs();
+                MetadataRefs metadataRefs = modules.getMetadataRefs(null);
                 for (ExportableRef ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
 
                 break;

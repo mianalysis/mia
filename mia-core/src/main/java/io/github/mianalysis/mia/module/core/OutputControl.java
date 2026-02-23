@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.script.RunMacro.MacroModes;
 import io.github.mianalysis.mia.object.Workspace;
@@ -306,7 +306,7 @@ public class OutputControl extends AbstractMacroRunner {
     */
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
 
-    public OutputControl(Modules modules) {
+    public OutputControl(ModulesI modules) {
         super("Output control", modules);
     }
 

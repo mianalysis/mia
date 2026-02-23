@@ -10,7 +10,7 @@ import com.drew.lang.annotations.Nullable;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
@@ -63,7 +63,7 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
 	*/
     public static final String MASK_IMAGE = "Mask image";
 
-    public MeasureGiniCoefficient(Modules modules) {
+    public MeasureGiniCoefficient(ModulesI modules) {
         super("Measure Gini coefficient", modules);
     }
 

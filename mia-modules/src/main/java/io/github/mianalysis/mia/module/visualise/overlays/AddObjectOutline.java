@@ -16,7 +16,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -123,7 +123,7 @@ public class AddObjectOutline extends AbstractOverlay {
 	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddObjectOutline(Modules modules) {
+    public AddObjectOutline(ModulesI modules) {
         super("Add object outline", modules);
     }
 

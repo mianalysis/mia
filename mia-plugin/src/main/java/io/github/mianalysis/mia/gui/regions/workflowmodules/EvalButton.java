@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.svg.SVGButton;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.WorkspaceI;
@@ -200,7 +200,7 @@ public class EvalButton extends SVGButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
 
         // Checking if InputControl has changed since last eval
         Parameters currentParameters = modules.getInputControl().getAllParameters();
@@ -268,7 +268,7 @@ public class EvalButton extends SVGButton implements ActionListener {
             t = new Thread(() -> {
                 while (idx > GUI.getLastModuleEval()) {
                     int i = GUI.getLastModuleEval() + 1;
-                    Module module = GUI.getModules().get(i);
+                    Module module = GUI.getModules().getAtIndex(i);
                     if (module.isEnabled() && module.isRunnable()) {
                         try {
                             if (!evaluateModule(module)) {
@@ -291,7 +291,7 @@ public class EvalButton extends SVGButton implements ActionListener {
     }
 
     public boolean evaluateModule(Module module) {
-        Modules modules = GUI.getModules();
+        ModulesI modules = GUI.getModules();
         WorkspaceI testWorkspace = GUI.getTestWorkspace();
 
         // Setting the index to the previous module. This will make the
