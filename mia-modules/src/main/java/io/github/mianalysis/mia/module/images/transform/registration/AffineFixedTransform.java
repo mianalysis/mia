@@ -27,8 +27,10 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -71,6 +73,11 @@ public class AffineFixedTransform extends Module {
     * 
     */
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
+
+    /**
+     * 
+     */
+    public static final String TRANSFORMATION_MESSAGE = "Transformation message";
 
     /**
     * 
@@ -242,6 +249,9 @@ public class AffineFixedTransform extends Module {
 
         parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
         parameters.add(new StringP(TRANSFORMATION, this));
+        parameters.add(new MessageP(TRANSFORMATION_MESSAGE, this,
+                "Transforms are expected as comma-separated lists of 6 numbers.  These should be in the order M00, M10, M01, M11, M02, M12, where Mij is the i,jth element of the 2x3 affine transformation matrix.",
+                ParameterState.MESSAGE));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
@@ -261,6 +271,7 @@ public class AffineFixedTransform extends Module {
 
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION));
+        returnedParameters.add(parameters.getParameter(TRANSFORMATION_MESSAGE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
@@ -279,8 +290,8 @@ public class AffineFixedTransform extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
