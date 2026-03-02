@@ -42,7 +42,7 @@ public abstract class BooleanType extends TextSwitchableParameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getBooleanControl(this);
     }
 

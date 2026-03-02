@@ -4,7 +4,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ImageNamesType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class InputImageP extends ImageNamesType {
     public InputImageP(String name, ModuleI module) {
@@ -30,7 +30,7 @@ public class InputImageP extends ImageNamesType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         InputImageP newParameter = new InputImageP(getName(), newModule, getImageName(), getDescription());
 
         newParameter.setNickname(getNickname());

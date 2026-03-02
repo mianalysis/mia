@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -210,7 +210,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String parameterName = attributes.getNamedItem("NAME").getNodeValue();
-            Parameter parameter = module.getParameter(parameterName);
+            ParameterI parameter = module.getParameter(parameterName);
 
             // If parameter isn't found, try the lost and found
             if (parameter == null) {

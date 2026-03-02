@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.refs.abstrakt.AbstractRef;
 
-public abstract class Parameter extends AbstractRef {
+public abstract class Parameter extends AbstractRef implements ParameterI {
     protected ModuleI module;
     private ParameterControl control;
     private boolean visible = false;
@@ -35,7 +35,7 @@ public abstract class Parameter extends AbstractRef {
 
     // ABSTRACT METHODS
 
-    protected abstract ParameterControl initialiseControl();
+    public abstract ParameterControl initialiseControl();
 
     public abstract <T> T getValue(WorkspaceI workspace);
 
@@ -47,7 +47,7 @@ public abstract class Parameter extends AbstractRef {
 
     public abstract boolean verify();
 
-    public abstract <T extends Parameter> T duplicate(ModuleI newModule);
+    public abstract <T extends ParameterI> T duplicate(ModuleI newModule);
 
     // PUBLIC METHODS
 
@@ -61,7 +61,7 @@ public abstract class Parameter extends AbstractRef {
         return getRawStringValue();
     }
 
-    public Parameter createNewInstance(String name, ModuleI module)
+    public ParameterI createNewInstance(String name, ModuleI module)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Constructor[] constructors = this.getClass().getConstructors();
 
@@ -72,7 +72,7 @@ public abstract class Parameter extends AbstractRef {
 
             Class[] parameterTypes = constructor.getParameterTypes();
             if (parameterTypes[0] == String.class && parameterTypes[1] == ModuleI.class)
-                return (Parameter) constructor.newInstance(name, module);
+                return (ParameterI) constructor.newInstance(name, module);
         }
 
         return null;

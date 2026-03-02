@@ -1,7 +1,7 @@
 package io.github.mianalysis.mia.object.parameters.text;
 
 import io.github.mianalysis.mia.module.ModuleI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
@@ -28,7 +28,7 @@ public class SeriesSingleSelectorP extends IntegerP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name, newModule, value, getDescription());
 
         newParameter.setNickname(getNickname());

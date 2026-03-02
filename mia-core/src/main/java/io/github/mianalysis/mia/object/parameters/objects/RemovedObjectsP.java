@@ -4,7 +4,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ObjectNamesType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class RemovedObjectsP extends ObjectNamesType {
     public RemovedObjectsP(String name, ModuleI module) {
@@ -22,7 +22,7 @@ public class RemovedObjectsP extends ObjectNamesType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         RemovedObjectsP newParameter = new RemovedObjectsP(getName(), newModule, choice, getDescription());
 
         newParameter.setNickname(getNickname());

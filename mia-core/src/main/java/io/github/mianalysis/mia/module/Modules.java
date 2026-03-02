@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.RemovableInputImageP;
 import io.github.mianalysis.mia.object.parameters.RemovedImageP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.objects.RemovedObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -414,7 +414,7 @@ public class Modules implements ModulesI {
     /*
      * Returns an LinkedHashSet of all parameters of a specific type
      */
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, ModuleI cutoffModule) {
+    public <T extends ParameterI> LinkedHashSet<T> getParametersMatchingType(Class<T> type, ModuleI cutoffModule) {
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
 
         for (ModuleI module : this) {
@@ -430,7 +430,7 @@ public class Modules implements ModulesI {
 
             // Running through all parameters, adding all images to the list
             Parameters currParameters = module.updateAndGetParameters();
-            for (Parameter currParameter : currParameters.values()) {
+            for (ParameterI currParameter : currParameters.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
                 }
@@ -441,12 +441,12 @@ public class Modules implements ModulesI {
 
     }
 
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
+    public <T extends ParameterI> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
         return getParametersMatchingType(type, null);
     }
 
-    public Parameter getObjectSource(String objectName, ModuleI cutoffModule) {
-        Parameter sourceParameter = null;
+    public ParameterI getObjectSource(String objectName, ModuleI cutoffModule) {
+        ParameterI sourceParameter = null;
 
         for (ModuleI module : this) {
             if (module == cutoffModule)
@@ -488,7 +488,7 @@ public class Modules implements ModulesI {
             if (!ignoreRemoved || removedObjects == null)
                 continue;
 
-            for (Parameter removedObject : removedObjects) {
+            for (ParameterI removedObject : removedObjects) {
                 String removeObjectName = removedObject.getRawStringValue();
                 objects.removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
             }
@@ -502,8 +502,8 @@ public class Modules implements ModulesI {
         return getAvailableObjectsMatchingClass(cutoffModule, OutputObjectsP.class, ignoreRemoved);
     }
 
-    public Parameter getImageSource(String imageName, ModuleI cutoffModule) {
-        Parameter sourceParameter = null;
+    public ParameterI getImageSource(String imageName, ModuleI cutoffModule) {
+        ParameterI sourceParameter = null;
 
         for (ModuleI module : this) {
             if (module == cutoffModule)
@@ -544,7 +544,7 @@ public class Modules implements ModulesI {
             if (!ignoreRemoved || removedImages == null)
                 continue;
 
-            for (Parameter removedImage : removedImages) {
+            for (ParameterI removedImage : removedImages) {
                 String removeImageName = removedImage.getRawStringValue();
                 images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
             }

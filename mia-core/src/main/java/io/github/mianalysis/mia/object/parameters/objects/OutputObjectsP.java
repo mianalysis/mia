@@ -6,7 +6,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
 public class OutputObjectsP extends TextType {
@@ -55,7 +55,7 @@ public class OutputObjectsP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         OutputObjectsP newParameter = new OutputObjectsP(getName(), newModule, objectsName, getDescription());
 
         newParameter.setNickname(getNickname());

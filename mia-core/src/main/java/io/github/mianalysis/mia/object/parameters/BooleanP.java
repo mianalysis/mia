@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.parameters;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.BooleanType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class BooleanP extends BooleanType {
     public BooleanP(String name, ModuleI module, boolean enabled) {
@@ -14,7 +14,7 @@ public class BooleanP extends BooleanType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         BooleanP newParameter = new BooleanP(getName(),newModule,getValue(null),getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

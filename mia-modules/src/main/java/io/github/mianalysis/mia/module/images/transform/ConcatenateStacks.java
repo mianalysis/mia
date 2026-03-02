@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -510,7 +510,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         }
 
         @Override
-        public <T extends Parameter> T duplicate(ModuleI newModule) {
+        public <T extends ParameterI> T duplicate(ModuleI newModule) {
             CustomInputImageP newParameter = new CustomInputImageP(name, module, getImageName(), getDescription());
 
             newParameter.setNickname(getNickname());

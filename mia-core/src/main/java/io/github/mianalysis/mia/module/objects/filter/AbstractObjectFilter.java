@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
@@ -105,12 +105,12 @@ public abstract class AbstractObjectFilter extends Module {
         if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
             // Determining type of input object
             String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-            Parameter objectSourceParameter = modules.getObjectSource(inputObjectName, this);
+            ParameterI objectSourceParameter = modules.getObjectSource(inputObjectName, this);
 
             if (objectSourceParameter != null) {
                 // Transferring details
-                Parameter oldOutputObjects = parameters.get(OUTPUT_FILTERED_OBJECTS);
-                Parameter newOutputObjects;
+                ParameterI oldOutputObjects = parameters.get(OUTPUT_FILTERED_OBJECTS);
+                ParameterI newOutputObjects;
                 try {
                     newOutputObjects = objectSourceParameter.createNewInstance(OUTPUT_FILTERED_OBJECTS, this);
                     newOutputObjects.setControl(oldOutputObjects.getControl());

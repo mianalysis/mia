@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
@@ -313,7 +313,7 @@ WorkspaceI workspace = null;
         // Adding all default parameters and adding transformation mode just after
         // registration separator
         Parameters defaultParameters = super.updateAndGetParameters();
-        for (Parameter parameter : defaultParameters.values()) {
+        for (ParameterI parameter : defaultParameters.values()) {
             returnedParameters.add(parameter);
             if (parameter.getName().equals(REGISTRATION_SEPARATOR))
                 returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));

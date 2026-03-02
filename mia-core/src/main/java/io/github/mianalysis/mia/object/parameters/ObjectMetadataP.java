@@ -4,7 +4,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class ObjectMetadataP extends ChoiceType {
     protected String objectName = "";
@@ -46,7 +46,7 @@ public class ObjectMetadataP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         ObjectMetadataP newParameter = new ObjectMetadataP(getName(), newModule, choice, objectName, getDescription());
 
         newParameter.setNickname(getNickname());

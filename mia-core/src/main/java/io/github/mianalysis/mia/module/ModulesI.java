@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -35,9 +35,9 @@ public interface ModulesI extends Refs<ModuleI>, Iterable<ModuleI> {
 
     public ModuleI getModuleByID(String ID);
 
-    public Parameter getImageSource(String imageName, ModuleI cutoffModule);
+    public ParameterI getImageSource(String imageName, ModuleI cutoffModule);
 
-    public Parameter getObjectSource(String objectName, ModuleI cutoffModule);
+    public ParameterI getObjectSource(String objectName, ModuleI cutoffModule);
 
     public boolean objectsExportMeasurements(String objectName);
 
@@ -57,7 +57,7 @@ public interface ModulesI extends Refs<ModuleI>, Iterable<ModuleI> {
 
     public PartnerRefs getPartnerRefs(@Nullable ModuleI cutoffModule);
 
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, @Nullable ModuleI cutoffModule);
+    public <T extends ParameterI> LinkedHashSet<T> getParametersMatchingType(Class<T> type, @Nullable ModuleI cutoffModule);
 
     public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjectsMatchingClass(ModuleI cutoffModule,
             Class<T> objectClass, boolean ignoreRemoved);

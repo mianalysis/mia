@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMetadataRef;
@@ -422,7 +422,7 @@ public class CombineObjectSets extends Module {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(ModuleI newModule) {
+        public <T extends ParameterI> T duplicate(ModuleI newModule) {
             CustomInputObjectsP newParameter = new CustomInputObjectsP(name, newModule, getRawStringValue(),
                     getDescription());
 

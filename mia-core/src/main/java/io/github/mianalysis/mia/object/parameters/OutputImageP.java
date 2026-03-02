@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.parameters;
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 
 public class OutputImageP extends StringP {
@@ -28,7 +28,7 @@ public class OutputImageP extends StringP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         OutputImageP newParameter = new OutputImageP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());

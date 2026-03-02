@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.CaretReporter;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextSwitchableParameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -77,12 +77,12 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
         if (reference instanceof TextType || (reference instanceof TextSwitchableParameter
                 && ((TextSwitchableParameter) reference).isShowText())) {
-            add(createDynamicVariableMenu((Parameter) reference));
-            add(createGlobalVariablesMenu((Parameter) reference));
+            add(createDynamicVariableMenu((ParameterI) reference));
+            add(createGlobalVariablesMenu((ParameterI) reference));
         }
     }
 
-    private static JMenu createDynamicVariableMenu(Parameter parameter) {
+    private static JMenu createDynamicVariableMenu(ParameterI parameter) {
         JMenu dynamicVariableMenu = new JMenu(INSERT_DYNAMIC_VALUE);
 
         dynamicVariableMenu.add(createImageMeasurementsMenu(parameter));
@@ -94,7 +94,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
     }
 
-    private static JMenu createImageMeasurementsMenu(Parameter parameter) {
+    private static JMenu createImageMeasurementsMenu(ParameterI parameter) {
         JMenu measurementsMenu = new JMenu(IMAGE_MEASUREMENTS);
 
         ModuleI module = parameter.getModule();
@@ -131,7 +131,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
     }
 
-    private static JMenu createMetadataMenu(Parameter parameter) {
+    private static JMenu createMetadataMenu(ParameterI parameter) {
         JMenu measurementsMenu = new JMenu(METADATA_ITEM);
 
         ModuleI module = parameter.getModule();
@@ -155,7 +155,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
     }
 
-    private static JMenu createObjectCountsMenu(Parameter parameter) {
+    private static JMenu createObjectCountsMenu(ParameterI parameter) {
         JMenu measurementsMenu = new JMenu(OBJECT_COUNTS);
 
         ModuleI module = parameter.getModule();
@@ -180,7 +180,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
     }
 
-    private static JMenu createObjectMeasurementsMenu(Parameter parameter) {
+    private static JMenu createObjectMeasurementsMenu(ParameterI parameter) {
         JMenu measurementsMenu = new JMenu(OBJECT_MEASUREMENTS);
 
         ModuleI module = parameter.getModule();
@@ -239,7 +239,7 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 
     }
 
-    private static JMenu createGlobalVariablesMenu(Parameter parameter) {
+    private static JMenu createGlobalVariablesMenu(ParameterI parameter) {
         JMenu globalVariablesMenu = new JMenu(INSERT_GLOBAL_VARIABLE);
 
         TreeSet<String> sortedNames = GlobalVariables.getGlobalVariables().keySet().stream()
@@ -291,10 +291,10 @@ public class ReferenceEditingMenu extends JPopupMenu implements ActionListener {
 }
 
 class DynamicVariableActionListener implements ActionListener {
-    private Parameter parameter;
+    private ParameterI parameter;
     private String stringToAdd;
 
-    public DynamicVariableActionListener(Parameter parameter, String stringToAdd) {
+    public DynamicVariableActionListener(ParameterI parameter, String stringToAdd) {
         this.parameter = parameter;
         this.stringToAdd = stringToAdd;
     }

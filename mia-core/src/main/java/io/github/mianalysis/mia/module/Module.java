@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -197,7 +197,7 @@ public abstract class Module extends AbstractRef implements Comparable, ModuleI 
         partnerRefs.add(ref);
     }
 
-    public <T extends Parameter> T getParameter(String name) {
+    public <T extends ParameterI> T getParameter(String name) {
         return parameters.getParameter(name);
     }
 
@@ -224,7 +224,7 @@ public abstract class Module extends AbstractRef implements Comparable, ModuleI 
 
     }
 
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
+    public <T extends ParameterI> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
         if (!isEnabled())
             return null;
         if (!isRunnable())
@@ -233,7 +233,7 @@ public abstract class Module extends AbstractRef implements Comparable, ModuleI 
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
         Parameters currParameters = updateAndGetParameters();
-        for (Parameter currParameter : currParameters.values()) {
+        for (ParameterI currParameter : currParameters.values()) {
             if (type.isInstance(currParameter))
                 parameters.add((T) currParameter);
 
@@ -246,11 +246,11 @@ public abstract class Module extends AbstractRef implements Comparable, ModuleI 
 
     }
 
-    public <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
+    public <T extends ParameterI> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
         LinkedHashMap<Integer, Parameters> collections = parameterGroup.getCollections(true);
         for (Parameters collection : collections.values()) {
-            for (Parameter currParameter : collection.values()) {
+            for (ParameterI currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
                 }
@@ -410,8 +410,8 @@ public abstract class Module extends AbstractRef implements Comparable, ModuleI 
         newModule.setRedirectModuleID(redirectModuleID);
 
         Parameters newParameters = newModule.getAllParameters();
-        for (Parameter parameter : parameters.values()) {
-            Parameter newParameter = parameter.duplicate(newModule);
+        for (ParameterI parameter : parameters.values()) {
+            ParameterI newParameter = parameter.duplicate(newModule);
             if (newParameter == null)
                 continue;
             newParameter.setModule(newModule);
@@ -518,16 +518,16 @@ public abstract class Module extends AbstractRef implements Comparable, ModuleI 
 
         NamedNodeMap map = node.getAttributes();
 
-        if (map.getNamedItem("ID") == null) {
+        if (map.getNamedItem("ID") == null)
             this.moduleID = String.valueOf(hashCode());
-        } else {
+        else
             this.moduleID = map.getNamedItem("ID").getNodeValue();
-        }
+        
         this.enabled = Boolean.parseBoolean(map.getNamedItem("ENABLED").getNodeValue());
         this.canBeDisabled = Boolean.parseBoolean(map.getNamedItem("DISABLEABLE").getNodeValue());
-        if (map.getNamedItem("SHOW_BASIC_TITLE") != null) {
+        if (map.getNamedItem("SHOW_BASIC_TITLE") != null)
             this.showProcessingViewTitle = Boolean.parseBoolean(map.getNamedItem("SHOW_BASIC_TITLE").getNodeValue());
-        }
+        
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
         this.notes = map.getNamedItem("NOTES").getNodeValue();
 

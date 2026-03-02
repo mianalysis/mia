@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -158,8 +158,8 @@ public class AnalysisWriter {
             return refsElement;
 
         for (Ref ref : refs.values()) {
-            if (ref instanceof Parameter) {
-                if (!((Parameter) ref).isExported())
+            if (ref instanceof ParameterI) {
+                if (!((ParameterI) ref).isExported())
                     continue;
             }
 

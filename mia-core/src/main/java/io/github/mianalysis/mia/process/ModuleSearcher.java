@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class ModuleSearcher { 
     private ModulesI modules;
@@ -138,7 +138,7 @@ public class ModuleSearcher {
             patterns.add(Pattern.compile(target));
 
         for (ModuleI module : modules) {
-            for (Parameter parameter : module.getAllParameters().values()) {
+            for (ParameterI parameter : module.getAllParameters().values()) {
                 for (Pattern pattern : patterns) {
                     Matcher matcher = pattern.matcher(parameter.getDescription());
                     while (matcher.find()) {

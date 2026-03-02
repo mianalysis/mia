@@ -40,7 +40,7 @@ import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
@@ -79,7 +79,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModulesI modules, ModuleI module, boolean editable) {
+    public JPanel createParameterControl(ParameterI parameter, ModulesI modules, ModuleI module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         paramPanel.setOpaque(false);
 
@@ -113,7 +113,7 @@ public class ComponentFactory {
             }
 
         } else if (parameter instanceof SeparatorP) {
-            Parameter firstParameter = module.updateAndGetParameters().values().iterator().next();
+            ParameterI firstParameter = module.updateAndGetParameters().values().iterator().next();
             // Add an extra space above a separator, unless it's the first parameter. We
             // also have to check if the first parameter is a ParameterGroup and if so,
             // whether the first parameter within this group is also a separator (this is
@@ -425,7 +425,7 @@ public class ComponentFactory {
 
     private void addProcessingParameters(ModuleI module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
             boolean editable) {
-        for (Parameter parameter : parameters.values()) {
+        for (ParameterI parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {
                 LinkedHashMap<Integer, Parameters> collections = ((ParameterGroup) parameter).getCollections(true);
                 for (Parameters collection : collections.values())

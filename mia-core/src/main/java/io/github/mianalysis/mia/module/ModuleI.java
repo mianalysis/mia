@@ -4,12 +4,10 @@ import java.util.LinkedHashSet;
 
 import org.scijava.plugin.SciJavaPlugin;
 
-import com.drew.metadata.Metadata;
-
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -196,7 +194,7 @@ public interface ModuleI extends Ref, SciJavaPlugin {
 
     public void addPartnerRef(PartnerRef ref);
 
-    public <T extends Parameter> T getParameter(String name);
+    public <T extends ParameterI> T getParameter(String name);
 
     public ModuleI updateParameterValue(String name, Object value);
 
@@ -208,9 +206,9 @@ public interface ModuleI extends Ref, SciJavaPlugin {
 
     public boolean invalidParameterIsVisible();
 
-    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type);
+    public <T extends ParameterI> LinkedHashSet<T> getParametersMatchingType(Class<T> type);
 
-    public <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
+    public <T extends ParameterI> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters);
 
     public ModulesI getModules();

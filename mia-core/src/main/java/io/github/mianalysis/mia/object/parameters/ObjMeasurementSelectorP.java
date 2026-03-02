@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
@@ -36,7 +37,7 @@ public class ObjMeasurementSelectorP extends Parameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getRefSelectorControl(this);
     }
 
@@ -85,7 +86,7 @@ public class ObjMeasurementSelectorP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         return null;
     }
 

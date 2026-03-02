@@ -7,7 +7,7 @@ import io.github.mianalysis.mia.gui.HyperlinkOpener;
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -45,7 +45,7 @@ public class HelpArea extends JTextPane {
         sb.append("<b>DESCRIPTION</b><br>").append(module.getDescription()).append("<br><br><br>")
                 .append("<b>PARAMETERS</b><br>");
 
-        for (Parameter parameter : module.getAllParameters().values()) {
+        for (ParameterI parameter : module.getAllParameters().values()) {
             if (parameter.isExported())
                 sb.append(getParameterHelpText(parameter));
         }
@@ -84,7 +84,7 @@ public class HelpArea extends JTextPane {
 
     }
 
-    private static String getParameterHelpText(Parameter parameter) {
+    private static String getParameterHelpText(ParameterI parameter) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<font face=\"sans-serif\" size=\"3\"><i>").append(parameter.getName())
@@ -92,7 +92,7 @@ public class HelpArea extends JTextPane {
                 .append(parameter.getDescription()).append("</font></div><br>");
 
         if (parameter instanceof ParameterGroup) {
-            for (Parameter currParameter : ((ParameterGroup) parameter).getTemplateParameters().values()) {
+            for (ParameterI currParameter : ((ParameterGroup) parameter).getTemplateParameters().values()) {
                 if (currParameter.isExported())
                     sb.append(getParameterHelpText(currParameter));
             }

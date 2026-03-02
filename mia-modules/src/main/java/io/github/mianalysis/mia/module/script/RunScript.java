@@ -48,7 +48,7 @@ import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -872,7 +872,7 @@ public class RunScript extends Module {
         }
 
         @Override
-        public <T extends Parameter> T duplicate(ModuleI newModule) {
+        public <T extends ParameterI> T duplicate(ModuleI newModule) {
             InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
                     newModule);
 

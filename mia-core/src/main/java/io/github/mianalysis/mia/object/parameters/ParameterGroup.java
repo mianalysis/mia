@@ -9,11 +9,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 
@@ -115,8 +115,8 @@ public class ParameterGroup extends Parameter {
     public Parameters addParameters() {
         // Create new copy of template collections
         Parameters newParameters = new Parameters();
-        for (Parameter templateParameter : templateParameters.values()) {
-            Parameter newParameter = templateParameter.duplicate(templateParameter.getModule());
+        for (ParameterI templateParameter : templateParameters.values()) {
+            ParameterI newParameter = templateParameter.duplicate(templateParameter.getModule());
 
             // New parameters should inherit the visibility of the addRef button
             newParameter.setVisible(isVisible());
@@ -142,7 +142,7 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getAddParametersControl(this);
     }
 
@@ -170,7 +170,7 @@ public class ParameterGroup extends Parameter {
     public boolean verify() {
         boolean runnable = true;
         for (Parameters collection : getCollections(true).values()) {
-            for (Parameter parameter : collection.values()) {
+            for (ParameterI parameter : collection.values()) {
                 boolean currentRunnable = parameter.verify();
                 parameter.setValid(currentRunnable);
                 if (!currentRunnable && runnable)
@@ -184,7 +184,7 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         ParameterGroup newParameter = new ParameterGroup(name, newModule, templateParameters.duplicate(),
                 updaterAndGetter, getDescription());
 

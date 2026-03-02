@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.module.workflow.FixedTextCondition;
 import io.github.mianalysis.mia.module.workflow.GUICondition;
 import io.github.mianalysis.mia.module.workflow.ModuleIsEnabled;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class AnalysisTester {
     public static int testModules(ModulesI modules, WorkspaceI workspace, @Nullable ModuleI startModule) {
@@ -70,7 +70,7 @@ public class AnalysisTester {
             return false;
 
         // Iterating over each parameter, checking if it's currently available
-        for (Parameter parameter : module.updateAndGetParameters().values()) {
+        for (ParameterI parameter : module.updateAndGetParameters().values()) {
             runnable = parameter.verify();
             parameter.setValid(runnable);
 

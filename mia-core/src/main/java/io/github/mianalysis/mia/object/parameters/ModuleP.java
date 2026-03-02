@@ -6,6 +6,7 @@ import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 
 public class ModuleP extends Parameter {
@@ -78,7 +79,7 @@ public class ModuleP extends Parameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getModuleChoiceControl(this);
     }
 
@@ -119,7 +120,7 @@ public class ModuleP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         ModuleP newParameter = new ModuleP(getName(), newModule, showNonRunnable, selectedModuleID, getDescription());
 
         newParameter.setNickname(getNickname());

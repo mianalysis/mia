@@ -3,13 +3,13 @@ package io.github.mianalysis.mia.object.parameters;
 import java.util.LinkedHashMap;
 
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class Parameters extends LinkedHashMap<String, Parameter> implements Refs<Parameter> {
+public class Parameters extends LinkedHashMap<String, ParameterI> implements Refs<ParameterI> {
 
     // PUBLIC METHODS
 
@@ -18,23 +18,23 @@ public class Parameters extends LinkedHashMap<String, Parameter> implements Refs
      */
     private static final long serialVersionUID = -1104212695371396327L;
 
-    public boolean add(Parameter parameter) {
+    public boolean add(ParameterI parameter) {
         put(parameter.getName(), parameter);
         return true;
     }
 
     public void addAll(Parameters parameterCollection) {
-        for (Parameter parameter : parameterCollection.values())
+        for (ParameterI parameter : parameterCollection.values())
             add(parameter);
 
     }
 
     public void removeAll(Parameters parameterCollection) {
-        for (Parameter parameter : parameterCollection.values())
+        for (ParameterI parameter : parameterCollection.values())
             remove(parameter);
     }
 
-    public <T extends Parameter> T getParameter(String name) {
+    public <T extends ParameterI> T getParameter(String name) {
         return (T) get(name);
 
     }
@@ -57,7 +57,7 @@ public class Parameters extends LinkedHashMap<String, Parameter> implements Refs
     }
 
     public boolean invalidParameterIsVisible() {
-        for (Parameter parameter : values()) {
+        for (ParameterI parameter : values()) {
             if (!parameter.isValid() && parameter.isVisible())
                 return true;
 
@@ -74,7 +74,7 @@ public class Parameters extends LinkedHashMap<String, Parameter> implements Refs
     }
 
     public boolean hasVisibleParameters() {
-        for (Parameter parameter : values()) {
+        for (ParameterI parameter : values()) {
             if (parameter.isVisible())
                 return true;
 
@@ -93,7 +93,7 @@ public class Parameters extends LinkedHashMap<String, Parameter> implements Refs
     public Parameters duplicate() {
         Parameters copyParameters = new Parameters();
 
-        for (Parameter parameter : values())
+        for (ParameterI parameter : values())
             copyParameters.add(parameter.duplicate(parameter.getModule()));
 
         return copyParameters;

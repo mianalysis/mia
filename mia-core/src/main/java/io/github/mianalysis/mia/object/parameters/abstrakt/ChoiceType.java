@@ -48,7 +48,7 @@ public abstract class ChoiceType extends TextSwitchableParameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getChoiceTypeControl(this);
     }
 

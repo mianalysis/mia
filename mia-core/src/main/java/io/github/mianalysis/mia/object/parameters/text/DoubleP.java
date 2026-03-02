@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.parameters.text;
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
 public class DoubleP extends TextType {
@@ -70,7 +70,7 @@ public class DoubleP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         DoubleP newParameter = new DoubleP(name, newModule, value, getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

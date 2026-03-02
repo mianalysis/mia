@@ -222,7 +222,7 @@ public abstract class TextType extends Parameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getTextTypeControl(this);
     }
 

@@ -5,7 +5,7 @@ import com.drew.lang.annotations.NotNull;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class ChoiceP extends ChoiceType {
     private String[] choices;
@@ -40,7 +40,7 @@ public class ChoiceP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         ChoiceP newParameter = new ChoiceP(getName(), newModule, choice, getChoices(), getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

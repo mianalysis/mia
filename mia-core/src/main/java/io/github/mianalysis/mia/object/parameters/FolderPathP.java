@@ -7,7 +7,7 @@ import com.drew.lang.annotations.NotNull;
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
 import io.github.mianalysis.mia.process.ParameterControlFactory;
 import io.github.mianalysis.mia.process.system.FileTools.FileTypes;
@@ -26,12 +26,12 @@ public class FolderPathP extends FileFolderType {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return ParameterControlFactory.getFileFolderSelectionControl(this, FileTypes.FOLDER_TYPE);
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         FolderPathP newParameter = new FolderPathP(getName(), newModule, getPath(), getDescription());
 
         newParameter.setNickname(getNickname());

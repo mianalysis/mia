@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.svg.SVGButton;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
 
@@ -15,9 +15,9 @@ import io.github.mianalysis.mia.object.system.SwingPreferences;
  */
 public class VisibleCheck extends SVGButton implements ActionListener {
     private static final int size = 18;
-    private Parameter parameter;
+    private ParameterI parameter;
 
-    public VisibleCheck(Parameter parameter) {
+    public VisibleCheck(ParameterI parameter) {
         super(new String[] { "/icons/eyeopen.svg", "/icons/eyeclosed.svg" }, size, parameter.isVisible() ? 0 : 1);
         
         this.parameter = parameter;
@@ -43,7 +43,7 @@ public class VisibleCheck extends SVGButton implements ActionListener {
 
     }
 
-    public Parameter getParameter() {
+    public ParameterI getParameter() {
         return parameter;
     }
 

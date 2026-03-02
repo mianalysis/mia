@@ -47,7 +47,7 @@ import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.RemovedImageP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.objects.RemovedObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -313,7 +313,7 @@ public class AnalysisReader_Pre_0p10p0 {
                 parameterValueSource = parameterAttributes.getNamedItem("VALUESOURCE").getNodeValue();
 
             try {
-                Parameter parameter = parameters.getParameter(parameterName);
+                ParameterI parameter = parameters.getParameter(parameterName);
                 if (parameter instanceof InputImageP) {
                     parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);

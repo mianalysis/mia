@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
@@ -301,7 +301,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         LinkedHashSet<BooleanP> actualParams = modules.getParametersMatchingType(BooleanP.class, null);
 
         // Getting expected values
-        LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
+        LinkedHashSet<ParameterI> expectedParams = new LinkedHashSet<>();
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_VOLUME, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_DIA, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_AREA, measureObjectShape, false));
@@ -313,9 +313,9 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         // Checking the parameters are what are expected
         assertEquals(7, actualParams.size());
 
-        for (Parameter actualParam : actualParams) {
+        for (ParameterI actualParam : actualParams) {
             boolean found = false;
-            for (Parameter expectedParam : expectedParams) {
+            for (ParameterI expectedParam : expectedParams) {
                 if (expectedParam.getName().equals(actualParam.getName())
                         && expectedParam.getValue(null).equals(actualParam.getValue(null))) {
                     found = true;
@@ -361,7 +361,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         LinkedHashSet<BooleanP> actualParams = modules.getParametersMatchingType(BooleanP.class, measureObjectTexture);
 
         // Getting expected values
-        LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
+        LinkedHashSet<ParameterI> expectedParams = new LinkedHashSet<>();
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_VOLUME, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_DIA, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_AREA, measureObjectShape, false));
@@ -372,9 +372,9 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         // Checking the parameters are what are expected
         assertEquals(6, actualParams.size());
 
-        for (Parameter actualParam : actualParams) {
+        for (ParameterI actualParam : actualParams) {
             boolean found = false;
-            for (Parameter expectedParam : expectedParams) {
+            for (ParameterI expectedParam : expectedParams) {
                 if (expectedParam.getName().equals(actualParam.getName())
                         && expectedParam.getValue(null).equals(actualParam.getValue(null))) {
                     found = true;

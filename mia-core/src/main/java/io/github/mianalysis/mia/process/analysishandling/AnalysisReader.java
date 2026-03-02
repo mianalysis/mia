@@ -40,7 +40,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
@@ -360,7 +360,7 @@ public class AnalysisReader {
         if (name == null)
             return;
         String parameterName = name.getNodeValue();
-        Parameter parameter = parameters.getParameter(parameterName);
+        ParameterI parameter = parameters.getParameter(parameterName);
 
         // If parameter isn't found, try the lost and found
         if (parameter == null) {

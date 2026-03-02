@@ -4,7 +4,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class ImageMeasurementP extends ChoiceType {
     private String imageName = "";
@@ -43,7 +43,7 @@ public class ImageMeasurementP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         ImageMeasurementP newParameter = new ImageMeasurementP(getName(),newModule,getRawStringValue(),imageName,getDescription());
 
         newParameter.setNickname(getNickname());

@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class SwingPreferences extends Preferences {
     public static final String GUI_SEPARATOR = "GUI parameters";
@@ -62,7 +62,7 @@ public class SwingPreferences extends Preferences {
         // GUI parameters
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
 
-        Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
+        ParameterI parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
         // parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
         //     if (evt.getOldValue() != null)
         //         setTheme();

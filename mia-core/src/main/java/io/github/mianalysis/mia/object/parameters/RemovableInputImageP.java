@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.parameters;
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.ModuleI;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class RemovableInputImageP extends InputImageP {
     private boolean removeInputImages = false;
@@ -21,7 +21,7 @@ public class RemovableInputImageP extends InputImageP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         RemovableInputImageP newParameter = new RemovableInputImageP(name, module, getImageName(), getDescription());
 
         newParameter.setNickname(getNickname());

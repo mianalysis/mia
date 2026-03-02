@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.parameters.AdjustParameters;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
@@ -109,7 +109,7 @@ public class ParametersPanel extends JPanel {
         c.gridwidth = 1;
         c.insets = new Insets(2, 10, 0, 0);
         if (module.updateAndGetParameters() != null) {
-            for (Parameter parameter : module.updateAndGetParameters().values()) {
+            for (ParameterI parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
                     addAdvancedParameterGroupControl((ParameterGroup) parameter,module,c);
                 } else {
@@ -198,7 +198,7 @@ public class ParametersPanel extends JPanel {
         }
     }
 
-    public void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
+    public void addAdvancedParameterControl(ParameterI parameter, GridBagConstraints c) {
         ComponentFactory componentFactory = GUI.getComponentFactory();
         ModuleI activeModule = GUI.getFirstSelectedModule();
 
@@ -220,7 +220,7 @@ public class ParametersPanel extends JPanel {
         for (int collectionIdx : collections.keySet()) {
             Parameters collection = collections.get(collectionIdx);
             // Adding the individual parameters
-            for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
+            for (ParameterI parameter:collection.values()) addAdvancedParameterControl(parameter,c);
 
             c.gridy++;
             AdjustParameters removeParameters = new AdjustParameters("",module,group,collectionIdx);

@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterControl;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 
 public class GenericButtonP extends Parameter {
     public enum DefaultModes {
@@ -86,7 +87,7 @@ public class GenericButtonP extends Parameter {
     }
 
     @Override
-    protected ParameterControl initialiseControl() {
+    public ParameterControl initialiseControl() {
         return SwingParameterControlFactory.getGenericButton(this);
     }
 
@@ -116,7 +117,7 @@ public class GenericButtonP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate(ModuleI newModule) {
+    public <T extends ParameterI> T duplicate(ModuleI newModule) {
         GenericButtonP newParameter = new GenericButtonP(name, newModule, buttonLabel, actionListener,
                 getDescription());
 

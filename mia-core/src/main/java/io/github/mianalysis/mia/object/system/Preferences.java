@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -189,7 +189,7 @@ public class Preferences extends Module {
             currentValues = new HashMap<>();
 
         parameters.add(new SeparatorP(WORKFLOW_SEPARATOR, this));
-        Parameter parameter = new ChoiceP(IMAGE_DISPLAY_MODE, this,
+        ParameterI parameter = new ChoiceP(IMAGE_DISPLAY_MODE, this,
                 Prefs.get("MIA.Workflow.imageDisplayMode", ImageDisplayModes.COMPOSITE), ImageDisplayModes.ALL);
         currentValues.put(IMAGE_DISPLAY_MODE, parameter.getRawStringValue());
         parameters.add(parameter);

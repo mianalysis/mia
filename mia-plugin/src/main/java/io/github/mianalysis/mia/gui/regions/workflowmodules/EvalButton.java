@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
@@ -156,12 +156,12 @@ public class EvalButton extends SVGButton implements ActionListener {
         
         // Checking each parameter to see if it's the same as before
         for (String currentParameterName : currentParameters.keySet()) {
-            Parameter currentParameter = currentParameters.get(currentParameterName);
+            ParameterI currentParameter = currentParameters.get(currentParameterName);
 
             if (!previousParameters.containsKey(currentParameterName))
                 return true;
             
-            Parameter previousParameter = previousParameters.get(currentParameterName);
+            ParameterI previousParameter = previousParameters.get(currentParameterName);
 
             // Comparing values
             if (previousParameter instanceof ParameterGroup) {

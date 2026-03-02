@@ -44,7 +44,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ParameterI;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
@@ -228,17 +228,17 @@ public class GUI {
         if (editingPanel != null)
             SwingUtilities.updateComponentTreeUI(editingPanel);
 
-        for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
+        for (ParameterI parameter : getModules().getInputControl().getAllParameters().values())
             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
-        for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
+        for (ParameterI parameter : getModules().getOutputControl().getAllParameters().values())
             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
-        for (Parameter parameter : MIA.getPreferences().getAllParameters().values())
+        for (ParameterI parameter : MIA.getPreferences().getAllParameters().values())
             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
         for (ModuleI module : getModules())
-            for (Parameter parameter : module.getAllParameters().values())
+            for (ParameterI parameter : module.getAllParameters().values())
                 SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
     }
