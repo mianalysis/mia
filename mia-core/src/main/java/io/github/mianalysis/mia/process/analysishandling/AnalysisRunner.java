@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.process.exporting.Exporter;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
@@ -37,7 +38,7 @@ public class AnalysisRunner {
     private static int counter = 0;
     private static int origThreads = Prefs.getThreads();
 
-    private final Workspaces workspaces = new Workspaces();
+    private final WorkspacesI workspaces = new Workspaces();
 
     private final static DecimalFormat dfInt = new DecimalFormat("0");
     private final static DecimalFormat dfDec = new DecimalFormat("0.00");
@@ -385,7 +386,7 @@ public class AnalysisRunner {
 
     }
 
-    public Workspaces getWorkspaces() {
+    public WorkspacesI getWorkspaces() {
         return workspaces;
     }
 }

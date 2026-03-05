@@ -40,7 +40,7 @@ import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.module.objects.detect.ManuallyIdentifyObjects;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;

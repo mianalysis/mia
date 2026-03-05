@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -27,7 +27,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit2D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -62,7 +62,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -97,7 +97,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit4D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -132,7 +132,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -167,7 +167,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity16bit3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -202,7 +202,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity32bitOverOne3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -237,7 +237,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity32bitUnderOne3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -272,7 +272,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testRunDoApply8bit3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -305,7 +305,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit2DClipPrecise() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace

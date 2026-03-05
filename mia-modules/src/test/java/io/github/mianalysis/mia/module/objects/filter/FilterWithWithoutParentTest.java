@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import ome.units.UNITS;
 
@@ -29,7 +29,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunPresentParentDoNothing(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting calibration parameters
@@ -88,7 +88,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunPresentParentMove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -157,7 +157,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunPresentParentRemove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -209,7 +209,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunMissingParentDoNothing(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -261,7 +261,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunMissingParentMove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -320,7 +320,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunMissingParentRemove(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -371,7 +371,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWithParent(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters

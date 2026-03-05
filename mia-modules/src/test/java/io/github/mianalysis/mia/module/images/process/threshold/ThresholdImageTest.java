@@ -15,7 +15,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -32,7 +32,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG2D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -73,7 +73,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -114,7 +114,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG4D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -155,7 +155,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG5D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -196,7 +196,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D16bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -239,7 +239,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test @Disabled
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D32bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -280,7 +280,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultBlackBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -321,7 +321,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLims2xMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -362,7 +362,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLims0p5xMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -403,7 +403,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangMinLimPassNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -445,7 +445,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangMinLimFailNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -512,7 +512,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunLocalSlicePhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -554,7 +554,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunLocalSlicePhansalkarNoLimsNoMultBlackBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -596,7 +596,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunManual8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -638,7 +638,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalIntermodesNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -680,7 +680,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalIsodataNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -721,7 +721,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalMaxEntropyNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -762,7 +762,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalOtsuNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -803,7 +803,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalTriangleNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -847,7 +847,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -885,7 +885,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdGlobalHuangApplyNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -919,7 +919,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdGlobalHuangApplyMinLimNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -953,7 +953,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdLocal() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -984,7 +984,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdManual() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace

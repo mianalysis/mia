@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.process.math.CumStat;
 /**
  * Created by sc13967 on 27/10/2016.
  */
-public class Workspaces extends LinkedHashSet<WorkspaceI> {
+public class Workspaces extends LinkedHashSet<WorkspaceI> implements WorkspacesI {
     /**
      *
      */
@@ -44,7 +44,7 @@ public class Workspaces extends LinkedHashSet<WorkspaceI> {
 
     public HashMap<String, WorkspaceI> getMetadataWorkspaces(String metadataName) {
         HashMap<String, WorkspaceI> workspaceList = new HashMap<>();
-        Workspaces workspacesMeta = new Workspaces();
+        WorkspacesI workspacesMeta = new Workspaces();
 
         for (WorkspaceI currWorkspace:this) {
             // The metadata value to group on
@@ -108,5 +108,10 @@ public class Workspaces extends LinkedHashSet<WorkspaceI> {
         // Subtracting 1 from the total, so it doesn't hit 100% until exporting is done
         return cs.getMean() - 0.01;
 
+    }
+
+    @Override
+    public boolean contains(WorkspaceI workspace) {
+        return super.contains(workspace);
     }
 }

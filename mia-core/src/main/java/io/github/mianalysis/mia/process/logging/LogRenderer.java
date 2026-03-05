@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.process.logging;
 
 import java.util.HashMap;
 
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 
 public abstract class LogRenderer {
     protected static int progress = 0;
@@ -40,7 +40,7 @@ public abstract class LogRenderer {
         LogRenderer.progress = progress;
     }
 
-    public static void setProgress(Workspaces workspaces) {
+    public static void setProgress(WorkspacesI workspaces) {
         progress = (int) Math.round(workspaces.getOverallProgress() * 100);
     }
 }

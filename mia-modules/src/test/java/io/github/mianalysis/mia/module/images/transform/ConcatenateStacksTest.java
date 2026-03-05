@@ -14,7 +14,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -33,7 +33,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -77,7 +77,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitY() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -121,7 +121,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitC() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -165,7 +165,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitZ() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -209,7 +209,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitT() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -256,7 +256,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate3D8bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -300,7 +300,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate3D8bitY() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -344,7 +344,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitC() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -388,7 +388,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitZ() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -432,7 +432,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitT() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -479,7 +479,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate4D8bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -523,7 +523,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate4D8bitY() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -567,7 +567,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitC() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -611,7 +611,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitC() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -655,7 +655,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitC() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -699,7 +699,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitZ() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -743,7 +743,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitZ() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -787,7 +787,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitZ() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -831,7 +831,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitT() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -875,7 +875,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitT() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -919,7 +919,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitT() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -966,7 +966,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1010,7 +1010,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitY() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1054,7 +1054,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate5D8bitC() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1098,7 +1098,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitZ() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1142,7 +1142,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate5D8bitT() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1189,7 +1189,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitXUnequal() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1233,7 +1233,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitYUnequal() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1277,7 +1277,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitCUnequal() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1321,7 +1321,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitZUnequal() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1365,7 +1365,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitTUnequal() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1412,7 +1412,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D16bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1456,7 +1456,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D32bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1500,7 +1500,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8and32bitX() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image

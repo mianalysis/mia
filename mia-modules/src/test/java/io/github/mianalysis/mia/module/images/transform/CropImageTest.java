@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -27,7 +27,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit2D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -66,7 +66,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -105,7 +105,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun16bit2D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -144,7 +144,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun32bit2D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -182,7 +182,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit4D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -220,7 +220,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace

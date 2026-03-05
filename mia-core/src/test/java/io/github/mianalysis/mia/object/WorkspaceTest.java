@@ -32,7 +32,7 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and checking it is empty
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
         assertEquals(0, workspace.getAllObjects().size());
 
@@ -54,7 +54,7 @@ public class WorkspaceTest {
 
     @Test
     public void testClearAllImagesDoRetainMeasurements() {
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Adding images
@@ -90,7 +90,7 @@ public class WorkspaceTest {
 
     @Test
     public void testClearAllImagesDontRetainMeasurements() {
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Adding images
@@ -131,7 +131,7 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -197,7 +197,7 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);
@@ -259,7 +259,7 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         CoordinateSetFactoryI factory = VolumeTypes.getFactory(volumeType);

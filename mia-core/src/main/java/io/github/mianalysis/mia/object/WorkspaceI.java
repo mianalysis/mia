@@ -78,8 +78,8 @@ public interface WorkspaceI {
 
     public void setExportWorkspace(boolean exportWorkspace);
 
-    public Workspaces getWorkspaces();
+    public WorkspacesI getWorkspaces();
 
-    public void setWorkspaces(Workspaces workspaces);
+    public void setWorkspaces(WorkspacesI workspaces);
 
 }

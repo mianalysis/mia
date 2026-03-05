@@ -16,7 +16,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -38,7 +38,7 @@ public class ImageSaverTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(testFile, 1);
 
         // Load the test image and put in the workspace
@@ -81,7 +81,7 @@ public class ImageSaverTest extends ModuleTest {
         File temporaryFolder = tempPath.toFile();
 
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Load the test image and put in the workspace

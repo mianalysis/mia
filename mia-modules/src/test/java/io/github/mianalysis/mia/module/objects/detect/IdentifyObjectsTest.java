@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.expectedobjects.VolumeTypes;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI;
 import io.github.mianalysis.mia.object.coordinates.volume.OctreeFactory;
@@ -59,7 +59,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit2DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -114,7 +114,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit2DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -171,7 +171,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit2DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -226,7 +226,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -282,7 +282,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -337,7 +337,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -392,7 +392,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit4DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -448,7 +448,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit4DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -504,7 +504,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit4DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -572,7 +572,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DLabelledPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -626,7 +626,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DLabelledQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -680,7 +680,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DLabelledOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -734,7 +734,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWhiteBackground8Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -789,7 +789,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWhiteBackground8Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -844,7 +844,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWhiteBackground8Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -899,7 +899,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DSingleObjectPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -955,7 +955,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DSingleObjectQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1011,7 +1011,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DSingleObjectOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1068,7 +1068,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithoutMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1124,7 +1124,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectQuadtreeWithoutMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1180,7 +1180,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectOctreeWithoutMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1235,7 +1235,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1290,7 +1290,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1345,7 +1345,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1400,7 +1400,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DPointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1458,7 +1458,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DQuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1516,7 +1516,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DOctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1574,7 +1574,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DNot255PointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1629,7 +1629,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DNot255QuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1684,7 +1684,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DNot255OctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1739,7 +1739,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DNot65535PointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1794,7 +1794,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DNot65535QuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1849,7 +1849,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DNot65535OctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1904,7 +1904,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DNot1PointListWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1962,7 +1962,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DNot1QuadtreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2020,7 +2020,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DNot1OctreeWithoutMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2078,7 +2078,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit2DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2133,7 +2133,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit2DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2188,7 +2188,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit2DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2243,7 +2243,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2298,7 +2298,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2353,7 +2353,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2408,7 +2408,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit4DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2464,7 +2464,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit4DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2520,7 +2520,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit4DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2582,7 +2582,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DLabelledPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2636,7 +2636,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DLabelledQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2690,7 +2690,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DLabelledOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2744,7 +2744,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWhiteBackground8Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2799,7 +2799,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWhiteBackground8Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2854,7 +2854,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWhiteBackground8Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2909,7 +2909,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DSingleObjectPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2965,7 +2965,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DSingleObjectQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3021,7 +3021,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DSingleObjectOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3078,7 +3078,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithMT(VolumeTypes volumeType)
             throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3133,7 +3133,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3188,7 +3188,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3243,7 +3243,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3298,7 +3298,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3353,7 +3353,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3408,7 +3408,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DPointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3466,7 +3466,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DQuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3524,7 +3524,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DOctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3582,7 +3582,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DNot255PointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3637,7 +3637,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DNot255QuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3692,7 +3692,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground8Bit3DNot255OctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3747,7 +3747,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DNot65535PointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3802,7 +3802,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DNot65535QuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3857,7 +3857,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground16Bit3DNot65535OctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3912,7 +3912,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DNot1PointListWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3970,7 +3970,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DNot1QuadtreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -4028,7 +4028,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunBlackBackground32Bit3DNot1OctreeWithMT(VolumeTypes volumeType) throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace

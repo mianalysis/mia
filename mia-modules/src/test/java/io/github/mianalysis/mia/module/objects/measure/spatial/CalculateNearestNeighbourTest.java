@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.ObjsFactories;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
@@ -176,7 +176,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWithinSameSet(VolumeTypes volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -250,7 +250,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetMaxDistAllPass(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -346,7 +346,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetMaxDistSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -442,7 +442,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -538,7 +538,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetWithinParent(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -631,7 +631,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -723,7 +723,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunDifferentSets(VolumeTypes volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -808,7 +808,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunDifferentSetsMaxDistSomePass(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -893,7 +893,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunDifferentSetsWithinParent(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -1003,7 +1003,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeTypes volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters

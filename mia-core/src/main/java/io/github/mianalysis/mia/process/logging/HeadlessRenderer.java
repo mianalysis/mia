@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 
 /**
  * Created by Stephen Cross on 14/06/2019.
@@ -69,7 +69,7 @@ public class HeadlessRenderer extends LogRenderer {
         write(progressString + message, level);
     }
 
-    public void write(String message, Level level, Workspaces workspaces) {
+    public void write(String message, Level level, WorkspacesI workspaces) {
         int progress = (int) Math.round(workspaces.getOverallProgress() * 100);
         write(message, level, progress);
     }

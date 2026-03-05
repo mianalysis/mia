@@ -7,7 +7,7 @@ import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetListOfWorkspaceIDs extends MacroOperation {
@@ -23,7 +23,7 @@ public class MIA_GetListOfWorkspaceIDs extends MacroOperation {
     @Override
     public String action(Object[] objects, WorkspaceI workspace, ModulesI modules) {
         // Getting Workspaces
-        Workspaces workspaces = workspace.getWorkspaces();
+        WorkspacesI workspaces = workspace.getWorkspaces();
 
         StringBuilder sb = new StringBuilder();
         for (WorkspaceI currWorkspace : workspaces) {

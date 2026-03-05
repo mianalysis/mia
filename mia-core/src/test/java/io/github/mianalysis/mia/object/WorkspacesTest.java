@@ -10,7 +10,7 @@ public class WorkspacesTest {
 
     @Test
     public void testGetNewWorkspace() {
-        Workspaces collection = new Workspaces();
+        WorkspacesI collection = new Workspaces();
 
         // Checking the collection is empty to start with
         assertEquals(0,collection.size());

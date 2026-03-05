@@ -10,13 +10,13 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.refs.abstrakt.SpreadsheetWriter;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 
 public class XLSXExporter {
 
-    public void exportSummary(String path, Workspaces workspaces, ModulesI modules) {
+    public void exportSummary(String path, WorkspacesI workspaces, ModulesI modules) {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Summary");
@@ -42,7 +42,7 @@ public class XLSXExporter {
 
     }
 
-    public LinkedHashMap<Integer,WorkspaceI> createRowList(Sheet sheet, Workspaces workspaces) {
+    public LinkedHashMap<Integer,WorkspaceI> createRowList(Sheet sheet, WorkspacesI workspaces) {
         LinkedHashMap<Integer,WorkspaceI> workspacesMap = new LinkedHashMap<>();
 
         int rowN = 1;

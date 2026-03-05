@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.module.objects.track.TrackObjects;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectsOverlay;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 
@@ -64,7 +64,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
 
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
         
         // Setting object parameters

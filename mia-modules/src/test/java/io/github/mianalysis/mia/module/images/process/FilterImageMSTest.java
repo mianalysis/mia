@@ -18,10 +18,11 @@ import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Calibration;
 import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.OutputMode;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageFactoryI;
 import io.github.mianalysis.mia.object.image.ImageI;
@@ -139,7 +140,7 @@ public class FilterImageMSTest extends ModuleTest {
 
         // Doing the main part of the test
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace

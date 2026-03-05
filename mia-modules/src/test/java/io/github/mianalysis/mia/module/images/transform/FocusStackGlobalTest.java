@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.image.ImageFactories;
 import io.github.mianalysis.mia.object.image.ImageI;
 import net.imagej.ImgPlus;
@@ -416,7 +416,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -454,7 +454,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunSecondChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -492,7 +492,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunBothChannelsBelowAndAbove5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -529,7 +529,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBothBelow5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -567,7 +567,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelSinglePlane5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -605,7 +605,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAboveIndicesInverted5D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -643,7 +643,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAboveSingleChannel4D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -681,7 +681,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAboveSingleTimepoint4D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -719,7 +719,7 @@ public class FocusStackGlobalTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAbove3D() throws Exception {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image

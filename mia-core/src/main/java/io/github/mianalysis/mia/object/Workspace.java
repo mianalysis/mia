@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.system.Status;
  * Created by sc13967 on 02/05/2017.
  */
 public class Workspace implements WorkspaceI {
-    private Workspaces workspaces;
+    private WorkspacesI workspaces;
     private LinkedHashMap<String, ObjsI> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, ImageI> images = new LinkedHashMap<>();
     private MetadataI metadata = new Metadata();
@@ -33,7 +33,7 @@ public class Workspace implements WorkspaceI {
 
     // CONSTRUCTOR
 
-    protected Workspace(int ID, File file, int series, Workspaces workspaces) {
+    protected Workspace(int ID, File file, int series, WorkspacesI workspaces) {
         this.ID = ID;
         this.workspaces = workspaces;
         
@@ -170,7 +170,7 @@ public class Workspace implements WorkspaceI {
      */
     public HashMap<Integer,WorkspaceI> getSingleTimepointWorkspaces() {
         HashMap<Integer, WorkspaceI> workspaceList = new HashMap<>();
-        Workspaces workspacesT = new Workspaces();
+        WorkspacesI workspacesT = new Workspaces();
 
         for (ObjsI collection:objects.values()) {
             for (ObjI obj:collection.values()) {
@@ -254,12 +254,12 @@ public class Workspace implements WorkspaceI {
         this.exportWorkspace = exportWorkspace;
     }
 
-    public Workspaces getWorkspaces() {
+    public WorkspacesI getWorkspaces() {
         return workspaces;
 
     }
 
-    public void setWorkspaces(Workspaces workspaces) {
+    public void setWorkspaces(WorkspacesI workspaces) {
         this.workspaces = workspaces;
         
     }

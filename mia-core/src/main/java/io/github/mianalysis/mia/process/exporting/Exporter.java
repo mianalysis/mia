@@ -48,11 +48,10 @@ import io.github.mianalysis.mia.module.ModulesI;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.object.image.ImageI;
-import io.github.mianalysis.mia.object.image.ImageI;
 import io.github.mianalysis.mia.object.measurements.MeasurementI;
-import io.github.mianalysis.mia.object.measurements.MeasurementFactories;
 import io.github.mianalysis.mia.object.metadata.MetadataI;
 import io.github.mianalysis.mia.object.metadata.ObjMetadataI;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -98,7 +97,7 @@ public class Exporter {
 
     // PUBLIC METHODS
 
-    public void exportResults(Workspaces workspaces, ModulesI modules, String exportFilePath) throws IOException {
+    public void exportResults(WorkspacesI workspaces, ModulesI modules, String exportFilePath) throws IOException {
         
         switch (exportMode) {
             case ALL_TOGETHER:
@@ -117,7 +116,7 @@ public class Exporter {
                 }
 
                 for (String metadataValue : metadataValues) {
-                    Workspaces currentWorkspaces = new Workspaces();
+                    WorkspacesI currentWorkspaces = new Workspaces();
 
                     // Adding Workspaces matching this metadata value
                     for (WorkspaceI workspace : workspaces) {
@@ -142,14 +141,14 @@ public class Exporter {
     }
 
     public void exportResults(WorkspaceI workspace, ModulesI modules, String name) throws IOException {
-        Workspaces currentWorkspaces = new Workspaces();
+        WorkspacesI currentWorkspaces = new Workspaces();
         currentWorkspaces.add(workspace);
 
         export(currentWorkspaces, modules, name);
 
     }
 
-    public void export(Workspaces workspaces, ModulesI modules, String name) throws IOException {
+    public void export(WorkspacesI workspaces, ModulesI modules, String name) throws IOException {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
 
@@ -353,7 +352,7 @@ public class Exporter {
         }
     }
 
-    private void prepareSummary(SXSSFWorkbook workbook, Workspaces workspaces, ModulesI modules,
+    private void prepareSummary(SXSSFWorkbook workbook, WorkspacesI workspaces, ModulesI modules,
             SummaryMode summaryType) {
         AtomicInteger headerCol = new AtomicInteger(0);
 
@@ -799,7 +798,7 @@ public class Exporter {
         }
     }
 
-    private void prepareObjectsXLS(SXSSFWorkbook workbook, Workspaces workspaces, ModulesI modules) {
+    private void prepareObjectsXLS(SXSSFWorkbook workbook, WorkspacesI workspaces, ModulesI modules) {
         // Creating bold font
         CellStyle cellStyle = workbook.createCellStyle();
         Font font = workbook.createFont();

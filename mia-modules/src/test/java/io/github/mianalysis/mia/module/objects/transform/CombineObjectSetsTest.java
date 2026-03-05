@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.relate.mergeobjects.CombineObjectSets;
 import io.github.mianalysis.mia.object.ObjsI;
 import io.github.mianalysis.mia.object.WorkspaceI;
-import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.WorkspacesI;
 import io.github.mianalysis.mia.object.coordinates.ObjI;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 
@@ -31,7 +31,7 @@ public class CombineObjectSetsTest extends ModuleTest {
     @EnumSource(VolumeTypes.class)
     public void testRunWithoutObjectDeletion(VolumeTypes volumeType) throws IntegerOverflowException {
         // Creating a new workspace
-        Workspaces workspaces = new Workspaces();
+        WorkspacesI workspaces = new Workspaces();
         WorkspaceI workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
