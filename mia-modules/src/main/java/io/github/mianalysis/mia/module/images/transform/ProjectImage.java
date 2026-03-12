@@ -1,14 +1,10 @@
 package io.github.mianalysis.mia.module.images.transform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
-import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -16,10 +12,8 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -234,7 +228,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         axes.put(idx, img.axis(img.dimensionIndex(axisAssignments.get(2))));
 
         OpService ops = MIA.getOpService();
-
+        
         // Creating output image
         T type;
         switch (projectionMode) {

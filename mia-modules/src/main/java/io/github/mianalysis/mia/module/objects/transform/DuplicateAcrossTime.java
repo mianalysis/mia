@@ -89,7 +89,7 @@ public class DuplicateAcrossTime extends Module {
     public static final String START_FRAME_FIXED_VALUE = "Start frame fixed value";
 
 	/**
-	* If "Start frame mode" is set to "Image measurement", this is the image from which the measurerment "Start frame image measurement" will be taken.
+	* If "Start frame mode" is set to "Image measurement", this is the image from which the measurement "Start frame image measurement" will be taken.
 	*/
     public static final String START_FRAME_IMAGE = "Start frame image";
 
@@ -114,7 +114,7 @@ public class DuplicateAcrossTime extends Module {
     public static final String END_FRAME_FIXED_VALUE = "End frame fixed value";
 
 	/**
-	* If "End frame mode" is set to "Image measurement", this is the image from which the measurerment "End frame image measurement" will be taken.
+	* If "End frame mode" is set to "Image measurement", this is the image from which the measurement "End frame image measurement" will be taken.
 	*/
     public static final String END_FRAME_IMAGE = "End frame image";
 
@@ -408,7 +408,7 @@ public class DuplicateAcrossTime extends Module {
 
         parameters.get(START_FRAME_IMAGE)
                 .setDescription("If \"" + START_FRAME_MODE + "\" is set to \"" + FrameModes.IMAGE_MEASUREMENT
-                        + "\", this is the image from which the measurerment \"" + START_FRAME_IMAGE_MEASUREMENT
+                        + "\", this is the image from which the measurement \"" + START_FRAME_IMAGE_MEASUREMENT
                         + "\" will be taken.");
 
         parameters.get(START_FRAME_IMAGE_MEASUREMENT).setDescription("If \"" + START_FRAME_MODE + "\" is set to \""
@@ -436,7 +436,7 @@ public class DuplicateAcrossTime extends Module {
 
         parameters.get(END_FRAME_IMAGE)
                 .setDescription("If \"" + END_FRAME_MODE + "\" is set to \"" + FrameModes.IMAGE_MEASUREMENT
-                        + "\", this is the image from which the measurerment \"" + END_FRAME_IMAGE_MEASUREMENT
+                        + "\", this is the image from which the measurement \"" + END_FRAME_IMAGE_MEASUREMENT
                         + "\" will be taken.");
 
         parameters.get(END_FRAME_IMAGE_MEASUREMENT).setDescription("If \"" + END_FRAME_MODE + "\" is set to \""

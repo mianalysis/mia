@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -34,22 +35,25 @@ import io.github.mianalysis.mia.object.system.Status;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ResolveObjectOverlap extends Module {
 
-    /**
-    * 
-    */
     public static final String INPUT_SEPARATOR = "Object input/output";
-
-    /**
-    * 
-    */
     public static final String INPUT_OBJECTS = "Input objects";
 
+    public static final String OVERLAP_SEPARATOR = "Overlap resolution controls";
+    public static final String Z_MODE = "Z-mode";
+
+    public interface ZModes {
+        String TWOD = "2D (slice-by-slice)";
+        String THREED = "3D";
+
+        String[] ALL = new String[] { TWOD, THREED };
+
+    }
 
     public ResolveObjectOverlap(Modules modules) {
         super("Resolve object overlap", modules);
     }
 
-    public static void process(Objs inputObjects, Workspace workspace) {
+    public static void process(Objs inputObjects, Workspace workspace, String zMode) {
         if (inputObjects == null || inputObjects.size() == 0)
             return;
 
@@ -60,6 +64,7 @@ public class ResolveObjectOverlap extends Module {
                 inputObjects.getNSlices(), inputObjects.getNFrames(), 8);
         ImageMath.process(overlap, ImageMath.CalculationModes.ADD, 255);
 
+        // Adding current objects to overlap image
         for (Obj inputObject : inputObjects.values()) {
             for (Obj testObject : inputObjects.values()) {
                 if (inputObject == testObject)
@@ -70,7 +75,7 @@ public class ResolveObjectOverlap extends Module {
 
                 for (Point<Integer> pt : inputObject.getCoordinateSet())
                     if (testObject.getCoordinateSet().contains(pt)) {
-                        overlap.setPosition(1, pt.z+1, inputObject.getT()+1);
+                        overlap.setPosition(1, pt.z + 1, inputObject.getT() + 1);
                         overlap.getProcessor().putPixel(pt.x, pt.y, 0);
                     }
             }
@@ -79,17 +84,43 @@ public class ResolveObjectOverlap extends Module {
         // Masking input objects
         Image maskImage = ImageFactory.createImage("Mask", overlap);
         MaskObjects.maskObjects(inputObjects, maskImage, null, true, false);
-  
+
+        switch (zMode) {
+            case ZModes.TWOD:
+                resolve2D(inputObjects, workspace);
+            case ZModes.THREED:
+                resolve3D(inputObjects, workspace);
+        }
+
+        // Masking to original objects
+        MaskObjects.maskObjects(inputObjects, finalMask, null, true, false);
+
+    }
+
+    public static void resolve2D(Objs inputObjects, Workspace workspace) {
+        
+
+
+
         // Growing input objects into overlap regions
         String startingObjectMode = GrowObjects.StartingObjectModes.SURFACES;
         String growthMode = GrowObjects.GrowthModes.EQUIDISTANT_FROM_OBJECTS;
         int connectivity = Integer.parseInt(GrowObjects.Connectivity.TWENTYSIX);
         GrowObjects.process(inputObjects, null, startingObjectMode, growthMode, null, null, true, connectivity, false,
                 workspace);
-  
-                // Masking to original objects
-        MaskObjects.maskObjects(inputObjects, finalMask, null, true, false);
-      
+
+        
+
+    }
+
+    public static void resolve3D(Objs inputObjects, Workspace workspace) {
+        // Growing input objects into overlap regions
+        String startingObjectMode = GrowObjects.StartingObjectModes.SURFACES;
+        String growthMode = GrowObjects.GrowthModes.EQUIDISTANT_FROM_OBJECTS;
+        int connectivity = Integer.parseInt(GrowObjects.Connectivity.TWENTYSIX);
+        GrowObjects.process(inputObjects, null, startingObjectMode, growthMode, null, null, true, connectivity, false,
+                workspace);
+
     }
 
     @Override
@@ -105,9 +136,10 @@ public class ResolveObjectOverlap extends Module {
     @Override
     public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String zMode = parameters.getValue(Z_MODE, workspace);
 
         Objs inputObjects = workspace.getObjects(inputObjectsName);
-        process(inputObjects, workspace);
+        process(inputObjects, workspace, zMode);
 
         // // Showing objects
         if (showOutput)
@@ -121,6 +153,9 @@ public class ResolveObjectOverlap extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new SeparatorP(OVERLAP_SEPARATOR, this));
+        parameters.add(new ChoiceP(Z_MODE, this, ZModes.THREED, ZModes.ALL));
 
         addParameterDescriptions();
 

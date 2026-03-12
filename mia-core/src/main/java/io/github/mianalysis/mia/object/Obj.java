@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.PointOutOfRangeException;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
