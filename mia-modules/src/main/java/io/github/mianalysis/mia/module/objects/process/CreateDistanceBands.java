@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.process;
 
+import java.util.Iterator;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -226,7 +228,22 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                     return centroidVolume;
 
                 case RelativeModes.OBJECT_SURFACE:
-                    return inputObject.getSurface(ignoreEdgesXY, ignoreEdgesZ);
+                    // To prevent missing band pixels coincident with the object surface, returning whole object
+                    Obj surfaceObject = inputObject.duplicate(null, false, false, false);
+                    
+                    // Removing surface pixels if required
+                    if (ignoreEdgesXY || ignoreEdgesZ) {
+                       Iterator<Point<Integer>> iterator = surfaceObject.getCoordinateIterator();
+                       while (iterator.hasNext()) {
+                           Point<Integer> point = iterator.next();
+                           if (ignoreEdgesXY && (point.x == 0 || point.x == surfaceObject.getWidth() - 1))
+                               iterator.remove();
+                           if (ignoreEdgesZ && (point.z == 0 || point.z == surfaceObject.getNSlices() - 1))
+                               iterator.remove();
+                       }
+                    }
+
+                    return surfaceObject;
 
                 case RelativeModes.PARENT_CENTROID:
                     Obj parentObject = inputObject.getParent(parentObjectsName);
@@ -250,12 +267,14 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     public static <T extends RealType<T> & NativeType<T>> Objs getAllBands(Image<T> inputImage, Image<T> maskImage,
             String outputObjectsName, String weightMode, boolean matchZToXY, double bandWidthPx, double minDistPx,
             double maxDistPx, String type) {
-        // Get distance map
-        Objs internalBands = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
-                bandWidthPx, minDistPx, maxDistPx, type);
         Objs externalBands = getBands(inputImage, maskImage, outputObjectsName, false, weightMode, matchZToXY,
                 bandWidthPx, minDistPx, maxDistPx, type);
 
+        InvertIntensity.process(inputImage);
+
+        Objs internalBands = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
+                bandWidthPx, minDistPx, maxDistPx, type);
+        
         // Getting max ID for internal bands
         int ID = internalBands.getLargestID() + 1;
         for (Obj externalBand : externalBands.values()) {
@@ -290,7 +309,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         // Creating external bands objects
         Objs bands = distPx.convertImageToObjects(type, outputObjectsName, false);
 
-        addMeasurements(bands, distPx, bandWidthPx, false);
+        addMeasurements(bands, distPx, bandWidthPx, internalBands);
 
         return bands;
 

@@ -838,7 +838,7 @@ public class Volume {
             ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
         }
 
-        return ImageFactory.createImage("Tight", ipl);
+        return ImageFactory.createImage(imageName, ipl);
 
     }
 
