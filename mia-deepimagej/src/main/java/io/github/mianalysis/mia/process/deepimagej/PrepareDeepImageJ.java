@@ -85,6 +85,11 @@ public class PrepareDeepImageJ implements PlugIn {
 
     }
 
+    public static void updateAvailableModels() {
+        dps = list(getModelsPath());
+        
+    }
+
     public static String[] getAvailableModels() {
         String[] all = new String[dps.size()];
 
