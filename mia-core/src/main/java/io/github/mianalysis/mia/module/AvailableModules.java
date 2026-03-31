@@ -30,4 +30,12 @@ public class AvailableModules {
         moduleNames.add(clazz.getCanonicalName());
 
     } 
+
+    public static void addModuleName(String className) {
+        if (moduleNames == null)
+            getModuleNames(true);
+            
+        moduleNames.add(className);
+
+    } 
 }

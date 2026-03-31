@@ -3,6 +3,8 @@ package io.github.mianalysis.mia.process.logging;
 import org.scijava.Context;
 import org.scijava.ui.UIService;
 
+import io.github.mianalysis.mia.MIA;
+
 public class BasicLogRenderer extends LogRenderer {
     public BasicLogRenderer() {
         levelStatus.put(Level.DEBUG, false);
@@ -37,9 +39,10 @@ public class BasicLogRenderer extends LogRenderer {
 
         // Trying to ensure the console is open
         try {
-            Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
-            UIService uiService = (UIService) context.getService(UIService.class);
-            uiService.getDefaultUI().getConsolePane().show();
+            // Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
+            // UIService uiService = (UIService) context.getService(UIService.class);
+            
+            MIA.getUIService().getDefaultUI().getConsolePane().show();
         } catch (Exception e) {
             // Don't worry if this fails. The message should still have been displayed (the
             // window may just not be open).
