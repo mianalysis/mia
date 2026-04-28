@@ -1,16 +1,12 @@
 package io.github.mianalysis.mia.process.system;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import io.github.mianalysis.mia.object.metadata.Metadata;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
 
 public class FileTools {
     public interface FileTypes {
@@ -20,15 +16,13 @@ public class FileTools {
 
     }
 
-    public static String getGenericName(Metadata metadata, String genericFormat)
-            throws ServiceException, DependencyException, FormatException, IOException {
+    public static String getGenericName(Metadata metadata, String genericFormat) {
         // Returns the first generic name matching the specified format
         return getGenericNames(metadata, genericFormat)[0];
 
     }
 
-    public static String[] getGenericNames(Metadata metadata, String genericFormat)
-            throws ServiceException, DependencyException, FormatException, IOException {
+    public static String[] getGenericNames(Metadata metadata, String genericFormat) {
         String absolutePath = metadata.insertMetadataValues(genericFormat);
         String filepath = FilenameUtils.getFullPath(absolutePath);
         String filename = FilenameUtils.getName(absolutePath);

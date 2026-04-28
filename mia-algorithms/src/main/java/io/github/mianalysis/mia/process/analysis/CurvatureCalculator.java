@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.coordinates.Point;
 public class CurvatureCalculator {
     private ArrayList<Point<Double>> path;
     private PolynomialSplineFunction[] splines = null;
+    private double estimatedLength = Double.NaN;
     private TreeMap<Double, Double> curvature = null;
     private TreeMap<Double, Double> orientationXY = null;
     private FittingMethod fittingMethod = FittingMethod.STANDARD;
@@ -142,7 +143,6 @@ public class CurvatureCalculator {
 
         // Extracting the gradients as a function of position along the curve
         double[] knots = splines[0].getKnots();
-
         curvature = new TreeMap<>();
         orientationXY = new TreeMap<>();
         double w = (double) NNeighbours / 2d;
@@ -175,11 +175,12 @@ public class CurvatureCalculator {
             curvature.put(knots[i], k);
             double orientationXYDegs = Math.toDegrees(Math.atan2(dy, dx));
             if (orientationXYDegs < 0)
-                    orientationXYDegs += 360;
+                orientationXYDegs += 360;
 
             orientationXYDegs = (orientationXYDegs + 90) % 180 - 90;
 
-            // orientationXYRads = Math.abs((orientationXYRads + Math.PI) % (2 * Math.PI) - Math.PI);
+            // orientationXYRads = Math.abs((orientationXYRads + Math.PI) % (2 * Math.PI) -
+            // Math.PI);
             // orientationXYRads = orientationXYRads - Math.PI;
             orientationXY.put(knots[i], orientationXYDegs);
 
@@ -322,6 +323,35 @@ public class CurvatureCalculator {
         }
 
         return spline;
+
+    }
+
+    public double getEstimatedLength() {
+        if (!Double.isNaN(estimatedLength))
+            return estimatedLength;
+
+        estimatedLength = 0;
+        double x0 = Double.NaN;
+        double y0 = Double.NaN;
+
+        for (double knot : splines[0].getKnots()) {
+            double x = splines[0].value(knot);
+            double y = splines[2].value(knot);
+
+            if (!Double.isNaN(x0)) {
+                double dx = x - x0;
+                double dy = y - y0;
+
+                estimatedLength += Math.sqrt(dx * dx + dy * dy);
+
+            }
+
+            x0 = x;
+            y0 = y;
+
+        }
+
+        return estimatedLength;
 
     }
 }

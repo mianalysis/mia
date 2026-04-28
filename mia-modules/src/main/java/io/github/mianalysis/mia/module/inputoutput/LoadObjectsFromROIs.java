@@ -149,7 +149,8 @@ public class LoadObjectsFromROIs extends Module {
         return "";
     }
 
-    public static void loadObjects(String filePath, Objs outputObjects, @Nullable Objs trackObjects, boolean assignClass) {
+    public static void loadObjects(String filePath, Objs outputObjects, @Nullable Objs trackObjects,
+            boolean assignClass) {
         byte[] buf = new byte[1024];
         int len;
 
@@ -307,11 +308,7 @@ public class LoadObjectsFromROIs extends Module {
         // Getting the final file path
         switch (filePathMode) {
             case FilePathModes.GENERIC_PATH:
-                try {
-                    filePath = FileTools.getGenericName(workspace.getMetadata(), genericFilePath);
-                } catch (ServiceException | DependencyException | FormatException | IOException e) {
-                    e.printStackTrace();
-                }
+                filePath = FileTools.getGenericName(workspace.getMetadata(), genericFilePath);
                 break;
         }
 
@@ -331,7 +328,7 @@ public class LoadObjectsFromROIs extends Module {
 
         if (!new File(filePath).exists())
             return Status.PASS;
-        
+
         loadObjects(filePath, outputObjects, trackObjects, assignClass);
 
         if (showOutput)

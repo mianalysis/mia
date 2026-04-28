@@ -10,7 +10,6 @@ import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -408,8 +407,6 @@ public class MeasureObjectCurvature extends Module {
         double minCurvature = Double.MAX_VALUE;
         double maxCurvature = -Double.MAX_VALUE;
 
-        double dppXY = inputObject.getDppXY();
-
         Iterator<Double> iterator = curvature.keySet().iterator();
         while (iterator.hasNext()) {
             pathLength = iterator.next();
@@ -428,9 +425,6 @@ public class MeasureObjectCurvature extends Module {
                 posMax = pathLength;
             }
         }
-
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX, pathLength));
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL, pathLength * dppXY));
 
         if (useReference) {
             Point<Integer> firstPoint = longestPath.iterator().next();
@@ -711,6 +705,10 @@ public class MeasureObjectCurvature extends Module {
 
             measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
             measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
+
+            double splineLength = calculator.getEstimatedLength();
+            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX, splineLength));
+            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL, splineLength * inputObject.getDppXY()));
 
             if (drawSpline) {
                 int[] position = new int[] { 1, (int) (inputObject.getZ(false, false)[0] + 1),

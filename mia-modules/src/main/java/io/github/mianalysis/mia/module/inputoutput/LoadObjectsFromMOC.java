@@ -126,7 +126,7 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         jsonString = jsonString.substring(jsonString.indexOf("{"));
         jsonString = jsonString.substring(0, jsonString.lastIndexOf("}") + 1);
         jsonString = jsonString.replaceAll("[\\x00-\\x1F&&[^\\n\\t]]", "");
-        
+
         return new JSONObject(jsonString);
 
     }
@@ -544,11 +544,8 @@ public class LoadObjectsFromMOC extends GeneralOutputter {
         // Getting the final file path
         switch (filePathMode) {
             case FilePathModes.GENERIC_PATH:
-                try {
-                    filePath = FileTools.getGenericName(workspace.getMetadata(), genericFilePath);
-                } catch (ServiceException | DependencyException | FormatException | IOException e) {
-                    e.printStackTrace();
-                }
+                filePath = FileTools.getGenericName(workspace.getMetadata(), genericFilePath);
+
                 break;
         }
 
