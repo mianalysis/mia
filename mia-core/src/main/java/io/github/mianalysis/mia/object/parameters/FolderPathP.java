@@ -48,6 +48,10 @@ public class FolderPathP extends FileFolderType {
         if (!super.verify())
             return false;
 
+        // Can't verify metadata at this point, so assume correct
+        if (path.contains("Me{"))
+            return true;
+
         // Checking the file exists
         String converted = GlobalVariables.convertString(path, module.getModules());
 
