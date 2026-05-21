@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FijiCompiler",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.FijiCompiler",
+            "projectName": "mia-core"
+        },
+        {
+            "type": "java",
+            "name": "LoadObjectsFromObjectDB",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.inputoutput.LoadObjectsFromObjectDB",
+            "projectName": "mia-modules"
+        },
+        {
+            "type": "java",
             "name": "ApplyDeepImageJModel",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.images.process.ApplyDeepImageJModel",
