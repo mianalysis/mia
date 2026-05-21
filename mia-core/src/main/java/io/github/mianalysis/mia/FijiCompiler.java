@@ -23,12 +23,14 @@ import net.imagej.updater.util.Platforms;
 public class FijiCompiler {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
         String platform = Platforms.current();
-        boolean isMac = platform.contains("mac"); // The different forms of Mac aren't distinguished in the <platform>
-                                                  // tag
+        boolean isMac = platform.contains("mac");
+        boolean isWin = platform.contains("win");
+        boolean isLinux = platform.contains("linux");
 
-        String path = "/Users/sc13967/Applications/Fiji (release).app/db.xml";
-        // String path = "C:\\Users\\sc13967\\Applications\\Fiji\\db.xml\\db.xml";
-        String target = "/Users/sc13967/Desktop/Demo/";
+        // String path = "/Users/sc13967/Applications/Fiji (release).app/db.xml";
+        String path = "C:\\Users\\sc13967\\Applications\\Fiji\\db.xml\\db.xml";
+        // String target = "/Users/sc13967/Desktop/Demo2/";
+        String target = "C:\\Users\\sc13967\\Desktop\\Demo\\";
 
         new File(target).mkdirs();
 
@@ -79,11 +81,18 @@ public class FijiCompiler {
                         // With Mac, the <platform> tag doesn't distinguish between different forms of
                         // Mac, so we have to compare to the filename, Some Mac filenames don't include
                         // any platform name, so this includes a check for these
-                        if ((isMac && !currentPlatform.equals("macosx"))
-                                || (!isMac && !currentPlatform.equals(platform))) {
+                        if (isMac && !currentPlatform.equals("macosx"))
                             wrongPlatform = true;
-                            break;
-                        }
+
+                        if (isWin && (!currentPlatform.equals("winx") && !currentPlatform.equals(platform)))
+                            wrongPlatform = true;
+                                                    
+                        if (isLinux && !currentPlatform.equals(platform))
+                            wrongPlatform = true;                            
+                        
+                        // There can only be one platform node
+                        break;
+
                     }
                 }
 
@@ -123,7 +132,7 @@ public class FijiCompiler {
             try {
                 FileUtils.copyURLToFile(new URL(url), new File(target + "Fiji/" +
                         outputFilename));
-                Thread.sleep(500); // Slow it down, so not overloading the server (can cause 403 error)
+                Thread.sleep(100); // Slow it down, so not overloading the server (can cause 403 error)
             } catch (Exception e) {
                 System.out.println("Can't find " + url);
                 e.printStackTrace();
