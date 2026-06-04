@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20135391.svg)](https://doi.org/10.5281/zenodo.1201320)
 [![javadoc](https://javadoc.io/badge2/io.github.mianalysis/mia-core/javadoc.svg)](https://javadoc.io/doc/io.github.mianalysis)
 [![Sonatype Central](https://maven-badges.sml.io/sonatype-central/io.github.mianalysis/mia-plugin/badge.svg)](https://maven-badges.sml.io/sonatype-central/io.github.mianalysis/mia-plugin/)
 [![Testing](https://github.com/mianalysis/mia/actions/workflows/tests.yml/badge.svg)](https://github.com/mianalysis/mia/actions/workflows/tests.yml)
