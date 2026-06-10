@@ -146,11 +146,11 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
     }
 
     public void show(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, MIA.getPreferences().imageDisplayMode(), overlay);
+        show(title, lut, MIA.getPreferences().normaliseIntensity(), MIA.getPreferences().imageDisplayMode(), overlay);
     }
 
     public void show(String title, LUT lut) {
-        show(title, lut, true, MIA.getPreferences().imageDisplayMode());
+        show(title, lut, MIA.getPreferences().normaliseIntensity(), MIA.getPreferences().imageDisplayMode());
     }
 
     public void show(String title) {
@@ -186,12 +186,12 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
 
     @Deprecated
     public void showImage(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, MIA.getPreferences().imageDisplayMode(), overlay);
+        show(title, lut, MIA.getPreferences().normaliseIntensity(), MIA.getPreferences().imageDisplayMode(), overlay);
     }
 
     @Deprecated
     public void showImage(String title, LUT lut) {
-        show(title, lut, true, MIA.getPreferences().imageDisplayMode());
+        show(title, lut, MIA.getPreferences().normaliseIntensity(), MIA.getPreferences().imageDisplayMode());
     }
 
     @Deprecated
