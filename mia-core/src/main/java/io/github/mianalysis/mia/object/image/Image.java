@@ -12,6 +12,7 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -145,11 +146,11 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
     }
 
     public void show(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, DisplayModes.COLOUR, overlay);
+        show(title, lut, true, MIA.getPreferences().imageDisplayMode(), overlay);
     }
 
     public void show(String title, LUT lut) {
-        show(title, lut, true, DisplayModes.COLOUR);
+        show(title, lut, true, MIA.getPreferences().imageDisplayMode());
     }
 
     public void show(String title) {
@@ -169,7 +170,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
     }
 
     public void show(boolean normalise) {
-        show(name, null, normalise, DisplayModes.COLOUR);
+        show(name, null, normalise, MIA.getPreferences().imageDisplayMode());
     }
 
     @Deprecated
@@ -185,12 +186,12 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> implements Me
 
     @Deprecated
     public void showImage(String title, LUT lut, Overlay overlay) {
-        show(title, lut, true, DisplayModes.COLOUR, overlay);
+        show(title, lut, true, MIA.getPreferences().imageDisplayMode(), overlay);
     }
 
     @Deprecated
     public void showImage(String title, LUT lut) {
-        show(title, lut, true, DisplayModes.COLOUR);
+        show(title, lut, true, MIA.getPreferences().imageDisplayMode());
     }
 
     @Deprecated

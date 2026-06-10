@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
@@ -44,13 +45,7 @@ public class Preferences extends Module {
 
     protected HashMap<String, String> currentValues;
 
-    public interface ImageDisplayModes {
-        String COMPOSITE = "Composite";
-        String COLOUR = "Colour";
-
-        String[] ALL = new String[] { COLOUR, COMPOSITE };
-
-    }
+    public interface ImageDisplayModes extends Image.DisplayModes { }
 
     // public interface DataStorageModes {
     // // String AUTOMATIC = "Automatic"; // This mode will look at each image and
