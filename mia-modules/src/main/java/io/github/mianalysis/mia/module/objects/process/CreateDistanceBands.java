@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objects.process;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.scijava.Priority;
@@ -228,19 +229,25 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
                     return centroidVolume;
 
                 case RelativeModes.OBJECT_SURFACE:
-                    // To prevent missing band pixels coincident with the object surface, returning whole object
+                    // To prevent missing band pixels coincident with the object surface, returning
+                    // whole object
                     Obj surfaceObject = inputObject.duplicate(null, false, false, false);
-                    
+
                     // Removing surface pixels if required
                     if (ignoreEdgesXY || ignoreEdgesZ) {
-                       Iterator<Point<Integer>> iterator = surfaceObject.getCoordinateIterator();
-                       while (iterator.hasNext()) {
-                           Point<Integer> point = iterator.next();
-                           if (ignoreEdgesXY && (point.x == 0 || point.x == surfaceObject.getWidth() - 1))
-                               iterator.remove();
-                           if (ignoreEdgesZ && (point.z == 0 || point.z == surfaceObject.getNSlices() - 1))
-                               iterator.remove();
-                       }
+                        Iterator<Point<Integer>> iterator = surfaceObject.getCoordinateIterator();
+                        ArrayList<Point<Integer>> toRemove = new ArrayList<>();
+                        while (iterator.hasNext()) {
+                            Point<Integer> point = iterator.next();
+                            if (ignoreEdgesXY && (point.x == 0 || point.x == surfaceObject.getWidth() - 1))
+                                toRemove.add(point);
+                            if (ignoreEdgesZ && (point.z == 0 || point.z == surfaceObject.getNSlices() - 1))
+                                toRemove.add(point);
+                        }
+
+                        for (Point<Integer> point : toRemove)
+                            surfaceObject.remove(point);
+
                     }
 
                     return surfaceObject;
@@ -270,11 +277,11 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         Objs externalBands = getBands(inputImage, maskImage, outputObjectsName, false, weightMode, matchZToXY,
                 bandWidthPx, minDistPx, maxDistPx, type);
 
-        InvertIntensity.process(inputImage);
+        // InvertIntensity.process(inputImage);
 
         Objs internalBands = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
                 bandWidthPx, minDistPx, maxDistPx, type);
-        
+
         // Getting max ID for internal bands
         int ID = internalBands.getLargestID() + 1;
         for (Obj externalBand : externalBands.values()) {
@@ -289,7 +296,7 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     public static <T extends RealType<T> & NativeType<T>> Objs getBands(Image<T> inputImage, Image<T> maskImage,
             String outputObjectsName, boolean internalBands, String weightMode, boolean matchZToXY, double bandWidthPx,
             double minDistPx, double maxDistPx, String type) {
-        Image<T> distPx = DistanceMap.process(inputImage, "Distance", true, weightMode, matchZToXY, false);
+        Image<T> distPx = DistanceMap.process(inputImage, "Distance", !internalBands, weightMode, matchZToXY, false);
         ImageMath.process(distPx, ImageMath.CalculationModes.DIVIDE, bandWidthPx);
 
         // Applying masking (can occur due to ZtoXY interpolation)

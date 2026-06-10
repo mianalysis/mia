@@ -86,10 +86,10 @@ public class FijiCompiler {
 
                         if (isWin && (!currentPlatform.equals("winx") && !currentPlatform.equals(platform)))
                             wrongPlatform = true;
-                                                    
+
                         if (isLinux && !currentPlatform.equals(platform))
-                            wrongPlatform = true;                            
-                        
+                            wrongPlatform = true;
+
                         // There can only be one platform node
                         break;
 
@@ -142,6 +142,14 @@ public class FijiCompiler {
 
         }
 
+        System.out.println(
+                "Download relevant copy of Fiji.  For newer (stable and latest) builds, there's the " +
+                " config/jlaunch/fiji.toml file that has a value -Dscijava.app.java-version-recommended " +
+                "that indicates which version to try and get.  Older builds don't have this, so if " +
+                " they know about the Java-8 update site, then assume they're Java 8; if not, assume Java " +
+                "6.  Either way, the GUI could say which JRE it's planing to download, but allow the user " +
+                "to override this.");
+                
         System.out.println("Complete!");
 
     }

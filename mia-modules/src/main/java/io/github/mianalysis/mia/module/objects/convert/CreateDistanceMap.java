@@ -40,57 +40,82 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
-
 /**
-* Creates a distance map for a selected object set.  Pixels in the output image are encoded with the distance to the nearest image edge or centroid (depending on setting).  A single distance map image is created for all objects in the specified set.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Creates a distance map for a selected object set. Pixels in the output image
+ * are encoded with the distance to the nearest image edge or centroid
+ * (depending on setting). A single distance map image is created for all
+ * objects in the specified set. Uses the plugin
+ * "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CreateDistanceMap extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Objects input / image output";
 
-	/**
-	* Objects from workspace for which distance map will be created.  A single distance map will be created for all objects.
-	*/
+    /**
+     * Objects from workspace for which distance map will be created. A single
+     * distance map will be created for all objects.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-	/**
-	* Output distance map image which will be added to the workspace.  This will contain the distance map for each object.
-	*/
+    /**
+     * Output distance map image which will be added to the workspace. This will
+     * contain the distance map for each object.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
 
-	/**
-	* Controls where the distances are calculated from:<br><ul><li>"Distance from object centroid" Each pixel is encoded with the distance from the centre of the respective object.</li><li>"Distance from object edge" Each pixel is encoded with the distance from the edge of the respective object.</li></ul>
-	*/
+    /**
+     * Controls where the distances are calculated from:<br>
+     * <ul>
+     * <li>"Distance from object centroid" Each pixel is encoded with the distance
+     * from the centre of the respective object.</li>
+     * <li>"Distance from object edge" Each pixel is encoded with the distance from
+     * the edge of the respective object.</li>
+     * </ul>
+     */
     public static final String REFERENCE_MODE = "Reference mode";
 
-	/**
-	* When selected (and "Reference mode" is set to "Distance from object edge"), the distance map will be inverted, such that the distances inside objects are also positive.  If not selected, the distances inside objects will be negative.  Distance values outside objects are always positive.
-	*/
+    /**
+     * When selected (and "Reference mode" is set to "Distance from object edge"),
+     * the distance map will be inverted, such that the distances inside objects are
+     * also positive. If not selected, the distances inside objects will be
+     * negative. Distance values outside objects are always positive.
+     */
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
 
-	/**
-	* Controls which regions of the image are displayed:<br><ul><li>"Inside and outside" Distances both inside and outside the objects are non-zero.</li><li>"Inside only" Distances are shown inside each object, but are set to zero for all pixels outside an object.</li><li>"Outside only" Distances are shown outside each object, but are set to zero for all pixels inside an object.</li></ul>
-	*/
+    /**
+     * Controls which regions of the image are displayed:<br>
+     * <ul>
+     * <li>"Inside and outside" Distances both inside and outside the objects are
+     * non-zero.</li>
+     * <li>"Inside only" Distances are shown inside each object, but are set to zero
+     * for all pixels outside an object.</li>
+     * <li>"Outside only" Distances are shown outside each object, but are set to
+     * zero for all pixels inside an object.</li>
+     * </ul>
+     */
     public static final String MASKING_MODE = "Masking mode";
 
-	/**
-	* When selected, the distance values inside each object are normalised to the range 0-1.  Normalisation is performed on an object-by-object basis, so the absolute distance values cannot be directly compared between objects.
-	*/
+    /**
+     * When selected, the distance values inside each object are normalised to the
+     * range 0-1. Normalisation is performed on an object-by-object basis, so the
+     * absolute distance values cannot be directly compared between objects.
+     */
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
 
-	/**
-	* Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
-	*/
+    /**
+     * Controls whether spatial values are assumed to be specified in calibrated
+     * units (as defined by the "Input control" parameter "Spatial unit") or pixel
+     * units.
+     */
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
     public CreateDistanceMap(Modules modules) {
@@ -263,16 +288,16 @@ public class CreateDistanceMap extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting other parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS,workspace);
-        String maskingMode = parameters.getValue(MASKING_MODE,workspace);
-        boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT,workspace);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS, workspace);
+        String maskingMode = parameters.getValue(MASKING_MODE, workspace);
+        boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT, workspace);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE, workspace);
 
         // Initialising the distance map
         Image distanceMap = null;
@@ -331,7 +356,7 @@ public class CreateDistanceMap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -340,14 +365,14 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(DISTANCE_MAP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.DISTANCE_FROM_EDGE:
                 returnedParameters.add(parameters.getParameter(INVERT_MAP_WITHIN_OBJECTS));
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(MASKING_MODE));
-        switch ((String) parameters.getValue(MASKING_MODE,workspace)) {
+        switch ((String) parameters.getValue(MASKING_MODE, workspace)) {
             case MaskingModes.INSIDE_ONLY:
                 returnedParameters.add(parameters.getParameter(NORMALISE_MAP_PER_OBJECT));
                 break;
@@ -355,8 +380,8 @@ Workspace workspace = null;
 
         // If we're not using the inside-only masking with normalisation, allow the
         // units to be specified.
-        if (!(((String) parameters.getValue(MASKING_MODE,workspace)).equals(MaskingModes.INSIDE_ONLY)
-                && (boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT,workspace))) {
+        if (!(((String) parameters.getValue(MASKING_MODE, workspace)).equals(MaskingModes.INSIDE_ONLY)
+                && (boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT, workspace))) {
             returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
         }
 
@@ -366,32 +391,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

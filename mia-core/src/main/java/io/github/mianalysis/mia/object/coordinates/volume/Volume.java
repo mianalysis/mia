@@ -13,7 +13,6 @@ import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -66,6 +65,10 @@ public class Volume {
     public void add(Point<Integer> point) throws PointOutOfRangeException {
         add(point.x, point.y, point.z);
 
+    }
+
+    public void remove(Point<Integer> point) throws PointOutOfRangeException {
+        coordinateSet.remove(point);
     }
 
     public void translateCoords(int xOffs, int yOffs, int zOffs) {
