@@ -149,7 +149,7 @@
             <artifactId>ij</artifactId>
             <version>1.54j</version>
             <scope>${scp}</scope>
-          </dependency>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -163,7 +163,8 @@
             <version>5.4.0</version>
         </dependency>
 
-        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or later -->
+        <!-- We've got to stick with 5.2.3 until the scijava pom updates commons-io to 2.12.0 or
+        later -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -189,8 +190,18 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/db.xml.gz</exclude>
+                </excludes>
+            </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/db.xml.gz</include>
+                </includes>
             </resource>
         </resources>
     </build>
-    
 </project>

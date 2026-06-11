@@ -1,10 +1,12 @@
 package io.github.mianalysis.mia;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,20 +29,19 @@ public class FijiCompiler {
         boolean isWin = platform.contains("win");
         boolean isLinux = platform.contains("linux");
 
-        // String path = "/Users/sc13967/Applications/Fiji (release).app/db.xml";
-        String path = "C:\\Users\\sc13967\\Applications\\Fiji\\db.xml\\db.xml";
-        // String target = "/Users/sc13967/Desktop/Demo2/";
-        String target = "C:\\Users\\sc13967\\Desktop\\Demo\\";
+        String tomlPath = FijiCompiler.class.getResource("/example-config/fiji.toml").getFile();
+        String dbPath = "/example-config/db.xml.gz";
+        String target = "/Users/sc13967/Desktop/Demo2/";
+        // String target = "C:\\Users\\sc13967\\Desktop\\Demo\\";
 
         new File(target).mkdirs();
 
-        String xml = FileUtils.readFileToString(new File(path), "UTF-8");
-
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+        InputStream dbInputStream = new GZIPInputStream(FijiCompiler.class.getResourceAsStream(dbPath));
+        Document doc = documentBuilder.parse(new InputSource(dbInputStream));
         doc.getDocumentElement().normalize();
-
+        
         // Creating a list of update sites
         HashMap<String, String> updateSites = new HashMap<>();
         NodeList nodes = doc.getChildNodes().item(1).getChildNodes();
@@ -118,32 +119,40 @@ public class FijiCompiler {
         }
 
         // Downloading files
-        int count = 0;
-        for (String url : installList.keySet()) {
-            count++;
-            String outputFilename = (String) installList.get(url)[0];
-            boolean executable = (Boolean) installList.get(url)[1];
+        // int count = 0;
+        // for (String url : installList.keySet()) {
+        //     count++;
+        //     String outputFilename = (String) installList.get(url)[0];
+        //     boolean executable = (Boolean) installList.get(url)[1];
 
-            if (new File(target + "Fiji/" + outputFilename).exists())
-                continue;
+        //     if (new File(target + "Fiji/" + outputFilename).exists())
+        //         continue;
 
-            System.out.println("Installing " + count + " of " + installList.size() + ": " + url);
+        //     System.out.println("Installing " + count + " of " + installList.size() + ": " + url);
 
-            try {
-                FileUtils.copyURLToFile(new URL(url), new File(target + "Fiji/" +
-                        outputFilename));
-                Thread.sleep(100); // Slow it down, so not overloading the server (can cause 403 error)
-            } catch (Exception e) {
-                System.out.println("Can't find " + url);
-                e.printStackTrace();
-            }
+        //     try {
+        //         FileUtils.copyURLToFile(new URL(url), new File(target + "Fiji/" +
+        //                 outputFilename));
+        //         Thread.sleep(100); // Slow it down, so not overloading the server (can cause 403 error)
+        //     } catch (Exception e) {
+        //         System.out.println("Can't find " + url);
+        //         e.printStackTrace();
+        //     }
 
-            new File(target + "Fiji/" + outputFilename).setExecutable(executable);
+        //     new File(target + "Fiji/" + outputFilename).setExecutable(executable);
 
-        }
+        // }
 
+        // Downloading Java
+        String toml = FileUtils.readFileToString(new File(tomlPath), "UTF-8");
+        Pattern jdkVersionPattern = Pattern.compile("-Dscijava.app.java-version-recommended=([0-9_.]+)");
+        Matcher jdkVersionMatcher = jdkVersionPattern.matcher(toml);
+        jdkVersionMatcher.find();
+        String jdkVersion = jdkVersionMatcher.group(1);
+        System.out.println("JDK version: " + jdkVersion);
+        
         System.out.println(
-                "Download relevant copy of Fiji.  For newer (stable and latest) builds, there's the " +
+                "Download relevant copy of Java.  For newer (stable and latest) builds, there's the " +
                 " config/jlaunch/fiji.toml file that has a value -Dscijava.app.java-version-recommended " +
                 "that indicates which version to try and get.  Older builds don't have this, so if " +
                 " they know about the Java-8 update site, then assume they're Java 8; if not, assume Java " +
