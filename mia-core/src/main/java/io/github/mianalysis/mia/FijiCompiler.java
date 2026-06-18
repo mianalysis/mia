@@ -1,8 +1,13 @@
 package io.github.mianalysis.mia;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +25,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.drew.lang.annotations.Nullable;
+
 import net.imagej.updater.util.Platforms;
+import net.imagej.updater.util.UpdaterUtil;
 
 public class FijiCompiler {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
@@ -34,14 +42,14 @@ public class FijiCompiler {
         String target = "/Users/sc13967/Desktop/Demo2/";
         // String target = "C:\\Users\\sc13967\\Desktop\\Demo\\";
 
-        new File(target).mkdirs();
+        new File(target + "Fiji").mkdirs();
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         InputStream dbInputStream = new GZIPInputStream(FijiCompiler.class.getResourceAsStream(dbPath));
         Document doc = documentBuilder.parse(new InputSource(dbInputStream));
         doc.getDocumentElement().normalize();
-        
+
         // Creating a list of update sites
         HashMap<String, String> updateSites = new HashMap<>();
         NodeList nodes = doc.getChildNodes().item(1).getChildNodes();
@@ -119,29 +127,47 @@ public class FijiCompiler {
         }
 
         // Downloading files
-        // int count = 0;
-        // for (String url : installList.keySet()) {
-        //     count++;
-        //     String outputFilename = (String) installList.get(url)[0];
-        //     boolean executable = (Boolean) installList.get(url)[1];
+        int count = 0;
+        for (String url : installList.keySet()) {
+            count++;
+            String outputFilename = (String) installList.get(url)[0];
+            boolean executable = (Boolean) installList.get(url)[1];
 
-        //     if (new File(target + "Fiji/" + outputFilename).exists())
-        //         continue;
+            System.out.println("Installing " + count + " of " + installList.size() + ": " + url);
 
-        //     System.out.println("Installing " + count + " of " + installList.size() + ": " + url);
+            // try {
+            // FileUtils.copyURLToFile(new URL(url), new File(target + "Fiji/" +
+            // outputFilename));
+            // Thread.sleep(100); // Slow it down, so not overloading the server (can cause
+            // 403 error)
+            // } catch (Exception e) {
+            // System.out.println("Can't find " + url);
+            // e.printStackTrace();
+            // }
 
-        //     try {
-        //         FileUtils.copyURLToFile(new URL(url), new File(target + "Fiji/" +
-        //                 outputFilename));
-        //         Thread.sleep(100); // Slow it down, so not overloading the server (can cause 403 error)
-        //     } catch (Exception e) {
-        //         System.out.println("Can't find " + url);
-        //         e.printStackTrace();
-        //     }
+            URLConnection connection = UpdaterUtil.openConnection(new URL(url));
+            connection.setUseCaches(false);
 
-        //     new File(target + "Fiji/" + outputFilename).setExecutable(executable);
+            File destination = new File(target + "Fiji/" + outputFilename);
+            if (!destination.getParentFile().exists())
+                destination.getParentFile().mkdirs();
 
-        // }
+            InputStream in = connection.getInputStream();
+            OutputStream out = new FileOutputStream(destination);
+
+            final byte[] buffer = new byte[65536];
+            for (;;) {
+                int bufferCount = in.read(buffer);
+                if (bufferCount < 0)
+                    break;
+                out.write(buffer, 0, bufferCount);
+            }
+            in.close();
+            out.close();
+
+            new File(target + "Fiji/" + outputFilename).setExecutable(executable);
+
+        }
 
         // Downloading Java
         String toml = FileUtils.readFileToString(new File(tomlPath), "UTF-8");
@@ -150,16 +176,28 @@ public class FijiCompiler {
         jdkVersionMatcher.find();
         String jdkVersion = jdkVersionMatcher.group(1);
         System.out.println("JDK version: " + jdkVersion);
-        
+
         System.out.println(
                 "Download relevant copy of Java.  For newer (stable and latest) builds, there's the " +
-                " config/jlaunch/fiji.toml file that has a value -Dscijava.app.java-version-recommended " +
-                "that indicates which version to try and get.  Older builds don't have this, so if " +
-                " they know about the Java-8 update site, then assume they're Java 8; if not, assume Java " +
-                "6.  Either way, the GUI could say which JRE it's planing to download, but allow the user " +
-                "to override this.");
-                
+                        " config/jlaunch/fiji.toml file that has a value -Dscijava.app.java-version-recommended " +
+                        "that indicates which version to try and get.  Older builds don't have this, so if " +
+                        " they know about the Java-8 update site, then assume they're Java 8; if not, assume Java " +
+                        "6.  Either way, the GUI could say which JRE it's planing to download, but allow the user " +
+                        "to override this.");
+
         System.out.println("Complete!");
+
+    }
+
+    class Downloadable {
+        protected ArrayList<URL> urls = new ArrayList<>();
+
+        public Downloadable(URL url, @Nullable String checksum) {
+            urls.add(url);   
+
+            
+
+        }
 
     }
 }

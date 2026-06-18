@@ -38,227 +38,263 @@ import io.github.mianalysis.mia.process.math.CumStat;
  */
 
 /**
-* Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.  For objects tracked through time, the image intensity can be interpreted as the ID of a parent track object.<br><br>Note: This module has different behaviour to the "Identify objects" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Converts objects encoded in a labelled image stack back into objects. Each
+ * output object is comprised of all pixels in a single timepoint with the same
+ * pixel intensity. As such, pixels need not be in direct contact to be assigned
+ * the same object. For objects tracked through time, the image intensity can be
+ * interpreted as the ID of a parent track object.<br>
+ * <br>
+ * Note: This module has different behaviour to the "Identify objects" module,
+ * which takes a binary image, identifies contiguous foreground regions and
+ * assigns new object IDs.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ConvertImageToObjects extends Module {
 
-	/**
-	* 
-	*/
-    public static final String INPUT_SEPARATOR = "Image input";
+  /**
+  * 
+  */
+  public static final String INPUT_SEPARATOR = "Image input";
 
-	/**
-	* Labelled image to convert to objects.  The background (non-object region) of this image should be black (0 intensity) and all pixels corresponding to the same object should have the same value.  Objects can only exist in a single timepoint, so pixels of the same intensity but in different timepoints will be assigned to different objects.
-	*/
-    public static final String INPUT_IMAGE = "Input image";
+  /**
+   * Labelled image to convert to objects. The background (non-object region) of
+   * this image should be black (0 intensity) and all pixels corresponding to the
+   * same object should have the same value. Objects can only exist in a single
+   * timepoint, so pixels of the same intensity but in different timepoints will
+   * be assigned to different objects.
+   */
+  public static final String INPUT_IMAGE = "Input image";
 
+  /**
+  * 
+  */
+  public static final String OUTPUT_SEPARATOR = "Object output";
 
-	/**
-	* 
-	*/
-    public static final String OUTPUT_SEPARATOR = "Object output";
+  /**
+   * Output objects created by the conversion process. These will be stored in the
+   * workspace and be accessible via this name.
+   */
+  public static final String OUTPUT_OBJECTS = "Output objects";
 
-	/**
-	* Output objects created by the conversion process.  These will be stored in the workspace and be accessible via this name.
-	*/
-    public static final String OUTPUT_OBJECTS = "Output objects";
+  /**
+   * The method used to store pixel coordinates. This only affects performance and
+   * memory usage, there is no difference in results obtained using difference
+   * storage methods.<br>
+   * <ul>
+   * <li>"Pointlist" (default) stores object coordinates as a list of XYZ
+   * coordinates. This is most efficient for small objects, very thin objects or
+   * objects with lots of holes.</li>
+   * <li>"Octree" stores objects in an octree format. Here, the coordinate space
+   * is broken down into cubes of different sizes, each of which is marked as
+   * foreground (i.e. an object) or background. Octrees are most efficient when
+   * there are lots of large cubic regions of the same label, as the space can be
+   * represented by larger (and thus fewer) cubes. This is best used when there
+   * are large, completely solid objects. If z-axis sampling is much larger than
+   * xy-axis sampling, it's typically best to opt for the quadtree method.</li>
+   * <li>"Quadtree" stores objects in a quadtree format. Here, each Z-plane of the
+   * object is broken down into squares of different sizes, each of which is
+   * marked as foreground (i.e. an object) or background. Quadtrees are most
+   * efficient when there are lots of large square regions of the same label, as
+   * the space can be represented by larger (and thus fewer) squares. This is best
+   * used when there are large, completely solid objects.</li>
+   * </ul>
+   */
+  public static final String VOLUME_TYPE = "Volume type";
 
-	/**
-	* The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul><li>"Pointlist" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li><li>"Octree" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li><li>"Quadtree" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>
-	*/
-    public static final String VOLUME_TYPE = "Volume type";
+  /**
+   * When selected, the intensity of the image for each object will be assumed as
+   * corresponding to the ID of a parent track object. This allows track
+   * relationships for objects present in multiple timepoints to be loaded back
+   * into MIA.
+   */
+  public static final String CREATE_TRACKS = "Create track objects";
 
-	/**
-	* When selected, the intensity of the image for each object will be assumed as corresponding to the ID of a parent track object.  This allows track relationships for objects present in multiple timepoints to be loaded back into MIA.
-	*/
-    public static final String CREATE_TRACKS = "Create track objects";
+  /**
+   * If creating track objects ("Create track objects" is selected), this is the
+   * name of the output tracks. These will be parents of the output objects.
+   */
+  public static final String TRACK_OBJECTS_NAME = "Output track objects name";
 
-	/**
-	* If creating track objects ("Create track objects" is selected), this is the name of the output tracks.  These will be parents of the output objects.
-	*/
-    public static final String TRACK_OBJECTS_NAME = "Output track objects name";
+  public ConvertImageToObjects(Modules modules) {
+    super("Convert image to objects", modules);
+  }
 
-    public ConvertImageToObjects(Modules modules) {
-        super("Convert image to objects", modules);
-    }
+  public interface VolumeTypes extends VolumeTypesInterface {
+  }
 
-    public interface VolumeTypes extends VolumeTypesInterface {
-    }
+  @Override
+  public Category getCategory() {
+    return Categories.OBJECTS_CONVERT;
+  }
 
-    @Override
-    public Category getCategory() {
-        return Categories.OBJECTS_CONVERT;
-    }
+  @Override
+  public String getVersionNumber() {
+    return "1.0.0";
+  }
 
-    @Override
-    public String getVersionNumber() {
-        return "1.0.0";
-    }
+  @Override
+  public String getDescription() {
+    return "Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.  For objects tracked through time, the image intensity can be interpreted as the ID of a parent track object."
 
-    @Override
-    public String getDescription() {
-        return "Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.  For objects tracked through time, the image intensity can be interpreted as the ID of a parent track object."
+        + "<br><br>Note: This module has different behaviour to the \"" + new IdentifyObjects(null).getName()
+        + "\" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.";
+  }
 
-                + "<br><br>Note: This module has different behaviour to the \"" + new IdentifyObjects(null).getName()
-                + "\" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.";
-    }
+  public static Objs createParents(Objs inputObjects, Image image, String parentsName) {
+    Objs parentObjects = new Objs(parentsName, inputObjects);
 
-    public static Objs createParents(Objs inputObjects, Image image, String parentsName) {
-        Objs parentObjects = new Objs(parentsName, inputObjects);
+    for (Obj inputObject : inputObjects.values()) {
+      // Taking parent ID as the largest intensity within the object
+      CumStat cs = MeasureObjectIntensity.measureIntensity(inputObject, image, false, false);
+      int ID = (int) Math.round(cs.getMax());
 
-        for (Obj inputObject : inputObjects.values()) {
-            // Taking parent ID as the largest intensity within the object
-            CumStat cs = MeasureObjectIntensity.measureIntensity(inputObject, image, false, false);
-            int ID = (int) Math.round(cs.getMax());
+      // Getting corresponding parent object
+      parentObjects.putIfAbsent(ID, new Obj(parentObjects, VolumeType.POINTLIST, ID));
+      Obj parentObject = parentObjects.get(ID);
 
-            // Getting corresponding parent object
-            parentObjects.putIfAbsent(ID, new Obj(parentObjects, VolumeType.POINTLIST, ID));
-            Obj parentObject = parentObjects.get(ID);
-
-            // Assigning relationships
-            inputObject.addParent(parentObject);
-            parentObject.addChild(inputObject);
-
-        }
-
-        return parentObjects;
-
-    }
-
-    @Override
-    public Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
-
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        String volumeType = parameters.getValue(VOLUME_TYPE,workspace);
-        boolean createParents = parameters.getValue(CREATE_TRACKS,workspace);
-        String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
-
-        Objs objects = null;
-        try {
-            objects = inputImage.convertImageToObjects(VolumeTypesInterface.getVolumeType(volumeType), outputObjectsName);
-        } catch (IntegerOverflowException e) {
-            return Status.FAIL;
-        }
-
-        if (createParents)
-            workspace.addObjects(createParents(objects, inputImage, parentObjectsName));
-
-        if (showOutput)
-            if (createParents)
-                TrackObjects.showObjects(objects, parentObjectsName);
-            else
-                objects.convertToImageIDColours().show(false);
-
-        workspace.addObjects(objects);
-
-        return Status.PASS;
+      // Assigning relationships
+      inputObject.addParent(parentObject);
+      parentObject.addChild(inputObject);
 
     }
 
-    @Override
-    protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
+    return parentObjects;
 
-        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
-        parameters.add(new BooleanP(CREATE_TRACKS, this, false));
-        parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS_NAME, this));
+  }
 
-        addParameterDescriptions();
+  @Override
+  public Status process(Workspace workspace) {
+    String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+    Image inputImage = workspace.getImages().get(inputImageName);
 
+    String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+    String volumeType = parameters.getValue(VOLUME_TYPE, workspace);
+    boolean createParents = parameters.getValue(CREATE_TRACKS, workspace);
+    String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME, workspace);
+
+    Objs objects = null;
+    try {
+      objects = inputImage.convertImageToObjects(VolumeTypesInterface.getVolumeType(volumeType), outputObjectsName);
+    } catch (IntegerOverflowException e) {
+      return Status.FAIL;
     }
 
-    @Override
-    public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        Parameters returnedParameters = new Parameters();
+    if (createParents)
+      workspace.addObjects(createParents(objects, inputImage, parentObjectsName));
 
-        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.get(INPUT_IMAGE));
+    if (showOutput)
+      if (createParents)
+        TrackObjects.showObjects(objects, parentObjectsName);
+      else
+        objects.convertToImageIDColours().show(false);
 
-        returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
-        returnedParameters.add(parameters.get(VOLUME_TYPE));
+    workspace.addObjects(objects);
 
-        returnedParameters.add(parameters.get(CREATE_TRACKS));
-        if ((boolean) parameters.getValue(CREATE_TRACKS,workspace))
-            returnedParameters.add(parameters.get(TRACK_OBJECTS_NAME));
+    return Status.PASS;
 
-        return returnedParameters;
+  }
 
+  @Override
+  protected void initialiseParameters() {
+    parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+    parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+    parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
+    parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+    parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
+    parameters.add(new BooleanP(CREATE_TRACKS, this, false));
+    parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS_NAME, this));
+
+    addParameterDescriptions();
+
+  }
+
+  @Override
+  public Parameters updateAndGetParameters() {
+    Workspace workspace = null;
+    Parameters returnedParameters = new Parameters();
+
+    returnedParameters.add(parameters.get(INPUT_SEPARATOR));
+    returnedParameters.add(parameters.get(INPUT_IMAGE));
+
+    returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
+    returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
+    returnedParameters.add(parameters.get(VOLUME_TYPE));
+
+    returnedParameters.add(parameters.get(CREATE_TRACKS));
+    if ((boolean) parameters.getValue(CREATE_TRACKS, workspace))
+      returnedParameters.add(parameters.get(TRACK_OBJECTS_NAME));
+
+    return returnedParameters;
+
+  }
+
+  @Override
+  public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+    return null;
+  }
+
+  @Override
+  public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+    return null;
+  }
+
+  @Override
+  public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+    return null;
+  }
+
+  @Override
+  public MetadataRefs updateAndGetMetadataReferences() {
+    return null;
+  }
+
+  @Override
+  public ParentChildRefs updateAndGetParentChildRefs() {
+    Workspace workspace = null;
+    ParentChildRefs returnedRelationships = new ParentChildRefs();
+
+    if ((boolean) parameters.getValue(CREATE_TRACKS, workspace)) {
+      String childObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+      String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME, workspace);
+
+      returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName, childObjectsName));
     }
 
-    @Override
-    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
-    }
+    return returnedRelationships;
 
-    @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
-    }
+  }
 
-    @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
-    }
+  @Override
+  public PartnerRefs updateAndGetPartnerRefs() {
+    return null;
+  }
 
-    @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-return null;
-    }
+  @Override
+  public boolean verify() {
+    return true;
+  }
 
-    @Override
-    public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
-        ParentChildRefs returnedRelationships = new ParentChildRefs();
+  void addParameterDescriptions() {
+    parameters.get(INPUT_IMAGE).setDescription(
+        "Labelled image to convert to objects.  The background (non-object region) of this image should be black (0 intensity) and all pixels corresponding to the same object should have the same value.  Objects can only exist in a single timepoint, so pixels of the same intensity but in different timepoints will be assigned to different objects.");
 
-        if ((boolean) parameters.getValue(CREATE_TRACKS,workspace)) {
-            String childObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-            String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
+    parameters.get(OUTPUT_OBJECTS).setDescription(
+        "Output objects created by the conversion process.  These will be stored in the workspace and be accessible via this name.");
 
-            returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName, childObjectsName));
-        }
+    parameters.get(VOLUME_TYPE).setDescription(
+        "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
+            + "<li>\"" + VolumeTypes.POINTLIST
+            + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
+            + "<li>\"" + VolumeTypes.OCTREE
+            + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
+            + "<li>\"" + VolumeTypes.QUADTREE
+            + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
-        return returnedRelationships;
+    parameters.get(CREATE_TRACKS).setDescription(
+        "When selected, the intensity of the image for each object will be assumed as corresponding to the ID of a parent track object.  This allows track relationships for objects present in multiple timepoints to be loaded back into MIA.");
 
-    }
-
-    @Override
-    public PartnerRefs updateAndGetPartnerRefs() {
-return null;
-    }
-
-    @Override
-    public boolean verify() {
-        return true;
-    }
-
-    void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription(
-                "Labelled image to convert to objects.  The background (non-object region) of this image should be black (0 intensity) and all pixels corresponding to the same object should have the same value.  Objects can only exist in a single timepoint, so pixels of the same intensity but in different timepoints will be assigned to different objects.");
-
-        parameters.get(OUTPUT_OBJECTS).setDescription(
-                "Output objects created by the conversion process.  These will be stored in the workspace and be accessible via this name.");
-
-        parameters.get(VOLUME_TYPE).setDescription(
-                "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-                        + "<li>\"" + VolumeTypes.POINTLIST
-                        + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-                        + "<li>\"" + VolumeTypes.OCTREE
-                        + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-                        + "<li>\"" + VolumeTypes.QUADTREE
-                        + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
-
-        parameters.get(CREATE_TRACKS).setDescription(
-                "When selected, the intensity of the image for each object will be assumed as corresponding to the ID of a parent track object.  This allows track relationships for objects present in multiple timepoints to be loaded back into MIA.");
-
-        parameters.get(TRACK_OBJECTS_NAME).setDescription("If creating track objects (\"" + CREATE_TRACKS
-                + "\" is selected), this is the name of the output tracks.  These will be parents of the output objects.");
-    }
+    parameters.get(TRACK_OBJECTS_NAME).setDescription("If creating track objects (\"" + CREATE_TRACKS
+        + "\" is selected), this is the name of the output tracks.  These will be parents of the output objects.");
+  }
 }

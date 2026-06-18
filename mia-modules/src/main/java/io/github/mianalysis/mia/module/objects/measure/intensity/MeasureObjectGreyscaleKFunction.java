@@ -2,6 +2,11 @@
 
 package io.github.mianalysis.mia.module.objects.measure.intensity;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -9,6 +14,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -23,12 +29,12 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
-import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -74,6 +80,17 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
+
+    /**
+    * 
+    */
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+    /**
+     * Process multiple input objects simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
         String MAX_LOCATION_PX = "MAX_LOCATION_(PX)";
@@ -138,109 +155,138 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         return "Measure's Ripley's K-function for greyscale images on an object-by-object basis.  This method is re-written from the publication \"Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images\" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.";
     }
 
+    public static void process(Obj inputObject, Image inputImage, int minRadius, int maxRadius, int radiusInc,
+            SXSSFSheet sheet, int rowI) {
+        int t = inputObject.getT();
+
+        // Getting images cropped to this object
+        double[][] extents = inputObject.getExtents(true, false);
+        int top = (int) Math.round(extents[1][0]);
+        int left = (int) Math.round(extents[0][0]);
+        int width = (int) Math.round(extents[0][1] - left) + 1;
+        int height = (int) Math.round(extents[1][1] - top) + 1;
+        Image cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
+
+        // Cropping image in Z
+        int minZ = (int) Math.round(extents[2][0]);
+        int maxZ = (int) Math.round(extents[2][1]);
+        Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1",
+                (minZ + 1) + "-" + (maxZ + 1),
+                String.valueOf(t + 1));
+
+        double maxK = -Double.MAX_VALUE;
+        double maxKLoc = -1;
+        double minK = Double.MAX_VALUE;
+        double minKLoc = -1;
+
+        // Getting
+        Image maskImage = inputObject.getAsTightImage("Mask");
+        for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
+            Image currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
+                    String.valueOf(z + 1), "1");
+            Image currMask = ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1",
+                    String.valueOf(z + 1), "1");
+
+            for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {
+                double[] kRes = MeasureGreyscaleKFunction.calculateGSKfunction(currImage, r, currMask);
+
+                int colI = 0;
+                Row row = sheet.createRow(rowI++);
+
+                Cell cell = row.createCell(colI++);
+                cell.setCellValue(t);
+
+                cell = row.createCell(colI++);
+                cell.setCellValue(z);
+
+                cell = row.createCell(colI++);
+                cell.setCellValue(r);
+
+                cell = row.createCell(colI++);
+                cell.setCellValue(inputObject.getID());
+
+                cell = row.createCell(colI++);
+                cell.setCellValue(kRes[0]);
+
+                cell = row.createCell(colI++);
+                cell.setCellValue(kRes[1]);
+
+                cell = row.createCell(colI++);
+                cell.setCellValue(kRes[2]);
+
+                // Updating measurement values
+                if (kRes[0] > maxK) {
+                    maxK = kRes[0];
+                    maxKLoc = r;
+                }
+
+                if (kRes[0] < minK) {
+                    minK = kRes[0];
+                    minKLoc = r;
+                }
+            }
+        }
+
+        // Adding measurements
+        inputObject.addMeasurement(
+                new Measurement(getFullName(inputImage.getName(), Measurements.MAX_LOCATION_PX), maxKLoc));
+        inputObject.addMeasurement(
+                new Measurement(getFullName(inputImage.getName(), Measurements.MIN_LOCATION_PX), minKLoc));
+        inputObject
+                .addMeasurement(new Measurement(getFullName(inputImage.getName(), Measurements.MAX_VALUE), maxK));
+        inputObject
+                .addMeasurement(new Measurement(getFullName(inputImage.getName(), Measurements.MIN_VALUE), minK));
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
-        // Getting input objects
+        // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs objects = workspace.getObjects(objectName);
-
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         int minRadius = parameters.getValue(MINIMUM_RADIUS_PX, workspace);
         int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX, workspace);
         int radiusInc = parameters.getValue(RADIUS_INCREMENT, workspace);
-
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         SXSSFWorkbook workbook = initialiseWorkbook();
         SXSSFSheet sheet = workbook.getSheetAt(0);
 
         Image inputImage = workspace.getImage(inputImageName);
 
+        // Setting up multithreading options
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
         int rowI = 1;
-        int count = 0;
-        int total = objects.size();
-        for (Obj obj : objects.values()) {
-            int t = obj.getT();
-
-            // Getting images cropped to this object
-            double[][] extents = obj.getExtents(true, false);
-            int top = (int) Math.round(extents[1][0]);
-            int left = (int) Math.round(extents[0][0]);
-            int width = (int) Math.round(extents[0][1] - left) + 1;
-            int height = (int) Math.round(extents[1][1] - top) + 1;
-            Image cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
-
-            // Cropping image in Z
-            int minZ = (int) Math.round(extents[2][0]);
-            int maxZ = (int) Math.round(extents[2][1]);
-            Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ + 1) + "-" + (maxZ + 1),
-                    "1");
-
-            double maxK = -Double.MAX_VALUE;
-            double maxKLoc = -1;
-            double minK = Double.MAX_VALUE;
-            double minKLoc = -1;
-
-            // Getting
-            Image maskImage = obj.getAsTightImage("Mask");
-
-            for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
-                Image currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
-                        String.valueOf(z + 1), String.valueOf(t + 1));
-                Image currMask = ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1",
-                        String.valueOf(z + 1), String.valueOf(t + 1));
-
-                for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {
-                    double[] kRes = MeasureGreyscaleKFunction.calculateGSKfunction(currImage, r, currMask);
-
-                    int colI = 0;
-                    Row row = sheet.createRow(rowI++);
-
-                    Cell cell = row.createCell(colI++);
-                    cell.setCellValue(t);
-
-                    cell = row.createCell(colI++);
-                    cell.setCellValue(z);
-
-                    cell = row.createCell(colI++);
-                    cell.setCellValue(r);
-
-                    cell = row.createCell(colI++);
-                    cell.setCellValue(obj.getID());
-
-                    cell = row.createCell(colI++);
-                    cell.setCellValue(kRes[0]);
-
-                    cell = row.createCell(colI++);
-                    cell.setCellValue(kRes[1]);
-
-                    cell = row.createCell(colI++);
-                    cell.setCellValue(kRes[2]);
-
-                    // Updating measurement values
-                    if (kRes[0] > maxK) {
-                        maxK = kRes[0];
-                        maxKLoc = r;
-                    }
-
-                    if (kRes[0] < minK) {
-                        minK = kRes[0];
-                        minKLoc = r;
-                    }
-
+        AtomicInteger count = new AtomicInteger(1);
+        int total = inputObjects.size();
+        for (Obj inputObject : inputObjects.values()) {
+            Runnable task = () -> {
+                try {
+                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, rowI);
+                } catch (Exception e) {
+                    MIA.log.writeError(e);
                 }
-            }
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
+            };
+            pool.submit(task);
 
-            // Adding measurements
-            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MAX_LOCATION_PX), maxKLoc));
-            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MIN_LOCATION_PX), minKLoc));
-            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MAX_VALUE), maxK));
-            obj.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MIN_VALUE), minK));
+        }
 
-            writeProgressStatus(++count, total, "objects");
-
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
+        } catch (Exception e) {
+            MIA.log.writeError(e);
         }
 
         String outputPath = getOutputPath(modules, workspace);
@@ -282,6 +328,9 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
         addParameterDescriptions();
 
     }
@@ -298,6 +347,9 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         returnedParameters.add(parameters.getParameter(MINIMUM_RADIUS_PX));
         returnedParameters.add(parameters.getParameter(MAXIMUM_RADIUS_PX));
         returnedParameters.add(parameters.getParameter(RADIUS_INCREMENT));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         returnedParameters.addAll(super.updateAndGetParameters());
 
@@ -367,6 +419,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     }
 
     protected void addParameterDescriptions() {
-
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
     }
 }
