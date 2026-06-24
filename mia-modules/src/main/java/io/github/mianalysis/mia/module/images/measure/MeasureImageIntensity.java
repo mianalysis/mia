@@ -4,6 +4,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.process.StackStatistics;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -49,6 +50,7 @@ public class MeasureImageIntensity extends Module {
     }
 
     public interface Measurements {
+        String INT_DEN = "INTENSITY // INT_DEN";
         String MEAN = "INTENSITY // MEAN";
         String MEDIAN = "INTENSITY // MEDIAN";
         String MODE = "INTENSITY // MODE";
@@ -71,7 +73,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "Measure intensity statistics (mean, median, mode, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.";
+        return "Measure intensity statistics (integrated density, mean, median, mode, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.";
     }
 
     @Override
@@ -85,14 +87,25 @@ public class MeasureImageIntensity extends Module {
         // Running measurement
         StackStatistics statistics = new StackStatistics(inputImagePlus);
 
+        // Calculating summed intensity
+        double sum = statistics.mean * statistics.longPixelCount;
+
+        // Calculating integrated density
+        Calibration calibration = inputImagePlus.getCalibration();
+        double pixelVolume = calibration.pixelWidth*calibration.pixelHeight;
+        if (inputImagePlus.getNSlices() > 1)
+            pixelVolume = pixelVolume*calibration.pixelDepth;
+        double integratedDensity = sum*pixelVolume;
+
         // Adding measurements to image
+        inputImage.addMeasurement(new Measurement(Measurements.INT_DEN, integratedDensity));
         inputImage.addMeasurement(new Measurement(Measurements.MEAN, statistics.mean));
         inputImage.addMeasurement(new Measurement(Measurements.MEDIAN, statistics.median));
         inputImage.addMeasurement(new Measurement(Measurements.MODE, statistics.mode));
         inputImage.addMeasurement(new Measurement(Measurements.MIN, statistics.min));
         inputImage.addMeasurement(new Measurement(Measurements.MAX, statistics.max));
         inputImage.addMeasurement(new Measurement(Measurements.STDEV, statistics.stdDev));
-        inputImage.addMeasurement(new Measurement(Measurements.SUM, statistics.mean * statistics.longPixelCount));
+        inputImage.addMeasurement(new Measurement(Measurements.SUM, sum));
 
         if (showOutput)
             inputImage.showMeasurements(this);
@@ -112,7 +125,6 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
         return parameters;
     }
 
@@ -122,6 +134,11 @@ public class MeasureImageIntensity extends Module {
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+
+        ImageMeasurementRef intDen = imageMeasurementRefs.getOrPut(Measurements.INT_DEN);
+        intDen.setImageName(inputImageName);
+        intDen.setDescription("Integrated density of all pixels in the image \"" + inputImageName + "\".  This is the summed intensity, multiplied by the volume (or area for 2D object sets) of a single pixel.");
+        returnedRefs.add(intDen);
 
         ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageName(inputImageName);

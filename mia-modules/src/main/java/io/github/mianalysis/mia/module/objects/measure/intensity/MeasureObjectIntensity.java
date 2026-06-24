@@ -7,6 +7,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -23,6 +24,7 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -96,6 +98,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     public interface Measurements {
+        String INT_DEN = "INTENSITY // INT_DEN";
         String MEAN = "MEAN";
         String MEDIAN = "MEDIAN";
         String MIN = "MIN";
@@ -113,7 +116,7 @@ public class MeasureObjectIntensity extends Module {
         String X_PEAK = "X_PEAK (PX)";
         String Y_PEAK = "Y_PEAK (PX)";
         String Z_PEAK = "Z_PEAK (SLICE)";
-        
+
         String MEAN_EDGE_DISTANCE_PX = "MEAN_EDGE_DISTANCE (PX)";
         String MEAN_EDGE_DISTANCE_CAL = "MEAN_EDGE_DISTANCE (${SCAL})";
         String STD_EDGE_DISTANCE_PX = "STD_EDGE_DISTANCE (PX)";
@@ -151,6 +154,13 @@ public class MeasureObjectIntensity extends Module {
                 vals[i++] = value;
         }
 
+        // Calculating integrated density
+        Calibration calibration = ipl.getCalibration();
+        double pixelVolume = calibration.pixelWidth * calibration.pixelHeight;
+        if (ipl.getNSlices() > 1)
+            pixelVolume = pixelVolume * calibration.pixelDepth;
+        double integratedDensity = cs.getSum() * pixelVolume;
+
         // Calculating mean, std, min and max intensity
         if (addMeasurements) {
             object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN), cs.getMean()));
@@ -159,6 +169,7 @@ public class MeasureObjectIntensity extends Module {
             object.addMeasurement(
                     new Measurement(getFullName(imageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
             object.addMeasurement(new Measurement(getFullName(imageName, Measurements.SUM), cs.getSum()));
+            object.addMeasurement(new Measurement(getFullName(imageName, Measurements.INT_DEN), integratedDensity));
 
             if (measureMedian)
                 object.addMeasurement(
@@ -185,7 +196,7 @@ public class MeasureObjectIntensity extends Module {
 
         // Running through all pixels in this object and adding the intensity to the
         // MultiCumStat object
-        for (Point<Integer> pt:object.getCoordinateSet()) {
+        for (Point<Integer> pt : object.getCoordinateSet()) {
             ipl.setPosition(1, pt.z + 1, tPos + 1);
             csX.addMeasure(pt.x, ipl.getProcessor().getPixelValue(pt.x, pt.y));
             csY.addMeasure(pt.y, ipl.getProcessor().getPixelValue(pt.x, pt.y));
@@ -211,14 +222,15 @@ public class MeasureObjectIntensity extends Module {
 
         ImagePlus ipl = image.getImagePlus();
 
-        // Iterating over each pixel, determining if this is the brightest pixel.  If it is, adding it's location to the relevant CumStat
+        // Iterating over each pixel, determining if this is the brightest pixel. If it
+        // is, adding it's location to the relevant CumStat
         float maxValue = -Float.MAX_VALUE;
         CumStat csX = new CumStat();
         CumStat csY = new CumStat();
         CumStat csZ = new CumStat();
         int tPos = object.getT();
 
-        for (Point<Integer> pt:object.getCoordinateSet()) {
+        for (Point<Integer> pt : object.getCoordinateSet()) {
             ipl.setPosition(1, pt.getZ() + 1, tPos + 1);
             float currVal = ipl.getProcessor().getPixelValue(pt.getX(), pt.getY());
 
@@ -352,7 +364,15 @@ public class MeasureObjectIntensity extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
-        String name = getFullName(inputImageName, Measurements.MEAN);
+        String name = getFullName(inputImageName, Measurements.INT_DEN);
+        ObjMeasurementRef intDen = objectMeasurementRefs.getOrPut(name);
+        intDen.setObjectsName(inputObjectsName);
+        intDen.setDescription("Integrated density of all pixels from the image \"" + inputImageName + "\" contained within each"
+                + " \"" + inputObjectsName + "\" object.  This is the summed intensity, multiplied by the volume (or area for 2D "
+                +"object sets) of a single pixel.");
+        returnedRefs.add(intDen);
+
+        name = getFullName(inputImageName, Measurements.MEAN);
         ObjMeasurementRef mean = objectMeasurementRefs.getOrPut(name);
         mean.setObjectsName(inputObjectsName);
         mean.setDescription("Mean intensity of pixels from the image \"" + inputImageName + "\" contained within each"
@@ -449,19 +469,22 @@ public class MeasureObjectIntensity extends Module {
             name = getFullName(inputImageName, Measurements.X_PEAK);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("X-position of the brightest pixel for each \"" + inputObjectsName + "\" object.  Measured in pixel units.");
+            reference.setDescription("X-position of the brightest pixel for each \"" + inputObjectsName
+                    + "\" object.  Measured in pixel units.");
             returnedRefs.add(reference);
 
             name = getFullName(inputImageName, Measurements.Y_PEAK);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Y-position of the brightest pixel for each \"" + inputObjectsName + "\" object.  Measured in pixel units.");
+            reference.setDescription("Y-position of the brightest pixel for each \"" + inputObjectsName
+                    + "\" object.  Measured in pixel units.");
             returnedRefs.add(reference);
 
             name = getFullName(inputImageName, Measurements.Z_PEAK);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Z-position of the brightest pixel for each \"" + inputObjectsName + "\" object.  Measured in slice units.");
+            reference.setDescription("Z-position of the brightest pixel for each \"" + inputObjectsName
+                    + "\" object.  Measured in slice units.");
             returnedRefs.add(reference);
 
         }
@@ -471,8 +494,8 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

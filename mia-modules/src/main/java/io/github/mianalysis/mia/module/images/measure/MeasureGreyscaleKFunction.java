@@ -112,11 +112,12 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         if (radius <= 0)
             return null;
 
-        int dia = (int) Math.ceil(2 * radius);
-        if (dia % 2 == 0)
-            dia++;
+        // int dia = (int) Math.ceil(2 * radius);
+        // if (dia % 2 == 0)
+        //     dia++;
 
-        int r = (int) Math.floor(dia / 2);
+        // int r = (int) Math.floor(dia / 2);
+        int r = radius;
 
         ArrayList<Integer> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
@@ -163,26 +164,31 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
                     // Only count points inside the mask
                     if (maskIpr != null && maskIpr.getValue(xxx, yyy) == 0)
                         continue;
-
+                    
                     b++;
 
-                    // Don't count the central pixel itself
-                    if (x.get(i) == 0 && y.get(i) == 0)
-                        continue;
+                    // // Don't count the central pixel itself
+                    // if (x.get(i) == 0 && y.get(i) == 0)
+                    //     continue;
 
                     sum = sum + ipr.getf(xxx, yyy);
 
                 }
 
-                double edgeCorrection = ((double) b) / (Math.PI * radius * radius);
-                float val = ipr.getf(xx, yy);
-                aggSum = aggSum + (val * (val - 1) + val * sum) / edgeCorrection;
+                // double edgeCorrection = ((double) b) / (double) (Math.PI * (double) radius * (double) radius);
+                // Both subtract 1 to account for centre pixel
+                // double edgeCorrection = ((double) b - 1) / ((double) x.size()-1);
+                double edgeCorrection = ((double) b) / ((double) x.size());
+                
+                // float val = ipr.getf(xx, yy);
+                // aggSum = aggSum + (val * (val - 1) + val * sum) / edgeCorrection;
+                aggSum = aggSum +  sum / edgeCorrection;
 
             }
         }
 
         // Calculating K
-        double K = aggSum * (imArea / (imSum * (imSum - 1)));
+        double K = aggSum * (imArea / (imSum * imSum));
 
         // Calculating normalised and centred K
         double imPerimeter = 2 * (w + h);

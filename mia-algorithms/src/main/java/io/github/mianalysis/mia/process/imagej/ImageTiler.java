@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.process.imagej;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -146,7 +147,10 @@ public class ImageTiler {
                 32);
 
         // Converting to 32 bit for this operation to get better results
-        IJ.run(inputIpl, "32-bit", null);
+        if (inputIpl.getBitDepth() != 32) {
+            inputIpl = new CompositeImage(inputIpl, CompositeImage.COLOR);
+            IJ.run(inputIpl, "32-bit", null);
+        }
 
         ImageStack inputIst = inputIpl.getStack();
         ImageStack outputIst = outputIpl.getStack();
@@ -154,8 +158,8 @@ public class ImageTiler {
         int count = 0;
         for (int y = 0; y < yNumTiles; y++) {
             for (int x = 0; x < xNumTiles; x++) {
-                int x0 = x * (xTileSize-xOverlapPx);
-                int y0 = y * (yTileSize-yOverlapPx);
+                int x0 = x * (xTileSize - xOverlapPx);
+                int y0 = y * (yTileSize - yOverlapPx);
 
                 for (int c = 0; c < nChannels; c++) {
                     for (int z = 0; z < nSlices; z++) {
@@ -181,13 +185,13 @@ public class ImageTiler {
                                     if (xx < xOverlapPx && x != 0)
                                         multiplier *= (1 - (xOverlapPx - xx) / (float) xOverlapPx);
 
-                                    if (xx >= (xTileSize-xOverlapPx) && x != xNumTiles - 1)
+                                    if (xx >= (xTileSize - xOverlapPx) && x != xNumTiles - 1)
                                         multiplier *= (xTileSize - xx) / (float) xOverlapPx;
 
                                     if (yy < yOverlapPx && y != 0)
                                         multiplier *= (1 - (yOverlapPx - yy) / (float) yOverlapPx);
 
-                                    if (yy >= (yTileSize-yOverlapPx) && y != yNumTiles - 1)
+                                    if (yy >= (yTileSize - yOverlapPx) && y != yNumTiles - 1)
                                         multiplier *= (yTileSize - yy) / (float) yOverlapPx;
 
                                     outputIpr.setf(xx + x0, yy + y0,
