@@ -31,6 +31,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           architecture: x64
+          cache: maven
 
       - name: Test with Maven
         run: mvn -U -B test
