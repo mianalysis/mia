@@ -33,8 +33,13 @@ jobs:
           architecture: x64
           cache: maven
 
+      - name: Delete xml-apis-ext
+        shell: bash
+        run: |
+          rm -rf ~/.m2/repository/xml-apis/xml-apis-ext
+
       - name: Test with Maven
-        run: mvn -B -Dscp=provided test
+        run: mvn -B test
   
 
  
