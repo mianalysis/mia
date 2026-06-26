@@ -141,6 +141,12 @@
             <artifactId>ijl-utilities-wrappers</artifactId>
             <version>0.11.5</version>
             <scope>${scp}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis-ext</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>    
 </project>
