@@ -83,7 +83,7 @@
         <dependency.locations.selected>false</dependency.locations.selected>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <scp>compile</scp>
+        <scp>provided</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
 
