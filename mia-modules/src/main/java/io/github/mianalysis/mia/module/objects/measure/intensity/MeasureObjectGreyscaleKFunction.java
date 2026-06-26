@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -32,9 +33,12 @@ import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+import io.github.mianalysis.mia.object.parameters.ParameterState;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -81,6 +85,12 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
 
+    public static final String PERCENTILE_INTERVAL_SEPARATOR = "Percentile interval controls";
+    public static final String CALCULATE_PERCENTILE_INTERVAL = "Calculate percentile interval";
+    public static final String PERCENTILE_INTERVAL = "Percentile interval";
+    public static final String NUMBER_OF_SIMULATIONS = "Number of simulations";
+    public static final String PERCENTILE_INTERVAL_WARNING = "Percentile intervals warning";
+
     /**
     * 
     */
@@ -93,10 +103,10 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
-        String MAX_LOCATION_PX = "MAX_LOCATION_(PX)";
-        String MIN_LOCATION_PX = "MIN_LOCATION_(PX)";
-        String MAX_VALUE = "MAX_VALUE";
-        String MIN_VALUE = "MIN_VALUE";
+        String MAX_LOCATION_PX = "L(r)-r // MAX_LOCATION_(PX)";
+        String MIN_LOCATION_PX = "L(r)-r // MIN_LOCATION_(PX)";
+        String MAX_VALUE = "L(r)-r // MAX_VALUE";
+        String MIN_VALUE = "L(r)-r // MAX_VALUE";
     }
 
     public MeasureObjectGreyscaleKFunction(Modules modules) {
@@ -107,7 +117,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         return "GREYSCALE_K_FUNCTION // " + imageName + " // " + measurementName;
     }
 
-    SXSSFWorkbook initialiseWorkbook() {
+    SXSSFWorkbook initialiseWorkbook(boolean calculatePercentileInterval, double percentileLow, double percentileHigh) {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         SXSSFSheet sheet = workbook.createSheet();
 
@@ -116,6 +126,9 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
         Row row = sheet.createRow(rowI++);
         Cell cell = row.createCell(colI++);
+        cell.setCellValue("Object ID");
+
+        cell = row.createCell(colI++);
         cell.setCellValue("Timepoint");
 
         cell = row.createCell(colI++);
@@ -125,16 +138,34 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         cell.setCellValue("Radius (px)");
 
         cell = row.createCell(colI++);
-        cell.setCellValue("Object ID");
+        cell.setCellValue("K(r)");
 
         cell = row.createCell(colI++);
-        cell.setCellValue("K-corr");
+        cell.setCellValue("L(r)");
 
         cell = row.createCell(colI++);
-        cell.setCellValue("Q01");
+        cell.setCellValue("L(r)-r");
 
-        cell = row.createCell(colI++);
-        cell.setCellValue("Q99");
+        if (calculatePercentileInterval) {
+            cell = row.createCell(colI++);
+            cell.setCellValue("Percentile: K(r)_" + percentileLow + "%");
+
+            cell = row.createCell(colI++);
+            cell.setCellValue("Percentile: K(r)_" + percentileHigh + "%");
+
+            cell = row.createCell(colI++);
+            cell.setCellValue("Percentile: L(r)_" + percentileLow + "%");
+
+            cell = row.createCell(colI++);
+            cell.setCellValue("Percentile: L(r)_" + percentileHigh + "%");
+
+            cell = row.createCell(colI++);
+            cell.setCellValue("Percentile: L(r)-r_" + percentileLow + "%");
+
+            cell = row.createCell(colI++);
+            cell.setCellValue("Percentile: L(r)-r_" + percentileHigh + "%");
+
+        }
 
         return workbook;
 
@@ -156,7 +187,8 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     }
 
     public static void process(Obj inputObject, Image inputImage, int minRadius, int maxRadius, int radiusInc,
-            SXSSFSheet sheet, int rowI) {
+            SXSSFSheet sheet, AtomicInteger rowI, boolean calculatePercentileInterval, double percentileLow,
+            double percentileHigh, int nSimulations) {
         int t = inputObject.getT();
 
         // Getting images cropped to this object
@@ -174,10 +206,10 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                 (minZ + 1) + "-" + (maxZ + 1),
                 String.valueOf(t + 1));
 
-        double maxK = -Double.MAX_VALUE;
-        double maxKLoc = -1;
-        double minK = Double.MAX_VALUE;
-        double minKLoc = -1;
+        double maxL_r = -Double.MAX_VALUE;
+        double maxL_rLoc = -1;
+        double minL_r = Double.MAX_VALUE;
+        double minL_rLoc = -1;
 
         // Getting
         Image maskImage = inputObject.getAsTightImage("Mask");
@@ -188,12 +220,15 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                     String.valueOf(z + 1), "1");
 
             for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {
-                double[] kRes = MeasureGreyscaleKFunction.calculateGSKfunction(currImage, r, currMask);
+                double K = MeasureGreyscaleKFunction.calculateGSKFunction(currImage, r, currMask);
 
                 int colI = 0;
-                Row row = sheet.createRow(rowI++);
+                Row row = sheet.createRow(rowI.getAndIncrement());
 
                 Cell cell = row.createCell(colI++);
+                cell.setCellValue(inputObject.getID());
+
+                cell = row.createCell(colI++);
                 cell.setCellValue(t);
 
                 cell = row.createCell(colI++);
@@ -203,39 +238,70 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                 cell.setCellValue(r);
 
                 cell = row.createCell(colI++);
-                cell.setCellValue(inputObject.getID());
+                cell.setCellValue(K);
 
                 cell = row.createCell(colI++);
-                cell.setCellValue(kRes[0]);
+                cell.setCellValue(MeasureGreyscaleKFunction.getLValue(K));
 
                 cell = row.createCell(colI++);
-                cell.setCellValue(kRes[1]);
+                cell.setCellValue(MeasureGreyscaleKFunction.getL_rValue(K, r));
 
-                cell = row.createCell(colI++);
-                cell.setCellValue(kRes[2]);
+                // Calculate percentile intervals
+                if (calculatePercentileInterval) {
+                    double[] pcResults = new double[nSimulations];
 
-                // Updating measurement values
-                if (kRes[0] > maxK) {
-                    maxK = kRes[0];
-                    maxKLoc = r;
+                    for (int i = 0; i < nSimulations; i++) {
+                        Image randomisedImage = MeasureGreyscaleKFunction.randomiseImage(currImage);
+                        pcResults[i] = MeasureGreyscaleKFunction.calculateGSKFunction(randomisedImage, r, currMask);
+                    }
+
+                    Percentile percentile = new Percentile();
+                    double kPercentileLow = percentile.evaluate(pcResults, percentileLow);
+                    double kPercentileHigh = percentile.evaluate(pcResults, percentileHigh);
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(kPercentileLow);
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(kPercentileHigh);
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(MeasureGreyscaleKFunction.getLValue(kPercentileLow));
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(MeasureGreyscaleKFunction.getLValue(kPercentileHigh));
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(MeasureGreyscaleKFunction.getL_rValue(kPercentileLow, r));
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(MeasureGreyscaleKFunction.getL_rValue(kPercentileHigh, r));
+
                 }
 
-                if (kRes[0] < minK) {
-                    minK = kRes[0];
-                    minKLoc = r;
+                // Updating measurement values
+                double L_r = MeasureGreyscaleKFunction.getL_rValue(K, r);
+                if (L_r > maxL_r) {
+                    maxL_r = L_r;
+                    maxL_rLoc = r;
+                }
+
+                if (L_r < minL_r) {
+                    minL_r = L_r;
+                    minL_rLoc = r;
                 }
             }
         }
 
         // Adding measurements
         inputObject.addMeasurement(
-                new Measurement(getFullName(inputImage.getName(), Measurements.MAX_LOCATION_PX), maxKLoc));
+                new Measurement(getFullName(inputImage.getName(), Measurements.MAX_LOCATION_PX), maxL_rLoc));
         inputObject.addMeasurement(
-                new Measurement(getFullName(inputImage.getName(), Measurements.MIN_LOCATION_PX), minKLoc));
+                new Measurement(getFullName(inputImage.getName(), Measurements.MIN_LOCATION_PX), minL_rLoc));
         inputObject
-                .addMeasurement(new Measurement(getFullName(inputImage.getName(), Measurements.MAX_VALUE), maxK));
+                .addMeasurement(new Measurement(getFullName(inputImage.getName(), Measurements.MAX_VALUE), maxL_r));
         inputObject
-                .addMeasurement(new Measurement(getFullName(inputImage.getName(), Measurements.MIN_VALUE), minK));
+                .addMeasurement(new Measurement(getFullName(inputImage.getName(), Measurements.MIN_VALUE), minL_r));
 
     }
 
@@ -247,6 +313,11 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         int minRadius = parameters.getValue(MINIMUM_RADIUS_PX, workspace);
         int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX, workspace);
         int radiusInc = parameters.getValue(RADIUS_INCREMENT, workspace);
+        boolean calculatePercentileInterval = parameters.getValue(CALCULATE_PERCENTILE_INTERVAL, workspace);
+        double percentileInterval = parameters.getValue(PERCENTILE_INTERVAL, workspace);
+        int nSimulations = parameters.getValue(NUMBER_OF_SIMULATIONS, workspace);
+        double percentileLow = (100 - percentileInterval) / 2;
+        double percentileHigh = 100 - percentileLow;
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
@@ -254,7 +325,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
-        SXSSFWorkbook workbook = initialiseWorkbook();
+        SXSSFWorkbook workbook = initialiseWorkbook(calculatePercentileInterval, percentileLow, percentileHigh);
         SXSSFSheet sheet = workbook.getSheetAt(0);
 
         Image inputImage = workspace.getImage(inputImageName);
@@ -264,13 +335,14 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        int rowI = 1;
+        AtomicInteger rowI = new AtomicInteger(1);
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
-                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, rowI);
+                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, rowI,
+                            calculatePercentileInterval, percentileLow, percentileHigh, nSimulations);
                 } catch (Exception e) {
                     MIA.log.writeError(e);
                 }
@@ -328,6 +400,14 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 
+        parameters.add(new SeparatorP(PERCENTILE_INTERVAL_SEPARATOR, this));
+        parameters.add(new BooleanP(CALCULATE_PERCENTILE_INTERVAL, this, false));
+        parameters.add(new DoubleP(PERCENTILE_INTERVAL, this, 95));
+        parameters.add(new IntegerP(NUMBER_OF_SIMULATIONS, this, 100));
+        parameters.add(new MessageP(PERCENTILE_INTERVAL_WARNING, this,
+                "Calculating percentile intervals can be slow.  To avoid excessive wait times, it's best to keep maximum radii as small as possible.",
+                ParameterState.WARNING));
+
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
@@ -347,6 +427,14 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         returnedParameters.add(parameters.getParameter(MINIMUM_RADIUS_PX));
         returnedParameters.add(parameters.getParameter(MAXIMUM_RADIUS_PX));
         returnedParameters.add(parameters.getParameter(RADIUS_INCREMENT));
+
+        returnedParameters.add(parameters.getParameter(PERCENTILE_INTERVAL_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CALCULATE_PERCENTILE_INTERVAL));
+        if ((Boolean) parameters.getValue(CALCULATE_PERCENTILE_INTERVAL, null)) {
+            returnedParameters.add(parameters.getParameter(PERCENTILE_INTERVAL));
+            returnedParameters.add(parameters.getParameter(NUMBER_OF_SIMULATIONS));
+            returnedParameters.add(parameters.getParameter(PERCENTILE_INTERVAL_WARNING));
+        }
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));

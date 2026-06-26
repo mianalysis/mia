@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.module.images.process;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -40,9 +39,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.system.FileTools;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
 import trainableSegmentation.WekaSegmentation;
 
 /**

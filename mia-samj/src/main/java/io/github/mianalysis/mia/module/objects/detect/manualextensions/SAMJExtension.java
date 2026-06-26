@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
