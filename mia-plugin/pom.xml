@@ -335,7 +335,7 @@
                             <includeScope>runtime</includeScope>
 
                             <excludeArtifactIds>
-                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,fastutil,slf4j-api,xml-apis
+                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,fastutil,slf4j-api,xml-apis,xml-apis-ext
                             </excludeArtifactIds>
 
                             <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
