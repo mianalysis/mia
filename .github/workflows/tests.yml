@@ -39,7 +39,7 @@ jobs:
           rm -rf ~/.m2/repository/xml-apis/xml-apis-ext
 
       - name: Test with Maven
-        run: mvn -B test
+        run: mvn -U -B test
   
 
  
