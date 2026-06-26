@@ -29,12 +29,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
           architecture: x64
-          cache: maven
 
       - name: Test with Maven
-        run: mvn -B test
+        run: mvn -U -B test
   
 
  
