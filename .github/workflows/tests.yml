@@ -33,7 +33,7 @@ jobs:
           architecture: x64
 
       - name: Download missing depwndency
-        run: curl https://repo1.maven.org/maven2/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar --output ~/.m2/repository/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar
+        run: curl https://repo1.maven.org/maven2/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar --create-dirs --output ~/.m2/repository/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar
 
       - name: Test with Maven
         run: mvn -U -B "-Denforcer.skip=true" test
