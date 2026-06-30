@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
@@ -118,14 +117,10 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         return "GREYSCALE_K_FUNCTION // " + imageName + " // " + measurementName;
     }
 
-    SXSSFWorkbook initialiseWorkbook(boolean calculatePercentileInterval, double percentileLow, double percentileHigh) {
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet();
-
-        int rowI = 0;
+    void initialiseSheetHeader(SXSSFSheet sheet, boolean calculatePercentileInterval, double percentileLow, double percentileHigh) {
         int colI = 0;
 
-        Row row = sheet.createRow(rowI++);
+        Row row = sheet.createRow(0);
         Cell cell = row.createCell(colI++);
         cell.setCellValue("Object ID");
 
@@ -167,9 +162,6 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
             cell.setCellValue("Percentile: L(r)-r_" + percentileHigh + "%");
 
         }
-
-        return workbook;
-
     }
 
     @Override
@@ -188,8 +180,9 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     }
 
     public static void process(Obj inputObject, Image inputImage, int minRadius, int maxRadius, int radiusInc,
-            Row row, boolean calculatePercentileInterval, double percentileLow, double percentileHigh,
+            SXSSFSheet sheet, boolean calculatePercentileInterval, double percentileLow, double percentileHigh,
             int nSimulations) {
+        int rowI = 1;
         int t = inputObject.getT();
 
         // Getting images cropped to this object
@@ -212,7 +205,6 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         double minL_r = Double.MAX_VALUE;
         double minL_rLoc = -1;
 
-        // Getting
         Image maskImage = inputObject.getAsTightImage("Mask");
         for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
             Image currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
@@ -223,6 +215,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
             for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {
                 double K = MeasureGreyscaleKFunction.calculateGSKFunction(currImage, r, currMask);
 
+                Row row = sheet.createRow(rowI++);
                 int colI = 0;
 
                 Cell cell = row.createCell(colI++);
@@ -324,25 +317,23 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         Objs inputObjects = workspace.getObjects(inputObjectsName);
-
-        SXSSFWorkbook workbook = initialiseWorkbook(calculatePercentileInterval, percentileLow, percentileHigh);
-        SXSSFSheet sheet = workbook.getSheetAt(0);
-
         Image inputImage = workspace.getImage(inputImageName);
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
 
         // Setting up multithreading options
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        AtomicInteger rowI = new AtomicInteger(1);
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
-            Row row = sheet.createRow(rowI.getAndIncrement());
+            SXSSFSheet sheet = workbook.createSheet("Obj"+inputObject.getID());
+            initialiseSheetHeader(sheet, calculatePercentileInterval, percentileLow, percentileHigh);
+            
             Runnable task = () -> {
                 try {
-                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, row, calculatePercentileInterval,
+                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, calculatePercentileInterval,
                             percentileLow, percentileHigh, nSimulations);
                 } catch (Exception e) {
                     MIA.log.writeError(e);

@@ -62,6 +62,8 @@
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA_",
             "projectName": "mia-plugin",
+            // The following is necessary to open in JDK21
+            // "vmArgs": "-Xmx14000m --add-opens=java.base/java.lang=ALL-UNNAMED"
             "vmArgs": "-Xmx14000m"
         },
         {
