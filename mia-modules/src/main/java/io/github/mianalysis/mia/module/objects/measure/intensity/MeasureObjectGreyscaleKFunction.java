@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
@@ -187,8 +188,8 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     }
 
     public static void process(Obj inputObject, Image inputImage, int minRadius, int maxRadius, int radiusInc,
-            SXSSFSheet sheet, AtomicInteger rowI, boolean calculatePercentileInterval, double percentileLow,
-            double percentileHigh, int nSimulations) {
+            Row row, boolean calculatePercentileInterval, double percentileLow, double percentileHigh,
+            int nSimulations) {
         int t = inputObject.getT();
 
         // Getting images cropped to this object
@@ -223,7 +224,6 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
                 double K = MeasureGreyscaleKFunction.calculateGSKFunction(currImage, r, currMask);
 
                 int colI = 0;
-                Row row = sheet.createRow(rowI.getAndIncrement());
 
                 Cell cell = row.createCell(colI++);
                 cell.setCellValue(inputObject.getID());
@@ -339,14 +339,15 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
+            Row row = sheet.createRow(rowI.getAndIncrement());
             Runnable task = () -> {
                 try {
-                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, rowI,
-                            calculatePercentileInterval, percentileLow, percentileHigh, nSimulations);
+                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, row, calculatePercentileInterval,
+                            percentileLow, percentileHigh, nSimulations);
                 } catch (Exception e) {
                     MIA.log.writeError(e);
                 }
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
+                writeProgressStatus(count.getAndIncrement(), total, "measurements");
             };
             pool.submit(task);
 

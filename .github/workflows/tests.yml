@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ 'ubuntu-latest' ]
+        os: [ 'windows-latest' ]
 
     steps:
       - name: Checkout repository
@@ -31,6 +31,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           architecture: x64
+          cache: maven
 
       - name: Download missing depwndency
         run: curl https://repo1.maven.org/maven2/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar --create-dirs --output ~/.m2/repository/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar
