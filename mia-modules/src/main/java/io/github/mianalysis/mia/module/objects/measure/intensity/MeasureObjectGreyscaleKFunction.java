@@ -106,7 +106,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         String MAX_LOCATION_PX = "L(r)-r // MAX_LOCATION_(PX)";
         String MIN_LOCATION_PX = "L(r)-r // MIN_LOCATION_(PX)";
         String MAX_VALUE = "L(r)-r // MAX_VALUE";
-        String MIN_VALUE = "L(r)-r // MAX_VALUE";
+        String MIN_VALUE = "L(r)-r // MIN_VALUE";
     }
 
     public MeasureObjectGreyscaleKFunction(Modules modules) {
