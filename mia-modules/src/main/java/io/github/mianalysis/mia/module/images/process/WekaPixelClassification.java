@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.module.images.process;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -40,9 +39,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.system.FileTools;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
 import trainableSegmentation.WekaSegmentation;
 
 /**
@@ -50,91 +46,123 @@ import trainableSegmentation.WekaSegmentation;
  */
 
 /**
-* Performs pixel classification using the WEKA Trainable Segmentation plugin.<br><br>This module loads a previously-saved WEKA classifier model and applies it to the input image.  It then returns the multi-channel probability map.<br><br>Image stacks are processed in 2D, one slice at a time.
-*/
+ * Performs pixel classification using the WEKA Trainable Segmentation
+ * plugin.<br>
+ * <br>
+ * This module loads a previously-saved WEKA classifier model and applies it to
+ * the input image. It then returns the multi-channel probability map.<br>
+ * <br>
+ * Image stacks are processed in 2D, one slice at a time.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WekaPixelClassification extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input";
 
-	/**
-	* Image to apply pixel classification to.
-	*/
+    /**
+     * Image to apply pixel classification to.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model.
-	*/
+    /**
+     * Converts a composite image to RGB format. This should be set to match the
+     * image-type used for generation of the model.
+     */
     public static final String CONVERT_TO_RGB = "Convert to RGB";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Image output";
 
-	/**
-	* Controls whether the output image is a probability map or single channel classified image.  For probabiliy maps, each class is assigned its own channel with floating point values in the range 0-1 depending on the likelihood of that pixel belonging to that class.  With classified images the pixel value corresponds to the most probable class at that position (class numbering starts at 0).
-	*/
+    /**
+     * Controls whether the output image is a probability map or single channel
+     * classified image. For probabiliy maps, each class is assigned its own channel
+     * with floating point values in the range 0-1 depending on the likelihood of
+     * that pixel belonging to that class. With classified images the pixel value
+     * corresponds to the most probable class at that position (class numbering
+     * starts at 0).
+     */
     public static final String OUTPUT_MODE = "Output mode";
 
-	/**
-	* Output image, which can be either a probability map or pre-assigned class image.
-	*/
+    /**
+     * Output image, which can be either a probability map or pre-assigned class
+     * image.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-	/**
-	* By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module.
-	*/
+    /**
+     * By default images will be saved as floating point 32-bit (probabilities in
+     * the range 0-1); however, they can be converted to 8-bit (probabilities in the
+     * range 0-255) or 16-bit (probabilities in the range 0-65535). This is useful
+     * for saving memory or if the output probability map will be passed to image
+     * threshold module.
+     */
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
 
-	/**
-	* Allows a single class (image channel) to be output.  This is another feature for reducing memory usage.
-	*/
+    /**
+     * Allows a single class (image channel) to be output. This is another feature
+     * for reducing memory usage.
+     */
     public static final String OUTPUT_SINGLE_CLASS = "Output single class";
 
-	/**
-	* Class (image channel) to be output.  Channel numbering starts at 1.
-	*/
+    /**
+     * Class (image channel) to be output. Channel numbering starts at 1.
+     */
     public static final String OUTPUT_CLASS = "Output class";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CLASSIFIER_SEPARATOR = "Classifier settings";
 
-	/**
-	* Method to use for generation of the classifier filename:<br><ul><li>"Matching format" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li><li>"Specific file" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul>
-	*/
+    /**
+     * Method to use for generation of the classifier filename:<br>
+     * <ul>
+     * <li>"Matching format" Will generate a name from metadata values stored in the
+     * current workspace. This is useful if the classifier varies from input file to
+     * input file.</li>
+     * <li>"Specific file" Will load the classifier file at a specific location.
+     * This is useful if the same file is to be used for all input files.</li>
+     * </ul>
+     */
     public static final String PATH_TYPE = "Path type";
 
-	/**
-	* Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.
-	*/
+    /**
+     * Format for a generic filename. Plain text can be mixed with global variables
+     * or metadata values currently stored in the workspace. Global variables are
+     * specified using the "V{name}" notation, where "name" is the name of the
+     * variable to insert. Similarly, metadata values are specified with the
+     * "M{name}" notation.
+     */
     public static final String GENERIC_FORMAT = "Generic format";
 
-	/**
-	* List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.
-	*/
+    /**
+     * List of the currently-available metadata values for this workspace. These can
+     * be used when compiling a generic filename.
+     */
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
-	/**
-	* Path to the classifier file (.model extension).  This file needs to be created manually using the WEKA Trainable Segmentation plugin included with Fiji.
-	*/
+    /**
+     * Path to the classifier file (.model extension). This file needs to be created
+     * manually using the WEKA Trainable Segmentation plugin included with Fiji.
+     */
     public static final String CLASSIFIER_FILE = "Classifier file path";
 
-	/**
-	* Number of image slices to process at any given time.  This reduces the memory footprint of the module, but can slow down processing.
-	*/
+    /**
+     * Number of image slices to process at any given time. This reduces the memory
+     * footprint of the module, but can slow down processing.
+     */
     public static final String SIMULTANEOUS_SLICES = "Simultaneous slices";
 
-	/**
-	* Number of tiles per dimension each image will be subdivided into for processing.  For example, a tile factor of 2 will divide the image into a 2x2 grid of tiles.  This reduces the memory footprint of the module.
-	*/
+    /**
+     * Number of tiles per dimension each image will be subdivided into for
+     * processing. For example, a tile factor of 2 will divide the image into a 2x2
+     * grid of tiles. This reduces the memory footprint of the module.
+     */
     public static final String TILE_FACTOR = "Tile factor";
 
     public WekaPixelClassification(Modules modules) {
@@ -224,7 +252,7 @@ public class WekaPixelClassification extends Module {
             if (wekaSegmentation.getTrainingInstances() == null)
                 wekaSegmentation.loadClassifier(classifierFilePath);
 
-            if (tileFactor == 1) {                
+            if (tileFactor == 1) {
                 wekaSegmentation.applyClassifier(createProbabilityMap);
                 iplSingle = wekaSegmentation.getClassifiedImage();
             } else {
@@ -291,18 +319,18 @@ public class WekaPixelClassification extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB,workspace);
-        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH,workspace);
-        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS,workspace);
-        int outputClass = parameters.getValue(OUTPUT_CLASS,workspace);
-        String pathType = parameters.getValue(PATH_TYPE,workspace);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT,workspace);
-        String classifierFilePath = parameters.getValue(CLASSIFIER_FILE,workspace);
-        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES,workspace);
-        int tileFactor = parameters.getValue(TILE_FACTOR,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB, workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH, workspace);
+        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS, workspace);
+        int outputClass = parameters.getValue(OUTPUT_CLASS, workspace);
+        String pathType = parameters.getValue(PATH_TYPE, workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT, workspace);
+        String classifierFilePath = parameters.getValue(CLASSIFIER_FILE, workspace);
+        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES, workspace);
+        int tileFactor = parameters.getValue(TILE_FACTOR, workspace);
 
         // Getting input image
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -324,11 +352,8 @@ public class WekaPixelClassification extends Module {
         switch (pathType) {
             case PathTypes.MATCHING_FORMAT:
                 Metadata metadata = (Metadata) workspace.getMetadata().clone();
-                try {
-                    classifierFilePath = FileTools.getGenericName(metadata, genericFormat);
-                } catch (ServiceException | DependencyException | FormatException | IOException e) {
-                    MIA.log.writeError(e);
-                }
+                classifierFilePath = FileTools.getGenericName(metadata, genericFormat);
+                
                 break;
         }
 
@@ -390,7 +415,7 @@ public class WekaPixelClassification extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -401,16 +426,16 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
-        if ((boolean) parameters.getValue(OUTPUT_MODE,workspace).equals(OutputModes.PROBABILITY)) {
+        if ((boolean) parameters.getValue(OUTPUT_MODE, workspace).equals(OutputModes.PROBABILITY)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
             returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
-            if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS,workspace))
+            if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS, workspace))
                 returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
         }
 
         returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PATH_TYPE));
-        switch ((String) parameters.getValue(PATH_TYPE,workspace)) {
+        switch ((String) parameters.getValue(PATH_TYPE, workspace)) {
             case PathTypes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
@@ -430,32 +455,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

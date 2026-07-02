@@ -44,7 +44,10 @@ public abstract class FileFolderType extends TextSwitchableParameter {
 
     @Override
     public <T> T getValue(Workspace workspace) {
-        return (T) GlobalVariables.convertString(path, module.getModules());
+
+        String converted = GlobalVariables.convertString(path, module.getModules());
+        return (T) TextType.insertWorkspaceValues(converted, workspace);
+
     }
 
     @Override
@@ -67,6 +70,10 @@ public abstract class FileFolderType extends TextSwitchableParameter {
         // Checking a file has been specified
         if (path == null || path.equals(""))
             return false;
+        
+        // Can't verify metadata at this point, so assume correct
+        if (path.contains("Me{"))
+            return true;
 
         // Checking the file exists
         String converted = GlobalVariables.convertString(path, module.getModules());

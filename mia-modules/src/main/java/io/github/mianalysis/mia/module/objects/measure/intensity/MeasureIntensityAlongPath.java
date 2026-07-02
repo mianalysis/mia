@@ -271,6 +271,9 @@ public class MeasureIntensityAlongPath extends AbstractSaver {
     }
 
     public static void writeDistancesFile(SXSSFWorkbook workbook, String path) {
+        if (new File(path).exists())
+            new File(path).delete();
+        
         // Writing the workbook to file
         try {
             FileOutputStream outputStream = new FileOutputStream(path);

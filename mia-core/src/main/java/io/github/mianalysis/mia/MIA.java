@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -12,8 +10,7 @@ import org.scijava.log.LogMessage;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
-
-import com.fasterxml.jackson.core.util.VersionUtil;
+import org.scijava.ui.UIService;
 
 import io.github.mianalysis.mia.module.lostandfound.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
@@ -41,6 +38,9 @@ public abstract class MIA {
 
     @Parameter
     protected static ScriptService scriptService;
+
+    @Parameter
+    protected static UIService uiService;
 
     private static String version = null;
     protected static boolean debug = false;
@@ -121,6 +121,10 @@ public abstract class MIA {
         return headless;
     }
 
+    public static void setHeadless(boolean headless) {
+        MIA.headless = headless;
+    }
+
     public static void setPreferences(Preferences newPreferences) {
         preferences = newPreferences;
     }
@@ -174,7 +178,7 @@ public abstract class MIA {
     }
 
     public static PluginService getPluginService() {
-        if (headless || opService == null) {
+        if (headless || pluginService == null) {
             Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
             pluginService = (PluginService) context.getService(PluginService.class);
         }
@@ -190,6 +194,16 @@ public abstract class MIA {
         }
 
         return scriptService;
+
+    }
+
+    public static UIService getUIService() {
+        if (headless || uiService == null) {
+            Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
+            scriptService = (ScriptService) context.getService(UIService.class);
+        }
+
+        return uiService;
 
     }
 
@@ -225,6 +239,10 @@ public abstract class MIA {
 
     public static void setScriptService(ScriptService scriptService) {
         MIA.scriptService = scriptService;
+    }
+
+    public static void setUIService(UIService uiService) {
+        MIA.uiService = uiService;
     }
 
     // Checking if Kryo is greater than or equal to version 5.4.0.

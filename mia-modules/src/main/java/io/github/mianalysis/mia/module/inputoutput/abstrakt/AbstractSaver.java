@@ -158,47 +158,38 @@ public abstract class AbstractSaver extends Module {
             }
         }
 
-        try {
-            switch (saveLocation) {
-                case SaveLocations.MIRRORED_DIRECTORY:
-                    return OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),
-                            workspace.getMetadata(), mirroredDirectoryRoot);
+        switch (saveLocation) {
+            case SaveLocations.MIRRORED_DIRECTORY:
+                return OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),
+                        workspace.getMetadata(), mirroredDirectoryRoot);
 
-                case SaveLocations.SAVE_WITH_INPUT:
-                default:
-                    File rootFile = workspace.getMetadata().getFile();
-                    return rootFile.getParent() + File.separator;
+            case SaveLocations.SAVE_WITH_INPUT:
+            default:
+                File rootFile = workspace.getMetadata().getFile();
+                return rootFile.getParent() + File.separator;
 
-                case SaveLocations.SPECIFIC_LOCATION:
-                    return filePath + File.separator;
+            case SaveLocations.SPECIFIC_LOCATION:
+                return filePath + File.separator;
 
-                case SaveLocations.SPECIFIC_LOCATION_GENERIC:
-                    filePath = FileTools.getGenericName(workspace.getMetadata(), filePathGeneric);
-                    return filePath + File.separator;
-            }
-        } catch (ServiceException | DependencyException | IOException | FormatException e) {
-            MIA.log.writeWarning(e);
-            return null;
+            case SaveLocations.SPECIFIC_LOCATION_GENERIC:
+                filePath = FileTools.getGenericName(workspace.getMetadata(), filePathGeneric);
+                return filePath + File.separator;
         }
     }
 
     public String getOutputName(Modules modules, Workspace workspace) {
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
-        try {
-            switch (saveNameMode) {
-                case SaveNameModes.MATCH_INPUT:
-                default:
-                    File rootFile = workspace.getMetadata().getFile();
-                    return FilenameUtils.removeExtension(rootFile.getName());
 
-                case SaveNameModes.SPECIFIC_NAME:
-                    saveFileName = FileTools.getGenericName(workspace.getMetadata(), saveFileName);
-                    return FilenameUtils.removeExtension(saveFileName);
-            }
-        } catch (ServiceException | DependencyException | IOException | FormatException e) {
-            MIA.log.writeWarning(e);
-            return null;
+        switch (saveNameMode) {
+            case SaveNameModes.MATCH_INPUT:
+            default:
+                File rootFile = workspace.getMetadata().getFile();
+                return FilenameUtils.removeExtension(rootFile.getName());
+
+            case SaveNameModes.SPECIFIC_NAME:
+                saveFileName = FileTools.getGenericName(workspace.getMetadata(), saveFileName);
+                return FilenameUtils.removeExtension(saveFileName);
         }
     }
 

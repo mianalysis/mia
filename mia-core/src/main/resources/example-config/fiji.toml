@@ -1,0 +1,322 @@
+# *** Welcome to the Fiji launcher's configuration file! ***
+#
+# The Fiji launcher is built on Jaunch (https://github.com/scijava/jaunch).
+#
+# The contents below define Fiji's particular launcher behavior and features,
+# on top of Jaunch's "sensible default" functionality.
+#
+# See the common.toml file for more details about Jaunch configuration.
+
+jaunch-version = 1
+
+program-name = 'Fiji'
+
+includes = ['jvm.toml', 'python.toml']
+
+supported-options = [
+    # General options
+    '--default-gc|do not use advanced garbage collector settings by default\n(-XX:+UseG1GC)',
+    '--gc-g1|use the G1 garbage collector',
+    '--debug-gc|show debug info about the garbage collector on stderr',
+    '--no-splash|suppress showing a splash screen upon startup',
+    '--jdb|launch the jdb debugger',
+
+    # Fiji-specific options
+    '--python|launch in Python mode',
+    '--no-python|do not launch in Python mode',
+    '--allow-multiple|do not reuse existing Fiji instance',
+    '--info|informational output',
+    '--plugins=<dir>|use <dir> to discover plugins',
+    '--run <plugin> [<arg>]|run <plugin> in Fiji, optionally with arguments',
+    '--edit [<file>...]|edit the given file in the script editor',
+
+    # Options to run programs other than Fiji
+    '--update|start the command-line version of the Updater',
+    '--main-class=<class name>|start the given class instead of Fiji',
+
+    # Windows things
+    '--console,--attach-console|attempt to attach output to the calling console',
+    '--new-console|ensure the launch of a new, dedicated console for output',
+    '--set-icon=<exe-file>,<ico-file>|add/replace the icon of the given program', #NO
+
+# Nico: NEED: execute a script with parameters
+# ./ImageJ-linux64 --headless --console --run hello.py 'name="Mr Kraken"'
+# Can we simplify this further?
+]
+
+modes = [
+  # Decide on launch mode: Python or Java?
+
+  # Interpolate cfg.launch-mode var to set a starting LAUNCH: hint.
+  'LAUNCH:${cfg.launch-mode}',
+  # If --python given, force PYTHON mode.
+  '--python|LAUNCH:PYTHON',
+  '--python|!LAUNCH:JVM',
+  # If --no-python given, force JVM mode.
+  '--no-python|LAUNCH:JVM',
+  '--no-python|!LAUNCH:PYTHON',
+
+  # Set INFO level logging for the command line Updater.
+  '--update|--info',
+
+  # Are we launching with an alternative main class?
+  # This list should match the one in jvm.main-class below.
+  '--jdb|MODE:custom-main',
+  '--update|MODE:custom-main',
+  '--main-class|MODE:custom-main',
+
+  # Disable the splash screen when running a different
+  # main class, or when --no-splash or --headless is given.
+  'MODE:custom-main|MODE:no-splash',
+  '--no-splash|MODE:no-splash',
+  '--headless|MODE:no-splash',
+]
+
+directives = [
+  'LAUNCH:JVM|!--dry-run|apply-update,INIT_THREADS',
+  'LAUNCH:PYTHON|!--dry-run|apply-update,INIT_THREADS',
+]
+
+# /============================================================================\
+# |                              CONFIG DEFAULTS                               |
+# \============================================================================/
+
+cfg.max-heap = '75%'
+cfg.launch-mode = 'JVM'
+
+# /============================================================================\
+# |                               PYTHON CONFIG                                |
+# \============================================================================/
+
+python.version-min = '3.9'
+
+python.packages = [
+  'pyimagej>=1.4.1',
+  'scyjava>=1.12.0',
+]
+
+python.script-path = ['${app-dir}/config/jaunch/fiji.py']
+
+python.main-args = [
+    '${jvm.libjvmPath}',
+    '@{jvm.runtimeArgs}',
+    '--',
+    '${jvm.mainClass}',
+    # Note: Jaunch appends @{python.mainArgs}, which will match.
+    #'@{jvm.mainArgs}',
+]
+
+# /============================================================================\
+# |                                JAVA CONFIG                                 |
+# \============================================================================/
+
+jvm.version-min = '8'
+
+jvm.classpath = [
+    # Construct the classpath.
+    '${app-dir}/jars/*.jar',
+    '${app-dir}/jars/*/*.jar',
+    '--plugins|${plugins}/*.jar'
+    '--plugins|${plugins}/*/*.jar'
+    '!--plugins|${app-dir}/plugins/*.jar',
+    '!--plugins|${app-dir}/plugins/*/*.jar',
+    #'${user.home}/.plugins/*.jar',
+    #'${user.home}/.plugins/*/*.jar',
+    #'${user.home}/.share/fiji/jars/*.jar',
+    #'/usr/local/share/fiji/jars/*.jar',
+    '--main-class|.', # Weird behavior, but it's what the ImageJ Launcher does.
+]
+
+jvm.max-heap = '${cfg.max-heap}'
+
+jvm.runtime-args = [
+    '--info|-Dscijava.log.level=info',
+    '--debug|-Dij.debug=true',
+    '--debug|-Dscijava.log.level=debug',
+
+    # In https://forum.image.sc/t/88620, acardona wrote:
+    # > When running in a machine with many CPU cores (like 64, or 256) and lots
+    # > of RAM (e.g., more than 100 GB, like 500 GB of heap size as defined by -Xmx),
+    # > I find that the concurrent garbage collector (G1 GC) works *a lot better*.
+    '!--default-gc|JAVA:6+|-XX:+UseG1GC',
+    # Handle --gc-g1 option.
+    '--gc-g1|-XX:+UseCompressedOops',
+    '--gc-g1|-XX:+UnlockExperimentalVMOptions',
+    '--gc-g1|-XX:+UseG1GC',
+    '--gc-g1|-XX:NewRatio=5',
+
+    # Handle --debug-gc option.
+    '--debug-gc|-verbose:gc',
+
+    # If running a custom main class, do not patch ImageJ.
+    'MODE:custom-main|-Dpatch.ij1=false',
+
+    # Enable SciJava logging in updater mode.
+    '--update|-Dscijava.log.level=info',
+
+    # For JavaFX - see https://github.com/apposed/jaunch/issues/51
+    #
+    # For now, we add only the platform-specific JAR subfolders,
+    # and explicitly enumerate the JavaFX modules.
+    #
+    # What would be nice to do is add everything to the module path:
+    #
+    #   --module-path jars --add-modules=ALL-MODULE-PATH
+    #
+    # Unfortunately, it is too brittle: it generates an automatic module name for each
+    # unmodularized JAR on the module path, even if the resultant name is invalid:
+    #
+    #   Error occurred during initialization of boot layer
+    #   java.lang.module.FindException: Unable to derive module descriptor for .../Fiji/jars/compiler-interface-1.3.5.jar
+    #   Caused by: java.lang.IllegalArgumentException: compiler.interface: Invalid module name: 'interface' is not a Java identifier
+    #
+    # In the longer term, we could avoid this issue by placing modularized
+    # JARs into a separate subtree -- perhaps `modules` instead of `jars`?
+    # The Updater would then need to grok the modules/<platform> subdirs, though.
+
+    'JAVA:9+|OS:LINUX|ARCH:ARM64|--module-path=${app-dir}/jars/linux-arm64',
+    'JAVA:9+|OS:LINUX|ARCH:X64|--module-path=${app-dir}/jars/linux64',
+    'JAVA:9+|OS:LINUX|ARCH:X86|--module-path=${app-dir}/jars/linux32',
+    'JAVA:9+|OS:MACOSX|ARCH:ARM64|--module-path=${app-dir}/jars/macos-arm64',
+    'JAVA:9+|OS:MACOSX|ARCH:X64|--module-path=${app-dir}/jars/macos64',
+    'JAVA:9+|OS:WINDOWS|ARCH:ARM64|--module-path=${app-dir}\jars\win-arm64',
+    'JAVA:9+|OS:WINDOWS|ARCH:X64|--module-path=${app-dir}\jars\win64',
+    'JAVA:9+|OS:WINDOWS|ARCH:X86|--module-path=${app-dir}\jars\win32',
+
+    # Give the SciJava app-launcher permission to unlock reflection on modularized code.
+    'JAVA:9+|--add-opens=java.base/java.lang=ALL-UNNAMED',
+
+    # TODO: Figure out why (some of?) these are still needed to squelch errors.
+    # sc.fiji.compat.DefaultFijiService uses XToolkit.awtAppClassName
+    'JAVA:9+|OS:LINUX|--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED',
+    # TODO: document where this happens on macOS.
+    'JAVA:9+|OS:MACOSX|--add-opens=java.desktop/com.apple.eawt=ALL-UNNAMED',
+     # net.imagej.patcher.LegacyInjector uses ClassLoader.findLoadedClass
+     # javassist.util.proxy.SecurityActions uses ClassLoader.defineClass
+     'JAVA:9+|--add-opens=java.base/java.lang=ALL-UNNAMED',
+     # For org.apache.arrow - TODO: document exactly why
+     'JAVA:9+|--add-opens=java.base/java.nio=ALL-UNNAMED',
+     # org.scijava.util.SizeableArrayList uses ArrayList.size
+     'JAVA:9+|--add-opens=java.base/java.util=ALL-UNNAMED',
+     # com.jogamp.nativewindow.awt.AppContextInfo uses sun.awt.AppContext
+     'JAVA:9+|--add-opens=java.desktop/sun.awt=ALL-UNNAMED',
+     #  ini.trakem2.Project.openFSProject uses javax.swing.JTree.expandedState
+     'JAVA:9+|--add-opens=java.desktop/javax.swing=ALL-UNNAMED',
+     # For accessing internal Swing UI classes used by BVV - TODO: document exactly where
+     'JAVA:9+|--add-opens=java.desktop/sun.swing=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.desktop/com.sun.java.swing=ALL-UNNAMED',
+     # HACK: For fiji.debugging.Object_Inspector
+     # The Object_Inspector could end up reflecting anything, so this doesn't
+     # make it work in all cases, but it helps for inspecting AWT/Swing windows.
+     'JAVA:9+|--add-opens=java.desktop/java.awt=ALL-UNNAMED',
+     # For scenery - TODO: document exactly why
+     #'JAVA:9+|--add-opens=java.base/java.lang=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/java.lang.invoke=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/java.net=ALL-UNNAMED',
+     #'JAVA:9+|--add-opens=java.base/java.nio=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/java.time=ALL-UNNAMED',
+     #'JAVA:9+|--add-opens=java.base/java.util=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/sun.nio.ch=ALL-UNNAMED',
+     'JAVA:9+|--add-opens=java.base/sun.util.calendar=ALL-UNNAMED',
+
+    # Avoid Jython's huge startup cost.
+    '-Dpython.cachedir.skip=true',
+
+    # Set ImageJ's plugins.dir property.
+    '--plugins|-Dplugins.dir=${plugins}',
+    '!--plugins|-Dplugins.dir=${app-dir}',
+
+    # Set application directory properties.
+    '-Dimagej.dir=${app-dir}',
+    '-Dij.dir=${app-dir}',
+    '-Dfiji.dir=${app-dir}',
+
+    # Set application executable properties.
+    '-Dfiji.executable=${executable}',
+    '-Dij.executable=${executable}',
+
+    # TODO: is fiji.defaultLibPath property necessary for any reason?
+
+    # Set up platform-specific native library paths.
+    # Regarding the setting of jna.library.path, see:
+    # https://github.com/scijava/scijava-common/pull/438
+    'OS:LINUX|ARCH:ARM64|-Djava.library.path=${app-dir}/lib/linux-arm64',
+    'OS:LINUX|ARCH:ARM64|-Djna.library.path=${app-dir}/lib/linux-arm64',
+    'OS:LINUX|ARCH:X64|-Djava.library.path=${app-dir}/lib/linux64',
+    'OS:LINUX|ARCH:X64|-Djna.library.path=${app-dir}/lib/linux64',
+    'OS:LINUX|ARCH:X86|-Djava.library.path=${app-dir}/lib/linux32',
+    'OS:LINUX|ARCH:X86|-Djna.library.path=${app-dir}/lib/linux32',
+    'OS:MACOSX|ARCH:ARM64|-Djava.library.path=${app-dir}/lib/macos-arm64',
+    'OS:MACOSX|ARCH:ARM64|-Djna.library.path=${app-dir}/lib/macos-arm64',
+    'OS:MACOSX|ARCH:X64|-Djava.library.path=${app-dir}/lib/macos64',
+    'OS:MACOSX|ARCH:X64|-Djna.library.path=${app-dir}/lib/macos64',
+    'OS:WINDOWS|ARCH:ARM64|-Djava.library.path=${app-dir}\lib\win-arm64',
+    'OS:WINDOWS|ARCH:ARM64|-Djna.library.path=${app-dir}\lib\win-arm64',
+    'OS:WINDOWS|ARCH:X64|-Djava.library.path=${app-dir}\lib\win64',
+    'OS:WINDOWS|ARCH:X64|-Djna.library.path=${app-dir}\lib\win64',
+    'OS:WINDOWS|ARCH:X86|-Djava.library.path=${app-dir}\lib\win32',
+    'OS:WINDOWS|ARCH:X86|-Djna.library.path=${app-dir}\lib\win32',
+
+    # Set properties favored by the the SciJava app-launcher.
+    # See https://github.com/scijava/app-launcher#readme
+    '-Dscijava.app.name=Fiji',
+    '-Dscijava.app.directory=${app-dir}',
+    '!MODE:no-splash|!OS:WINDOWS|-Dscijava.app.splash-image=${app-dir}/images/icon.png',
+    '!MODE:no-splash|OS:WINDOWS|-Dscijava.app.splash-image=${app-dir}\images\icon.png',
+    '-Dscijava.app.java-version-minimum=1.8',
+    '-Dscijava.app.java-version-recommended=1.8.0_172',
+    '-Dscijava.app.look-and-feel=com.formdev.flatlaf.FlatLightLaf',
+    'OS:WINDOWS|-Dscijava.app.config-file=${app-dir}\config\jaunch\fiji.cfg',
+    '!OS:WINDOWS|-Dscijava.app.config-file=${app-dir}/config/jaunch/fiji.cfg',
+    'OS:LINUX|ARCH:ARM64|-Dscijava.app.java-root=${app-dir}/java/linux-arm64',
+    'OS:LINUX|ARCH:X64|-Dscijava.app.java-root=${app-dir}/java/linux64',
+    'OS:LINUX|ARCH:X86|-Dscijava.app.java-root=${app-dir}/java/linux32',
+    'OS:MACOSX|ARCH:ARM64|-Dscijava.app.java-root=${app-dir}/java/macos-arm64',
+    'OS:MACOSX|ARCH:X64|-Dscijava.app.java-root=${app-dir}/java/macos64',
+    'OS:WINDOWS|ARCH:ARM64|-Dscijava.app.java-root=${app-dir}\java\win-arm64',
+    'OS:WINDOWS|ARCH:X64|-Dscijava.app.java-root=${app-dir}\java\win64',
+    'OS:WINDOWS|ARCH:X86|-Dscijava.app.java-root=${app-dir}\java\win32',
+    '-Dscijava.app.java-links=https://downloads.imagej.net/java/jdk-urls.txt',
+    'OS:LINUX|ARCH:ARM64|-Dscijava.app.java-platform=linux-arm64',
+    'OS:LINUX|ARCH:X64|-Dscijava.app.java-platform=linux64',
+    'OS:LINUX|ARCH:X86|-Dscijava.app.java-platform=linux32',
+    'OS:MACOSX|ARCH:ARM64|-Dscijava.app.java-platform=macos-arm64',
+    'OS:MACOSX|ARCH:X64|-Dscijava.app.java-platform=macos64',
+    'OS:WINDOWS|ARCH:ARM64|-Dscijava.app.java-platform=win-arm64',
+    'OS:WINDOWS|ARCH:X64|-Dscijava.app.java-platform=win64',
+    'OS:WINDOWS|ARCH:X86|-Dscijava.app.java-platform=win32',
+
+    # Make SciJava startup less brittle.
+    '-Dscijava.context.strict=false',
+
+    # Enable JavaFX's JavaScript engine.
+    '-Djavafx.allowjs=true',
+
+    # Enable AWT/Swing's HiDPI scaling.
+    '-Dsun.java2d.uiScale=true',
+
+    # Avoid the following error message on Windows:
+    #
+    #   console: Failed to install '': java.nio.charset.UnsupportedCharsetException: cp0.
+    #
+    # See https://github.com/imagej/imagej-launcher/issues/56
+    '-Dpython.console.encoding=UTF-8',
+]
+
+jvm.main-class = [
+    # This list should match the one in modes above.
+    '--jdb|com.sun.tools.example.debug.tty.TTY',
+    '--update|net.imagej.updater.CommandLine',
+    '--main-class|${main-class}',
+    'org.scijava.launcher.ClassLauncher',
+]
+
+jvm.main-args = [
+    # Pass the actual main class to the ClassLauncher as an argument.
+    '!MODE:custom-main|net.imagej.Main',
+
+    # The -batch flag is required when --headless is given.
+    '--headless|!MODE:custom-main|-batch',
+]

@@ -6,19 +6,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Line;
 import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -31,9 +31,9 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -42,131 +42,185 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ColourFactory;
-
 
 /**
-* Adds a series of line overlays, representing various relationship scenarios.  Lines extend between centroids of two objects.  Depicted relationships can be between mutual child of the same parent object, between partner objects of between children and parents.
-*/
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+ * Adds a series of line overlays, representing various relationship scenarios.
+ * Lines extend between centroids of two objects. Depicted relationships can be
+ * between mutual child of the same parent object, between partner objects of
+ * between children and parents.
+ */
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddRelationshipConnection extends AbstractOverlay {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image and object input";
 
-	/**
-	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
-	*/
+    /**
+     * Image onto which overlay will be rendered. Input image will only be updated
+     * if "Apply to input image" is enabled, otherwise the image containing the
+     * overlay will be stored as a new image with name specified by "Output image".
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Controls what object-object relationships will be represented by the lines.  In all cases, lines are drawn between object centroids, although the line start and end points can be offset along the line when the "Offset by measurement" setting is selected:<br><br>- "Between children" Draw lines between all objects in two child object sets of a common parent object ("Parent objects").  This will result in all permutations of lines between one child object set and the other  The child object sets are selected with the "Child objects 1" and "Child objects 2" parameters.<br><br>- "Between partners" Draw lines between all partner objects.  The two partner object sets are selected using the "Partner objects 1" and "Partner objects 2" parameters.<br><br>- "Parent to child" Draw lines between parent objects and all their children.  Parent objects are selected using the "Parent objects" parameter and children using the "Child objects 1" parameter..<br>
-	*/
+    /**
+     * Controls what object-object relationships will be represented by the lines.
+     * In all cases, lines are drawn between object centroids, although the line
+     * start and end points can be offset along the line when the "Offset by
+     * measurement" setting is selected:<br>
+     * <br>
+     * - "Between children" Draw lines between all objects in two child object sets
+     * of a common parent object ("Parent objects"). This will result in all
+     * permutations of lines between one child object set and the other The child
+     * object sets are selected with the "Child objects 1" and "Child objects 2"
+     * parameters.<br>
+     * <br>
+     * - "Between partners" Draw lines between all partner objects. The two partner
+     * object sets are selected using the "Partner objects 1" and "Partner objects
+     * 2" parameters.<br>
+     * <br>
+     * - "Parent to child" Draw lines between parent objects and all their children.
+     * Parent objects are selected using the "Parent objects" parameter and children
+     * using the "Child objects 1" parameter..<br>
+     */
     public static final String LINE_MODE = "Line mode";
 
-	/**
-	* Used to select the parent object of the two child object sets when in "Between children" mode, or to select the parent objects in "Parent to child" mode.
-	*/
+    /**
+     * Used to select the parent object of the two child object sets when in
+     * "Between children" mode, or to select the parent objects in "Parent to child"
+     * mode.
+     */
     public static final String PARENT_OBJECTS = "Parent objects";
 
-	/**
-	* Selects the first child objects set when in "Between children" mode, or the (only) child set when in "Parent to child" mode.
-	*/
+    /**
+     * Selects the first child objects set when in "Between children" mode, or the
+     * (only) child set when in "Parent to child" mode.
+     */
     public static final String CHILD_OBJECTS_1 = "Child objects 1";
 
-	/**
-	* Selects the second child objects set when in "Between children" mode.
-	*/
+    /**
+     * Selects the second child objects set when in "Between children" mode.
+     */
     public static final String CHILD_OBJECTS_2 = "Child objects 2";
 
-	/**
-	* Selects the first partner objects set when in "Between partners" mode.
-	*/
+    /**
+     * Selects the first partner objects set when in "Between partners" mode.
+     */
     public static final String PARTNER_OBJECTS_1 = "Partner objects 1";
 
-	/**
-	* Selects the second partner objects set when in "Between partners" mode.
-	*/
+    /**
+     * Selects the second partner objects set when in "Between partners" mode.
+     */
     public static final String PARTNER_OBJECTS_2 = "Partner objects 2";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Image output";
 
-	/**
-	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
-	*/
+    /**
+     * Determines if the modifications made to the input image (added overlay
+     * elements) will be applied to that image or directed to a new image. When
+     * selected, the input image will be updated.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
-	*/
+    /**
+     * If the modifications (overlay) aren't being applied directly to the input
+     * image, this control will determine if a separate image containing the overlay
+     * should be saved to the workspace.
+     */
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
 
-	/**
-	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
-	*/
+    /**
+     * The name of the new image to be saved to the workspace (if not applying the
+     * changes directly to the input image).
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
 
-	/**
-	* Controls how the line is displayed between the centroids of the relevant two objects:<br><br>- "Full line" Draws a complete line between the two centroids (unless "Offset by measurement" is selected, in which case the line won't necessarily begin at the centroid).<br><br>- "Half line" Draws a line between the first object (either "Child objects 1", "Partner objects 1" or "Parent objects" when in "Between children", "Between partners" or "Parent to child" modes, respectively) and the mid-point between the two relevant objects.  Any offsets applied when "Offset by measurement" is selected still apply.<br><br>- "Midpoint dot" Draws a dot half way between the two relevant objects (no line is drawn).<br>
-	*/
+    /**
+     * Controls how the line is displayed between the centroids of the relevant two
+     * objects:<br>
+     * <br>
+     * - "Full line" Draws a complete line between the two centroids (unless "Offset
+     * by measurement" is selected, in which case the line won't necessarily begin
+     * at the centroid).<br>
+     * <br>
+     * - "Half line" Draws a line between the first object (either "Child objects
+     * 1", "Partner objects 1" or "Parent objects" when in "Between children",
+     * "Between partners" or "Parent to child" modes, respectively) and the
+     * mid-point between the two relevant objects. Any offsets applied when "Offset
+     * by measurement" is selected still apply.<br>
+     * <br>
+     * - "Midpoint dot" Draws a dot half way between the two relevant objects (no
+     * line is drawn).<br>
+     */
     public static final String RENDER_MODE = "Render mode";
 
-	/**
-	* Width of the rendered lines.  Specified in pixel units.
-	*/
+    /**
+     * Width of the rendered lines. Specified in pixel units.
+     */
     public static final String LINE_WIDTH = "Line width";
 
-	/**
-	* Size of each overlay marker.  Choices are: Tiny, Small, Medium, Large, Extra large.
-	*/
+    /**
+     * Size of each overlay marker. Choices are: Tiny, Small, Medium, Large, Extra
+     * large.
+     */
     public static final String POINT_SIZE = "Point size";
 
-	/**
-	* Type of overlay marker used to represent each object.  Choices are: Circle, Cross, Dot, Hybrid.
-	*/
+    /**
+     * Type of overlay marker used to represent each object. Choices are: Circle,
+     * Cross, Dot, Hybrid.
+     */
     public static final String POINT_TYPE = "Point type";
 
-	/**
-	* When selected, the lines at either end can start a fraction of the way between the two relevant object centroids.  Separate offsets are applied at each end, with measurements providing the offset values selected using the "Measurement name 1" and "Measurement name 2" parameters.  For example.  This is useful when it is preferable to not have the line extend all the way between centroids.
-	*/
+    /**
+     * When selected, the lines at either end can start a fraction of the way
+     * between the two relevant object centroids. Separate offsets are applied at
+     * each end, with measurements providing the offset values selected using the
+     * "Measurement name 1" and "Measurement name 2" parameters. For example. This
+     * is useful when it is preferable to not have the line extend all the way
+     * between centroids.
+     */
     public static final String OFFSET_BY_MEASUREMENT = "Offset by measurement";
 
-	/**
-	* Object measurement specifying offset to be applied to the line start point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.
-	*/
+    /**
+     * Object measurement specifying offset to be applied to the line start point.
+     * Offsets are fractional values, specifying the proportion of the line to
+     * ignore. For example, dual offsets of 0.25 will result in a line half the
+     * usual length.
+     */
     public static final String MEASUREMENT_NAME_1 = "Measurement name 1";
 
-	/**
-	* Object measurement specifying offset to be applied to the line end point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.
-	*/
+    /**
+     * Object measurement specifying offset to be applied to the line end point.
+     * Offsets are fractional values, specifying the proportion of the line to
+     * ignore. For example, dual offsets of 0.25 will result in a line half the
+     * usual length.
+     */
     public static final String MEASUREMENT_NAME_2 = "Measurement name 2";
 
-	/**
-	* Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.
-	*/
+    /**
+     * Display the overlay elements in all frames (time axis) of the input image
+     * stack, irrespective of whether the object was present in that frame.
+     */
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple overlay elements simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface LineModes {
@@ -309,18 +363,19 @@ public class AddRelationshipConnection extends AbstractOverlay {
             int t = renderInAllFrames ? 0 : childObj1.getT() + 1;
             for (Obj childObj2 : object.getChildren(childObjects2Name).values()) {
                 if (childObj1.getT() == childObj2.getT())
-                switch (renderMode) {
-                    case RenderModes.FULL_LINE:
-                        drawFullLine(ipl, childObj1, childObj2, t, colour, lineWidth);
-                        break;
-                    case RenderModes.HALF_LINE:
-                        drawHalfLine(ipl, childObj1, childObj2, t, colour, lineWidth, offset, measName1, measName2);
-                        break;
-                    case RenderModes.MIDPOINT_DOT:
-                        drawMidpointDot(ipl, childObj1, childObj2, t, colour, pointSize, pointType, offset, measName1,
-                                measName2);
-                        break;
-                }
+                    switch (renderMode) {
+                        case RenderModes.FULL_LINE:
+                            drawFullLine(ipl, childObj1, childObj2, t, colour, lineWidth);
+                            break;
+                        case RenderModes.HALF_LINE:
+                            drawHalfLine(ipl, childObj1, childObj2, t, colour, lineWidth, offset, measName1, measName2);
+                            break;
+                        case RenderModes.MIDPOINT_DOT:
+                            drawMidpointDot(ipl, childObj1, childObj2, t, colour, pointSize, pointType, offset,
+                                    measName1,
+                                    measName2);
+                            break;
+                    }
             }
         }
     }
@@ -400,12 +455,12 @@ public class AddRelationshipConnection extends AbstractOverlay {
         for (int z = 0; z < nSlices; z++) {
             Line line = new Line(x1, y1, x2, y2);
             // if (ipl.isHyperStack()) {
-                ipl.setPosition(1, z + 1, t);
-                line.setPosition(1, z + 1, t);
+            ipl.setPosition(1, z + 1, t);
+            line.setPosition(1, z + 1, t);
             // } else {
-            //     int pos = Math.max(Math.max(1, z + 1), t);
-            //     ipl.setPosition(pos);
-            //     line.setPosition(pos);
+            // int pos = Math.max(Math.max(1, z + 1), t);
+            // ipl.setPosition(pos);
+            // line.setPosition(pos);
             // }
 
             line.setStrokeColor(colour);
@@ -436,12 +491,12 @@ public class AddRelationshipConnection extends AbstractOverlay {
         for (int z = 0; z < nSlices; z++) {
             Line line = new Line(x1, y1, x1p5, y1p5);
             // if (ipl.isHyperStack()) {
-                ipl.setPosition(1, z + 1, t);
-                line.setPosition(1, z + 1, t);
+            ipl.setPosition(1, z + 1, t);
+            line.setPosition(1, z + 1, t);
             // } else {
-            //     int pos = Math.max(Math.max(1, z + 1), t);
-            //     ipl.setPosition(pos);
-            //     line.setPosition(pos);
+            // int pos = Math.max(Math.max(1, z + 1), t);
+            // ipl.setPosition(pos);
+            // line.setPosition(pos);
             // }
 
             line.setStrokeColor(colour);
@@ -478,12 +533,12 @@ public class AddRelationshipConnection extends AbstractOverlay {
             pointRoi.setSize(sizeVal);
 
             // if (ipl.isHyperStack()) {
-                ipl.setPosition(1, z + 1, t);
-                pointRoi.setPosition(1, z + 1, t);
+            ipl.setPosition(1, z + 1, t);
+            pointRoi.setPosition(1, z + 1, t);
             // } else {
-            //     int pos = Math.max(Math.max(1, z + 1), t);
-            //     ipl.setPosition(pos);
-            //     pointRoi.setPosition(pos);
+            // int pos = Math.max(Math.max(1, z + 1), t);
+            // ipl.setPosition(pos);
+            // pointRoi.setPosition(pos);
             // }
 
             pointRoi.setStrokeColor(colour);
@@ -491,7 +546,6 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -511,33 +565,33 @@ public class AddRelationshipConnection extends AbstractOverlay {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting input objects
-        String lineMode = parameters.getValue(LINE_MODE,workspace);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECTS,workspace);
-        String childObjects1Name = parameters.getValue(CHILD_OBJECTS_1,workspace);
-        String childObjects2Name = parameters.getValue(CHILD_OBJECTS_2,workspace);
-        String partnerObjects1Name = parameters.getValue(PARTNER_OBJECTS_1,workspace);
-        String partnerObjects2Name = parameters.getValue(PARTNER_OBJECTS_2,workspace);
+        String lineMode = parameters.getValue(LINE_MODE, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
+        String childObjects1Name = parameters.getValue(CHILD_OBJECTS_1, workspace);
+        String childObjects2Name = parameters.getValue(CHILD_OBJECTS_2, workspace);
+        String partnerObjects1Name = parameters.getValue(PARTNER_OBJECTS_1, workspace);
+        String partnerObjects2Name = parameters.getValue(PARTNER_OBJECTS_2, workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double opacity = parameters.getValue(OPACITY,workspace);
-        String renderMode = parameters.getValue(RENDER_MODE,workspace);
-        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
-        String pointSize = parameters.getValue(POINT_SIZE,workspace);
-        String pointType = parameters.getValue(POINT_TYPE,workspace);
-        boolean offset = parameters.getValue(OFFSET_BY_MEASUREMENT,workspace);
-        String measName1 = parameters.getValue(MEASUREMENT_NAME_1,workspace);
-        String measName2 = parameters.getValue(MEASUREMENT_NAME_2,workspace);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        double opacity = parameters.getValue(OPACITY, workspace);
+        String renderMode = parameters.getValue(RENDER_MODE, workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH, workspace);
+        String pointSize = parameters.getValue(POINT_SIZE, workspace);
+        String pointType = parameters.getValue(POINT_TYPE, workspace);
+        boolean offset = parameters.getValue(OFFSET_BY_MEASUREMENT, workspace);
+        String measName1 = parameters.getValue(MEASUREMENT_NAME_1, workspace);
+        String measName2 = parameters.getValue(MEASUREMENT_NAME_2, workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -621,7 +675,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         String refObjectsName = "";
 
         Parameters returnedParameters = new Parameters();
@@ -630,19 +684,19 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(LINE_MODE));
 
-        switch ((String) parameters.getValue(LINE_MODE,workspace)) {
+        switch ((String) parameters.getValue(LINE_MODE, workspace)) {
             case LineModes.BETWEEN_CHILDREN:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
                 ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
-                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
+                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS, workspace));
                 returnedParameters.add(childObjectsP);
 
                 childObjectsP = parameters.getParameter(CHILD_OBJECTS_2);
-                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
+                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS, workspace));
                 returnedParameters.add(childObjectsP);
 
-                refObjectsName = parameters.getValue(CHILD_OBJECTS_1,workspace);
+                refObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
 
                 break;
 
@@ -650,10 +704,10 @@ Workspace workspace = null;
                 returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_1));
 
                 PartnerObjectsP partnerObjectsP = parameters.getParameter(PARTNER_OBJECTS_2);
-                partnerObjectsP.setPartnerObjectsName(parameters.getValue(PARTNER_OBJECTS_1,workspace));
+                partnerObjectsP.setPartnerObjectsName(parameters.getValue(PARTNER_OBJECTS_1, workspace));
                 returnedParameters.add(partnerObjectsP);
 
-                refObjectsName = parameters.getValue(PARTNER_OBJECTS_1,workspace);
+                refObjectsName = parameters.getValue(PARTNER_OBJECTS_1, workspace);
 
                 break;
 
@@ -661,19 +715,19 @@ Workspace workspace = null;
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
                 childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
-                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
+                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS, workspace));
                 returnedParameters.add(childObjectsP);
 
-                refObjectsName = parameters.getValue(PARENT_OBJECTS,workspace);
+                refObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
 
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
@@ -682,7 +736,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RENDER_MODE));
-        switch ((String) parameters.getValue(RENDER_MODE,workspace)) {
+        switch ((String) parameters.getValue(RENDER_MODE, workspace)) {
             case RenderModes.FULL_LINE:
             case RenderModes.HALF_LINE:
                 returnedParameters.add(parameters.getParameter(LINE_WIDTH));
@@ -692,28 +746,28 @@ Workspace workspace = null;
                 returnedParameters.add(parameters.getParameter(POINT_TYPE));
                 break;
         }
-        switch ((String) parameters.getValue(RENDER_MODE,workspace)) {
+        switch ((String) parameters.getValue(RENDER_MODE, workspace)) {
             case RenderModes.HALF_LINE:
             case RenderModes.MIDPOINT_DOT:
                 returnedParameters.add(parameters.getParameter(OFFSET_BY_MEASUREMENT));
-                if ((boolean) parameters.getValue(OFFSET_BY_MEASUREMENT,workspace)) {
+                if ((boolean) parameters.getValue(OFFSET_BY_MEASUREMENT, workspace)) {
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME_1));
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME_2));
 
                     String name1 = "";
                     String name2 = "";
-                    switch ((String) parameters.getValue(LINE_MODE,workspace)) {
+                    switch ((String) parameters.getValue(LINE_MODE, workspace)) {
                         case LineModes.BETWEEN_CHILDREN:
-                            name1 = parameters.getValue(CHILD_OBJECTS_1,workspace);
-                            name2 = parameters.getValue(CHILD_OBJECTS_2,workspace);
+                            name1 = parameters.getValue(CHILD_OBJECTS_1, workspace);
+                            name2 = parameters.getValue(CHILD_OBJECTS_2, workspace);
                             break;
                         case LineModes.BETWEEN_PARTNERS:
-                            name1 = parameters.getValue(PARTNER_OBJECTS_1,workspace);
-                            name2 = parameters.getValue(PARTNER_OBJECTS_2,workspace);
+                            name1 = parameters.getValue(PARTNER_OBJECTS_1, workspace);
+                            name2 = parameters.getValue(PARTNER_OBJECTS_2, workspace);
                             break;
                         case LineModes.PARENT_TO_CHILD:
-                            name1 = parameters.getValue(PARENT_OBJECTS,workspace);
-                            name2 = parameters.getValue(CHILD_OBJECTS_1,workspace);
+                            name1 = parameters.getValue(PARENT_OBJECTS, workspace);
+                            name2 = parameters.getValue(CHILD_OBJECTS_1, workspace);
                             break;
                     }
 
@@ -735,32 +789,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -771,7 +825,7 @@ return null;
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         parameters.get(INPUT_IMAGE)
                 .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
                         + APPLY_TO_INPUT
@@ -851,11 +905,16 @@ return null;
         parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Choices are: "
                 + String.join(", ", PointTypes.ALL) + ".");
 
-        parameters.get(OFFSET_BY_MEASUREMENT).setDescription("When selected, the lines at either end can start a fraction of the way between the two relevant object centroids.  Separate offsets are applied at each end, with measurements providing the offset values selected using the \""+MEASUREMENT_NAME_1+"\" and \""+MEASUREMENT_NAME_2+"\" parameters.  For example.  This is useful when it is preferable to not have the line extend all the way between centroids.");
+        parameters.get(OFFSET_BY_MEASUREMENT).setDescription(
+                "When selected, the lines at either end can start a fraction of the way between the two relevant object centroids.  Separate offsets are applied at each end, with measurements providing the offset values selected using the \""
+                        + MEASUREMENT_NAME_1 + "\" and \"" + MEASUREMENT_NAME_2
+                        + "\" parameters.  For example.  This is useful when it is preferable to not have the line extend all the way between centroids.");
 
-        parameters.get(MEASUREMENT_NAME_1).setDescription("Object measurement specifying offset to be applied to the line start point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.");
+        parameters.get(MEASUREMENT_NAME_1).setDescription(
+                "Object measurement specifying offset to be applied to the line start point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.");
 
-        parameters.get(MEASUREMENT_NAME_2).setDescription("Object measurement specifying offset to be applied to the line end point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.");
+        parameters.get(MEASUREMENT_NAME_2).setDescription(
+                "Object measurement specifying offset to be applied to the line end point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.");
 
         parameters.get(RENDER_IN_ALL_FRAMES).setDescription(
                 "Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");

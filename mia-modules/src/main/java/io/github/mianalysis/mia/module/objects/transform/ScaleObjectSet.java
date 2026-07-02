@@ -6,6 +6,7 @@ import org.scijava.plugin.Plugin;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Scaler;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -182,9 +183,21 @@ public class ScaleObjectSet extends Module {
                 zResolution, inputObjects.getNFrames(), inputObjects.getFrameInterval(),
                 inputObjects.getTemporalUnit());
 
+        double xScale = (double) outputObjects.getWidth()/(double) inputObjects.getWidth();
+        double yScale = (double) outputObjects.getHeight()/(double) inputObjects.getHeight();
+        double zScale = (double) outputObjects.getNSlices()/(double) inputObjects.getNSlices();
+
+        int count = 0;
+        int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
-            ImagePlus inputIpl = inputObject.getAsImage("Object image", true).getImagePlus();
-            ImagePlus outputIpl = Scaler.resize(inputIpl, xResolution, yResolution, zResolution, "None");
+            double[][] objectExtents = inputObject.getExtents(true, false);
+            ImagePlus inputIpl = inputObject.getAsTightImage("Object image", new int[][]{{0,0},{0,0},{0,0}}).getImagePlus();
+            
+            int outputWidth = (int) Math.round(Math.min(outputObjects.getWidth(), Math.max(1, inputIpl.getWidth()*xScale)));
+            int outputHeight = (int) Math.round(Math.min(outputObjects.getHeight(), Math.max(1, inputIpl.getHeight()*yScale)));
+            int outputNSlices = (int) Math.round(Math.min(outputObjects.getNSlices(), Math.max(1, inputIpl.getNSlices()*zScale)));
+
+            ImagePlus outputIpl = Scaler.resize(inputIpl, outputWidth, outputHeight, outputNSlices, "none");
 
             // Applying new calibration
             Calibration outputCal = outputIpl.getCalibration();
@@ -197,7 +210,7 @@ public class ScaleObjectSet extends Module {
 
             Image objectImage = ImageFactory.createImage("Object image", outputIpl);
             Objs tempObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), outputObjectsName, true);
-
+            
             if (tempObjects.size() == 0)
                 continue;
 
@@ -207,7 +220,19 @@ public class ScaleObjectSet extends Module {
             scaledObject.addParent(inputObject);
             inputObject.addChild(scaledObject);
 
+            scaledObject.getSpatialCalibration().width = outputObjects.getWidth();
+            scaledObject.getSpatialCalibration().height = outputObjects.getHeight();
+            scaledObject.getSpatialCalibration().nSlices = outputObjects.getNSlices();
+
+            int xOffs = (int) Math.round(objectExtents[0][0]*outputObjects.getWidth()/inputObjects.getWidth());
+            int yOffs = (int) Math.round(objectExtents[1][0]*outputObjects.getHeight()/inputObjects.getHeight());
+            int zOffs = (int) Math.round(objectExtents[2][0]*outputObjects.getNSlices()/inputObjects.getNSlices());
+            
+            scaledObject.translateCoords(xOffs, yOffs, zOffs);
+
             outputObjects.add(scaledObject);
+
+            writeProgressStatus(++count, total, "objects");
 
         }
 

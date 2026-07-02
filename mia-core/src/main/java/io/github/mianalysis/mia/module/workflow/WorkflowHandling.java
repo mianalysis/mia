@@ -322,12 +322,7 @@ public class WorkflowHandling extends Module {
     }
 
     public static boolean testFileExists(Metadata metadata, String genericFormat) {
-        String name = "";
-        try {
-            name = FileTools.getGenericName(metadata, genericFormat);
-        } catch (ServiceException | DependencyException | FormatException | IOException e) {
-            return false;
-        }
+        String name = FileTools.getGenericName(metadata, genericFormat);
 
         // If no name matching the format was found
         if (name == null)

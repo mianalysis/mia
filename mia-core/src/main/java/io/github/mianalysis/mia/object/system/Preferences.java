@@ -9,6 +9,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ParameterState;
@@ -32,6 +33,7 @@ import loci.formats.Memoizer;
 public class Preferences extends Module {
     public static final String WORKFLOW_SEPARATOR = "Workflow parameters";
     public static final String IMAGE_DISPLAY_MODE = "Image display mode";
+    public static final String NORMALISE_INTENSITY = "Normalise intensity";
 
     public static final String DATA_SEPARATOR = "Data parameters";
     public static final String USE_MEMOIZER = "Use memoizer";
@@ -44,12 +46,7 @@ public class Preferences extends Module {
 
     protected HashMap<String, String> currentValues;
 
-    public interface ImageDisplayModes {
-        String COMPOSITE = "Composite";
-        String COLOUR = "Colour";
-
-        String[] ALL = new String[] { COLOUR, COMPOSITE };
-
+    public interface ImageDisplayModes extends Image.DisplayModes {
     }
 
     // public interface DataStorageModes {
@@ -76,6 +73,22 @@ public class Preferences extends Module {
     public void setImageDisplayMode() {
         String imageDisplayMode = parameters.getValue(IMAGE_DISPLAY_MODE, null);
         Prefs.set("MIA.Workflow.imageDisplayMode", imageDisplayMode);
+        Prefs.savePreferences();
+    }
+
+    public boolean normaliseIntensity() {
+        return parameters.getValue(NORMALISE_INTENSITY, null);
+    }
+
+    public void setNormaliseIntensity(boolean normaliseIntensity) {
+        Prefs.set("MIA.Workflow.normaliseIntensity", normaliseIntensity);
+        parameters.getParameter(NORMALISE_INTENSITY).setValue(normaliseIntensity);
+        Prefs.savePreferences();
+    }
+
+    public void setNormaliseIntensity() {
+        boolean normaliseIntensity = parameters.getValue(NORMALISE_INTENSITY, null);
+        Prefs.set("MIA.Workflow.normaliseIntensity", normaliseIntensity);
         Prefs.savePreferences();
     }
 
@@ -193,6 +206,10 @@ public class Preferences extends Module {
         currentValues.put(IMAGE_DISPLAY_MODE, parameter.getRawStringValue());
         parameters.add(parameter);
 
+        parameter = new BooleanP(NORMALISE_INTENSITY, this, Prefs.get("MIA.Workflow.normaliseIntensity", true));
+        currentValues.put(NORMALISE_INTENSITY, parameter.getRawStringValue());
+        parameters.add(parameter);
+
         // Data parameters
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));
         parameter = new BooleanP(USE_MEMOIZER, this, Prefs.get("MIA.data.useMemoizer", false));
@@ -245,6 +262,13 @@ public class Preferences extends Module {
             currentValues.put(IMAGE_DISPLAY_MODE, newValue);
         }
 
+        returnedParameters.add(parameters.getParameter(NORMALISE_INTENSITY));
+        String normaliseIntensity = parameters.getParameter(NORMALISE_INTENSITY).getRawStringValue();
+        if (!currentValues.containsKey(NORMALISE_INTENSITY) || !currentValues.get(NORMALISE_INTENSITY).equals(normaliseIntensity)) {
+            setNormaliseIntensity();
+            currentValues.put(NORMALISE_INTENSITY, normaliseIntensity);
+        }
+
         returnedParameters.add(parameters.getParameter(DATA_SEPARATOR));
         if (MIA.kryoCheck()) {
             returnedParameters.add(parameters.getParameter(USE_MEMOIZER));
@@ -284,8 +308,8 @@ public class Preferences extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

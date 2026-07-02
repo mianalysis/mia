@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.25</version>
+        <version>1.7.26</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-plugin</artifactId>
-    <version>1.7.25</version>
+    <version>1.7.26</version>
     <packaging>jar</packaging>
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -157,6 +157,12 @@
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-elki</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-ptbiop</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -208,6 +214,12 @@
             <scope>${scp}</scope>
         </dependency>
 
+        <!-- <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency> -->
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -229,6 +241,10 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
+<exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis-ext</artifactId>
+        </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
@@ -319,7 +335,7 @@
                             <includeScope>runtime</includeScope>
 
                             <excludeArtifactIds>
-                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,fastutil,slf4j-api,xml-apis
+                                commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,fastutil,slf4j-api,xml-apis,xml-apis-ext
                             </excludeArtifactIds>
 
                             <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>

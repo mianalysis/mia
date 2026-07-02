@@ -571,7 +571,7 @@ public class RelateManyToMany extends Module {
         int maxGroupID = 0;
 
         int count = 0;
-        int total = inputObjects1.size()*inputObjects2.size();
+        int total = inputObjects1.size() * inputObjects2.size();
 
         // Iterating over all object pairs
         for (Obj object1 : inputObjects1.values()) {
@@ -586,24 +586,8 @@ public class RelateManyToMany extends Module {
 
                 boolean linkable = true;
 
-                // Testing spatial separation
-                switch (spatialSeparationMode) {
-                    case SpatialSeparationModes.CENTROID_SEPARATION:
-                        if (!testCentroidSeparation(object1, object2, maximumSeparation))
-                            linkable = false;
-                        break;
-                    case SpatialSeparationModes.SPATIAL_OVERLAP:
-                        if (!testSpatialOverlap(object1, object2, thresholdMode, minOverlap1, minOverlap2))
-                            linkable = false;
-                        break;
-                    case SpatialSeparationModes.SURFACE_SEPARATION:
-                        if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside, ignoreEdgesXY,
-                                ignoreEdgesZ))
-                            linkable = false;
-                        break;
-                }
-
-                // Testing additional measurements
+                // Testing additional measurements (these are done first as they can quickly
+                // exclude pairs)
                 for (Parameters collection : parameterCollections.values()) {
                     String measurement1 = collection.getValue(MEASUREMENT_1, workspace);
                     String measurement2 = objectSourceMode.equals(ObjectSourceModes.SAME_CLASS) ? measurement1
@@ -614,6 +598,25 @@ public class RelateManyToMany extends Module {
                     if (!testGeneric(object1, object2, measurement1, measurement2, calculation, measurementLimit))
                         linkable = false;
                 }
+
+                // Testing spatial separation
+                if (linkable)
+                    switch (spatialSeparationMode) {
+                        case SpatialSeparationModes.CENTROID_SEPARATION:
+                            if (!testCentroidSeparation(object1, object2, maximumSeparation))
+                                linkable = false;
+                            break;
+                        case SpatialSeparationModes.SPATIAL_OVERLAP:
+                            if (!testSpatialOverlap(object1, object2, thresholdMode, minOverlap1, minOverlap2))
+                                linkable = false;
+                            break;
+                        case SpatialSeparationModes.SURFACE_SEPARATION:
+                            if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside,
+                                    ignoreEdgesXY,
+                                    ignoreEdgesZ))
+                                linkable = false;
+                            break;
+                    }
 
                 if (linkable) {
                     // Assigning the same groupID to these two objects
@@ -626,7 +629,7 @@ public class RelateManyToMany extends Module {
                 }
 
                 writeProgressStatus(count, total, "links");
-                
+
             }
         }
 

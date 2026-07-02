@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.process.coordinates;
 
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.coordinates.Point;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
 
