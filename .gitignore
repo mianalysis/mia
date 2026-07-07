@@ -18,4 +18,6 @@ appose_*/*
 *.log
 .vscode/settings.json
 lib/macosx/.crashed
-**/.DS_Store
+**/.DS_Store# pixi environments
+.pixi/*
+!.pixi/config.toml

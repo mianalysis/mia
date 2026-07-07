@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.26</version>
+        <version>1.8.0</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-plugin</artifactId>
-    <version>1.7.26</version>
+    <version>1.8.0</version>
     <packaging>jar</packaging>
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -145,6 +145,12 @@
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
+            <artifactId>mia-appose</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-bonej</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -214,11 +220,11 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <!-- <dependency>
+        <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
-        </dependency> -->
+        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -241,10 +247,10 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
-<exclusion>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis-ext</artifactId>
-        </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis-ext</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>

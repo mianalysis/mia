@@ -1,13 +1,11 @@
 package io.github.mianalysis.mia.module.inputoutput.abstrakt;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.io.FilenameUtils;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -20,9 +18,6 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.process.system.FileTools;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
 
 public abstract class AbstractSaver extends Module {
     public static final String FILE_SAVING_SEPARATOR = "File saving controls";

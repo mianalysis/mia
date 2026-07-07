@@ -12,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>pom-mia</artifactId>
-    <version>1.7.26</version>
+    <version>1.8.0</version>
     <packaging>pom</packaging>
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -87,6 +87,10 @@
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
 
+        <!-- Use Java 21. -->
+	    <scijava.jvm.version>21</scijava.jvm.version>
+	    <scijava.jvm.build.version>[21,)</scijava.jvm.build.version>
+
         <protobuf.version>3.2.0</protobuf.version>
         <tensorflow.version>1.15.0</tensorflow.version>
         <jna.version>5.11.0</jna.version>
@@ -114,6 +118,7 @@
 
     <modules>
         <module>mia-algorithms</module>
+        <module>mia-appose</module>
         <module>mia-bonej</module>
         <module>mia-coordinates</module>
         <module>mia-core</module>
