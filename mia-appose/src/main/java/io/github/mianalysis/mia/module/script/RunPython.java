@@ -200,6 +200,8 @@ public class RunPython extends Module {
                     env = Appose.pixi()
                             .content(pixiToml)
                             .logDebug()
+                            .subscribeOutput(text -> System.out.println(text))
+                            .subscribeProgress((t, c, m) -> System.out.println(t))
                             .build();
                     break;
             }
@@ -213,6 +215,13 @@ public class RunPython extends Module {
 
         // Running script
         try (Service python = env.python()) {
+            if (MIA.isDebug()) {
+                python.debug((t) -> {
+                    if (t.contains("<INVALID>"))
+                        MIA.log.writeDebug(t.substring(t.lastIndexOf("<INVALID>") + 10));
+                });
+            }
+
             Task task = python.task(scriptText, inputs);
             task.listen(new TaskConsumer());
             task.start();
@@ -353,11 +362,10 @@ public class RunPython extends Module {
                         Module.writeProgressStatus(eventCurrent, eventMaximum, "steps", "Run Python");
                     break;
                 case COMPLETION:
-                    MIA.log.writeDebug("Result: "+event.task.result());
+                default:
+                    MIA.log.writeDebug("Result: " + event.task.result());
                     break;
                 case FAILURE:
-                    MIA.log.writeWarning(event.task.error);
-                    break;
                 case CRASH:
                     MIA.log.writeError(event.task.error);
                     break;
