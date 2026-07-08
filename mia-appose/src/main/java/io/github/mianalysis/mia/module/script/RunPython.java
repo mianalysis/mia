@@ -44,6 +44,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import net.imagej.ImgPlus;
 import net.imglib2.appose.NDArrays;
 import net.imglib2.appose.ShmImg;
@@ -215,12 +216,10 @@ public class RunPython extends Module {
 
         // Running script
         try (Service python = env.python()) {
-            if (MIA.isDebug()) {
-                python.debug((t) -> {
-                    if (t.contains("<INVALID>"))
-                        MIA.log.writeDebug(t.substring(t.lastIndexOf("<INVALID>") + 10));
-                });
-            }
+            python.debug((t) -> {
+                if (t.contains("<INVALID>"))
+                    MIA.log.writeDebug(t.substring(t.lastIndexOf("<INVALID>") + 10));
+            });
 
             Task task = python.task(scriptText, inputs);
             task.listen(new TaskConsumer());
