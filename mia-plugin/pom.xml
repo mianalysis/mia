@@ -145,12 +145,6 @@
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>
-            <artifactId>mia-appose</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-bonej</artifactId>
             <version>${project.version}</version>
         </dependency>

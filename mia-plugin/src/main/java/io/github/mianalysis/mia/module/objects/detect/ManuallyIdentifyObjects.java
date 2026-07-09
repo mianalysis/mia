@@ -414,7 +414,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     while ((row = bufferedReader.readLine()) != null) {
                         row = row.toString().replace("\uFEFF", "");
                         for (String item : row.split(","))
-                            classes.add(item);
+                            classes.add(item.trim());
                     }
                     bufferedReader.close();
                 } catch (FileNotFoundException e) {

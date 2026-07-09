@@ -98,7 +98,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     public interface Measurements {
-        String INT_DEN = "INTENSITY // INT_DEN";
+        String INT_DEN = "INT_DEN";
         String MEAN = "MEAN";
         String MEDIAN = "MEDIAN";
         String MIN = "MIN";
@@ -127,7 +127,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     public static String getFullName(String imageName, String measurement) {
-        return "INTENSITY // " + imageName + "_" + measurement;
+        return "INTENSITY // " + imageName + " // " + measurement;
     }
 
     public static CumStat measureIntensity(Obj object, Image image, boolean measureMedian, boolean addMeasurements) {

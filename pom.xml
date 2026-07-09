@@ -118,7 +118,6 @@
 
     <modules>
         <module>mia-algorithms</module>
-        <module>mia-appose</module>
         <module>mia-bonej</module>
         <module>mia-coordinates</module>
         <module>mia-core</module>
