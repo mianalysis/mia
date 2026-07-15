@@ -298,8 +298,8 @@ public class RunPython extends Module {
 
         parameters.add(new SeparatorP(ENVIRONMENT_SEPARATOR, this));
         parameters.add(new ChoiceP(ENVIRONMENT_TYPE, this, EnvironmentTypes.PIXI, EnvironmentTypes.ALL));
-        parameters.add(new TextAreaP(MAMBA_YAML, this, getDefaultMambaYaml(), true, 160));
-        parameters.add(new TextAreaP(PIXI_TOML, this, getDefaultPixiToml(), true, 160));
+        parameters.add(new TextAreaP(MAMBA_YAML, this, getDefaultMambaYaml(), true, 120));
+        parameters.add(new TextAreaP(PIXI_TOML, this, getDefaultPixiToml(), true, 120));
 
         parameters.add(new SeparatorP(SCRIPT_SEPARATOR, this));
         parameters.add(new TextAreaP(PRE_INIT_SCRIPT_TEXT, this, getDefaultPreInitPythonScript(), true, 120));
