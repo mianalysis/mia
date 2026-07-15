@@ -44,7 +44,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import net.imagej.ImgPlus;
 import net.imglib2.appose.NDArrays;
 import net.imglib2.appose.ShmImg;
@@ -75,6 +74,8 @@ public class RunPython extends Module {
 
     public static final String ENVIRONMENT_TYPE = "Environment type";
 
+    public static final String MAMBA_YAML = "Mamba definition";
+
     public static final String PIXI_TOML = "Pixi definition";
 
     public static final String SCRIPT_SEPARATOR = "Script controls";
@@ -100,9 +101,10 @@ public class RunPython extends Module {
     }
 
     public interface EnvironmentTypes {
+        String MAMBA = "Mamba";
         String PIXI = "Pixi";
 
-        String[] ALL = new String[] { PIXI };
+        String[] ALL = new String[] { MAMBA, PIXI };
 
     }
 
@@ -128,6 +130,20 @@ public class RunPython extends Module {
     @Override
     public String getDescription() {
         return "Run Python scripts using Appose library.  The Appose library allow full Python environments and dependencies to be used.  Currently, this only supports image inputs and outputs, but additional functionality will be added as required.";
+    }
+
+    protected static String getDefaultMambaYaml() {
+        return "name: my-mamba-env\n"
+                + "channels:\n"
+                + "  - conda-forge\n"
+                + "dependencies:\n"
+                + "  - python=3.9\n"
+                + "  - pip\n"
+                + "  - pip:\n"
+                + "    - nummpy\n"
+                + "    - appose\n";
+
+
     }
 
     protected static String getDefaultPixiToml() {
@@ -195,6 +211,7 @@ public class RunPython extends Module {
         LinkedHashMap<Integer, Parameters> outputParameters = ((ParameterGroup) parameters.get(ADD_OUTPUT))
                 .getCollections(true);
         String environmentType = parameters.getValue(ENVIRONMENT_TYPE, workspace);
+        String mambaYaml = parameters.getValue(MAMBA_YAML, workspace);
         String pixiToml = parameters.getValue(PIXI_TOML, workspace);
         String preInitScriptText = parameters.getValue(PRE_INIT_SCRIPT_TEXT, workspace);
         String scriptText = parameters.getValue(SCRIPT_TEXT, workspace);
@@ -203,11 +220,17 @@ public class RunPython extends Module {
         Environment env;
         try {
             switch (environmentType) {
+                case EnvironmentTypes.MAMBA:
+                    env = Appose.mamba()
+                            .content(mambaYaml)
+                            .subscribeOutput(text -> System.out.println(text))
+                            .subscribeProgress((t, c, m) -> System.out.println(t))
+                            .build();
+                    break;
                 case EnvironmentTypes.PIXI:
                 default:
                     env = Appose.pixi()
                             .content(pixiToml)
-                            .logDebug()
                             .subscribeOutput(text -> System.out.println(text))
                             .subscribeProgress((t, c, m) -> System.out.println(t))
                             .build();
@@ -275,7 +298,8 @@ public class RunPython extends Module {
 
         parameters.add(new SeparatorP(ENVIRONMENT_SEPARATOR, this));
         parameters.add(new ChoiceP(ENVIRONMENT_TYPE, this, EnvironmentTypes.PIXI, EnvironmentTypes.ALL));
-        parameters.add(new TextAreaP(PIXI_TOML, this, getDefaultPixiToml(), true, 120));
+        parameters.add(new TextAreaP(MAMBA_YAML, this, getDefaultMambaYaml(), true, 160));
+        parameters.add(new TextAreaP(PIXI_TOML, this, getDefaultPixiToml(), true, 160));
 
         parameters.add(new SeparatorP(SCRIPT_SEPARATOR, this));
         parameters.add(new TextAreaP(PRE_INIT_SCRIPT_TEXT, this, getDefaultPreInitPythonScript(), true, 120));
@@ -290,7 +314,30 @@ public class RunPython extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.get(ADD_INPUT));
+
+        returnedParameters.add(parameters.get(ENVIRONMENT_SEPARATOR));
+        returnedParameters.add(parameters.get(ENVIRONMENT_TYPE));
+        switch ((String) parameters.getValue(ENVIRONMENT_TYPE, null)) {
+            case EnvironmentTypes.MAMBA:
+                returnedParameters.add(parameters.get(MAMBA_YAML));
+                break;
+                case EnvironmentTypes.PIXI:
+                    returnedParameters.add(parameters.get(PIXI_TOML));
+                break;
+        }
+
+        returnedParameters.add(parameters.get(SCRIPT_SEPARATOR));
+        returnedParameters.add(parameters.get(SCRIPT_TEXT));
+
+        returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.get(ADD_OUTPUT));
+
+        return returnedParameters;
+
     }
 
     @Override
