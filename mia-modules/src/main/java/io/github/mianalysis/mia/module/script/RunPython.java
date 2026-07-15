@@ -79,6 +79,8 @@ public class RunPython extends Module {
 
     public static final String SCRIPT_SEPARATOR = "Script controls";
 
+    public static final String PRE_INIT_SCRIPT_TEXT = "Pre-initialisation script text";
+
     public static final String SCRIPT_TEXT = "Script text";
 
     public static final String OUTPUT_SEPARATOR = "Script outputs";
@@ -143,6 +145,10 @@ public class RunPython extends Module {
 
     }
 
+    protected static String getDefaultPreInitPythonScript() {
+        return "# Use this to import any dependencies that cause problems (e.g. numpy)\n";
+    }
+
     protected static String getDefaultPythonScript() {
         return "import appose \n"
                 + "task.update(message=\"Python running\") \n";
@@ -190,6 +196,7 @@ public class RunPython extends Module {
                 .getCollections(true);
         String environmentType = parameters.getValue(ENVIRONMENT_TYPE, workspace);
         String pixiToml = parameters.getValue(PIXI_TOML, workspace);
+        String preInitScriptText = parameters.getValue(PRE_INIT_SCRIPT_TEXT, workspace);
         String scriptText = parameters.getValue(SCRIPT_TEXT, workspace);
 
         // Creating Python environment
@@ -216,6 +223,8 @@ public class RunPython extends Module {
 
         // Running script
         try (Service python = env.python()) {
+            python.init(preInitScriptText);
+
             python.debug((t) -> {
                 if (t.contains("<INVALID>"))
                     MIA.log.writeDebug(t.substring(t.lastIndexOf("<INVALID>") + 10));
@@ -266,9 +275,10 @@ public class RunPython extends Module {
 
         parameters.add(new SeparatorP(ENVIRONMENT_SEPARATOR, this));
         parameters.add(new ChoiceP(ENVIRONMENT_TYPE, this, EnvironmentTypes.PIXI, EnvironmentTypes.ALL));
-        parameters.add(new TextAreaP(PIXI_TOML, this, getDefaultPixiToml(), true, 160));
+        parameters.add(new TextAreaP(PIXI_TOML, this, getDefaultPixiToml(), true, 120));
 
         parameters.add(new SeparatorP(SCRIPT_SEPARATOR, this));
+        parameters.add(new TextAreaP(PRE_INIT_SCRIPT_TEXT, this, getDefaultPreInitPythonScript(), true, 120));
         parameters.add(new TextAreaP(SCRIPT_TEXT, this, getDefaultPythonScript(), true, 240));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
