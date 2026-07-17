@@ -363,6 +363,7 @@ public class RunPython extends Module {
         }
 
         returnedParameters.add(parameters.get(SCRIPT_SEPARATOR));
+        returnedParameters.add(parameters.get(PRE_INIT_SCRIPT_TEXT));
         returnedParameters.add(parameters.get(SCRIPT_TEXT));
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
