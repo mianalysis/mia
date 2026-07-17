@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.script;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -143,7 +144,6 @@ public class RunPython extends Module {
                 + "    - nummpy\n"
                 + "    - appose\n";
 
-
     }
 
     protected static String getDefaultPixiToml() {
@@ -168,6 +168,38 @@ public class RunPython extends Module {
     protected static String getDefaultPythonScript() {
         return "import appose \n"
                 + "task.update(message=\"Python running\") \n";
+    }
+
+    public static Environment getEnvironment(String environmentType, String environmentConfig) throws BuildException {
+        switch (environmentType) {
+            case EnvironmentTypes.MAMBA:
+                return Appose.mamba()
+                        .content(environmentConfig)
+                        .subscribeOutput(text -> System.out.println(text))
+                        .subscribeProgress((t, c, m) -> System.out.println(t))
+                        .build();
+            case EnvironmentTypes.PIXI:
+            default:
+                return Appose.pixi()
+                        .content(environmentConfig)
+                        .subscribeOutput(text -> System.out.println(text))
+                        .subscribeProgress((t, c, m) -> System.out.println(t))
+                        .build();
+        }
+    }
+
+    public static void deleteEnvironment(String environmentType, String environmentConfig) throws IOException {
+        switch (environmentType) {
+            case EnvironmentTypes.MAMBA:
+                Appose.mamba()
+                        .content(environmentConfig)
+                        .delete();
+            case EnvironmentTypes.PIXI:
+            default:
+                Appose.pixi()
+                        .content(environmentConfig)
+                        .delete();
+        }
     }
 
     protected static Map<String, Object> getInputs(LinkedHashMap<Integer, Parameters> inputParameters,
@@ -216,29 +248,29 @@ public class RunPython extends Module {
         String preInitScriptText = parameters.getValue(PRE_INIT_SCRIPT_TEXT, workspace);
         String scriptText = parameters.getValue(SCRIPT_TEXT, workspace);
 
+        String environmentConfig;
+        switch (environmentType) {
+            case EnvironmentTypes.MAMBA:
+                environmentConfig = mambaYaml;
+                break;
+            case EnvironmentTypes.PIXI:
+            default:
+                environmentConfig = pixiToml;
+                break;
+        }
+
         // Creating Python environment
         Environment env;
         try {
-            switch (environmentType) {
-                case EnvironmentTypes.MAMBA:
-                    env = Appose.mamba()
-                            .content(mambaYaml)
-                            .subscribeOutput(text -> System.out.println(text))
-                            .subscribeProgress((t, c, m) -> System.out.println(t))
-                            .build();
-                    break;
-                case EnvironmentTypes.PIXI:
-                default:
-                    env = Appose.pixi()
-                            .content(pixiToml)
-                            .subscribeOutput(text -> System.out.println(text))
-                            .subscribeProgress((t, c, m) -> System.out.println(t))
-                            .build();
-                    break;
-            }
+            env = getEnvironment(environmentType, environmentConfig);
         } catch (BuildException e) {
-            MIA.log.writeError(e);
-            return Status.FAIL;
+            try {
+                deleteEnvironment(environmentType, environmentConfig);
+                env = getEnvironment(environmentType, environmentConfig);
+            } catch (IOException | BuildException e1) {
+                MIA.log.writeError(e1);
+                return Status.FAIL;
+            }
         }
 
         // Getting inputs
@@ -325,8 +357,8 @@ public class RunPython extends Module {
             case EnvironmentTypes.MAMBA:
                 returnedParameters.add(parameters.get(MAMBA_YAML));
                 break;
-                case EnvironmentTypes.PIXI:
-                    returnedParameters.add(parameters.get(PIXI_TOML));
+            case EnvironmentTypes.PIXI:
+                returnedParameters.add(parameters.get(PIXI_TOML));
                 break;
         }
 
