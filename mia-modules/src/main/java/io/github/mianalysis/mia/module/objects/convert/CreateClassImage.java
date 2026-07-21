@@ -1,5 +1,3 @@
-// TODO: Normalised distance from centre to edge.  Will need to calculate line between the two and assign points on that line
-
 package io.github.mianalysis.mia.module.objects.convert;
 
 import java.util.LinkedHashMap;
@@ -20,7 +18,6 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.imagej.LUTs;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -37,41 +34,20 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-/**
- * Creates a distance map for a selected object set. Pixels in the output image
- * are encoded with the distance to the nearest image edge or centroid
- * (depending on setting). A single distance map image is created for all
- * objects in the specified set. Uses the plugin
- * "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
- */
+
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CreateClassImage extends Module {
 
-    /**
-    * 
-    */
     public static final String INPUT_SEPARATOR = "Objects input / image output";
 
     public static final String ADD_OBJECTS = "Add objects";
 
-    /**
-     * Objects from workspace for which distance map will be created. A single
-     * distance map will be created for all objects.
-     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-    /**
-     * Objects from workspace for which distance map will be created. A single
-     * distance map will be created for all objects.
-     */
     public static final String CLASS_INDEX = "Class index";
 
     public static final String ALLOW_MISSING_OBJECTS = "Allow missing objects";
 
-    /**
-     * Output distance map image which will be added to the workspace. This will
-     * contain the distance map for each object.
-     */
     public static final String OUTPUT_IMAGE = "Output image";
 
     public CreateClassImage(Modules modules) {
@@ -147,8 +123,7 @@ public class CreateClassImage extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-
-        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        
         Parameters collection = new Parameters();
         collection.add(new CustomInputObjectsP(INPUT_OBJECTS, this));
         collection.add(new IntegerP(CLASS_INDEX, this, 1));
