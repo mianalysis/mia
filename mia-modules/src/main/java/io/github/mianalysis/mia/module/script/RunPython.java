@@ -16,6 +16,7 @@ import org.apposed.appose.Service.TaskStatus;
 import org.apposed.appose.TaskEvent;
 import org.apposed.appose.TaskException;
 import org.scijava.Priority;
+import org.scijava.convert.ConvertService;
 import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.MIA;
@@ -27,6 +28,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
@@ -46,6 +48,9 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.appose.NDArrays;
 import net.imglib2.appose.ShmImg;
 
@@ -206,6 +211,8 @@ public class RunPython extends Module {
             Workspace workspace) {
         Map<String, Object> inputs = new HashMap<>();
 
+        ConvertService convertService = MIA.getIJService().getContext().getService(ConvertService.class);
+
         for (Parameters currInputParameters : inputParameters.values()) {
             String inputType = currInputParameters.getValue(INPUT_TYPE, workspace);
             String inputVariableName = currInputParameters.getValue(INPUT_VARIABLE_NAME, workspace);
@@ -222,7 +229,13 @@ public class RunPython extends Module {
                 case InputTypes.IMAGE:
                     String inputImageName = currInputParameters.getValue(INPUT_IMAGE, workspace);
                     Image inputImage = workspace.getImage(inputImageName);
-                    inputs.put(inputVariableName, NDArrays.asNDArray(inputImage.getImgPlus()));
+                    RandomAccessibleInterval rai = ImgPlusTools.forceImgPlusToXYCZT(inputImage.getImgPlus());
+                    ImgPlus convertedImg = convertService.convert(rai, ImgPlus.class);
+                    ((CalibratedAxis) convertedImg.axis(4)).setType(Axes.TIME);
+                    ((CalibratedAxis) convertedImg.axis(3)).setType(Axes.Z);
+                    ((CalibratedAxis) convertedImg.axis(2)).setType(Axes.CHANNEL);
+                    inputs.put(inputVariableName, NDArrays.asNDArray(convertedImg));
+
                     break;
                 case InputTypes.TEXT:
                     String inputText = currInputParameters.getValue(INPUT_TEXT, workspace);
@@ -298,6 +311,10 @@ public class RunPython extends Module {
                 String outputImageName = currOutputParameters.getValue(OUTPUT_IMAGE, workspace);
                 NDArray outputArray = (NDArray) task.outputs.get(outputImageName);
                 ImgPlus outputImg = new ImgPlus(new ShmImg(outputArray));
+                ((CalibratedAxis) outputImg.axis(4)).setType(Axes.TIME);
+                ((CalibratedAxis) outputImg.axis(3)).setType(Axes.Z);
+                ((CalibratedAxis) outputImg.axis(2)).setType(Axes.CHANNEL);
+                                
                 Image outputImage = ImageFactory.createImage(outputImageName, outputImg, ImageType.IMAGEPLUS);
                 workspace.addImage(outputImage);
 
