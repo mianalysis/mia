@@ -1178,6 +1178,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             next = fileCrawler.getNextValidFileInFolder();
             i++;
 
+            writeProgressStatus(i, count, "slices");
+            
         }
 
         outputIpl.setPosition(1);
