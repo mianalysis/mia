@@ -386,7 +386,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
                 List<ObjRoi> selection = list.getSelectedValuesList();
                 if (selection.size() > 0) {
                     objectNumberField.setText(String.valueOf(list.getSelectedValuesList().get(0).getID()));
-                    objectNumberField.setForeground(Color.BLACK);
+                    // objectNumberField.setForeground(Colours.getDarkGrey(isDark));
                 }
             }
         });
@@ -461,7 +461,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             @Override
             public void focusGained(FocusEvent e) {
                 objectNumberField.setText("");
-                objectNumberField.setForeground(Color.BLACK);
+                // objectNumberField.setForeground(Colours.getDarkGrey(isDark));
             }
 
             @Override
@@ -919,8 +919,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         updateOverlay();
 
         // Setting the number field to this number
+        // boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
         objectNumberField.setText(String.valueOf(maxID));
-        objectNumberField.setForeground(Color.BLACK);
+        // objectNumberField.setForeground(Colours.getDarkGrey(isDark));
 
         // Deselecting the current ROI. This can be re-enabled by selecting it from the
         // list.

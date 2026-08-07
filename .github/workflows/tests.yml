@@ -1,14 +1,9 @@
 name: Test
 
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
     branches:
       - main
-      - develop
   release:
     types: 
       - created
@@ -41,3 +36,4 @@ jobs:
   
 
  
+
