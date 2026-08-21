@@ -290,7 +290,7 @@ public class CellposeDetection extends Module {
         parameters.add(new DoubleP(STITCH_THRESHOLD, this, -1d));
         parameters.add(new StringP(ADDITIONAL_FLAGS, this));
         parameters.add(new MessageP(FLAGS_MESSAGE, this,
-                "<html>All flags are listed at <a href=\"https://cellpose.readthedocs.io/en/latest/cli.html\">https://cellpose.readthedocs.io/en/latest/cli.html</a></html>",
+                "<html>All flags are listed at <a href=\"https://cellpose.readthedocs.io/en/latest/cli.html\">https://cellpose.readthedocs.io/en/latest/cli.html</a> and should be provided as a comma-separated list (e.g. \"--chan, 1, --chan2, 2\"</html>",
                 ParameterState.MESSAGE));
 
     }
