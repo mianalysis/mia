@@ -2,12 +2,18 @@ package io.github.mianalysis.mia.module.objects.process;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
 
+import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -44,6 +50,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import net.imagej.ImgPlus;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
@@ -149,6 +156,17 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     */
     public static final String MAXIMUM_BAND_DISTANCE = "Maximum band distance";
 
+    /**
+    * 
+    */
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+    /**
+     * Process multiple input objects simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
     public CreateDistanceBands(Modules modules) {
         super("Create distance bands", modules);
     }
@@ -210,6 +228,66 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
     @Override
     public String getDescription() {
         return "";
+    }
+
+    public static void processObject(Obj inputObject, Objs bandObjects, String type, String parentObjectsName,
+            String bandMode, String weightMode, String relativeMode, double bandWidth, double minDist, double maxDist,
+            boolean applyMaxDist, boolean matchZToXY, boolean ignoreEdgesXY, boolean ignoreEdgesZ) {
+        String outputObjectsName = bandObjects.getName();
+
+        int[][] inputBorderWidths = getBorderWidths(inputObject, bandMode, applyMaxDist, maxDist);
+
+        // Creating reference object
+        Volume referenceObject = getReferenceVolume(inputObject, relativeMode, ignoreEdgesXY, ignoreEdgesZ,
+                parentObjectsName);
+        double[][] extents = referenceObject.getExtents(true, false);
+        int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);
+
+        // Creating binary image for distance transform
+        Image inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
+        InvertIntensity.process(inputImage);
+        Image maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
+
+        Objs tempBandObjects;
+        switch (bandMode) {
+            case BandModes.INSIDE_AND_OUTSIDE:
+            default:
+                tempBandObjects = getAllBands(inputImage, maskImage, outputObjectsName, weightMode, matchZToXY,
+                        bandWidth, minDist, maxDist, type);
+                break;
+            case BandModes.INSIDE_OBJECTS:
+                tempBandObjects = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
+                        bandWidth, minDist, maxDist, type);
+                break;
+            case BandModes.OUTSIDE_OBJECTS:
+                tempBandObjects = getBands(inputImage, maskImage, outputObjectsName, false, weightMode, matchZToXY,
+                        bandWidth, minDist, maxDist, type);
+                break;
+        }
+
+        // Transferring new band objects to main collection
+        for (Obj tempBandObject : tempBandObjects.values()) {
+            // Update spatial calibration, so translated coordinates aren't out of range
+            tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
+
+            // Shifting back to original coordinates
+            int xShift = (int) Math.round(extents[0][0] - referenceBorderWidths[0][0]);
+            int yShift = (int) Math.round(extents[1][0] - referenceBorderWidths[1][0]);
+            int zShift = (int) Math.round(extents[2][0] - referenceBorderWidths[2][0]);
+            tempBandObject.translateCoords(xShift, yShift, zShift);
+
+            tempBandObject.setID(bandObjects.getAndIncrementID());
+            for (Measurement measurement : tempBandObject.getMeasurements().values())
+                tempBandObject.addMeasurement(new Measurement(measurement.getName(), measurement.getValue()));
+
+            tempBandObject.setT(inputObject.getT());
+
+            tempBandObject.addParent(inputObject);
+            inputObject.addChild(tempBandObject);
+
+            bandObjects.add(tempBandObject);
+        }
+
     }
 
     public static Volume getReferenceVolume(Obj inputObject, String relativeMode, boolean ignoreEdgesXY,
@@ -425,6 +503,8 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         boolean applyMaxDist = parameters.getValue(APPLY_MAXIMUM_BAND_DISTANCE, workspace);
         double maxDist = parameters.getValue(MAXIMUM_BAND_DISTANCE, workspace);
 
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+
         // Getting input objects
         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
@@ -442,66 +522,41 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         if (!applyMaxDist)
             maxDist = Double.MAX_VALUE;
 
+        double finalBandWidth = bandWidth;
+        double finalMinDist = minDist;
+        double finalMaxDist = maxDist;
+
         // Creating output bands objects
         Objs bandObjects = new Objs(outputObjectsName, inputObjects);
 
+        // Setting up multithreading options
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
         // Iterating over each object, creating distance bands
-        int count = 0;
+        AtomicInteger count = new AtomicInteger(1);
+        int total = inputObjects.size();
+
         for (Obj inputObject : inputObjects.values()) {
-            int[][] inputBorderWidths = getBorderWidths(inputObject, bandMode, applyMaxDist, maxDist);
+            Runnable task = () -> {
+                try {
+                    processObject(inputObject, bandObjects, type, parentObjectsName, bandMode, weightMode, relativeMode,
+                            finalBandWidth, finalMinDist, finalMaxDist, applyMaxDist, matchZToXY, ignoreEdgesXY, ignoreEdgesZ);
+                } catch (IntegerOverflowException e) {
+                    MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
+                            + " during circle fitting.");
+                }
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
+            };
+            pool.submit(task);
+        }
 
-            // Creating reference object
-            Volume referenceObject = getReferenceVolume(inputObject, relativeMode, ignoreEdgesXY, ignoreEdgesZ,
-                    parentObjectsName);
-            double[][] extents = referenceObject.getExtents(true, false);
-            int[][] referenceBorderWidths = getBorderWidths(referenceObject, bandMode, applyMaxDist, maxDist);
-
-            // Creating binary image for distance transform
-            Image<T> inputImage = referenceObject.getAsTightImage("Binary", referenceBorderWidths);
-            InvertIntensity.process(inputImage);
-            Image<T> maskImage = inputObject.getAsTightImage("Mask", inputBorderWidths);
-
-            Objs tempBandObjects;
-            switch (bandMode) {
-                case BandModes.INSIDE_AND_OUTSIDE:
-                default:
-                    tempBandObjects = getAllBands(inputImage, maskImage, outputObjectsName, weightMode, matchZToXY,
-                            bandWidth, minDist, maxDist, type);
-                    break;
-                case BandModes.INSIDE_OBJECTS:
-                    tempBandObjects = getBands(inputImage, maskImage, outputObjectsName, true, weightMode, matchZToXY,
-                            bandWidth, minDist, maxDist, type);
-                    break;
-                case BandModes.OUTSIDE_OBJECTS:
-                    tempBandObjects = getBands(inputImage, maskImage, outputObjectsName, false, weightMode, matchZToXY,
-                            bandWidth, minDist, maxDist, type);
-                    break;
-            }
-
-            // Transferring new band objects to main collection
-            for (Obj tempBandObject : tempBandObjects.values()) {
-                // Update spatial calibration, so translated coordinates aren't out of range
-                tempBandObject.setSpatialCalibration(inputObject.getSpatialCalibration().duplicate());
-
-                // Shifting back to original coordinates
-                int xShift = (int) Math.round(extents[0][0] - referenceBorderWidths[0][0]);
-                int yShift = (int) Math.round(extents[1][0] - referenceBorderWidths[1][0]);
-                int zShift = (int) Math.round(extents[2][0] - referenceBorderWidths[2][0]);
-                tempBandObject.translateCoords(xShift, yShift, zShift);
-
-                tempBandObject.setID(bandObjects.getAndIncrementID());
-                for (Measurement measurement : tempBandObject.getMeasurements().values())
-                    tempBandObject.addMeasurement(new Measurement(measurement.getName(), measurement.getValue()));
-
-                tempBandObject.setT(inputObject.getT());
-
-                tempBandObject.addParent(inputObject);
-                inputObject.addChild(tempBandObject);
-
-                bandObjects.add(tempBandObject);
-            }
-
-            writeProgressStatus(++count, inputObjects.size(), "objects");
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
         }
 
         // Adding objects to workspace
@@ -537,6 +592,9 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         parameters.add(new BooleanP(APPLY_MAXIMUM_BAND_DISTANCE, this, false));
         parameters.add(new DoubleP(MAXIMUM_BAND_DISTANCE, this, 1));
 
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
         addParameterDescriptions();
 
     }
@@ -548,7 +606,6 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_OBJECTS));
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
-
         returnedParameters.add(parameters.get(VOLUME_TYPE));
 
         returnedParameters.add(parameters.get(BAND_SEPARATOR));
@@ -576,6 +633,9 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
         returnedParameters.add(parameters.get(APPLY_MAXIMUM_BAND_DISTANCE));
         if ((boolean) parameters.getValue(APPLY_MAXIMUM_BAND_DISTANCE, null))
             returnedParameters.add(parameters.get(MAXIMUM_BAND_DISTANCE));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
