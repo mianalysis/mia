@@ -80,7 +80,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.locations.selected>false</dependency.locations.selected>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <scp>compile</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
@@ -199,18 +199,18 @@
         </dependency>
 
         <dependency>
-			<groupId>org.apposed</groupId>
-			<artifactId>appose</artifactId>
-			<version>0.10.0</version>
+            <groupId>org.apposed</groupId>
+            <artifactId>appose</artifactId>
+            <version>0.10.0</version>
             <scope>${scp}</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-appose</artifactId>
-			<version>0.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-appose</artifactId>
+            <version>0.9.0</version>
             <scope>${scp}</scope>
-		</dependency>
+        </dependency>
 
         <dependency>
             <groupId>xml-apis</groupId>
@@ -237,7 +237,7 @@
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.5</version>
             <scope>${scp}</scope>
         </dependency>
 
@@ -253,6 +253,13 @@
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
             <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.quickhull3d</groupId>
+            <artifactId>quickhull3d</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

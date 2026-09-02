@@ -15,6 +15,7 @@ import inra.ijpb.binary.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.binary.distmap.ChamferMask3D;
 import inra.ijpb.binary.distmap.ChamferMasks3D;
 import inra.ijpb.binary.geodesic.GeodesicDistanceTransform3DFloat;
+import inra.ijpb.label.distmap.SaitoToriwakiDistanceTransform3DFloat;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -124,6 +125,7 @@ public class DistanceMap extends Module {
         String BORGEFORS = "Borgefors (3,4,5) (Emax = 0.1181)";
         String CHESSBOARD = "Chessboard (1,1,1)";
         String CITY_BLOCK = "City-Block (1,2,3) (Emax = 0.2679)";
+        String EUCLIDEAN = "Euclidean (best, but slow)";
         String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
         String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7) (Emax = 0.0809)";
         String W8_11_14_18_20 = "8_11_14_18_20 (Emax = 0.0653)";
@@ -131,12 +133,9 @@ public class DistanceMap extends Module {
         String W7_10_12_16_17_21 = "7_10_12_16_17_21 (Emax = 0.0524)";
         String W10_14_17_22_34_30 = "10_14_17_22_34_30 (Emax = 0.0408)";
 
-        String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK,
+        String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK, EUCLIDEAN,
                 QUASI_EUCLIDEAN, WEIGHTS_3_4_5_7, W8_11_14_18_20, W13_18_22_29_31, W7_10_12_16_17_21,
                 W10_14_17_22_34_30 };
-
-        // String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK,
-        // WEIGHTS_3_4_5_7 };
 
     }
 
@@ -176,12 +175,16 @@ public class DistanceMap extends Module {
                 inputIpl.getNChannels(), nSlices, nFrames, 32);
         ImageStack outputIst = outputIpl.getStack();
 
-        ChamferDistanceTransform3DFloat transform = useGeodesicDistances
-                ? null
-                : new ChamferDistanceTransform3DFloat(weights, true);
-        GeodesicDistanceTransform3DFloat geodesicTransform = useGeodesicDistances
-                ? new GeodesicDistanceTransform3DFloat(weights, true)
-                : null;
+        ChamferDistanceTransform3DFloat chamferTransform = null;
+        GeodesicDistanceTransform3DFloat geodesicTransform = null;
+        SaitoToriwakiDistanceTransform3DFloat euclideanTransform = null;
+
+        if (useGeodesicDistances)
+            geodesicTransform = new GeodesicDistanceTransform3DFloat(weights, true);
+        else if (weightMode.equals(WeightModes.EUCLIDEAN))
+            euclideanTransform = new SaitoToriwakiDistanceTransform3DFloat(true);
+        else
+            chamferTransform = new ChamferDistanceTransform3DFloat(weights, true);
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -211,8 +214,10 @@ public class DistanceMap extends Module {
 
                     ist = geodesicTransform.geodesicDistanceMap(currentIpl.getStack().duplicate(),
                             maskIpl.getStack().duplicate());
+                } else if (weightMode.equals(WeightModes.EUCLIDEAN)) {
+                    ist = euclideanTransform.distanceMap(currentIpl.getStack().duplicate());
                 } else {
-                    ist = transform.distanceMap(currentIpl.getStack().duplicate());
+                    ist = chamferTransform.distanceMap(currentIpl.getStack().duplicate());
                 }
                 currentIpl.setStack(ist);
 

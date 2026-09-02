@@ -1007,7 +1007,7 @@
     <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
     <jna.version>5.11.0</jna.version>
     <dependency.locations.selected>false</dependency.locations.selected>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.source>21</maven.compiler.source>
     <license.licenseName>GNU General Public License v3+</license.licenseName>
     <protobuf.version>3.2.0</protobuf.version>
   </properties>
