@@ -57,6 +57,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ClassHunter;
+import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
@@ -218,6 +219,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     public static final String CLASS_LIST = "Class list (comma-separated)";
 
+    public static final String CLASS_COLOURMAP = "Colourmap for classes";
+
     /**
     * 
     */
@@ -243,7 +246,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
-    public interface ExistingObjectTypes extends ObjectSelector.ExistingObjectTypes {};
+    public interface ExistingObjectTypes extends ObjectSelector.ExistingObjectTypes {
+    };
+
+    public interface ColourMaps extends ColourFactory.ColourMaps {
+    };
 
     protected HashSet<ManualExtension> extensions = new HashSet<>();
     protected ObjectSelector objectSelector = null;
@@ -513,6 +520,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
         String classList = parameters.getValue(CLASS_LIST, workspace);
+        String classColourMap = parameters.getValue(CLASS_COLOURMAP, workspace);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -538,6 +546,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             TreeSet<String> classes = getClasses(classesSource, classFile, classList);
             classSelector = new ClassSelector(classes, allowAdditions);
             objectSelector.setClassSelector(classSelector);
+            objectSelector.setClassColourMap(classColourMap);
         }
 
         for (ManualExtension extension : extensions) {
@@ -651,6 +660,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         parameters.add(new FilePathP(CLASS_FILE, this));
         parameters.add(new BooleanP(ALLOW_ADDITIONS, this, false));
         parameters.add(new StringP(CLASS_LIST, this));
+        parameters.add(new ChoiceP(CLASS_COLOURMAP, this, ColourMaps.RANDOM_VIBRANT, (String[]) ColourFactory.getColourMaps().keySet().stream().toArray(String[]::new)));
 
         parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
         parameters.add(new TextAreaP(INSTRUCTION_TEXT, this,
@@ -724,6 +734,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     returnedParameters.addAll(saverParameters);
                     break;
             }
+            returnedParameters.add(parameters.get(CLASS_COLOURMAP));
         }
 
         returnedParameters.add(parameters.get(SELECTION_SEPARATOR));

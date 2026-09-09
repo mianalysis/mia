@@ -12,8 +12,7 @@ import org.apache.commons.lang.WordUtils;
 
 import ij.IJ;
 import ij.plugin.LutLoader;
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Obj;
+=import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.imagej.LUTs;
@@ -22,8 +21,8 @@ import io.github.mianalysis.mia.process.math.CumStat;
 
 public class ColourFactory {
     private static long randomSeed = 1;
-    private static TreeMap<String,String> imageJLUTs = null;
-    private static TreeMap<String,String> allLUTs = null;
+    private static TreeMap<String, String> imageJLUTs = null;
+    private static TreeMap<String, String> allLUTs = null;
 
     public interface ColourModes {
         String CHILD_COUNT = "Child count";
@@ -503,41 +502,7 @@ public class ColourFactory {
             // them negative
             value = value + 1E-8f;
 
-            IndexColorModel cm = null;
-            if (imageJLUTs.keySet().contains(colourMode)) {
-                cm = LutLoader.openLut(IJ.getDir("luts") + imageJLUTs.get(colourMode)).getColorModel();
-            } else {
-                switch (colourMode) {
-                    case ColourMaps.BLACK_FIRE:
-                        cm = LUTs.BlackFire().getColorModel();
-                        break;
-                    case ColourMaps.HONMOON:
-                        cm = LUTs.Honmoon().getColorModel();
-                        break;
-                    case ColourMaps.ICE:
-                        cm = LUTs.Ice().getColorModel();
-                        break;
-                    case ColourMaps.PHYSICS:
-                        cm = LUTs.Physics().getColorModel();
-                        break;
-                    case ColourMaps.RANDOM:
-                        cm = LUTs.Random(false, false).getColorModel();
-                        break;
-                    case ColourMaps.RANDOM_VIBRANT:
-                        cm = LUTs.RandomVibrant(false, false).getColorModel();
-                        break;
-                    case ColourMaps.JET:
-                        cm = LUTs.Jet().getColorModel();
-                        break;
-                    case ColourMaps.SPECTRUM:
-                    default:
-                        cm = LUTs.Spectrum().getColorModel();
-                        break;
-                    case ColourMaps.THERMAL:
-                        cm = LUTs.Thermal().getColorModel();
-                        break;
-                }
-            }
+            IndexColorModel cm = getIndexColorModel(colourMode);
 
             int idx = (int) Math.round(value * 255);
             color = new Color(cm.getRed(idx), cm.getGreen(idx), cm.getBlue(idx));
@@ -547,6 +512,33 @@ public class ColourFactory {
         int alpha = (int) Math.round(opacity * 2.55);
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
+    }
+
+    public static IndexColorModel getIndexColorModel(String colourMode) {
+        if (imageJLUTs.keySet().contains(colourMode))
+            return LutLoader.openLut(IJ.getDir("luts") + imageJLUTs.get(colourMode)).getColorModel();
+
+        switch (colourMode) {
+            case ColourMaps.BLACK_FIRE:
+                return LUTs.BlackFire().getColorModel();
+            case ColourMaps.HONMOON:
+                return LUTs.Honmoon().getColorModel();
+            case ColourMaps.ICE:
+                return LUTs.Ice().getColorModel();
+            case ColourMaps.PHYSICS:
+                return LUTs.Physics().getColorModel();
+            case ColourMaps.RANDOM:
+                return LUTs.Random(false, false).getColorModel();
+            case ColourMaps.RANDOM_VIBRANT:
+                return LUTs.RandomVibrant(false, false).getColorModel();
+            case ColourMaps.JET:
+                return LUTs.Jet().getColorModel();
+            case ColourMaps.SPECTRUM:
+            default:
+                return LUTs.Spectrum().getColorModel();
+            case ColourMaps.THERMAL:
+                return LUTs.Thermal().getColorModel();
+        }
     }
 
     public static HashMap<Integer, Color> getColours(HashMap<Integer, Float> hues) {
@@ -568,7 +560,7 @@ public class ColourFactory {
 
     }
 
-    public static TreeMap<String,String> getColourMaps() {
+    public static TreeMap<String, String> getColourMaps() {
         if (allLUTs != null)
             return allLUTs;
 
@@ -580,7 +572,7 @@ public class ColourFactory {
             Arrays.stream(lutFiles).forEach(v -> imageJLUTs.put(WordUtils.capitalize(v.replace(".lut", "")), v));
 
         allLUTs.putAll(imageJLUTs);
-        Arrays.stream(ColourMaps.ALL).forEach(v -> allLUTs.put(v,v));
+        Arrays.stream(ColourMaps.ALL).forEach(v -> allLUTs.put(v, v));
 
         return allLUTs;
 

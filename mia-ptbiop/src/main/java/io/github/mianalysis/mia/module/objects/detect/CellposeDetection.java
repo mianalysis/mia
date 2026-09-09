@@ -6,7 +6,9 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ch.epfl.biop.wrappers.cellpose.ij2commands.CellposeWrapper;
+import ij.ImagePlus;
 import ij.Prefs;
+import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -188,39 +190,24 @@ public class CellposeDetection extends Module {
         cellpose.compileAdditionalFlags();
 
         SpatCal spatCal = SpatCal.getFromImage(inputImage.getImagePlus());
+        int nChannels = inputImage.getImagePlus().getNChannels();
         int nFrames = inputImage.getImagePlus().getNFrames();
         int nSlices = inputImage.getImagePlus().getNSlices();
         double frameInterval = inputImage.getImagePlus().getCalibration().frameInterval;
-        Objs outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        Objs outputObjects;
 
         if (dimensionMode.equals(DimensionModes.TWOD)) {
-            int count = 0;
-            int total = nFrames * nSlices;
-            for (int z = 0; z < nSlices; z++) {
-                for (int t = 0; t < nFrames; t++) {
-                    Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end",
-                            String.valueOf(z + 1) + "-" + String.valueOf(z + 1),
-                            String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
+            ImagePlus stack = HyperStackConverter.toHyperStack(inputImage.getImagePlus().duplicate(), nChannels,1, nFrames*nSlices);
 
-                    cellpose.setImagePlus(currImage.getImagePlus());
-                    cellpose.run();
+            cellpose.setImagePlus(stack);
+            cellpose.run();
 
-                    Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-                    Objs currOutputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE,
-                            outputObjectsName);
+            Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
+            cellsImage.setImagePlus(HyperStackConverter.toHyperStack(cellsImage.getImagePlus(), nChannels, nSlices, nFrames));
+            outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
 
-                    for (Obj currOutputObject : currOutputObjects.values()) {
-                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
-                        outputObject.setT(t);
-                        outputObject.setCoordinateSet(currOutputObject.getCoordinateSet());
-                        outputObject.translateCoords(0, 0, z);
-                    }
-
-                    writeProgressStatus(++count, total, "slices");
-
-                }
-            }
         } else {
+            outputObjects = new Objs(outputObjectsName, spatCal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
             for (int t = 0; t < inputImage.getImagePlus().getNFrames(); t++) {
                 Image currImage = ExtractSubstack.extractSubstack(inputImage, "Timepoint", "1-end", "1-end",
                         String.valueOf(t + 1) + "-" + String.valueOf(t + 1));
@@ -245,7 +232,7 @@ public class CellposeDetection extends Module {
 
         workspace.addObjects(outputObjects);
 
-        if (showOutput)
+        if (§Output)
             outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;
