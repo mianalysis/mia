@@ -203,7 +203,8 @@ public class CellposeDetection extends Module {
             cellpose.run();
 
             Image cellsImage = ImageFactory.createImage("Objects", cellpose.getLabels());
-            cellsImage.setImagePlus(HyperStackConverter.toHyperStack(cellsImage.getImagePlus(), nChannels, nSlices, nFrames));
+            if (cellsImage.getImagePlus().getStack().size() > 1)
+                cellsImage.setImagePlus(HyperStackConverter.toHyperStack(cellsImage.getImagePlus(), 1, nSlices, nFrames));
             outputObjects = cellsImage.convertImageToObjects(VolumeType.QUADTREE, outputObjectsName);
 
         } else {
@@ -232,7 +233,7 @@ public class CellposeDetection extends Module {
 
         workspace.addObjects(outputObjects);
 
-        if (§Output)
+        if (showOutput)
             outputObjects.convertToImageIDColours().show(false);
 
         return Status.PASS;

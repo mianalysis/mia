@@ -12,7 +12,7 @@ import org.apache.commons.lang.WordUtils;
 
 import ij.IJ;
 import ij.plugin.LutLoader;
-=import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.imagej.LUTs;
