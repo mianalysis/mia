@@ -235,7 +235,6 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public Parameters updateAndGetParameters() {
-        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
