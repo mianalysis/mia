@@ -527,9 +527,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         switch ((String) parameters.getValue(CLASSES_SOURCE, workspace)) {
-                case ClassesSources.FIXED_LIST:
-                case ClassesSources.NEW_CLASS_FILE:
-                    allowAdditions = true;
+            case ClassesSources.NEW_CLASS_FILE:
+                allowAdditions = true;
         }
 
         setSelector(selectorType);
@@ -600,6 +599,20 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 return extensionStatus;
         }
 
+        // Updated fixed class list if necessary
+        switch ((String) parameters.getValue(CLASSES_SOURCE, workspace)) {
+            case ClassesSources.FIXED_LIST:
+                if (allowAdditions) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String className : classSelector.getAllClasses())
+                        if (className.length() > 0)
+                            sb.append(className).append(",");
+
+                    String newClassList = sb.toString();
+                    parameters.get(CLASS_LIST).setValueFromString(newClassList.substring(0, newClassList.length() - 1));
+                }
+        }
+
         // If more pixels than Integer.MAX_VALUE were assigned, return false
         // (IntegerOverflowException).
         if (objectSelector.hadOverflow())
@@ -666,7 +679,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         parameters.add(new FilePathP(CLASS_FILE, this));
         parameters.add(new BooleanP(ALLOW_ADDITIONS, this, false));
         parameters.add(new StringP(CLASS_LIST, this));
-        parameters.add(new ChoiceP(CLASS_COLOURMAP, this, ColourMaps.RANDOM_VIBRANT, (String[]) ColourFactory.getColourMaps().keySet().stream().toArray(String[]::new)));
+        parameters.add(new ChoiceP(CLASS_COLOURMAP, this, ColourMaps.RANDOM_VIBRANT,
+                (String[]) ColourFactory.getColourMaps().keySet().stream().toArray(String[]::new)));
 
         parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
         parameters.add(new TextAreaP(INSTRUCTION_TEXT, this,
@@ -733,6 +747,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     break;
                 case ClassesSources.FIXED_LIST:
                     returnedParameters.add(parameters.get(CLASS_LIST));
+                    returnedParameters.add(parameters.get(ALLOW_ADDITIONS));
                     break;
                 case ClassesSources.NEW_CLASS_FILE:
                     Parameters saverParameters = super.updateAndGetParameters();

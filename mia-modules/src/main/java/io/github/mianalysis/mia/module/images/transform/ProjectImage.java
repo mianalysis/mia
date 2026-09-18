@@ -207,7 +207,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
         // If the projection axis doesn't exist, permute to correct view, then output
         if (img.dimensionIndex(projType) == -1)
-            return getNonProjectedImage(img, outputImageName, xType, yType, projectionMode);
+            return getNonProjectedImage(inputImage, outputImageName, xType, yType, projectionMode);
 
         HashMap<Integer, AxisType> axisAssignments = getAxisAssignments(img);
 
@@ -273,8 +273,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         CalibratedAxis axOut = new DefaultLinearAxis(axIn.type(), axIn.unit(), axIn.calibratedValue(1));
         proj.setAxis(axOut, proj.numDimensions() - 1);
 
-        Image projectedImage = ImageFactory.createImage(outputImageName, proj);
-
+        Image projectedImage = ImageFactory.createImage(outputImageName, proj, ImageType.IMAGEPLUS);
+        
         SetLookupTable.copyLUTFromImage(projectedImage,inputImage);
         
         dcImage.shutdown();
@@ -283,8 +283,10 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     }
 
-    static <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>> Image getNonProjectedImage(ImgPlus<T> img, String outputImageName,
+    static <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>> Image getNonProjectedImage(Image<T> inputImage, String outputImageName,
             AxisType xType, AxisType yType, String projectionMode) {
+        ImgPlus<T> img = inputImage.getImgPlus();
+
         HashMap<Integer, AxisType> axisAssignments = getAxisAssignments(img);
 
         // Permute axes, so that display axes X and Y are at positions 0 and 1 and
@@ -331,9 +333,12 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         // ImagePlus outputImagePlus = ImageJFunctions.wrap(outImg,outputImageName);
         // ImgPlusTools.applyAxes(outImg,outputImagePlus);
 
+        Image outputImage = ImageFactory.createImage(outputImageName, outImg);
+        SetLookupTable.copyLUTFromImage(outputImage, inputImage);
+
         dcImage.shutdown();
 
-        return ImageFactory.createImage(outputImageName, outImg);
+        return outputImage;
 
     }
 
