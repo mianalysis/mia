@@ -263,6 +263,15 @@ public class ClassSelector implements ActionListener, KeyListener {
                 fullList.setSelectedIndex(idx);
                 fullList.ensureIndexIsVisible(idx);
                 tabbedPane.setSelectedIndex(0); // Selecting "All items" tab
+
+                lastSelectedClass = fullList.getSelectedValue();
+                currentListModel.add(lastSelectedClass);
+                recentListModel.add(lastSelectedClass);
+
+                saveRecentClassesToPrefs();
+
+                setVisible(false);
+
                 break;
         }
     }
