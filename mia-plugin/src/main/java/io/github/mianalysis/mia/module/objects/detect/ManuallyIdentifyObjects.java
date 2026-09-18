@@ -526,6 +526,12 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
+        switch ((String) parameters.getValue(CLASSES_SOURCE, workspace)) {
+                case ClassesSources.FIXED_LIST:
+                case ClassesSources.NEW_CLASS_FILE:
+                    allowAdditions = true;
+        }
+
         setSelector(selectorType);
 
         if (!outputTracks)
