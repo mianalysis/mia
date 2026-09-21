@@ -197,7 +197,10 @@ public class CellposeDetection extends Module {
         Objs outputObjects;
 
         if (dimensionMode.equals(DimensionModes.TWOD)) {
-            ImagePlus stack = HyperStackConverter.toHyperStack(inputImage.getImagePlus().duplicate(), nChannels,1, nFrames*nSlices);
+            ImagePlus stack = inputImage.getImagePlus();
+
+            if (nFrames > 1 || nSlices > 1)
+                stack = HyperStackConverter.toHyperStack(inputImage.getImagePlus().duplicate(), nChannels,1, nFrames*nSlices);
 
             cellpose.setImagePlus(stack);
             cellpose.run();
