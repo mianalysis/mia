@@ -42,7 +42,7 @@ public class ImageTiler {
     }
 
     public static int getTileCount(int imageSize, int overlap, int tileSize) {
-        return (int) Math.ceil(Math.ceil((double) (imageSize - overlap) / (double) tileSize));
+        return (int) Math.ceil((double) imageSize / (double) (tileSize - overlap));
     }
 
     public static ImagePlus tile(ImagePlus inputIpl, int xNumTiles, int yNumTiles, int xTileSize, int yTileSize,
