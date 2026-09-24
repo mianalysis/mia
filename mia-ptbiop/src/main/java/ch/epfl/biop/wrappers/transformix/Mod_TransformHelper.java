@@ -19,27 +19,30 @@ public class Mod_TransformHelper extends TransformHelper {
     public void transform(TransformixTask task) {
         TransformixTaskSettings transformSettings = new TransformixTaskSettings().transform(this.transformFile)
                 .outFolder(this.outputDir);
-            transformSettings.nThreads(nThreads);
-
+        transformSettings.nThreads(nThreads);
+            
         if (!transformTaskSet) {
             if (checkParametersForTransformation()) {
                 transformSettings = new TransformixTaskSettings().transform(this.transformFile)
                         .outFolder(this.outputDir); // THIS SHOULD BE HERE!!!
 
-                if (verbose) transformSettings.verbose();
+                if (verbose)
+                    transformSettings.verbose();
 
-                if (transformInfo!=null) transformSettings.taskInfo = transformInfo;
+                if (transformInfo != null)
+                    transformSettings.taskInfo = transformInfo;
 
-                if (transformType==IMAGE_TRANSFORM) {
+                if (transformType == IMAGE_TRANSFORM) {
                     transformSettings.image(this::imageToTransformPathSupplier);
                 }
 
-                if (transformType==ROIS_TRANSFORM) {
+                if (transformType == ROIS_TRANSFORM) {
                     transformSettings.pts(this::roisToTransformPathSupplier);
                 }
-                
-                //transform = new TransformixTask(transformSettings);//transformBuilder.build();
-                //task.setSettings(transformSettings);
+
+                // transform = new
+                // TransformixTask(transformSettings);//transformBuilder.build();
+                // task.setSettings(transformSettings);
                 transformTaskSet = true;
             } else {
                 task = null;
@@ -52,19 +55,20 @@ public class Mod_TransformHelper extends TransformHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (transformType==IMAGE_TRANSFORM) {
-            	imageTransformed.clear();
-            	imageTransformed.set(new File(this.outputDir.get()+File.separator+"result.tif"));
+            if (transformType == IMAGE_TRANSFORM) {
+                imageTransformed.clear();
+                imageTransformed.set(new File(this.outputDir.get() + File.separator + "result.tif"));
             }
-            if (transformType==ROIS_TRANSFORM) {
-            	TransformixOutputRoisFile erf =  new TransformixOutputRoisFile(new File(this.outputDir.get()+File.separator+"outputpoints.txt"),
+            if (transformType == ROIS_TRANSFORM) {
+                TransformixOutputRoisFile erf = new TransformixOutputRoisFile(
+                        new File(this.outputDir.get() + File.separator + "outputpoints.txt"),
                         (TransformixInputRoisFile) roisToTransform.to(TransformixInputRoisFile.class));// roisToTransform.to(TransformixInputRoisFile.class);
-            	roisTransformed.clear();            	
-            	roisTransformed.set(erf);
-            	//System.out.println("Output rois set!");
-            	//roisTransformed.set(roisToTransform.to(ArrayList.class));
-            	//roisTransformed.elastixFileFormatToArray(erf);
-            	//new File(this.outputDir.get()+File.separator+"outputpoints.txt"));
+                roisTransformed.clear();
+                roisTransformed.set(erf);
+                // System.out.println("Output rois set!");
+                // roisTransformed.set(roisToTransform.to(ArrayList.class));
+                // roisTransformed.elastixFileFormatToArray(erf);
+                // new File(this.outputDir.get()+File.separator+"outputpoints.txt"));
             }
         }
     }

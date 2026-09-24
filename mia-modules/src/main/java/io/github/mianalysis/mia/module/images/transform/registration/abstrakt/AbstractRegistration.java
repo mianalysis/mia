@@ -18,10 +18,13 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks2;
 import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
+import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
+import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -51,7 +54,7 @@ import io.github.mianalysis.mia.object.units.TemporalUnit;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>> extends Module {
+public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>> extends AbstractSaver {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -190,14 +193,14 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // If the reference image is the previous frame, get this now
             switch (referenceMode) {
                 case ReferenceModes.FIRST_FRAME:
-                    // We don't need to align the first image if comparing to the first image
-                    if (t == 0)
-                        continue;
+                    // We don't need to align the first image if comparing to the first image (actually, disabling this, as it's needed for loading transforms via Elastix))
+                    // if (t == 0)
+                    //     continue;
                     break;
 
                 case ReferenceModes.PREVIOUS_N_FRAMES:
-                    if (t == 0)
-                        continue;
+                    // if (t == 0)
+                    //     continue;
 
                     int minT = Math.max(1, t - numPrevFrames + 1);
                     Image referenceStack = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1",
@@ -439,12 +442,16 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (int channel = 0; channel < targetIpl.getNChannels(); channel++) {
             for (int timepoint = 0; timepoint < targetIpl.getNFrames(); timepoint++) {
                 int sourceIdx = sourceIpl.getStackIndex(channel+1,1,timepoint+1);
-                int targetIdx = targetIpl.getStackIndex(channel+1,slice+1,timepoint+1);
 
-                targetIpl.getStack().setProcessor(sourceIpl.getStack().getProcessor(sourceIdx), targetIdx);
+                targetIpl.setPosition(channel+1,1,timepoint+1);
+                ImageProcessor sourceIpr = sourceIpl.getStack().getProcessor(sourceIdx);
+                targetIpl.setProcessor(sourceIpr);
 
             }
         }        
+        
+        targetIpl.updateAndDraw();
+
     }
 
     @Override
@@ -471,9 +478,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL, workspace);
         boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS, workspace);
 
-        // Getting the input image and duplicating if the output will be stored
-        // separately
+        // Getting the input image
         Image inputImage = workspace.getImage(inputImageName);
+
+        // Creating a crop that will let us store the LUT information
+        Image lutCrop = CropImage.cropImage(inputImage, "Crop", 0, 0, 1, 1);
+
+        // Duplicating if the output will be stored separately
         if (!applyToInput)
             inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
@@ -561,6 +572,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         } else {
             MIA.log.writeWarning("Input stack has not been registered");
         }
+
+        SetLookupTable.copyLUTFromImage(inputImage, lutCrop);
 
         if (showOutput) {
             if (referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE)) {
@@ -784,5 +797,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     public class Transform {
+    }
+
+    public void initialiseSavingParameters() {
+        super.initialiseParameters();
+    }
+
+    public Parameters updateAndGetSavingParameters() {
+        return super.updateAndGetParameters();
     }
 }
