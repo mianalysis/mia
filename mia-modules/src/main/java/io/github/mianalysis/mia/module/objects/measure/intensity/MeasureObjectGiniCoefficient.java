@@ -2,11 +2,6 @@
 
 package io.github.mianalysis.mia.module.objects.measure.intensity;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -70,16 +65,6 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
     */
     public static final String INPUT_IMAGE = "Input image";
 
-    /**
-    * 
-    */
-    public static final String EXECUTION_SEPARATOR = "Execution controls";
-
-    /**
-     * Process multiple input objects simultaneously. This can provide a speed
-     * improvement when working on a computer with a multi-core CPU.
-     */
-    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements extends MeasureGiniCoefficient.Measurements {
     };
@@ -142,39 +127,17 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         Image inputImage = workspace.getImage(inputImageName);
         Objs inputObjects = workspace.getObjects(inputObjectName);
         String measurementName = getFullName(inputImageName);
 
         // Setting up multithreading options
-        int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
-
-        AtomicInteger count = new AtomicInteger(1);
+        int count = 0;
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                try {
-                    process(inputObject, inputImage, measurementName);
-                } catch (Exception e) {
-                    MIA.log.writeError(e);
-                }
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
-
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        } catch (Exception e) {
-            MIA.log.writeError(e);
+            process(inputObject, inputImage, measurementName);
+            writeProgressStatus(++count, total, "objects");
         }
 
         if (showOutput)
@@ -190,11 +153,6 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        addParameterDescriptions();
-
     }
 
     @Override
@@ -204,9 +162,6 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-
-        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
@@ -257,10 +212,5 @@ public class MeasureObjectGiniCoefficient<T extends RealType<T> & NativeType<T>>
     @Override
     public boolean verify() {
         return true;
-    }
-
-    void addParameterDescriptions() {
-        parameters.get(ENABLE_MULTITHREADING).setDescription(
-                "Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
     }
 }

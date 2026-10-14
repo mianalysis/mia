@@ -266,7 +266,7 @@ public class CellposeDetection extends Module {
 
         parameters.add(new SeparatorP(MODEL_SEPARATOR, this));
         parameters.add(new ChoiceP(MODEL_MODE, this, ModelModes.INCLUDED, ModelModes.ALL));
-        parameters.add(new FilePathP(CUSTOM_MODEL_PATH, this));
+        parameters.add(new FolderPathP(CUSTOM_MODEL_PATH, this));
         parameters.add(new StringP(MODEL, this, "cpsam"));
         parameters.add(new MessageP(MODEL_MESSAGE, this,
                 "Available models will depend on the version of Cellpose installed, but examples are \"cyto\", \"cyto2\", \"cyto3\", \"cpsam\", \"nuclei\" and \"bact\".",

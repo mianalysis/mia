@@ -1001,7 +1001,7 @@
   <properties>
     <imagej-tensorflow.version>1.1.6</imagej-tensorflow.version>
     <tensorflow.version>1.15.0</tensorflow.version>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.target>21</maven.compiler.target>
     <scp>compile</scp>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
