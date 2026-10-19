@@ -131,6 +131,13 @@
         </dependency> -->
 
         <dependency>
+            <groupId>com.github.mcib3d</groupId>
+            <artifactId>ABSnake</artifactId>
+            <version>-a8bf2b60f0-1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.mianalysis</groupId>
             <artifactId>mia-core</artifactId>
             <version>${project.version}</version>

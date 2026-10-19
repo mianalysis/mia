@@ -266,113 +266,113 @@ public class MeasureObjectShape extends Module {
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            int total = inputObjects.size();
+            AtomicInteger count = new AtomicInteger();
 
-        int total = inputObjects.size();
-        AtomicInteger count = new AtomicInteger();
+            // Running through each object, making the measurements
+            for (Obj inputObject : inputObjects.values()) {
+                Runnable task = () -> {
+                    // Adding the volume measurements
+                    if (measureVolume) {
+                        int nVoxels = inputObject.size();
+                        inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS, nVoxels));
 
-        // Running through each object, making the measurements
-        for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                // Adding the volume measurements
-                if (measureVolume) {
-                    int nVoxels = inputObject.size();
-                    inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS, nVoxels));
+                        double containedVolumePx = inputObject.getContainedVolume(true);
+                        inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx));
 
-                    double containedVolumePx = inputObject.getContainedVolume(true);
-                    inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx));
+                        double containedVolumeCal = inputObject.getContainedVolume(false);
+                        inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal));
 
-                    double containedVolumeCal = inputObject.getContainedVolume(false);
-                    inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal));
+                        double baseAreaPx = calculateBaseAreaPx(inputObject);
+                        inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_PX, baseAreaPx));
 
-                    double baseAreaPx = calculateBaseAreaPx(inputObject);
-                    inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_PX, baseAreaPx));
+                        double dppXY = inputObject.getDppXY();
+                        inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
 
-                    double dppXY = inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_CAL, baseAreaPx * dppXY * dppXY));
+                        double heightSlice = inputObject.getHeight(true, false);
+                        inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_SLICE, heightSlice));
 
-                    double heightSlice = inputObject.getHeight(true, false);
-                    inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_SLICE, heightSlice));
+                        double heightCal = inputObject.getHeight(false, false);
+                        inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_CAL, heightCal));
+                    }
 
-                    double heightCal = inputObject.getHeight(false, false);
-                    inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_CAL, heightCal));
-                }
-
-                // If necessary analyses are included
-                Objs projectedObjects = new Objs("Projected", inputObjects);
-                Obj projectedObject = null;
-                if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
-                    if (inputObject.is2D()) {
-                        projectedObject = inputObject;
-                    } else {
-                        try {
-                            if (inputObject.is2D())
-                                projectedObject = inputObject;
-                            else
-                                projectedObject = ProjectObjects.process(inputObject, projectedObjects, false);
-                        } catch (IntegerOverflowException e) {
-                            MIA.log.writeWarning(e);
-                            return;
+                    // If necessary analyses are included
+                    Objs projectedObjects = new Objs("Projected", inputObjects);
+                    Obj projectedObject = null;
+                    if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
+                        if (inputObject.is2D()) {
+                            projectedObject = inputObject;
+                        } else {
+                            try {
+                                if (inputObject.is2D())
+                                    projectedObject = inputObject;
+                                else
+                                    projectedObject = ProjectObjects.process(inputObject, projectedObjects, false);
+                            } catch (IntegerOverflowException e) {
+                                MIA.log.writeWarning(e);
+                                return;
+                            }
                         }
                     }
-                }
 
-                // Adding the projected-object area measurements
-                if (measureProjectedArea) {
-                    double areaPx = projectedObject.size();
-                    double areaCal = areaPx * projectedObject.getDppXY() * projectedObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal));
+                    // Adding the projected-object area measurements
+                    if (measureProjectedArea) {
+                        double areaPx = projectedObject.size();
+                        double areaCal = areaPx * projectedObject.getDppXY() * projectedObject.getDppXY();
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx));
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal));
 
-                }
+                    }
 
-                // Adding the projected-object diameter measurements
-                if (measureProjectedDiameter) {
-                    double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
-                    double maxDistanceCal = maxDistancePx * inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
+                    // Adding the projected-object diameter measurements
+                    if (measureProjectedDiameter) {
+                        double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
+                        double maxDistanceCal = maxDistancePx * inputObject.getDppXY();
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx));
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
 
-                    double minFeretPx = projectedObject.getRoi(0).getFeretValues()[2];
-                    double minFeretCal = minFeretPx * inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
+                        double minFeretPx = projectedObject.getRoi(0).getFeretValues()[2];
+                        double minFeretCal = minFeretPx * inputObject.getDppXY();
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_PX, minFeretPx));
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_MIN_FERET_CAL, minFeretCal));
 
-                }
+                    }
 
-                // Adding the projected-object perimeter measurements
-                if (measureProjectedPerimeter) {
-                    double areaPx = projectedObject.size();
-                    double perimeterPx = projectedObject.getRoi(0).getLength();
-                    double perimeterCal = perimeterPx * inputObject.getDppXY();
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX, perimeterPx));
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_CAL, perimeterCal));
+                    // Adding the projected-object perimeter measurements
+                    if (measureProjectedPerimeter) {
+                        double areaPx = projectedObject.size();
+                        double perimeterPx = projectedObject.getRoi(0).getLength();
+                        double perimeterCal = perimeterPx * inputObject.getDppXY();
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX, perimeterPx));
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_CAL, perimeterCal));
 
-                    double circularity = 4 * Math.PI * areaPx / (perimeterPx * perimeterPx);
-                    inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity));
+                        double circularity = 4 * Math.PI * areaPx / (perimeterPx * perimeterPx);
+                        inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity));
 
-                }
+                    }
 
-                if (measure3dMetrics)
-                    measure3DMetrics(inputObject, connectivity, surfaceAreaMethodInt);
+                    if (measure3dMetrics)
+                        measure3DMetrics(inputObject, connectivity, surfaceAreaMethodInt);
 
-                // Clearing the projected object from memory to save some space
-                if (projectedObject != null & !inputObject.is2D())
-                    inputObject.clearProjected();
+                    // Clearing the projected object from memory to save some space
+                    if (projectedObject != null & !inputObject.is2D())
+                        inputObject.clearProjected();
 
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
 
-            };
-            pool.submit(task);
-        }
+                };
+                pool.submit(task);
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return Status.FAIL;
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return Status.FAIL;
+            }
         }
 
         if (showOutput)

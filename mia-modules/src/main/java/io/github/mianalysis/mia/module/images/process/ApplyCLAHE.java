@@ -136,28 +136,28 @@ public class ApplyCLAHE extends Module {
             @Nullable ByteProcessor mask, boolean fastMode, boolean multithread) {
         // Setting up multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Applying the macro
+            ImageStack ist = inputImagePlus.getStack();
+            for (int i = 0; i < ist.size(); i++) {
+                ImageProcessor ipr = ist.getProcessor(i + 1);
+                ImagePlus ipl = new ImagePlus("Temp", ipr);
+                Runnable task = () -> {
+                    if (fastMode)
+                        Flat.getFastInstance().run(ipl, blockRadius, histogramBins, maxSlope, mask, true);
+                    else
+                        Flat.getInstance().run(ipl, blockRadius, histogramBins, maxSlope, mask, true);
+                };
+                pool.submit(task);
+            }
 
-        // Applying the macro
-        ImageStack ist = inputImagePlus.getStack();
-        for (int i = 0; i < ist.size(); i++) {
-            ImageProcessor ipr = ist.getProcessor(i + 1);
-            ImagePlus ipl = new ImagePlus("Temp", ipr);
-            Runnable task = () -> {
-                if (fastMode)
-                    Flat.getFastInstance().run(ipl, blockRadius, histogramBins, maxSlope, mask, true);
-                else
-                    Flat.getInstance().run(ipl, blockRadius, histogramBins, maxSlope, mask, true);
-            };
-            pool.submit(task);
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
 
         inputImagePlus.updateChannelAndDraw();

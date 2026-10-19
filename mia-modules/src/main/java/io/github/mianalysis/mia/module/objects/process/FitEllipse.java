@@ -311,35 +311,35 @@ public class FitEllipse extends Module {
 
         // Setting up multithreading options
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, taking measurements and adding new object to the
+            // workspace where necessary
+            AtomicInteger count = new AtomicInteger(1);
+            int total = inputObjects.size();
+            Objs finalOutputObjects = outputObjects;
 
-        // Running through each object, taking measurements and adding new object to the
-        // workspace where necessary
-        AtomicInteger count = new AtomicInteger(1);
-        int total = inputObjects.size();
-        Objs finalOutputObjects = outputObjects;
+            for (Obj inputObject : inputObjects.values()) {
+                Runnable task = () -> {
+                    try {
+                        processObject(inputObject, finalOutputObjects, objectOutputMode, maxAxisLength, fittingMode);
+                    } catch (IntegerOverflowException e) {
+                        MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
+                                + " during ellipse fitting.");
+                    }
 
-        for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                try {
-                    processObject(inputObject, finalOutputObjects, objectOutputMode, maxAxisLength, fittingMode);
-                } catch (IntegerOverflowException e) {
-                    MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
-                            + " during ellipse fitting.");
-                }
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                };
+                pool.submit(task);
 
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
+            }
 
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
 
         if (showOutput) {

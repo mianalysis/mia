@@ -132,25 +132,25 @@ public class RunSingleCommand extends Module {
     public void runCommandMultithreaded(ImagePlus inputImagePlus, String commandTitle, String arguments) {
         // Setting up multithreading
         int nThreads = Prefs.getThreads();
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Applying the command
+            ImageStack ist = inputImagePlus.getStack();
+            for (int i = 0; i < ist.size(); i++) {
+                ImageProcessor ipr = ist.getProcessor(i + 1);
+                ImagePlus ipl = new ImagePlus("Temp", ipr);
+                Runnable task = () -> {
+                    IJ.run(ipl, commandTitle, arguments);
+                };
+                pool.submit(task);
+            }
 
-        // Applying the command
-        ImageStack ist = inputImagePlus.getStack();
-        for (int i = 0; i < ist.size(); i++) {
-            ImageProcessor ipr = ist.getProcessor(i + 1);
-            ImagePlus ipl = new ImagePlus("Temp", ipr);
-            Runnable task = () -> {
-                IJ.run(ipl, commandTitle, arguments);
-            };
-            pool.submit(task);
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
 
         inputImagePlus.updateChannelAndDraw();

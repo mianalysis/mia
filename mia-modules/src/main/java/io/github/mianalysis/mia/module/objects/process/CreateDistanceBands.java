@@ -531,32 +531,32 @@ public class CreateDistanceBands<T extends RealType<T> & NativeType<T>> extends 
 
         // Setting up multithreading options
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Iterating over each object, creating distance bands
+            AtomicInteger count = new AtomicInteger(1);
+            int total = inputObjects.size();
 
-        // Iterating over each object, creating distance bands
-        AtomicInteger count = new AtomicInteger(1);
-        int total = inputObjects.size();
+            for (Obj inputObject : inputObjects.values()) {
+                Runnable task = () -> {
+                    try {
+                        processObject(inputObject, bandObjects, type, parentObjectsName, bandMode, weightMode, relativeMode,
+                                finalBandWidth, finalMinDist, finalMaxDist, applyMaxDist, matchZToXY, ignoreEdgesXY, ignoreEdgesZ);
+                    } catch (IntegerOverflowException e) {
+                        MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
+                                + " during circle fitting.");
+                    }
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                };
+                pool.submit(task);
+            }
 
-        for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                try {
-                    processObject(inputObject, bandObjects, type, parentObjectsName, bandMode, weightMode, relativeMode,
-                            finalBandWidth, finalMinDist, finalMaxDist, applyMaxDist, matchZToXY, ignoreEdgesXY, ignoreEdgesZ);
-                } catch (IntegerOverflowException e) {
-                    MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
-                            + " during circle fitting.");
-                }
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
 
         // Adding objects to workspace

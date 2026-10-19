@@ -151,44 +151,44 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             boolean isFlipped, AffineTransform transform, Object[] resBest) throws InterruptedException {
 
         int nThreads = param.multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            int fillValue = getFillValue(param.fillMode, warpedIpr);
 
-        int fillValue = getFillValue(param.fillMode, warpedIpr);
+            HashMap<Integer, Object[]> results = new HashMap<>();
+            // Iterating over all orientations in normal (unflipped) mode
+            for (int orientation : param.orientations) {
+                // Apply orientation
+                ImageProcessor rotatedIpr = applyRotation(warpedIpr, orientation, fillValue);
 
-        HashMap<Integer, Object[]> results = new HashMap<>();
-        // Iterating over all orientations in normal (unflipped) mode
-        for (int orientation : param.orientations) {
-            // Apply orientation
-            ImageProcessor rotatedIpr = applyRotation(warpedIpr, orientation, fillValue);
+                Runnable task = () -> {
+                    results.put(orientation, fitModel(referenceIpr, rotatedIpr, param));
+                };
+                pool.submit(task);
 
-            Runnable task = () -> {
-                results.put(orientation, fitModel(referenceIpr, rotatedIpr, param));
-            };
-            pool.submit(task);
-
-        }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-        for (int orientation : results.keySet()) {
-            Object[] resCandidate = results.get(orientation);
-
-            if (resCandidate == null)
-                continue;
-
-            // If no best alignment has been determined, use this one
-            if (resBest == null) {
-                resBest = resCandidate;
-                continue;
             }
 
-            // Checking which is the best (lowest cost) match
-            if (((AbstractAffineModel2D) resCandidate[0]).getCost() < ((AbstractAffineModel2D) resBest[0]).getCost()) {
-                resBest = resCandidate;
-                transform.flip = isFlipped;
-                transform.orientation = orientation;
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+            for (int orientation : results.keySet()) {
+                Object[] resCandidate = results.get(orientation);
+
+                if (resCandidate == null)
+                    continue;
+
+                // If no best alignment has been determined, use this one
+                if (resBest == null) {
+                    resBest = resCandidate;
+                    continue;
+                }
+
+                // Checking which is the best (lowest cost) match
+                if (((AbstractAffineModel2D) resCandidate[0]).getCost() < ((AbstractAffineModel2D) resBest[0]).getCost()) {
+                    resBest = resCandidate;
+                    transform.flip = isFlipped;
+                    transform.orientation = orientation;
+                }
             }
         }
 

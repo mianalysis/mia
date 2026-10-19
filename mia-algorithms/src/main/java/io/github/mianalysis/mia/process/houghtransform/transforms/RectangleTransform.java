@@ -35,55 +35,55 @@ public class RectangleTransform extends AbstractTransform {
     public void run() {
         int[][] parameters = accumulator.getParameters();
         
-        // Setting up the threading system
+        try (// Setting up the threading system
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+                new LinkedBlockingQueue<>())) {
+            // Iterating over all widths, heights and orientations
+            int nX = parameters[0].length;
+            int nY = parameters[1].length;
+            int nW = parameters[2].length;
+            int nL = parameters[3].length;
+            int nT = parameters[4].length;
+            
+            for (int iW = 0; iW < nW; iW++) {
+                for (int iL = 0; iL < nL; iL++) {
+                    for (int iT = 0; iT < nT; iT++) {
+                        int finalIW = iW;
+                        int finalIL = iL;
+                        int finalIT = iT;
 
-        // Iterating over all widths, heights and orientations
-        int nX = parameters[0].length;
-        int nY = parameters[1].length;
-        int nW = parameters[2].length;
-        int nL = parameters[3].length;
-        int nT = parameters[4].length;
-        
-        for (int iW = 0; iW < nW; iW++) {
-            for (int iL = 0; iL < nL; iL++) {
-                for (int iT = 0; iT < nT; iT++) {
-                    int finalIW = iW;
-                    int finalIL = iL;
-                    int finalIT = iT;
+                        int W = parameters[2][iW];
+                        int L = parameters[3][iL];
+                        int T = parameters[4][iT];
 
-                    int W = parameters[2][iW];
-                    int L = parameters[3][iL];
-                    int T = parameters[4][iT];
+                        Runnable task = () -> {
+                            // Generating coordinates for the points on the rectangle
+                            int[][] rect = BresenhamRectangle.getRectangle(W, L, T);
 
-                    Runnable task = () -> {
-                        // Generating coordinates for the points on the rectangle
-                        int[][] rect = BresenhamRectangle.getRectangle(W, L, T);
+                            // Iterating over X and Y
+                            for (int iX = 0; iX < nX; iX++) {
+                                for (int iY = 0; iY < nY; iY++) {
+                                    // Getting current XY values
+                                    int X = parameters[0][iX];
+                                    int Y = parameters[1][iY];
 
-                        // Iterating over X and Y
-                        for (int iX = 0; iX < nX; iX++) {
-                            for (int iY = 0; iY < nY; iY++) {
-                                // Getting current XY values
-                                int X = parameters[0][iX];
-                                int Y = parameters[1][iY];
+                                    double value = pixels.getPixelValue(new int[] { X, Y });
+                                    accumulator.addPoints(new int[] { iX, iY, finalIW, finalIL, finalIT }, value, rect);
 
-                                double value = pixels.getPixelValue(new int[] { X, Y });
-                                accumulator.addPoints(new int[] { iX, iY, finalIW, finalIL, finalIT }, value, rect);
-
+                                }
                             }
-                        }
-                    };
-                    pool.submit(task);
+                        };
+                        pool.submit(task);
+                    }
                 }
             }
-        }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

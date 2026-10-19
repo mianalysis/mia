@@ -594,28 +594,28 @@ public class AddObjectsOverlay extends Module {
         }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object : inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
 
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
-            ImagePlus finalIpl = ipl;
+                Runnable task = () -> {
+                    float value = values.get(object.getID());
+                    Color colour = ColourFactory.getColour(value, 100);
 
-            Runnable task = () -> {
-                float value = values.get(object.getID());
-                Color colour = ColourFactory.getColour(value, 100);
+                    addAllPointsOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
-                addAllPointsOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
 
-                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
+                };
+                pool.submit(task);
+            }
 
-            };
-            pool.submit(task);
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -632,52 +632,52 @@ public class AddObjectsOverlay extends Module {
         }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object : inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
 
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
-            ImagePlus finalIpl = ipl;
+                Runnable task = () -> {
+                    float value = values.get(object.getID());
+                    Color colour = ColourFactory.getColour(value, 100);
+                    double orientation = 0;
+                    switch (oriMode) {
+                        case OrientationModes.MEASUREMENT:
+                            orientation = object.getMeasurement(oriMeasurementName).getValue();
+                            break;
+                        case OrientationModes.PARENT_MEASUREMENT:
+                            orientation = object.getParent(oriParentName).getMeasurement(oriMeasurementName).getValue();
+                            break;
+                    }
 
-            Runnable task = () -> {
-                float value = values.get(object.getID());
-                Color colour = ColourFactory.getColour(value, 100);
-                double orientation = 0;
-                switch (oriMode) {
-                    case OrientationModes.MEASUREMENT:
-                        orientation = object.getMeasurement(oriMeasurementName).getValue();
-                        break;
-                    case OrientationModes.PARENT_MEASUREMENT:
-                        orientation = object.getParent(oriParentName).getMeasurement(oriMeasurementName).getValue();
-                        break;
-                }
+                    double length = 0;
+                    switch (lengthMode) {
+                        case LengthModes.FIXED_VALUE:
+                            length = lengthValue;
+                            break;
+                        case LengthModes.MEASUREMENT:
+                            length = object.getMeasurement(lengthMeasurementName).getValue();
+                            break;
+                        case LengthModes.PARENT_MEASUREMENT:
+                            length = object.getParent(lengthParentName).getMeasurement(lengthMeasurementName).getValue();
+                            break;
+                    }
 
-                double length = 0;
-                switch (lengthMode) {
-                    case LengthModes.FIXED_VALUE:
-                        length = lengthValue;
-                        break;
-                    case LengthModes.MEASUREMENT:
-                        length = object.getMeasurement(lengthMeasurementName).getValue();
-                        break;
-                    case LengthModes.PARENT_MEASUREMENT:
-                        length = object.getParent(lengthParentName).getMeasurement(lengthMeasurementName).getValue();
-                        break;
-                }
+                    length = length * lengthScale;
 
-                length = length * lengthScale;
+                    addArrowsOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
-                addArrowsOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
 
-                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
+                };
+                pool.submit(task);
+            }
 
-            };
-            pool.submit(task);
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -690,26 +690,26 @@ public class AddObjectsOverlay extends Module {
         }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object : inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
 
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
-            ImagePlus finalIpl = ipl;
+                Runnable task = () -> {
+                    float value = values.get(object.getID());
+                    Color colour = ColourFactory.getColour(value, 100);
+                    addCentroidOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
-            Runnable task = () -> {
-                float value = values.get(object.getID());
-                Color colour = ColourFactory.getColour(value, 100);
-                addCentroidOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
+                };
+                pool.submit(task);
+            }
 
-                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
-            };
-            pool.submit(task);
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -723,37 +723,37 @@ public class AddObjectsOverlay extends Module {
         }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object : inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
 
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
-            ImagePlus finalIpl = ipl;
+                Runnable task = () -> {
+                    float value = values.get(object.getID());
+                    Color colour = ColourFactory.getColour(value, 100);
+                    String label = labels == null ? "" : labels.get(object.getID());
 
-            Runnable task = () -> {
-                float value = values.get(object.getID());
-                Color colour = ColourFactory.getColour(value, 100);
-                String label = labels == null ? "" : labels.get(object.getID());
+                    double xMean = object.getXMean(true);
+                    double yMean = object.getYMean(true);
+                    double zMean = object.getZMean(true, false);
+                    int z = (int) Math.round(zMean + 1);
+                    int t = object.getT() + 1;
 
-                double xMean = object.getXMean(true);
-                double yMean = object.getYMean(true);
-                double zMean = object.getZMean(true, false);
-                int z = (int) Math.round(zMean + 1);
-                int t = object.getT() + 1;
+                    if (renderInAllFrames)
+                        t = 0;
 
-                if (renderInAllFrames)
-                    t = 0;
+                    addLabelsOverlay(finalIpl, label, new double[] { xMean, yMean, z, t }, colour, labelSize);
 
-                addLabelsOverlay(finalIpl, label, new double[] { xMean, yMean, z, t }, colour, labelSize);
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
+                };
+                pool.submit(task);
+            }
 
-                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
-            };
-            pool.submit(task);
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -766,27 +766,27 @@ public class AddObjectsOverlay extends Module {
         }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object : inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
 
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
-            ImagePlus finalIpl = ipl;
+                Runnable task = () -> {
+                    float value = values.get(object.getID());
+                    Color colour = ColourFactory.getColour(value, 100);
 
-            Runnable task = () -> {
-                float value = values.get(object.getID());
-                Color colour = ColourFactory.getColour(value, 100);
+                    addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
-                addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
+                };
+                pool.submit(task);
+            }
 
-                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
-            };
-            pool.submit(task);
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -800,27 +800,27 @@ public class AddObjectsOverlay extends Module {
         }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object : inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
 
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object : inputObjects.values()) {
-            ImagePlus finalIpl = ipl;
+                Runnable task = () -> {
+                    float value = values.get(object.getID());
+                    Color colour = ColourFactory.getColour(value, 100);
 
-            Runnable task = () -> {
-                float value = values.get(object.getID());
-                Color colour = ColourFactory.getColour(value, 100);
+                    addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
-                addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
+                };
+                pool.submit(task);
+            }
 
-                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
-            };
-            pool.submit(task);
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 

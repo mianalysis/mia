@@ -39,69 +39,76 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
-
 /**
-* Adds an overlay to the specified input image showing the extent of each specified input object as a filled shape.  The opacity of the filled shape can be varied to see the image underneath.
-*/
+ * Adds an overlay to the specified input image showing the extent of each
+ * specified input object as a filled shape. The opacity of the filled shape can
+ * be varied to see the image underneath.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddObjectFill extends AbstractOverlay {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image and object input";
 
-	/**
-	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
-	*/
+    /**
+     * Image onto which overlay will be rendered. Input image will only be updated
+     * if "Apply to input image" is enabled, otherwise the image containing the
+     * overlay will be stored as a new image with name specified by "Output image".
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Objects to represent as overlays.
-	*/
+    /**
+     * Objects to represent as overlays.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Image output";
 
-	/**
-	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
-	*/
+    /**
+     * Determines if the modifications made to the input image (added overlay
+     * elements) will be applied to that image or directed to a new image. When
+     * selected, the input image will be updated.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
-	*/
+    /**
+     * If the modifications (overlay) aren't being applied directly to the input
+     * image, this control will determine if a separate image containing the overlay
+     * should be saved to the workspace.
+     */
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
 
-	/**
-	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
-	*/
+    /**
+     * The name of the new image to be saved to the workspace (if not applying the
+     * changes directly to the input image).
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
 
-	/**
-	* Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.
-	*/
+    /**
+     * Display the overlay elements in all frames (time axis) of the input image
+     * stack, irrespective of whether the object was present in that frame.
+     */
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple overlay elements simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddObjectFill(Modules modules) {
@@ -119,41 +126,41 @@ public class AddObjectFill extends AbstractOverlay {
         String name = new AddObjectFill(null).getName();
 
         // Adding the overlay element
-        try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-            // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
 
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>());
-
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
             // Running through each object, adding it to the overlay along with an ID label
             AtomicInteger count = new AtomicInteger(1);
             int total = inputObjects.size();
-            for (Obj object : inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
+            try {
+                for (Obj object : inputObjects.values()) {
+                    ImagePlus finalIpl = ipl;
 
-                Runnable task = () -> {
-                    Color colour = colours.get(object.getID());
-                    addOverlay(object, finalIpl, colour, renderInAllFrames);
-                    writeProgressStatus(count.getAndIncrement(), total, "objects", name);
+                    Runnable task = () -> {
+                        Color colour = colours.get(object.getID());
+                        addOverlay(object, finalIpl, colour, renderInAllFrames);
+                        writeProgressStatus(count.getAndIncrement(), total, "objects", name);
 
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
+
+                pool.shutdown();
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+                ipl.setPosition(1, 1, 1);
+                ipl.updateAndDraw();
+
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return;
             }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-            ipl.setPosition(1, 1, 1);
-            ipl.updateAndDraw();
-
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return;
         }
     }
 
@@ -193,12 +200,12 @@ public class AddObjectFill extends AbstractOverlay {
                     continue;
 
                 // if (ipl.isHyperStack()) {
-                    polyRoi.setPosition(1, z + 1, t);
-                    ipl.setPosition(1, z + 1, t);
+                polyRoi.setPosition(1, z + 1, t);
+                ipl.setPosition(1, z + 1, t);
                 // } else {
-                //     int pos = Math.max(Math.max(1, z + 1), t);
-                //     polyRoi.setPosition(pos);
-                //     ipl.setPosition(pos);
+                // int pos = Math.max(Math.max(1, z + 1), t);
+                // polyRoi.setPosition(pos);
+                // ipl.setPosition(pos);
                 // }
 
                 polyRoi.setFillColor(colour);
@@ -331,8 +338,8 @@ public class AddObjectFill extends AbstractOverlay {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

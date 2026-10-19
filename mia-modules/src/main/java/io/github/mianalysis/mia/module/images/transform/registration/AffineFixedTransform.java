@@ -142,37 +142,37 @@ public class AffineFixedTransform extends Module {
         int nFrames = inputIpl.getNFrames();
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            InverseTransformMapping<AbstractAffineModel2D<?>> mapping = getMapping(transform);
 
-        InverseTransformMapping<AbstractAffineModel2D<?>> mapping = getMapping(transform);
+            if (fillMode.equals(FillModes.WHITE))
+                InvertIntensity.process(inputImage);
 
-        if (fillMode.equals(FillModes.WHITE))
-            InvertIntensity.process(inputImage);
+            for (int c = 1; c <= nChannels; c++) {
+                for (int z = 1; z <= nSlices; z++) {
+                    for (int t = 1; t <= nFrames; t++) {
+                        int finalC = c;
+                        int finalZ = z;
+                        int finalT = t;
 
-        for (int c = 1; c <= nChannels; c++) {
-            for (int z = 1; z <= nSlices; z++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    int finalC = c;
-                    int finalZ = z;
-                    int finalT = t;
+                        Runnable task = () -> {
+                            ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
 
-                    Runnable task = () -> {
-                        ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+                            ImageProcessor alignedSlice = applyTransform(slice, mapping);
+                            alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
 
-                        ImageProcessor alignedSlice = applyTransform(slice, mapping);
-                        alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
+                            getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
 
-                        getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
-
-                    };
-                    pool.submit(task);
+                        };
+                        pool.submit(task);
+                    }
                 }
             }
-        }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        }
 
         if (fillMode.equals(FillModes.WHITE))
             InvertIntensity.process(inputImage);
