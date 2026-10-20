@@ -135,6 +135,17 @@
             <artifactId>ABSnake</artifactId>
             <version>-a8bf2b60f0-1</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>sc.fiji</groupId>
+                    <artifactId>3D_Viewer</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.scijava</groupId>
+                    <artifactId>j3dcore</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
