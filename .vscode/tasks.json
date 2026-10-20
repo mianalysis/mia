@@ -3,7 +3,7 @@
         {
             "label": "maven: install-quick",
             "type": "shell",
-            "command": "mvn clean install -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip",
+            "command": "mvn clean install -Dscp=provided -D maven.test.skip -D maven.javadoc.skip",
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -12,7 +12,7 @@
         {
             "label": "maven: package-quick",
             "type": "shell",
-            "command": "mvn clean package -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip -U -T 1C",
+            "command": "mvn clean package -Dscp=provided -D maven.test.skip -D maven.javadoc.skip -U -T 1C",
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -21,7 +21,7 @@
         {
             "label": "maven: package-modules-quick",
             "type": "shell",
-            "command": "mvn clean package -Dscp=provided -D enforcer.skip -D maven.test.skip -D maven.javadoc.skip -pl mia-modules -am",
+            "command": "mvn clean package -Dscp=provided -D maven.test.skip -D maven.javadoc.skip -pl mia-modules -am",
             "group": {
                 "kind": "build",
                 "isDefault": false
