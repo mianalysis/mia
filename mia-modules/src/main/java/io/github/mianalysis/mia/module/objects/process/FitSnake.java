@@ -10,7 +10,6 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
-import com.jogamp.openal.AL;
 
 import ABSnake.SnakeConfig;
 import ij.ImagePlus;
