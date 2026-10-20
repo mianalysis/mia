@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Obj;
@@ -143,6 +144,8 @@ public class CreateImageCrops extends Module {
 
         Image outputImage = process(inputObjects, inputImage, outputImageName, outputWidth, outputHeight,
                 outputNumSlices);
+
+        SetLookupTable.copyLUTFromImage(outputImage,inputImage);
 
         workspace.addImage(outputImage);
         if (showOutput)

@@ -188,8 +188,15 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
         ImgPlusTools.applyDimensions(imgOut, outputImagePlus);
 
         dcImage.shutdown();
+
+        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
         
-        return ImageFactory.createImage(outputImageName, outputImagePlus);
+        if (axis.equals(AxisModes.CHANNEL))
+            convertToColour(outputImage, inputImages);
+        else
+            SetLookupTable.copyLUTFromImage(outputImage, inputImages.getFirst());
+
+        return outputImage;
 
     }
 
@@ -339,9 +346,7 @@ public class ConcatenateStacks2<T extends RealType<T> & NativeType<T>> extends M
 
         if (outputImage == null)
             return Status.FAIL;
-        if (axisMode.equals(AxisModes.CHANNEL))
-            convertToColour(outputImage, inputImages);
-
+        
         if (showOutput)
             outputImage.show();
 

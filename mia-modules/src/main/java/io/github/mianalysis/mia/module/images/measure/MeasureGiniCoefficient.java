@@ -2,6 +2,8 @@
 
 package io.github.mianalysis.mia.module.images.measure;
 
+import java.util.Arrays;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -26,9 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.math.CumStat;
 import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -37,30 +37,35 @@ import net.imglib2.type.numeric.RealType;
  */
 
 /**
-* Measure the Gini coefficient for all pixels in the specified image.  The Gini coefficient measures the inequality in intensity of pixels.  A coefficient of 0 indicates perfect intensity homogeneity (all pixels with the same value), while a value of 1 indicates the maximum possible inequality (all pixels are black, except for a single bright pixel).
-*/
+ * Measure the Gini coefficient for all pixels in the specified image. The Gini
+ * coefficient measures the inequality in intensity of pixels. A coefficient of
+ * 0 indicates perfect intensity homogeneity (all pixels with the same value),
+ * while a value of 1 indicates the maximum possible inequality (all pixels are
+ * black, except for a single bright pixel).
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String USE_MASK = "Use mask";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String MASK_IMAGE = "Mask image";
+
 
     public MeasureGiniCoefficient(Modules modules) {
         super("Measure Gini coefficient", modules);
@@ -85,50 +90,42 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
         return "Measure the Gini coefficient for all pixels in the specified image.  The Gini coefficient measures the inequality in intensity of pixels.  A coefficient of 0 indicates perfect intensity homogeneity (all pixels with the same value), while a value of 1 indicates the maximum possible inequality (all pixels are black, except for a single bright pixel).";
     }
 
-    public static <T extends RealType<T> & NativeType<T>> double calculateGiniCoefficient(Image<T> image,
-            @Nullable Image<T> maskImage) {
-        Cursor<T> cursor1 = image.getImgPlus().localizingCursor();
-        RandomAccess<T> randomAccessMask = maskImage == null ? null : maskImage.getImgPlus().randomAccess();
+    public static <T extends RealType<T> & NativeType<T>> double calculateGiniCoefficient(
+        Image<T> image, @Nullable Image<T> maskImage) {
 
-        // Calculating the summed absolute difference and mean
-        double absDiff = 0;
-        CumStat cs = new CumStat();
-        while (cursor1.hasNext()) {
-            cursor1.fwd();
+    long n = image.getImgPlus().size();
+    double[] values = new double[(int) n];
+    int count = 0;
 
-            // Checking if we should evaluate this point
-            if (randomAccessMask != null) {
-                randomAccessMask.setPosition(cursor1);
-                if ((int) Math.round(randomAccessMask.get().getRealDouble()) == 0)
-                    continue;
-            }
-
-            Cursor<T> cursor2 = image.getImgPlus().localizingCursor();
-            while (cursor2.hasNext()) {
-                cursor2.fwd();
-
-                // Checking if we should evaluate this point
-                if (randomAccessMask != null) {
-                    randomAccessMask.setPosition(cursor2);
-                    if ((int) Math.round(randomAccessMask.get().getRealDouble()) == 0)
-                        continue;
-                }
-
-                // Calculating the difference
-                absDiff += Math.abs(cursor1.get().getRealDouble() - cursor2.get().getRealDouble());
-
-            }
-
-            cs.addMeasure(cursor1.get().getRealDouble());
-
+    if (maskImage == null) {
+        for (T p : image.getImgPlus())
+            values[count++] = p.getRealDouble();
+    } else {
+        Cursor<T> c = image.getImgPlus().cursor();
+        Cursor<? extends RealType<?>> m = maskImage.getImgPlus().cursor();
+        while (c.hasNext()) {
+            double v = c.next().getRealDouble();
+            if ((int) Math.round(m.next().getRealDouble()) != 0)
+                values[count++] = v;
         }
-
-        return absDiff / (2 * cs.getN() * cs.getN() * cs.getMean());
-
     }
+
+    Arrays.parallelSort(values, 0, count); 
+
+    double weighted = 0;
+    double sum = 0;
+    for (int i = 0; i < count; i++) {
+        weighted += (2.0 * (i + 1) - count - 1) * values[i];
+        sum += values[i];
+    }
+    
+    return weighted / (count * sum);
+
+}
 
     @Override
     public Status process(Workspace workspace) {
+        // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean useMask = parameters.getValue(USE_MASK, workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
@@ -183,7 +180,7 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
         returnedRefs.add(measurementRef);
 
         return returnedRefs;
-        
+
     }
 
     @Override
@@ -192,8 +189,8 @@ public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> exten
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

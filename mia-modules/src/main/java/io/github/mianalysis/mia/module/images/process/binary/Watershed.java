@@ -228,59 +228,59 @@ public class Watershed extends Module {
             IJ.run(maskIpl, "Invert", "stack");
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            int nChannels = markerIpl.getNChannels();
+            int nFrames = markerIpl.getNFrames();
+            int nTotal = nChannels * nFrames;
+            AtomicInteger count = new AtomicInteger();
 
-        int nChannels = markerIpl.getNChannels();
-        int nFrames = markerIpl.getNFrames();
-        int nTotal = nChannels * nFrames;
-        AtomicInteger count = new AtomicInteger();
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    int finalT = t;
+                    int finalC = c;
 
-        for (int c = 1; c <= nChannels; c++) {
-            for (int t = 1; t <= nFrames; t++) {
-                int finalT = t;
-                int finalC = c;
+                    Runnable task = () -> {
+                        // Getting maskIpl for this timepoint
+                        ImageStack timepointMask = maskIpl == null ? null
+                                : ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
+                        ImageStack timepointIntensity = ImagePlusImage.getSetStack(intensityIpl, finalT, finalC, null);
+                        ImageStack timepointMarker = ImagePlusImage.getSetStack(markerIpl, finalT, finalC, null);
+                        timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
 
-                Runnable task = () -> {
-                    // Getting maskIpl for this timepoint
-                    ImageStack timepointMask = maskIpl == null ? null
-                            : ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
-                    ImageStack timepointIntensity = ImagePlusImage.getSetStack(intensityIpl, finalT, finalC, null);
-                    ImageStack timepointMarker = ImagePlusImage.getSetStack(markerIpl, finalT, finalC, null);
-                    timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
+                        if (maskIpl == null)
+                            timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
+                                    timepointMarker, connectivity, true, false);
+                        else
+                            timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
+                                    timepointMarker, timepointMask, connectivity, true, false);
 
-                    if (maskIpl == null)
-                        timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
-                                timepointMarker, connectivity, true, false);
-                    else
-                        timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
-                                timepointMarker, timepointMask, connectivity, true, false);
+                        // The image produced by MorphoLibJ's watershed function is labelled. Converting
+                        // to binary and back to 8-bit.
+                        ImagePlus timepointMaskIpl = new ImagePlus("Timepoint mask", timepointMask);
+                        IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
+                        IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
+                        if (blackBackground)
+                            IJ.run(timepointMaskIpl, "Invert", "stack");
 
-                    // The image produced by MorphoLibJ's watershed function is labelled. Converting
-                    // to binary and back to 8-bit.
-                    ImagePlus timepointMaskIpl = new ImagePlus("Timepoint mask", timepointMask);
-                    IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
-                    IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
-                    if (blackBackground)
-                        IJ.run(timepointMaskIpl, "Invert", "stack");
+                        IJ.run(timepointMaskIpl, "8-bit", null);
 
-                    IJ.run(timepointMaskIpl, "8-bit", null);
+                        if (timepointMaskIpl.isInvertedLut())
+                            IJ.run(timepointMaskIpl, "Invert LUT", "");
 
-                    if (timepointMaskIpl.isInvertedLut())
-                        IJ.run(timepointMaskIpl, "Invert LUT", "");
+                        // Replacing the maskIpl intensity
+                        ImagePlusImage.getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
 
-                    // Replacing the maskIpl intensity
-                    ImagePlusImage.getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
+                        writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", name);
 
-                    writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", name);
-
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
             }
-        }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        }
 
     }
 

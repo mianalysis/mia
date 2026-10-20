@@ -24,7 +24,6 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -98,7 +97,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     public interface Measurements {
-        String INT_DEN = "INTENSITY // INT_DEN";
+        String INT_DEN = "INT_DEN";
         String MEAN = "MEAN";
         String MEDIAN = "MEDIAN";
         String MIN = "MIN";

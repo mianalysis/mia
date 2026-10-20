@@ -191,68 +191,69 @@ public class IdentifyObjects extends Module {
             tempSW = Math.floorDiv(imW, nThreads);
         }
         int sW = tempSW;
-
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
-
+        
         // Iterating over each strip of the input image, creating the connectivity map
         Map<Integer, ImageStack> strips = Collections.synchronizedMap(new HashMap<>());
         Map<Integer, HashMap<Double, Fragment>> fragments = Collections.synchronizedMap(new HashMap<>());
 
-        for (int stripIdx = 0; stripIdx < nThreads; stripIdx++) {
-            final int finalStripIdx = stripIdx;
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
 
-            int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
-            int w;
-            if (finalStripIdx == 0)
-                w = sW;
-            else if (finalStripIdx == nThreads - 1)
-                w = imW - (sW * (nThreads - 1)) + 1;
-            else
-                w = sW + 1;
+            for (int stripIdx = 0; stripIdx < nThreads; stripIdx++) {
+                final int finalStripIdx = stripIdx;
 
-            ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
-            Runnable task = () -> {
-                ImageStack strip = cropIst.duplicate();
+                int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
+                int w;
+                if (finalStripIdx == 0)
+                    w = sW;
+                else if (finalStripIdx == nThreads - 1)
+                    w = imW - (sW * (nThreads - 1)) + 1;
+                else
+                    w = sW + 1;
 
-                // Running connected components labelling
-                try {
-                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                    strip = ffcl3D.computeLabels(strip);
-                } catch (RuntimeException e2) {
-                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-                    strip = ffcl3D.computeLabels(strip);
-                }
+                ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
+                Runnable task = () -> {
+                    ImageStack strip = cropIst.duplicate();
 
-                strips.put(finalStripIdx, strip);
+                    // Running connected components labelling
+                    try {
+                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                        strip = ffcl3D.computeLabels(strip);
+                    } catch (RuntimeException e2) {
+                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                        strip = ffcl3D.computeLabels(strip);
+                    }
 
-                // Identifying separate regions
-                HashMap<Double, Fragment> currentFragments = new HashMap<>();
-                fragments.put(finalStripIdx, currentFragments);
+                    strips.put(finalStripIdx, strip);
 
-                for (int z = 0; z < strip.size(); z++) {
-                    for (int x = 0; x < strip.getWidth(); x++) {
-                        for (int y = 0; y < strip.getHeight(); y++) {
-                            Double val = (Double) strip.getVoxel(x, y, z);
+                    // Identifying separate regions
+                    HashMap<Double, Fragment> currentFragments = new HashMap<>();
+                    fragments.put(finalStripIdx, currentFragments);
 
-                            if (val == 0)
-                                continue;
+                    for (int z = 0; z < strip.size(); z++) {
+                        for (int x = 0; x < strip.getWidth(); x++) {
+                            for (int y = 0; y < strip.getHeight(); y++) {
+                                Double val = (Double) strip.getVoxel(x, y, z);
 
-                            // Check if this object exists
-                            currentFragments.putIfAbsent(val, new Fragment(finalStripIdx, val));
+                                if (val == 0)
+                                    continue;
 
+                                // Check if this object exists
+                                currentFragments.putIfAbsent(val, new Fragment(finalStripIdx, val));
+
+                            }
                         }
                     }
-                }
-            };
-            pool.submit(task);
-        }
+                };
+                pool.submit(task);
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
 
         // Processing overlapping regions, adding links
@@ -303,47 +304,47 @@ public class IdentifyObjects extends Module {
             ist = tempIpl.getImageStack();
         }
 
-        // Restarting the pool
-        pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+        try (// Restarting the pool
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>())) {
+            for (int z = 0; z < ist.size(); z++) {
+                final int finalZ = z;
+                ImageProcessor ipr = ist.getProcessor(finalZ + 1);
+                Runnable task = () -> {
+                    for (int stripIdx = 0; stripIdx < strips.size(); stripIdx++) {
+                        ImageStack strip = strips.get(stripIdx);
+                        int x0 = stripIdx == 0 ? 0 : (sW * stripIdx) - 1;
+                        HashMap<Double, Fragment> currFragments = fragments.get(stripIdx);
 
-        for (int z = 0; z < ist.size(); z++) {
-            final int finalZ = z;
-            ImageProcessor ipr = ist.getProcessor(finalZ + 1);
-            Runnable task = () -> {
-                for (int stripIdx = 0; stripIdx < strips.size(); stripIdx++) {
-                    ImageStack strip = strips.get(stripIdx);
-                    int x0 = stripIdx == 0 ? 0 : (sW * stripIdx) - 1;
-                    HashMap<Double, Fragment> currFragments = fragments.get(stripIdx);
+                        ImageProcessor stripIpr = strip.getProcessor(finalZ + 1);
 
-                    ImageProcessor stripIpr = strip.getProcessor(finalZ + 1);
+                        for (int x = 0; x < strip.getWidth(); x++) {
+                            for (int y = 0; y < strip.getHeight(); y++) {
 
-                    for (int x = 0; x < strip.getWidth(); x++) {
-                        for (int y = 0; y < strip.getHeight(); y++) {
+                                // Getting value from strip
+                                Double val = (Double) ((double) stripIpr.getf(x, y));
 
-                            // Getting value from strip
-                            Double val = (Double) ((double) stripIpr.getf(x, y));
+                                if (val == 0)
+                                    continue;
 
-                            if (val == 0)
-                                continue;
+                                // Converting to grouped label
+                                int regionID = currFragments.get(val).regionID;
 
-                            // Converting to grouped label
-                            int regionID = currFragments.get(val).regionID;
+                                // Assigning to original stack
+                                ipr.setf(x0 + x, y, regionID);
 
-                            // Assigning to original stack
-                            ipr.setf(x0 + x, y, regionID);
-
+                            }
                         }
                     }
-                }
-            };
-            pool.submit(task);
-        }
+                };
+                pool.submit(task);
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
 
         return ist;

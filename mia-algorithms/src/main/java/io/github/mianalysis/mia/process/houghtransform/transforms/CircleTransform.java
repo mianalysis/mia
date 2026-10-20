@@ -32,44 +32,44 @@ public class CircleTransform extends AbstractTransform {
     public void run() {
         int[][] parameters = accumulator.getParameters();
 
-        // Setting up the threading system
+        try (// Setting up the threading system
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+                new LinkedBlockingQueue<>())) {
+            // Iterating over all radii
+            int nX = parameters[0].length;
+            int nY = parameters[1].length;
+            int nR = parameters[2].length;
 
-        // Iterating over all radii
-        int nX = parameters[0].length;
-        int nY = parameters[1].length;
-        int nR = parameters[2].length;
+            for (int iR = 0; iR < nR; iR++) {
+                int finalIR = iR;
+                int R = parameters[2][iR];
+                Runnable task = () -> {
+                    // Generating coordinates for the points on the midpoint circle
+                    MidpointCircle midpointCircle = new MidpointCircle(R);
+                    int[][] circ = midpointCircle.getCircle();
 
-        for (int iR = 0; iR < nR; iR++) {
-            int finalIR = iR;
-            int R = parameters[2][iR];
-            Runnable task = () -> {
-                // Generating coordinates for the points on the midpoint circle
-                MidpointCircle midpointCircle = new MidpointCircle(R);
-                int[][] circ = midpointCircle.getCircle();
+                    // Iterating over X and Y
+                    for (int iX = 0; iX < nX; iX++) {
+                        for (int iY = 0; iY < nY; iY++) {
+                            // Getting current XY values
+                            int X = parameters[0][iX];
+                            int Y = parameters[1][iY];
 
-                // Iterating over X and Y
-                for (int iX = 0; iX < nX; iX++) {
-                    for (int iY = 0; iY < nY; iY++) {
-                        // Getting current XY values
-                        int X = parameters[0][iX];
-                        int Y = parameters[1][iY];
+                            double value = pixels.getPixelValue(new int[] { X, Y });
+                            accumulator.addPoints(new int[] { iX, iY, finalIR }, value, circ);
 
-                        double value = pixels.getPixelValue(new int[] { X, Y });
-                        accumulator.addPoints(new int[] { iX, iY, finalIR }, value, circ);
-
+                        }
                     }
-                }
-            };
-            pool.submit(task);
-        }
+                };
+                pool.submit(task);
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

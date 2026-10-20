@@ -47,83 +47,109 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.exceptions.LongOverflowException;
 
-
 /**
-* Performs a volume-limited 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The volume of holes to be filled can be restricted with both minimum and maximum permissible holes.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
-*/
+ * Performs a volume-limited 3D fill holes operation on an input binary image.
+ * This operation will change all background pixels in a region which is fully
+ * enclosed by foreground pixels to foreground. The volume of holes to be filled
+ * can be restricted with both minimum and maximum permissible holes. This image
+ * will be 8-bit with binary logic determined by the "Binary logic" parameter.
+ * Uses the plugin
+ * "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FillHolesByVolume extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input, object output";
 
-	/**
-	* Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
-	*/
+    /**
+     * Image from workspace to apply fill holes operation to. This image will be
+     * 8-bit with binary logic determined by the "Binary logic" parameter.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
-	*/
+    /**
+     * When selected, the post-operation image will overwrite the input image in the
+     * workspace. Otherwise, the image will be saved to the workspace with the name
+     * specified by the "Output image" parameter.
+     */
     public static final String APPLY_TO_INPUT = "Apply to input image";
 
-	/**
-	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
-	*/
+    /**
+     * If "Apply to input image" is not selected, the post-operation image will be
+     * saved to the workspace with this name.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String HOLE_FILLING_SEPARATOR = "Hole filling controls";
 
-	/**
-	* When selected, a minimum permitted volume for binary holes can be set.  Any holes with volumes smaller than this value will be removed.
-	*/
+    /**
+     * When selected, a minimum permitted volume for binary holes can be set. Any
+     * holes with volumes smaller than this value will be removed.
+     */
     public static final String SET_MINIMUM_VOLUME = "Set minimum volume";
 
-	/**
-	* If "Set minimum volume" is selected, this is the minimum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.
-	*/
+    /**
+     * If "Set minimum volume" is selected, this is the minimum volume each hole
+     * must have for it to be retained. Volumes are specified in units controlled by
+     * the "Calibrated units" parameter.
+     */
     public static final String MINIMUM_VOLUME = "Minimum permitted volume";
 
-	/**
-	* When selected, a maximum permitted volume for binary holes can be set.  Any holes with volumes larger than this value will be removed.
-	*/
+    /**
+     * When selected, a maximum permitted volume for binary holes can be set. Any
+     * holes with volumes larger than this value will be removed.
+     */
     public static final String SET_MAXIMUM_VOLUME = "Set maximum volume";
 
-	/**
-	* If "Set maximum volume" is selected, this is the maximum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.
-	*/
+    /**
+     * If "Set maximum volume" is selected, this is the maximum volume each hole
+     * must have for it to be retained. Volumes are specified in units controlled by
+     * the "Calibrated units" parameter.
+     */
     public static final String MAXIMUM_VOLUME = "Maximum permitted volume";
 
-	/**
-	* When selected, hole size limits are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
-	*/
+    /**
+     * When selected, hole size limits are assumed to be specified in calibrated
+     * units (as defined by the "Input control" parameter "Spatial unit").
+     * Otherwise, pixel units are assumed.
+     */
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-	/**
-	* Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li></ul>
-	*/
+    /**
+     * Controls which adjacent pixels are considered:<br>
+     * <ul>
+     * <li>"6" Only pixels immediately next to the active pixel are considered.
+     * These are the pixels on the four "cardinal" directions plus the pixels
+     * immediately above and below the current pixel. If working in 2D, 4-way
+     * connectivity is used.</li>
+     * <li>"26" In addition to the core 6-pixels, all immediately diagonal pixels
+     * are used. If working in 2D, 8-way connectivity is used.</li>
+     * </ul>
+     */
     public static final String CONNECTIVITY = "Connectivity";
 
-	/**
-	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
-	*/
+    /**
+     * Controls whether objects are considered to be white (255 intensity) on a
+     * black (0 intensity) background, or black on a white background.
+     */
     public static final String BINARY_LOGIC = "Binary logic";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.
-	*/
+    /**
+     * Break the image down into strips, each one processed on a separate CPU
+     * thread. The overhead required to do this means it's best for large multi-core
+     * CPUs, but should be left disabled for small images or on CPUs with few cores.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
@@ -176,39 +202,40 @@ public class FillHolesByVolume extends Module {
                 // Counting the number of instances of each label
                 ImageStack labelIst = currStack.getImageStack();
 
-                ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                        new LinkedBlockingQueue<>());
-
                 // Storing on a slice-by-slice basis
                 ConcurrentHashMap<Integer, Long> labels = new ConcurrentHashMap<>();
-                for (int z = 0; z < labelIst.getSize(); z++) {
-                    final int finalZ = z;
-                    Runnable task = () -> {
-                        HashMap<Integer, Long> currLabels = new HashMap<>();
-                        final ImageProcessor labelIpr = labelIst.getProcessor(finalZ + 1);
-                        for (int x = 0; x < labelIst.getWidth(); x++) {
-                            for (int y = 0; y < labelIst.getHeight(); y++) {
-                                int label = labelIpr.get(x, y);
-                                currLabels.putIfAbsent(label, 0l);
-                                currLabels.put(label, currLabels.get(label) + 1);
 
+                try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>())) {
+                    for (int z = 0; z < labelIst.getSize(); z++) {
+                        final int finalZ = z;
+                        Runnable task = () -> {
+                            HashMap<Integer, Long> currLabels = new HashMap<>();
+                            final ImageProcessor labelIpr = labelIst.getProcessor(finalZ + 1);
+                            for (int x = 0; x < labelIst.getWidth(); x++) {
+                                for (int y = 0; y < labelIst.getHeight(); y++) {
+                                    int label = labelIpr.get(x, y);
+                                    currLabels.putIfAbsent(label, 0l);
+                                    currLabels.put(label, currLabels.get(label) + 1);
+
+                                }
                             }
-                        }
 
-                        // Adding current labels to the global collection
-                        for (int currLabel : currLabels.keySet()) {
-                            labels.putIfAbsent(currLabel, 0l);
-                            labels.put(currLabel, labels.get(currLabel) + currLabels.get(currLabel));
-                        }
-                    };
-                    pool.submit(task);
-                }
+                            // Adding current labels to the global collection
+                            for (int currLabel : currLabels.keySet()) {
+                                labels.putIfAbsent(currLabel, 0l);
+                                labels.put(currLabel, labels.get(currLabel) + currLabels.get(currLabel));
+                            }
+                        };
+                        pool.submit(task);
+                    }
 
-                pool.shutdown();
-                try {
-                    pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-                } catch (InterruptedException e) {
-                    // Do nothing as the user has selected this
+                    pool.shutdown();
+                    try {
+                        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+                    } catch (InterruptedException e) {
+                        // Do nothing as the user has selected this
+                    }
                 }
 
                 // Removing pixels with counts outside the limits
@@ -221,39 +248,39 @@ public class FillHolesByVolume extends Module {
 
                 }
 
-                pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                        new LinkedBlockingQueue<>());
+                try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>())) {
+                    // Binarising the input image based on whether the label is still in the list
+                    for (int z = 1; z <= nSlices; z++) {
+                        final int finalC = c;
+                        final int finalZ = z;
+                        final int finalT = t;
 
-                // Binarising the input image based on whether the label is still in the list
-                for (int z = 1; z <= nSlices; z++) {
-                    final int finalC = c;
-                    final int finalZ = z;
-                    final int finalT = t;
+                        Runnable task = () -> {
+                            int idx = ipl.getStackIndex(finalC, finalZ, finalT);
+                            ImageProcessor ipr = ipl.getImageStack().getProcessor(idx);
+                            ImageProcessor labelIpr = labelIst.getProcessor(finalZ);
 
-                    Runnable task = () -> {
-                        int idx = ipl.getStackIndex(finalC, finalZ, finalT);
-                        ImageProcessor ipr = ipl.getImageStack().getProcessor(idx);
-                        ImageProcessor labelIpr = labelIst.getProcessor(finalZ);
-
-                        for (int x = 0; x < labelIst.getWidth(); x++) {
-                            for (int y = 0; y < labelIst.getHeight(); y++) {
-                                int label = labelIpr.get(x, y);
-                                // int label = (int) labelIst.getVoxel(x, y, finalZ);
-                                if (labels.containsKey(label))
-                                    ipr.set(x, y, 0);
-                                else if (label > 0)
-                                    ipr.set(x, y, 255);
+                            for (int x = 0; x < labelIst.getWidth(); x++) {
+                                for (int y = 0; y < labelIst.getHeight(); y++) {
+                                    int label = labelIpr.get(x, y);
+                                    // int label = (int) labelIst.getVoxel(x, y, finalZ);
+                                    if (labels.containsKey(label))
+                                        ipr.set(x, y, 0);
+                                    else if (label > 0)
+                                        ipr.set(x, y, 255);
+                                }
                             }
-                        }
-                    };
-                    pool.submit(task);
-                }
+                        };
+                        pool.submit(task);
+                    }
 
-                pool.shutdown();
-                try {
-                    pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-                } catch (InterruptedException e) {
-                    // Do nothing as the user has selected this
+                    pool.shutdown();
+                    try {
+                        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+                    } catch (InterruptedException e) {
+                        // Do nothing as the user has selected this
+                    }
                 }
 
                 writeProgressStatus(++count, total, "stacks", name);
@@ -379,7 +406,7 @@ public class FillHolesByVolume extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -412,32 +439,32 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

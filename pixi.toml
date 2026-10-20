@@ -1,0 +1,17 @@
+[workspace]
+authors = ["Stephen Cross <stephencross86@gmail.com>"]
+channels = ["conda-forge"]
+name = "mia"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.9"
+numpy = "<2"
+
+[pypi-dependencies]
+n2v = "<=1"
+tensorflow = ">=1.0, <=2.18"
+appose = ">=0.11.0, <0.12"

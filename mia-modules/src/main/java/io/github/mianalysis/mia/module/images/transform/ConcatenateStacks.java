@@ -304,7 +304,14 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyDimensions(imgOut, outputImagePlus);
 
-        return ImageFactory.createImage(outputImageName, outputImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
+
+        if (axis.equals(AxisModes.CHANNEL))
+            convertToColour(outputImage, inputImages);
+        else
+            SetLookupTable.copyLUTFromImage(outputImage, inputImages.getFirst());
+
+        return outputImage;
 
     }
 
@@ -396,8 +403,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
         if (outputImage == null)
             return Status.FAIL;
-        if (axisMode.equals(AxisModes.CHANNEL))
-            convertToColour(outputImage, inputImages);
+
         if (showOutput)
             outputImage.show();
         workspace.addImage(outputImage);

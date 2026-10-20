@@ -122,10 +122,28 @@ public class MergeRelatedObjects extends Module {
 
     public static Objs mergeRelatedObjectsCreateNew(Objs parentObjects, String childObjectsName,
             String relatedObjectsName, String mergeMode) {
-        Objs relatedObjects = new Objs(relatedObjectsName, parentObjects);
-
         if (parentObjects == null)
-            return relatedObjects;
+            return null;
+
+        // Identifying which is the larger space
+        int nSlices = parentObjects.getNSlices();
+        Objs childObjectsForInitialisation = null;
+
+        for (Obj parentObj : parentObjects.values()) {
+            Objs children = parentObj.getChildren(childObjectsName);
+            for (Obj childObj : children.values()) {
+                if (childObj.getNSlices() > nSlices) {
+                    childObjectsForInitialisation = children;
+                    break;
+                }
+            }
+        }
+
+        Objs relatedObjects;
+        if (childObjectsForInitialisation == null)
+            relatedObjects = new Objs(relatedObjectsName, parentObjects);
+        else
+            relatedObjects = new Objs(relatedObjectsName, childObjectsForInitialisation);
 
         for (Obj parentObj : parentObjects.values()) {
             // Collecting all children for this parent. If none are present, skip to the
@@ -226,7 +244,7 @@ public class MergeRelatedObjects extends Module {
                 mergeRelatedObjectsUpdateParent(parentObjects, childObjectsName, mergeMode);
                 if (showOutput && parentObjects != null)
                     parentObjects.convertToImageIDColours().show(false);
-                
+
                 break;
         }
         return Status.PASS;
@@ -283,8 +301,8 @@ public class MergeRelatedObjects extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

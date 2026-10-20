@@ -196,6 +196,7 @@ public class FitActiveContours extends Module {
 
     public FitActiveContours(Modules modules) {
         super("Fit active contours", modules);
+        setDeprecated(true);
     }
 
     @Override

@@ -57,6 +57,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ClassHunter;
+import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
@@ -218,6 +219,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     public static final String CLASS_LIST = "Class list (comma-separated)";
 
+    public static final String CLASS_COLOURMAP = "Colourmap for classes";
+
     /**
     * 
     */
@@ -243,7 +246,11 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
      */
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
-    public interface ExistingObjectTypes extends ObjectSelector.ExistingObjectTypes {};
+    public interface ExistingObjectTypes extends ObjectSelector.ExistingObjectTypes {
+    };
+
+    public interface ColourMaps extends ColourFactory.ColourMaps {
+    };
 
     protected HashSet<ManualExtension> extensions = new HashSet<>();
     protected ObjectSelector objectSelector = null;
@@ -414,7 +421,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     while ((row = bufferedReader.readLine()) != null) {
                         row = row.toString().replace("\uFEFF", "");
                         for (String item : row.split(","))
-                            classes.add(item);
+                            classes.add(item.trim());
                     }
                     bufferedReader.close();
                 } catch (FileNotFoundException e) {
@@ -513,10 +520,16 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
         String classList = parameters.getValue(CLASS_LIST, workspace);
+        String classColourMap = parameters.getValue(CLASS_COLOURMAP, workspace);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+
+        switch ((String) parameters.getValue(CLASSES_SOURCE, workspace)) {
+            case ClassesSources.NEW_CLASS_FILE:
+                allowAdditions = true;
+        }
 
         setSelector(selectorType);
 
@@ -538,6 +551,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             TreeSet<String> classes = getClasses(classesSource, classFile, classList);
             classSelector = new ClassSelector(classes, allowAdditions);
             objectSelector.setClassSelector(classSelector);
+            objectSelector.setClassColourMap(classColourMap);
         }
 
         for (ManualExtension extension : extensions) {
@@ -583,6 +597,20 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             Status extensionStatus = extension.onFinishAddingObjects();
             if (extensionStatus != Status.PASS)
                 return extensionStatus;
+        }
+
+        // Updated fixed class list if necessary
+        switch ((String) parameters.getValue(CLASSES_SOURCE, workspace)) {
+            case ClassesSources.FIXED_LIST:
+                if (allowAdditions) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String className : classSelector.getAllClasses())
+                        if (className.length() > 0)
+                            sb.append(className).append(",");
+
+                    String newClassList = sb.toString();
+                    parameters.get(CLASS_LIST).setValueFromString(newClassList.substring(0, newClassList.length() - 1));
+                }
         }
 
         // If more pixels than Integer.MAX_VALUE were assigned, return false
@@ -651,6 +679,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         parameters.add(new FilePathP(CLASS_FILE, this));
         parameters.add(new BooleanP(ALLOW_ADDITIONS, this, false));
         parameters.add(new StringP(CLASS_LIST, this));
+        parameters.add(new ChoiceP(CLASS_COLOURMAP, this, ColourMaps.RANDOM_VIBRANT,
+                (String[]) ColourFactory.getColourMaps().keySet().stream().toArray(String[]::new)));
 
         parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
         parameters.add(new TextAreaP(INSTRUCTION_TEXT, this,
@@ -717,6 +747,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     break;
                 case ClassesSources.FIXED_LIST:
                     returnedParameters.add(parameters.get(CLASS_LIST));
+                    returnedParameters.add(parameters.get(ALLOW_ADDITIONS));
                     break;
                 case ClassesSources.NEW_CLASS_FILE:
                     Parameters saverParameters = super.updateAndGetParameters();
@@ -724,6 +755,7 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                     returnedParameters.addAll(saverParameters);
                     break;
             }
+            returnedParameters.add(parameters.get(CLASS_COLOURMAP));
         }
 
         returnedParameters.add(parameters.get(SELECTION_SEPARATOR));

@@ -322,35 +322,35 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 
         // Setting up multithreading options
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            AtomicInteger count = new AtomicInteger(1);
+            int total = inputObjects.size();
+            for (Obj inputObject : inputObjects.values()) {
+                SXSSFSheet sheet = workbook.createSheet("Obj"+inputObject.getID());
+                initialiseSheetHeader(sheet, calculatePercentileInterval, percentileLow, percentileHigh);
+                
+                Runnable task = () -> {
+                    try {
+                        process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, calculatePercentileInterval,
+                                percentileLow, percentileHigh, nSimulations);
+                    } catch (Exception e) {
+                        MIA.log.writeError(e);
+                    }
+                    writeProgressStatus(count.getAndIncrement(), total, "measurements");
+                };
+                pool.submit(task);
 
-        AtomicInteger count = new AtomicInteger(1);
-        int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
-            SXSSFSheet sheet = workbook.createSheet("Obj"+inputObject.getID());
-            initialiseSheetHeader(sheet, calculatePercentileInterval, percentileLow, percentileHigh);
-            
-            Runnable task = () -> {
-                try {
-                    process(inputObject, inputImage, minRadius, maxRadius, radiusInc, sheet, calculatePercentileInterval,
-                            percentileLow, percentileHigh, nSimulations);
-                } catch (Exception e) {
-                    MIA.log.writeError(e);
-                }
-                writeProgressStatus(count.getAndIncrement(), total, "measurements");
-            };
-            pool.submit(task);
+            }
 
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        } catch (Exception e) {
-            MIA.log.writeError(e);
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            } catch (Exception e) {
+                MIA.log.writeError(e);
+            }
         }
 
         String outputPath = getOutputPath(modules, workspace);

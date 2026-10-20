@@ -42,67 +42,99 @@ import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
  */
 
 /**
-* Fit ellipsoids to all objects in a collection using "<a href="https://imagej.net/BoneJ">BoneJ</a>".  Fit ellipsoids can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipsoid coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.
-*/
+ * Fit ellipsoids to all objects in a collection using
+ * "<a href="https://imagej.net/BoneJ">BoneJ</a>". Fit ellipsoids can be stored
+ * either as new objects, or replacing the input object coordinates.<br>
+ * <br>
+ * Note: If updating input objects with ellipsoid coordinates, measurements
+ * associated with the input object (e.g. spatial measurements) will still be
+ * available, but may no longer be valid.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitEllipsoid extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Object input";
 
-	/**
-	* Objects from workspace to which ellipsoids will be fit.  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipsoids are also stored as objects.
-	*/
+    /**
+     * Objects from workspace to which ellipsoids will be fit. Measurements made by
+     * this module are associated with these input objects, irrespective of whether
+     * the fit ellipsoids are also stored as objects.
+     */
     public static final String INPUT_OBJECTS = "Input objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String FITTING_SEPARATOR = "Ellipsoid fitting";
 
-	/**
-	* Controls which object coordinates are used for ellipsoid fitting:<br><ul><li>"Fit to whole" All coordinates for the input object are passed to the ellipsoid fitter.</li><li>"Fit to surface" (default) Only surface coordinates of the input object are passed to the ellipsoid fitter.  Surface coordinates are calculated using 6-way connectivity.</li></ul>
-	*/
+    /**
+     * Controls which object coordinates are used for ellipsoid fitting:<br>
+     * <ul>
+     * <li>"Fit to whole" All coordinates for the input object are passed to the
+     * ellipsoid fitter.</li>
+     * <li>"Fit to surface" (default) Only surface coordinates of the input object
+     * are passed to the ellipsoid fitter. Surface coordinates are calculated using
+     * 6-way connectivity.</li>
+     * </ul>
+     */
     public static final String FITTING_MODE = "Fitting mode";
 
-	/**
-	* When selected, all axes of the the fit ellipsoids must be shorter than the length specified by "Maximum axis length".  This helps filter out mis-fit ellipsoids and prevents unnecessary, massive memory use when storing ellipsoids.
-	*/
+    /**
+     * When selected, all axes of the the fit ellipsoids must be shorter than the
+     * length specified by "Maximum axis length". This helps filter out mis-fit
+     * ellipsoids and prevents unnecessary, massive memory use when storing
+     * ellipsoids.
+     */
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
 
-	/**
-	* Maximum length of any fit ellipsoid axis as measured in pixel units.  This is onyl used if "Limit axis length" is selected.
-	*/
+    /**
+     * Maximum length of any fit ellipsoid axis as measured in pixel units. This is
+     * onyl used if "Limit axis length" is selected.
+     */
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String OUTPUT_SEPARATOR = "Object output";
 
-	/**
-	* Controls whether the fit ellipsoid is stored as an object in the workspace:<br><ul><li>"Create new objects" Fit ellipsoids are stored as new objects in the workspace (name specified by "Output objects").  Ellipsoids are "solid" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipsoid objects are children of the input objects to which they were fit.  If outputting ellipsoid objects, any measurements are still only applied to the corresponding input objects.</li><li>"Do not store" (default) The ellipsoid coordinates are not stored.</li><li>"Update input objects" The coordinates of the input object are removed and replaced with the fit ellipsoid coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul>
-	*/
+    /**
+     * Controls whether the fit ellipsoid is stored as an object in the
+     * workspace:<br>
+     * <ul>
+     * <li>"Create new objects" Fit ellipsoids are stored as new objects in the
+     * workspace (name specified by "Output objects"). Ellipsoids are "solid"
+     * objects, irrespective of whether they were only fit to input object surface
+     * coordinates. Ellipsoid objects are children of the input objects to which
+     * they were fit. If outputting ellipsoid objects, any measurements are still
+     * only applied to the corresponding input objects.</li>
+     * <li>"Do not store" (default) The ellipsoid coordinates are not stored.</li>
+     * <li>"Update input objects" The coordinates of the input object are removed
+     * and replaced with the fit ellipsoid coordinates. Note: Measurements
+     * associated with the input object (e.g. spatial measurements) will still be
+     * available, but may no longer be valid.</li>
+     * </ul>
+     */
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
 
-	/**
-	* Name assigned to output ellipsoid objects if "Object output mode" is in "Create new objects" mode.
-	*/
+    /**
+     * Name assigned to output ellipsoid objects if "Object output mode" is in
+     * "Create new objects" mode.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
-	/**
-	* Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
-	*/
+    /**
+     * Process multiple input objects simultaneously. This can provide a speed
+     * improvement when working on a computer with a multi-core CPU.
+     */
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public FitEllipsoid(Modules modules) {
@@ -318,37 +350,37 @@ public class FitEllipsoid extends Module {
 
         // Setting up multithreading options
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, taking measurements and adding new object to the
+            // workspace where necessary
+            AtomicInteger count = new AtomicInteger(1);
+            int total = inputObjects.size();
+            Objs finalOutputObjects = outputObjects;
+            for (Obj inputObject : inputObjects.values()) {
+                Runnable task = () -> {
+                    try {
+                        processObject(inputObject, finalOutputObjects, objectOutputMode, fittingMode, maxAxisLength);
+                    } catch (IntegerOverflowException e) {
+                        MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
+                                + " during ellipsoid fitting.");
+                    } catch (Exception e) {
+                        MIA.log.writeError(e);
+                    }
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                };
+                pool.submit(task);
 
-        // Running through each object, taking measurements and adding new object to the
-        // workspace where necessary
-        AtomicInteger count = new AtomicInteger(1);
-        int total = inputObjects.size();
-        Objs finalOutputObjects = outputObjects;
-        for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                try {
-                    processObject(inputObject, finalOutputObjects, objectOutputMode, fittingMode, maxAxisLength);
-                } catch (IntegerOverflowException e) {
-                    MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
-                            + " during ellipsoid fitting.");
-                } catch (Exception e) {
-                    MIA.log.writeError(e);
-                }
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
+            }
 
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        } catch (Exception e) {
-            MIA.log.writeError(e);
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            } catch (Exception e) {
+                MIA.log.writeError(e);
+            }
         }
 
         if (showOutput) {
@@ -504,8 +536,8 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+        return null;
     }
 
     @Override

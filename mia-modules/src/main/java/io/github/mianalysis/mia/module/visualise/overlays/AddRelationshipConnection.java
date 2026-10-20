@@ -256,36 +256,37 @@ public class AddRelationshipConnection extends AbstractOverlay {
             String measName2, HashMap<Integer, Color> colours, boolean renderInAllFrames,
             boolean multithread) {
         // Adding the overlay element
-        try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-            // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
 
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>());
-
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object : inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
+            try {
+                for (Obj object : inputObjects.values()) {
+                    ImagePlus finalIpl = ipl;
 
-                Runnable task = () -> {
-                    Color colour = colours.get(object.getID());
+                    Runnable task = () -> {
+                        Color colour = colours.get(object.getID());
 
-                    addParentChildOverlay(object, childObjectsName, finalIpl, colour, renderMode, lineWidth, pointSize,
-                            pointType, offset, measName1, measName2, renderInAllFrames);
+                        addParentChildOverlay(object, childObjectsName, finalIpl, colour, renderMode, lineWidth,
+                                pointSize,
+                                pointType, offset, measName1, measName2, renderInAllFrames);
 
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
+
+                pool.shutdown();
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return;
             }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return;
         }
     }
 
@@ -319,36 +320,36 @@ public class AddRelationshipConnection extends AbstractOverlay {
             boolean offset, String measName1, String measName2, HashMap<Integer, Color> colours,
             boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
-        try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-            // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
 
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>());
-
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object : inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
+            try {
+                for (Obj object : inputObjects.values()) {
+                    ImagePlus finalIpl = ipl;
 
-                Runnable task = () -> {
-                    Color colour = colours.get(object.getID());
+                    Runnable task = () -> {
+                        Color colour = colours.get(object.getID());
 
-                    addSiblingOverlay(object, childObjects1Name, childObjects2Name, finalIpl, colour, renderMode,
-                            lineWidth, pointSize, pointType, offset, measName1, measName2, renderInAllFrames);
+                        addSiblingOverlay(object, childObjects1Name, childObjects2Name, finalIpl, colour, renderMode,
+                                lineWidth, pointSize, pointType, offset, measName1, measName2, renderInAllFrames);
 
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
+
+                pool.shutdown();
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return;
             }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return;
         }
     }
 
@@ -385,36 +386,36 @@ public class AddRelationshipConnection extends AbstractOverlay {
             String measName2, HashMap<Integer, Color> colours, boolean renderInAllFrames,
             boolean multithread) {
         // Adding the overlay element
-        try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-            // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
 
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>());
-
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj partnerObject1 : partnerObjects1.values()) {
-                ImagePlus finalIpl = ipl;
+            try {
+                for (Obj partnerObject1 : partnerObjects1.values()) {
+                    ImagePlus finalIpl = ipl;
 
-                Runnable task = () -> {
-                    Color colour = colours.get(partnerObject1.getID());
+                    Runnable task = () -> {
+                        Color colour = colours.get(partnerObject1.getID());
 
-                    addPartnerOverlay(partnerObject1, partnerObjects2Name, finalIpl, colour, renderMode, lineWidth,
-                            pointSize, pointType, offset, measName1, measName2, renderInAllFrames);
+                        addPartnerOverlay(partnerObject1, partnerObjects2Name, finalIpl, colour, renderMode, lineWidth,
+                                pointSize, pointType, offset, measName1, measName2, renderInAllFrames);
 
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
+
+                pool.shutdown();
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return;
             }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return;
         }
     }
 

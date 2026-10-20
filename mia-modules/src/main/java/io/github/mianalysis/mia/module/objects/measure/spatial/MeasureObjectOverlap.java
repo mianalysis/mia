@@ -178,78 +178,78 @@ public class MeasureObjectOverlap extends Module {
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            int total = inputObjects1.size() + inputObjects2.size();
+            AtomicInteger count = new AtomicInteger();
 
-        int total = inputObjects1.size() + inputObjects2.size();
-        AtomicInteger count = new AtomicInteger();
+            // Iterating over all object pairs, adding overlapping pixels to a HashSet based
+            // on their index
+            for (Obj obj1 : inputObjects1.values()) {
+                Runnable task = () -> {
+                    double dppXY = obj1.getDppXY();
+                    double dppZ = obj1.getDppZ();
 
-        // Iterating over all object pairs, adding overlapping pixels to a HashSet based
-        // on their index
-        for (Obj obj1 : inputObjects1.values()) {
-            Runnable task = () -> {
-                double dppXY = obj1.getDppXY();
-                double dppZ = obj1.getDppZ();
+                    // Calculating volume
+                    double objVolume = (double) obj1.size();
+                    double overlap = (double) getNOverlappingPoints(obj1, inputObjects2, linkInSameFrame);
+                    double overlapVolPx = overlap * dppZ / dppXY;
+                    double overlapVolCal = overlap * dppXY * dppXY * dppZ;
+                    double overlapPC = 100 * overlap / objVolume;
 
-                // Calculating volume
-                double objVolume = (double) obj1.size();
-                double overlap = (double) getNOverlappingPoints(obj1, inputObjects2, linkInSameFrame);
-                double overlapVolPx = overlap * dppZ / dppXY;
-                double overlapVolCal = overlap * dppXY * dppXY * dppZ;
-                double overlapPC = 100 * overlap / objVolume;
+                    // Adding the measurements
+                    obj1.addMeasurement(
+                            new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOX_1), overlap));
+                    obj1.addMeasurement(
+                            new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_PX_1), overlapVolPx));
+                    obj1.addMeasurement(
+                            new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_CAL_1), overlapVolCal));
+                    obj1.addMeasurement(
+                            new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_PERCENT_1), overlapPC));
 
-                // Adding the measurements
-                obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOX_1), overlap));
-                obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_PX_1), overlapVolPx));
-                obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_CAL_1), overlapVolCal));
-                obj1.addMeasurement(
-                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_PERCENT_1), overlapPC));
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                };
+                pool.submit(task);
 
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
+            }
 
-        }
+            // Iterating over all object pairs, adding overlapping pixels to a HashSet based
+            // on their index
+            for (Obj obj2 : inputObjects2.values()) {
+                Runnable task = () -> {
+                    double dppXY = obj2.getDppXY();
+                    double dppZ = obj2.getDppZ();
 
-        // Iterating over all object pairs, adding overlapping pixels to a HashSet based
-        // on their index
-        for (Obj obj2 : inputObjects2.values()) {
-            Runnable task = () -> {
-                double dppXY = obj2.getDppXY();
-                double dppZ = obj2.getDppZ();
+                    // Calculating volume
+                    double objVolume = (double) obj2.size();
+                    double overlap = (double) getNOverlappingPoints(obj2, inputObjects1, linkInSameFrame);
+                    double overlapVolPx = overlap * dppZ / dppXY;
+                    double overlapVolCal = overlap * dppXY * dppXY * dppZ;
+                    double overlapPC = 100 * overlap / objVolume;
 
-                // Calculating volume
-                double objVolume = (double) obj2.size();
-                double overlap = (double) getNOverlappingPoints(obj2, inputObjects1, linkInSameFrame);
-                double overlapVolPx = overlap * dppZ / dppXY;
-                double overlapVolCal = overlap * dppXY * dppXY * dppZ;
-                double overlapPC = 100 * overlap / objVolume;
+                    // Adding the measurements
+                    obj2.addMeasurement(
+                            new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOX_2), overlap));
+                    obj2.addMeasurement(
+                            new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_PX_2), overlapVolPx));
+                    obj2.addMeasurement(
+                            new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_CAL_2), overlapVolCal));
+                    obj2.addMeasurement(
+                            new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_PERCENT_2), overlapPC));
 
-                // Adding the measurements
-                obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOX_2), overlap));
-                obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_PX_2), overlapVolPx));
-                obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_CAL_2), overlapVolCal));
-                obj2.addMeasurement(
-                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_PERCENT_2), overlapPC));
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                };
+                pool.submit(task);
 
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
+            }
 
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return Status.FAIL;
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return Status.FAIL;
+            }
         }
 
         if (showOutput)

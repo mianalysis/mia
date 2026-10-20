@@ -401,51 +401,51 @@ public class AddLabels extends AbstractOverlay {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
 
         // Adding the overlay element
-        try {
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>());
-
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object : inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
+            try {
+                for (Obj object : inputObjects.values()) {
+                    ImagePlus finalIpl = ipl;
 
-                Runnable task = () -> {
-                    int t1 = object.getT() + 1;
-                    int t2 = object.getT() + 1;
-                    if (renderInAllFrames) {
-                        t1 = 1;
-                        t2 = finalIpl.getNFrames();
-                    }
+                    Runnable task = () -> {
+                        int t1 = object.getT() + 1;
+                        int t2 = object.getT() + 1;
+                        if (renderInAllFrames) {
+                            t1 = 1;
+                            t2 = finalIpl.getNFrames();
+                        }
 
-                    Color colour = colours.get(object.getID());
-                    String label = labels == null ? "" : labels.get(object.getID());
+                        Color colour = colours.get(object.getID());
+                        String label = labels == null ? "" : labels.get(object.getID());
 
-                    double[] location = getLocation(object, labelPosition, xOffset, yOffset, positions,
-                            measurementNames);
+                        double[] location = getLocation(object, labelPosition, xOffset, yOffset, positions,
+                                measurementNames);
 
-                    for (int t = t1; t <= t2; t++) {
-                        if (renderInAllSlices) {
-                            double[][] extents = object.getExtents(true, false);
-                            int zMin = (int) Math.round(extents[2][0]);
-                            int zMax = (int) Math.round(extents[2][1]);
-                            for (int z = zMin; z <= zMax; z++) {
-                                location[2] = z + 1;
+                        for (int t = t1; t <= t2; t++) {
+                            if (renderInAllSlices) {
+                                double[][] extents = object.getExtents(true, false);
+                                int zMin = (int) Math.round(extents[2][0]);
+                                int zMax = (int) Math.round(extents[2][1]);
+                                for (int z = zMin; z <= zMax; z++) {
+                                    location[2] = z + 1;
+                                    addOverlay(finalIpl, label, location, t, colour, labelSize, centreText);
+                                }
+                            } else {
                                 addOverlay(finalIpl, label, location, t, colour, labelSize, centreText);
                             }
-                        } else {
-                            addOverlay(finalIpl, label, location, t, colour, labelSize, centreText);
                         }
-                    }
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
+
+                pool.shutdown();
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
             }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
         }
     }
 
@@ -461,9 +461,9 @@ public class AddLabels extends AbstractOverlay {
         text.setAntialiased(true);
 
         // if (ipl.isHyperStack()) {
-            text.setPosition(1, (int) labelCoords[2], t);
+        text.setPosition(1, (int) labelCoords[2], t);
         // } else {
-        //     text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), t));
+        // text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), t));
         // }
 
         if (centreText) {

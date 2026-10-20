@@ -627,58 +627,58 @@ public class CreateSkeleton extends Module {
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            int total = inputObjects.size();
+            AtomicInteger count = new AtomicInteger();
 
-        int total = inputObjects.size();
-        AtomicInteger count = new AtomicInteger();
+            final double minLengthFinal = minLength;
+            final boolean exportLargestShortestPathFinal = exportLargestShortestPath;
+            for (Obj inputObject : inputObjects.values()) {
+                Runnable task = () -> {
+                    try {
+                        Object[] result = initialiseAnalyzer(inputObject, minLengthFinal, exportLargestShortestPathFinal);
 
-        final double minLengthFinal = minLength;
-        final boolean exportLargestShortestPathFinal = exportLargestShortestPath;
-        for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                try {
-                    Object[] result = initialiseAnalyzer(inputObject, minLengthFinal, exportLargestShortestPathFinal);
+                        // Adding the skeleton to the input object
+                        if (addToWorkspace) {
 
-                    // Adding the skeleton to the input object
-                    if (addToWorkspace) {
+                            Obj skeletonObject = createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
+                                    skeletonObjects, edgeObjects, junctionObjects, inputMode.equals(InputModes.OBJECTS));
 
-                        Obj skeletonObject = createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
-                                skeletonObjects, edgeObjects, junctionObjects, inputMode.equals(InputModes.OBJECTS));
+                            // Creating loop objects
+                            if (exportLoops)
+                                createLoopObjects(loopObjects, edgeObjectsName, junctionObjectsName, loopObjectsName,
+                                        skeletonObject);
+                            
+                        }
 
-                        // Creating loop objects
-                        if (exportLoops)
-                            createLoopObjects(loopObjects, edgeObjectsName, junctionObjectsName, loopObjectsName,
-                                    skeletonObject);
-                        
+                        if (exportLargestShortestPathFinal)
+                            createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0],
+                                    (SkeletonResult) result[1], inputMode.equals(InputModes.OBJECTS));
+
+                        if (((SkeletonResult) result[1]) != null && inputMode.equals(InputModes.OBJECTS))
+                            addMeasurements(inputObject, (SkeletonResult) result[1]);
+
+                    } catch (Throwable t) {
+                        MIA.log.writeError(t);
                     }
 
-                    if (exportLargestShortestPathFinal)
-                        createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0],
-                                (SkeletonResult) result[1], inputMode.equals(InputModes.OBJECTS));
+                    writeProgressStatus(count.incrementAndGet(), total, "objects");
 
-                    if (((SkeletonResult) result[1]) != null && inputMode.equals(InputModes.OBJECTS))
-                        addMeasurements(inputObject, (SkeletonResult) result[1]);
+                };
+                pool.submit(task);
 
-                } catch (Throwable t) {
-                    MIA.log.writeError(t);
-                }
+            }
 
-                writeProgressStatus(count.incrementAndGet(), total, "objects");
-
-            };
-            pool.submit(task);
-
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            return Status.FAIL;
-        } catch (Throwable t) {
-            MIA.log.writeError(t);
-            return Status.FAIL;
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                return Status.FAIL;
+            } catch (Throwable t) {
+                MIA.log.writeError(t);
+                return Status.FAIL;
+            }
         }
 
         if (exportLoops)

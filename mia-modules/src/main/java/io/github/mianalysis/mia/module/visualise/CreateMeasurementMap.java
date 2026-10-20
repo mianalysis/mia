@@ -250,72 +250,72 @@ public class CreateMeasurementMap extends Module {
 
         // Setting up the ExecutorService, which will manage the threads
         int nThreads = Prefs.getThreads();
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Iterating over each pixel in the CumStat array
+            int[] dims = indexer.getDim();
 
-        // Iterating over each pixel in the CumStat array
-        int[] dims = indexer.getDim();
+            for (int z = 0; z < dims[2]; z++) {
+                for (int t = 0; t < dims[3]; t++) {
+                    for (int x = 0; x < dims[0]; x++) {
+                        for (int y = 0; y < dims[1]; y++) {
+                            int finalX = x;
+                            int finalY = y;
+                            int finalZ = z;
+                            int finalT = t;
 
-        for (int z = 0; z < dims[2]; z++) {
-            for (int t = 0; t < dims[3]; t++) {
-                for (int x = 0; x < dims[0]; x++) {
-                    for (int y = 0; y < dims[1]; y++) {
-                        int finalX = x;
-                        int finalY = y;
-                        int finalZ = z;
-                        int finalT = t;
+                            Runnable task = () -> {
+                                int idx = indexer.getIndex(new int[] { finalX, finalY, finalZ, finalT });
+                                // Getting neighbour measurements
+                                for (int i = 0; i < xSamp.length; i++) {
+                                    int xx = finalX + xSamp[i];
+                                    int yy = finalY + ySamp[i];
 
-                        Runnable task = () -> {
-                            int idx = indexer.getIndex(new int[] { finalX, finalY, finalZ, finalT });
-                            // Getting neighbour measurements
-                            for (int i = 0; i < xSamp.length; i++) {
-                                int xx = finalX + xSamp[i];
-                                int yy = finalY + ySamp[i];
+                                    int idx2 = indexer.getIndex(new int[] { xx, yy, finalZ, finalT });
+                                    if (idx2 == -1)
+                                        continue;
 
-                                int idx2 = indexer.getIndex(new int[] { xx, yy, finalZ, finalT });
-                                if (idx2 == -1)
-                                    continue;
+                                    double dist = Math.sqrt((xx - finalX) * (xx - finalX) + (yy - finalY) * (yy - finalY));
+                                    double measurementValue = 0;
+                                    switch (statistic) {
+                                        case Statistics.COUNT:
+                                            measurementValue = inputCumstats[idx2].getN();
+                                            break;
+                                        case Statistics.MEAN:
+                                            measurementValue = inputCumstats[idx2].getMean();
+                                            break;
+                                        case Statistics.MIN:
+                                            measurementValue = inputCumstats[idx2].getMin();
+                                            break;
+                                        case Statistics.MAX:
+                                            measurementValue = inputCumstats[idx2].getMax();
+                                            break;
+                                        case Statistics.STD:
+                                            measurementValue = inputCumstats[idx2].getStd();
+                                            break;
+                                        case Statistics.SUM:
+                                            measurementValue = inputCumstats[idx2].getSum();
+                                            break;
+                                    }
 
-                                double dist = Math.sqrt((xx - finalX) * (xx - finalX) + (yy - finalY) * (yy - finalY));
-                                double measurementValue = 0;
-                                switch (statistic) {
-                                    case Statistics.COUNT:
-                                        measurementValue = inputCumstats[idx2].getN();
-                                        break;
-                                    case Statistics.MEAN:
-                                        measurementValue = inputCumstats[idx2].getMean();
-                                        break;
-                                    case Statistics.MIN:
-                                        measurementValue = inputCumstats[idx2].getMin();
-                                        break;
-                                    case Statistics.MAX:
-                                        measurementValue = inputCumstats[idx2].getMax();
-                                        break;
-                                    case Statistics.STD:
-                                        measurementValue = inputCumstats[idx2].getStd();
-                                        break;
-                                    case Statistics.SUM:
-                                        measurementValue = inputCumstats[idx2].getSum();
-                                        break;
+                                    double weight = gaussian.value(dist);
+                                    outputCumStats[idx].addMeasure(measurementValue, weight);
+
                                 }
-
-                                double weight = gaussian.value(dist);
-                                outputCumStats[idx].addMeasure(measurementValue, weight);
-
-                            }
-                        };
-                        pool.submit(task);
+                            };
+                            pool.submit(task);
+                        }
                     }
                 }
             }
-        }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-            return null;
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+                return null;
+            }
         }
 
         return outputCumStats;

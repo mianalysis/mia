@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.7.26</version>
+        <version>1.8.0</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.7.26</version>
+    <version>1.8.0</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -80,8 +80,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.locations.selected>false</dependency.locations.selected>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <scp>compile</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
@@ -124,10 +124,17 @@
     </repositories>
 
     <dependencies>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.46.1.3</version>
+        </dependency> -->
+
+        <dependency>
+            <groupId>com.github.mcib3d</groupId>
+            <artifactId>ABSnake</artifactId>
+            <version>-a8bf2b60f0-1</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -199,6 +206,20 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apposed</groupId>
+            <artifactId>appose</artifactId>
+            <version>0.10.0</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-appose</artifactId>
+            <version>0.9.0</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis-ext</artifactId>
             <version>1.3.04</version>
@@ -211,6 +232,12 @@
             <artifactId>Trainable_Segmentation</artifactId>
             <version>3.3.2</version>
             <scope>${scp}</scope>
+            <!-- <exclusions>
+                <exclusion>
+                    <groupId>jakarta.activation</groupId>
+                    <artifactId>jakarta.activation-api</artifactId>
+                </exclusion>
+            </exclusions> -->
         </dependency>
 
         <dependency>
@@ -223,7 +250,7 @@
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.5</version>
             <scope>${scp}</scope>
         </dependency>
 
@@ -239,6 +266,13 @@
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
             <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.quickhull3d</groupId>
+            <artifactId>quickhull3d</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

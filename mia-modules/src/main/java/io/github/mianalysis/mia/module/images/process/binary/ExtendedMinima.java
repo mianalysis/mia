@@ -142,49 +142,49 @@ public class ExtendedMinima extends Module {
         outputIpl.setCalibration(inputImage.getImagePlus().getCalibration());
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            int nTotal = nChannels * nFrames;
+            AtomicInteger count = new AtomicInteger();
 
-        int nTotal = nChannels * nFrames;
-        AtomicInteger count = new AtomicInteger();
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    int finalT = t;
+                    int finalC = c;
 
-        for (int c = 1; c <= nChannels; c++) {
-            for (int t = 1; t <= nFrames; t++) {
-                int finalT = t;
-                int finalC = c;
+                    Runnable task = () -> {
+                        // Getting maskIpl for this timepoint
+                        ImageStack timepoint = ImagePlusImage.getSetStack(inputIpl, finalT, finalC, null);
 
-                Runnable task = () -> {
-                    // Getting maskIpl for this timepoint
-                    ImageStack timepoint = ImagePlusImage.getSetStack(inputIpl, finalT, finalC, null);
+                        if (timepoint == null)
+                            return;
 
-                    if (timepoint == null)
-                        return;
+                        switch (minimaMaxima) {
+                            case MinimaMaximaModes.MAXIMA:
+                                timepoint = MinimaAndMaxima3D.extendedMaxima(timepoint, dynamic, connectivity);
+                                break;
+                            case MinimaMaximaModes.MINIMA:
+                                timepoint = MinimaAndMaxima3D.extendedMinima(timepoint, dynamic, connectivity);
+                                break;
+                        }
 
-                    switch (minimaMaxima) {
-                        case MinimaMaximaModes.MAXIMA:
-                            timepoint = MinimaAndMaxima3D.extendedMaxima(timepoint, dynamic, connectivity);
-                            break;
-                        case MinimaMaximaModes.MINIMA:
-                            timepoint = MinimaAndMaxima3D.extendedMinima(timepoint, dynamic, connectivity);
-                            break;
-                    }
+                        // Setting the binary logic of the output extended minima
+                        if (blackBackground)
+                            new StackProcessor(timepoint).invert();
 
-                    // Setting the binary logic of the output extended minima
-                    if (blackBackground)
-                        new StackProcessor(timepoint).invert();
+                        // Replacing the maskIpl intensity
+                        ImagePlusImage.getSetStack(outputIpl, finalT, finalC, timepoint);
 
-                    // Replacing the maskIpl intensity
-                    ImagePlusImage.getSetStack(outputIpl, finalT, finalC, timepoint);
+                        writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", moduleName);
 
-                    writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", moduleName);
-
-                };
-                pool.submit(task);
+                    };
+                    pool.submit(task);
+                }
             }
-        }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        }
 
         // MorphoLibJ gives white objects on a black background. Inverting this to match
         // the logic of ImageJ

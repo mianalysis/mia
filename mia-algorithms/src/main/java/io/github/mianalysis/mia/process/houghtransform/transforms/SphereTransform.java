@@ -22,9 +22,9 @@ public class SphereTransform extends AbstractTransform {
         String zRange = CommaSeparatedStringInterpreter.removeInterval(parameterRanges[2]);
 
         int[][] parameters = new int[parameterRanges.length][];
-        parameters[0] = CommaSeparatedStringInterpreter.interpretIntegers(xRange, true, ist.getWidth()-1);
-        parameters[1] = CommaSeparatedStringInterpreter.interpretIntegers(yRange, true, ist.getHeight()-1);
-        parameters[2] = CommaSeparatedStringInterpreter.interpretIntegers(zRange, true, ist.size()-1);
+        parameters[0] = CommaSeparatedStringInterpreter.interpretIntegers(xRange, true, ist.getWidth() - 1);
+        parameters[1] = CommaSeparatedStringInterpreter.interpretIntegers(yRange, true, ist.getHeight() - 1);
+        parameters[2] = CommaSeparatedStringInterpreter.interpretIntegers(zRange, true, ist.size() - 1);
         parameters[3] = CommaSeparatedStringInterpreter.interpretIntegers(parameterRanges[3], true, ist.getWidth() - 1);
 
         this.accumulator = new SphereAccumulator(parameters);
@@ -35,48 +35,48 @@ public class SphereTransform extends AbstractTransform {
     public void run() {
         int[][] parameters = accumulator.getParameters();
 
-        // Setting up the threading system
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (// Setting up the threading system
+                ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>())) {
+            // Iterating over all radii
+            int nX = parameters[0].length;
+            int nY = parameters[1].length;
+            int nZ = parameters[2].length;
+            int nR = parameters[3].length;
 
-        // Iterating over all radii
-        int nX = parameters[0].length;
-        int nY = parameters[1].length;
-        int nZ = parameters[2].length;
-        int nR = parameters[3].length;
+            for (int iR = 0; iR < nR; iR++) {
+                int finalIR = iR;
+                int R = parameters[3][iR];
+                Runnable task = () -> {
+                    // Generating coordinates for the points on the midpoint circle
+                    SphereShell sphereShell = new SphereShell(R, Connectivity.SIX);
+                    int[][] sph = sphereShell.getSphere();
 
-        for (int iR = 0; iR < nR; iR++) {
-            int finalIR = iR;
-            int R = parameters[3][iR];
-            Runnable task = () -> {
-                // Generating coordinates for the points on the midpoint circle
-                SphereShell sphereShell = new SphereShell(R,Connectivity.SIX);
-                int[][] sph = sphereShell.getSphere();
+                    // Iterating over X and Y
+                    for (int iX = 0; iX < nX; iX++) {
+                        for (int iY = 0; iY < nY; iY++) {
+                            for (int iZ = 0; iZ < nZ; iZ++) {
+                                // Getting current XYZ values
+                                int X = parameters[0][iX];
+                                int Y = parameters[1][iY];
+                                int Z = parameters[2][iZ];
 
-                // Iterating over X and Y
-                for (int iX = 0; iX < nX; iX++) {                    
-                    for (int iY = 0; iY < nY; iY++) {
-                        for (int iZ = 0; iZ < nZ; iZ++) {    
-                            // Getting current XYZ values
-                            int X = parameters[0][iX];
-                            int Y = parameters[1][iY];
-                            int Z = parameters[2][iZ];
+                                double value = pixels.getPixelValue(new int[] { X, Y, Z });
+                                accumulator.addPoints(new int[] { iX, iY, iZ, finalIR }, value, sph);
 
-                            double value = pixels.getPixelValue(new int[] { X, Y, Z });
-                            accumulator.addPoints(new int[] { iX, iY, iZ, finalIR }, value, sph);
-
+                            }
                         }
                     }
-                }
-            };
-            pool.submit(task);
-        }
+                };
+                pool.submit(task);
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (Exception e) {
-            e.printStackTrace();
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

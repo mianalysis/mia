@@ -278,51 +278,51 @@ public class RelateManyToOne extends Module {
         for (Obj parent : parentObjects.values())
             parent.getMeanCentroid();
 
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            for (Obj childObject : childObjects.values()) {
+                Runnable task = () -> {
+                    double minDist = Double.MAX_VALUE;
+                    Obj minLink = null;
+                    double dpp = childObject.getDppXY();
 
-        for (Obj childObject : childObjects.values()) {
-            Runnable task = () -> {
-                double minDist = Double.MAX_VALUE;
-                Obj minLink = null;
-                double dpp = childObject.getDppXY();
+                    for (Obj parentObject : parentObjects.values()) {
+                        if (linkInSameFrame & parentObject.getT() != childObject.getT())
+                            continue;
 
-                for (Obj parentObject : parentObjects.values()) {
-                    if (linkInSameFrame & parentObject.getT() != childObject.getT())
-                        continue;
+                        double dist = childObject.getCentroidSeparation(parentObject, true);
 
-                    double dist = childObject.getCentroidSeparation(parentObject, true);
-
-                    if (dist < minDist && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
-                        minDist = dist;
-                        minLink = parentObject;
+                        if (dist < minDist && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
+                            minDist = dist;
+                            minLink = parentObject;
+                        }
                     }
-                }
 
-                // Adding measurements to the input object
-                if (minLink != null) {
-                    childObject.addParent(minLink);
-                    minLink.addChild(childObject);
+                    // Adding measurements to the input object
+                    if (minLink != null) {
+                        childObject.addParent(minLink);
+                        minLink.addChild(childObject);
 
-                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
-                } else {
-                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
-                }
+                        childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
+                        childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                    } else {
+                        childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
+                        childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                    }
 
-                writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
+                    writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
 
-            };
-            pool.submit(task);
+                };
+                pool.submit(task);
 
-        }
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
     }
 
@@ -341,54 +341,54 @@ public class RelateManyToOne extends Module {
             if (!parent.hasCalculatedSurface())
                 parent.getCoordinateSet().calculateSurface(parent.is2D());
 
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            for (Obj childObject : childObjects.values()) {
+                Runnable task = () -> {
+                    double minDist = Double.MAX_VALUE;
+                    Obj minLink = null;
+                    double dpp = childObject.getDppXY();
 
-        for (Obj childObject : childObjects.values()) {
-            Runnable task = () -> {
-                double minDist = Double.MAX_VALUE;
-                Obj minLink = null;
-                double dpp = childObject.getDppXY();
+                    for (Obj parentObject : parentObjects.values()) {
+                        if (linkInSameFrame & parentObject.getT() != childObject.getT())
+                            continue;
 
-                for (Obj parentObject : parentObjects.values()) {
-                    if (linkInSameFrame & parentObject.getT() != childObject.getT())
-                        continue;
+                        // Calculating the object spacing
+                        double dist = childObject.getSurfaceSeparation(parentObject, true, ignoreEdgesXY, ignoreEdgesZ);
 
-                    // Calculating the object spacing
-                    double dist = childObject.getSurfaceSeparation(parentObject, true, ignoreEdgesXY, ignoreEdgesZ);
-
-                    if (Math.abs(dist) < Math.abs(minDist)
-                            && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
-                        minDist = dist;
-                        minLink = parentObject;
+                        if (Math.abs(dist) < Math.abs(minDist)
+                                && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
+                            minDist = dist;
+                            minLink = parentObject;
+                        }
                     }
-                }
 
-                // Applying the inside outside mode
-                if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
-                    minDist = 0;
-                    minLink = null;
-                }
+                    // Applying the inside outside mode
+                    if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
+                        minDist = 0;
+                        minLink = null;
+                    }
 
-                // Adding measurements to the input object
-                if (minLink != null) {
-                    childObject.addParent(minLink);
-                    minLink.addChild(childObject);
-                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
-                } else {
-                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
-                }
-                writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
-            };
-            pool.submit(task);
-        }
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
+                    // Adding measurements to the input object
+                    if (minLink != null) {
+                        childObject.addParent(minLink);
+                        minLink.addChild(childObject);
+                        childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
+                        childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                    } else {
+                        childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
+                        childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                    }
+                    writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
+                };
+                pool.submit(task);
+            }
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
     }
 
@@ -401,91 +401,96 @@ public class RelateManyToOne extends Module {
 
         // Ensuring all parent objects have a calculated surface
         writeStatus("Initialising object surfaces", moduleName);
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
-        final AtomicInteger count = new AtomicInteger(1);
-        int numberOfParents = parentObjects.size();
-        int numberOfChildren = childObjects.size();
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            final AtomicInteger count = new AtomicInteger(1);
+            int numberOfParents = parentObjects.size();
 
-        for (Obj parent : parentObjects.values()) {
-            if (!parent.hasCalculatedSurface()) {
+            for (Obj parent : parentObjects.values()) {
+                if (!parent.hasCalculatedSurface()) {
+                    Runnable task = () -> {
+                        parent.getCoordinateSet().calculateSurface(parent.is2D());
+                        writeProgressStatus(count.getAndIncrement(), numberOfParents, "objects", moduleName);
+                    };
+                    pool.submit(task);
+                }
+            }
+            pool.shutdown();
+
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
+        }
+
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            final AtomicInteger count = new AtomicInteger(1);
+            int numberOfChildren = childObjects.size();
+            count.set(1);
+
+            writeStatus("Processing objects", moduleName);
+            for (Obj childObject : childObjects.values()) {
                 Runnable task = () -> {
-                    parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeProgressStatus(count.getAndIncrement(), numberOfParents, "objects", moduleName);
+                    double minDist = Double.MAX_VALUE;
+                    Obj minLink = null;
+                    double dpp = childObject.getDppXY();
+
+                    Point<Double> childCentPx = childObject.getMeanCentroid(true, false);
+
+                    for (Obj parentObject : parentObjects.values()) {
+                        if (linkInSameFrame & parentObject.getT() != childObject.getT())
+                            continue;
+
+                        double dist = parentObject.getPointSurfaceSeparation(childCentPx, true, ignoreEdgesXY,
+                                ignoreEdgesZ);
+
+                        if (Math.abs(dist) < Math.abs(minDist)
+                                && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
+                            minDist = dist;
+                            minLink = parentObject;
+                        }
+                    }
+
+                    // If using centroid to surface proximity and inside only, calculate the
+                    // fractional distance
+                    if (minLink != null && calcFrac)
+                        calculateFractionalDistance(childObject, minLink, minDist);
+
+                    // Applying the inside outside mode
+                    if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
+                        minDist = 0;
+                        minLink = null;
+                    }
+
+                    // Adding measurements to the input object
+                    if (minLink != null) {
+                        childObject.addParent(minLink);
+                        minLink.addChild(childObject);
+
+                        childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
+                        childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+
+                    } else {
+                        childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
+                        childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+
+                    }
+
+                    writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
+
                 };
                 pool.submit(task);
             }
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
         }
-        pool.shutdown();
 
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        }
-
-        pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-        count.set(1);
-
-        writeStatus("Processing objects", moduleName);
-        for (Obj childObject : childObjects.values()) {
-            Runnable task = () -> {
-                double minDist = Double.MAX_VALUE;
-                Obj minLink = null;
-                double dpp = childObject.getDppXY();
-
-                Point<Double> childCentPx = childObject.getMeanCentroid(true, false);
-
-                for (Obj parentObject : parentObjects.values()) {
-                    if (linkInSameFrame & parentObject.getT() != childObject.getT())
-                        continue;
-
-                    double dist = parentObject.getPointSurfaceSeparation(childCentPx, true, ignoreEdgesXY,
-                            ignoreEdgesZ);
-
-                    if (Math.abs(dist) < Math.abs(minDist)
-                            && testLinkingDistance(linkingDistanceLimit, linkingDistance, dist)) {
-                        minDist = dist;
-                        minLink = parentObject;
-                    }
-                }
-
-                // If using centroid to surface proximity and inside only, calculate the
-                // fractional distance
-                if (minLink != null && calcFrac)
-                    calculateFractionalDistance(childObject, minLink, minDist);
-
-                // Applying the inside outside mode
-                if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
-                    minDist = 0;
-                    minLink = null;
-                }
-
-                // Adding measurements to the input object
-                if (minLink != null) {
-                    childObject.addParent(minLink);
-                    minLink.addChild(childObject);
-
-                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
-
-                } else {
-                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
-
-                }
-
-                writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
-
-            };
-            pool.submit(task);
-        }
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        }
     }
 
     public static void calculateFractionalDistance(Obj childObject, Obj parentObject, double minDist) {

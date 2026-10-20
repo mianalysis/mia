@@ -8,6 +8,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -148,7 +149,11 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         dcImage.shutdown();
         
-        return ImageFactory.createImage(outputImageName,outputImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName,outputImagePlus);
+
+        SetLookupTable.copyLUTFromImage(outputImage, inputImage);
+
+        return outputImage;
 
     }
 

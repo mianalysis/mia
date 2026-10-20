@@ -398,57 +398,57 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
 
         // Setting up multithreading options
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            // Running through each object, taking measurements and adding new object to the
+            // workspace where necessary
+            AtomicInteger count = new AtomicInteger(1);
+            int total = inputObjects.size();
+            TreeMap<Integer, ImagePlus> histogramIpls = new TreeMap<>();
 
-        // Running through each object, taking measurements and adding new object to the
-        // workspace where necessary
-        AtomicInteger count = new AtomicInteger(1);
-        int total = inputObjects.size();
-        TreeMap<Integer, ImagePlus> histogramIpls = new TreeMap<>();
+            for (Obj inputObject : inputObjects.values()) {
+                Runnable task = () -> {
+                    Directionality_ directionality = processObject(inputObject, inputImage, nBins, binStart, binEnd, method,
+                            includeBinRange, includeBinNumber);
 
-        for (Obj inputObject : inputObjects.values()) {
-            Runnable task = () -> {
-                Directionality_ directionality = processObject(inputObject, inputImage, nBins, binStart, binEnd, method,
-                        includeBinRange, includeBinNumber);
+                    if (saveHistogram)
+                        histogramIpls.put(inputObject.getID(),
+                                MeasureImageIntensityOrientation.getHistogramRGB(directionality).getImagePlus());
 
-                if (saveHistogram)
-                    histogramIpls.put(inputObject.getID(),
-                            MeasureImageIntensityOrientation.getHistogramRGB(directionality).getImagePlus());
+                    writeProgressStatus(count.getAndIncrement(), total, "objects");
+                };
+                pool.submit(task);
 
-                writeProgressStatus(count.getAndIncrement(), total, "objects");
-            };
-            pool.submit(task);
+            }
 
-        }
+            pool.shutdown();
+            try {
+                pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            } catch (InterruptedException e) {
+                // Do nothing as the user has selected this
+            }
 
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        }
+            if (saveHistogram) {
+                // Constructing core filename
+                String outputPath = getOutputPath(modules, workspace);
+                String outputName = getOutputName(modules, workspace);
+                outputPath = outputPath + outputName;
+                outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+                outputPath = appendDateTime(outputPath, appendDateTimeMode);
+                outputPath = outputPath + suffix;
 
-        if (saveHistogram) {
-            // Constructing core filename
-            String outputPath = getOutputPath(modules, workspace);
-            String outputName = getOutputName(modules, workspace);
-            outputPath = outputPath + outputName;
-            outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
-            outputPath = appendDateTime(outputPath, appendDateTimeMode);
-            outputPath = outputPath + suffix;
-
-            switch (histGroupMode) {
-                case HistogramGroupingModes.ALL_TOGETHER:
-                    saveHistogramsAllTogether(inputObjects, histogramIpls, outputPath);
-                    break;
-                case HistogramGroupingModes.GROUP_BY_PARENT:
-                    Objs parentObjects = workspace.getObjects(parentObjectsName);
-                    saveHistogramsByParent(parentObjects, inputObjectsName, histogramIpls, outputPath);
-                    break;
-                case HistogramGroupingModes.INDIVIDUAL_FILES:
-                    saveHistogramsIndividually(inputObjects, histogramIpls, outputPath);
-                    break;
+                switch (histGroupMode) {
+                    case HistogramGroupingModes.ALL_TOGETHER:
+                        saveHistogramsAllTogether(inputObjects, histogramIpls, outputPath);
+                        break;
+                    case HistogramGroupingModes.GROUP_BY_PARENT:
+                        Objs parentObjects = workspace.getObjects(parentObjectsName);
+                        saveHistogramsByParent(parentObjects, inputObjectsName, histogramIpls, outputPath);
+                        break;
+                    case HistogramGroupingModes.INDIVIDUAL_FILES:
+                        saveHistogramsIndividually(inputObjects, histogramIpls, outputPath);
+                        break;
+                }
             }
         }
 

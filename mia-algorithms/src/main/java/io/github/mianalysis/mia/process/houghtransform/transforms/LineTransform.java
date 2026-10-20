@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.process.houghtransform.transforms;
 
-import ij.gui.Plot;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.process.houghtransform.accumulators.LineAccumulator;
 import io.github.mianalysis.mia.process.string.CommaSeparatedStringInterpreter;

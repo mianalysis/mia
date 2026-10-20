@@ -89,6 +89,7 @@ import io.github.mianalysis.mia.object.coordinates.volume.VolumeType;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.SwingPreferences;
+import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.system.FileCrawler;
 
@@ -127,6 +128,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
     private String pointMode;
     private String volumeTypeString;
     private ClassSelector classSelector;
+    private String classColourMap = ColourFactory.ColourMaps.RANDOM_VIBRANT;
     private ArrayList<JPanel> extraPanels = new ArrayList<>();
     private int gridWidth = 3;
     private String previousOverlayMode = OverlayModes.NONE;
@@ -224,6 +226,10 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     public void setClassSelector(ClassSelector classSelector) {
         this.classSelector = classSelector;
+    }
+
+    public void setClassColourMap(String classColourMap) {
+        this.classColourMap = classColourMap;
     }
 
     public void addExtraPanel(JPanel extraPanel) {
@@ -919,7 +925,8 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         updateOverlay();
 
         // Setting the number field to this number
-        // boolean isDark = ((SwingPreferences) MIA.getPreferences()).darkThemeEnabled();
+        // boolean isDark = ((SwingPreferences)
+        // MIA.getPreferences()).darkThemeEnabled();
         objectNumberField.setText(String.valueOf(maxID));
         // objectNumberField.setForeground(Colours.getDarkGrey(isDark));
 
@@ -1271,14 +1278,14 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         Color colour = null;
         switch ((String) colourMode.getSelectedItem()) {
             case ColourModesWithClass.BY_CLASS:
-                float hue = objRoi.getAssignedClass() == null ? 0.167f
-                        : new Random(objRoi.getAssignedClass().hashCode() * 2000 * 31).nextFloat();
-                colour = Color.getHSBColor(hue, 1, 1);
+                colour = objRoi.getAssignedClass() == null ? Color.getHSBColor(0.167f, 1, 1)
+                        : ColourFactory.getColour(
+                                new Random(objRoi.getAssignedClass().hashCode() * 2000 * 31).nextFloat(),
+                                classColourMap, 100);
                 break;
             case ColourModesWithClass.BY_ID:
             default:
-                hue = new Random(objRoi.getID() * 1000 * 31).nextFloat();
-                colour = Color.getHSBColor(hue, 1, 1);
+                colour = Color.getHSBColor(new Random(objRoi.getID() * 1000 * 31).nextFloat(), 1, 1);
                 break;
             case ColourModesWithClass.BLACK:
                 colour = Color.BLACK;
@@ -1696,13 +1703,37 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             int z = displayIpl.getZ() - 1;
             int t = displayIpl.getT() - 1;
 
+            // The following two variables will only be changed for point ROIs
+            int closestIdx = -1;
+            double closestDist = Double.MAX_VALUE;
+
             for (int idx = 0; idx < listModel.size(); idx++) {
                 ObjRoi roi = listModel.getElementAt(idx);
-                if (roi.getZ() == z && roi.getT() == t && roi.getRoi().contains(x, y)) {
-                    list.setSelectedIndex(idx);
-                    list.ensureIndexIsVisible(idx);
-                    return;
+
+                if (roi.getZ() != z || roi.getT() != t)
+                    continue;
+
+                if (roi.getRoi() instanceof PointRoi) {
+                    PointRoi pointRoi = (PointRoi) roi.getRoi();
+                    Point containedPoint = pointRoi.getContainedPoints()[0];
+                    double currDist = new Point(containedPoint.x, containedPoint.y).distance(x, y);
+                    if (currDist <= 5 && currDist < closestDist) {
+                        closestIdx = idx;
+                        closestDist = currDist;
+                    }
+                } else {
+                    if (roi.getRoi().contains(x, y)) {
+                        list.setSelectedIndex(idx);
+                        list.ensureIndexIsVisible(idx);
+                        return;
+                    }
                 }
+            }
+
+            // If this value was set, apply it now
+            if (closestIdx != -1) {
+                list.setSelectedIndex(closestIdx);
+                list.ensureIndexIsVisible(closestIdx);
             }
         }
     }

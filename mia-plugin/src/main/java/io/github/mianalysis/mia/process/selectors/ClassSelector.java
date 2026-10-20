@@ -27,13 +27,10 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import com.drew.lang.annotations.Nullable;
 
 import ij.Prefs;
-import io.github.mianalysis.mia.MIA;
 
 public class ClassSelector implements ActionListener, KeyListener {
     private boolean allowAdditions;
@@ -266,6 +263,15 @@ public class ClassSelector implements ActionListener, KeyListener {
                 fullList.setSelectedIndex(idx);
                 fullList.ensureIndexIsVisible(idx);
                 tabbedPane.setSelectedIndex(0); // Selecting "All items" tab
+
+                lastSelectedClass = fullList.getSelectedValue();
+                currentListModel.add(lastSelectedClass);
+                recentListModel.add(lastSelectedClass);
+
+                saveRecentClassesToPrefs();
+
+                setVisible(false);
+
                 break;
         }
     }

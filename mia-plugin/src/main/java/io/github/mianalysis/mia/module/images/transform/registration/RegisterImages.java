@@ -488,37 +488,37 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         ImageProcessor referenceIpr = referenceImage.getImagePlus().getProcessor();
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>())) {
+            if (fillMode.equals(FillModes.WHITE))
+                InvertIntensity.process(inputImage);
 
-        if (fillMode.equals(FillModes.WHITE))
-            InvertIntensity.process(inputImage);
+            for (int c = 1; c <= nChannels; c++) {
+                for (int z = 1; z <= nSlices; z++) {
+                    for (int t = 1; t <= nFrames; t++) {
+                        int finalC = c;
+                        int finalZ = z;
+                        int finalT = t;
 
-        for (int c = 1; c <= nChannels; c++) {
-            for (int z = 1; z <= nSlices; z++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    int finalC = c;
-                    int finalZ = z;
-                    int finalT = t;
+                        Runnable task = () -> {
+                            ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+                            slice.setInterpolationMethod(ImageProcessor.BILINEAR);
+                            ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(),
+                                    referenceIpr.getHeight());
+                            alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
+                            mapping.mapInterpolated(slice, alignedSlice);
 
-                    Runnable task = () -> {
-                        ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
-                        slice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(),
-                                referenceIpr.getHeight());
-                        alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
-                        mapping.mapInterpolated(slice, alignedSlice);
+                            getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
 
-                        getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
-
-                    };
-                    pool.submit(task);
+                        };
+                        pool.submit(task);
+                    }
                 }
             }
-        }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        }
 
         if (fillMode.equals(FillModes.WHITE))
             InvertIntensity.process(inputImage);
