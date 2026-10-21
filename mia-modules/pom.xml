@@ -139,24 +139,28 @@
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>AnalyzeSkeleton_</artifactId>
+            <version>${AnalyzeSkeleton.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Auto_Local_Threshold</artifactId>
+            <version>${Auto_Local_Threshold.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>bUnwarpJ_</artifactId>
+            <version>${bUnwarpJ.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Colocalisation_Analysis</artifactId>
+            <version>${sc.fiji.Colocalisation_Analysis.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
@@ -169,32 +173,42 @@
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>CorrectBleach_</artifactId>
+            <version>${sc.fiji.CorrectBleach_.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Directionality_</artifactId>
+            <version>${sc.fiji.Directionality_.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Fiji_Plugins</artifactId>
+            <version>${sc.fiji.Fiji_Plugins.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Skeletonize3D_</artifactId>
-            <version>2.1.1</version>
+            <version>${sc.fiji.Skeletonize3D_.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate</artifactId>
-            <version>7.12.2</version>
+            <version>${sc.fiji.TrackMate.version}</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Trainable_Segmentation</artifactId>
+            <version>${sc.fiji.Trainable_Segmentation.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
@@ -207,13 +221,6 @@
         </dependency>
 
         <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Trainable_Segmentation</artifactId>
-            <version>3.3.2</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>de.biomedical-imaging.imagej</groupId>
             <artifactId>ij_ridge_detect</artifactId>
             <version>1.4.1</version>
@@ -223,21 +230,21 @@
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
-            <version>1.6.2</version>
+            <version>${fr.inra.ijpb.MorphoLibJ_.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>mpicbg</groupId>
             <artifactId>mpicbg</artifactId>
-            <version>1.5.0</version>
+            <version>${mpicbg.mpicbg.version}</version>
             <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>5.9</version>
+            <version>${com.opencsv.opencsv.version}</version>
             <scope>${scp}</scope>
         </dependency>
     </dependencies>
