@@ -7,9 +7,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.jogamp.vecmath.Point2d;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import org.scijava.vecmath.Point2d;
 
 import com.drew.lang.annotations.Nullable;
 

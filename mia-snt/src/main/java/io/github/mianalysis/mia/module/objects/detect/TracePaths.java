@@ -43,7 +43,6 @@ import sc.fiji.snt.tracing.BiSearch;
 import sc.fiji.snt.tracing.cost.Cost;
 import sc.fiji.snt.tracing.cost.Reciprocal;
 import sc.fiji.snt.tracing.heuristic.Dijkstra;
-import sc.fiji.snt.tracing.heuristic.Euclidean;
 import sc.fiji.snt.tracing.heuristic.Heuristic;
 
 /**
