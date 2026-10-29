@@ -262,7 +262,7 @@
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
-            <version>${fr.inra.ijpb.MorphoLibJ_.version}</version>
+            <version>1.6.5</version>
             <scope>${scp}</scope>
         </dependency>
 
