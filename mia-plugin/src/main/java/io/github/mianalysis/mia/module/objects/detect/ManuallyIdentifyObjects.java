@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.JPanel;
@@ -67,6 +68,7 @@ import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
+import net.imglib2.ops.parse.token.Int;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -677,8 +679,27 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
 
         workspace.addObjects(outputObjects);
-        if (outputTracks)
+        if (outputTracks) {
+            for (Obj track:outputTrackObjects.values()) {
+
+                TreeMap<Integer, Obj> childObjs = new TreeMap<>();
+                for (Obj spot:track.getChildren(outputObjectsName).values())
+                    childObjs.put(spot.getT(), spot);
+
+                Obj prevChild = null;
+                for (Obj childObj:childObjs.values()) {
+                    if (prevChild != null) {
+                        prevChild.addPartner(childObj);
+                        childObj.addPartner(prevChild);
+                    }
+
+                    prevChild = childObj;
+                    
+                }
+                
+            }
             workspace.addObjects(outputTrackObjects);
+        }
 
         // Showing the selected objects
         if (showOutput)
@@ -866,7 +887,13 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+        Workspace workspace = null;
+        PartnerRefs returnedRelationships = new PartnerRefs();
+
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        returnedRelationships.add(partnerRefs.getOrPut(outputObjectsName, outputObjectsName));
+
+        return returnedRelationships;
     }
 
     @Override

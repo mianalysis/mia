@@ -11,6 +11,7 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -190,14 +191,14 @@ public class AddTracks extends AbstractOverlay implements MeasurementPositionPro
 
                     Line line = new Line(x1, y1, x2, y2);
 
-                    // if (ipl.isHyperStack()) {
+                    if (ipl.isHyperStack()) {
                     ipl.setPosition(1, 1, t + 1);
                     line.setPosition(1, 1, t + 1);
-                    // } else {
-                    // int pos = Math.max(1, t + 1);
-                    // ipl.setPosition(pos);
-                    // line.setPosition(pos);
-                    // }
+                    } else {
+                    int pos = Math.max(1, t + 1);
+                    ipl.setPosition(pos);
+                    line.setPosition(pos);
+                    }
 
                     line.setStrokeWidth(lineWidth);
 
