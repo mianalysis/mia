@@ -973,6 +973,34 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
     }
 
+    public void addToExistingObject(Roi roi, int ID, int z, int t, @Nullable String assignedClass) {
+        ArrayList<ObjRoi> currentRois = rois.get(ID);
+        if (currentRois == null)
+            currentRois = new ArrayList<>();
+        
+        // If there's already a ROI in this image with the same ID, combine them
+        ListIterator<ObjRoi> iterator = currentRois.listIterator();
+
+        while (iterator.hasNext()) {
+            ObjRoi currentRoi = iterator.next();
+            if (currentRoi.getT() == t && currentRoi.getZ() == z) {
+                currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
+                displayIpl.setRoi(currentRoi.getRoi());
+                updateOverlay();
+                return;
+            }
+        }
+
+        // If no ROI was found, this will add it as a new ROI
+        ObjRoi objRoi = new ObjRoi(ID, roi, t, z, assignedClass);
+        iterator.add(objRoi);
+        rois.put(ID, currentRois);
+
+        addObjectToList(objRoi, ID);
+        updateOverlay();
+
+    }
+
     public void addToExistingObject() {
         // If there are no existing objects, add as new object
         if (rois.size() == 0 || objectNumberField.getText().equals("")) {
@@ -996,7 +1024,6 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         // Getting points
         Roi roi = displayIpl.getRoi();
-
         if (roi == null) {
             frame.setAlwaysOnTop(false);
             IJ.error("Select a ROI first using the ImageJ ROI tools.");
@@ -1004,8 +1031,12 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             return;
         }
 
+        int z = displayIpl.getZ() - 1;
+        int t = displayIpl.getT() - 1;
+
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = rois.get(ID);
+
         String assignedClass = null;
         for (ObjRoi currentRoi : currentRois) {
             if (currentRoi.getAssignedClass() != null) {
@@ -1014,28 +1045,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
             }
         }
 
-        // If there's already a ROI in this image with the same ID, combine them
-        int t = displayIpl.getT() - 1;
-        int z = displayIpl.getZ() - 1;
-        ListIterator<ObjRoi> iterator = currentRois.listIterator();
-        while (iterator.hasNext()) {
-            ObjRoi currentRoi = iterator.next();
-            if (currentRoi.getT() == t && currentRoi.getZ() == z) {
-                currentRoi.setRoi(new ShapeRoi(roi).or(new ShapeRoi(currentRoi.getRoi())));
-                displayIpl.setRoi(currentRoi.getRoi());
-                updateOverlay();
-                return;
-            }
-        }
-
-        // If no ROI was found, this will add it as a new ROI
-        ObjRoi objRoi = new ObjRoi(ID, roi, displayIpl.getT() - 1, displayIpl.getZ() - 1,
-                assignedClass);
-        iterator.add(objRoi);
-        rois.put(ID, currentRois);
-
-        addObjectToList(objRoi, ID);
-        updateOverlay();
+        addToExistingObject(roi, ID, z, t, assignedClass);
 
     }
 
@@ -1529,27 +1539,7 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
             ArrayList<ObjRoi> currentRois = rois.get(ID);
             for (Entry<Integer, Roi> entry : inputObject.getRois().entrySet()) {
-                Roi roi;
-                switch (existingObjectType) {
-                    case ExistingObjectTypes.REGIONS:
-                    default:
-                        roi = entry.getValue();
-                        break;
-
-                    case ExistingObjectTypes.SINGLE_POINTS:
-                        Point[] points = entry.getValue().getContainedPoints();
-                        double[] centroid = new double[2];
-                        centroid[0] = 0;
-                        centroid[1] = 0;
-                        for (Point point : points) {
-                            centroid[0] = +point.getX();
-                            centroid[1] = +point.getY();
-                        }
-                        centroid[0] = (centroid[0] / points.length);
-                        centroid[1] = (centroid[1] / points.length);
-                        roi = new PointRoi(centroid[0], centroid[1]);
-                        break;
-                }
+                Roi roi = convertRoi(entry.getValue(), existingObjectType);
 
                 ObjRoi objRoi = new ObjRoi(ID, roi, inputObject.getT(), entry.getKey(), assignedClass);
                 currentRois.add(objRoi);
@@ -1569,6 +1559,27 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
 
         updateOverlay();
 
+    }
+
+    public static Roi convertRoi(Roi inputRoi, String existingObjectType) {
+        switch (existingObjectType) {
+            case ExistingObjectTypes.REGIONS:
+            default:
+                return inputRoi;
+
+            case ExistingObjectTypes.SINGLE_POINTS:
+                Point[] points = inputRoi.getContainedPoints();
+                double[] centroid = new double[2];
+                centroid[0] = 0;
+                centroid[1] = 0;
+                for (Point point : points) {
+                    centroid[0] = +point.getX();
+                    centroid[1] = +point.getY();
+                }
+                centroid[0] = (centroid[0] / points.length);
+                centroid[1] = (centroid[1] / points.length);
+                return new PointRoi(centroid[0], centroid[1]);
+        }
     }
 
     void loadObjects() {

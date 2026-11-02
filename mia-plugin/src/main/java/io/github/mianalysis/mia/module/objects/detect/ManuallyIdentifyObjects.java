@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
@@ -21,6 +22,7 @@ import com.drew.lang.annotations.NotNull;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -31,6 +33,8 @@ import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtension;
 import io.github.mianalysis.mia.module.objects.detect.extensions.ManualExtensionDependencies;
 import io.github.mianalysis.mia.module.objects.track.TrackObjects;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.ObjMetadata;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
@@ -42,6 +46,7 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMetadataP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -126,8 +131,18 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
 
     /**
      * 
-     */
+    */
     public static final String ALLOW_MISSING_OBJECTS = "Allow missing objects";
+
+    /**
+    * 
+    */
+    public static final String ADD_EXISTING_TRACKS = "Add existing tracks";
+
+    /**
+    * 
+    */
+    public static final String INPUT_TRACK_OBJECTS = "Input track objects";
 
     /**
      * 
@@ -499,6 +514,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
         boolean addExistingObjects = parameters.getValue(ADD_EXISTING_OBJECTS, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        boolean addExistingTracks = parameters.getValue(ADD_EXISTING_TRACKS, workspace);
+        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         boolean applyExistingClass = parameters.getValue(APPLY_EXISTING_CLASS, workspace);
         String existingObjectType = parameters.getValue(EXISTING_OBJECT_TYPE, workspace);
         String metadataForClass = parameters.getValue(METADATA_FOR_CLASS, workspace);
@@ -566,11 +583,33 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         // Loading existing objects
         if (addExistingObjects) {
             Objs inputObjects = workspace.getObjects(inputObjectsName);
+
             if (!applyExistingClass)
                 metadataForClass = null;
 
             if (inputObjects != null) {
-                objectSelector.addObjects(inputObjects, existingObjectType, metadataForClass);
+                for (Obj inputObject : inputObjects.values()) {
+                    int ID = inputObject.getID();
+                    if (addExistingTracks && inputObject.getParent(inputTrackObjectsName) != null)
+                        ID = inputObject.getParent(inputTrackObjectsName).getID();
+
+                    HashMap<Integer, Roi> currRois = inputObject.getRois();
+                    for (int z : currRois.keySet()) {
+                        Roi roi = ObjectSelector.convertRoi(currRois.get(z), existingObjectType);
+
+                        String assignedClass = null;
+                        if (metadataForClass != null) {
+                            ObjMetadata metadataItem = inputObject.getMetadataItem(metadataForClass);
+                            if (metadataItem == null)
+                                assignedClass = "None";
+                            else
+                                assignedClass = metadataItem.getValue();
+                        }
+
+                        objectSelector.addToExistingObject(roi, ID, z, inputObject.getT(), assignedClass);
+                    }
+                }
+
                 objectSelector.updateOverlay();
             }
         }
@@ -638,6 +677,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         }
 
         workspace.addObjects(outputObjects);
+        if (outputTracks)
+            workspace.addObjects(outputTrackObjects);
 
         // Showing the selected objects
         if (showOutput)
@@ -662,6 +703,8 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
         parameters.add(new CustomInputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(EXISTING_OBJECT_TYPE, this, ExistingObjectTypes.REGIONS, ExistingObjectTypes.ALL));
         parameters.add(new BooleanP(ALLOW_MISSING_OBJECTS, this, false));
+        parameters.add(new BooleanP(ADD_EXISTING_TRACKS, this, false));
+        parameters.add(new ParentObjectsP(INPUT_TRACK_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_EXISTING_CLASS, this, false));
         parameters.add(new CustomObjectMetadataP(METADATA_FOR_CLASS, this));
 
@@ -713,6 +756,12 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
             boolean allowMissingObjects = parameters.getValue(ALLOW_MISSING_OBJECTS, workspace);
             ((CustomInputObjectsP) parameters.get(INPUT_OBJECTS)).setAllowMissingObjects(allowMissingObjects);
             ((CustomObjectMetadataP) parameters.get(METADATA_FOR_CLASS)).setAllowMissingObjects(allowMissingObjects);
+
+            returnedParameters.add(parameters.get(ADD_EXISTING_TRACKS));
+            if ((boolean) parameters.getValue(ADD_EXISTING_TRACKS, workspace)) {
+                returnedParameters.add(parameters.get(INPUT_TRACK_OBJECTS));
+                ((ParentObjectsP) parameters.get(INPUT_TRACK_OBJECTS)).setChildObjectsName(parameters.getValue(INPUT_OBJECTS, workspace));
+            }
 
             if ((boolean) parameters.getValue(ASSIGN_CLASSES, workspace)) {
                 returnedParameters.add(parameters.get(APPLY_EXISTING_CLASS));
