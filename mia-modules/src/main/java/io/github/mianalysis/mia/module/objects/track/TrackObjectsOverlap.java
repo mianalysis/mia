@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.module.objects.track;
 
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
+
 import java.util.Map;
 
 import org.scijava.Priority;
@@ -25,7 +28,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTracking {
+public class TrackObjectsOverlap extends AbstractSplittingMergingObjectTracking {
     public static final String TRACKING_SEPARATOR = "Tracking controls";
     public static final String MIN_IOU = "Min IoU";
 
@@ -38,8 +41,8 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
         String IoU = "IoU";
     }
 
-    public TrackObjectsOverlap3D(Modules modules) {
-        super("Overlap tracking 3D", modules);
+    public TrackObjectsOverlap(Modules modules) {
+        super("Track objects by overlap", modules);
     }
 
     @Override
@@ -55,10 +58,10 @@ public class TrackObjectsOverlap3D extends AbstractSplittingMergingObjectTrackin
         trackerSettings.put(OverlapTracker3DFactory.KEY_MIN_IOU, minIoU);
 
         boolean allowSplit = parameters.getValue(ALLOW_TRACK_SPLITTING, workspace);
-        trackerSettings.put(OverlapTracker3DFactory.KEY_ALLOW_TRACK_SPLITTING, allowSplit);
+        trackerSettings.put(KEY_ALLOW_TRACK_SPLITTING, allowSplit);
 
         boolean allowMerge = parameters.getValue(ALLOW_TRACK_MERGING, workspace);
-        trackerSettings.put(OverlapTracker3DFactory.KEY_ALLOW_TRACK_MERGING, allowMerge);
+        trackerSettings.put(KEY_ALLOW_TRACK_MERGING, allowMerge);
 
         return spotTrackerFactory.create(spotCollection, trackerSettings);
 

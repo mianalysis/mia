@@ -23,6 +23,8 @@ package io.github.mianalysis.mia.module.objects.track.trackmate;
 
 import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
 import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
 
 import java.util.HashMap;
@@ -51,10 +53,6 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
      * are not created. Values are strictly positive {@link Double}s.
      */
     public static final String KEY_MIN_IOU = "MIN_IOU";
-
-    public static final String KEY_ALLOW_TRACK_SPLITTING = "ALLOW_TRACK_SPLITTING";
-
-    public static final String KEY_ALLOW_TRACK_MERGING = "ALLOW_TRACK_MERGING";
 
     public static final String KEY_MIA_OBJECTS = "MIA_OBJECTS";
 
