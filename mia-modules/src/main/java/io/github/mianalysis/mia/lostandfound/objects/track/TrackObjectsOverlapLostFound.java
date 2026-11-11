@@ -18,7 +18,7 @@ public class TrackObjectsOverlapLostFound extends LostAndFoundItem {
 
     @Override
     public String[] getPreviousModuleNames() {
-        return new String[] { "Overlap tracking 3D" };
+        return new String[] { "TrackObjectsOverlap" };
     }
 
     @Override

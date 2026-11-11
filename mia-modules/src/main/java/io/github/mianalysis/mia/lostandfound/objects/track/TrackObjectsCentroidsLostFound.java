@@ -18,7 +18,7 @@ public class TrackObjectsCentroidsLostFound extends LostAndFoundItem {
 
     @Override
     public String[] getPreviousModuleNames() {
-        return new String[] { "Centroid tracking 3D" };
+        return new String[] { "TrackObjectsCentroids3D" };
     }
 
     @Override
