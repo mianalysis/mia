@@ -14,7 +14,9 @@ import com.drew.lang.annotations.Nullable;
 import ABSnake.SnakeConfig;
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.gui.ShapeRoi;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -173,7 +175,20 @@ public class FitSnake extends Module {
 
             SnakeConfig config = new SnakeConfig(gradThresh, displMax, maxSearch, regMin, regMax, alphaD);
             ABSnakeMod snake = new ABSnakeMod();
-            snake.Init(inputObj.getRoi(z));
+            Roi inputRoi = inputObj.getRoi(z);
+            if (inputRoi.getType() == Roi.COMPOSITE) {
+                double maxLength = -1;
+                Roi maxRoi = null;
+                for (Roi currRoi:((ShapeRoi) inputRoi).getRois()) {
+                    if (currRoi.getLength() > maxLength) {
+                        maxLength = currRoi.getLength();
+                        maxRoi = currRoi;
+                    }
+                }
+                inputRoi = maxRoi;
+            }
+                
+            snake.Init(inputRoi);
             snake.setOriginalImage(ipr);
             snake.setConfig(config);
 
