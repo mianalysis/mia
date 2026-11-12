@@ -23,6 +23,8 @@ package io.github.mianalysis.mia.module.objects.track.trackmate;
 
 import static fiji.plugin.trackmate.io.IOUtils.readDoubleAttribute;
 import static fiji.plugin.trackmate.io.IOUtils.writeAttribute;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
 import static fiji.plugin.trackmate.util.TMUtils.checkParameter;
 
 import java.util.HashMap;
@@ -36,7 +38,6 @@ import org.scijava.plugin.Plugin;
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.gui.components.ConfigurationPanel;
-import fiji.plugin.trackmate.gui.components.tracker.OverlapTrackerSettingsPanel;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import io.github.mianalysis.mia.MIA;
@@ -52,10 +53,6 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
      * are not created. Values are strictly positive {@link Double}s.
      */
     public static final String KEY_MIN_IOU = "MIN_IOU";
-
-    public static final String KEY_ALLOW_TRACK_SPLITTING = "ALLOW_TRACK_SPLITTING";
-
-    public static final String KEY_ALLOW_TRACK_MERGING = "ALLOW_TRACK_MERGING";
 
     public static final String KEY_MIA_OBJECTS = "MIA_OBJECTS";
 
@@ -109,7 +106,6 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
         return new OverlapTracker3DSettingsPanel();
     }
 
-    @Override
     public boolean marshall(final Map<String, Object> settings, final Element element) {
         boolean ok = true;
         final StringBuilder str = new StringBuilder();
@@ -118,7 +114,6 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
         return ok;
     }
 
-    @Override
     public boolean unmarshall(final Element element, final Map<String, Object> settings) {
         settings.clear();
         final StringBuilder errorHolder = new StringBuilder();
@@ -154,7 +149,6 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
         
     }
 
-    @Override
     public boolean checkSettingsValidity(final Map<String, Object> settings) {
         if (null == settings) {
             errorMessage = BASE_ERROR_MESSAGE + "Settings map is null.\n";
@@ -173,7 +167,6 @@ public class OverlapTracker3DFactory implements SpotTrackerFactory {
         return true;
     }
 
-    @Override
     public String getErrorMessage() {
         return errorMessage;
     }

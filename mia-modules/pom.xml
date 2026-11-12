@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.8.0</version>
+        <version>1.8.2</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.8.0</version>
+    <version>1.8.2</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -262,7 +262,7 @@
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
-            <version>${fr.inra.ijpb.MorphoLibJ_.version}</version>
+            <version>1.6.5</version>
             <scope>${scp}</scope>
         </dependency>
 

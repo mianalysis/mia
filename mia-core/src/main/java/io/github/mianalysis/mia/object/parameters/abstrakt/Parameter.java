@@ -96,6 +96,9 @@ public abstract class Parameter extends Ref {
     }
 
     public void setControl(ParameterControl control) {
+        if (control == null)
+            return;
+        
         this.control = control;
         control.setParameter(this);
     }

@@ -44,7 +44,6 @@ import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.util.Threads;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.coordinates.volume.Volume;
@@ -171,7 +170,8 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 			for (final Spot target : targetGeometries.keySet()) {
 				final Volume targetVolume = targetGeometries.get(target);
 				futures.add(executors
-						.submit(new FindBestSourcesTask(target, targetVolume, sourceGeometries, minIoU, allowTrackMerging)));
+						.submit(new FindBestSourcesTask(target, targetVolume, sourceGeometries, minIoU,
+								allowTrackMerging)));
 			}
 
 			// Get results.
@@ -192,11 +192,11 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 								continue;
 							else
 								removeLink(bestSourceIoUs.get(link.source));
-						
+
 						addLink(link);
 						bestSourceIoUs.put(link.source, link);
 						link.target.putFeature("IoU", link.iou);
-						
+
 					}
 
 				} catch (InterruptedException | ExecutionException e) {
@@ -209,7 +209,7 @@ public class OverlapTracker3D extends MultiThreadedBenchmarkAlgorithm implements
 			sourceGeometries = targetGeometries;
 			logger.setProgress((double) progress++ / spots.keySet().size());
 
-			Module.writeProgressStatus(++count,spots.keySet().size(),"frames","Overlap tracker 3D");
+			Module.writeProgressStatus(++count, spots.keySet().size(), "frames", "Overlap tracker 3D");
 
 		}
 
