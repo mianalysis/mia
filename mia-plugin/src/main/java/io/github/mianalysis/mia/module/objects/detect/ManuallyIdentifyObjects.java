@@ -68,7 +68,6 @@ import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
-import net.imglib2.ops.parse.token.Int;
 
 /**
  * Created by sc13967 on 27/02/2018.
