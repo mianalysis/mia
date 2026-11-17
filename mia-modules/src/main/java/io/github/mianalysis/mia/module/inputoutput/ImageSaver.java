@@ -321,8 +321,8 @@ public class ImageSaver extends AbstractSaver {
                     // Adding last bits to name
                     String finalOutputPath = outputPath + outputName;
                     finalOutputPath = appendSeries(finalOutputPath, workspace, appendSeriesMode);
-                    finalOutputPath = appendDateTime(finalOutputPath, appendDateTimeMode);
                     finalOutputPath = finalOutputPath + suffix;
+                    finalOutputPath = appendDateTime(finalOutputPath, appendDateTimeMode);
 
                     // Optionally, appending sequence number
                     switch (imageSequenceMode) {

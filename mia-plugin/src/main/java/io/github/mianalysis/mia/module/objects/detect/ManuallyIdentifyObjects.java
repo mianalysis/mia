@@ -476,8 +476,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 // Adding last bits to name
                 outputPath = outputPath + outputName;
                 outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+                outputPath = outputPath + suffix;
                 outputPath = appendDateTime(outputPath, appendDateTimeMode);
-                outputPath = outputPath + suffix + ".csv";
+                outputPath = outputPath + ".csv";
 
                 writeClassesFile(outputPath, allClasses);
 

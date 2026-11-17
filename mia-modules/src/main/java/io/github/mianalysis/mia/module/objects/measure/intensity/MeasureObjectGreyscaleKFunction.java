@@ -359,8 +359,9 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
         // Adding last bits to name
         outputPath = outputPath + outputName;
         outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+        outputPath = outputPath + suffix;
         outputPath = appendDateTime(outputPath, appendDateTimeMode);
-        outputPath = outputPath + suffix + ".xlsx";
+        outputPath = outputPath +  ".xlsx";
 
         MeasureIntensityAlongPath.writeDistancesFile(workbook, outputPath);
 

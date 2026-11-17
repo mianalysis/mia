@@ -50,6 +50,8 @@ public class GetObjectSurface extends Module {
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
         outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
 
+        outputObject.setT(inputObject.getT());
+
         if (assignRelationships) {
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);

@@ -434,8 +434,8 @@ public class MeasureObjectIntensityOrientation extends AbstractSaver {
                 String outputName = getOutputName(modules, workspace);
                 outputPath = outputPath + outputName;
                 outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
-                outputPath = appendDateTime(outputPath, appendDateTimeMode);
                 outputPath = outputPath + suffix;
+                outputPath = appendDateTime(outputPath, appendDateTimeMode);
 
                 switch (histGroupMode) {
                     case HistogramGroupingModes.ALL_TOGETHER:
