@@ -124,6 +124,7 @@
         <module>mia-deepimagej</module>
         <module>mia-elki</module>
         <module>mia-macros</module>
+        <module>mia-mcib3d</module>
         <module>mia-modules</module>
         <module>mia-plugin</module>
         <module>mia-ptbiop</module>
@@ -135,7 +136,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public/</url>
+            <url>https://maven.scijava.org/content/groups/public/</url> 
         </repository>
 
         <repository>
