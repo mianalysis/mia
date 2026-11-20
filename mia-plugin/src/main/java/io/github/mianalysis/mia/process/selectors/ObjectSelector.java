@@ -996,7 +996,9 @@ public class ObjectSelector implements ActionListener, KeyListener, MouseListene
         iterator.add(objRoi);
         rois.put(ID, currentRois);
 
-        addObjectToList(objRoi, ID);
+        maxID = Math.max(maxID, ID);
+        
+        addObjectToList(objRoi, ID);       
         updateOverlay();
 
     }

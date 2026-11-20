@@ -99,8 +99,9 @@ public class SaveObjectsAsVOC extends AbstractSaver {
         String outputName = getOutputName(modules, workspace);
         outputPath = outputPath + outputName;
         outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+        outputPath = outputPath + suffix;
         outputPath = appendDateTime(outputPath, appendDateTimeMode);
-        outputPath = outputPath + suffix + ".xml";
+        outputPath = outputPath + ".xml";
 
         try {
             VOCWriter writer = new VOCWriter();

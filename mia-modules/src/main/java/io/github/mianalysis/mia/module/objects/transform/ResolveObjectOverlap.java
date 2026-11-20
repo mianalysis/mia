@@ -78,7 +78,7 @@ public class ResolveObjectOverlap extends Module {
 
         // Masking input objects
         Image maskImage = ImageFactory.createImage("Mask", overlap);
-        MaskObjects.maskObjects(inputObjects, maskImage, null, true, false);
+        MaskObjects.maskObjects(inputObjects, maskImage, null, null, true, false);
   
         // Growing input objects into overlap regions
         String startingObjectMode = GrowObjects.StartingObjectModes.SURFACES;
@@ -88,7 +88,7 @@ public class ResolveObjectOverlap extends Module {
                 workspace);
   
                 // Masking to original objects
-        MaskObjects.maskObjects(inputObjects, finalMask, null, true, false);
+        MaskObjects.maskObjects(inputObjects, finalMask, null, null, true, false);
       
     }
 

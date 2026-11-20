@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.mianalysis</groupId>
         <artifactId>pom-mia</artifactId>
-        <version>1.8.2</version>
+        <version>1.8.3</version>
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>mia-modules</artifactId>
-    <version>1.8.2</version>
+    <version>1.8.3</version>
     <packaging>jar</packaging>
     <name>mia-modules</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -129,24 +129,6 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.46.1.3</version>
         </dependency> -->
-
-        <dependency>
-            <groupId>com.github.mcib3d</groupId>
-            <artifactId>ABSnake</artifactId>
-            <version>-a8bf2b60f0-1</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>sc.fiji</groupId>
-                    <artifactId>3D_Viewer</artifactId>
-                </exclusion>
-
-                <exclusion>
-                    <groupId>org.scijava</groupId>
-                    <artifactId>j3dcore</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>io.github.mianalysis</groupId>

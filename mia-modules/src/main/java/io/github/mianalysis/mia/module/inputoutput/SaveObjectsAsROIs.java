@@ -230,8 +230,8 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         // Adding last bits to name
         outputPath = outputPath + outputName;
         outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
-        outputPath = appendDateTime(outputPath, appendDateTimeMode);
         outputPath = outputPath + suffix;
+        outputPath = appendDateTime(outputPath, appendDateTimeMode);
 
         saveObjects(outputPath, fileMode, inputObjects, parentObjectsName, metadataItem);
 

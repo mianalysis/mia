@@ -117,6 +117,7 @@ public class InputControl extends Module {
 	*/
     public static final String PATTERN = "Pattern";
 
+    public static final String RANDOMISE_PROCESSING_ORDER = "Randomise processing order";
 
 	/**
 	* 
@@ -465,6 +466,7 @@ public class InputControl extends Module {
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
         parameters.add(new BooleanP(LOAD_FIRST_MATCHING_GROUP, this, false));
         parameters.add(new StringP(PATTERN, this));
+        parameters.add(new BooleanP(RANDOMISE_PROCESSING_ORDER, this, false));
 
         parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
@@ -512,6 +514,7 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
         if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP, workspace))
             returnedParameters.add(parameters.getParameter(PATTERN));
+        returnedParameters.add(parameters.getParameter(RANDOMISE_PROCESSING_ORDER));
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));

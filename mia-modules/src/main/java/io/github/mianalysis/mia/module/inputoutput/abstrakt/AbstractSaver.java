@@ -98,7 +98,7 @@ public abstract class AbstractSaver extends Module {
                 String nameWithoutExtension = FilenameUtils.removeExtension(inputName);
                 String extension = FilenameUtils.getExtension(inputName);
                 String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-                return nameWithoutExtension + "_(" + dateTime + ")." + extension;
+                return nameWithoutExtension + "_(" + dateTime + ")" + extension;
             case AppendDateTimeModes.NEVER:
             default:
                 return inputName;
