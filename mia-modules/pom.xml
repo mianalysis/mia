@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.github.mcib3d</groupId>
             <artifactId>ABSnake</artifactId>
-            <version>-a8bf2b60f0-1</version>
+            <version>-SNAPSHOT</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
