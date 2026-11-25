@@ -38,7 +38,7 @@ import io.github.mianalysis.mia.object.system.Status;
 public class ImageMeasurementCalculator extends MeasurementCalculator {
 
     /**
-    * 
+    *
     */
     public static final String INPUT_SEPARATOR = "Image input";
 
@@ -52,7 +52,7 @@ public class ImageMeasurementCalculator extends MeasurementCalculator {
     public interface CalculationModes extends MeasurementCalculator.CalculationModes{};
 
     public interface StatisticModes extends MeasurementCalculator.StatisticModes{};
-    
+
 
     public ImageMeasurementCalculator(Modules modules) {
         super("Image measurement calculator", modules);
@@ -167,7 +167,10 @@ public class ImageMeasurementCalculator extends MeasurementCalculator {
         return true;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+
         parameters.get(INPUT_IMAGE)
                 .setDescription("Image from the workspace to perform the measurement calculation for.");
 

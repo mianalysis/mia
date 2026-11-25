@@ -490,7 +490,7 @@ public abstract class MeasurementCalculator extends Module {
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(VALUE_MODE_1)
                 .setDescription("Controls how the first value in the calculation is defined:<br><ul>"
 

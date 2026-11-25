@@ -41,7 +41,7 @@ import io.github.mianalysis.mia.object.system.Status;
 public class ObjectMeasurementCalculator extends MeasurementCalculator {
 
 	/**
-	* 
+	*
 	*/
     public static final String INPUT_SEPARATOR = "Object input";
 
@@ -57,7 +57,7 @@ public class ObjectMeasurementCalculator extends MeasurementCalculator {
 
     public interface StatisticModes extends MeasurementCalculator.StatisticModes{};
 
-    
+
     public ObjectMeasurementCalculator(Modules modules) {
         super("Object measurement calculator", modules);
     }
@@ -225,8 +225,8 @@ public class ObjectMeasurementCalculator extends MeasurementCalculator {
     }
 
     @Override
-    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {  
-	return null; 
+    public ObjMetadataRefs updateAndGetObjectMetadataRefs() {
+	return null;
     }
 
     @Override
@@ -249,7 +249,7 @@ public class ObjectMeasurementCalculator extends MeasurementCalculator {
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(INPUT_OBJECTS).setDescription(
                 "Object collection from the workspace to perform the measurement calculation for.  The specified calculation will be performed once per object in the collection.");
 

@@ -49,7 +49,7 @@ public class MIA_ extends MIA implements Command {
     }
 
     @Override
-    public void run() {        
+    public void run() {
         headless = false;
 
         // Adding LogService to LogHistory
