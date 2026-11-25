@@ -1,0 +1,9 @@
+<settings>
+    <mirrors>
+        <mirror>
+            <id>imagej-https</id>
+            <mirrorOf>imagej.public</mirrorOf>
+            <url>https://maven.scijava.org/content/groups/public</url>
+        </mirror>
+    </mirrors>
+</settings>

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -54,7 +55,7 @@ public class AnalysisRunner {
 
         AnalysisTester.testModules(modules, null, null);
 
-        LinkedHashSet<Job> jobs = getJobs(modules);
+        Set<Job> jobs = getJobs(modules);
         if (jobs.size() == 0) {
             String message = "No valid images found at specified path";
             MIA.log.writeWarning(message);
@@ -138,8 +139,8 @@ public class AnalysisRunner {
         }
     }
 
-    public LinkedHashSet<Job> getJobs(Modules modules) {
-        LinkedHashSet<Job> jobs = new LinkedHashSet<>();
+    public Set<Job> getJobs(Modules modules) {
+        Set<Job> jobs = new LinkedHashSet<>();
 
         InputControl inputControl = modules.getInputControl();
 
@@ -155,6 +156,7 @@ public class AnalysisRunner {
         boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP, null);
         String patternString = inputControl.getParameterValue(InputControl.PATTERN, null);
         Pattern pattern = firstMatchingGroup ? Pattern.compile(patternString) : null;
+        boolean randomiseProcessingOrder = inputControl.getParameterValue(InputControl.RANDOMISE_PROCESSING_ORDER, null);
         HashSet<String> groups = new HashSet<>();
 
         if (firstMatchingGroup && pattern.matcher("").groupCount() == 0) {
@@ -200,6 +202,9 @@ public class AnalysisRunner {
 
             }
         }
+
+        if (randomiseProcessingOrder)
+            jobs = new HashSet<>(jobs);
 
         return jobs;
 

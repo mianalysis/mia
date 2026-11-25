@@ -313,8 +313,8 @@ public class SaveObjectsAsMOC extends AbstractSaver {
         // Adding last bits to name
         outputPath = outputPath + outputName;
         outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
-        outputPath = appendDateTime(outputPath, appendDateTimeMode);
         outputPath = outputPath + suffix;
+        outputPath = appendDateTime(outputPath, appendDateTimeMode);
 
         ParameterGroup group = parameters.getParameter(ADD_OBJECTS);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);

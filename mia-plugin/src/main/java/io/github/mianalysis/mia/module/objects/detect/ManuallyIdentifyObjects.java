@@ -68,7 +68,6 @@ import io.github.mianalysis.mia.process.coordinates.ZInterpolator;
 import io.github.mianalysis.mia.process.exceptions.IntegerOverflowException;
 import io.github.mianalysis.mia.process.selectors.ClassSelector;
 import io.github.mianalysis.mia.process.selectors.ObjectSelector;
-import net.imglib2.ops.parse.token.Int;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -477,8 +476,9 @@ public class ManuallyIdentifyObjects extends AbstractSaver {
                 // Adding last bits to name
                 outputPath = outputPath + outputName;
                 outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+                outputPath = outputPath + suffix;
                 outputPath = appendDateTime(outputPath, appendDateTimeMode);
-                outputPath = outputPath + suffix + ".csv";
+                outputPath = outputPath + ".csv";
 
                 writeClassesFile(outputPath, allClasses);
 

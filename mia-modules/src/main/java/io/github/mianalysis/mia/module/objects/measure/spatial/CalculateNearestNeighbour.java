@@ -546,8 +546,6 @@ public class CalculateNearestNeighbour extends AbstractSaver {
         String inputParentsName = parameters.getValue(INPUT_PARENT, workspace);
         boolean includeNeighbourParent = parameters.getValue(INCLUDE_NEIGHBOUR_PARENT, workspace);
         String neighbourParentsName = parameters.getValue(NEIGHBOUR_PARENT, workspace);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
@@ -644,8 +642,9 @@ public class CalculateNearestNeighbour extends AbstractSaver {
             // Adding last bits to name
             outputPath = outputPath + outputName;
             outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+            outputPath = outputPath + suffix;
             outputPath = appendDateTime(outputPath, appendDateTimeMode);
-            outputPath = outputPath + suffix + ".xlsx";
+            outputPath = outputPath + ".xlsx";
 
             // Applying inside/outside policy
             for (LinkedHashMap<Obj, Double> collection : distances.values()) {

@@ -454,8 +454,9 @@ public class MeasureImageIntensityOrientation extends AbstractSaver {
             // Adding last bits to name
             outputPath = outputPath + outputName;
             outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+            outputPath = outputPath + suffix;
             outputPath = appendDateTime(outputPath, appendDateTimeMode);
-            outputPath = outputPath + suffix + ".tif";
+            outputPath = outputPath + ".tif";
 
             ImageSaver.saveImage(histogramImage, ImageSaver.FileFormats.TIF, outputPath);
 

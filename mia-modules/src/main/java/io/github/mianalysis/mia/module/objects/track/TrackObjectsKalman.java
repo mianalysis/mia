@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.module.objects.track;
 
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_MERGING;
+import static fiji.plugin.trackmate.tracking.TrackerKeys.KEY_ALLOW_TRACK_SPLITTING;
+
 import java.util.Map;
 
 import org.scijava.Priority;
@@ -9,10 +12,10 @@ import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.SpotTracker;
 import fiji.plugin.trackmate.tracking.SpotTrackerFactory;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
-import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
+import fiji.plugin.trackmate.tracking.kalman.AdvancedKalmanTrackerFactory;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractObjectTracking;
+import io.github.mianalysis.mia.module.objects.track.abstrakt.AbstractSplittingMergingObjectTracking;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -21,7 +24,7 @@ import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class TrackObjectsKalman extends AbstractObjectTracking {
+public class TrackObjectsKalman extends AbstractSplittingMergingObjectTracking {
     public static final String TRACKING_SEPARATOR = "Tracking controls";
     public static final String SEARCH_RADIUS = "Search radius (px)";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
@@ -34,7 +37,7 @@ public class TrackObjectsKalman extends AbstractObjectTracking {
 
     @Override
     protected SpotTracker getSpotTracker(SpotCollection spotCollection, Workspace workspace) {
-        SpotTrackerFactory spotTrackerFactory = new KalmanTrackerFactory();
+        SpotTrackerFactory spotTrackerFactory = new AdvancedKalmanTrackerFactory();
         Map<String, Object> trackerSettings = spotTrackerFactory.getDefaultSettings();
 
         double searchRadius = parameters.getValue(SEARCH_RADIUS, workspace);
@@ -45,6 +48,12 @@ public class TrackObjectsKalman extends AbstractObjectTracking {
 
         int maxFrameGap = parameters.getValue(MAXIMUM_FRAME_GAP, workspace);
         trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP, maxFrameGap);
+
+        boolean allowSplit = parameters.getValue(ALLOW_TRACK_SPLITTING, workspace);
+        trackerSettings.put(KEY_ALLOW_TRACK_SPLITTING, allowSplit);
+        
+        boolean allowMerge = parameters.getValue(ALLOW_TRACK_MERGING, workspace);
+        trackerSettings.put(KEY_ALLOW_TRACK_MERGING, allowMerge);
 
         return spotTrackerFactory.create(spotCollection, trackerSettings);
 

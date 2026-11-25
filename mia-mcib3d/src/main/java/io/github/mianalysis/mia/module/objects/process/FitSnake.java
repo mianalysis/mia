@@ -14,7 +14,6 @@ import com.drew.lang.annotations.Nullable;
 import ABSnake.SnakeConfig;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.process.ImageProcessor;
