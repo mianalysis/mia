@@ -123,7 +123,7 @@
             <dependency>
                 <groupId>com.github.mcib3d</groupId>
                 <artifactId>mcib3d-core</artifactId>
-                <version>3.96.0</version>
+                <version>3.96.31</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
