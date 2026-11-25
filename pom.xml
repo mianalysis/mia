@@ -1,6 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -17,7 +19,8 @@
     <name>pom-mia</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
-    <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
+    <description
+    >ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
     <organization>
         <name>University of Bristol</name>
     </organization>
@@ -84,7 +87,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <scp>compile</scp>
-        <license.licenseName>GNU General Public License v3+</license.licenseName>
+        <license.licenseName
+        >GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
 
         <!-- Use Java 21. -->
@@ -106,7 +110,8 @@
 
     <scm>
         <connection>scm:git:git://github.com/mianalysis/mia</connection>
-        <developerConnection>scm:git:git@github.com:mianalysis/mia</developerConnection>
+        <developerConnection
+        >scm:git:git@github.com:mianalysis/mia</developerConnection>
         <tag>HEAD</tag>
         <url>https://github.com/mianalysis/mia</url>
     </scm>
@@ -136,7 +141,7 @@
     <repositories>
         <repository>
             <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public/</url> 
+            <url>https://maven.scijava.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -152,6 +157,12 @@
                 <artifactId>npy</artifactId>
                 <version>0.3.5</version>
                 <scope>${scp}</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.mcib3d</groupId>
+                <artifactId>mcib3d-core</artifactId>
+                <version>3.96.31</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -290,11 +301,13 @@
     <distributionManagement>
         <snapshotRepository>
             <id>mavencentral</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <url
+            >https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>mavencentral</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url
+            >https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
