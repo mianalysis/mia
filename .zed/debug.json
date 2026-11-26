@@ -1,0 +1,10 @@
+[
+  {
+    "adapter": "Java",
+    "request": "launch",
+    "label": "(MIA) Launch MIA",
+    "mainClass": "io.github.mianalysis.mia.MIA_",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "vmArgs": ["-Xmx14000m", "--add-opens=java.base/java.lang=ALL-UNNAMED"],
+  },
+]

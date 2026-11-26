@@ -19,14 +19,14 @@ public class FitSnakeDependency extends Dependency {
     public String getMessage() {
         return "Please download absnake_.jar from https://web.archive.org/web/20260614160040/https://imagejdocu.list.lu/_media/plugin/segmentation/active_contour/absnake_.jar and put it in the \"plugins\" folder of your Fiji)";
     }
-    
+
     @Override
     public String getVersionThreshold() {
-        return "1.0.0";
+        return "";
     }
 
     @Override
     public Relationship getRelationship() {
-        return Relationship.GREATER_THAN_OR_EQUAL_TO;
+        return Relationship.ANY;
     }
 }
