@@ -27,7 +27,7 @@ public class InputControlLostFound extends LostAndFoundItem {
         HashMap<String,String> parameterNames = new HashMap<String,String>();
         parameterNames.put("Spatial units", InputControl.SPATIAL_UNIT);
         parameterNames.put("Ignore case", "");
-        
+
         return parameterNames;
 
     }
@@ -35,14 +35,14 @@ public class InputControlLostFound extends LostAndFoundItem {
     @Override
     public HashMap<String, HashMap<String, String>> getPreviousParameterValues() {
         HashMap<String, HashMap<String, String>> parameterValues = new HashMap<>();
-        
+
         HashMap<String, String> values = new HashMap<>();
         values.put("METRE", SpatialUnit.AvailableUnits.METRE);
         values.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         values.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
         values.put("MICROMETRE", SpatialUnit.AvailableUnits.MICROMETRE);
         values.put("NANOMETRE", SpatialUnit.AvailableUnits.NANOMETRE);
-        values.put("ANGSTROM", SpatialUnit.AvailableUnits.ANGSTROM);        
+        values.put("ANGSTROM", SpatialUnit.AvailableUnits.ANGSTROM);
         parameterValues.put(InputControl.SPATIAL_UNIT, values);
 
         values = new HashMap<>();
@@ -50,6 +50,6 @@ public class InputControlLostFound extends LostAndFoundItem {
         parameterValues.put(InputControl.SERIES_MODE, values);
 
         return parameterValues;
-    
+
     }
 }

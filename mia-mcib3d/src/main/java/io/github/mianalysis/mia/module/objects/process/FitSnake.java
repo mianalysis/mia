@@ -46,7 +46,7 @@ import io.github.mianalysis.mia.thirdparty.ABSnakeMod;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitSnake extends Module {
     /**
-     * 
+     *
     */
     public static final String OBJECTS_SEPARATOR = "Objects input/output";
 
@@ -65,7 +65,7 @@ public class FitSnake extends Module {
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
 
     /**
-    * 
+    *
     */
     public static final String IMAGE_SEPARATOR = "Image input";
 
@@ -84,47 +84,47 @@ public class FitSnake extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     /**
-    * 
+    *
     */
     public static final String SNAKE_SEPARATOR = "Snake controls";
 
     /**
-    * 
+    *
     */
     public static final String MINIMUM_REGULARISATION = "Minimum regularisation";
 
     /**
-    * 
+    *
     */
     public static final String MAXIMUM_REGULARISATION = "Maximum regularisation";
 
     /**
-    * 
+    *
     */
     public static final String ALPHA_DERICHE = "Alpha Deriche";
 
     /**
-    * 
+    *
     */
     public static final String MAXIMUM_DISPLACEMENT = "Maximum displacement";
 
     /**
-    * 
+    *
     */
     public static final String STEP_MULTIPLIER = "Step multiplier";
 
     /**
-    * 
+    *
     */
     public static final String GRADIENT_THRESHOLD = "Gradient threshold";
 
     /**
-    * 
+    *
     */
     public static final String NUM_ITERATIONS = "Number of iterations";
 
     /**
-    * 
+    *
     */
     public static final String EXECUTION_SEPARATOR = "Execution controls";
 
@@ -186,7 +186,7 @@ public class FitSnake extends Module {
                 }
                 inputRoi = maxRoi;
             }
-                
+
             snake.Init(inputRoi);
             snake.setOriginalImage(ipr);
             snake.setConfig(config);

@@ -5,7 +5,7 @@ import org.scijava.util.VersionUtils;
 
 public abstract class CoreDependency implements SciJavaPlugin {
     public enum Relationship {
-        LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN, NOT_EQUAL_TO;
+        ANY, LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN, NOT_EQUAL_TO;
     }
 
     public abstract String getMessage();
@@ -21,10 +21,17 @@ public abstract class CoreDependency implements SciJavaPlugin {
             return false;
         }
 
-        int comparison = VersionUtils.compare(dependencyClass.getPackage().getImplementationVersion(),
-                this.getVersionThreshold());
+        String implementationVersion = dependencyClass.getPackage().getImplementationVersion();
+        if (implementationVersion == null)
+            // If any is allowed, it doesn't matter that we can't get the implementation version, otherwise, it fails
+            return getRelationship().equals(Relationship.ANY);
+
+        int comparison = VersionUtils.compare(implementationVersion, this.getVersionThreshold());
 
         switch (getRelationship()) {
+            case ANY:
+                return true;
+
             case LESS_THAN:
                 return comparison < 0;
 

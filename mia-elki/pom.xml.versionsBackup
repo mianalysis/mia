@@ -142,15 +142,19 @@
             </exclusions>
         </dependency>
 
-        <!--The main fastutil that comes with elki is massive (around 22 MB), so 
+        <!--The main fastutil that comes with elki is massive (around 22 MB), so
         we use this trimmed down version instead.  The fastutil import is removed
         by maven-dependency-plugin in the mia-plugin pom-->
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil-core</artifactId>
             <version>8.5.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>it.unimi.dsi</groupId>
+                    <artifactId>fastutil</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
-
-    
 </project>

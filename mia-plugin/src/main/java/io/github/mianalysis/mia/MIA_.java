@@ -37,6 +37,8 @@ public class MIA_ extends MIA implements Command {
     }
 
     public static void main(String[] args) throws Exception {
+        String version = System.getProperty("java.version");
+        System.out.println("VERSION = "+version);
         debug = true;
 
         try {
