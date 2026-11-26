@@ -241,6 +241,10 @@ public class Exporter {
         row.createCell(1).setCellValue(SystemUtils.OS_VERSION);
 
         row = sheet.createRow(rowIdx++);
+        row.createCell(0).setCellValue("JAVA_VERSION");
+        row.createCell(1).setCellValue(System.getProperty("java.version"));
+
+        row = sheet.createRow(rowIdx++);
         row.createCell(0).setCellValue("AVAILABLE MEMORY (MB)");
         row.createCell(1).setCellValue(IJ.maxMemory() / 1048576);
 

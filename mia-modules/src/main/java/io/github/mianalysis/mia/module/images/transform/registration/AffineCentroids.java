@@ -28,6 +28,8 @@ import mpicbg.models.AffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.Point;
 import mpicbg.models.PointMatch;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 /**
  * Apply slice-by-slice (2D) affine-based image registration to a
@@ -43,10 +45,10 @@ import mpicbg.models.PointMatch;
  * points for image alignment
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class AffineCentroids extends AbstractAffineRegistration {
+public class AffineCentroids<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration<T> {
 
     /**
-    * 
+    *
     */
     public static final String FEATURE_SEPARATOR = "Feature detection";
 
@@ -146,11 +148,14 @@ public class AffineCentroids extends AbstractAffineRegistration {
             }
         }
 
+        if (candidates1.size() == 0 || candidates2.size() == 0)
+            return null;
+
         ArrayList<Linkable> linkables = RelateOneToOne.getCentroidSeparationLinkables(candidates1, candidates2, false,
                 p.maxSeparation);
         DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
-        if (!linker.checkInput() || !linker.process())
+        if (creator == null || !linker.checkInput() || !linker.process())
             return null;
         Map<Integer, Integer> assignment = linker.getResult();
 
