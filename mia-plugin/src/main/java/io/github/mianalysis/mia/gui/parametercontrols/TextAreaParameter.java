@@ -35,17 +35,17 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
     protected int caretPosition = 0;
 
     private JLabel resizeBar;
-    private  JTextArea textArea;
+    private JTextArea textArea;
     private JScrollPane objectsScrollPane;
     private String prevString = "";
     private int dragStartY;
-    
+
     public TextAreaParameter(TextAreaP parameter) {
         super(parameter);
         this.prevString = parameter.getRawStringValue();
 
         createControl(250);
-        
+
     }
 
     public TextAreaParameter(TextAreaP parameter, int height) {
@@ -55,7 +55,7 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
         createControl(height);
 
     }
-    
+
     void createControl(int height) {
         control = new JPanel();
 
@@ -66,7 +66,7 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
         c.fill = GridBagConstraints.BOTH;
 
         textArea = new JTextArea();
-        
+
         Document document = textArea.getDocument();
         if (document instanceof PlainDocument) {
             document.putProperty(PlainDocument.tabSizeAttribute, 4);
@@ -129,7 +129,7 @@ public class TextAreaParameter extends ParameterControl implements CaretReporter
             @Override
             public void mouseMoved(MouseEvent e) {
             }
-            
+
         });
         c.gridy++;
         c.gridy++;

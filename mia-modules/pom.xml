@@ -210,6 +210,12 @@
             <artifactId>Trainable_Segmentation</artifactId>
             <version>${sc.fiji.Trainable_Segmentation.version}</version>
             <scope>${scp}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.activation</groupId>
+                    <artifactId>jakarta.activation-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

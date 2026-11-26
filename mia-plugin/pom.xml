@@ -1,6 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -16,7 +18,8 @@
     <name>mia-plugin</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
-    <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
+    <description
+    >ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
     <organization>
         <name>University of Bristol</name>
     </organization>
@@ -84,7 +87,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <scp>compile</scp>
-        <license.licenseName>GNU General Public License v3+</license.licenseName>
+        <license.licenseName
+        >GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
 
         <protobuf.version>3.2.0</protobuf.version>
@@ -102,7 +106,8 @@
 
     <scm>
         <connection>scm:git:git://github.com/mianalysis/mia</connection>
-        <developerConnection>scm:git:git@github.com:mianalysis/mia</developerConnection>
+        <developerConnection
+        >scm:git:git@github.com:mianalysis/mia</developerConnection>
         <tag>HEAD</tag>
         <url>https://github.com/mianalysis/mia</url>
     </scm>
@@ -297,8 +302,10 @@
                     <finalName>MIA_-${project.version}</finalName>
                     <archive>
                         <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries
+                            >true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries
+                            >true</addDefaultSpecificationEntries>
                             <mainClass>io.github.mianalysis.mia.MIA_</mainClass>
                         </manifest>
                     </archive>
@@ -352,7 +359,8 @@
                                 commons-codec,commons-beanutils,commons-collections,commons-collections4,commons-compress,commons-io,commons-lang3,commons-logging,commons-math3,commons-text,fastutil,slf4j-api,xml-apis,xml-apis-ext
                             </excludeArtifactIds>
 
-                            <outputDirectory>${project.build.directory}/mia-dependencies/</outputDirectory>
+                            <outputDirectory
+                            >${project.build.directory}/mia-dependencies/</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
