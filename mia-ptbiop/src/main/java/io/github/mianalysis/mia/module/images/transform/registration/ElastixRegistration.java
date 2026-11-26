@@ -26,7 +26,6 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractRegistration;
 import io.github.mianalysis.mia.module.inputoutput.LoadImage;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
-import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -137,7 +136,7 @@ public class ElastixRegistration<T extends RealType<T> & NativeType<T>>
                     th.transform(new DefaultTransformixTask());
                     return ((ImagePlus) (th.getTransformedImage().to(ImagePlus.class)));
                 }, new ImagePlus("Warped", inputIpr));
-        
+
         ImageTypeConverter.process(outputIpl, inputIpr.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
 
         return outputIpl.getProcessor();

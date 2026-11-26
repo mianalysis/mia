@@ -8,36 +8,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Vector;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import bunwarpj.Transformation;
-import bunwarpj.bUnwarpJ_;
 import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
 import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
-import ij.ImagePlus;
-import ij.gui.PointRoi;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.transform.registration.AffineCentroids.CentroidParam;
-import io.github.mianalysis.mia.module.images.transform.registration.UnwarpAutomatic.AutomaticBUnwarpJParam;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.module.objects.relate.Linkable;
 import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.coordinates.PointPair;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.thirdparty.bUnwarpJ_Mod;
-import mpicbg.models.PointMatch;
 
 /**
  * Apply slice-by-slice (2D) B-spline unwarping-based image registration to a
@@ -158,12 +150,18 @@ public class UnwarpCentroids extends AbstractBUnwarpJRegistration {
             }
         }
 
+        if (candidates1.size() == 0 || candidates2.size() == 0)
+            return null;
+
+
         ArrayList<Linkable> linkables = RelateOneToOne.getCentroidSeparationLinkables(candidates1, candidates2, false,
                 p.maxSeparation);
         DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
-        if (!linker.checkInput() || !linker.process())
+
+        if (creator == null || !linker.checkInput() || !linker.process())
             return null;
+        
         Map<Integer, Integer> assignment = linker.getResult();
 
         Stack<Point> points1 = new Stack<>();
